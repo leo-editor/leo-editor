@@ -6,7 +6,7 @@
 # @+node:ekr.20220826084013.1: ** << commanderEditCommands imports & annotations >>
 from __future__ import annotations
 import re
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -22,7 +22,7 @@ if TYPE_CHECKING:  # pragma: no cover
 # @+others
 # @+node:ekr.20171123135625.34: ** c_ec.addComments
 @g.commander_command('add-comments')
-def addComments(self: Self, event: LeoKeyEvent = None) -> None:
+def addComments(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Undoably add comments to the selected text."""
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
     # "Before" snapshot.
@@ -45,7 +45,7 @@ def addComments(self: Self, event: LeoKeyEvent = None) -> None:
         openDelim, closeDelim = d2 + ' ', ' ' + d3
     # Calculate the result.
     result = []
-    i: int = None
+    i: int | None = None
     for line in lines:
         if line.strip():
             if i is None:
@@ -69,7 +69,7 @@ def addComments(self: Self, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20171123135625.16: ** c_ec.convertAllBlanks
 @g.commander_command('convert-all-blanks')
-def convertAllBlanks(self: Self, event: LeoKeyEvent = None) -> None:
+def convertAllBlanks(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Convert all blanks to tabs in the selected outline."""
     c, u = self, self.undoer
     undoType = 'Convert All Blanks'
@@ -83,8 +83,7 @@ def convertAllBlanks(self: Self, event: LeoKeyEvent = None) -> None:
     for p in current.self_and_subtree():
         innerUndoData = u.beforeChangeNodeContents(p)
         if p == current:
-            changed = c.convertBlanks(event)
-            if changed:
+            if changed := c.convertBlanks():
                 count += 1
         else:
             changed = False
@@ -110,7 +109,7 @@ def convertAllBlanks(self: Self, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20171123135625.17: ** c_ec.convertAllTabs
 @g.commander_command('convert-all-tabs')
-def convertAllTabs(self: Self, event: LeoKeyEvent = None) -> None:
+def convertAllTabs(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Convert all tabs to blanks in the selected outline."""
     c = self
     u = c.undoer
@@ -125,8 +124,7 @@ def convertAllTabs(self: Self, event: LeoKeyEvent = None) -> None:
     for p in current.self_and_subtree():
         undoData = u.beforeChangeNodeContents(p)
         if p == current:
-            changed = self.convertTabs(event)
-            if changed:
+            if changed := self.convertTabs(event):
                 count += 1
         else:
             result = []
@@ -151,7 +149,7 @@ def convertAllTabs(self: Self, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20171123135625.18: ** c_ec.convertBlanks
 @g.commander_command('convert-blanks')
-def convertBlanks(self: Self, event: LeoKeyEvent = None) -> bool:
+def convertBlanks(self: Self, event: LeoKeyEvent | None = None) -> bool:
     """
     Convert *all* blanks to tabs in the selected node.
     Return True if the the p.b was changed.
@@ -186,10 +184,10 @@ def convertBlanks(self: Self, event: LeoKeyEvent = None) -> bool:
 
 # @+node:ekr.20171123135625.19: ** c_ec.convertTabs
 @g.commander_command('convert-tabs')
-def convertTabs(self: Self, event: LeoKeyEvent = None) -> bool:
+def convertTabs(self: Self, event: LeoKeyEvent | None = None) -> bool:
     """Convert all tabs to blanks in the selected node."""
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
-    #
+
     # "Before" snapshot.
     bunch = u.beforeChangeBody(p)
     # Data...
@@ -206,20 +204,20 @@ def convertTabs(self: Self, event: LeoKeyEvent = None) -> bool:
         result.append(s)
     if not changed:
         return False
-    #
+
     # Set p.b and w's text first.
     middle = ''.join(result)
     p.b = head + middle + tail  # Sets dirty and changed bits.
     w.setAllText(head + middle + tail)
-    #
+
     # Calculate the proper selection range (i, j, ins).
     i = len(head)
     j = max(i, len(head) + len(middle) - 1)
-    #
+
     # Set the selection range and scroll position.
     w.setSelectionRange(i, j, insert=j)
     w.setYScrollPosition(oldYview)
-    #
+
     # "after" snapshot.
     u.afterChangeBody(p, 'Convert Tabs', bunch)
     return True
@@ -227,16 +225,16 @@ def convertTabs(self: Self, event: LeoKeyEvent = None) -> bool:
 
 # @+node:ekr.20171123135625.21: ** c_ec.dedentBody (unindent-region)
 @g.commander_command('unindent-region')
-def dedentBody(self: Self, event: LeoKeyEvent = None) -> None:
+def dedentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Remove one tab's worth of indentation from all presently selected lines."""
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
-    #
+
     # Initial data.
     sel_1, sel_2 = w.getSelectionRange()
     tab_width = c.getTabWidth(c.p)
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
     bunch = u.beforeChangeBody(p)
-    #
+
     # Calculate the result.
     changed, result = False, []
     for line in lines:
@@ -247,13 +245,13 @@ def dedentBody(self: Self, event: LeoKeyEvent = None) -> None:
         result.append(s)
     if not changed:
         return
-    #
+
     # Set p.b and w's text first.
     middle = ''.join(result)
     all = head + middle + tail
     p.b = all  # Sets dirty and changed bits.
     w.setAllText(all)
-    #
+
     # Calculate the proper selection range (i, j, ins).
     if sel_1 == sel_2:
         line = result[0]
@@ -264,7 +262,7 @@ def dedentBody(self: Self, event: LeoKeyEvent = None) -> None:
         j = len(head) + len(middle)
         if middle.endswith('\n'):  # #1742.
             j -= 1
-    #
+
     # Set the selection range and scroll position.
     w.setSelectionRange(i, j, insert=j)
     w.setYScrollPosition(oldYview)
@@ -273,7 +271,7 @@ def dedentBody(self: Self, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20171123135625.36: ** c_ec.deleteComments
 @g.commander_command('delete-comments')
-def deleteComments(self: Self, event: LeoKeyEvent = None) -> None:
+def deleteComments(self: Self, event: LeoKeyEvent | None = None) -> None:
     # @+<< deleteComments docstring >>
     # @+node:ekr.20171123135625.37: *3* << deleteComments docstring >>
     # @@pagewidth 50
@@ -290,10 +288,10 @@ def deleteComments(self: Self, event: LeoKeyEvent = None) -> None:
     """
     # @-<< deleteComments docstring >>
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
-    #
+
     # "Before" snapshot.
     bunch = u.beforeChangeBody(p)
-    #
+
     # Initial data.
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
     if not lines:
@@ -304,7 +302,7 @@ def deleteComments(self: Self, event: LeoKeyEvent = None) -> None:
     if c.hasAmbiguousLanguage(p):
         language = c.getLanguageAtCursor(p, language)
     d1, d2, d3 = g.set_delims_from_language(language)
-    #
+
     # Calculate the result.
     changed, result = False, []
     if d1:
@@ -340,25 +338,25 @@ def deleteComments(self: Self, event: LeoKeyEvent = None) -> None:
                 result.append(s)
     if not changed:
         return
-    #
+
     # Set p.b and w's text first.
     middle = ''.join(result)
     p.b = head + middle + tail  # Sets dirty and changed bits.
     w.setAllText(head + middle + tail)
-    #
+
     # Set the selection range and scroll position.
     i = len(head)
     j = ins = max(i, len(head) + len(middle) - 1)
     w.setSelectionRange(i, j, insert=ins)
     w.setYScrollPosition(oldYview)
-    #
+
     # "after" snapshot.
     u.afterChangeBody(p, 'Delete Comments', bunch)
 
 
 # @+node:ekr.20171123135625.54: ** c_ec.editHeadline (edit-headline)
 @g.commander_command('edit-headline')
-def editHeadline(self: Self, event: LeoKeyEvent = None) -> None:
+def editHeadline(self: Self, event: LeoKeyEvent | None = None) -> None:
     """
     Begin editing the headline of the selected node.
     """
@@ -376,7 +374,7 @@ def editHeadline(self: Self, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20171123135625.23: ** c_ec.extract
 @g.commander_command('extract')
-def extract(self: Self, event: LeoKeyEvent = None) -> None:
+def extract(self: Self, event: LeoKeyEvent | None = None) -> None:
     # @+<< docstring for extract command >>
     # @+node:ekr.20201113130021.1: *3* << docstring for extract command >>
     r"""
@@ -407,9 +405,9 @@ def extract(self: Self, event: LeoKeyEvent = None) -> None:
     head, lines, tail, oldSel, oldYview = c.getBodyLines()
     if not lines:
         return  # Nothing selected.
-    #
+
     # Remove leading whitespace.
-    junk, ws = g.skip_leading_ws_with_indent(lines[0], 0, c.tab_width)
+    _, ws = g.skip_leading_ws_with_indent(lines[0], 0, c.tab_width)
     lines = [g.removeLeadingWhitespace(s, ws, c.tab_width) for s in lines]
     h = lines[0].strip()
     ref_h = extractRef(c, h).strip()
@@ -419,7 +417,7 @@ def extract(self: Self, event: LeoKeyEvent = None) -> None:
         def_h = extractDef_find(c, [lines[0]])  # Only look at the first line for a definition.
     else:
         def_h = extractDef_find(c, lines)  # Default to look at all lines for a definition.
-    #
+
     # First check for reference, then definition, then default to the first line.
     if ref_h:
         h, b, middle = ref_h, lines[1:], ' ' * ws + lines[0]  # By vitalije.
@@ -427,35 +425,35 @@ def extract(self: Self, event: LeoKeyEvent = None) -> None:
         h, b, middle = def_h, lines, ''
     else:
         h, b, middle = lines[0].strip(), lines[1:], ''
-    #
+
     # Start the outer undo group.
     u.beforeChangeGroup(c.p, undoType)
     undoData = u.beforeInsertNode(c.p)
     p = createFirstChildNode(c, c.p, h, ''.join(b))
     u.afterInsertNode(p, undoType, undoData)
-    #
+
     # Start inner undo.
     if oldSel:
         i, j = oldSel
         w.setSelectionRange(i, j, insert=j)
     bunch = u.beforeChangeBody(c.p)  # Not p.
-    #
+
     # Update the text and selection
     c.p.v.b = head + middle + tail  # Don't redraw.
     w.setAllText(head + middle + tail)
     i = len(head)
     j = max(i, len(head) + len(middle) - 1)
     w.setSelectionRange(i, j, insert=j)
-    #
+
     # End the inner undo.
     u.afterChangeBody(c.p, undoType, bunch)
-    #
+
     # Scroll as necessary.
     if oldYview:
         w.setYScrollPosition(oldYview)
     else:
         w.seeInsertPoint()
-    #
+
     # Add the changes to the outer undo group.
     u.afterChangeGroup(c.p, undoType=undoType)
     p.parent().expand()
@@ -518,10 +516,9 @@ def extractDef(c: Cmdr, s: str) -> str:
 
 
 # @+node:ekr.20171123135625.26: *3* function: extractDef_find
-def extractDef_find(c: Cmdr, lines: list[str]) -> Optional[str]:
+def extractDef_find(c: Cmdr, lines: list[str]) -> str | None:
     for line in lines:
-        def_h = extractDef(c, line.strip())
-        if def_h:
+        if def_h := extractDef(c, line.strip()):
             return def_h
     return None
 
@@ -542,7 +539,7 @@ def extractRef(c: Cmdr, s: str) -> str:
 
 # @+node:ekr.20171123135625.27: ** c_ec.extractSectionNames
 @g.commander_command('extract-names')
-def extractSectionNames(self: Self, event: LeoKeyEvent = None) -> None:
+def extractSectionNames(self: Self, event: LeoKeyEvent | None = None) -> None:
     """
     Create child nodes for every section reference in the selected text.
     - The headline of each new child node is the section reference.
@@ -559,12 +556,11 @@ def extractSectionNames(self: Self, event: LeoKeyEvent = None) -> None:
         return
     found = False
     for s in lines:
-        name = findSectionName(c, s)
-        if name:
+        if name := findSectionName(c, s):
             if not found:
                 u.beforeChangeGroup(current, undoType)  # first one!
             undoData = u.beforeInsertNode(current)
-            p = createFirstChildNode(c, current, name, None)
+            p = createFirstChildNode(c, current, name, '')
             u.afterInsertNode(p, undoType, undoData)
             found = True
     c.checkOutline()
@@ -574,15 +570,16 @@ def extractSectionNames(self: Self, event: LeoKeyEvent = None) -> None:
     else:
         g.warning("selected text should contain section names")
     # Restore the selection.
+    if not oldSel:
+        return  # PR #4812
     i, j = oldSel
-    w = body.wrapper
-    if w:
+    if w := body.wrapper:
         w.setSelectionRange(i, j)
         w.setFocus()
 
 
 # @+node:ekr.20171123135625.28: *3* function: findSectionName
-def findSectionName(self: Self, s: str) -> Optional[str]:
+def findSectionName(self: Self, s: str) -> str:
     head1 = s.find("<<")
     if head1 > -1:
         head2 = s.find(">>", head1)
@@ -591,7 +588,7 @@ def findSectionName(self: Self, s: str) -> Optional[str]:
         if head1 > -1:
             head2 = s.find("@>", head1)
     if head1 == -1 or head2 == -1 or head1 > head2:
-        name = None
+        name = ''
     else:
         name = s[head1 : head2 + 2]
     return name
@@ -600,7 +597,7 @@ def findSectionName(self: Self, s: str) -> Optional[str]:
 # @+node:ekr.20171123135625.15: ** c_ec.findMatchingBracket
 @g.commander_command('match-brackets')
 @g.commander_command('select-to-matching-bracket')
-def findMatchingBracket(self: Self, event: LeoKeyEvent = None) -> None:
+def findMatchingBracket(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Select the text between matching brackets."""
     c, p = self, self.p
     if g.app.batchMode:
@@ -616,28 +613,30 @@ def findMatchingBracket(self: Self, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20171123135625.30: ** c_ec.alwaysIndentBody (always-indent-region)
 @g.commander_command('always-indent-region')
-def alwaysIndentBody(self: Self, event: LeoKeyEvent = None) -> None:
+def alwaysIndentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     """
     The always-indent-region command indents each line of the selected body
     text. The @tabwidth directive in effect determines amount of
     indentation.
     """
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
-    #
+    if not event:
+        return
+
     # #1801: Don't rely on bindings to ensure that we are editing the body.
     event_w = event and event.w
     if event_w != w:
         c.insertCharFromEvent(event)
         return
-    #
+
     # "Before" snapshot.
     bunch = u.beforeChangeBody(p)
-    #
+
     # Initial data.
     sel_1, sel_2 = w.getSelectionRange()
     tab_width = c.getTabWidth(p)
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
-    #
+
     # Calculate the result.
     changed, result = False, []
     for line in lines:
@@ -651,13 +650,13 @@ def alwaysIndentBody(self: Self, event: LeoKeyEvent = None) -> None:
             result.append('\n')  # #2418
     if not changed:
         return
-    #
+
     # Set p.b and w's text first.
     middle = ''.join(result)
     all = head + middle + tail
     p.b = all  # Sets dirty and changed bits.
     w.setAllText(all)
-    #
+
     # Calculate the proper selection range (i, j, ins).
     if sel_1 == sel_2:
         line = result[0]
@@ -668,18 +667,18 @@ def alwaysIndentBody(self: Self, event: LeoKeyEvent = None) -> None:
         j = len(head) + len(middle)
         if middle.endswith('\n'):  # #1742.
             j -= 1
-    #
+
     # Set the selection range and scroll position.
     w.setSelectionRange(i, j, insert=j)
     w.setYScrollPosition(oldYview)
-    #
+
     # "after" snapshot.
     u.afterChangeBody(p, 'Indent Region', bunch)
 
 
 # @+node:ekr.20210104123442.1: ** c_ec.indentBody (indent-region)
 @g.commander_command('indent-region')
-def indentBody(self: Self, event: LeoKeyEvent = None) -> None:
+def indentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     """
     The indent-region command indents each line of the selected body text.
     Unlike the always-indent-region command, this command inserts a tab
@@ -687,7 +686,12 @@ def indentBody(self: Self, event: LeoKeyEvent = None) -> None:
 
     The @tabwidth directive in effect determines amount of indentation.
     """
-    c, event_w, w = self, event and event.w, self.frame.body.wrapper
+    if not event:
+        return
+    c = self
+    event_w = event.w
+    w = self.frame.body.wrapper
+
     # #1801: Don't rely on bindings to ensure that we are editing the body.
     if event_w != w:
         c.insertCharFromEvent(event)
@@ -705,7 +709,7 @@ def indentBody(self: Self, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20171123135625.38: ** c_ec.insertBodyTime
 @g.commander_command('insert-body-time')
-def insertBodyTime(self: Self, event: LeoKeyEvent = None) -> None:
+def insertBodyTime(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Insert a time/date stamp at the cursor."""
     c, p, u = self, self.p, self.undoer
     w = c.frame.body.wrapper
@@ -724,7 +728,7 @@ def insertBodyTime(self: Self, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20171123135625.52: ** c_ec.justify-toggle-auto
 @g.commander_command("justify-toggle-auto")
-def justify_toggle_auto(self: Self, event: LeoKeyEvent = None) -> None:
+def justify_toggle_auto(self: Self, event: LeoKeyEvent | None = None) -> None:
     c = self
     if c.editCommands.autojustify == 0:
         c.editCommands.autojustify = abs(c.config.getInt("autojustify") or 0)
@@ -739,7 +743,7 @@ def justify_toggle_auto(self: Self, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20190210095609.1: ** c_ec.line_to_headline
 @g.commander_command('line-to-headline')
-def line_to_headline(self: Self, event: LeoKeyEvent = None) -> None:
+def line_to_headline(self: Self, event: LeoKeyEvent | None = None) -> None:
     """
     Create child node from the selected line.
 
@@ -754,23 +758,23 @@ def line_to_headline(self: Self, event: LeoKeyEvent = None) -> None:
     if not line:
         return
     u.beforeChangeGroup(p, undoType)
-    #
+
     # Start outer undo.
     undoData = u.beforeInsertNode(p)
     p2 = p.insertAsLastChild()
     p2.h = line
     u.afterInsertNode(p2, undoType, undoData)
-    #
+
     # "before" snapshot.
     bunch = u.beforeChangeBody(p)
     p.b = s[:i] + s[j:]
     w.setInsertPoint(i)
     p2.setDirty()
     c.setChanged()
-    #
+
     # "after" snapshot.
     u.afterChangeBody(p, undoType, bunch)
-    #
+
     # Finish outer undo.
     u.afterChangeGroup(p, undoType=undoType)
     p.expand()
@@ -780,7 +784,7 @@ def line_to_headline(self: Self, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20171123135625.11: ** c_ec.preferences
 @g.commander_command('settings')
-def preferences(self: Self, event: LeoKeyEvent = None) -> None:
+def preferences(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Handle the preferences command."""
     c = self
     c.openLeoSettings()
@@ -788,7 +792,7 @@ def preferences(self: Self, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20171123135625.40: ** c_ec.reformatBody
 @g.commander_command('reformat-body')
-def reformatBody(self: Self, event: LeoKeyEvent = None) -> None:
+def reformatBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Reformat all paragraphs in the body."""
     c, p = self, self.p
     undoType = 'reformat-body'
@@ -810,7 +814,7 @@ def reformatBody(self: Self, event: LeoKeyEvent = None) -> None:
 @g.commander_command('reformat-paragraph')
 def reformatParagraph(
     self: Self,
-    event: LeoKeyEvent = None,
+    event: LeoKeyEvent | None = None,
     undoType: str = 'Reformat Paragraph',
 ) -> None:
     """
@@ -901,7 +905,7 @@ def find_bound_paragraph(c: Cmdr) -> tuple[str, list[str], str]:
         tail_lines = para_lines[i:] if ended else []  # pylint: disable=undefined-loop-variable
         tail = ''.join(tail_lines)
         return head, result, tail  # string, list, string
-    return None, None, None
+    return '', [], ''
 
 
 # @+node:ekr.20171123135625.45: *3* function: rp_get_args
@@ -955,7 +959,7 @@ def rp_reformat(
     bunch = u.beforeChangeBody(p)
     if changed:
         w.setAllText(s)  # Destroys coloring.
-    #
+
     # #1748: Always advance to the next paragraph.
     i = len(head)
     j = max(i, len(head) + len(result) - 1)
@@ -971,14 +975,14 @@ def rp_reformat(
             break
     ins = min(ins, len(s))
     w.setSelectionRange(ins, ins, insert=ins)
-    #
+
     # Show more lines, if they exist.
     k = g.see_more_lines(s, ins, 4)
     p.v.insertSpot = ins
     w.see(k)  # New in 6.4. w.see works!
     if not changed:
         return
-    #
+
     # Finish.
     p.v.b = s  # p.b would cause a redraw.
     u.afterChangeBody(p, undoType, bunch)
@@ -1048,14 +1052,16 @@ def startsParagraph(s: str) -> bool:
         # This could cause problems in some situations.
         val = (g.match(s, 1, ')') or g.match(s, 1, '.')) and (len(s) < 2 or s[2] in ' \t\n')
     else:
-        val = s.startswith('@') or s.startswith('-')
+        val = s.startswith(('@', '-'))
     return val
 
 
 # @+node:ekr.20201124191844.1: ** c_ec.reformatSelection
 @g.commander_command('reformat-selection')
 def reformatSelection(
-    self: Self, event: LeoKeyEvent = None, undoType: str = 'Reformat Selection'
+    self: Self,
+    event: LeoKeyEvent | None = None,
+    undoType: str = 'Reformat Selection',
 ) -> None:
     """
     Reformat the selected text, as in reformat-paragraph, but without
@@ -1077,14 +1083,14 @@ def reformatSelection(
     s = head + result + tail
     if s == original:
         return
-    #
+
     # Update the text and the selection.
     w.setAllText(s)  # Destroys coloring.
     i = len(head)
     j = max(i, len(head) + len(result) - 1)
     j = min(j, len(s))
     w.setSelectionRange(i, j, insert=j)
-    #
+
     # Finish.
     p.v.b = s  # p.b would cause a redraw.
     u.afterChangeBody(p, undoType, bunch)
@@ -1093,21 +1099,21 @@ def reformatSelection(
 
 # @+node:ekr.20171123135625.12: ** c_ec.show/hide/toggleInvisibles
 @g.commander_command('hide-invisibles')
-def hideInvisibles(self: Self, event: LeoKeyEvent = None) -> None:
+def hideInvisibles(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Hide invisible (whitespace) characters."""
     c = self
     showInvisiblesHelper(c, False)
 
 
 @g.commander_command('show-invisibles')
-def showInvisibles(self: Self, event: LeoKeyEvent = None) -> None:
+def showInvisibles(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Show invisible (whitespace) characters."""
     c = self
     showInvisiblesHelper(c, True)
 
 
 @g.commander_command('toggle-invisibles')
-def toggleShowInvisibles(self: Self, event: LeoKeyEvent = None) -> None:
+def toggleShowInvisibles(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Toggle showing of invisible (whitespace) characters."""
     c = self
     colorizer = c.frame.body.getColorizer()
@@ -1135,7 +1141,7 @@ def showInvisiblesHelper(c: Cmdr, val: Value) -> None:
 
 # @+node:ekr.20171123135625.55: ** c_ec.toggleAngleBrackets
 @g.commander_command('toggle-angle-brackets')
-def toggleAngleBrackets(self: Self, event: LeoKeyEvent = None) -> None:
+def toggleAngleBrackets(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Add or remove double angle brackets from the headline of the selected node."""
     c, p, u = self, self.p, self.undoer
     if g.app.batchMode:
@@ -1165,7 +1171,9 @@ def toggleAngleBrackets(self: Self, event: LeoKeyEvent = None) -> None:
 # @+node:ekr.20171123135625.49: ** c_ec.unformatParagraph & helper
 @g.commander_command('unformat-paragraph')
 def unformatParagraph(
-    self: Self, event: LeoKeyEvent = None, undoType: str = 'Unformat Paragraph'
+    self: Self,
+    event: LeoKeyEvent | None = None,
+    undoType: str = 'Unformat Paragraph',
 ) -> None:
     """
     Unformat a text paragraph. Removes all extra whitespace in a paragraph.
@@ -1206,8 +1214,7 @@ def unreformat(
     ins = max(len(head), len(head) + len(result) - 1)
     bunch = u.beforeChangeBody(p)
     w.setAllText(s)  # Destroys coloring.
-    changed = original != s
-    if changed:
+    if original != s:
         p.v.b = w.getAllText()
         u.afterChangeBody(p, undoType, bunch)
     # Advance to the next paragraph.
@@ -1230,7 +1237,7 @@ def unreformat(
 
 # @+node:ekr.20180410054716.1: ** c_ec: insert-jupyter-toc & insert-markdown-toc
 @g.commander_command('insert-jupyter-toc')
-def insertJupyterTOC(self: Self, event: LeoKeyEvent = None) -> None:
+def insertJupyterTOC(self: Self, event: LeoKeyEvent | None = None) -> None:
     """
     Insert a Jupyter table of contents at the cursor,
     replacing any selected text.
@@ -1239,7 +1246,7 @@ def insertJupyterTOC(self: Self, event: LeoKeyEvent = None) -> None:
 
 
 @g.commander_command('insert-markdown-toc')
-def insertMarkdownTOC(self: Self, event: LeoKeyEvent = None) -> None:
+def insertMarkdownTOC(self: Self, event: LeoKeyEvent | None = None) -> None:
     """
     Insert a Markdown table of contents at the cursor,
     replacing any selected text.

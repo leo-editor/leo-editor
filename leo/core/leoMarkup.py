@@ -2,15 +2,16 @@
 # @+node:ekr.20190515070742.1: * @file leoMarkup.py
 """Supports @adoc, @pandoc and @sphinx nodes and related commands."""
 
-# @+<< leoMarkup imports & annotations >>
-# @+node:ekr.20190515070742.3: ** << leoMarkup imports & annotations >>
+# @+<< leoMarkup: imports & annotations >>
+# @+node:ekr.20190515070742.3: ** << leoMarkup: imports & annotations >>
 from __future__ import annotations
+import functools
 import io
 from shutil import which
 import os
 import re
 import time
-from typing import Optional, TYPE_CHECKING
+from typing import cast, TYPE_CHECKING
 import leo.core.leoGlobals as g
 
 # Abbreviation.
@@ -21,32 +22,41 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
 
-    File_List = Optional[list[str]]
-# @-<< leoMarkup imports & annotations >>
+    File_List = list[str] | None
+# @-<< leoMarkup: imports & annotations >>
+# @+<< leoMarkup: cached functions >>
+# @+node:ekr.20260421071144.1: ** << leoMarkup: cached functions >>
 
-# Try RVM Ruby asciidoctor first, then fallback to system asciidoctor
-try:
-    import subprocess
 
-    rvm_gemdir = subprocess.check_output(['rvm', 'gemdir'], text=True).strip()
-    rvm_asciidoctor = os.path.join(rvm_gemdir, 'bin', 'asciidoctor')
-    if os.path.exists(rvm_asciidoctor):
-        asciidoctor_exec = rvm_asciidoctor
-    else:
-        asciidoctor_exec = which('asciidoctor')
-except Exception:
-    asciidoctor_exec = which('asciidoctor')
+# PR #4615: Defer calls to `which` until needed.
+@functools.cache
+def _asciidoctor_exec() -> str | None:
+    return which('asciidoctor')
 
-asciidoc3_exec = which('asciidoc3')
-pandoc_exec = which('pandoc')
-sphinx_build = which('sphinx-build')
+
+@functools.cache
+def _asciidoc3_exec() -> str | None:
+    return which('asciidoc3')
+
+
+@functools.cache
+def _pandoc_exec() -> str | None:
+    return which('pandoc')
+
+
+@functools.cache
+def _sphinx_build() -> str | None:
+    return which('sphinx-build')
+
+
+# @-<< leoMarkup: cached functions >>
 
 
 # @+others
 # @+node:ekr.20191006153522.1: ** adoc, pandoc & sphinx commands
 # @+node:ekr.20190515070742.22: *3* @g.command: 'adoc' & 'adoc-with-preview')
 @g.command('adoc')
-def adoc_command(event: LeoKeyEvent = None, verbose: bool = True) -> File_List:
+def adoc_command(event: LeoKeyEvent | None = None, verbose: bool = True) -> File_List:
     # @+<< adoc command docstring >>
     # @+node:ekr.20190515115100.1: *4* << adoc command docstring >>
     """
@@ -107,7 +117,7 @@ def adoc_command(event: LeoKeyEvent = None, verbose: bool = True) -> File_List:
 
 
 @g.command('adoc-with-preview')
-def adoc_with_preview_command(event: LeoKeyEvent = None, verbose: bool = True) -> File_List:
+def adoc_with_preview_command(event: LeoKeyEvent | None = None, verbose: bool = True) -> File_List:
     """Run the adoc command, then show the result in the browser."""
     c = event and event.get('c')
     if not c:
@@ -117,7 +127,7 @@ def adoc_with_preview_command(event: LeoKeyEvent = None, verbose: bool = True) -
 
 # @+node:ekr.20191006153411.1: *3* @g.command: 'pandoc' & 'pandoc-with-preview'
 @g.command('pandoc')
-def pandoc_command(event: LeoKeyEvent, verbose: bool = True) -> File_List:
+def pandoc_command(event: LeoKeyEvent | None = None, verbose: bool = True) -> File_List:
     # @+<< pandoc command docstring >>
     # @+node:ekr.20191006153547.1: *4* << pandoc command docstring >>
     """
@@ -169,7 +179,7 @@ def pandoc_command(event: LeoKeyEvent, verbose: bool = True) -> File_List:
 
 @g.command('pandoc-with-preview')
 def pandoc_with_preview_command(
-    event: LeoKeyEvent = None,
+    event: LeoKeyEvent | None = None,
     verbose: bool = True,
 ) -> File_List:
     """Run the pandoc command, then show the result in the browser."""
@@ -181,7 +191,7 @@ def pandoc_with_preview_command(
 
 # @+node:ekr.20191017163422.1: *3* @g.command: 'sphinx' & 'sphinx-with-preview'
 @g.command('sphinx')
-def sphinx_command(event: LeoKeyEvent, verbose: bool = True) -> File_List:
+def sphinx_command(event: LeoKeyEvent | None = None, verbose: bool = True) -> File_List:
     # @+<< sphinx command docstring >>
     # @+node:ekr.20191017163422.2: *4* << sphinx command docstring >>
     """
@@ -233,7 +243,7 @@ def sphinx_command(event: LeoKeyEvent, verbose: bool = True) -> File_List:
 
 @g.command('sphinx-with-preview')
 def sphinx_with_preview_command(
-    event: LeoKeyEvent = None,
+    event: LeoKeyEvent | None = None,
     verbose: bool = True,
 ) -> File_List:
     """Run the sphinx command, then show the result in the browser."""
@@ -249,7 +259,7 @@ class MarkupCommands:
 
     def __init__(self, c: Cmdr) -> None:
         self.c = c
-        self.kind: str = None  # 'adoc' or 'pandoc'
+        self.kind: str = ''  # 'adoc' or 'pandoc'
         self.level_offset = 0
         self.root_level = 0
         self.reload_settings()
@@ -266,11 +276,11 @@ class MarkupCommands:
     # @+node:ekr.20191006153233.1: *3* markup.command_helper & helpers
     def command_helper(
         self,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None,
         kind: str,
         preview: bool,
         verbose: bool,
-    ) -> list[str]:
+    ) -> list[str] | None:
         def predicate(p: Position) -> str:
             return self.filename(p)
 
@@ -279,7 +289,7 @@ class MarkupCommands:
         t1 = time.time()
         c = self.c
         self.kind = kind
-        p = event.p if event and hasattr(event, 'p') else c.p
+        p = cast('Position', event.p) if event and hasattr(event, 'p') else c.p
         roots = g.findRootsWithPredicate(c, p, predicate=predicate)
         if not roots:
             g.warning('No @adoc nodes in', p.h)
@@ -296,7 +306,7 @@ class MarkupCommands:
                 with open(i_path, 'w', encoding='utf-8', errors='replace') as self.output_file:
                     self.write_root(p)
                     i_paths.append(i_path)
-            except IOError:
+            except OSError:
                 g.es_print(f"Can not open {i_path!r}")
             except Exception:
                 g.es_print(f"Unexpected exception opening {i_path!r}")
@@ -332,7 +342,7 @@ class MarkupCommands:
     # @+node:ekr.20190515084219.1: *4* markup.filename
     adoc_pattern = re.compile(r'^@(adoc|asciidoctor)')
 
-    def filename(self, p: Position) -> Optional[str]:
+    def filename(self, p: Position) -> str:
         """Return the filename of the @adoc, @pandoc or @sphinx node, or None."""
         kind = self.kind
         h = p.h.rstrip()
@@ -340,14 +350,14 @@ class MarkupCommands:
             if m := self.adoc_pattern.match(h):
                 prefix = m.group(1)
                 return h[1 + len(prefix) :].strip()
-            return None
+            return ''
         if kind in ('pandoc', 'sphinx'):
             prefix = f"@{kind}"
             if g.match_word(h, 0, prefix):
                 return h[len(prefix) :].strip()
-            return None
+            return ''
         g.trace('BAD KIND', kind)
-        return None
+        return ''
 
     # @+node:ekr.20191007053522.1: *4* markup.compute_opath
     def compute_opath(self, i_path: str) -> str:
@@ -368,30 +378,34 @@ class MarkupCommands:
         """
         Process the input file given by i_path with asciidoctor or asciidoc3.
         """
-        # global asciidoctor_exec, asciidoc3_exec
-        assert asciidoctor_exec or asciidoc3_exec, g.callers()
+        asciidoctor_exec = _asciidoctor_exec()
+        asciidoc3_exec = _asciidoc3_exec()
+        prog = asciidoctor_exec if asciidoctor_exec else asciidoc3_exec
+        if not prog:
+            g.es_print('asciidoc not found', color='blue')
+            return
+
         # Call the external program to write the output file.
         # The -e option deletes css.
-        prog = asciidoctor_exec if asciidoctor_exec else asciidoc3_exec
         command = f"{prog} {i_path} -o {o_path} -b html5"
-        g.execute_shell_commands(command)
+        g.execute_shell_commands(command, shell=True)  # #4681: enable shell.
 
     # @+node:ekr.20191007043043.1: *4* markup.run_pandoc
     def run_pandoc(self, i_path: str, o_path: str) -> None:
         """
         Process the input file given by i_path with pandoc.
         """
-        # global pandoc_exec
-        assert pandoc_exec, g.callers()
+        assert _pandoc_exec(), g.callers()
         # Call pandoc to write the output file.
         # --quiet does no harm.
         command = f"pandoc {i_path} -t html5 -o {o_path}"
-        g.execute_shell_commands(command)
+        g.execute_shell_commands(command, shell=True)
 
     # @+node:ekr.20191017165427.1: *4* markup.run_sphinx
     def run_sphinx(self, i_path: str, o_path: str) -> None:
         """Process i_path and o_path with sphinx."""
         trace = True
+
         # cd to the command directory, or i_path's directory.
         command_dir = g.finalize(self.sphinx_command_dir or os.path.dirname(i_path))
         if os.path.exists(command_dir):
@@ -401,13 +415,13 @@ class MarkupCommands:
         else:
             g.error(f"command directory not found: {command_dir!r}")
             return
-        #
+
         # If a default command exists, just call it.
         # The user is responsible for making everything work.
         if self.sphinx_default_command:
             if trace:
                 g.trace(f"\ncommand: {self.sphinx_default_command!r}\n")
-            g.execute_shell_commands(self.sphinx_default_command)
+            g.execute_shell_commands(self.sphinx_default_command, shell=True)
             return
         # Compute the input directory.
         input_dir = g.finalize(self.sphinx_input_dir or os.path.dirname(i_path))
@@ -419,13 +433,13 @@ class MarkupCommands:
         if not os.path.exists(output_dir):
             g.error(f"output directory not found: {output_dir!r}")
             return
-        #
+
         # Call sphinx-build to write the output file.
         # sphinx-build [OPTIONS] SOURCEDIR OUTPUTDIR [FILENAMES...]
         command = f"sphinx-build {input_dir} {output_dir} {i_path}"
         if trace:
             g.trace(f"\ncommand: {command!r}\n")
-        g.execute_shell_commands(command)
+        g.execute_shell_commands(command, shell=True)
 
     # @+node:ekr.20190515070742.24: *3* markup.write_root & helpers
     def write_root(self, root: Position) -> None:
@@ -542,12 +556,11 @@ class MarkupCommands:
     # @+node:ekr.20191006155051.1: *3* markup.commands
     def adoc_command(
         self,
-        event: LeoKeyEvent = None,
+        event: LeoKeyEvent | None = None,
         preview: bool = False,
         verbose: bool = True,
     ) -> File_List:
-        # global asciidoctor_exec, asciidoc3_exec
-        if asciidoctor_exec or asciidoc3_exec:
+        if _asciidoctor_exec() or _asciidoc3_exec():
             return self.command_helper(event, kind='adoc', preview=preview, verbose=verbose)
         name = 'adoc-with-preview' if preview else 'adoc'
         g.es_print(f"{name} requires either asciidoctor or asciidoc3")
@@ -555,12 +568,11 @@ class MarkupCommands:
 
     def pandoc_command(
         self,
-        event: LeoKeyEvent = None,
+        event: LeoKeyEvent | None = None,
         preview: bool = False,
         verbose: bool = True,
     ) -> File_List:
-        # global pandoc_exec
-        if pandoc_exec:
+        if _pandoc_exec():
             return self.command_helper(event, kind='pandoc', preview=preview, verbose=verbose)
         name = 'pandoc-with-preview' if preview else 'pandoc'
         g.es_print(f"{name} requires pandoc")
@@ -568,12 +580,11 @@ class MarkupCommands:
 
     def sphinx_command(
         self,
-        event: LeoKeyEvent = None,
+        event: LeoKeyEvent | None = None,
         preview: bool = False,
         verbose: bool = True,
     ) -> File_List:
-        # global sphinx_build
-        if sphinx_build:
+        if _sphinx_build():
             return self.command_helper(event, kind='sphinx', preview=preview, verbose=verbose)
         name = 'sphinx-with-preview' if preview else 'sphinx'
         g.es_print(f"{name} requires sphinx")

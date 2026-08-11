@@ -9,8 +9,8 @@
 
 # @+<< imports >>
 # @+node:bob.20180205135704.1: ** << imports >>
-import datetime
-# import time
+import datetime as dt
+from typing import Any, cast
 
 from leo.core import leoGlobals as leoG
 
@@ -50,7 +50,7 @@ class EsCapture:
     # @+node:bob.20180116152036.1: *3* __init__()
     def __init__(self):
         self._es = leoG.es
-        leoG.es = self.esCapture
+        leoG.es = cast(Any, self.esCapture)
         self._colorDict = None
 
     # @+node:bob.20180116152548.1: *3* beginCollection()
@@ -172,9 +172,9 @@ class TestCmdr:
         self.testCnt = 0
         self.babelExecCnt = 0
 
-        fdR.write(
-            '||* Tests *|| {0}\n'.format(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%s'))
-        )
+        tz = dt.timezone.utc
+        now = dt.datetime.now(tz=tz)  # PR #4829
+        fdR.write('||* Tests *|| {0}\n'.format(now).strftime('%Y-%m-%d %H:%M:%s', tz=tz))
 
     # @-others
 
@@ -221,7 +221,7 @@ def runTests(itPoll, cmdrT, fdR, testCmdr, genFindTests):
     else:
         if testCmdr.babelExecCnt >= babelCmdr.babelExecCnt:
             return  # Waiting for test to complete
-        #
+
         # Most Recent Test has finished.
         testCmdr.babelExecCnt = babelCmdr.babelExecCnt
         fdR.write('||* Test Name *|| {0}\n'.format(testCmdr.testRootMostRecnt.h))
@@ -243,7 +243,7 @@ def runTests(itPoll, cmdrT, fdR, testCmdr, genFindTests):
             else:
                 fdR.write('||* Other Color *|| {0}\n'.format(color))
                 fdR.write(formatCaptured(outList))
-    #
+
     # Most Recent Test (if any) if done and its output recorded
     # Start the next test.
     try:

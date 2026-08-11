@@ -1,12 +1,13 @@
 # @+leo-ver=5-thin
 # @+node:ekr.20220823200700.1: * @file ../plugins/leofts.py
 import os
+from typing import Any
 from whoosh.index import create_in, open_dir
 from whoosh.fields import ID, TEXT, Schema
 from whoosh.qparser import MultifieldParser
 from whoosh.analysis import RegexTokenizer, LowercaseFilter, StopFilter
 
-g = None
+g: Any = None
 
 
 # @+others

@@ -39,13 +39,13 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
         self.textChanged.connect(self.text_changed)
 
     # @+node:tbrown.20171028115504.5: *3* focusInEvent
-    def focusInEvent(self, event):
+    def focusInEvent(self, event: QtGui.QFocusEvent) -> None:
         QtWidgets.QTextEdit.focusInEvent(self, event)
         DBG("focusin()")
         self.lep.edit_widget_focus()
 
     # @+node:tbrown.20171028115504.6: *3* focusOutEvent
-    def focusOutEvent(self, event):
+    def focusOutEvent(self, event: QtGui.QFocusEvent) -> None:
         QtWidgets.QTextEdit.focusOutEvent(self, event)
         DBG("focusout()")
 
@@ -111,10 +111,12 @@ class LEP_PlainTextEditB(LEP_PlainTextEdit):
 
         # @-others
 
-    # @+node:tbrown.20171028115504.13: *3* __init__
+    # @+node:tbrown.20171028115504.13: *3* LEP_PlainTextEditB.__init__
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
-        super().__init__(c=c, lep=lep, *args, **kwargs)
+        kwargs['c'] = c
+        kwargs['lep'] = lep
+        super().__init__(*args, **kwargs)
         self.setStyleSheet("* {background: #989; color: #222; }")
         self.highlighter = self.BHighlighter(self.document())
 

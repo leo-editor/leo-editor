@@ -5,12 +5,9 @@ full_test_leo.py: Run all these tests scripts in this order:
 
 - beautify_all_leo.py.
 - run_test_leo.py.
-- flake8_leo.py.
-- pyflakes_leo.py
 - mypy_leo.py.
 - ruff_leo.py.
 - check_leo.py.
-- pylint_leo.py.
 
 Devs: *please* run this script before pushing!
 
@@ -36,18 +33,14 @@ leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
 os.chdir(leo_editor_dir)
 
 args = ' '.join(sys.argv[1:])
-isWindows = sys.platform.startswith('win')
-python = 'py' if isWindows else 'python'
-
+python = sys.executable
 for command in [
     rf'{python} -m leo.scripts.beautify_all_leo',
-    rf'{python} -m leo.scripts.flake8_leo',
-    rf'{python} -m leo.scripts.pyflakes_leo',
     rf'{python} -m leo.scripts.run_test_leo',
     rf'{python} -m leo.scripts.mypy_leo',
     rf'{python} -m leo.scripts.ruff_leo',
     rf'{python} -m leo.scripts.check_leo',
-    rf'{python} -m leo.scripts.pylint_leo',
+    rf'{python} -m leo.scripts.ty_leo',
 ]:
-    subprocess.Popen(command, shell=True).communicate()
+    subprocess.run(command, shell=True)
 # @-leo

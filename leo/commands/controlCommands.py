@@ -34,7 +34,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
 
     # @+others
     # @+node:ekr.20150514063305.91: *3* executeSubprocess
-    def executeSubprocess(self, event: LeoKeyEvent, command: str) -> None:
+    def executeSubprocess(self, event: LeoKeyEvent | None, command: str) -> None:
         """Execute a command in a separate process."""
         trace = False
         k = self.c.k
@@ -43,11 +43,11 @@ class ControlCommandsClass(BaseEditCommandsClass):
                 shlex.split(command),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.DEVNULL if trace else subprocess.PIPE,
-                shell=g.isWindows,
+                shell=True,
             )
             out, err = proc.communicate()
-            for line in g.splitLines(out):  # type:ignore
-                g.es_print(g.toUnicode(line.rstrip()))
+            for line in g.splitLines(g.toUnicode(out)):
+                g.es_print(line.rstrip())
         except Exception:
             g.es_exception()
         k.keyboardQuit()  # Inits vim mode too.
@@ -55,11 +55,11 @@ class ControlCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.92: *3* print plugins info...
     @cmd('show-plugin-handlers')
-    def printPluginHandlers(self, event: LeoKeyEvent = None) -> None:
+    def printPluginHandlers(self, event: LeoKeyEvent | None = None) -> None:
         """Print the handlers for each plugin."""
         g.app.pluginsController.printHandlers(self.c)
 
-    def printPlugins(self, event: LeoKeyEvent = None) -> None:
+    def printPlugins(self, event: LeoKeyEvent | None = None) -> None:
         """
         Print the file name responsible for loading a plugin.
 
@@ -69,7 +69,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
         g.app.pluginsController.printPlugins(self.c)
 
     @cmd('show-plugins-info')
-    def printPluginsInfo(self, event: LeoKeyEvent = None) -> None:
+    def printPluginsInfo(self, event: LeoKeyEvent | None = None) -> None:
         """
         Print the file name responsible for loading a plugin.
 
@@ -80,7 +80,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.93: *3* setSilentMode
     @cmd('set-silent-mode')
-    def setSilentMode(self, event: LeoKeyEvent = None) -> None:
+    def setSilentMode(self, event: LeoKeyEvent | None = None) -> None:
         """
         Set the mode to be run silently, without the minibuffer.
         The only use for this command is to put the following in an @mode node::
@@ -91,25 +91,25 @@ class ControlCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.94: *3* shellCommand (improved)
     @cmd('shell-command')
-    def shellCommand(self, event: LeoKeyEvent) -> None:
+    def shellCommand(self, event: LeoKeyEvent | None = None) -> None:
         """Execute a shell command."""
         k = self.c.k
         k.setLabelBlue('shell-command: ')
         k.get1Arg(event, self.shellCommand1)
 
-    def shellCommand1(self, event: LeoKeyEvent) -> None:
+    def shellCommand1(self, event: LeoKeyEvent | None = None) -> None:
         k = self.c.k
-        command = g.toUnicode(k.arg)
-        if command:
+        if command := g.toUnicode(k.arg):
             self.executeSubprocess(event, command)
 
     # @+node:ekr.20150514063305.95: *3* shellCommandOnRegion
     @cmd('shell-command-on-region')
-    def shellCommandOnRegion(self, event: LeoKeyEvent) -> None:
+    def shellCommandOnRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Execute a command taken from the selected text in a separate process."""
-        k = self.c.k
-        w = self.editWidget(event)
-        if w:
+        c = self.c
+        k = c.k
+        w = event.w if event else c.frame.body.wrapper
+        if g.isTextWrapper(w):
             if w.hasSelection():
                 command = w.getSelectedText()
                 self.executeSubprocess(event, command)
@@ -119,14 +119,14 @@ class ControlCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.96: *3* actOnNode
     @cmd('act-on-node')
-    def actOnNode(self, event: LeoKeyEvent) -> None:
+    def actOnNode(self, event: LeoKeyEvent | None = None) -> None:
         """
         Executes node-specific action, typically defined in a plugins as
         follows::
 
             import leo.core.leoPlugins
 
-            def act_print_upcase(c: Cmdr, p: Position, event: LeoKeyEvent) -> None:
+            def act_print_upcase(c: Cmdr, p: Position, event: LeoKeyEvent | None = None) -> None:
                 if not p.h.startswith('@up'):
                     raise leo.core.leoPlugins.TryNext
                 p.h = p.h.upper()
@@ -139,23 +139,20 @@ class ControlCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.97: *3* shutdown, saveBuffersKillEmacs & setShutdownHook
     @cmd('save-buffers-kill-leo')
-    def shutdown(self, event: LeoKeyEvent) -> None:
+    def shutdown(self, event: LeoKeyEvent | None = None) -> None:
         """Quit Leo, prompting to save any unsaved files first."""
-        g.app.onQuit()
+        g.app.onQuit(event)  # PR #4773: Bug fix.
 
     saveBuffersKillLeo = shutdown
 
     # @+node:ekr.20150514063305.98: *3* suspend & iconifyFrame
     @cmd('suspend')
-    def suspend(self, event: LeoKeyEvent) -> None:
+    def suspend(self, event: LeoKeyEvent | None = None) -> None:
         """Minimize the present Leo window."""
-        w = self.editWidget(event)
-        if not w:
-            return
         self.c.frame.top.iconify()
 
     @cmd('iconify-frame')
-    def iconifyFrame(self, event: LeoKeyEvent) -> None:
+    def iconifyFrame(self, event: LeoKeyEvent | None = None) -> None:
         """Minimize the present Leo window."""
         self.suspend(event)
 

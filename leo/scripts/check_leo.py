@@ -45,7 +45,7 @@ all_args: set[str] = set()
 chains_seen: set[str] = set()
 errors: set[str] = set()
 full_check = False  # True: report *all* unknown attrs.
-module_name: str = None
+module_name: str = ''
 report_all_attrs = False
 report_all_args = False
 report_unusual_attrs = False  # True: report only unusual attrs containing '{}[]()'
@@ -100,98 +100,13 @@ class CheckLeo:
             core_files = glob.glob(f"{core_dir}{os.sep}*.py")
             commands_files = glob.glob(f"{commands_dir}{os.sep}*.py")
             plugins_names = (
-                # 'active_path.py',
-                # 'add_directives.py',
-                # 'anki.py',
-                # 'attrib_edit.py',
-                # 'at_folder.py',
-                # 'at_produce.py',
-                # 'at_view.py',
-                # 'auto_colorize2_0.py',
                 'backlink.py',
-                # 'baseNativeTree.py',
-                # 'bibtex.py',
-                # 'bigdash.py',
                 'bookmarks.py',
-                # 'bzr_qcommands.py',
-                # 'chapter_hoist.py',
-                # 'colorize_headlines.py',
                 'contextmenu.py',
-                # 'ctagscompleter.py',
-                # 'cursesGui.py',
-                # 'cursesGui2.py',
-                # 'datenodes.py',
-                # 'debugger_pudb.py',
-                # 'demo.py',
-                # 'dragdropgoodies.py',
-                # 'dtest.py',
-                # 'dump_globals.py',
-                # 'empty_leo_file.py',
-                # 'enable_gc.py',
-                # 'example_rst_filter.py',
-                # 'expfolder.py',
-                # 'FileActions.py',
-                # 'freewin.py',
-                # 'free_layout.py',
-                # 'ftp.py',
-                # 'geotag.py',
-                # 'gitarchive.py',
-                # 'graphcanvas.py',
-                # 'history_tracer.py',
-                # 'import_cisco_config.py',
-                # 'indented_languages.py',
-                # 'initinclass.py',
-                # 'interact.py',
-                # 'leocursor.py',
-                # 'leofeeds.py',
-                # 'leofts.py',
-                # 'leomail.py',
-                # 'leomylyn.py',
-                # 'leoOPML.py',
-                # 'leoremote.py',
-                # 'leoscreen.py',
-                # 'leo_cloud.py',
-                # 'leo_cloud_server.py',
-                # 'leo_interface.py',
-                # 'leo_pdf.py',
-                # 'leo_to_html.py',
-                # 'leo_to_html_outline_viewer.py',
-                # 'leo_to_rtf.py',
-                # 'lineNumbers.py',
-                # 'line_numbering.py',
-                # 'livecode.py',
-                # 'macros.py',
-                # 'markup_inline.py',
-                # 'maximizeNewWindows.py',
-                # 'md_docer.py',
-                # 'mime.py',
-                # 'mnplugins.py',
-                # 'mod_autosave.py',
-                # 'mod_framesize.py',
-                # 'mod_http.py',
-                # 'mod_leo2ascd.py',
-                # 'mod_read_dir_outline.py',
                 'mod_scripting.py',
-                # 'mod_speedups.py',
-                # 'mod_timestamp.py',
-                # 'multifile.py',
                 'nav_qt.py',
-                # 'nested_splitter.py',
-                # 'niceNosent.py',
-                # 'nodeActions.py',
-                # 'nodediff.py',
                 'nodetags.py',
-                # 'nodewatch.py',
-                # 'open_shell.py',
-                # 'outline_export.py',
-                # 'pane_commands.py',
-                # 'paste_as_headlines.py',
-                # 'patch_python_colorizer.py',
                 'plugins_menu.py',
-                # 'projectwizard.py',
-                # 'pyplot_backend.py',
-                # 'python_terminal.py',
-                # 'QNCalendarWidget.py',
                 'qtGui.py',
                 'qt_commands.py',
                 'qt_events.py',
@@ -207,49 +122,11 @@ class CheckLeo:
                 'qt_tree.py',
                 'quickMove.py',
                 'quicksearch.py',
-                # 'quit_leo.py',
-                # 'read_only_nodes.py',
-                # 'redirect_to_log.py',
-                # 'richtext.py',
-                # 'rpcalc.py',
-                # 'rss.py',
-                # 'run_nodes.py',
-                # 'screencast.py',
-                # 'screenshots.py',
-                # 'screen_capture.py',
-                # 'script_io_to_body.py',
-                # 'setHomeDirectory.py',
-                # 'settings_finder.py',
-                # 'sftp.py',
                 'slideshow.py',
-                # 'spydershell.py',
-                # 'startfile.py',
-                # 'stickynotes.py',
-                # 'stickynotes_plus.py',
-                # 'systray.py',
-                # 'tables.py',
-                # 'testRegisterCommand.py',
-                # 'textnode.py',
-                # 'threadutil.py',
-                # 'timestamp.py',
-                'todo.py',
-                # 'tomboy_import.py',
-                # 'trace_gc_plugin.py',
-                # 'trace_tags.py',
                 'viewrendered.py',
                 'viewrendered3.py',
-                # 'vim.py',
-                # 'wikiview.py',
-                # 'word_count.py',
-                # 'word_export.py',
-                # 'xdb_pane.py',
-                # 'xemacs.py',
-                # 'xml_edit.py',
-                # 'xsltWithNodes.py',
-                # 'zenity_file_dialogs.py',
             )
             plugins_files = [f"{plugins_dir}{os.sep}{z}" for z in plugins_names]
-            # z for z in glob.glob(f"{plugins_dir}{os.sep}*.py")
             if 0:
                 for z in plugins_files:
                     print(f"plugin: {z}")
@@ -345,7 +222,7 @@ class CheckLeo:
         Visitor class.
         """
 
-        def report_set(the_set: set, tag: str = None) -> None:
+        def report_set(the_set: set, tag: str = '') -> None:
             if tag:
                 print(f"\n{len(list(the_set))} {tag}...")
             for z in sorted(list(the_set)):
@@ -515,6 +392,7 @@ class Visitor(ast.NodeVisitor):
     # @+node:ekr.20251201051957.1: *5* << define Attribute ignore_dict >>
     # A list of (prefixes of) chains to be ignored.
     ignore_list = (
+        'aList.get',
         # Obsolete ast Nodes in leoAst.py.
         'ast.Num',
         'ast.Str',
@@ -525,6 +403,7 @@ class Visitor(ast.NodeVisitor):
         # Injected by plugins.
         'c._bookmarks',
         'c.cleo',
+        'c.menuAccels',
         'c.quickMove',
         'c.pluginsMenu',
         'c.screenCastController',
@@ -542,6 +421,7 @@ class Visitor(ast.NodeVisitor):
         'c.frame.detached_body_info',
         'c.frame.nav',
         'c.ftm',
+        'c.k.autoCompleter',  # PR #4812
         'c.zoom_delta',
         'g.app.openWithTable',
         'g.insqh',

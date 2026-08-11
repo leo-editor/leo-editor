@@ -45,6 +45,7 @@ actions, Leo does not do anything with or to such files.
 # @+node:ekr.20090317093747.1: ** << imports >>
 import fnmatch
 import os
+import subprocess
 import sys
 import tempfile
 from leo.core import leoGlobals as g
@@ -97,10 +98,10 @@ def onIconDoubleClick(tag, keywords):
     directive = words[0]
     if directive[0] != '@' or directive not in file_directives:
         return None
-    #
+
     # Get filename by removing directive from node's headstring
     filename = h.replace(directive + " ", "", 1)
-    #
+
     # This writes all modified files, not just the one that has been clicked on.
     # This generates a slightly confusing warning if there are no dirty nodes.
     c.fileCommands.writeDirtyAtFileNodes()
@@ -174,7 +175,9 @@ def shellScriptInWindow(c, script):
         os.close(handle)
         os.chmod(path, 0x700)
         # @-<< write script to temporary MacOS file >>
-        os.system("open -a /Applications/Utilities/Terminal.app " + path)
+        subprocess.run(
+            "open -a /Applications/Utilities/Terminal.app " + path, shell=True, check=False
+        )
 
     elif sys.platform == 'win32':
         g.error("shellScriptInWindow not ready for Windows")
@@ -189,7 +192,7 @@ def shellScriptInWindow(c, script):
         os.close(handle)
         os.chmod(path, 0x700)
         # @-<< write script to temporary Unix file >>
-        os.system("xterm -e sh  " + path)
+        subprocess.run("xterm -e sh  " + path, shell=True, check=False)
 
 
 # @-others

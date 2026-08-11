@@ -32,7 +32,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
     # @+others
     # @+node:ekr.20150514063305.373: *3* help
     @cmd('help')
-    def help_command(self, event: LeoKeyEvent = None) -> None:
+    def help_command(self, event: LeoKeyEvent | None = None) -> None:
         """Prints an introduction to Leo's help system."""
         # @+<< define rst_s >>
         # @+node:ekr.20150514063305.374: *4* << define rst_s >> (F1)
@@ -72,7 +72,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.375: *3* helpForAbbreviations
     @cmd('help-for-abbreviations')
-    def helpForAbbreviations(self, event: LeoKeyEvent = None) -> None:
+    def helpForAbbreviations(self, event: LeoKeyEvent | None = None) -> None:
         """Explains Leo's abbreviations."""
         # @+<< define s >>
         # @+node:ekr.20150514063305.376: *4* << define s >> (helpForAbbreviations)
@@ -90,11 +90,9 @@ class HelpCommandsClass(BaseEditCommandsClass):
         Abbreviations typically end with something like ";;" so they won't trigger
         by accident.
 
-        You define abbreviations in @data abbreviations nodes or @data
-        global-abbreviations nodes. None come predefined, but leoSettings.leo
-        contains example abbreviations in the node::
-
-            @@data abbreviations examples
+        You define abbreviations in @data abbreviations nodes
+        or @data global-abbreviations nodes. Some come predefined
+        in @data global-abbreviations such as date;; and  html;;.
 
         Abbreviations can simply be shortcuts::
 
@@ -114,17 +112,16 @@ class HelpCommandsClass(BaseEditCommandsClass):
             \:name="<|name|>"
             \:value="" id="<|id|>">\n
 
-        Typing ",," after inserting a template selects the next field.
+        Typing "F3" after inserting a template selects the next field.
 
         Abbreviations can execute **abbreviation scripts**, delimited by {\|{ and
         }\|}::
 
             date;;={|{import time ; x=time.asctime()}|}
-            ts;;={|{import time ; x=time.strftime("%Y%m%d%H%M%S")}|}
 
-        For example, typing ts;; gives::
+        For example, typing date;; gives::
 
-            20131009171117
+            Sun Jun 14 19:51:44 2026
 
         It's even possible to define a context in which abbreviation scripts execute.
 
@@ -136,7 +133,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.377: *3* helpForAutocompletion
     @cmd('help-for-autocompletion')
-    def helpForAutocompletion(self, event: LeoKeyEvent = None) -> None:
+    def helpForAutocompletion(self, event: LeoKeyEvent | None = None) -> None:
         """Explains how to use autocompletion."""
         # @+<< define s >>
         # @+node:ekr.20150514063305.378: *4* << define s >> (helpForAutocompletion)
@@ -254,7 +251,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.379: *3* helpForBindings
     @cmd('help-for-bindings')
-    def helpForBindings(self, event: LeoKeyEvent = None) -> None:
+    def helpForBindings(self, event: LeoKeyEvent | None = None) -> None:
         """Explains Leo's keyboard bindings."""
         # @+<< define s >>
         # @+node:ekr.20150514063305.380: *4* << define s >> (helpForBindings)
@@ -341,7 +338,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.381: *3* helpForCommand & helpers
     @cmd('help-for-command')
-    def helpForCommand(self, event: LeoKeyEvent) -> None:
+    def helpForCommand(self, event: LeoKeyEvent | None = None) -> None:
         """Prompts for a command name and prints the help message for that command."""
         c, k = self.c, self.c.k
         s = '''\
@@ -385,12 +382,10 @@ class HelpCommandsClass(BaseEditCommandsClass):
         else:
             if commandName:
                 bindings = self.getBindingsForCommand(commandName)
-                func = c.commandsDict.get(commandName)
-                s = g.getDocStringForFunction(func)
-                if s:
-                    s = self.replaceBindingPatterns(s)
-                else:
-                    s = 'no docstring available'
+                s = 'no docstring available'
+                if func := c.commandsDict.get(commandName):
+                    if s := g.getDocStringForFunction(func):
+                        s = self.replaceBindingPatterns(s)
                 # Create the title.
                 s2 = f"{commandName} ({bindings})" if bindings else commandName
                 underline = '+' * len(s2)
@@ -452,7 +447,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
             if m is None:
                 break
             name = m.group(1)
-            junk, aList = c.config.getShortcut(name)
+            _, aList = c.config.getShortcut(name)
             for bi in aList:
                 if bi.pane == 'all':
                     key = c.k.prettyPrintKey(bi.stroke.s)
@@ -464,7 +459,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.386: *3* helpForCreatingExternalFiles
     @cmd('help-for-creating-external-files')
-    def helpForCreatingExternalFiles(self, event: LeoKeyEvent = None) -> None:
+    def helpForCreatingExternalFiles(self, event: LeoKeyEvent | None = None) -> None:
         """Explains how to create external files."""
         # @+<< define s >>
         # @+node:ekr.20150514063305.387: *4* << define s >> (helpForCreatingExternalFiles)
@@ -600,7 +595,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.388: *3* helpForDebuggingCommands
     @cmd('help-for-debugging-commands')
-    def helpForDebuggingCommands(self, event: LeoKeyEvent = None) -> None:
+    def helpForDebuggingCommands(self, event: LeoKeyEvent | None = None) -> None:
         """Explains Leo's debugging commands."""
         # @+<< define s >>
         # @+node:ekr.20150514063305.389: *4* << define s >> (helpForDebuggingCommands)
@@ -633,7 +628,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.390: *3* helpForDragAndDrop
     @cmd('help-for-drag-and-drop')
-    def helpForDragAndDrop(self, event: LeoKeyEvent = None) -> None:
+    def helpForDragAndDrop(self, event: LeoKeyEvent | None = None) -> None:
         """Explains Leo's drag-and-drop commands."""
         # @+<< define s >>
         # @+node:ekr.20150514063305.391: *4* << define s >> (helpForDragAndDrop
@@ -674,7 +669,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.392: *3* helpForDynamicAbbreviations
     @cmd('help-for-dynamic-abbreviations')
-    def helpForDynamicAbbreviations(self, event: LeoKeyEvent = None) -> None:
+    def helpForDynamicAbbreviations(self, event: LeoKeyEvent | None = None) -> None:
         """Explains Leo's abbreviations."""
         # @+<< define s >>
         # @+node:ekr.20150514063305.393: *4* << define s >> (helpForDynamicAbbreviations)
@@ -721,10 +716,20 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.394: *3* helpForFindCommands
     @cmd('help-for-find-commands')
-    def helpForFindCommands(self, event: LeoKeyEvent = None) -> None:
+    def helpForFindCommands(self, event: LeoKeyEvent | None = None) -> None:
         """Explains Leo's find commands."""
-        # @+<< define s >>
-        # @+node:ekr.20150514063305.395: *4* << define s >> (help-for-find-commands)
+        c = self.c
+        d = c.k.computeInverseBindingDict()
+
+        def find_binding(command: str) -> str:
+            aList = d.get(command) or []
+            for pane, stroke in aList:
+                if pane == 'all':
+                    return stroke.s
+            return ''
+
+        # @+<< help-for-find-commands: define s >>
+        # @+node:ekr.20150514063305.395: *4* << help-for-find-commands: define s >>
         # @@language rest
 
         s = '''
@@ -732,9 +737,9 @@ class HelpCommandsClass(BaseEditCommandsClass):
         Finding & replacing text
         ------------------------
 
-        Alt-0 (vr-toggle) hides this help message.
+        vr-toggle (<vr-toggle>) hides this help message.
 
-        **Ctrl-F** (start-search) shows the Find pane
+        **<start-search>** (start-search) shows the Find pane
         and puts focus in the find box.
 
         Enter the find text and the replacement text if desired::
@@ -742,31 +747,37 @@ class HelpCommandsClass(BaseEditCommandsClass):
             Tab switches focus from widget to widget.
             Return executes the find-next command.
 
-        When Leo selects the found text you can do::
+        When Leo selects the found text you can do the following commands::
 
-            Ctrl-equal (replace)
-            Ctrl-minus (replace-then-find)
-            F3 (find-next)
-            F2 (find-previous)
-            Ctrl-G (keyboard-quit)
-            anything else :-)
+            find-next:          <find-next>
+            find-prev:           <find-prev>
+            replace:            <replace>
+            replace-all:        <replace-all>
+            replace-then-find:  <replace-then-find>
+            keyboard-quit:      <keyboard-quit>
 
-        You can Leo's commands toggle check boxes and radio buttons.
+        You may use Leo's find-toggle commands to toggle check boxes and radio buttons::
+
+            toggle-find-ignore-case-option:  <Alt+Ctrl+i>
+            toggle-find-in-body-option:      <Alt+Ctrl+b>
+            toggle-find-in-headline-option:  <Alt+Ctrl+h>
+            toggle-find-mark-changes-option: <Alt+Ctrl+c>
+            toggle-find-mark-finds-option:   <Alt+Ctrl+f>
+            toggle-find-regex-option:        <Alt+Ctrl+x>
+            toggle-find-word-option:         <Alt+Ctrl+w>
+
         These commands are listed in the Search menu.
-
-        You can execute these commands (and see their key bindings)
-        using the minibuffer::
-
-            <Alt-X>tog<tab>f<tab>   or
-            <Alt-X>set<tab>f<tab>
 
         Incremental searching
         ---------------------
 
         Incremental search is done only from the minibuffer::
 
-            Alt-I (isearch forward)
-            Alt-R (isearch backward)
+            isearch-forward:        <isearch-forward>
+            isearch-backward:       <isearch-backward>
+            isearch-forward-regex:  <isearch-forward-regex>
+            isearch-backward-regex: <isearch-backward-regex>
+
             BackSpace retracts the search
             All other characters extend the search
 
@@ -776,14 +787,40 @@ class HelpCommandsClass(BaseEditCommandsClass):
             Alt-S finds the search string again.
             Alt-R ditto for reverse searches.
         '''
-        # @-<< define s >>
+        # @-<< help-for-find-commands: define s >>
+
+        table = (
+            'find-next',
+            'find-prev',
+            'isearch-backward',
+            'isearch-backward-regex',
+            'isearch-forward',
+            'isearch-forward-regex',
+            'keyboard-quit',
+            'replace',
+            'replace-all',
+            'replace-then-find',
+            'start-search',
+            'toggle-find-ignore-case-option',
+            'toggle-find-in-body-option',
+            'toggle-find-in-headline-option',
+            'toggle-find-mark-changes-option',
+            'toggle-find-mark-finds-option',
+            'toggle-find-regex-option',
+            'toggle-find-word-option',
+            'vr-toggle',
+        )
+        for command in table:
+            s = s.replace(f"<{command}>", find_binding(command))
         self.c.putHelpFor(s)
 
     # @+node:ekr.20150628161341.1: *3* helpForKeystroke
     @cmd('help-for-keystroke')
-    def helpForKeystroke(self, event: LeoKeyEvent) -> None:
+    def helpForKeystroke(self, event: LeoKeyEvent | None = None) -> None:
         """Prompts for any key and prints the bindings for that key."""
         c, k = self.c, self.c.k
+        if not event:
+            return  # PR #4812
         state_name = 'help-for-keystroke'
         state = k.getState(state_name)
         if state == 0:
@@ -804,7 +841,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20240822071015.1: *3* helpForLayouts
     @cmd('help-for-layouts')
-    def helpForLayouts(self, event: LeoKeyEvent = None) -> None:
+    def helpForLayouts(self, event: LeoKeyEvent | None = None) -> None:
         """Print a message telling you how to use Leo's layouts."""
         c = self.c
         # @+<< create listing list>>
@@ -861,7 +898,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.396: *3* helpForMinibuffer
     @cmd('help-for-minibuffer')
-    def helpForMinibuffer(self, event: LeoKeyEvent = None) -> None:
+    def helpForMinibuffer(self, event: LeoKeyEvent | None = None) -> None:
         """Print a messages telling you how to get started with Leo."""
         # A bug in Leo: triple quotes puts indentation before each line.
         c = self.c
@@ -899,7 +936,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.398: *3* helpForRegularExpressions
     @cmd('help-for-regular-expressions')
-    def helpForRegularExpressions(self, event: LeoKeyEvent = None) -> None:
+    def helpForRegularExpressions(self, event: LeoKeyEvent | None = None) -> None:
         """Explains the regular expressions used by Leo's find commands."""
         # @+<< define s >>
         # @+node:ekr.20150514063305.399: *4* << define s >> (helpForRegularExpressions)
@@ -971,7 +1008,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.400: *3* helpForScripting
     @cmd('help-for-scripting')
-    def helpForScripting(self, event: LeoKeyEvent = None) -> None:
+    def helpForScripting(self, event: LeoKeyEvent | None = None) -> None:
         """Shows a tutorial about scripting Leo."""
         # @+<< define s >>
         # @+node:ekr.20150514063305.401: *4* << define s >> (helpForScripting)
@@ -1188,7 +1225,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20170823084423.1: *3* helpForSettings
     @cmd('help-for-settings')
-    def helpForSettings(self, event: LeoKeyEvent = None) -> None:
+    def helpForSettings(self, event: LeoKeyEvent | None = None) -> None:
         """Explains Leo's settings."""
         # @+<< define s >>
         # @+node:ekr.20170823084456.1: *4* << define s >> (helpForSettings)
@@ -1218,7 +1255,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20230306104232.1: *3* help.showColorSettings
     @cmd('show-color-settings')
-    def showColorSettings(self, event: LeoKeyEvent = None) -> None:
+    def showColorSettings(self, event: LeoKeyEvent | None = None) -> None:
         """
         Print the value of all @color settings.
 
@@ -1235,7 +1272,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20230306104131.1: *3* help.showFontSettings
     @cmd('show-font-settings')
-    def showFontSettings(self, event: LeoKeyEvent = None) -> None:
+    def showFontSettings(self, event: LeoKeyEvent | None = None) -> None:
         """
         Print the value of every @font setting.
 
@@ -1252,7 +1289,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.402: *3* help.showSettings
     @cmd('show-settings')
-    def showSettings(self, event: LeoKeyEvent = None) -> None:
+    def showSettings(self, event: LeoKeyEvent | None = None) -> None:
         """
         Print the value of every setting, except key bindings, commands, and
         open-with tables.
@@ -1270,7 +1307,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20190831025811.1: *3* help.showSettingsOutline
     @cmd('show-settings-outline')
-    def showSettingsOutline(self, event: LeoKeyEvent = None) -> None:
+    def showSettingsOutline(self, event: LeoKeyEvent | None = None) -> None:
         """
         Create and open an outline, summarizing all presently active settings.
 
@@ -1283,14 +1320,14 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.403: *3* pythonHelp
     @cmd('help-for-python')
-    def pythonHelp(self, event: LeoKeyEvent = None) -> None:
+    def pythonHelp(self, event: LeoKeyEvent | None = None) -> None:
         """Prompt for a arg for Python's help function, and put it to the VR pane."""
         c, k = self.c, self.c.k
         c.minibufferWantsFocus()
         k.setLabelBlue('Python help: ')
         k.get1Arg(event, handler=self.pythonHelp1)
 
-    def pythonHelp1(self, event: LeoKeyEvent) -> str:
+    def pythonHelp1(self, event: LeoKeyEvent | None = None) -> str:
         c, k = self.c, self.c.k
         k.clearState()
         k.resetLabel()

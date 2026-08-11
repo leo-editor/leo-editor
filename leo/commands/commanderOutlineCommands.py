@@ -6,11 +6,11 @@
 # @+node:ekr.20220826123551.1: ** << commanderOutlineCommands imports & annotations >>
 from __future__ import annotations
 from collections import defaultdict
-from collections.abc import Callable
-import xml.etree.ElementTree as ElementTree
+from collections.abc import Callable, Generator
+from xml.etree import ElementTree
 import json
 import time
-from typing import Any, Generator, Optional, TYPE_CHECKING
+from typing import Any, cast, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core import leoFileCommands
@@ -26,7 +26,7 @@ if TYPE_CHECKING:  # pragma: no cover
 # @+node:ekr.20031218072017.1548: ** c_oc.Cut & Paste Outlines
 # @+node:ekr.20031218072017.1550: *3* c_oc.copyOutline
 @g.commander_command('copy-node')
-def copyOutline(self: Cmdr, event: LeoKeyEvent = None) -> str:
+def copyOutline(self: Cmdr, event: LeoKeyEvent | None = None) -> str:
     """Copy the selected outline to the clipboard."""
     # Copying an outline has no undo consequences.
     c = self
@@ -41,7 +41,7 @@ def copyOutline(self: Cmdr, event: LeoKeyEvent = None) -> str:
 
 # @+node:ekr.20220314071523.1: *3* c_oc.copyOutlineAsJson & helpers
 @g.commander_command('copy-node-as-json')
-def copyOutlineAsJSON(self: Cmdr, event: LeoKeyEvent = None) -> Optional[str]:
+def copyOutlineAsJSON(self: Cmdr, event: LeoKeyEvent | None = None) -> str | None:
     """Copy the selected outline as JSON to the clipboard"""
     # Copying an outline has no undo consequences.
     c = self
@@ -56,23 +56,22 @@ def copyOutlineAsJSON(self: Cmdr, event: LeoKeyEvent = None) -> Optional[str]:
 
 # @+node:ekr.20031218072017.1549: *3* c_oc.cutOutline
 @g.commander_command('cut-node')
-def cutOutline(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def cutOutline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Delete the selected outline and send it to the clipboard."""
     c = self
     if c.canDeleteHeadline():
         c.copyOutline()
         c.deleteOutline(op_name="Cut Node")
-        c.recolor()
 
 
 # @+node:ekr.20031218072017.1551: *3* c_oc.pasteOutline
 @g.commander_command('paste-node')
 def pasteOutline(
     self: Cmdr,
-    event: LeoKeyEvent = None,
-    s: str = None,
+    event: LeoKeyEvent | None = None,
+    s: str | None = None,
     undoFlag: bool = True,  # A hack for abbrev.paste_tree.
-) -> Optional[Position]:
+) -> Position | None:
     """
     Paste an outline into the present outline from the clipboard.
     Nodes do *not* retain their original identify.
@@ -113,7 +112,6 @@ def pasteOutline(
     if undoFlag:
         c.undoer.afterInsertNode(pasted, 'Paste Node', undoData)
     c.redraw(pasted)
-    c.recolor()
     return pasted
 
 
@@ -121,9 +119,9 @@ def pasteOutline(
 @g.commander_command('paste-retaining-clones')
 def pasteOutlineRetainingClones(
     self: Cmdr,
-    event: LeoKeyEvent = None,
-    s: str = None,
-) -> Optional[Position]:
+    event: LeoKeyEvent | None = None,
+    s: str | None = None,
+) -> Position | None:
     """
     Paste an outline into the present outline from the clipboard.
     Nodes *retain* their original identify.
@@ -164,7 +162,6 @@ def pasteOutlineRetainingClones(
     # Finish the command.
     c.undoer.afterInsertNode(pasted, 'Paste As Clone', undoData)
     c.redraw(pasted)
-    c.recolor()
     return pasted
 
 
@@ -181,8 +178,8 @@ def computeCopiedBunchList(
     aList = []
     for v in vnodeInfoDict:
         if d.get(v):
-            bunch = vnodeInfoDict.get(v)
-            aList.append(bunch)
+            if bunch := vnodeInfoDict.get(v):
+                aList.append(bunch)
     return aList
 
 
@@ -205,7 +202,7 @@ def computeVnodeInfoDict(c: Cmdr) -> dict[VNode, g.Bunch]:
 
 # @+node:vitalije.20200529105105.1: *3* c_oc.pasteAsTemplate
 @g.commander_command('paste-as-template')
-def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Paste as template clones only nodes that were already clones"""
     c = self
     p = c.p
@@ -217,7 +214,7 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent = None) -> None:
     # Define helpers.
     # @+others
     # @+node:vitalije.20200529112224.1: *4* skip_root
-    def skip_root(v: VNode) -> Generator:
+    def skip_root(v: VNode) -> Generator[VNode, None, None]:
         """
         generates v nodes in the outline order
         but skips a subtree of the node with root_gnx
@@ -238,7 +235,7 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent = None) -> None:
         return g.app.nodeIndices.computeNewIndex()
 
     # @+node:vitalije.20200529115141.1: *4* viter
-    def viter(parent_gnx: str, xv: Any) -> Generator:
+    def viter(parent_gnx: str, xv: Any) -> Generator[tuple[str, str, str | None, str], None, None]:
         """
         iterates <v> nodes generating tuples:
 
@@ -253,7 +250,7 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent = None) -> None:
             chgnx = xv.get('gnx')
 
         b = bodies[chgnx]
-        gnx = translation.get(chgnx)
+        gnx = translation.get(chgnx, '')
         if gnx in seen:
             yield parent_gnx, gnx, heads.get(gnx), b
         else:
@@ -301,6 +298,9 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
         # create vnode
         v, _ = getv(gnx)
+        # h is never None here: this first row is always xv[0] itself (the
+        # root of the copied tree), which viter() never treats as "seen".
+        assert h is not None
         v.h = h
         v.b = b
 
@@ -315,10 +315,14 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent = None) -> None:
             # get or create a child `v`
             v, isNew = getv(gnx)
             if isNew:
+                # h is never None here: viter() only yields h=None for gnx
+                # values already in `seen` (nodes outside the copied tree),
+                # and those always resolve to an existing vnode, so isNew
+                # is False for them.
+                assert h is not None
                 v.h = h
                 v.b = b
-                ua = uas.get(gnx)
-                if ua:
+                if ua := uas.get(gnx):
                     v.unknownAttributes = ua
             # get parent node `vpar`
             vpar = getv(pgnx)[0]
@@ -351,8 +355,8 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
     if not isJson:
         xroot = ElementTree.fromstring(s)
-        xvelements = xroot.find('vnodes')  # <v> elements.
-        xtelements = xroot.find('tnodes')  # <t> elements.
+        xvelements = cast(Any, xroot.find('vnodes'))  # <v> elements.
+        xtelements = cast(Any, xroot.find('tnodes'))  # <t> elements.
         bodies, uas = x.scanTnodes(xtelements)
         root_gnx = xvelements[0].attrib.get('t')  # the gnx of copied node
     else:
@@ -423,7 +427,7 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20040412060927: ** c_oc.dumpOutline
 @g.commander_command('dump-outline')
-def dumpOutline(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def dumpOutline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Dump all nodes in the outline."""
     c = self
     seen = {}
@@ -441,7 +445,7 @@ def dumpOutline(self: Cmdr, event: LeoKeyEvent = None) -> None:
 # @+node:ekr.20031218072017.2898: ** c_oc.Expand & contract commands
 # @+node:ekr.20031218072017.2900: *3* c_oc.contract-all
 @g.commander_command('contract-all')
-def contractAllHeadlinesCommand(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def contractAllHeadlinesCommand(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Contract all nodes in the outline."""
     # The helper does all the work.
     c = self
@@ -451,7 +455,7 @@ def contractAllHeadlinesCommand(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20080819075811.3: *3* c_oc.contractAllOtherNodes & helper
 @g.commander_command('contract-all-other-nodes')
-def contractAllOtherNodes(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def contractAllOtherNodes(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """
     Contract all nodes except those needed to make the
     presently selected node visible.
@@ -477,7 +481,7 @@ def contractIfNotCurrent(c: Cmdr, p: Position, leaveOpen: Position) -> None:
 
 # @+node:ekr.20200824130837.1: *3* c_oc.contractAllSubheads (new)
 @g.commander_command('contract-all-subheads')
-def contractAllSubheads(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def contractAllSubheads(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Contract all children of the presently selected node."""
     c, p = self, self.p
     if not p:
@@ -492,7 +496,7 @@ def contractAllSubheads(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20031218072017.2901: *3* c_oc.contractNode
 @g.commander_command('contract-node')
-def contractNode(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def contractNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Contract the presently selected node."""
     c = self
     p = c.p
@@ -504,7 +508,7 @@ def contractNode(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20040930064232: *3* c_oc.contractNodeOrGoToParent
 @g.commander_command('contract-or-go-left')
-def contractNodeOrGoToParent(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def contractNodeOrGoToParent(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Simulate the left Arrow Key in folder of Windows Explorer."""
     c, cc, p = self, self.chapterController, self.p
     parent = p.parent()
@@ -531,7 +535,7 @@ def contractNodeOrGoToParent(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20031218072017.2902: *3* c_oc.contractParent
 @g.commander_command('contract-parent')
-def contractParent(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def contractParent(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Contract the parent of the presently selected node."""
     c = self
     c.endEditing()
@@ -546,7 +550,7 @@ def contractParent(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20031218072017.2903: *3* c_oc.expandAllHeadlines
 @g.commander_command('expand-all')
-def expandAllHeadlines(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def expandAllHeadlines(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Expand all headlines.
     Warning: this can take a long time for large outlines."""
     c = self
@@ -562,7 +566,7 @@ def expandAllHeadlines(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20031218072017.2904: *3* c_oc.expandAllSubheads
 @g.commander_command('expand-all-subheads')
-def expandAllSubheads(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def expandAllSubheads(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Expand all children of the presently selected node."""
     c, p = self, self.p
     if not p:
@@ -577,62 +581,62 @@ def expandAllSubheads(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20031218072017.2905: *3* c_oc.expandLevel1..9
 @g.commander_command('expand-to-level-1')
-def expandLevel1(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def expandLevel1(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Expand the outline to level 1"""
     self.expandToLevel(1)
 
 
 @g.commander_command('expand-to-level-2')
-def expandLevel2(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def expandLevel2(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Expand the outline to level 2"""
     self.expandToLevel(2)
 
 
 @g.commander_command('expand-to-level-3')
-def expandLevel3(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def expandLevel3(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Expand the outline to level 3"""
     self.expandToLevel(3)
 
 
 @g.commander_command('expand-to-level-4')
-def expandLevel4(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def expandLevel4(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Expand the outline to level 4"""
     self.expandToLevel(4)
 
 
 @g.commander_command('expand-to-level-5')
-def expandLevel5(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def expandLevel5(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Expand the outline to level 5"""
     self.expandToLevel(5)
 
 
 @g.commander_command('expand-to-level-6')
-def expandLevel6(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def expandLevel6(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Expand the outline to level 6"""
     self.expandToLevel(6)
 
 
 @g.commander_command('expand-to-level-7')
-def expandLevel7(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def expandLevel7(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Expand the outline to level 7"""
     self.expandToLevel(7)
 
 
 @g.commander_command('expand-to-level-8')
-def expandLevel8(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def expandLevel8(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Expand the outline to level 8"""
     self.expandToLevel(8)
 
 
 @g.commander_command('expand-to-level-9')
-def expandLevel9(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def expandLevel9(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Expand the outline to level 9"""
     self.expandToLevel(9)
 
 
 # @+node:ekr.20031218072017.2906: *3* c_oc.expandNextLevel
 @g.commander_command('expand-next-level')
-def expandNextLevel(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def expandNextLevel(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """
     Increase the expansion level of the outline and
     Expand all nodes at that level or lower.
@@ -647,7 +651,7 @@ def expandNextLevel(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20031218072017.2907: *3* c_oc.expandNode
 @g.commander_command('expand-node')
-def expandNode(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def expandNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Expand the presently selected node."""
     c = self
     p = c.p
@@ -659,7 +663,7 @@ def expandNode(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20040930064232.1: *3* c_oc.expandNodeAndGoToFirstChild
 @g.commander_command('expand-and-go-right')
-def expandNodeAndGoToFirstChild(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def expandNodeAndGoToFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """If a node has children, expand it if needed and go to the first child."""
     c, p = self, self.p
     c.endEditing()
@@ -672,7 +676,7 @@ def expandNodeAndGoToFirstChild(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20171125082744.1: *3* c_oc.expandNodeOrGoToFirstChild
 @g.commander_command('expand-or-go-right')
-def expandNodeOrGoToFirstChild(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def expandNodeOrGoToFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """
     Simulate the Right Arrow Key in folder of Windows Explorer.
     if c.p has no children, do nothing.
@@ -692,8 +696,8 @@ def expandNodeOrGoToFirstChild(self: Cmdr, event: LeoKeyEvent = None) -> None:
 @g.commander_command('expand-ancestors-only')
 def expandOnlyAncestorsOfNode(
     self: Cmdr,
-    event: LeoKeyEvent = None,
-    p: Position = None,
+    event: LeoKeyEvent | None = None,
+    p: Position | None = None,
 ) -> None:
     """Contract all nodes except ancestors of the selected node."""
     c = self
@@ -712,7 +716,7 @@ def expandOnlyAncestorsOfNode(
 
 # @+node:ekr.20031218072017.2908: *3* c_oc.expandPrevLevel
 @g.commander_command('expand-prev-level')
-def expandPrevLevel(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def expandPrevLevel(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Decrease the expansion level of the outline and
     Expand all nodes at that level or lower."""
     c = self
@@ -725,7 +729,7 @@ def expandPrevLevel(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20171124081846.1: ** c_oc.fullCheckOutline
 @g.commander_command('check-outline')
-def fullCheckOutline(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def fullCheckOutline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Do a full check of the consistency of a .leo file."""
     c = self
     t1 = time.process_time()
@@ -737,7 +741,7 @@ def fullCheckOutline(self: Cmdr, event: LeoKeyEvent = None) -> None:
 # @+node:ekr.20031218072017.2913: ** c_oc.Goto commands
 # @+node:ekr.20071213123942: *3* c_oc.findNextClone
 @g.commander_command('find-next-clone')
-def findNextClone(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def findNextClone(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the next cloned node."""
     c, p = self, self.p
     cc = c.chapterController
@@ -755,8 +759,7 @@ def findNextClone(self: Cmdr, event: LeoKeyEvent = None) -> None:
     if flag:
         if cc:
             cc.selectChapterByName('main')
-        c.selectPosition(p)
-        c.redraw_after_select(p)
+        c.redraw(p)
     else:
         g.blue('no more clones')
 
@@ -764,7 +767,7 @@ def findNextClone(self: Cmdr, event: LeoKeyEvent = None) -> None:
 # @+node:ekr.20031218072017.1628: *3* c_oc.goNextVisitedNode
 @g.commander_command('go-forward')
 @g.commander_command('goto-next-history-node')
-def goNextVisitedNode(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def goNextVisitedNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the next visited node."""
     c = self
     c.nodeHistory.goNext()
@@ -773,7 +776,7 @@ def goNextVisitedNode(self: Cmdr, event: LeoKeyEvent = None) -> None:
 # @+node:ekr.20031218072017.1627: *3* c_oc.goPrevVisitedNode
 @g.commander_command('go-back')
 @g.commander_command('goto-prev-history-node')
-def goPrevVisitedNode(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def goPrevVisitedNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the previously visited node."""
     c = self
     c.nodeHistory.goPrev()
@@ -781,7 +784,7 @@ def goPrevVisitedNode(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20031218072017.2914: *3* c_oc.goToFirstNode
 @g.commander_command('goto-first-node')
-def goToFirstNode(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def goToFirstNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """
     Select the first node of the entire outline.
     Or the first visible node if Leo is hoisted or within a chapter.
@@ -794,7 +797,7 @@ def goToFirstNode(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20051012092453: *3* c_oc.goToFirstSibling
 @g.commander_command('goto-first-sibling')
-def goToFirstSibling(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def goToFirstSibling(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the first sibling of the selected node."""
     c, p = self, self.p
     if p.hasBack():
@@ -805,11 +808,10 @@ def goToFirstSibling(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20070615070925: *3* c_oc.goToFirstVisibleNode
 @g.commander_command('goto-first-visible-node')
-def goToFirstVisibleNode(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def goToFirstVisibleNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the first visible node of the selected chapter or hoist."""
     c = self
-    p = c.firstVisible()
-    if p:
+    if p := c.firstVisible():
         if c.sparse_goto_visible:
             c.expandOnlyAncestorsOfNode(p=p)
         else:
@@ -819,7 +821,7 @@ def goToFirstVisibleNode(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20031218072017.2915: *3* c_oc.goToLastNode
 @g.commander_command('goto-last-node')
-def goToLastNode(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def goToLastNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the last node in the entire tree."""
     c = self
     p = c.rootPosition()
@@ -831,7 +833,7 @@ def goToLastNode(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20051012092847.1: *3* c_oc.goToLastSibling
 @g.commander_command('goto-last-sibling')
-def goToLastSibling(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def goToLastSibling(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the last sibling of the selected node."""
     c, p = self, self.p
     if p.hasNext():
@@ -842,11 +844,10 @@ def goToLastSibling(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20050711153537: *3* c_oc.goToLastVisibleNode
 @g.commander_command('goto-last-visible-node')
-def goToLastVisibleNode(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def goToLastVisibleNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the last visible node of selected chapter or hoist."""
     c = self
-    p = c.lastVisible()
-    if p:
+    if p := c.lastVisible():
         if c.sparse_goto_visible:
             c.expandOnlyAncestorsOfNode(p=p)
         else:
@@ -856,7 +857,7 @@ def goToLastVisibleNode(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20031218072017.2916: *3* c_oc.goToNextClone
 @g.commander_command('goto-next-clone')
-def goToNextClone(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def goToNextClone(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """
     Select the next node that is a clone of the selected node.
     If the selected node is not a clone, do find-next-clone.
@@ -898,7 +899,7 @@ def goToNextClone(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20031218072017.2917: *3* c_oc.goToNextDirtyHeadline
 @g.commander_command('goto-next-changed')
-def goToNextDirtyHeadline(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def goToNextDirtyHeadline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the node that is marked as changed."""
     c, p = self, self.p
     if not p:
@@ -922,7 +923,7 @@ def goToNextDirtyHeadline(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20031218072017.2918: *3* c_oc.goToNextMarkedHeadline
 @g.commander_command('goto-next-marked')
-def goToNextMarkedHeadline(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def goToNextMarkedHeadline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the next marked node."""
     c, p = self, self.p
     if not p:
@@ -946,7 +947,7 @@ def goToNextMarkedHeadline(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20031218072017.2919: *3* c_oc.goToNextSibling
 @g.commander_command('goto-next-sibling')
-def goToNextSibling(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def goToNextSibling(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the next sibling of the selected node."""
     c, p = self, self.p
     c.treeSelectHelper(p and p.next())
@@ -954,7 +955,7 @@ def goToNextSibling(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20031218072017.2920: *3* c_oc.goToParent
 @g.commander_command('goto-parent')
-def goToParent(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def goToParent(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the parent of the selected node."""
     c, p = self, self.p
     c.treeSelectHelper(p and p.parent())
@@ -962,7 +963,7 @@ def goToParent(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20190211104913.1: *3* c_oc.goToPrevMarkedHeadline
 @g.commander_command('goto-prev-marked')
-def goToPrevMarkedHeadline(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def goToPrevMarkedHeadline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the previous marked node."""
     c, p = self, self.p
     if not p:
@@ -978,7 +979,7 @@ def goToPrevMarkedHeadline(self: Cmdr, event: LeoKeyEvent = None) -> None:
             break
         else:
             wrapped = True
-            p = c.rootPosition()
+            p = c.lastPosition()
     if not p:
         g.blue('done')
     c.treeSelectHelper(p)  # Sets focus.
@@ -986,7 +987,7 @@ def goToPrevMarkedHeadline(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20031218072017.2921: *3* c_oc.goToPrevSibling
 @g.commander_command('goto-prev-sibling')
-def goToPrevSibling(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def goToPrevSibling(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the previous sibling of the selected node."""
     c, p = self, self.p
     c.treeSelectHelper(p and p.back())
@@ -994,7 +995,7 @@ def goToPrevSibling(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20031218072017.2993: *3* c_oc.selectThreadBack
 @g.commander_command('goto-prev-node')
-def selectThreadBack(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def selectThreadBack(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the node preceding the selected node in outline order."""
     c, p = self, self.p
     if not p:
@@ -1005,7 +1006,7 @@ def selectThreadBack(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20031218072017.2994: *3* c_oc.selectThreadNext
 @g.commander_command('goto-next-node')
-def selectThreadNext(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def selectThreadNext(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the node following the selected node in outline order."""
     c, p = self, self.p
     if not p:
@@ -1016,7 +1017,7 @@ def selectThreadNext(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20031218072017.2995: *3* c_oc.selectVisBack
 @g.commander_command('goto-prev-visible')
-def selectVisBack(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def selectVisBack(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the visible node preceding the presently selected node."""
     # This has an up arrow for a control key.
     c, p = self, self.p
@@ -1031,7 +1032,7 @@ def selectVisBack(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20031218072017.2996: *3* c_oc.selectVisNext
 @g.commander_command('goto-next-visible')
-def selectVisNext(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def selectVisNext(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the visible node following the presently selected node."""
     c, p = self, self.p
     if not p:
@@ -1047,7 +1048,7 @@ def selectVisNext(self: Cmdr, event: LeoKeyEvent = None) -> None:
 # @+node:ekr.20120308061112.9865: *3* c_oc.deHoist
 @g.commander_command('de-hoist')
 @g.commander_command('dehoist')
-def dehoist(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def dehoist(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Undo a previous hoist of an outline."""
     c, cc, tag = self, self.chapterController, '@chapter '
     if not c.p or not c.hoistStack:
@@ -1064,8 +1065,7 @@ def dehoist(self: Cmdr, event: LeoKeyEvent = None) -> None:
         p.expand()
     else:
         p.contract()
-    c.setCurrentPosition(p)
-    c.redraw()
+    c.redraw(p)
     c.frame.clearStatusLine()
     c.frame.putStatusLine("De-Hoist: " + p.h)
     g.doHook('hoist-changed', c=c)
@@ -1073,7 +1073,7 @@ def dehoist(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20120308061112.9866: *3* c_oc.clearAllHoists
 @g.commander_command('clear-all-hoists')
-def clearAllHoists(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def clearAllHoists(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Undo a previous hoist of an outline."""
     c = self
     c.hoistStack = []
@@ -1083,7 +1083,7 @@ def clearAllHoists(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20120308061112.9867: *3* c_oc.hoist
 @g.commander_command('hoist')
-def hoist(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def hoist(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Make only the selected outline visible."""
     c, p = self, self.p
     if not p:
@@ -1106,7 +1106,7 @@ def hoist(self: Cmdr, event: LeoKeyEvent = None) -> None:
 # @+node:ekr.20031218072017.1759: ** c_oc.Insert, Delete & Clone commands
 # @+node:ekr.20031218072017.1762: *3* c_oc.clone
 @g.commander_command('clone-node')
-def clone(self: Cmdr, event: LeoKeyEvent = None) -> Optional[Position]:
+def clone(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Create a clone of the selected outline."""
     c, p, u = self, self.p, self.undoer
     if not p:
@@ -1122,13 +1122,13 @@ def clone(self: Cmdr, event: LeoKeyEvent = None) -> Optional[Position]:
         c.treeWantsFocus()
         return clone  # For mod_labels and chapters plugins.
     clone.doDelete()
-    c.setCurrentPosition(p)
+    c.p = p
     return None
 
 
 # @+node:ekr.20150630152607.1: *3* c_oc.cloneToAtSpot
 @g.commander_command('clone-to-at-spot')
-def cloneToAtSpot(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def cloneToAtSpot(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """
     Create a clone of the selected node and move it to the last @spot node
     of the outline. Create the @spot node if necessary.
@@ -1175,12 +1175,12 @@ def cloneToAtSpot(self: Cmdr, event: LeoKeyEvent = None) -> None:
         clone.doDelete()
         if created_last_spot:
             last_spot.doDelete()
-        c.setCurrentPosition(p)  # This method does not change p.
+        c.p = p
 
 
 # @+node:ekr.20141023154408.5: *3* c_oc.cloneToLastNode
 @g.commander_command('clone-node-to-last-node')
-def cloneToLastNode(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def cloneToLastNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """
     Clone the selected node and move it to the last node.
     Do *not* change the selected node.
@@ -1205,7 +1205,11 @@ def cloneToLastNode(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20031218072017.1193: *3* c_oc.deleteOutline
 @g.commander_command('delete-node')
-def deleteOutline(self: Cmdr, event: LeoKeyEvent = None, op_name: str = "Delete Node") -> None:
+def deleteOutline(
+    self: Cmdr,
+    event: LeoKeyEvent | None = None,
+    op_name: str = "Delete Node",
+) -> None:
     """Deletes the selected outline."""
     c, u = self, self.undoer
     p = c.p
@@ -1239,7 +1243,7 @@ def deleteOutline(self: Cmdr, event: LeoKeyEvent = None, op_name: str = "Delete 
 
 # @+node:ekr.20071005173203.1: *3* c_oc.insertChild
 @g.commander_command('insert-child')
-def insertChild(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def insertChild(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Insert a node after the presently selected node."""
     c = self
     return c.insertHeadline(event=event, op_name='Insert Child', as_child=True)
@@ -1249,10 +1253,10 @@ def insertChild(self: Cmdr, event: LeoKeyEvent = None) -> None:
 @g.commander_command('insert-node')
 def insertHeadline(
     self: Cmdr,
-    event: LeoKeyEvent = None,
+    event: LeoKeyEvent | None = None,
     op_name: str = "Insert Node",
     as_child: bool = False,
-) -> Optional[Position]:
+) -> Position | None:
     """
     If c.p is expanded, insert a new node as the first or last child of c.p,
     depending on @bool insert-new-nodes-at-end.
@@ -1265,14 +1269,14 @@ def insertHeadline(
 
 
 @g.commander_command('insert-as-first-child')
-def insertNodeAsFirstChild(self: Cmdr, event: LeoKeyEvent = None) -> Optional[Position]:
+def insertNodeAsFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Insert a node as the first child of the previous node."""
     c = self
     return insertHeadlineHelper(c, event=event, as_first_child=True)
 
 
 @g.commander_command('insert-as-last-child')
-def insertNodeAsLastChild(self: Cmdr, event: LeoKeyEvent = None) -> Optional[Position]:
+def insertNodeAsLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Insert a node as the last child of the previous node."""
     c = self
     return insertHeadlineHelper(c, event=event, as_last_child=True)
@@ -1281,12 +1285,12 @@ def insertNodeAsLastChild(self: Cmdr, event: LeoKeyEvent = None) -> Optional[Pos
 # @+node:ekr.20171124091846.1: *4* function: insertHeadlineHelper
 def insertHeadlineHelper(
     c: Cmdr,
-    event: LeoKeyEvent = None,
+    event: LeoKeyEvent | None = None,
     op_name: str = "Insert Node",
     as_child: bool = False,
     as_first_child: bool = False,
     as_last_child: bool = False,
-) -> Optional[Position]:
+) -> Position | None:
     """Insert a node after the presently selected node."""
     u = c.undoer
     current = c.p
@@ -1320,7 +1324,7 @@ def insertHeadlineHelper(
 
 # @+node:ekr.20130922133218.11540: *3* c_oc.insertHeadlineBefore
 @g.commander_command('insert-node-before')
-def insertHeadlineBefore(self: Cmdr, event: LeoKeyEvent = None) -> Optional[Position]:
+def insertHeadlineBefore(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Insert a node before the presently selected node."""
     c, current, u = self, self.p, self.undoer
     op_name = 'Insert Node Before'
@@ -1344,7 +1348,7 @@ def insertHeadlineBefore(self: Cmdr, event: LeoKeyEvent = None) -> Optional[Posi
 # @+node:ekr.20031218072017.2922: ** c_oc.Mark commands
 # @+node:ekr.20090905110447.6098: *3* c_oc.cloneMarked
 @g.commander_command('clone-marked-nodes')
-def cloneMarked(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def cloneMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Clone all marked nodes as children of a new node."""
     c, u = self, self.undoer
     p1 = c.p.copy()
@@ -1385,7 +1389,7 @@ def cloneMarked(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20160502090456.1: *3* c_oc.copyMarked
 @g.commander_command('copy-marked-nodes')
-def copyMarked(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def copyMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Copy all marked nodes as children of a new node."""
     c, u = self, self.undoer
     p1 = c.p.copy()
@@ -1420,7 +1424,7 @@ def copyMarked(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20111005081134.15540: *3* c_oc.deleteMarked
 @g.commander_command('delete-marked-nodes')
-def deleteMarked(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def deleteMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Delete all marked nodes."""
     c, u = self, self.undoer
     p1 = c.p.copy()
@@ -1445,7 +1449,7 @@ def deleteMarked(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20111005081134.15539: *3* c_oc.moveMarked & helper
 @g.commander_command('move-marked-nodes')
-def moveMarked(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def moveMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """
     Move all marked nodes as children of a new node.
     This command is not undoable.
@@ -1518,7 +1522,7 @@ def createMoveMarkedNode(c: Cmdr) -> Position:
 # @+node:ekr.20031218072017.2923: *3* c_oc.markChangedHeadlines
 @g.commander_command('mark-changed-items')
 @g.commander_command('mark-changed-nodes')
-def markChangedHeadlines(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def markChangedHeadlines(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Mark all nodes that have been changed."""
     c, current, u = self, self.p, self.undoer
     undoType = 'Mark Changed'
@@ -1542,7 +1546,7 @@ def markChangedHeadlines(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 
 # @+node:ekr.20031218072017.2924: *3* c_oc.markChangedRoots
-def markChangedRoots(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def markChangedRoots(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Mark all changed @root nodes."""
     c, current, u = self, self.p, self.undoer
     undoType = 'Mark Changed'
@@ -1570,7 +1574,7 @@ def markChangedRoots(self: Cmdr, event: LeoKeyEvent = None) -> None:
 # @+node:ekr.20031218072017.2928: *3* c_oc.markHeadline
 @g.commander_command('mark')  # Compatibility
 @g.commander_command('toggle-mark')
-def markHeadline(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def markHeadline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Toggle the mark of the selected node."""
     c, p, u = self, self.p, self.undoer
     if not p:
@@ -1590,7 +1594,7 @@ def markHeadline(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20031218072017.2929: *3* c_oc.markSubheads
 @g.commander_command('mark-subheads')
-def markSubheads(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def markSubheads(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Mark all children of the selected node as changed."""
     c, current, u = self, self.p, self.undoer
     undoType = 'Mark Subheads'
@@ -1614,7 +1618,7 @@ def markSubheads(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20031218072017.2930: *3* c_oc.unmarkAll
 @g.commander_command('unmark-all')
-def unmarkAll(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def unmarkAll(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Unmark all nodes in the entire outline."""
     c, current, u = self, self.p, self.undoer
     undoType = 'Unmark All'
@@ -1642,7 +1646,7 @@ def unmarkAll(self: Cmdr, event: LeoKeyEvent = None) -> None:
 # @+node:ekr.20031218072017.1766: ** c_oc.Move commands
 # @+node:ekr.20031218072017.1767: *3* c_oc.demote
 @g.commander_command('demote')
-def demote(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def demote(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Make all following siblings children of the selected node."""
     c, p, u = self, self.p, self.undoer
     if not p or not p.hasNext():
@@ -1678,11 +1682,11 @@ def demote(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20031218072017.1768: *3* c_oc.moveOutlineDown
 @g.commander_command('move-outline-down')
-def moveOutlineDown(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def moveOutlineDown(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Move the selected node down."""
     # Moving down is more tricky than moving up because we can't
     # move p to be a child of itself.
-    #
+
     # An important optimization:
     # we don't have to call checkMoveWithParentWithWarning() if the parent of
     # the moved node remains the same.
@@ -1709,14 +1713,12 @@ def moveOutlineDown(self: Cmdr, event: LeoKeyEvent = None) -> None:
     # @+node:ekr.20031218072017.1769: *4* << Move p down & set moved if successful >>
     if next.hasChildren() and next.isExpanded():
         # Attempt to move p to the first child of next.
-        moved = c.checkMoveWithParentWithWarning(p, next, True)
-        if moved:
+        if moved := c.checkMoveWithParentWithWarning(p, next, True):
             p.setDirty()
             p.moveToNthChildOf(next, 0)
     else:
         # Attempt to move p after next.
-        moved = c.checkMoveWithParentWithWarning(p, next.parent(), True)
-        if moved:
+        if moved := c.checkMoveWithParentWithWarning(p, next.parent(), True):
             p.setDirty()
             p.moveAfter(next)
     # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
@@ -1738,7 +1740,7 @@ def moveOutlineDown(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20031218072017.1770: *3* c_oc.moveOutlineLeft
 @g.commander_command('move-outline-left')
-def moveOutlineLeft(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def moveOutlineLeft(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Move the selected node left if possible."""
     c, p, u = self, self.p, self.undoer
     if not p:
@@ -1763,12 +1765,11 @@ def moveOutlineLeft(self: Cmdr, event: LeoKeyEvent = None) -> None:
     if c.collapse_nodes_after_move and c.sparse_move:  # New in Leo 4.4.2
         parent.contract()
     c.redraw(p)
-    c.recolor()  # Moving can change syntax coloring.
 
 
 # @+node:ekr.20031218072017.1771: *3* c_oc.moveOutlineRight
 @g.commander_command('move-outline-right')
-def moveOutlineRight(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def moveOutlineRight(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Move the selected node right if possible."""
     c, p, u = self, self.p, self.undoer
     if not p:
@@ -1794,12 +1795,11 @@ def moveOutlineRight(self: Cmdr, event: LeoKeyEvent = None) -> None:
     c.setChanged()  # #2036.
     u.afterMoveNode(p, 'Move Right', undoData)
     c.redraw(p)
-    c.recolor()  # Moving can change syntax coloring.
 
 
 # @+node:ekr.20031218072017.1772: *3* c_oc.moveOutlineUp
 @g.commander_command('move-outline-up')
-def moveOutlineUp(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def moveOutlineUp(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Move the selected node up if possible."""
     c, p, u = self, self.p, self.undoer
     if not p:
@@ -1864,7 +1864,7 @@ def moveOutlineUp(self: Cmdr, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20230902051130.1: *3* c_oc.moveOutlineToFirstChild
 @g.commander_command('move-outline-to-first-child')
-def moveOutlineToFirstChild(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def moveOutlineToFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """
     Move the selected node so that it is the first child of its parent.
 
@@ -1887,12 +1887,11 @@ def moveOutlineToFirstChild(self: Cmdr, event: LeoKeyEvent = None) -> None:
     c.setChanged()
     u.afterMoveNode(p, 'Move To First Child', undoData)
     c.redraw(p)
-    # c.recolor()  # Moving can *not* change syntax coloring.
 
 
 # @+node:ekr.20230902051833.1: *3* c_oc.moveOutlineToLastChild
 @g.commander_command('move-outline-to-last-child')
-def moveOutlineToLastChild(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def moveOutlineToLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """
     Move the selected node so that it is the last child of its parent.
 
@@ -1915,12 +1914,15 @@ def moveOutlineToLastChild(self: Cmdr, event: LeoKeyEvent = None) -> None:
     c.setChanged()
     u.afterMoveNode(p, 'Move To Last Child', undoData)
     c.redraw(p)
-    # c.recolor()  # Moving can *not* change syntax coloring.
 
 
 # @+node:ekr.20031218072017.1774: *3* c_oc.promote
 @g.commander_command('promote')
-def promote(self: Cmdr, event: LeoKeyEvent = None, undoFlag: bool = True) -> None:
+def promote(
+    self: Cmdr,
+    event: LeoKeyEvent | None = None,
+    undoFlag: bool = True,
+) -> None:
     """Make all children of the selected nodes siblings of the selected node."""
     c, p, u = self, self.p, self.undoer
     if not p or not p.hasChildren():
@@ -1939,7 +1941,7 @@ def promote(self: Cmdr, event: LeoKeyEvent = None, undoFlag: bool = True) -> Non
 
 # @+node:ekr.20071213185710: *3* c_oc.toggleSparseMove
 @g.commander_command('toggle-sparse-move')
-def toggleSparseMove(self: Cmdr, event: LeoKeyEvent = None) -> None:
+def toggleSparseMove(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Toggle whether moves collapse the outline."""
     c = self
     c.sparse_move = not c.sparse_move
@@ -1950,14 +1952,22 @@ def toggleSparseMove(self: Cmdr, event: LeoKeyEvent = None) -> None:
 # @+node:ekr.20080425060424.1: ** c_oc.Sort commands
 # @+node:felix.20230318172503.1: *3* c_oc.reverseSortChildren
 @g.commander_command('reverse-sort-children')
-def reverseSortChildren(self: Cmdr, event: LeoKeyEvent = None, key: str = None) -> None:
+def reverseSortChildren(
+    self: Cmdr,
+    event: LeoKeyEvent | None = None,
+    key: str | None = None,
+) -> None:
     """Sort the children of a node in reverse order."""
     self.sortChildren(key=key, reverse=True)  # as reverse, Fixes #3188
 
 
 # @+node:felix.20230318172511.1: *3* c_oc.reverseSortSiblings
 @g.commander_command('reverse-sort-siblings')
-def reverseSortSiblings(self: Cmdr, event: LeoKeyEvent = None, key: str = None) -> None:
+def reverseSortSiblings(
+    self: Cmdr,
+    event: LeoKeyEvent | None = None,
+    key: str | None = None,
+) -> None:
     """Sort the siblings of a node in reverse order."""
     self.sortSiblings(key=key, reverse=True)  # as reverse, Fixes #3188
 
@@ -1965,7 +1975,10 @@ def reverseSortSiblings(self: Cmdr, event: LeoKeyEvent = None, key: str = None) 
 # @+node:ekr.20050415134809: *3* c_oc.sortChildren
 @g.commander_command('sort-children')
 def sortChildren(
-    self: Cmdr, event: LeoKeyEvent = None, key: Callable = None, reverse: bool = False
+    self: Cmdr,
+    event: LeoKeyEvent | None = None,
+    key: Callable | None = None,
+    reverse: bool = False,
 ) -> None:
     """Sort the children of a node."""
     # This method no longer supports the 'cmp' keyword arg.
@@ -1978,9 +1991,9 @@ def sortChildren(
 @g.commander_command('sort-siblings')
 def sortSiblings(
     self: Cmdr,
-    event: LeoKeyEvent = None,  # cmp keyword is no longer supported.
-    key: Callable = None,
-    p: Position = None,
+    event: LeoKeyEvent | None = None,
+    key: Callable | None = None,
+    p: Position | None = None,
     sortChildren: bool = False,
     reverse: bool = False,
 ) -> None:
@@ -2001,12 +2014,10 @@ def sortSiblings(
     newChildren = parent_v.children[:]
     if key is None:
 
-        def lowerKey(self: Cmdr) -> str:
-            return self.h.lower()
+        def key(v: VNode) -> str:
+            return v.h.lower()
 
-        key = lowerKey
-
-    newChildren.sort(key=key, reverse=reverse)  # type:ignore
+    newChildren.sort(key=key, reverse=reverse)
     if oldChildren == newChildren:
         return
     # 2010/01/20. Fix bug 510148.
@@ -2040,10 +2051,9 @@ def cantMoveMessage(c: Cmdr) -> None:
 
 # @+node:ekr.20180201040936.1: ** count-children
 @g.command('count-children')
-def count_children(event: LeoKeyEvent = None) -> None:
+def count_children(event: LeoKeyEvent | None = None) -> None:
     """Print out the number of children for the currently selected node"""
-    c = event and event.get('c')
-    if c:
+    if c := event and event.get('c'):
         g.es_print(f"{c.p.numberOfChildren()} children")
 
 

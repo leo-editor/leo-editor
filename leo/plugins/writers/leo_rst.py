@@ -9,7 +9,7 @@ This module must **not** be named rst, so as not to conflict with docutils.
 
 from leo.core import leoGlobals as g  # Required
 from leo.core.leoNodes import Position
-import leo.plugins.writers.basewriter as basewriter
+from leo.plugins.writers import basewriter
 import leo.plugins.importers.leo_rst as rst_importer
 
 # Make *sure* that reader's underlines match the writer's.

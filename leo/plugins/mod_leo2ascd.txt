@@ -2246,11 +2246,11 @@ if Tk: # Register the handlers...
 
             # Entries in the following table are the tuple
             # (commandName,shortcut,data).
-            #
+
             # - data is the tuple (command,arg,ext).
             # - command is one of "os.system", "os.startfile", "os.spawnl",
             # "os.spawnv" or "exec".
-            #
+
             # Leo executes command(arg+path) where path is the full path to
             # the temp file.
             # If ext is not None, the temp file has the extension ext,

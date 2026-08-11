@@ -343,8 +343,6 @@ WrapMode = QtGui.QTextOption.WrapMode
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
-    from leo.core.leoQt import QtWidgets
-    from leo.core.leoQt import QtGui
     from leo.plugins.qt_text import LeoQTextBrowser
 # @-<< annotations >>
 # @+<< declarations >>
@@ -536,7 +534,7 @@ def init() -> bool:
 
 # @+node:tom.20210527153848.1: ** z-commands
 @g.command('z-open-freewin')
-def open_z_window(event: LeoKeyEvent) -> None:
+def open_z_window(event: LeoKeyEvent | None = None) -> None:
     """Open or show editing window for the selected node."""
     if g.app.gui.guiName() != 'qt':
         return
@@ -702,7 +700,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         self.render_pane_type = BROWSER_VIEW
 
         self.editor = QTextEdit()
-        wrapper = qt_text.QTextEditWrapper(self.editor, name='zwin', c=c)
+        wrapper = qt_text.QTextEditWrapper(widget=self.editor, name='zwin', c=c)
         c.k.completeAllBindingsForWidget(wrapper)
 
         self.editor.cursorPositionChanged.connect(self.highlightCurrentLine)
@@ -940,7 +938,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
             return
 
         # Make sure our host node still exists
-        if not self.c.p.v == self.v:
+        if self.c.p.v != self.v:
             # Find our node
             found_us: bool = False
             for p1 in self.c.all_unique_positions():

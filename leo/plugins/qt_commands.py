@@ -13,8 +13,6 @@ if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
 
-    Args = Any
-    KWargs = Any
     QWidget = QtWidgets.QWidget
 
 
@@ -38,9 +36,11 @@ def onSelect(tag: str, keywords: Any) -> None:
 
 # @+node:ekr.20110605121601.18001: ** qt: detach-editor-toggle & helpers
 @g.command('detach-editor-toggle')
-def detach_editor_toggle(event: LeoKeyEvent) -> None:
+def detach_editor_toggle(event: LeoKeyEvent | None = None) -> None:
     """Detach or undetach body editor"""
-    c: Cmdr = event['c']
+    c = event.get('c') if event else None
+    if not c:
+        return
     detach = True
     try:
         if c.frame.detached_body_info is not None:
@@ -54,9 +54,11 @@ def detach_editor_toggle(event: LeoKeyEvent) -> None:
 
 
 @g.command('detach-editor-toggle-max')
-def detach_editor_toggle_max(event: LeoKeyEvent) -> None:
+def detach_editor_toggle_max(event: LeoKeyEvent | None = None) -> None:
     """Detach editor, maximize"""
-    c: Cmdr = event['c']
+    c = event.get('c') if event else None
+    if not c:
+        return
     detach_editor_toggle(event)
     if c.frame.detached_body_info is not None:
         wdg: QWidget = c.frame.top.leo_body_frame
@@ -92,9 +94,11 @@ def undetach_editor(c: Cmdr) -> None:
 
 # @+node:ekr.20170324143944.2: ** qt: show-color-names
 @g.command('show-color-names')
-def showColorNames(event: LeoKeyEvent) -> None:
+def showColorNames(event: LeoKeyEvent | None = None) -> None:
     """Put up a dialog showing color names."""
-    c: Cmdr = event.get('c')
+    c = event.get('c') if event else None
+    if not c:
+        return
     template = '''
         QComboBox {
             background-color: %s;
@@ -108,7 +112,7 @@ def showColorNames(event: LeoKeyEvent) -> None:
         color_list: list[str] = []
         box = QtWidgets.QComboBox()
 
-        def onActivated(n: int, *args: Args, **keys: KWargs) -> None:
+        def onActivated(n: int, *args: Any, **keys: Any) -> None:
             color = color_list[n]
             sheet = template % (color, color)
             box.setStyleSheet(sheet)
@@ -119,7 +123,9 @@ def showColorNames(event: LeoKeyEvent) -> None:
         color_db = leoColor.leo_color_database
         for key in sorted(color_db):
             if not key.startswith('grey'):  # Use gray, not grey.
-                val = color_db.get(key)
+                val = color_db.get(key, '')
+                if not val:
+                    continue
                 color = QtGui.QColor(val)
                 color_list.append(val)
                 pixmap = QtGui.QPixmap(40, 40)
@@ -135,7 +141,7 @@ def showColorNames(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20170324142416.1: ** qt: show-color-wheel
 @g.command('show-color-wheel')
-def showColorWheel(self: Any, event: LeoKeyEvent = None) -> None:
+def showColorWheel(self: Any, event: LeoKeyEvent | None = None) -> None:
     """Show a Qt color dialog."""
     c, p = self.c, self.c.p
     picker = QtWidgets.QColorDialog()
@@ -164,7 +170,7 @@ def showColorWheel(self: Any, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20170324143944.3: ** qt: show-fonts
 @g.command('show-fonts')
-def showFonts(self: Any, event: LeoKeyEvent = None) -> None:
+def showFonts(self: Any, event: LeoKeyEvent | None = None) -> None:
     """Open a tab in the log pane showing a font picker."""
     c, p = self.c, self.c.p
     picker = QtWidgets.QFontDialog()
@@ -207,24 +213,23 @@ def showFonts(self: Any, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20140918124632.17893: ** qt: show-style-sheet
 @g.command('show-style-sheet')
-def print_style_sheet(event: LeoKeyEvent = None) -> None:
+def print_style_sheet(event: LeoKeyEvent | None = None) -> None:
     """show-style-sheet command."""
-    c: Cmdr = event.get('c')
-    if c:
+    if c := event.get('c') if event else None:
         c.styleSheetManager.print_style_sheet()
 
 
 # @+node:ekr.20140918124632.17891: ** qt: style-reload
 @g.command('style-reload')
 @g.command('reload-style-sheets')
-def style_reload(event: LeoKeyEvent) -> None:
+def style_reload(event: LeoKeyEvent | None = None) -> None:
     """reload-styles command.
 
     Find the appropriate style sheet and re-apply it.
 
     This replaces execution of the `stylesheet & source` node in settings files.
     """
-    c: Cmdr = event.get('c')
+    c = event.get('c') if event else None
     if c and c.styleSheetManager:
         # Call ssm.reload_settings after reloading all settings.
         c.reloadSettings()
@@ -232,10 +237,9 @@ def style_reload(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20140918124632.17892: ** qt: style-set-selected
 @g.command('style-set-selected')
-def style_set_selected(event: LeoKeyEvent) -> None:
+def style_set_selected(event: LeoKeyEvent | None = None) -> None:
     """style-set-selected command. Set the global stylesheet to c.p.b. (For testing)"""
-    c: Cmdr = event.get('c')
-    if c:
+    if c := event.get('c') if event else None:
         c.styleSheetManager.set_selected_style_sheet()
 
 

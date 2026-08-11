@@ -11,6 +11,7 @@ https://github.com/leo-editor/leo-editor/issues/3837
 
 import os
 import subprocess
+import sys
 
 print(os.path.basename(__file__))
 
@@ -21,12 +22,13 @@ assert os.path.exists(leo_editor_dir), repr(leo_editor_dir)
 assert os.path.isdir(leo_editor_dir), repr(leo_editor_dir)
 os.chdir(leo_editor_dir)
 
-command = 'python -m twine upload -r pypi dist/*.* --verbose'
+python = sys.executable
+command = f"{python} -m twine upload -r pypi dist/*.* --verbose"
 
 # Upload.
 if 1:  # Don't do this until we are ready to release.
     print(command)
-    subprocess.Popen(command, shell=True).communicate()
+    subprocess.run(command, shell=True)
 else:
     print(f"Skipped: {command}")
 # @-leo

@@ -110,7 +110,7 @@ class Demo:
         self.script_i = 0
         # A list of strings (scripts). Scripts are removed when executed.
         self.script_list = []
-        self.speed: float = None
+        self.speed: float | None = None
         self.user_dict = {}  # For use by scripts.
         self.widgets = []  # References to all widgets created by this class.
         # Init...
@@ -267,7 +267,7 @@ class Demo:
         """
 
     # @+node:ekr.20170128213103.33: *4* demo.start & helpers
-    def start(self, script_tree, auto_run=False, delim='###', root=None):
+    def start(self, script_tree, *, auto_run=False, delim='###', root=None):
         """Start a demo. script_tree contains the demo scripts."""
         from leo.core import leoNodes
 
@@ -358,7 +358,7 @@ class Demo:
         return aList
 
     # @+node:ekr.20170128213103.43: *4* demo.wait & key_wait
-    def key_wait(self, speed: float = None, n1=None, n2=None):
+    def key_wait(self, speed: float | None = None, n1=None, n2=None):
         """Wait for an interval between n1 and n2, in seconds."""
         if n1 is None:
             n1 = self.n1
@@ -455,7 +455,7 @@ class Demo:
         tree = c.frame.tree
         p.h = ''
         c.editHeadline()
-        w = tree.edit_widget(p)
+        w = tree.headline_wrapper(p)
         if undo:
             undoData = c.undoer.beforeChangeNodeContents(p)
             p.setDirty()
@@ -538,7 +538,7 @@ class Demo:
         return p
 
     # @+node:ekr.20170211045602.1: *4* demo.insert_node
-    def insert_node(self, headline, end=True, keys=False, speed: float = None):
+    def insert_node(self, headline, end=True, keys=False, speed: float | None = None):
         """Helper for inserting a node."""
         c = self.c
         p = c.insertHeadline()
@@ -766,7 +766,7 @@ class Demo:
 
 # @+node:ekr.20170208045907.1: ** Graphics classes & helpers
 # @+node:ekr.20170206203005.1: *3*  class Label (QLabel)
-class Label(QtWidgets.QLabel):  # type:ignore
+class Label(QtWidgets.QLabel):
     """A class for user-defined callouts in demo.py."""
 
     def __init__(self, text, font=None, pane=None, position=None, stylesheet=None):
@@ -842,7 +842,7 @@ class Callout(Label):
 
 
 # @+node:ekr.20170208065111.1: *3* class Image (QLabel)
-class Image(QtWidgets.QLabel):  # type:ignore
+class Image(QtWidgets.QLabel):
     def __init__(self, fn, pane=None, magnification=None, position=None, size=None):
         """Image.__init__."""
         demo, w = g.app.demo, self
@@ -891,7 +891,7 @@ class Image(QtWidgets.QLabel):  # type:ignore
 
 
 # @+node:ekr.20170208095240.1: *3* class Text (QPlainTextEdit)
-class Text(QtWidgets.QPlainTextEdit):  # type:ignore
+class Text(QtWidgets.QPlainTextEdit):
     def __init__(self, text, font=None, pane=None, position=None, size=None, stylesheet=None):
         """Pop up a QPlainTextEdit in the indicated pane."""
         demo, w = g.app.demo, self

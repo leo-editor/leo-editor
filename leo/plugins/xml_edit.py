@@ -118,7 +118,8 @@ filetypes = [
 ]
 
 # xml namespace mapping from prefix to full namespace
-NSMAP: dict[str, Any] = {}
+# (a None key holds the default namespace, per lxml's nsmap convention)
+NSMAP: dict[str | None, Any] = {}
 
 
 # @+node:tbrown.20110428102237.20325: ** append_element
@@ -339,7 +340,7 @@ def xml2leo(event, from_string=None):
             xml_.docinfo.encoding,
         )
     if NSMAP:
-        for k in sorted(NSMAP):
+        for k in sorted(NSMAP, key=lambda k: k or ''):
             if k:
                 nd.b += "%s: %s\n" % (k, NSMAP[k])
             else:

@@ -47,18 +47,18 @@ from leo.core import leoGlobals as g
 
 
 # @+others
-# @+node:dan.20090210183435.1: ** exec_full_cmd
+# @+node:dan.20090210183435.1: ** exec_full_cmd (mime.py)
 def exec_full_cmd(cmd):
     """Accept a command string including filename and return a function
     which executes the command."""
 
     def f(fpath):
-        return subprocess.Popen(cmd, shell=True)
+        return subprocess.Popen(cmd)
 
     return f
 
 
-# @+node:dan.20090210180636.27: ** exec_string_cmd
+# @+node:dan.20090210180636.27: ** exec_string_cmd (mime.py)
 def exec_string_cmd(cmd):
     """Accept a command string and return a function which opens executes the command,
     replacing %s with the full file path."""
@@ -68,7 +68,7 @@ def exec_string_cmd(cmd):
 
     def f(fpath):
         s = cmd % fpath
-        return subprocess.Popen(s, shell=True)
+        return subprocess.Popen(s)
 
     return f
 

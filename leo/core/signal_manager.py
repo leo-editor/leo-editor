@@ -17,10 +17,9 @@ Terry Brown, terrynbrown@gmail.com, Thu Mar 23 21:13:38 2017
 from __future__ import annotations
 from collections import defaultdict
 from collections.abc import Callable
-from typing import Any
+from typing import Any, cast
 
-Args = Any
-KWargs = Any
+
 # @-<< signal_manager imports >>
 
 
@@ -39,17 +38,15 @@ class MsgSignalHandled:
     other listeners from being called
     """
 
-    pass
-
 
 # @+node:tbrown.20171028115601.5: ** _setup
 def _setup(obj: object) -> None:
     if not hasattr(obj, '_signal_data'):
-        obj._signal_data = SignalData()
+        cast(Any, obj)._signal_data = SignalData()
 
 
 # @+node:tbrown.20171028115601.6: ** emit
-def emit(source: object, signal_name: str, *args: Args, **kwargs: KWargs) -> None:
+def emit(source: object, signal_name: str, *args: Any, **kwargs: Any) -> None:
     """Emit signal to all listeners"""
     if not hasattr(source, '_signal_data'):
         return
@@ -121,7 +118,7 @@ class SignalManager:
 
     # @+others
     # @+node:tbrown.20171028115601.13: *3* emit
-    def emit(self, signal_name: str, *args: Args, **kwargs: KWargs) -> None:
+    def emit(self, signal_name: str, *args: Any, **kwargs: Any) -> None:
         """Emit signal to all listeners"""
         emit(self, signal_name, *args, **kwargs)
 
@@ -168,8 +165,6 @@ def main() -> None:
 
     class SomeProxy:
         """Like a public notice board"""
-
-        pass
 
     relay = SomeProxy()
     a = Tester('A', relay)

@@ -1,6 +1,8 @@
 #! /usr/bin/env python
+# type:ignore
 # @+leo-ver=5-thin
 # @+node:ekr.20070227091955.1: * @file leoBridge.py
+# @@first
 # @@first
 """A module to allow full access to Leo commanders from outside Leo."""
 
@@ -54,7 +56,7 @@ import os
 import sys
 import time
 import traceback
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from types import ModuleType
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -105,7 +107,7 @@ class BridgeController:
         vs_code_flag: bool = False,  # #2098.
     ) -> None:
         """Ctor for the BridgeController class."""
-        self.g: ModuleType = None  # leo.core.leoGlobals.
+        self.g: ModuleType | None = None  # leo.core.leoGlobals.
         self.guiName = guiName or 'nullGui'
         self.loadPlugins = loadPlugins
         self.readSettings = readSettings
@@ -140,7 +142,7 @@ class BridgeController:
             self.g = g
         except ImportError:
             print("Error importing leoGlobals.py")
-        #
+
         # Create the application object.
         try:
             # Tell leoApp.createDefaultGui not to create a gui.
@@ -152,7 +154,7 @@ class BridgeController:
             g.app = leoApp.LeoApp()
         except ImportError:
             print("Error importing leoApp.py")
-        g.app.leoID = None
+        g.app.leoID = ''
         if self.tracePlugins:
             g.app.debug.append('plugins')
         g.app.silentMode = self.silentMode
@@ -191,8 +193,8 @@ class BridgeController:
         if self.useCaches:
             g.app.setGlobalDb()  # #556.
         else:
-            g.app.db = g.NullObject()  # type:ignore
-            g.app.global_cacher = g.NullObject()  # type:ignore
+            g.app.db = g.NullObject()
+            g.app.global_cacher = g.NullObject()
         if self.readSettings:
             # reads only standard settings files, using a null gui.
             # uses lm.files[0] to compute the local directory
@@ -220,7 +222,7 @@ class BridgeController:
         g.doHook("start2", c=None, p=None, v=None, fileName=None)
         t2 = time.process_time()
         if self.verbose:
-            print(f"bridge.initLeo:     {t2 - t1:.2f} sec.")
+            print(f"bridge.initLeo: {t2 - t1:.2f} sec.")
 
     # @+node:ekr.20070302061713: *4* bridge.adjustSysPath
     def adjustSysPath(self) -> None:
@@ -249,14 +251,19 @@ class BridgeController:
     # @+node:ekr.20070227095743: *4* bridge.createGui
     def createGui(self) -> None:
         g = self.g
-        if self.guiName == 'nullGui':
+        name = self.guiName
+        if name not in ('qt', 'nullGui'):
+            g.trace(f"Unknown gui: {name}. Using null gui.")
+            name = 'nullGui'
+
+        if name == 'nullGui':  # Predefined objects.
             g.app.gui = g.app.nullGui
             g.app.log = g.app.gui.log = log = g.app.nullLog
             log.isNull = False
             log.enabled = True  # Allow prints from NullLog.
-            log.logInited = True  # Bug fix: 2012/10/17.
+            log.logInited = True
         else:
-            assert False, f"leoBridge.py: unsupported gui: {self.guiName}"  # noqa
+            g.app.createQtGui(verbose=True)
 
     # @+node:ekr.20070227093629.4: *4* bridge.isValidPython
     def isValidPython(self) -> bool:
@@ -305,7 +312,7 @@ class BridgeController:
         return bool(g and g.app and g.app.gui)
 
     # @+node:ekr.20070227092442.5: *3* bridge.openLeoFile & helpers
-    def openLeoFile(self, fileName: str) -> Optional[Cmdr]:
+    def openLeoFile(self, fileName: str | None) -> Cmdr | None:
         """Open a .leo file, or create a new Leo frame if no fileName is given."""
         g = self.g
         g.app.silentMode = self.silentMode
@@ -333,11 +340,11 @@ class BridgeController:
             log.enabled = True
         t2 = time.process_time()
         if self.verbose:
-            print(f"bridge.openLeoFile: {t2 - t1:.2f} sec.")
+            print(f"bridge.open:    {t2 - t1:.2f} sec. {g.shortFileName(fileName)} ")
         return c
 
     # @+node:ekr.20070227093629.5: *4* bridge.completeFileName
-    def completeFileName(self, fileName: str) -> str:
+    def completeFileName(self, fileName: str | None) -> str:
         g = self.g
         if not (fileName and fileName.strip()):
             return ''

@@ -84,7 +84,7 @@ from leo.core import leoGlobals as g
 try:  # #2343
     from leo.core.leoQt import QtGui, QtWidgets, uic
 except Exception:
-    QtGui = QtWidgets = None
+    QtGui = QtWidgets = None  # type:ignore
 # @+others
 # @+node:ekr.20140920145803.17995: ** top-level
 # @+node:ekr.20090616105756.3940: *3* init (backlink.py)
@@ -716,7 +716,7 @@ class backlinkController:
 # @+node:ekr.20090616105756.3939: ** class backlinkQtUI
 if QtWidgets:
 
-    class backlinkQtUI(QtWidgets.QWidget):  # type:ignore
+    class backlinkQtUI(QtWidgets.QWidget):
         # @+others
         # @+node:ekr.20140920145803.17987: *3* bc.__init__
         def __init__(self, owner):

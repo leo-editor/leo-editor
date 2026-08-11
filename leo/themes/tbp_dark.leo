@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
-<leo_file xmlns:leo="http://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
+<leo_file xmlns:leo="https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20180312111155.1"><vh>Read me</vh></v>
+<v t="ekr.20180312111155.1" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000007374725f6c656f5f706f7371035805000000322c302c33710473732e"><vh>Read me</vh></v>
 <v t="ekr.20180312110809.1"><vh>Theme Tests</vh>
 <v t="ekr.20180314052441.1"><vh>Syntax coloring template</vh>
 <v t="ekr.20180314052441.2"><vh>&lt;&lt; defined section &gt;&gt;</vh></v>
@@ -14,8 +14,8 @@
 <v t="ekr.20180312110809.4"><vh>Test g.es(color=*)</vh></v>
 <v t="ekr.20180312110809.5"><vh>g.error/note/warning test</vh></v>
 </v>
-<v t="tom.20230218225340.1"><vh>@settings</vh>
-<v t="tom.20230218225340.2"><vh>@theme tbp_dark</vh>
+<v t="tom.20230218225340.1" descendentVnodeUnknownAttributes="7d71005803000000302e3071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>@settings</vh>
+<v t="tom.20230218225340.2" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>@theme tbp_dark</vh>
 <v t="tom.20230218225340.3"><vh>Theme description settings</vh>
 <v t="tom.20230218225340.4"><vh>@bool color_theme_is_dark = True</vh></v>
 <v t="tom.20230218225340.5"><vh>@string color_theme = dark</vh></v>
@@ -24,7 +24,8 @@
 <v t="tom.20230218225340.7"><vh> Theme Settings</vh>
 <v t="tom.20230218225544.1"><vh>Colors...</vh>
 <v t="tom.20230218225544.2"><vh>Base colors: not all are solarized colors</vh>
-<v t="tom.20230218225544.3"><vh>@color dark-base0 = #b8cac8</vh></v>
+<v t="tom.20230218225544.3"><vh>@@color dark-base0 = #b8cac8</vh></v>
+<v t="tom.20260328094237.1"><vh>@color dark-base0 = #c9dbd9</vh></v>
 <v t="tom.20230218225544.7"><vh>@color dark-base00 = #657b83</vh></v>
 <v t="tom.20230218225544.8"><vh>@color dark-base01 = #586e75</vh></v>
 <v t="tom.20230218225544.9"><vh>@color dark-base02 = #073642</vh></v>
@@ -35,6 +36,7 @@
 <v t="tom.20230218225544.15"><vh>@color dark-base1 = #93a1a1</vh></v>
 <v t="tom.20230218225544.16"><vh>@color dark-base2 = #eee8d5</vh></v>
 <v t="tom.20230218225544.17"><vh>@color dark-base3 = #fdf6e3</vh></v>
+<v t="tom.20260722142839.1"><vh>@color dark-base-0-darker = #646d6c</vh></v>
 <v t="tom.20230218225544.19"><vh>@color solarized-black = #202020</vh></v>
 <v t="tom.20230218225544.20"><vh>@@color solarized-blue = #268bd2</vh></v>
 <v t="tom.20230218225544.22"><vh>@color solarized-cyan = #2aa198</vh></v>
@@ -109,25 +111,24 @@
 </v>
 <v t="tom.20230218225544.86"><vh>Colors: Text</vh>
 <v t="tom.20230218225544.87"><vh>@color log_text_background_color = #181818</vh></v>
-<v t="tom.20230218225544.88"><vh>@@color log_text_foreground_color = #ffffff</vh></v>
-<v t="tom.20230218225544.89"><vh>@@color log_text_foreground_color = @text-foreground</vh></v>
 <v t="tom.20230226180941.1"><vh>@color log_text_foreground_color = @dark-base0</vh></v>
-<v t="tom.20230218225544.90"><vh>@color text-background =@dark-base03</vh></v>
-<v t="tom.20230218225544.91"><vh>@color text-background-bright =@dark-base02</vh></v>
-<v t="tom.20230218225544.92"><vh>@color text-foreground =@dark-base0</vh></v>
-<v t="tom.20230218225544.93"><vh>@color text-foreground-bright =@dark-base2</vh></v>
+<v t="tom.20230218225544.90"><vh>@color text-background = @dark-base03</vh></v>
+<v t="tom.20230218225544.91"><vh>@color text-background-bright = @dark-base02</vh></v>
+<v t="tom.20230218225544.92"><vh>@color text-foreground = @dark-base0</vh></v>
+<v t="tom.20230218225544.93"><vh>@color text-foreground-bright = @dark-base2</vh></v>
 </v>
 <v t="tom.20230218225544.94"><vh>Colors: Widgets</vh>
 <v t="tom.20230218225544.95"><vh>@color button-hover-fg =@dark-base03</vh></v>
 </v>
 </v>
 <v t="tom.20230218225340.96"><vh>Fonts &amp; text sizes</vh>
-<v t="tom.20230218225340.97"><vh>@string font-family = Cousine, Consolas, "Droid Sans Mono", "DejaVu Sans Mono"</vh></v>
+<v t="tom.20230218225340.97"><vh>@string font-family = "Atkinson Hyperlegible Mono","Intel One Mono", Cousine, Consolas, "Droid Sans Mono", "DejaVu Sans Mono"</vh></v>
 <v t="tom.20230218225340.98"><vh>@string font-family-ui = "Open Sans", "Segoe UI", Verdana, sans-serif</vh></v>
-<v t="tom.20230218225340.99"><vh>@string font-size-text = 10.5pt</vh></v>
-<v t="tom.20230218225340.100"><vh>@string font-size-ui = 9.5pt</vh></v>
-<v t="tom.20230218225340.101"><vh>@string font-size-gutter = 9pt</vh></v>
-<v t="tom.20230218225340.102"><vh>@string font-size-button = @font-size-ui</vh></v>
+<v t="tom.20230218225340.99"><vh>@string font-size-text = 10pt</vh></v>
+<v t="tom.20230218225340.100"><vh>@string font-size-ui = 10.5pt</vh></v>
+<v t="tom.20230218225340.102"><vh>@string font-size-button = 9pt;</vh></v>
+<v t="tom.20230218225340.101"><vh>@string font-size-gutter = 8.5pt</vh></v>
+<v t="tom.20230429231518.1"><vh>@int gutter-y-adjust = 5</vh></v>
 <v t="tom.20230218225340.103"><vh>@string font-family-body = @font-family</vh></v>
 <v t="tom.20230218225340.104"><vh>@string font-family-log = @font-family</vh></v>
 <v t="tom.20230218225340.105"><vh>@string font-family-tree = @font-family-ui</vh></v>
@@ -150,13 +151,16 @@
 <v t="tom.20230218225340.118"><vh>Body &amp; other text</vh></v>
 <v t="tom.20230218225340.119"><vh>Borders</vh></v>
 <v t="tom.20230218225340.120"><vh>Buttons</vh></v>
+<v t="tom.20260722163757.1"><vh>Checkboxes</vh></v>
 <v t="tom.20230218225340.121"><vh>Gutter</vh></v>
 <v t="tom.20230218225340.122"><vh>Menus</vh></v>
 <v t="tom.20230218225340.123"><vh>Minibuffer &amp; label</vh></v>
+<v t="tom.20260722000116.1"><vh>Radio Buttons</vh></v>
 <v t="tom.20230218225340.124"><vh>Scroll bars</vh></v>
 <v t="tom.20230218225340.125"><vh>Status area</vh></v>
 <v t="tom.20230218225340.126"><vh>Splitters</vh></v>
 <v t="tom.20230218225340.127"><vh>Tab bar</vh></v>
+<v t="tom.20240403141228.1"><vh>Toolbar</vh></v>
 <v t="tom.20230223003539.1"><vh>Tooltips</vh></v>
 <v t="tom.20230218225340.128"><vh>Tree</vh></v>
 </v>
@@ -310,7 +314,6 @@ QLineEdit {
 </t>
 <t tx="tom.20230218225340.118">/* The body pane */
 LeoQTextBrowser {
-/*QTextEdit {*/
   font-family: @font-family-body;
   font-size: @font-size-body;
   color: @text-foreground;
@@ -787,12 +790,15 @@ div#bg {background:#268bd2}
 
 @language md
 &lt;style&gt;
-div#bg {background:#d33682}
+* {
+    background:#202020;
+    color:#d33682;
+}
 
 &lt;/style&gt;
-&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
-&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
-&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div class="bg"&gt;dffdddf&lt;/div&gt;&lt;br&gt;
+&lt;div class="bg"&gt;&lt;/div&gt;&lt;br&gt;
+&lt;div class="bg"&gt;&lt;/div&gt;&lt;br&gt;
 </t>
 <t tx="tom.20230218225544.66"></t>
 <t tx="tom.20230218225544.67"></t>
@@ -858,26 +864,6 @@ div#bg {background:#586e75}
 @language md
 &lt;style&gt;
 div#bg {background:#000005}
-&lt;/style&gt;
-&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
-&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
-&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
-</t>
-<t tx="tom.20230218225544.88">&lt;!-- Foreground color of log text. --&gt;
-
-@language md
-&lt;style&gt;
-div#bg {background:#ffffff}
-&lt;/style&gt;
-&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
-&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
-&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
-</t>
-<t tx="tom.20230218225544.89">&lt;!-- Foreground color of log text. --&gt;
-
-@language md
-&lt;style&gt;
-div#bg {background:#ffffff}
 &lt;/style&gt;
 &lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
 &lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
@@ -954,5 +940,48 @@ This is a test
 &lt;/pre&gt;
 
 </t>
+<t tx="tom.20230429231518.1"></t>
+<t tx="tom.20240403141228.1">/*QToolButton#qt_toolbar_ext_button*/
+QToolButton
+{
+    background-color: @text-foreground;
+    color: @text-foreground;
+    border: none;
+}
+
+</t>
+<t tx="tom.20260328094237.1">Original solarized base0: #839496</t>
+<t tx="tom.20260722000116.1">QRadioButton::indicator {
+    width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    background-color: @text-background;
+    border: 1px solid @text_foreground;
+}
+
+QRadioButton::indicator:checked {
+    background-color: @dark-base-0-darker;
+    image: none;
+}
+
+QRadioButton::indicator:unchecked {
+    background-color: @text-background;
+}</t>
+<t tx="tom.20260722142839.1"></t>
+<t tx="tom.20260722163757.1">QCheckBox::indicator {
+    width: 14px;
+    height: 14px;
+    background-color: @text-background;
+    border: 1px solid @text_foreground;
+}
+
+QCheckBox::indicator:checked {
+    background-color: @dark-base-0-darker;
+    image: none;
+}
+
+QCheckBox::indicator:unchecked {
+    background-color: @text-background;
+}</t>
 </tnodes>
 </leo_file>

@@ -68,9 +68,8 @@ class C_Importer(Importer):
             s = lines[i]
             i += 1
             for kind, pattern in self.block_patterns:
-                m = pattern.match(s)
                 m2 = self.multi_line_func_pat.match(s)
-                if m:
+                if m := pattern.match(s):
                     name = m.group(1) or ''
                     if (
                         # Don't match if the line contains a trailing '}'.

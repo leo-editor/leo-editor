@@ -25,8 +25,9 @@ if any('leo-editor' in z for z in sys.path):
 else:
     # Run.
     print(file_name)
-    command = 'python -m leo.core.runLeo'
+    python = sys.executable
+    command = f"{python} -m leo.core.runLeo"
     print(command)
     print('')
-    subprocess.Popen(command, shell=True).communicate()
+    subprocess.run(command, shell=True)
 # @-leo

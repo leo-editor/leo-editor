@@ -1,5 +1,7 @@
 # @+leo-ver=5-thin
 # @+node:ekr.20131109170017.16504: * @file leoVim.py
+# type:ignore
+
 # @+<< leoVim docstring >>
 # @+node:ekr.20220824081749.1: ** << leoVim docstring >>
 """
@@ -26,12 +28,12 @@ import string
 from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoGui import LeoKeyEvent
+from leo.plugins.qt_text import QTextMixin
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import QEvent
     from leo.core.leoQt import QtWidgets
-    from leo.plugins.qt_text import QTextMixin
 
     QWidget = QtWidgets.QWidget
     KWargs = Any
@@ -71,7 +73,7 @@ def show_stroke(stroke: Stroke) -> str:
 class VimEvent:
     """A class to contain the components of the dot."""
 
-    def __init__(self, c: Cmdr, char: str, stroke: Stroke, w: QWidget) -> None:
+    def __init__(self, c: Cmdr, char: str, stroke: Stroke, w: QTextMixin) -> None:
         """ctor for the VimEvent class."""
         self.c: Cmdr = c
         self.char: str = char  # For Leo's core.
@@ -101,6 +103,7 @@ class VimCommands:
         """The ctor for the VimCommands class."""
         self.c = c
         self.k = c.k
+        self.w: QTextMixin | None = None
         # Toggled by :toggle-vim-trace.
         self.trace_flag = 'keys' in g.app.debug
         self.init_constant_ivars()
@@ -142,7 +145,7 @@ class VimCommands:
                         # d[key] = f2
 
     # @+node:ekr.20140222064735.16702: *5* vc.create_motion_dispatch_d
-    def create_motion_dispatch_d(self) -> dict[str, Callable]:
+    def create_motion_dispatch_d(self) -> dict[str, Callable | None]:
         """
         Return the dispatch dict for motions.
         Keys are strokes, values are methods.
@@ -235,7 +238,7 @@ class VimCommands:
         return d
 
     # @+node:ekr.20131111061547.16460: *5* vc.create_normal_dispatch_d
-    def create_normal_dispatch_d(self) -> dict[str, Callable]:
+    def create_normal_dispatch_d(self) -> dict[str, Callable | None]:
         """
         Return the dispatch dict for normal mode.
         Keys are strokes, values are methods.
@@ -442,40 +445,40 @@ class VimCommands:
     def init_state_ivars(self) -> None:
         """Init all ivars related to command state."""
         self.ch = None  # The incoming character.
-        self.command_i: int = None  # The offset into the text at the start of a command.
+        self.command_i: int | None = None  # The offset into the text at the start of a command.
         self.command_list: list[VimEvent] = []  # The list of all characters seen in this command.
-        self.command_n: int = None  # The repeat count in effect at the start of a command.
-        self.command_w: QTextMixin = None  # The widget in effect at the start of a command.
-        self.event: QEvent = None  # The event for the current key.
+        self.command_n: int | None = None  # The repeat count in effect at the start of a command.
+        self.command_w: QTextMixin | None = None  # The widget in effect at the start of a command.
+        self.event: QEvent | None = None  # The event for the current key.
         self.extend = False  # True: extending selection.
         self.handler: Callable = self.do_normal_mode  # Use the handler for normal mode.
         self.in_command = False  # True: we have seen some command characters.
         self.in_motion = False  # True if parsing an *inner* motion, the 2j in d2j.
         # The callback handler to execute after executing an inner motion.
-        self.motion_func: Callable = None
-        self.motion_i: int = None  # The offset into the text at the start of a motion.
+        self.motion_func: Callable | None = None
+        self.motion_i: int | None = None  # The offset into the text at the start of a motion.
         self.n1 = 1  # The first repeat count.
         self.n = 1  # The second repeat count.
         self.n1_seen = False  # True if self.n1 has been set.
-        self.next_func: Callable = None  # The continuation of a multi-character command.
-        self.old_sel: tuple = None  # The selection range at the start of a command.
+        self.next_func: Callable | None = None  # The continuation of a multi-character command.
+        self.old_sel: tuple | None = None  # The selection range at the start of a command.
         self.repeat_list: list[str] = []  # The characters of the current repeat count.
         # The value returned by do_key().
         # Handlers set this to False to tell k.masterKeyHandler to handle the key.
         self.return_value = True
         self.state = 'normal'  # in ('normal','insert','visual',)
-        self.stroke: Stroke = None  # The incoming stroke.
+        self.stroke: Stroke | None = None  # The incoming stroke.
         self.visual_line_flag = False  # True: in visual-line state.
-        self.vis_mode_i: int = None  # The insertion point at the start of visual mode.
+        self.vis_mode_i: int | None = None  # The insertion point at the start of visual mode.
         # The widget in effect at the start of visual mode.
-        self.vis_mode_w: QTextMixin = None
+        self.vis_mode_w: QTextMixin | None = None
 
     # @+node:ekr.20140803220119.18107: *5* vc.init_persistent_ivars
     def init_persistent_ivars(self) -> None:
         """Init ivars that are never re-inited."""
         c = self.c
         # The widget that has focus when a ':' command begins.  May be None.
-        self.colon_w = None
+        self.colon_w: QTextMixin | None = None
         # True: allow f,F,h,l,t,T,x to cross line boundaries.
         self.cross_lines = c.config.getBool('vim-crosses-lines', default=True)
         self.register_d: dict[str, str] = {}  # Keys are letters; values are strings.
@@ -502,7 +505,7 @@ class VimCommands:
 
     # @+node:ekr.20140803220119.18097: *4* direct acceptance methods
     # @+node:ekr.20140802225657.18031: *5* vc.accept
-    def accept(self, add_to_dot: bool = True, handler: Callable = None) -> None:
+    def accept(self, add_to_dot: bool = True, handler: Callable | None = None) -> None:
         """
         Accept the present stroke.
         Optionally, this can set the dot or change self.handler.
@@ -535,7 +538,7 @@ class VimCommands:
         add_to_dot: bool = True,
         return_value: bool = True,
         set_dot: bool = True,
-        stroke: Stroke = None,
+        stroke: Stroke | None = None,
     ) -> None:
         """Complete a command, preserving text and optionally updating the dot."""
         self.do_trace()
@@ -627,7 +630,7 @@ class VimCommands:
 
     # @+node:ekr.20140802225657.18034: *4* indirect acceptance methods
     # @+node:ekr.20140222064735.16709: *5* vc.begin_insert_mode
-    def begin_insert_mode(self, i: int = None, w: QTextMixin = None) -> None:
+    def begin_insert_mode(self, i: int | None = None, w: QTextMixin | None = None) -> None:
         """Common code for beginning insert mode."""
         self.do_trace()
         # c = self.c
@@ -1053,15 +1056,8 @@ class VimCommands:
             # Copy the list so it can't change in the loop.
             for event in self.dot_list[:]:
                 # Only k.masterKeyHandler can insert characters!
-                #
-                # #1757: Create a LeoKeyEvent.
-                event = LeoKeyEvent(
-                    binding=g.KeyStroke(event.stroke),
-                    c=self.c,
-                    char=event.char,
-                    event=event,
-                    w=self.w,
-                )
+                binding = g.KeyStroke(event.stroke)
+                event = LeoKeyEvent(self.c, binding=binding, char=event.char, w=self.w)
                 self.k.masterKeyHandler(event)
             # For the dot list to be the old dot list, whatever happens.
             self.command_list = self.old_dot_list[:]
@@ -1116,8 +1112,7 @@ class VimCommands:
         """Handle F <stroke>"""
         if self.is_text_wrapper(self.w):
             w = self.w
-            s = w.getAllText()
-            if s:
+            if s := w.getAllText():
                 i = i1 = w.getInsertPoint()
                 match_i, n = None, self.n1 * self.n
                 i -= 1  # Ensure progress
@@ -1152,8 +1147,7 @@ class VimCommands:
         if self.is_text_wrapper(self.w):
             # ec = self.c.editCommands
             w = self.w
-            s = w.getAllText()
-            if s:
+            if s := w.getAllText():
                 i = i1 = w.getInsertPoint()
                 match_i, n = None, self.n1 * self.n
                 while i < len(s):
@@ -1572,8 +1566,7 @@ class VimCommands:
         if self.is_text_wrapper(self.w):
             # ec = self.c.editCommands
             w = self.w
-            s = w.getAllText()
-            if s:
+            if s := w.getAllText():
                 i = i1 = w.getInsertPoint()
                 # ensure progress:
                 if i < len(s) and s[i] == self.ch:
@@ -1610,8 +1603,7 @@ class VimCommands:
         if self.is_text_wrapper(self.w):
             # ec = self.c.editCommands
             w = self.w
-            s = w.getAllText()
-            if s:
+            if s := w.getAllText():
                 i = i1 = w.getInsertPoint()
                 match_i, n = None, self.n1 * self.n
                 i -= 1
@@ -2083,7 +2075,7 @@ class VimCommands:
 
         # @+others
         # @+node:ekr.20140820063930.18321: *5* Substitution.__call__ (:%s & :s)
-        def __call__(self, event: QEvent = None) -> None:
+        def __call__(self, event: QEvent | None = None) -> None:
             """Handle the :s and :%s commands. Neither command affects the dot."""
             vc = self.vc
             c, w = vc.c, vc.w
@@ -2154,16 +2146,16 @@ class VimCommands:
 
     # @+node:ekr.20150509050905.1: *4* vc.e_command & tabnew_command
     @cmd(':e')
-    def e_command(self, event: LeoKeyEvent = None) -> None:
+    def e_command(self, event: LeoKeyEvent | None = None) -> None:
         self.Tabnew(self)
 
     @cmd(':tabnew')
-    def tabnew_command(self, event: LeoKeyEvent = None) -> None:
+    def tabnew_command(self, event: LeoKeyEvent | None = None) -> None:
         self.Tabnew(self)
 
     # @+node:ekr.20140815160132.18824: *4* vc.print_dot (:print-dot)
     @cmd(':print-dot')
-    def print_dot(self, event: LeoKeyEvent = None) -> None:
+    def print_dot(self, event: LeoKeyEvent | None = None) -> None:
         """Print the dot."""
         aList = [z.stroke if isinstance(z, VimEvent) else z for z in self.dot_list]
         aList = [show_stroke(self.c.k.stroke2char(z)) for z in aList]
@@ -2177,12 +2169,12 @@ class VimCommands:
 
     # @+node:ekr.20140815160132.18825: *4* vc.q/qa_command & quit_now (:q & q! & :qa)
     @cmd(':q')
-    def q_command(self, event: LeoKeyEvent = None) -> None:
+    def q_command(self, event: LeoKeyEvent | None = None) -> None:
         """Quit the present Leo outline, prompting for saves."""
         g.app.closeLeoWindow(self.c.frame, new_c=None)
 
     @cmd(':qa')
-    def qa_command(self, event: LeoKeyEvent = None) -> None:
+    def qa_command(self, event: LeoKeyEvent | None = None) -> None:
         """Quit only if there are no unsaved changes."""
         for c in g.app.commanders():
             if c.isChanged():
@@ -2190,33 +2182,33 @@ class VimCommands:
         g.app.onQuit(event)
 
     @cmd(':q!')
-    def quit_now(self, event: LeoKeyEvent = None) -> None:
+    def quit_now(self, event: LeoKeyEvent | None = None) -> None:
         """Quit immediately."""
         g.app.forceShutdown()
 
     # @+node:ekr.20150509050918.1: *4* vc.r_command
     @cmd(':r')
-    def r_command(self, event: LeoKeyEvent = None) -> None:
+    def r_command(self, event: LeoKeyEvent | None = None) -> None:
         self.LoadFileAtCursor(self)
 
     # @+node:ekr.20140815160132.18826: *4* vc.revert (:e!)
     @cmd(':e!')
-    def revert(self, event: LeoKeyEvent = None) -> None:
+    def revert(self, event: LeoKeyEvent | None = None) -> None:
         """Revert all changes to a .leo file, prompting if there have been changes."""
         self.c.revert()
 
     # @+node:ekr.20150509050755.1: *4* vc.s_command & percent_s_command
     @cmd(':%s')
-    def percent_s_command(self, event: LeoKeyEvent = None) -> None:
+    def percent_s_command(self, event: LeoKeyEvent | None = None) -> None:
         self.Substitution(self, all_lines=True)
 
     @cmd(':s')
-    def s_command(self, event: LeoKeyEvent = None) -> None:
+    def s_command(self, event: LeoKeyEvent | None = None) -> None:
         self.Substitution(self, all_lines=False)
 
     # @+node:ekr.20140815160132.18827: *4* vc.shell_command (:!)
     @cmd(':!')
-    def shell_command(self, event: LeoKeyEvent = None) -> None:
+    def shell_command(self, event: LeoKeyEvent | None = None) -> None:
         """Execute a shell command."""
         c, k = self.c, self.c.k
         if k.functionTail:
@@ -2229,7 +2221,7 @@ class VimCommands:
 
     # @+node:ekr.20140815160132.18830: *4* vc.toggle_vim_mode
     @cmd(':toggle-vim-mode')
-    def toggle_vim_mode(self, event: LeoKeyEvent = None) -> None:
+    def toggle_vim_mode(self, event: LeoKeyEvent | None = None) -> None:
         """toggle vim-mode."""
         c = self.c
         c.vim_mode = not c.vim_mode
@@ -2249,7 +2241,7 @@ class VimCommands:
 
     # @+node:ekr.20140909140052.18128: *4* vc.toggle_vim_trace
     @cmd(':toggle-vim-trace')
-    def toggle_vim_trace(self, event: LeoKeyEvent = None) -> None:
+    def toggle_vim_trace(self, event: LeoKeyEvent | None = None) -> None:
         """toggle vim tracing."""
         self.trace_flag = not self.trace_flag
         val = 'On' if self.trace_flag else 'Off'
@@ -2257,7 +2249,7 @@ class VimCommands:
 
     # @+node:ekr.20140815160132.18831: *4* vc.toggle_vim_trainer_mode
     @cmd(':toggle-vim-trainer-mode')
-    def toggle_vim_trainer_mode(self, event: LeoKeyEvent = None) -> None:
+    def toggle_vim_trainer_mode(self) -> None:
         """toggle vim-trainer mode."""
         self.trainer = not self.trainer
         val = 'on' if self.trainer else 'off'
@@ -2265,19 +2257,19 @@ class VimCommands:
 
     # @+node:ekr.20140815160132.18832: *4* w/xa/wq_command (:w & :xa & wq)
     @cmd(':w')
-    def w_command(self, event: LeoKeyEvent = None) -> None:
+    def w_command(self, event: LeoKeyEvent | None = None) -> None:
         """Save the .leo file."""
         self.c.save()
 
     @cmd(':xa')
-    def xa_command(self, event: LeoKeyEvent = None) -> None:  # same as :xa
+    def xa_command(self, event: LeoKeyEvent | None = None) -> None:  # same as :xa
         """Save all open files and keep working."""
         for c in g.app.commanders():
             if c.isChanged():
                 c.save()
 
     @cmd(':wq')
-    def wq_command(self, event: LeoKeyEvent = None) -> None:
+    def wq_command(self, event: LeoKeyEvent | None = None) -> None:
         """Save all open files and exit."""
         for c in g.app.commanders():
             c.save()
@@ -2292,8 +2284,7 @@ class VimCommands:
             assert self.in_motion
             if restart:
                 self.next_func = None
-            func = self.next_func or self.motion_dispatch_d.get(self.stroke)
-            if func:
+            if func := self.next_func or self.motion_dispatch_d.get(self.stroke):
                 func()
                 if self.motion_func:
                     self.motion_func()
@@ -2360,8 +2351,7 @@ class VimCommands:
     def do_state(self, d: dict[str, Callable], mode_name: str) -> None:
         """General dispatcher code. d is a dispatch dict."""
         try:
-            func = d.get(self.stroke)
-            if func:
+            if func := d.get(self.stroke):
                 func()
             elif self.is_plain_key(self.stroke):
                 self.ignore()
@@ -2390,7 +2380,7 @@ class VimCommands:
 
     # @+node:ekr.20140222064735.16682: *3* vc.Utilities
     # @+node:ekr.20140802183521.17998: *4* vc.add_to_dot
-    def add_to_dot(self, stroke: Stroke = None) -> None:
+    def add_to_dot(self, stroke: Stroke | None = None) -> None:
         """
         Add a new VimEvent to self.command_list.
         Never change self.command_list if self.in_dot is True
@@ -2412,7 +2402,7 @@ class VimCommands:
             self.dot_list = self.command_list[:]
 
     # @+node:ekr.20140810214537.18241: *4* vc.do
-    def do(self, o: Any, event: LeoKeyEvent = None) -> None:
+    def do(self, o: Any, event: LeoKeyEvent | None = None) -> None:
         """Do one or more Leo commands by name."""
         if not event:
             event = self.event
@@ -2453,7 +2443,7 @@ class VimCommands:
         """Return True if stroke is a plain key."""
         return self.k.isPlainKey(stroke)
 
-    def is_text_wrapper(self, w: QTextMixin = None) -> bool:
+    def is_text_wrapper(self, w: QTextMixin | None = None) -> bool:
         """Return True if w is a text widget."""
         return self.is_body(w) or self.is_head(w) or g.isTextWrapper(w)
 
@@ -2483,12 +2473,10 @@ class VimCommands:
         # Ensure that i1 <= i2 and that i1 and i2 are in range.
         if i1 > i2:
             i1, i2 = i2, i1
-        if i1 < 0:
-            i1 = 0
+        i1 = max(i1, 0)
         if i1 >= len(s):
             i1 = len(s) - 1
-        if i2 < 0:
-            i2 = 0
+        i2 = max(i2, 0)
         if i2 >= len(s):
             i2 = len(s) - 1
         if s[i2] == '\n':
@@ -2517,9 +2505,9 @@ class VimCommands:
     # @+node:ekr.20140804123147.18929: *4* vc.set_border & helper
     def set_border(
         self,
-        kind: str = None,
-        w: QTextMixin = None,
-        activeFlag: bool = None,
+        kind: str | None = None,
+        w: QTextMixin | None = None,
+        activeFlag: bool | None = None,
     ) -> None:
         """
         Set the border color of self.w, depending on state.
@@ -2546,7 +2534,7 @@ class VimCommands:
     def set_property(self, w: QTextMixin, focus_flag: bool) -> None:
         """Set the property of w, depending on focus and state."""
         c, state = self.c, self.state
-        #
+
         # #1221: Use a style sheet based on new settings.
         if focus_flag:
             d = {
@@ -2566,7 +2554,7 @@ class VimCommands:
         # g.trace(setting, border)
         w.setStyleSheet(border)
         return
-        #
+
         # This code doesn't work on Qt 5, because of a Qt bug.
         # It probably isn't coming back.
         # selector = f"vim_{state}" if focus_flag else 'vim_unfocused'
@@ -2609,8 +2597,7 @@ class VimCommands:
     # @+node:ekr.20140801121720.18080: *4* vc.to_bol & vc.eol
     def to_bol(self, s: str, i: int) -> int:
         """Return the index of the first character on the line containing s[i]"""
-        if i >= len(s):
-            i = len(s)
+        i = min(len(s), i)
         while i > 0 and s[i - 1] != '\n':
             i -= 1
         return i

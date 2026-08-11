@@ -2,6 +2,22 @@
 # @+node:ekr.20140907103315.18766: * @file ../plugins/qt_events.py
 """Leo's Qt event handling code."""
 
+# @+<< qt_events.py: imports & annotations >>
+# @+node:ekr.20260731163956.1: ** << qt_events.py: imports & annotations >>
+from __future__ import annotations
+
+import sys
+from typing import Any, TYPE_CHECKING
+from leo.core import leoGlobals as g
+from leo.core import leoGui
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
+from leo.core.leoQt import Key, KeyboardModifier, Type
+
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent
+    from QtCore import QKeyEvent
+# @-<< qt_events.py: imports & annotations >>
 # @+<< about internal bindings >>
 # @+node:ekr.20110605121601.18538: ** << about internal bindings >>
 # @@language rest
@@ -34,17 +50,23 @@
 # with Tk's key-event specifiers). It is also, I think, the least confusing set of
 # rules.
 # @-<< about internal bindings >>
-import sys
-from leo.core import leoGlobals as g
-from leo.core import leoGui
-from leo.core.leoQt import QtCore, QtGui, QtWidgets
-from leo.core.leoQt import Key, KeyboardModifier, Type
 
 
 # @+others
 # @+node:ekr.20210512101604.1: ** class LossageData
 class LossageData:
-    def __init__(self, actual_ch, binding, ch, keynum, mods, mods2, mods3, text, toString):
+    def __init__(
+        self,
+        actual_ch: str,
+        binding: str,
+        ch: str,
+        keynum: str,
+        mods: list[str],
+        mods2: list[str],
+        mods3: list[str],
+        text: str,
+        toString: str,
+    ) -> None:
         self.actual_ch = actual_ch
         self.binding = binding
         self.ch = ch
@@ -56,7 +78,7 @@ class LossageData:
         self.text = text
         self.toString = toString
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return (
             f"keynum: {self.keynum:>7x} binding: {self.binding}"
             # f"ch: {self.ch:>7s} "
@@ -73,15 +95,18 @@ class LossageData:
 # @+node:ekr.20141028061518.17: ** class LeoQtEventFilter
 class LeoQtEventFilter(QtCore.QObject):
     # @+others
-    # @+node:ekr.20110605121601.18539: *3* filter.ctor
-    def __init__(self, c, w, tag=''):
+    # @+node:ekr.20110605121601.18539: *3*  LeoQtEventFilter.__init__
+    def __init__(self, c: Cmdr, w: Any, tag: str = '') -> None:
         """Ctor for LeoQtEventFilter class."""
         super().__init__()
         self.c = c
         self.w = w  # A leoQtX object, *not* a Qt object.
+        # print(f"   filter {id(w)} {g.app.gui.widget_name(w):>22} {w.__class__.__name__}")
         self.tag = tag
         # Debugging.
         self.keyIsActive = False
+        # Used by TestQtGui.test_bug_4626. Keys are id(w).
+        self.key_count_dict: dict[int, int] = {}
         # Pretend there is a binding for these characters.
         close_flashers = c.config.getString('close-flash-brackets') or ''
         open_flashers = c.config.getString('open-flash-brackets') or ''
@@ -92,17 +117,19 @@ class LeoQtEventFilter(QtCore.QObject):
         self.ctagscompleter_active = False
         self.ctagscompleter_onKey = None
 
-    # @+node:ekr.20110605121601.18540: *3* filter.eventFilter & helpers
-    def eventFilter(self, obj, event):
+    # @+node:ekr.20110605121601.18540: *3* LeoQtEventFilter.eventFilter & helpers
+    def eventFilter(self, obj: Any, event: Any) -> bool:
         """Return False if Qt should handle the event."""
-        c, k = self.c, self.c.k
-        #
+        c = self.c
         # Handle non-key events first.
         if not g.app:
             return False  # For unit tests, but g.unitTesting may be False!
         if not self.c.p:
             return False  # Startup.
-        #
+        # Bump a count for a unit test.
+        if isinstance(event, QtGui.QKeyEvent):
+            d = self.key_count_dict
+            d[id(obj)] = 1 + d.get(id(obj), 0)
         # Trace events.
         if 'events' in g.app.debug:
             if isinstance(event, QtGui.QKeyEvent):
@@ -110,30 +137,27 @@ class LeoQtEventFilter(QtCore.QObject):
             else:
                 self.traceEvent(obj, event)
                 self.traceWidget(event)
-        #
         # Let Qt handle the non-key events.
         if self.doNonKeyEvent(event, obj):
             return False
-        #
+
         # Ignore incomplete key events.
         if self.shouldIgnoreKeyEvent(event, obj):
             return False
-        #
         # Generate a g.KeyStroke for k.masterKeyHandler.
         try:
             binding, ch, lossage = self.toBinding(event)
             if not binding:
                 return False  # Let Qt handle the key.
-            #
+            c = self.currentCommander()
+            k = c.k
             # Pass the KeyStroke to masterKeyHandler.
             key_event = self.createKeyEvent(event, c, self.w, ch, binding)
-            #
             # #1933: Update the g.app.lossage
             if len(g.app.lossage) > 99:
                 g.app.lossage.pop()
             lossage.stroke = key_event.stroke
             g.app.lossage.insert(0, lossage)
-            #
             # Call masterKeyHandler!
             k.masterKeyHandler(key_event)
             c.outerUpdate()
@@ -141,14 +165,15 @@ class LeoQtEventFilter(QtCore.QObject):
             g.es_exception()
         return True  # Whatever happens, suppress all other Qt key handling.
 
-    # @+node:ekr.20110605195119.16937: *4* filter.createKeyEvent
-    def createKeyEvent(self, event, c, w, ch, binding):
+    # @+node:ekr.20110605195119.16937: *4* LeoQtEventFilter.createKeyEvent
+    def createKeyEvent(
+        self, event: Any, c: Cmdr, w: Any, ch: str, binding: str
+    ) -> leoGui.LeoKeyEvent:
         return leoGui.LeoKeyEvent(
-            c=self.c,
+            c=c,
             # char = None doesn't work at present.
             # But really, the binding should suffice.
             char=ch,
-            event=event,
             binding=binding,
             w=w,
             x=getattr(event, 'x', None) or 0,
@@ -157,8 +182,20 @@ class LeoQtEventFilter(QtCore.QObject):
             y_root=getattr(event, 'y_root', None) or 0,
         )
 
-    # @+node:ekr.20180413180751.2: *4* filter.doNonKeyEvent
-    def doNonKeyEvent(self, event, obj):
+    def currentCommander(self) -> Cmdr:
+        """Return the current tab's commander on macOS."""
+        c = self.c
+        if sys.platform != 'darwin':
+            return c
+        try:
+            master = getattr(c.frame.top, 'leo_master', None)
+            current = master.currentWidget()
+            return getattr(current, 'leo_c', None) or c
+        except Exception:
+            return c
+
+    # @+node:ekr.20180413180751.2: *4* LeoQtEventFilter.doNonKeyEvent
+    def doNonKeyEvent(self, event: LeoKeyEvent, obj: Any) -> bool:
         """Handle all non-key event."""
         c = self.c
         eventType = event.type()
@@ -177,8 +214,8 @@ class LeoQtEventFilter(QtCore.QObject):
         # Return True unless we have a key event.
         return eventType not in (Type.ShortcutOverride, Type.KeyPress, Type.KeyRelease)
 
-    # @+node:ekr.20180413180751.3: *4* filter.shouldIgnoreKeyEvent
-    def shouldIgnoreKeyEvent(self, event, obj):
+    # @+node:ekr.20180413180751.3: *4* LeoQtEventFilter.shouldIgnoreKeyEvent
+    def shouldIgnoreKeyEvent(self, event: LeoKeyEvent, obj: Any) -> bool:
         """
         Return True if we should ignore the key event.
 
@@ -187,8 +224,7 @@ class LeoQtEventFilter(QtCore.QObject):
         """
         c = self.c
         t = event.type()
-        isEditWidget = obj == c.frame.tree.edit_widget(c.p)
-        if isEditWidget:
+        if obj == c.frame.tree.headline_wrapper(c.p):
             # QLineEdit: ignore all key events except keyRelease events.
             return t != Type.KeyRelease
         if t == Type.KeyPress:
@@ -205,8 +241,8 @@ class LeoQtEventFilter(QtCore.QObject):
         # return False # Don't ignore shortcut overrides with a real value.
         return True  # Ignore everything else.
 
-    # @+node:ekr.20110605121601.18543: *4* filter.toBinding & helpers
-    def toBinding(self, event):
+    # @+node:ekr.20110605121601.18543: *4* LeoQtEventFilter.toBinding & helpers
+    def toBinding(self, event: LeoKeyEvent) -> tuple[str, str, Any]:
         """
         Return (binding, actual_ch):
 
@@ -217,50 +253,47 @@ class LeoQtEventFilter(QtCore.QObject):
         mods = self.qtMods(event)
         keynum, text, toString, ch = self.qtKey(event)
         actual_ch = text or toString
-        #
+
         # Never allow empty chars, or chars in g.app.gui.ignoreChars
+        fail = '', '', None
         if toString in g.app.gui.ignoreChars:
-            return None, None, None
+            return fail
         ch = ch or toString or ''
         if not ch:
-            return None, None, None
-        #
+            return fail
+
         # Check for AltGr and Alt+Ctrl keys *before* creating a binding.
         actual_ch, ch, mods2 = self.doMacTweaks(actual_ch, ch, mods)
         mods3 = self.doAltTweaks(actual_ch, keynum, mods2, toString)
-        #
+
         # Use *ch* in the binding.
         # Clearer w/o f-strings.
         binding = '%s%s' % (''.join([f"{z}+" for z in mods3]), ch)
-        #
+
         # Return the tweaked *actual* char.
         binding, actual_ch = self.doLateTweaks(binding, actual_ch)
-        #
+
         # #1933: Create lossage data.
         lossage = LossageData(actual_ch, binding, ch, keynum, mods, mods2, mods3, text, toString)
         return binding, actual_ch, lossage
 
-    # @+node:ekr.20180419154543.1: *5* filter.doAltTweaks
-    def doAltTweaks(self, actual_ch, keynum, mods, toString):
+    # @+node:ekr.20180419154543.1: *5* LeoQtEventFilter.doAltTweaks
+    def doAltTweaks(self, actual_ch: str, keynum: str, mods: list[str], toString: str) -> list[str]:
         """Turn AltGr and some Alt-Ctrl keys into plain keys."""
 
-        def removeAltCtrl(mods):
+        def removeAltCtrl(mods: list[str]) -> list[str]:
             for mod in ('Alt', 'Control'):
                 if mod in mods:
                     mods.remove(mod)
             return mods
 
-        #
         # Remove Alt, Ctrl for AltGr keys.
         # See https://en.wikipedia.org/wiki/AltGr_key
-
         if keynum == Key.Key_AltGr:
             return removeAltCtrl(mods)
-        #
         # Never alter complex characters.
         if len(actual_ch) != 1:
             return mods
-        #
         # #1563: A hack for German and Spanish keyboards:
         #        Remove *plain* Shift modifier for colon and semicolon.
         #        https://en.m.wikipedia.org/wiki/German_keyboard_layout
@@ -275,31 +308,30 @@ class LeoQtEventFilter(QtCore.QObject):
             mods.remove('Shift')
         elif kind == 'us-international':
             pass  # To do.
-        #
         # Handle Alt-Ctrl modifiers for chars whose that are not ascii.
         # Testing: Alt-Ctrl-E is '€'.
         if ord(actual_ch) > 127 and 'Alt' in mods and 'Control' in mods:
             return removeAltCtrl(mods)
         return mods
 
-    # @+node:ekr.20180417161548.1: *5* filter.doLateTweaks
-    def doLateTweaks(self, binding, ch):
+    # @+node:ekr.20180417161548.1: *5* LeoQtEventFilter.doLateTweaks
+    def doLateTweaks(self, binding: str, ch: str) -> tuple[str, str]:
         """Make final tweaks. g.KeyStroke does other tweaks later."""
-        #
+
         # These are needed  because ch is separate from binding.
         if ch == '\r':
             ch = '\n'
         if binding == 'Escape':
             ch = 'Escape'
-        #
+
         # Adjust the case of the binding string (for the minibuffer).
         if len(ch) == 1 and len(binding) == 1 and ch.isalpha() and binding.isalpha():
             if ch != binding:
                 binding = ch
         return binding, ch
 
-    # @+node:ekr.20180419160958.1: *5* filter.doMacTweaks
-    def doMacTweaks(self, actual_ch, ch, mods):
+    # @+node:ekr.20180419160958.1: *5* LeoQtEventFilter.doMacTweaks
+    def doMacTweaks(self, actual_ch: str, ch: str, mods: list[str]) -> tuple[str, str, list[str]]:
         """Replace MacOS Alt characters."""
         if not g.isMac:
             return actual_ch, ch, mods
@@ -321,12 +353,12 @@ class LeoQtEventFilter(QtCore.QObject):
             }
             if ch.lower() in mac_d:
                 # Ignore the case.
-                actual_ch = ch = g.checkUnicode(mac_d.get(ch.lower()))
+                actual_ch = ch = g.checkUnicode(mac_d.get(ch.lower(), ''))
                 mods = []
         return actual_ch, ch, mods
 
-    # @+node:ekr.20110605121601.18544: *5* filter.qtKey
-    def qtKey(self, event):
+    # @+node:ekr.20110605121601.18544: *5* LeoQtEventFilter.qtKey
+    def qtKey(self, event: LeoKeyEvent) -> tuple[str, str, str, str]:
         """
         Return the components of a Qt key event.
 
@@ -342,7 +374,7 @@ class LeoQtEventFilter(QtCore.QObject):
         text:   event.text()
         """
         text, toString, ch = '', '', ''  # Defaults.
-        #
+
         # Leo 6.4: Test keynum's directly.
         #          The values are the same in Qt4, Qt5, Qt6.
         keynum = event.key()
@@ -356,11 +388,9 @@ class LeoQtEventFilter(QtCore.QObject):
         ):
             # Disallow bare modifiers.
             return keynum, text, toString, ch
-        #
         # Compute toString and ch.
         text = event.text()  # This is the unicode character!
         toString = QtGui.QKeySequence(keynum).toString()
-        #
         # #1244461: Numpad 'Enter' key does not work in minibuffer
         if toString == 'Enter':
             toString = 'Return'
@@ -372,8 +402,8 @@ class LeoQtEventFilter(QtCore.QObject):
             pass
         return keynum, text, toString, ch
 
-    # @+node:ekr.20120204061120.10084: *5* filter.qtMods
-    def qtMods(self, event):
+    # @+node:ekr.20120204061120.10084: *5* LeoQtEventFilter.qtMods
+    def qtMods(self, event: LeoKeyEvent) -> list[str]:
         """Return the text version of the modifiers of the key event."""
         modifiers = event.modifiers()
         mod_table = (
@@ -388,9 +418,9 @@ class LeoQtEventFilter(QtCore.QObject):
         mods = [b for a, b in mod_table if (modifiers & a)]
         return mods
 
-    # @+node:ekr.20140907103315.18767: *3* filter.Tracing
-    # @+node:ekr.20190922075339.1: *4* filter.traceKeys
-    def traceKeys(self, obj, event):
+    # @+node:ekr.20140907103315.18767: *3* LeoQtEventFilter: Tracing
+    # @+node:ekr.20190922075339.1: *4* LeoQtEventFilter.traceKeys
+    def traceKeys(self, obj: Any, event: QKeyEvent) -> None:
         if g.unitTesting:
             return
         e = QtCore.QEvent
@@ -400,13 +430,12 @@ class LeoQtEventFilter(QtCore.QObject):
             e.Type.Shortcut: 'shortcut',  # 117
             e.Type.ShortcutOverride: 'shortcut-override',  # 51
         }
-        kind = key_events.get(event.type())
-        if kind:
+        if kind := key_events.get(event.type()):
             mods = ','.join(self.qtMods(event))
             g.trace(f"{kind:>20}: {mods:>7} {event.text()!r}")
 
-    # @+node:ekr.20110605121601.18548: *4* filter.traceEvent
-    def traceEvent(self, obj, event):
+    # @+node:ekr.20110605121601.18548: *4* LeoQtEventFilter.traceEvent
+    def traceEvent(self, obj: Any, event: LeoKeyEvent) -> None:
         if g.unitTesting:
             return
         # http://qt-project.org/doc/qt-4.8/qevent.html#properties
@@ -424,6 +453,8 @@ class LeoQtEventFilter(QtCore.QObject):
         eventType = event.type()
         # http://doc.qt.io/qt-5/qevent.html
         show: list[tuple[QtCore.QEvent.Type, str]] = []
+        # @+<< define events >>
+        # @+node:ekr.20260425152938.1: *5* << define events >>
         ignore = [
             e.Type.MetaCall,  # 43
             e.Type.Timer,  # 1
@@ -513,6 +544,7 @@ class LeoQtEventFilter(QtCore.QObject):
             (e.Type.UpdateLater, 'update-later'),  # 78
             (e.Type.UpdateRequest, 'update'),  # 77
         )
+        # @-<< define events >>
         option_table = (
             (traceActivate, activate_events),
             (traceFocus,    focus_events),
@@ -552,15 +584,16 @@ class LeoQtEventFilter(QtCore.QObject):
             )
             g.trace(f"{eventType:>25} {self.tag:25} {tag}")
 
-    # @+node:ekr.20131121050226.16331: *4* filter.traceWidget
+    # @+node:ekr.20131121050226.16331: *4* LeoQtEventFilter.traceWidget
     def traceWidget(self, event: QtCore.QEvent) -> None:
-        """Show unexpected events in unusual widgets."""
-        verbose = False  # Not good for --trace-events
+        """Show events in widgets."""
         e = QtCore.QEvent
         t: str | QtCore.QEvent.Type
         assert isinstance(event, QtCore.QEvent)
         et = event.type()
         # http://qt-project.org/doc/qt-4.8/qevent.html#properties
+        # @+<< define dicts >>
+        # @+node:ekr.20260425151831.5: *5* << define dicts >>
         ignore_d = {
             e.Type.ChildAdded: 'child-added',  # 68
             e.Type.ChildPolished: 'child-polished',  # 69
@@ -614,52 +647,30 @@ class LeoQtEventFilter(QtCore.QObject):
             e.Type.WindowActivate: 'window-activate',  # 24
             e.Type.WindowDeactivate: 'window-deactivate',  # 25
         }
-        line_edit_ignore_d = {
-            e.Type.Enter: 'enter',  # 10 (mouse over)
-            e.Type.Leave: 'leave',  # 11 (mouse over)
-            e.Type.FocusOut: 'focus-out',  # 9
-            e.Type.WindowActivate: 'window-activate',  # 24
-            e.Type.WindowDeactivate: 'window-deactivate',  # 25
-        }
-        none_ignore_d = {
-            e.Type.Enter: 'enter',  # 10 (mouse over)
-            e.Type.Leave: 'leave',  # 11 (mouse over)
-            e.Type.FocusOut: 'focus-out',  # 9
-            e.Type.WindowActivate: 'window-activate',  # 24
-        }
+        # line_edit_ignore_d = {
+        #     e.Type.Enter: 'enter',  # 10 (mouse over)
+        #     e.Type.Leave: 'leave',  # 11 (mouse over)
+        #     e.Type.FocusOut: 'focus-out',  # 9
+        #     e.Type.WindowActivate: 'window-activate',  # 24
+        #     e.Type.WindowDeactivate: 'window-deactivate',  # 25
+        # }
+        # none_ignore_d = {
+        #     e.Type.Enter: 'enter',  # 10 (mouse over)
+        #     e.Type.Leave: 'leave',  # 11 (mouse over)
+        #     e.Type.FocusOut: 'focus-out',  # 9
+        #     e.Type.WindowActivate: 'window-activate',  # 24
+        # }
+        # @-<< define dicts >>
         if et in ignore_d:
             return
-        w = QtWidgets.QApplication.focusWidget()
-        if verbose:  # Too verbose for --trace-events.
-            for d in (ignore_d, focus_d, line_edit_ignore_d, none_ignore_d):
-                t = d.get(et)
-                if t:
-                    break
-            else:
-                t = et
-            g.trace(f"{t:20} {w.__class__}")
-            return
-        if w is None:
-            if et not in none_ignore_d:
-                t = focus_d.get(et) or et
-                g.trace(f"None {t}")
-        if isinstance(w, QtWidgets.QPushButton):
-            return
-        if isinstance(w, QtWidgets.QLineEdit):
-            if et not in line_edit_ignore_d:
-                t = focus_d.get(et) or et
-                if hasattr(w, 'objectName'):
-                    tag = w.objectName()
-                else:
-                    tag = f"id: {id(w)}, {w.__class__.__name__}"
-                g.trace(f"{t:20} {tag}")
-            return
         t = focus_d.get(et) or et
-        if hasattr(w, 'objectName'):
-            tag = w.objectName()
-        else:
-            tag = f"id: {id(w)}, {w.__class__.__name__}"
-        g.trace(f"{t:20} {tag}")
+        if t in ignore_d:
+            return
+        w = QtWidgets.QApplication.focusWidget()
+        if w is None:
+            return
+        name = w.objectName() if hasattr(w, 'objectName') else None
+        g.trace(f"{t:20} {w.__class__.__name__:>20} {name or '<no name>'}")
 
     # @-others
 

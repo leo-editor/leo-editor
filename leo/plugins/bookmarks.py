@@ -502,7 +502,7 @@ def cmd_use_other_outline(event):
 
 
 # @+node:ekr.20140917180536.17896: ** class FlowLayout (QLayout)
-class FlowLayout(QtWidgets.QLayout):  # type:ignore
+class FlowLayout(QtWidgets.QLayout):
     """
     from http://ftp.ics.uci.edu/pub/centos0/ics-custom-build/BUILD/
     PyQt-x11-gpl-4.7.2/examples/layouts/flowlayout.py
@@ -527,7 +527,7 @@ class FlowLayout(QtWidgets.QLayout):  # type:ignore
             item = self.takeAt(0)
 
     # @+node:ekr.20140917180536.17899: *3* addItem
-    def addItem(self, item):
+    def addItem(self, item: QtWidgets.QLayoutItem) -> None:
         self.itemList.append(item)
 
     # @+node:ekr.20140917180536.17900: *3* insertWidget
@@ -569,12 +569,12 @@ class FlowLayout(QtWidgets.QLayout):  # type:ignore
         return True
 
     # @+node:ekr.20140917180536.17906: *3* heightForWidth
-    def heightForWidth(self, width):
+    def heightForWidth(self, width: int) -> int:
         height = self.doLayout(QtCore.QRect(0, 0, width, 0), True)
         return height
 
     # @+node:ekr.20140917180536.17907: *3* setGeometry
-    def setGeometry(self, rect):
+    def setGeometry(self, rect: QtCore.QRect) -> None:
         super().setGeometry(rect)
         self.doLayout(rect, False)
 
@@ -704,7 +704,7 @@ class BookMarkDisplay:
                 AlfShift navigate
                 AltControlShift hoist
             """.split('\n')
-        self.mod_map = dict(i.strip().split() for i in mod_map if i.strip())
+        self.mod_map = {k: v for k, v in (i.strip().split() for i in mod_map if i.strip())}
 
     # @+node:tbrown.20131227100801.30379: *3* background_clicked
     def background_clicked(self, event, bookmarks, row_parent):
@@ -1088,15 +1088,15 @@ class BookMarkDisplay:
         w.layout().addStretch()
 
     # @+node:tbrown.20110712100955.39218: *3* update
-    def update(self, tag, keywords):
+    def update(self, tag, keywords) -> None:
         """re-show the current list of bookmarks"""
 
         if keywords['c'] is not self.c:
-            return None
+            return
 
         self.show_list(self.get_list())
 
-        return None  # do not stop processing the select1 hook
+        return  # do not stop processing the select1 hook
 
     # @+node:tbrown.20130222093439.30271: *3* delete_bookmark
     def delete_bookmark(self, bm):

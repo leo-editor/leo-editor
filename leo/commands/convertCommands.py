@@ -309,10 +309,10 @@ class To_Python:  # pragma: no cover
         n = len(comment_lines)
         assert n > 0
         s = comment_lines[0]
-        junk, w = g.skip_leading_ws_with_indent(s, 0, tab_width=4)
+        _, w = g.skip_leading_ws_with_indent(s, 0, tab_width=4)
         if n == 1:
             return [f"{' ' * (w - 1)}# {s.strip()}"]
-        junk, w = g.skip_leading_ws_with_indent(s, 0, tab_width=4)
+        _, w = g.skip_leading_ws_with_indent(s, 0, tab_width=4)
         result: list[str] = []
         for i, s in enumerate(comment_lines):
             if s.strip():
@@ -533,7 +533,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
     # @+others
     # @+node:ekr.20220105151235.1: *3* ccc.add-mypy-annotations
     @cmd('add-mypy-annotations')
-    def add_mypy_annotations(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def add_mypy_annotations(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         The add-mypy-annotations command adds mypy annotations to function and
         method definitions based on naming conventions.
@@ -796,7 +796,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20160316091843.1: *3* ccc.c-to-python
     @cmd('c-to-python')
-    def c_to_python(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def c_to_python(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         The c-to-python command converts c or c++ text to python text.
         The conversion is not perfect, but it eliminates a lot of tedious
@@ -812,7 +812,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def __init__(self, c: Cmdr) -> None:
             """Ctor for C_To_Python class."""
             super().__init__(c)
-            #
+
             # Internal state...
             # The class name for the present function.  Used to modify ivars.
             self.class_name = ''
@@ -833,8 +833,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 "double",
                 "float",
             ]
-            aList = c.config.getData('c-to-python-ivars-dict')
-            if aList:
+            if aList := c.config.getData('c-to-python-ivars-dict'):
                 self.ivars_dict = self.parse_ivars_data(aList)
             else:
                 self.ivars_dict = {}
@@ -999,9 +998,12 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     j = i + 1
                     prevSemi = j
                 elif self.match(lines, i, "{"):
-                    j = self.handlePossibleFunctionHeader(lines, i, prevSemi, firstOpen)
-                    prevSemi = j
-                    firstOpen = None  # restart the scan
+                    j = self.handlePossibleFunctionHeader(lines, i, prevSemi, firstOpen)  # type:ignore
+                    if j is None:  # PR #4812
+                        j = i + 1
+                    else:
+                        prevSemi = j
+                        firstOpen = None  # restart the scan
                 else:
                     j = i + 1
                 # Handle unusual cases.
@@ -1222,8 +1224,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     if word in ivars:
                         # replace word by self.word
                         word = "self." + word
-                        word = list(word)  # type:ignore
-                        body[i:j] = word
+                        body[i:j] = list(word)  # #4753
                         delta = len(word) - (j - i)
                         i = j + delta
                     else:
@@ -1293,7 +1294,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
     old_unl_pat2 = re.compile(r"(.*?)unl\://(.*)$")  # Second, assume no '#'.
 
     @cmd('convert-unls')
-    def convert_unls(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def convert_unls(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         Convert all legacy (headline-based) unls to gnx-based unls.
         """
@@ -1341,7 +1342,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20160111190632.1: *3* ccc.make-stub_files
     @cmd('make-stub-files')
-    def make_stub_files(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def make_stub_files(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         Make stub files for all nearby @<file> nodes.
         Take configuration settings from @x stub-y nodes.
@@ -1362,6 +1363,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 """MakeStubFile.ctor. From StandAloneMakeStubFile.ctor."""
                 self.c = c
                 self.msf = msf = g.import_module('make_stub_files')
+                assert msf
                 x = msf.StandAloneMakeStubFile()  # x is used *only* to init ivars.
                 # Ivars set on the command line...
                 self.config_fn = None
@@ -1370,7 +1372,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 self.output_directory = self.finalize(
                     c.config.getString('stub-output-directory') or '.'
                 )
-                self.output_fn: str = None
+                self.output_fn: str | None = None
                 self.overwrite = c.config.getBool('stub-overwrite', default=False)
                 self.trace_matches = c.config.getBool('stub-trace-matches', default=False)
                 self.trace_patterns = c.config.getBool('stub-trace-patterns', default=False)
@@ -1406,22 +1408,23 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 return aList
 
             # @+node:ekr.20160213070235.4: *6* msf.scan_d
-            def scan_d(self, kind: str) -> dict[str, list[str]]:
+            def scan_d(self, kind: str) -> dict[str, str]:
                 """Return a dict created from an @data node of the given kind."""
                 c = self.c
                 aList = c.config.getData(kind, strip_comments=True, strip_data=True)
-                d: dict[str, list[str]] = {}
+                d: dict[str, str] = {}
                 if aList is None:
                     g.trace(f"warning: no @data {kind} node")
                 for s in aList or []:
                     # Split s into two strings.
                     name, value = s.split(':', 1)
-                    d[name.strip()] = value.strip()  # type:ignore
+                    d[name.strip()] = value.strip()
                 return d
 
             # @+node:ekr.20160213070235.5: *6* msf.scan_patterns
             def scan_patterns(self, kind: str) -> list[str]:
                 """Parse the config section into a list of patterns, preserving order."""
+                assert self.msf
                 d = self.scan_d(kind)
                 aList: list[str] = []
                 seen = set()
@@ -1443,6 +1446,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             def make_stub_file(self, p: Position) -> None:
                 """Make a stub file in ~/stubs for the @<file> node at p."""
                 import ast
+
+                assert self.msf
 
                 assert p.isAnyAtFileNode()
                 c = self.c
@@ -1507,7 +1512,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20160316091923.1: *3* ccc.python-to-coffeescript
     @cmd('python-to-coffeescript')
-    def python2coffeescript(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def python2coffeescript(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         Converts python text to coffeescript text. The conversion is not
         perfect, but it eliminates a lot of tedious text manipulation.
@@ -1546,6 +1551,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             # @+node:ekr.20160316094011.8: *5* py2cs.to_coffeescript
             def to_coffeescript(self, p: Position) -> None:
                 """Convert the @<file> node at p to a .coffee file."""
+                assert self.py2cs
                 assert p.isAnyAtFileNode()
                 c = self.c
                 fn = p.anyAtFileNodeName()
@@ -1610,7 +1616,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 Strip s of all sentinel lines.
                 This may be dubious because it destroys outline structure.
                 """
-                delims = ('#', None, None)
+                delims = ('#', '', '')
                 return ''.join([z for z in g.splitLines(s) if not g.is_sentinel(z, delims)])
 
             # @-others
@@ -1622,7 +1628,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20231119103003.1: *3* ccc.python-to-rust
     @cmd('python-to-rust')
-    def python2rust(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def python2rust(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         Converts Python text to Rust text. The conversion is not
         perfect, but it eliminates a lot of tedious text manipulation.
@@ -1658,7 +1664,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         # @+others
         # @+node:ekr.20231119103026.2: *5* py2rust.ctor
-        def __init__(self, c: Cmdr, alias: str = None) -> None:
+        def __init__(self, c: Cmdr, alias: str | None = None) -> None:
             self.c = c
             self.alias = alias  # For scripts. An alias for 'self'.
             data = c.config.getData('python-to-typescript-types') or []
@@ -1840,9 +1846,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         def do_for(self, i: int, lines: list[str], m: Match, p: Position) -> int:
             line = lines[i]
-            m1 = self.for1_pat.match(line)
-            m2 = self.for2_pat.match(line)
-            if m1:
+            if self.for1_pat.match(line):
                 j = self.find_indented_block(i, lines, m, p)
                 lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
                 cond_s = cond if cond.startswith('(') else f"({cond})"
@@ -1850,8 +1854,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 lines[i] = f"{lws}for {cond_s} {{{tail_s}\n"
                 self.do_operators(i, lines, p)
                 lines.insert(j, f"{lws}}}\n")
-                return i + 1
-            else:
+            elif m2 := self.for2_pat.match(line):
                 j = self.find_indented_block(i, lines, m2, p)
                 # Generate the 'for' line.
                 lws, tail = m2.group(1), m2.group(2).strip()
@@ -1865,6 +1868,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 k = self.find_indented_block(j, lines, m2, p)
                 lines.insert(k, f"{lws}}}\n")
                 return i + 1
+            return i + 1
 
         # @+node:ekr.20231119103026.14: *7* py2rust.do_import
         import_s = r'^([ \t]*)import[ \t]+(.*)\n'
@@ -1875,13 +1879,11 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         def do_import(self, i: int, lines: list[str], m: Match, p: Position) -> int:
             line = lines[i]
-            m1 = self.import1_pat.match(line)
-            m2 = self.import2_pat.match(line)
             # Comment out all imports.
-            if m1:
+            if m1 := self.import1_pat.match(line):
                 lws, import_list = m1.group(1), m1.group(2).strip()
                 lines[i] = f'{lws}// import "{import_list}"\n'
-            else:
+            elif m2 := self.import2_pat.match(line):
                 lws, module, import_list = (
                     m2.group(1),
                     m2.group(2).strip(),
@@ -1900,9 +1902,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         def do_elif(self, i: int, lines: list[str], m: Match, p: Position) -> int:
             line = lines[i]
-            m1 = self.elif1_pat.match(line)
-            m2 = self.elif2_pat.match(line)
-            if m1:
+            if self.elif1_pat.match(line):
                 j = self.find_indented_block(i, lines, m, p)
                 lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
                 cond_s = cond if cond.startswith('(') else f"({cond})"
@@ -1910,8 +1910,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 lines[i] = f"{lws}else if {cond_s} {{{tail_s}\n"
                 lines.insert(j, f"{lws}}}\n")
                 self.do_operators(i, lines, p)
-                return i + 1
-            else:
+            elif m2 := self.elif2_pat.match(line):
                 j = self.find_indented_block(i, lines, m2, p)
                 # Generate the 'else if' line.
                 lws, tail = m2.group(1), m2.group(2).strip()
@@ -1924,7 +1923,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Insert '}'
                 k = self.find_indented_block(j, lines, m2, p)
                 lines.insert(k, f"{lws}}}\n")
-                return i + 1
+            return i + 1
 
         # @+node:ekr.20231119103026.16: *7* py2rust.do_else
         else_pat = re.compile(r'^([ \t]*)else:(.*)\n')
@@ -1959,17 +1958,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def do_if(self, i: int, lines: list[str], m: Match, p: Position) -> int:
             # Recompute the match for better accuracy.
             line = lines[i]
-            m1 = self.if1_pat.match(line)
-            m2 = self.if2_pat.match(line)
-            if m1:
+            if m1 := self.if1_pat.match(line):
                 j = self.find_indented_block(i, lines, m1, p)
                 lws, cond, tail = m1.group(1), m1.group(2).strip(), m1.group(3).strip()
                 tail_s = f" // {tail}" if tail else ''
                 lines[i] = f"{lws}if {cond} {{{tail_s}\n"
                 self.do_operators(i, lines, p)
                 lines.insert(j, f"{lws}}}\n")
-                return i + 1
-            else:
+            elif m2 := self.if2_pat.match(line):
                 j = self.find_indented_block(i, lines, m2, p)
                 # Generate the 'if' line.
                 lws, tail = m2.group(1), m2.group(2).strip()
@@ -1982,7 +1978,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Insert '}'
                 k = self.find_indented_block(j, lines, m2, p)
                 lines.insert(k, f"{lws}}}\n")
-                return i + 1
+            return i + 1
 
         # @+node:ekr.20231121113506.1: *7* py2rust.do_return
         return_pat = re.compile(r'^([ \t]*)return\b(.*?)\n')
@@ -2024,9 +2020,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         def do_while(self, i: int, lines: list[str], m: Match, p: Position) -> int:
             line = lines[i]
-            m1 = self.while1_pat.match(line)
-            m2 = self.while2_pat.match(line)
-            if m1:
+            if self.while1_pat.match(line):
                 j = self.find_indented_block(i, lines, m, p)
                 lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
                 cond_s = cond if cond.startswith('(') else f"({cond})"
@@ -2034,8 +2028,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 lines[i] = f"{lws}while {cond_s} {{{tail_s}\n"
                 self.do_operators(i, lines, p)
                 lines.insert(j, f"{lws}}}\n")
-                return i + 1
-            else:
+            elif m2 := self.while2_pat.match(line):
                 j = self.find_indented_block(i, lines, m2, p)
                 # Generate the 'while' line.
                 lws, tail = m2.group(1), m2.group(2).strip()
@@ -2048,7 +2041,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Insert '}'
                 k = self.find_indented_block(j, lines, m2, p)
                 lines.insert(k, f"{lws}}}\n")
-                return i + 1
+            return i + 1
 
         # @+node:ekr.20231119103026.22: *7* py2rust.do_with
         with_pat = re.compile(r'^([ \t]*)with(.*):(.*)\n')
@@ -2167,13 +2160,13 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             j = i + 1
             while j < len(lines):
                 line = lines[j]
-                m2 = self.lws_pat.match(line)
-                lws2 = m2.group(1)
-                if line.strip() and len(lws2) <= len(lws):
-                    # Don't add a blank line at the end of a block.
-                    if j > 1 and not lines[j - 1].strip():
-                        j -= 1
-                    break
+                if m2 := self.lws_pat.match(line):
+                    if lws2 := m2.group(1):
+                        if line.strip() and len(lws2) <= len(lws):
+                            # Don't add a blank line at the end of a block.
+                            if j > 1 and not lines[j - 1].strip():
+                                j -= 1
+                            break
                 j += 1
             return j
 
@@ -2355,7 +2348,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20211013080132.1: *3* ccc.python-to-typescript
     @cmd('python-to-typescript')
-    def python_to_typescript(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def python_to_typescript(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         The python-to-typescript command converts python to typescript text.
         The conversion is not perfect, but it eliminates a lot of tedious text
@@ -2388,7 +2381,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         # @+others
         # @+node:ekr.20211020162251.1: *5* py2ts.ctor
-        def __init__(self, c: Cmdr, alias: str = None) -> None:
+        def __init__(self, c: Cmdr, alias: str | None = None) -> None:
             self.c = c
             self.alias = alias  # For scripts. An alias for 'self'.
             data = c.config.getData('python-to-typescript-types') or []
@@ -2610,9 +2603,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         def do_for(self, i: int, lines: list[str], m: Match, p: Position) -> int:
             line = lines[i]
-            m1 = self.for1_pat.match(line)
-            m2 = self.for2_pat.match(line)
-            if m1:
+            if self.for1_pat.match(line):
                 j = self.find_indented_block(i, lines, m, p)
                 lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
                 cond_s = cond if cond.startswith('(') else f"({cond})"
@@ -2620,8 +2611,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 lines[i] = f"{lws}for {cond_s} {{{tail_s}\n"
                 self.do_operators(i, lines, p)
                 lines.insert(j, f"{lws}}}\n")
-                return i + 1
-            else:
+            elif m2 := self.for2_pat.match(line):
                 j = self.find_indented_block(i, lines, m2, p)
                 # Generate the 'for' line.
                 lws, tail = m2.group(1), m2.group(2).strip()
@@ -2634,7 +2624,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Insert '}'
                 k = self.find_indented_block(j, lines, m2, p)
                 lines.insert(k, f"{lws}}}\n")
-                return i + 1
+            return i + 1
 
         # @+node:ekr.20211017202104.1: *7* py2ts.do_import
         import_s = r'^([ \t]*)import[ \t]+(.*)\n'
@@ -2645,13 +2635,11 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         def do_import(self, i: int, lines: list[str], m: Match, p: Position) -> int:
             line = lines[i]
-            m1 = self.import1_pat.match(line)
-            m2 = self.import2_pat.match(line)
             # Comment out all imports.
-            if m1:
+            if m1 := self.import1_pat.match(line):
                 lws, import_list = m1.group(1), m1.group(2).strip()
                 lines[i] = f'{lws}// import "{import_list}"\n'
-            else:
+            elif m2 := self.import2_pat.match(line):
                 lws, module, import_list = (
                     m2.group(1),
                     m2.group(2).strip(),
@@ -2670,9 +2658,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         def do_elif(self, i: int, lines: list[str], m: Match, p: Position) -> int:
             line = lines[i]
-            m1 = self.elif1_pat.match(line)
-            m2 = self.elif2_pat.match(line)
-            if m1:
+            if self.elif1_pat.match(line):
                 j = self.find_indented_block(i, lines, m, p)
                 lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
                 cond_s = cond if cond.startswith('(') else f"({cond})"
@@ -2680,8 +2666,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 lines[i] = f"{lws}else if {cond_s} {{{tail_s}\n"
                 lines.insert(j, f"{lws}}}\n")
                 self.do_operators(i, lines, p)
-                return i + 1
-            else:
+            elif m2 := self.elif2_pat.match(line):
                 j = self.find_indented_block(i, lines, m2, p)
                 # Generate the 'else if' line.
                 lws, tail = m2.group(1), m2.group(2).strip()
@@ -2694,7 +2679,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Insert '}'
                 k = self.find_indented_block(j, lines, m2, p)
                 lines.insert(k, f"{lws}}}\n")
-                return i + 1
+            return i + 1
 
         # @+node:ekr.20211014022445.1: *7* py2ts.do_else
         else_pat = re.compile(r'^([ \t]*)else:(.*)\n')
@@ -2728,9 +2713,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         def do_if(self, i: int, lines: list[str], m: Match, p: Position) -> int:
             line = lines[i]
-            m1 = self.if1_pat.match(line)
-            m2 = self.if2_pat.match(line)
-            if m1:
+            if m1 := self.if1_pat.match(line):
                 j = self.find_indented_block(i, lines, m1, p)
                 lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
                 cond_s = cond if cond.startswith('(') else f"({cond})"
@@ -2738,8 +2721,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 lines[i] = f"{lws}if {cond_s} {{{tail_s}\n"
                 self.do_operators(i, lines, p)
                 lines.insert(j, f"{lws}}}\n")
-                return i + 1
-            else:
+            elif m2 := self.if2_pat.match(line):
                 j = self.find_indented_block(i, lines, m2, p)
                 # Generate the 'if' line.
                 lws, tail = m2.group(1), m2.group(2).strip()
@@ -2752,7 +2734,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Insert '}'
                 k = self.find_indented_block(j, lines, m2, p)
                 lines.insert(k, f"{lws}}}\n")
-                return i + 1
+            return i + 1
 
         # @+node:ekr.20211018125503.1: *7* py2ts.do_section_ref
         section_ref_pat = re.compile(r"^([ \t]*)(\<\<.*?\>\>)\s*(.*)$")
@@ -2785,9 +2767,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         def do_while(self, i: int, lines: list[str], m: Match, p: Position) -> int:
             line = lines[i]
-            m1 = self.while1_pat.match(line)
-            m2 = self.while2_pat.match(line)
-            if m1:
+            if self.while1_pat.match(line):
                 j = self.find_indented_block(i, lines, m, p)
                 lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
                 cond_s = cond if cond.startswith('(') else f"({cond})"
@@ -2796,7 +2776,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 self.do_operators(i, lines, p)
                 lines.insert(j, f"{lws}}}\n")
                 return i + 1
-            else:
+            elif m2 := self.while2_pat.match(line):
                 j = self.find_indented_block(i, lines, m2, p)
                 # Generate the 'while' line.
                 lws, tail = m2.group(1), m2.group(2).strip()
@@ -2809,7 +2789,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Insert '}'
                 k = self.find_indented_block(j, lines, m2, p)
                 lines.insert(k, f"{lws}}}\n")
-                return i + 1
+            return i + 1
 
         # @+node:ekr.20211014022554.1: *7* py2ts.do_with
         with_pat = re.compile(r'^([ \t]*)with(.*):(.*)\n')
@@ -2921,13 +2901,13 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             j = i + 1
             while j < len(lines):
                 line = lines[j]
-                m2 = self.lws_pat.match(line)
-                lws2 = m2.group(1)
-                if line.strip() and len(lws2) <= len(lws):
-                    # Don't add a blank line at the end of a block.
-                    if j > 1 and not lines[j - 1].strip():
-                        j -= 1
-                    break
+                if m2 := self.lws_pat.match(line):
+                    if lws2 := m2.group(1):
+                        if line.strip() and len(lws2) <= len(lws):
+                            # Don't add a blank line at the end of a block.
+                            if j > 1 and not lines[j - 1].strip():
+                                j -= 1
+                            break
                 j += 1
             return j
 
@@ -3136,7 +3116,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20160316091843.2: *3* ccc.typescript-to-py
     @cmd('typescript-to-py')
-    def typescript_to_py(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def typescript_to_py(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         The typescript-to-python command converts typescript text to python
         text. The conversion is not perfect, but it eliminates a lot of tedious
@@ -3248,7 +3228,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         i += len(word)
                         break
                 else:
-                    return None
+                    return i + 1  # PR #4812
                 # Skip any following spaces.
                 i2 = self.skip_ws(lines, i)
                 # Scan to the next newline:
@@ -3368,9 +3348,12 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         j = i + 1
                         prevSemi = j
                     elif self.match(lines, i, "{"):
-                        j = self.handlePossibleFunctionHeader(lines, i, prevSemi, firstOpen)
-                        prevSemi = j
-                        firstOpen = None  # restart the scan
+                        j = self.handlePossibleFunctionHeader(lines, i, prevSemi, firstOpen)  # type:ignore
+                        if j is None:  # PR #4812
+                            j = i + 1
+                        else:
+                            prevSemi = j
+                            firstOpen = None  # restart the scan
                     else:
                         j = i + 1
                     # Handle unusual cases.

@@ -58,9 +58,10 @@ __plugin_priority__
 # @+<< plugins_menu imports & annotations >>
 # @+node:ekr.20050101090207.10: ** << plugins_menu imports & annotations >>
 from __future__ import annotations
+from collections.abc import Callable, Sequence
 import configparser as ConfigParser
 import os
-from typing import Any, Sequence, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from types import ModuleType
 from leo.core import leoGlobals as g
 
@@ -92,7 +93,7 @@ def addPluginMenuItem(plugin: PlugIn, c: Cmdr) -> None:
         # Check at runtime to see if the plugin has actually been loaded.
         # This prevents us from calling hasTopLevel() on unloaded plugins.
 
-        def callback(event: Event, c: Cmdr = c, plugin: "PlugIn" = plugin) -> None:
+        def callback(event: Event, c: Cmdr = c, plugin: PlugIn = plugin) -> None:
             path, name = g.os_path_split(plugin.filename)
             name, ext = g.os_path_splitext(name)
             pc = g.app.pluginsController
@@ -112,11 +113,11 @@ def addPluginMenuItem(plugin: PlugIn, c: Cmdr) -> None:
             menu_location = "&Plugins"
         # @-<< Get menu location >>
         m = c.frame.menu.createNewMenu(plugin_name, menu_location)
-        table = [("About...", None, plugin.about)]
+        entries: list[tuple[str, None, Callable | None]] = [("About...", None, plugin.about)]
         if plugin.hasconfig:
-            table.append(("Properties...", None, plugin.properties))
+            entries.append(("Properties...", None, plugin.properties))
         if plugin.othercmds:
-            table.append(("-", None, None))
+            entries.append(("-", None, None))
             items = []
             d = plugin.othercmds
             for cmd in list(d.keys()):
@@ -124,8 +125,8 @@ def addPluginMenuItem(plugin: PlugIn, c: Cmdr) -> None:
                 items.append(
                     (cmd, None, fn),
                 )  # No need for a callback.
-            table.extend(sorted(items))
-        c.frame.menu.createMenuEntries(m, table)
+            entries.extend(sorted(items))
+        c.frame.menu.createMenuEntries(m, entries)
     else:
         table = [(plugin_name, None, plugin.about)]
         c.frame.menu.createMenuEntries(PluginDatabase.getMenu(plugin), table)
@@ -140,23 +141,25 @@ def createPluginsMenu(tag: str, keywords: KWargs) -> None:
     menu_name = keywords.get('menu_name', '&Plugins')
     pc = g.app.pluginsController
     lmd = pc.loadedModules
-    if lmd:
-        impModSpecList = list(lmd.keys())
+    if not lmd:
+        return  # #4753
 
-        def key(aList: list) -> str:
-            return aList.split('.')[-1].lower()
+    impModSpecList = list(lmd.keys())
 
-        impModSpecList.sort(key=key)  # type:ignore
-        plgObList: list[PlugIn] = [PlugIn(lmd[impModSpec], c) for impModSpec in impModSpecList]
-        c.pluginsMenu = pluginMenu = c.frame.menu.createNewMenu(menu_name)
-        # 2013/12/13: Add any items in @menu plugins
-        add_menu_from_settings(c)
-        PluginDatabase.setMenu("Default", pluginMenu)
-        # Add group menus
-        for group_name in PluginDatabase.getGroups():
-            PluginDatabase.setMenu(group_name, c.frame.menu.createNewMenu(group_name, menu_name))
-        for plgObj in plgObList:
-            addPluginMenuItem(plgObj, c)
+    def key(s: str) -> str:
+        return s.split('.')[-1].lower()
+
+    impModSpecList.sort(key=key)
+    plgObList: list[PlugIn] = [PlugIn(lmd[impModSpec], c) for impModSpec in impModSpecList]
+    c.pluginsMenu = pluginMenu = c.frame.menu.createNewMenu(menu_name)
+    # 2013/12/13: Add any items in @menu plugins
+    add_menu_from_settings(c)
+    PluginDatabase.setMenu("Default", pluginMenu)
+    # Add group menus
+    for group_name in PluginDatabase.getGroups():
+        PluginDatabase.setMenu(group_name, c.frame.menu.createNewMenu(group_name, menu_name))
+    for plgObj in plgObList:
+        addPluginMenuItem(plgObj, c)
 
 
 # @+node:ekr.20131213072223.19531: *4* add_menu_from_settings
@@ -192,8 +195,7 @@ def init() -> bool:
         return False
     if not g.app.gui:
         g.app.createDefaultGui()
-    ok = g.app.gui.guiName() == 'qt'
-    if ok:
+    if ok := g.app.gui.guiName() == 'qt':
         g.registerHandler("create-optional-menus", createPluginsMenu)
         g.plugin_signon(__name__)
     return ok
@@ -212,7 +214,7 @@ class _PluginDatabase:
         self.menus: dict[str, LeoMenu] = {}
 
     # @+node:pap.20050305152751.2: *3* addPlugin
-    def addPlugin(self, item: PlugIn, group: str) -> None:
+    def addPlugin(self, item: PlugIn, group: str | None) -> None:
         """Add a plugin"""
         if group:
             self.plugins_by_group.setdefault(group, []).append(item)
@@ -234,7 +236,7 @@ class _PluginDatabase:
     def getMenu(self, item: PlugIn) -> LeoMenu:
         """Get the menu for a particular item"""
         try:
-            return self.menus[item.group]
+            return self.menus[item.group] if item.group else self.menus["Default"]
         except KeyError:
             return self.menus["Default"]
 
@@ -248,9 +250,11 @@ PluginDatabase = _PluginDatabase()
 class PlugIn:
     """A class to hold information about one plugin"""
 
+    hastoplevel: Any
+
     # @+others
     # @+node:EKR.20040517080555.4: *3* PlugIn.__init__ & helper
-    def __init__(self, plgMod: ModuleType, c: Cmdr = None) -> None:
+    def __init__(self, plgMod: ModuleType, c: Cmdr | None = None) -> None:
         """
         @param plgMod: Module object for the plugin represented by this instance.
         @param c:  Leo-editor "commander" for the current .leo file
@@ -274,6 +278,7 @@ class PlugIn:
         self.version = self.mod.__dict__.get("__version__", "<unknown>")
         # g.pr(self.version,g.shortFileName(filename))
         # Configuration...
+        assert plgMod.__file__
         self.configfilename = "%s.ini" % os.path.splitext(plgMod.__file__)[0]
         # True if this can be configured.
         self.hasconfig = os.path.isfile(self.configfilename)
@@ -300,10 +305,11 @@ class PlugIn:
                 self.othercmds[func.command_name] = func
 
     # @+node:EKR.20040517080555.8: *3* PlugIn.about
-    def about(self, event: Event = None) -> None:
+    def about(self, event: Event | None = None) -> None:
         """Put information about this plugin in a scrolledMessage dialog."""
         c = self.c
         msg = self.doc.strip() + '\n' if self.doc else ''
+        assert self.name
         c.putHelpFor(msg, short_title=self.name)
 
     # @+node:pap.20050317183526: *3* PlugIn.getNiceName
@@ -324,7 +330,7 @@ class PlugIn:
         return name.capitalize()
 
     # @+node:EKR.20040517080555.9: *3* PlugIn.properties
-    def properties(self, event: Event = None) -> None:
+    def properties(self, event: Event | None = None) -> None:
         """Display a modal properties dialog for this plugin"""
         if self.hasapply:
 
@@ -351,6 +357,7 @@ class PlugIn:
         self.sourceConfig = data
         # Open a modal dialog and wait for it to return.
         # Provide the dialog with a callback for the 'Appply' function.
+        assert self.name
         title = "Properties of " + self.name
         result, data = g.app.gui.runPropertiesDialog(title, data, callback, buttons)
         if result != 'Cancel' and data:

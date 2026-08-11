@@ -181,8 +181,6 @@ packages = [
     "leo.external.concurrent",
     "leo.external.concurrent.futures",
     "leo.external.leoserver",
-    "leo.external.npyscreen",
-    "leo.external.npyscreen.compatibility_code",
     "leo.external.obsolete",
     "leo.modes",
     "leo.plugins",
@@ -236,7 +234,7 @@ packages = [
 
 [project]
 requires-python = ">= 3.10"
-version = "6.8.8"  # No space.
+version = "0.0.0.dev0"  # Placeholder: publish.yml stamps the real version from the release tag at build time.
 name = "leo"
 
 #@+<< developer info >>
@@ -281,7 +279,7 @@ readme = "README.md"
 # Yes, we must duplicate requirements.txt.
 #@+<< pyproject.toml: dependencies >>
 #@+node:ekr.20240713074535.1: ** << pyproject.toml: dependencies >>
-# Warning: these dependencies should match those in pyproject.toml.
+# Warning: these dependencies should match those in requirements.txt.
 
 dependencies = [
 
@@ -304,9 +302,6 @@ dependencies = [
   "asttokens",       # For unit tests.
   "beautifulsoup4",  # For link testing.
   "black",           # For unit tests.
-  "flake8",
-  "pyflakes",
-  "pylint",
   "pytest",
   "pytest-cov",      # For coverage testing.
   "ruff",
@@ -333,10 +328,6 @@ dependencies = [
   "PyQt6-QScintilla",
   "PyQt6-WebEngine",
   "Send2Trash; platform_system == 'Windows'",  # For picture_viewer plugin.
-  
-  # cursesGui2 plugin.
-  # The windows-curses package works with Python 3.14.
-  "windows-curses[curses]; platform_system == 'Windows'",  # python_version < '3.15'",
 ]
 
 #@-<< pyproject.toml: dependencies >>
@@ -362,10 +353,12 @@ Issues = "https://github.com/leo-editor/leo-editor/issues"
 [tool.ruff]
 line-length = 100
 
+extend-exclude = ["*.md"]
+
 # @string black-toml gives the path to a pyproject.toml or ruff.toml file.
 [tool.ruff.format]
 docstring-code-format = false
 indent-style = "space"
-line-ending = "native"
+line-ending = "lf"
 quote-style = "preserve"
 #@-leo

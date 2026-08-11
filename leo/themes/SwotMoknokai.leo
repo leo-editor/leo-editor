@@ -88,6 +88,7 @@
 <v t="ekr.20180318145515.791"><vh>@color text-background-bright = #3e3d32</vh></v>
 <v t="ekr.20180318145515.792"><vh>@color text-foreground = #f8f8f2</vh></v>
 <v t="ekr.20180318145515.793"><vh>@color text-foreground-bright = #ffffff</vh></v>
+<v t="tom.20260722191339.1"><vh>@color dark-base-0-darker = #7c7c79</vh></v>
 </v>
 <v t="ekr.20180318145515.794"><vh>Colors: Widgets</vh>
 <v t="ekr.20180318145515.795"><vh>@color button-hover-fg =@dark-base03</vh></v>
@@ -114,12 +115,14 @@
 <v t="ekr.20180318145515.815"><vh>Body &amp; other text</vh></v>
 <v t="ekr.20180318145515.816"><vh>Borders</vh></v>
 <v t="ekr.20180318145515.817"><vh>Buttons</vh></v>
+<v t="tom.20260722191239.1"><vh>Checkboxes</vh></v>
 <v t="ekr.20190531140643.1"><vh>Dock</vh></v>
 <v t="ekr.20180318145515.818"><vh>Log</vh></v>
 <v t="ekr.20181005084517.1"><vh>Gutter</vh></v>
 <v t="ekr.20180318145515.819"><vh>Menus</vh></v>
 <v t="ekr.20180318145515.820"><vh>Minibuffer &amp; label</vh></v>
 <v t="ekr.20180318145515.821"><vh>Plugins</vh></v>
+<v t="tom.20260722191305.1"><vh>Radio Buttons</vh></v>
 <v t="ekr.20180318145515.822"><vh>Scroll bars</vh></v>
 <v t="ekr.20180318145515.823"><vh>Splitters</vh></v>
 <v t="ekr.20180318145515.824"><vh>Status area</vh></v>
@@ -1028,5 +1031,37 @@ QLineEdit#editorLabel {
 
 url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)</t>
 <t tx="swot.20250711201052.1">url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/open.png)</t>
+<t tx="tom.20260722191239.1">QCheckBox::indicator {
+    width: 14px;
+    height: 14px;
+    background-color: @text-background;
+    border: 1px solid @text_foreground;
+}
+
+QCheckBox::indicator:checked {
+    background-color: @dark-base-0-darker;
+    image: none;
+}
+
+QCheckBox::indicator:unchecked {
+    background-color: @text-background;
+}</t>
+<t tx="tom.20260722191305.1">QRadioButton::indicator {
+    width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    background-color: @text-background;
+    border: 1px solid @text_foreground;
+}
+
+QRadioButton::indicator:checked {
+    background-color: @dark-base-0-darker;
+    image: none;
+}
+
+QRadioButton::indicator:unchecked {
+    background-color: @text-background;
+}</t>
+<t tx="tom.20260722191339.1"></t>
 </tnodes>
 </leo_file>

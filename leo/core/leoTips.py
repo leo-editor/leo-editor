@@ -32,7 +32,7 @@ class TipManager:
 
     # @+others
     # @+node:ekr.20180121041748.1: *3* tipm.get_next_tip
-    def get_next_tip(self) -> "UserTip":
+    def get_next_tip(self) -> UserTip:
         # global tips
         db = g.app.db
         # Compute list of unseen tips.
@@ -59,7 +59,9 @@ class TipManager:
 class UserTip:
     """A User Tip."""
 
-    def __init__(self, n: int = 0, tags: list[str] = None, text: str = '', title: str = '') -> None:
+    def __init__(
+        self, n: int = 0, tags: list[str] | None = None, text: str = '', title: str = ''
+    ) -> None:
         self.n = n  # Not used.
         self.tags: list[str] = tags or []  # Not used.
         self.title = title.strip()
@@ -193,7 +195,6 @@ tips: list[UserTip] = [
     - contextmenu.py shows a menu when when right-clicking.
     - mod_scripting.py supports @button and @command nodes.
     - quicksearch.py adds a Nav tab for searching.
-    - todo.py handles to-do lists and is a project manager.
     - viewrendered.py renders content in the rendering pane.
     - viewrendered3.py: an alternate renderer.
 
@@ -354,20 +355,6 @@ tips: list[UserTip] = [
 
     """,
     ),
-    # @+node:ekr.20180324065153.2: *4* pylint command
-    UserTip(
-        n=622,
-        tags=['Command', 'Testing'],
-        title="<html>The pylint command",
-        text="""
-    <p>Leo's pylint command runs
-    <a href="https://www.pylint.org/">pylint</a>
-    on all `@<file>` nodes in the selected trees.</p>
-
-    <p>Pylint runs in the background. It doesn't interfere with Leo.</p>
-
-    </html>""",
-    ),
     # @+node:ekr.20180324073008.1: *4* repeat-complex-command
     UserTip(
         n=0,
@@ -477,24 +464,6 @@ tips: list[UserTip] = [
     <p>You must
     <a href="https://leo-editor.github.io/leo-editor/running.html#running-leo-from-a-console-window">
     run Leo from a console</a> for this to work.</p>
-
-    </html>""",
-    ),
-    # @+node:ekr.20180324065152.4: *4* Pyflakes
-    UserTip(
-        n=624,
-        tags=['Settings', 'Scripting'],
-        title="<html>The pyflakes command",
-        text="""\
-    <p><a href="https://pypi.python.org/pypi/pyflakes">pyflakes</a>
-    checks python files almost instantly.</p>
-
-    <p>Enable pyflakes with these settings:
-    <pre>
-    @bool run-pyflakes-on-write = True
-    @bool syntax-error-popup = True
-    </pre>
-    </p>
 
     </html>""",
     ),

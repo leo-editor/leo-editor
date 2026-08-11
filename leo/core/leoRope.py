@@ -8,9 +8,8 @@ from leo.core import leoGlobals as g
 
 # Third-party imports.
 try:
-    import rope.base.project as project
-    import rope.base.simplify as simplify
-    import rope.refactor as refactor
+    from rope import refactor
+    from rope.base import project, simplify
 
     has_rope = True
 except Exception:
@@ -68,8 +67,7 @@ class RopeController:
     # @+node:ekr.20140525065558.15810: *3* run
     def run(self):
         """run the refactorings."""
-        proj = self.proj
-        if proj:
+        if proj := self.proj:
             proj.validate(proj.root)
             self.refactor()
             proj.close()

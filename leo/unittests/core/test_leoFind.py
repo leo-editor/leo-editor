@@ -4,7 +4,7 @@
 
 import re
 from leo.core import leoGlobals as g
-import leo.core.leoFind as leoFind
+from leo.core import leoFind
 from leo.core.leoGui import StringFindTabManager
 from leo.core.leoTest2 import LeoUnitTest
 
@@ -290,7 +290,6 @@ class TestFind(LeoUnitTest):
         # Test 3.
         init()
         settings.search_headline = False
-        settings.p.setVisited()
         x.do_find_all(settings)
         # Test 4.
         init()
@@ -362,7 +361,7 @@ class TestFind(LeoUnitTest):
         # Find test_p.
         p, pos, newpos = x.do_find_next(settings)
         self.assertEqual(p, test_p)
-        w = c.edit_widget(p)
+        w = c.headline_wrapper(p)
         self.assertEqual(test_p.h, w.getAllText())
         self.assertEqual(w.getSelectionRange(), (pos, newpos))
         # Do change-then-find.
@@ -378,8 +377,6 @@ class TestFind(LeoUnitTest):
         settings.find_text = 'def top1'
         # Start at end, so we stay in the node.
         grand_child = g.findNodeAnywhere(c, 'child 6')
-        settings.p = grand_child
-        assert settings.p
         settings.find_text = 'def child2'
         # Set c.p in the command.
         x.c.selectPosition(grand_child)
@@ -440,8 +437,7 @@ class TestFind(LeoUnitTest):
         x.do_change_then_find(settings)
 
     def test_replace_then_find_in_headline(self):
-        settings, x = self.settings, self.x
-        p = settings.p
+        c, settings, x = self.c, self.settings, self.x
         settings.find_text = 'Node 1'
         settings.change_text = 'Node 1a'
         settings.in_headline = True
@@ -449,7 +445,7 @@ class TestFind(LeoUnitTest):
         p, pos, newpos = x.do_find_next(settings)
         assert p
         self.assertEqual(p.h, settings.find_text)
-        w = self.c.edit_widget(p)
+        w = c.headline_wrapper(p)
         assert w
         s = p.h[pos:newpos]
         self.assertEqual(s, settings.find_text)
@@ -887,13 +883,13 @@ class TestFind(LeoUnitTest):
 
     # @+node:ekr.20210110073117.84: *4* TestFind.test_next_node_after_fail
     def test_fnm_next_after_fail(self):
-        settings, x = self.settings, self.x
+        c = self.c
+        settings = self.settings
+        x = self.x
         for reverse in (True, False):
             settings.reverse = reverse
-            for wrapping in (True, False):
-                settings.wrapping = wrapping
-                x.init_ivars_from_settings(settings)
-                x._fnm_next_after_fail(settings.p)
+            x.init_ivars_from_settings(settings)
+            x._fnm_next_after_fail(c.p)
 
     # @+node:ekr.20210829203927.2: *4* TestFind.test_replace_all_plain_search
     def test_replace_all_plain_search(self):
@@ -993,33 +989,38 @@ class TestFind(LeoUnitTest):
             ('\\n',      '\n'),
             ('\\t',      '\t'),
             ('a\\n',     'a\n'),
-            ('\\\n',     '\\\n'),  # Backslash-newline!
             ('a\\tc',    'a\tc'),
             ('a\\t\\fc', 'a\t\fc'),
             ('a\\nc',    'a\nc'),
-            # Allow escaped backslash: #4284.
+            # #4609: Replace one *or* two backslashes in the find string
+            #        with a single backslash in the change string.
             ('\\',      '\\'),
-            ('\\\\',    '\\\\'),
-            ('\\\\n',   '\\\\n'),
-            ('\\\\t',   '\\\\t'),
-            ('b\\\\nd', 'b\\\\nd'),
-            # Make no other replacements.
+            ('\\\\',    '\\'),
+            ('\\\n',    '\\\n'),
+            ('\\\\n',   '\\n'),
+            ('\\\t',    '\\\t'),
+            ('\\\\t',   '\\t'),
+            ('\\\f',    '\\\f'),
+            ('\\\\f',   '\\f'),
+            (r'b\\\\nd', r'b\\nd'),
             (r'a\bc',    r'a\bc'),
-            (r'a\\bc',   r'a\\bc'),
+            (r'a\\bc',   r'a\bc'),
+            (r'a\\\\bc', r'a\\bc'),
             (r'a \ b',   r'a \ b'),
-            (r'a \\ b',  r'a \\ b'),
-            (r'a \\\ b', r'a \\\ b'),
+            (r'a \\ b',  r'a \ b'),
+            (r'a \\\ b', r'a \\ b'),
+            (r'a \\\\ b', r'a \\ b'),
         )  # fmt: skip
-        for s, expected in table:
-            got = x.replace_back_slashes(s)
-            self.assertEqual(expected, got, msg=s)
+        for input_s, expected_output_s in table:
+            got = x.replace_back_slashes(input_s)
+            self.assertEqual(got, expected_output_s, msg=input_s)
 
     # @+node:ekr.20210110073117.89: *4* TestFind.test_switch_style
     def test_switch_style(self):
         x = self.x
         table = (
-            ('', None),
-            ('TestClass', None),
+            ('', ''),
+            ('TestClass', ''),
             ('camelCase', 'camel_case'),
             ('under_score', 'underScore'),
         )

@@ -1,6 +1,5 @@
 # @+leo-ver=5-thin
 # @+node:tbrown.20171028115144.1: * @file ../plugins/editpane/plaintextview.py
-# from leo.core import leoGlobals as g
 from leo.core.leoQt import QtWidgets
 
 
@@ -55,10 +54,12 @@ class LEP_PlainTextViewB(LEP_PlainTextView):
     lep_name = "Plain Text View 'B'"
 
     # @+others
-    # @+node:tbrown.20171028115502.7: *3* __init__
+    # @+node:tbrown.20171028115502.7: *3* LEP_PlainTextViewB.__init__
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
-        super().__init__(c=c, lep=lep, *args, **kwargs)
+        kwargs['c'] = c
+        kwargs['lep'] = lep
+        super().__init__(*args, **kwargs)
         self.setStyleSheet("* {background: #899; color: #222; }")
 
     # @-others

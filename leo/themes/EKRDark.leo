@@ -6,7 +6,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20180312111155.1"><vh>Read me</vh></v>
+<v t="ekr.20180312111155.1" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000007374725f6c656f5f706f7371035805000000322c302c33710473732e"><vh>Read me</vh></v>
 <v t="ekr.20180312110809.1"><vh>Theme Tests</vh>
 <v t="ekr.20180314052441.1"><vh>Syntax coloring template</vh>
 <v t="ekr.20180314052441.2"><vh>&lt;&lt; defined section &gt;&gt;</vh></v>
@@ -42,6 +42,7 @@
 <v t="ekr.20180318145515.721"><vh>@color dark-base1 = #93a1a1</vh></v>
 <v t="ekr.20180318145515.722"><vh>@color dark-base2 = #eee8d5</vh></v>
 <v t="ekr.20180318145515.723"><vh>@color dark-base3 = #fdf6e3</vh></v>
+<v t="tom.20260722145153.1"><vh>@color dark-base-0-darker = #7e7f6e</vh></v>
 <v t="ekr.20180318145515.724"><vh>@color solarized-black = #000005</vh></v>
 <v t="ekr.20180318145515.725"><vh>@color solarized-blue = #268bd2</vh></v>
 <v t="ekr.20180318145515.726"><vh>@color solarized-cyan = #2aa198</vh></v>
@@ -91,38 +92,6 @@
 <v t="ekr.20180318145515.185"><vh>@color log-bg = @LightSteelBlue1</vh></v>
 <v t="ekr.20180318145515.203"><vh>@color tree-bg = @solarized-base2</vh></v>
 <v t="ekr.20180318145515.202"><vh>@color tree-fg = black</vh></v>
-</v>
-</v>
-<v t="ekr.20180318145515.796"><vh>Fonts &amp; text sizes</vh>
-<v t="ekr.20180318145515.797"><vh>@string font-family = DejaVu Sans Mono, Inconsolata, Droid Sans Mono</vh></v>
-<v t="ekr.20180318145515.798"><vh>@string font-family-body =@font-family</vh></v>
-<v t="ekr.20180318145515.799"><vh>@string font-family-log =@font-family</vh></v>
-<v t="ekr.20180318145515.800"><vh>@string font-family-tree =@font-family</vh></v>
-<v t="ekr.20180318145515.801"><vh>@string font-size-body = 12pt</vh></v>
-<v t="ekr.20180318145515.802"><vh>@string font-size-log = 12pt</vh></v>
-<v t="ekr.20180318145515.803"><vh>@string font-size-tree = 12pt</vh></v>
-</v>
-<v t="ekr.20201221073034.1"><vh>Plugins</vh>
-<v t="ekr.20180318145515.811"><vh>@bool color_theme_is_dark = True</vh></v>
-</v>
-<v t="ekr.20201221073050.1"><vh>Style sheet</vh>
-<v t="ekr.20180318145515.813"><vh>@data qt-gui-plugin-style-sheet</vh>
-<v t="ekr.20180318145515.814"><vh> Widgets: general</vh></v>
-<v t="ekr.20180318145515.815"><vh>Body &amp; other text</vh></v>
-<v t="ekr.20180318145515.816"><vh>Borders</vh></v>
-<v t="ekr.20180318145515.817"><vh>Buttons</vh></v>
-<v t="ekr.20190531140643.1"><vh>Dock</vh></v>
-<v t="ekr.20180318145515.818"><vh>Log</vh></v>
-<v t="ekr.20181005084517.1"><vh>Gutter</vh></v>
-<v t="ekr.20180318145515.819"><vh>Menus</vh></v>
-<v t="ekr.20180318145515.820"><vh>Minibuffer &amp; label</vh></v>
-<v t="ekr.20180318145515.821"><vh>Plugins</vh></v>
-<v t="ekr.20180318145515.822"><vh>Scroll bars</vh></v>
-<v t="ekr.20180318145515.823"><vh>Splitters</vh></v>
-<v t="ekr.20180318145515.824"><vh>Status area</vh></v>
-<v t="ekr.20180318145515.825"><vh>Tab bar</vh></v>
-<v t="ekr.20180318145515.826"><vh>Tree</vh></v>
-</v>
 </v>
 <v t="ekr.20201221102453.1"><vh>Syntax coloring</vh>
 <v t="ekr.20180318145515.753"><vh>Color names for syntax coloring</vh>
@@ -177,9 +146,40 @@
 </v>
 </v>
 </v>
-<v t="ekr.20180318145515.796"></v>
-<v t="ekr.20180318145515.813"></v>
-<v t="ekr.20180318145515.822"></v>
+<v t="ekr.20180318145515.796"><vh>Fonts &amp; text sizes</vh>
+<v t="ekr.20180318145515.797"><vh>@string font-family = DejaVu Sans Mono, Inconsolata, Droid Sans Mono</vh></v>
+<v t="ekr.20180318145515.798"><vh>@string font-family-body =@font-family</vh></v>
+<v t="ekr.20180318145515.799"><vh>@string font-family-log =@font-family</vh></v>
+<v t="ekr.20180318145515.800"><vh>@string font-family-tree =@font-family</vh></v>
+<v t="ekr.20180318145515.801"><vh>@string font-size-body = 12pt</vh></v>
+<v t="ekr.20180318145515.802"><vh>@string font-size-log = 12pt</vh></v>
+<v t="ekr.20180318145515.803"><vh>@string font-size-tree = 12pt</vh></v>
+</v>
+<v t="ekr.20201221073034.1"><vh>Plugins</vh>
+<v t="ekr.20180318145515.811"><vh>@bool color_theme_is_dark = True</vh></v>
+</v>
+<v t="ekr.20201221073050.1"><vh>Style sheet</vh>
+<v t="ekr.20180318145515.813"><vh>@data qt-gui-plugin-style-sheet</vh>
+<v t="ekr.20180318145515.814"><vh>Widgets: general</vh></v>
+<v t="ekr.20180318145515.815"><vh>Body &amp; other text</vh></v>
+<v t="ekr.20180318145515.816"><vh>Borders</vh></v>
+<v t="ekr.20180318145515.817"><vh>Buttons</vh></v>
+<v t="tom.20260722185345.1"><vh>Checkboxes</vh></v>
+<v t="ekr.20190531140643.1"><vh>Dock</vh></v>
+<v t="ekr.20180318145515.818"><vh>Log</vh></v>
+<v t="ekr.20181005084517.1"><vh>Gutter</vh></v>
+<v t="ekr.20180318145515.819"><vh>Menus</vh></v>
+<v t="ekr.20180318145515.820"><vh>Minibuffer &amp; label</vh></v>
+<v t="ekr.20180318145515.821"><vh>Plugins</vh></v>
+<v t="tom.20260722145106.1"><vh>Radio Buttons</vh></v>
+<v t="ekr.20180318145515.822"><vh>Scroll bars</vh></v>
+<v t="ekr.20180318145515.823"><vh>Splitters</vh></v>
+<v t="ekr.20180318145515.824"><vh>Status area</vh></v>
+<v t="ekr.20180318145515.825"><vh>Tab bar</vh></v>
+<v t="ekr.20180318145515.826"><vh>Tree</vh></v>
+</v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180312110809.1"></t>
@@ -775,6 +775,7 @@ QPushButton:hover {
 }
 </t>
 <t tx="ekr.20180318145515.818">/* The log pane */
+
 QTextEdit#log-widget {
   background: @log_text_background_color;
   color: @log_text_foreground_color;
@@ -996,5 +997,37 @@ QLineEdit#editorLabel {
 <t tx="ekr.20240206072249.7">Numbers</t>
 <t tx="ekr.20240206072249.8">Standard Leo comment color.</t>
 <t tx="ekr.20240206072249.9">Nim nested comment.</t>
+<t tx="tom.20260722145106.1">QRadioButton::indicator {
+    width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    background-color: @text-background;
+    border: 1px solid @text_foreground;
+}
+
+QRadioButton::indicator:checked {
+    background-color: @text_foreground;
+    image: none;
+}
+
+QRadioButton::indicator:unchecked {
+    background-color: @text-background;
+}</t>
+<t tx="tom.20260722145153.1"></t>
+<t tx="tom.20260722185345.1">QCheckBox::indicator {
+    width: 14px;
+    height: 14px;
+    background-color: @text-background;
+    border: 1px solid @text_foreground;
+}
+
+QCheckBox::indicator:checked {
+    background-color: @text_foreground;
+    image: none;
+}
+
+QCheckBox::indicator:unchecked {
+    background-color: @text-background;
+}</t>
 </tnodes>
 </leo_file>

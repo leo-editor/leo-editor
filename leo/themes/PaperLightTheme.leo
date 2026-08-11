@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
+<leo_file xmlns:leo="https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
@@ -15,7 +15,7 @@
 <v t="chris.20180314054143.5"><vh>g.error/note/warning test</vh></v>
 <v t="chris.20180313181652.4"><vh>Colors: ???</vh></v>
 </v>
-<v t="chris.20180313181652.1"><vh>@settings</vh>
+<v t="chris.20180313181652.1" descendentVnodeUnknownAttributes="7d71005805000000302e332e3171017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>@settings</vh>
 <v t="chris.20180313181652.117"><vh>@string color_theme = light</vh></v>
 <v t="chris.20180322072943.1"><vh>Colors</vh>
 <v t="chris.20180313181652.15"><vh>Color definitions</vh>
@@ -65,9 +65,9 @@
 <v t="chris.20180315130317.1"><vh>@string font-size-menu = 12pt</vh></v>
 <v t="chris.20180315130516.1"><vh>@string font-size-tabs = 12pt</vh></v>
 </v>
-<v t="chris.20180313181652.79"><vh>Plugins settings</vh>
+<v t="chris.20180313181652.79" descendentVnodeUnknownAttributes="7d71005803000000302e3171017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Plugins settings</vh>
 <v t="chris.20180313181652.116"><vh>@bool color_theme_is_dark = False</vh></v>
-<v t="chris.20180313181652.80"><vh>bookmarks</vh>
+<v t="chris.20180313181652.80" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>bookmarks</vh>
 <v t="chris.20180313181652.81"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
 <v t="chris.20180313181652.82"><vh>bookmarks base</vh>
 <v t="chris.20180313181652.83"><vh>@color bookmarks_base_color = @text-foreground</vh></v>
@@ -113,8 +113,10 @@
 <v t="chris.20190828143751.1"><vh>Minibuffer</vh></v>
 <v t="chris.20190619152603.5"><vh>Active Widget Highlighting</vh></v>
 <v t="chris.20190619152603.6"><vh>Buttons</vh></v>
+<v t="tom.20260722190216.1"><vh>Checkboxes</vh></v>
 <v t="chris.20190619152603.7"><vh>Docks</vh></v>
 <v t="chris.20190620120545.1"><vh>Find Widget</vh></v>
+<v t="tom.20260722190242.1"><vh>Radio Buttons</vh></v>
 <v t="chris.20190620142003.1"><vh>Spell Widget</vh></v>
 <v t="chris.20190619152603.8"><vh>Tabs Widget</vh></v>
 <v t="chris.20190619152603.9"><vh>Menus</vh></v>
@@ -181,9 +183,9 @@ Notes:
 <t tx="chris.20180313181652.109"></t>
 <t tx="chris.20180313181652.110">bold or regular</t>
 <t tx="chris.20180313181652.111"></t>
-<t tx="chris.20180313181652.116" lineYOffset="4b002e">Set to true for dark themes, so bookmarks.py can generate
+<t tx="chris.20180313181652.116">Set to true for dark themes, so bookmarks.py can generate
 random background colors which are appropriate etc.</t>
-<t tx="chris.20180313181652.117" lineYOffset="4b002e">Name of the theme,
+<t tx="chris.20180313181652.117">Name of the theme,
 used to find icon files</t>
 <t tx="chris.20180313181652.15"></t>
 <t tx="chris.20180313181652.16">Use a light color, not black!
@@ -201,7 +203,7 @@ used to find icon files</t>
 <t tx="chris.20180313181652.27"></t>
 <t tx="chris.20180313181652.28"># Not an official solarized color: same as solorarized-base3</t>
 <t tx="chris.20180313181652.29"></t>
-<t tx="chris.20180313181652.30" lineYOffset="4b002e">These settings must exist because they are *not* used in the css.</t>
+<t tx="chris.20180313181652.30">These settings must exist because they are *not* used in the css.</t>
 <t tx="chris.20180313181652.31">Maroon #9b0000
 Brown #a26b22
 Olive #808100
@@ -1282,5 +1284,36 @@ background: @hover;
 
 There are only five colors and it is very simple to modify.</t>
 <t tx="ekr.20201221110246.1"></t>
+<t tx="tom.20260722190216.1">QCheckBox::indicator {
+    width: 14px;
+    height: 14px;
+    background-color: @text-background;
+    border: 1px solid @text_foreground;
+}
+
+QCheckBox::indicator:checked {
+    background-color: @text_foreground;
+    image: none;
+}
+
+QCheckBox::indicator:unchecked {
+    background-color: @text-background;
+}</t>
+<t tx="tom.20260722190242.1">QRadioButton::indicator {
+    width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    background-color: @text-background;
+    border: 1px solid @text_foreground;
+}
+
+QRadioButton::indicator:checked {
+    background-color: @text_foreground;
+    image: none;
+}
+
+QRadioButton::indicator:unchecked {
+    background-color: @text-background;
+}</t>
 </tnodes>
 </leo_file>

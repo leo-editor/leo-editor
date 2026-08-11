@@ -47,7 +47,7 @@ def onCreate(tag, key):
 # @+node:ekr.20181004143535.7: ** class XdbPane
 if g.app.gui.guiName() == "qt":
 
-    class XdbPane(QtWidgets.QWidget):  # type:ignore
+    class XdbPane(QtWidgets.QWidget):
         """Create the contents of the Debug pane."""
 
         def __init__(self, c):
@@ -93,7 +93,7 @@ if g.app.gui.guiName() == "qt":
                 for name, func in table:
                     w = QtWidgets.QPushButton()
                     w.setText(name)
-                    w.clicked.connect(func)  # type:ignore
+                    w.clicked.connect(func)
                     hlayout.addWidget(w)
                 vlayout.addLayout(hlayout)
             layout.addLayout(vlayout)

@@ -22,9 +22,7 @@ assert os.path.exists(leo_editor_dir), repr(leo_editor_dir)
 assert os.path.isdir(leo_editor_dir), repr(leo_editor_dir)
 os.chdir(leo_editor_dir)
 
-isWindows = sys.platform.startswith('win')
-python = 'py' if isWindows else 'python'
-
+python = sys.executable
 for command in [
     f"{python} -m pip freeze > temp_requirements.txt",
     f"{python} -m pip uninstall -r temp_requirements.txt -y --verbose",
@@ -33,7 +31,7 @@ for command in [
     print('')
     print(command)
     print('')
-    subprocess.Popen(command, shell=True).communicate()
+    subprocess.run(command, shell=True)
 
 if os.path.exists('temp_requirements.txt'):
     print('')

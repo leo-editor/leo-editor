@@ -218,8 +218,8 @@ class VimCommander:
         if path and self.should_open_old_file(path, root):
             cmd = self.vim_cmd + "--remote-send '<C-\\><C-N>:e " + path + "<CR>'"
             if self.trace:
-                g.trace('os.system(%s)' % cmd)
-            os.system(cmd)
+                g.trace('subprocess.run(%s)' % cmd)
+            subprocess.run(cmd, shell=True, check=False)
         else:
             # Open a new temp file.
             if path:
@@ -279,7 +279,7 @@ class VimCommander:
             if g.os_path_exists(path):
                 os.remove(path)
         cmd = self.vim_cmd + "--remote-send '<C-\\><C-N>:bd " + path + "<CR>'"
-        os.system(cmd)
+        subprocess.run(cmd, shell=True, check=False)
 
     # @+node:ekr.20150326181247.1: *4* vim.get_cursor_arg
     def get_cursor_arg(self):
@@ -316,9 +316,9 @@ class VimCommander:
             ext = 'txt'
             fn = efc.create_temp_file(c, ext, c.p)
         c_arg = '%s %s' % (' '.join(args), fn)
-        command = 'subprocess.Popen(%s,shell=True)' % c_arg
+        command = f"subprocess.Popen({c_arg})"
         try:
-            subprocess.Popen(c_arg, shell=True)
+            subprocess.Popen(c_arg)
         except OSError:
             g.es_print(command)
             g.es_exception()

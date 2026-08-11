@@ -315,7 +315,7 @@ class MenuPopUp(QtWidgets.QMenu):
     # @+node:bob.20170726143458.13: *3* _info()
     def _info(self, what):
         QtWidgets.QMessageBox.information(self, 'Information Only', what)
-        self.exec_(QtWidgets.QApplication.desktop().screen().rect().center() - self.rect().center())  # type:ignore
+        self.exec_(QtWidgets.QApplication.desktop().screen().rect().center() - self.rect().center())
 
     # @-others
 

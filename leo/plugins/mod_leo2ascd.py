@@ -172,7 +172,7 @@ def WriteNode(v, startinglevel, ascFile):
         'Writes a line of text to the output file.'
         try:
             ascFile.write("%s\n" % lineString)
-        except IOError:
+        except OSError:
             g.es("Could not write to output file: %s" % ascFile.name)
             # statusOfWriteOutputLine = CV.END_PROGRAM
 
@@ -300,7 +300,7 @@ def WriteTreeAsAsc(p, fn):
     'Writes the tree under p to the file ascFile'
     try:
         ascFile = open(fn, 'w')
-    except IOError:
+    except OSError:
         g.es("Could not open output file: %s" % fn)
         return
     stopHere = p.nodeAfterTree()

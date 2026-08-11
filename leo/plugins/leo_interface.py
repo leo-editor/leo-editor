@@ -26,9 +26,7 @@ from typing import Any
 debug = False
 vnode_count = 0
 if debug:
-    allvnodes = {
-        # leo_file:None, # Fixed a valid pylint complaint. file is not defined.
-    }
+    allvnodes: dict = {}
     vnode_count = 0
     vnode_stack: list[Any] = []
 

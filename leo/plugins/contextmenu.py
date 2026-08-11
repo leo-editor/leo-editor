@@ -70,11 +70,12 @@ inited = False
 # @+node:ville.20090701224704.9805: *3* 'cm-external-editor'
 # cm is 'contextmenu' prefix
 @g.command('cm-external-editor')
-def cm_external_editor(event: LeoKeyEvent) -> None:
+def cm_external_editor(event: LeoKeyEvent | None = None) -> None:
     """Open node in external editor
 
     Set LEO_EDITOR/EDITOR environment variable to get the editor you want.
     """
+    assert event is not None
     c = event['c']
 
     editor, _ = getEditor(c)
@@ -90,7 +91,7 @@ def cm_external_editor(event: LeoKeyEvent) -> None:
 
 # @+node:tbrown.20121123075838.19937: *3* 'context_menu_open'
 @g.command('context-menu-open')
-def context_menu_open(event: LeoKeyEvent) -> None:
+def context_menu_open(event: LeoKeyEvent | None = None) -> None:
     """Provide a command for key binding to open the context menu"""
     event.c.frame.tree.onContextMenu(QtCore.QPoint(0, 0))
 
@@ -125,7 +126,6 @@ def install_handlers() -> None:
         marknodes_rclick,
         # deletenodes_rclick,
         openurl_rclick,
-        pylint_rclick,
     ]
     g.tree_popup_handlers.extend(handlers)
 
@@ -174,7 +174,7 @@ def configuredcommands_rclick(c: Cmdr, p: Position, menu: LeoQtMenu) -> None:
             w = g.app.gui.get_focus(c)
             # #2000: The log pane is a confusing special case.
             wrapper = getattr(w, 'wrapper', None) or getattr(w, 'leo_log_wrapper', None)  # #2000.
-            key_event = LeoKeyEvent(c, char=None, event=None, binding=None, w=wrapper)
+            key_event = LeoKeyEvent(c, w=wrapper)
             return lambda: c.doCommandByName(command_name, event=key_event)
 
         configcmd_rclick_cb = create_callback(command_name)
@@ -224,7 +224,7 @@ def deletenodes_rclick(c: Cmdr, p: Position, menu: LeoQtMenu) -> None:
         # move to a node that still exists
         for v in nextviz:
             pos = c.vnode2position(v)
-            if c.positionExists(pos):
+            if pos and c.positionExists(pos):
                 c.selectPosition(pos)
                 break
         else:
@@ -392,7 +392,7 @@ def openatleo_rclick(c: Cmdr, p: Position, menu: LeoQtMenu) -> None:
     def openatleo_rclick_cb() -> None:
         path = c.fullPath(p)
         if g.os_path_exists(path):
-            g.openWithFileName(path, old_c=c)  # type:ignore
+            g.openWithFileName(path, old_c=c)
         else:
             g.red(f"file not found: {path}")
 
@@ -400,17 +400,6 @@ def openatleo_rclick(c: Cmdr, p: Position, menu: LeoQtMenu) -> None:
     if len(split) >= 2 and p.isAtLeoNode():
         action = menu.addAction("Open @leo file")
         action.triggered.connect(openatleo_rclick_cb)
-
-
-# @+node:ekr.20140724211116.19258: *3* pylint_rclick
-def pylint_rclick(c: Cmdr, p: Position, menu: LeoQtMenu) -> None:
-    """Run pylint on the selected node."""
-    action = menu.addAction("Run Pylint")
-
-    def pylint_rclick_cb(aBool: bool) -> None:
-        c.doCommandByName('pylint')
-
-    action.triggered.connect(pylint_rclick_cb)
 
 
 # @+node:ekr.20140724211116.19256: ** Helpers

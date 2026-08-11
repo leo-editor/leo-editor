@@ -30,7 +30,7 @@ free-layout-zoom
 # @+node:tbrown.20110203111907.5520: ** << free_layout imports >>
 from __future__ import annotations
 import json
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 #
@@ -40,7 +40,7 @@ try:  # #1973
     from leo.core.leoQt import MouseButton
     from leo.plugins.nested_splitter import NestedSplitter  # NestedSplitterChoice
 except Exception:
-    QtWidgets = None
+    QtWidgets = None  # type:ignore
     MouseButton = None  # type:ignore
     NestedSplitter = None  # type:ignore
 
@@ -184,7 +184,7 @@ class FreeLayoutController:
         layout = top_splitter.get_saveable_layout()
         nd = g.findNodeAnywhere(c, "@data free-layout-layout")
         if not nd:
-            settings: Position
+            settings: Position | None
             settings = g.findNodeAnywhere(c, "@settings")
             if not settings:
                 settings = c.rootPosition().insertAfter()
@@ -198,7 +198,7 @@ class FreeLayoutController:
         c.redraw()
 
     # @+node:ekr.20160424035257.1: *3* flc.get_main_splitter
-    def get_main_splitter(self, w: QTextMixin = None) -> Optional[NestedSplitter]:
+    def get_main_splitter(self, w: QTextMixin | None = None) -> NestedSplitter | None:
         """
         Return the main splitter.
 
@@ -208,7 +208,7 @@ class FreeLayoutController:
         return top if top.objectName() == 'main_splitter' else None
 
     # @+node:ekr.20160424035254.1: *3* flc.get_secondary_splitter
-    def get_secondary_splitter(self) -> Optional[NestedSplitter]:
+    def get_secondary_splitter(self) -> NestedSplitter | None:
         """
         Return the secondary splitter, that is, the splitter containing the outline pane.
         """
@@ -221,7 +221,7 @@ class FreeLayoutController:
         return None
 
     # @+node:tbrown.20110621120042.22914: *3* flc.get_top_splitter
-    def get_top_splitter(self) -> Optional[NestedSplitter]:
+    def get_top_splitter(self) -> NestedSplitter | None:
         """Return the top splitter of c.frame.top."""
         f = self.c.frame
         if hasattr(f, 'top') and f.top:
@@ -254,11 +254,9 @@ class FreeLayoutController:
         if trace:
             g.trace(tag)
             g.printObj(keys, tag="keys")
-        layout = c.config.getData("free-layout-layout")
-        if layout:
+        if layout := c.config.getData("free-layout-layout"):
             layout = json.loads('\n'.join(layout))
-        name = c.db.get('_ns_layout')
-        if name:
+        if name := c.db.get('_ns_layout'):
             if reloading:
                 name = c.free_layout.original_layout
                 c.db['_ns_layout'] = name
@@ -276,19 +274,17 @@ class FreeLayoutController:
             for name in sorted(d.keys()):
 
                 def func(event: LeoKeyEvent) -> None:
-                    layout = d.get(name)
-                    if layout:
+                    if layout := d.get(name):  # noqa
                         c.free_layout.get_top_splitter().load_layout(c, layout)
                     else:
-                        g.trace('no layout', name)
+                        g.trace('no layout', name)  # noqa
 
                 name_s = name.strip().lower().replace(' ', '-')
                 commandName = f"free-layout-load-{name_s}"
                 c.k.registerCommand(commandName, func)
         # Careful: we could be unit testing or in the Leo bridge.
         if layout:
-            splitter = c.free_layout.get_top_splitter()
-            if splitter:
+            if splitter := c.free_layout.get_top_splitter():
                 splitter.load_layout(c, layout)
 
     # @+node:tbrown.20110628083641.11730: *3* flc.ns_context
@@ -297,8 +293,7 @@ class FreeLayoutController:
             ('Embed layout', '_fl_embed_layout'),
             ('Save layout', '_fl_save_layout'),
         ]
-        d = g.app.db.get('ns_layouts', {})
-        if d:
+        if d := g.app.db.get('ns_layouts', {}):
             ans.append({'Load layout': [(k, '_fl_load_layout:' + k) for k in d]})
             ans.append({'Delete layout': [(k, '_fl_delete_layout:' + k) for k in d]})
             ans.append(('Forget layout', '_fl_forget_layout:'))
@@ -369,7 +364,7 @@ class FreeLayoutController:
         return False
 
     # @+node:tbrown.20110628083641.11724: *3* flc.ns_provide
-    def ns_provide(self, id_: str) -> Optional[str | QTextMixin]:
+    def ns_provide(self, id_: str) -> str | QTextMixin | None:
         if id_.startswith('_leo_tab:'):
             id_ = id_.split(':', 1)[1]
             top = self.get_top_splitter()
@@ -385,8 +380,7 @@ class FreeLayoutController:
             return 'USE_EXISTING'
         if id_.startswith('_leo_pane:'):
             id_ = id_.split(':', 1)[1]
-            w = self.get_top_splitter().find_child(QtWidgets.QWidget, id_)
-            if w:
+            if w := self.get_top_splitter().find_child(QtWidgets.QWidget, id_):
                 w.setHidden(False)  # may be from Tab holder
                 w.setMinimumSize(20, 20)
             return w
@@ -415,7 +409,7 @@ class FreeLayoutController:
         self,
         splitter: QSplitter,
         handle: QSplitter,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None,
         release: str,
         double: bool,
     ) -> None:
@@ -429,6 +423,8 @@ class FreeLayoutController:
         :param bool release: was it a Press or Release event
         :param bool double: was it a double click event
         """
+        if not event:
+            return
         if not release or event.button() != MouseButton.MiddleButton:
             return
         if splitter.root.zoomed:  # unzoom if *any* handle clicked
@@ -452,12 +448,14 @@ class FreeLayoutController:
 # @+node:ekr.20160416065221.1: ** commands: free_layout.py
 # @+node:tbrown.20140524112944.32658: *3* @g.command free-layout-context-menu
 @g.command('free-layout-context-menu')
-def free_layout_context_menu(event: LeoKeyEvent) -> None:
+def free_layout_context_menu(event: LeoKeyEvent | None = None) -> None:
     """
     Open free layout's context menu, using the first divider of the top
     splitter for context.
     """
-    c = event.get('c')
+    c = event.get('c') if event else None
+    if not c:
+        return
     splitter = c.free_layout.get_top_splitter()
     handle = splitter.handle(1)
     handle.splitter_menu(handle.rect().topLeft())
@@ -465,19 +463,19 @@ def free_layout_context_menu(event: LeoKeyEvent) -> None:
 
 # @+node:tbrown.20130403081644.25265: *3* @g.command free-layout-restore
 @g.command('free-layout-restore')
-def free_layout_restore(event: LeoKeyEvent) -> None:
+def free_layout_restore(event: LeoKeyEvent | None = None) -> None:
     """
     Restore layout outline had when it was loaded.
     """
-    c = event.get('c')
-    c.free_layout.loadLayouts('reload', {'c': c}, reloading=True)
+    if c := event.get('c') if event else None:
+        c.free_layout.loadLayouts('reload', {'c': c}, reloading=True)
 
 
 # @+node:tbrown.20131111194858.29876: *3* @g.command free-layout-load
 @g.command('free-layout-load')
-def free_layout_load(event: LeoKeyEvent) -> None:
+def free_layout_load(event: LeoKeyEvent | None = None) -> None:
     """Load layout from menu."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if not c:
         return
     d = g.app.db.get('ns_layouts', {})
@@ -492,25 +490,23 @@ def free_layout_load(event: LeoKeyEvent) -> None:
     c.db['_ns_layout'] = name
     # layout = g.app.db['ns_layouts'][name]
     layouts = g.app.db.get('ns_layouts', {})
-    layout = layouts.get(name)
-    if layout:
+    if layout := layouts.get(name):
         c.free_layout.get_top_splitter().load_layout(c, layout)
 
 
 # @+node:tbrown.20140522153032.32658: *3* @g.command free-layout-zoom
 @g.command('free-layout-zoom')
-def free_layout_zoom(event: LeoKeyEvent) -> None:
+def free_layout_zoom(event: LeoKeyEvent | None = None) -> None:
     """(un)zoom the current pane."""
-    c = event.get('c')
-    c.free_layout.get_top_splitter().zoom_toggle()
+    if c := event.get('c') if event else None:
+        c.free_layout.get_top_splitter().zoom_toggle()
 
 
 # @+node:ekr.20160327060009.1: *3* free_layout:register_provider
 def register_provider(c: Cmdr, provider_instance: object) -> None:
     """Register the provider instance with the top splitter."""
     if getattr(c, 'free_layout', None):
-        splitter = c.free_layout.get_top_splitter()
-        if splitter:
+        if splitter := c.free_layout.get_top_splitter():
             splitter.register_provider(provider_instance)
 
 

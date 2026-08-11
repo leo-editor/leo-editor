@@ -2,11 +2,154 @@
 #@+node:ekr.20240406013108.1: * @file ../../ruff.toml
 #@@language toml
 
-# This file includes options only for the ruff linter.
-# pyproject.toml contains all `ruff format` options.
+# When this file exists, ruff ignores pyproject.toml's [tool.ruff] and [tool.ruff.format] tables.
+# Options must be repeated here to  take effect!
+
+line-length = 100
+
+extend-exclude = ["*.md"]
+
+[format]
+docstring-code-format = false
+indent-style = "space"
+line-ending = "lf"
+quote-style = "preserve"
 
 [lint]
+
+# #4855: pylint-leo-rc-ref.txt enabled only the basic/classes/format/imports/typecheck/variables
+# checkers (minus its own ~60 message disables, plus the design/similarities categories, which
+# have no ruff equivalent -- see #4855). These are ruff's PL* rules that overlap: same message,
+# same numeric id (e.g. pylint's W0602 <-> ruff's PLW0602), just with a `PL` prefix.
+extend-select = [
+
+    # basic
+    "PLC0105",  # Type var name does not reflect its variance
+    "PLC0131",  # Type var cannot be both covariant and contravariant
+    "PLC0132",  # Type var name does not match assigned variable name
+    "PLE0100",  # `__init__` method is a generator
+    "PLE0101",  # Explicit return in `__init__`
+    "PLE0115",  # Name is both `nonlocal` and `global`
+    "PLE0117",  # Nonlocal name found without binding
+    "PLE0118",  # Name is used prior to global declaration
+    "PLR0124",  # Name compared with itself
+    "PLR0133",  # Two constants compared in a comparison
+    "PLW0120",  # `else` clause on loop without a `break` statement
+    "PLW0127",  # Self-assignment of variable
+    "PLW0129",  # Asserting on an empty string literal will never pass
+    "PLW0131",  # Named expression used without context
+    "PLW0133",  # Missing `raise` statement on exception
+    "PLW0177",  # Comparing against a NaN value; use `math.isnan` instead
+
+    # classes
+    "PLC0205",  # Class `__slots__` should be a non-string iterable
+    "PLE0237",  # Attribute is not defined in class's `__slots__`
+    "PLE0241",  # Duplicate base class
+    "PLE0302",  # Special dunder method has an unexpected signature
+    "PLE0303",  # `__len__` does not return a non-negative integer
+    "PLE0304",  # `__bool__` does not return `bool`
+    "PLE0305",  # `__index__` does not return an integer
+    "PLE0307",  # `__str__` does not return `str`
+    "PLE0308",  # `__bytes__` does not return `bytes`
+    "PLE0309",  # `__hash__` does not return an integer
+    "PLR0206",  # Property cannot have parameters
+    "PLW0211",  # First argument of a static method should not be `self`/`cls`
+    "PLW0245",  # `super` call is missing parentheses
+
+    # imports
+    "PLC0414",  # Import alias does not rename original package
+
+    # typecheck
+    "PLE1132",  # Repeated keyword argument
+    "PLE1142",  # `await` should be used within an async function
+
+    # Not selected: PLE1141, PLR0202, PLR0203, PLW0244 are still preview-only
+    # in this ruff version, so selecting them has no effect (ruff warns and
+    # skips them) unless preview mode is enabled.
+
+    # variables
+    "PLE0604",  # Invalid object in `__all__`, must contain only strings
+    "PLE0605",  # Invalid format for `__all__`, must be `tuple` or `list`
+    "PLE0643",  # Expression is likely to raise `IndexError`
+    "PLW0604",  # `global` at module level is redundant
+    "PLW0642",  # Reassigned `self`/`cls` variable
+]
+
 ignore = [
+
+    # New suppressions: Keep these for now.
+    
+    "B008",     # Do not perform function call in argument defaults
+    "B019",     # Use of `functools.lru_cache` or `functools.cache` on methods can lead to memory leaks
+    "B020",     # Loop control variable `p` overrides iterable it iterates
+    "BLE001",   # Do not catch blind exception: `Exception`
+    "C400",     # Unnecessary generator (rewrite as a list comprehension)
+    "C401",     # Unnecessary generator (rewrite as a set comprehension)
+    "C402",     # Unnecessary generator (rewrite as a dict comprehension)
+    "C403",     # Unnecessary list comprehension (rewrite as a set comprehension)
+    "C404",     # Unnecessary list comprehension (rewrite as a dict comprehension)
+    "C405",     # Unnecessary list literal (rewrite as a set literal)
+    "C408",     # Unnecessary `dict()` call (rewrite as a literal)
+    "C413",     # Unnecessary `list()` call around `sorted()`
+    "C414",     # Unnecessary `list()` call within `sorted()`
+    "C417",     # Unnecessary `map()` usage (rewrite using a generator expression)
+
+    "FLY002",   # Consider `f'{root.h}-->{p.h}'` instead of string join
+    "FURB105",  # Unnecessary empty string passed to `print`
+    "FURB167",  # Use of regular expression alias `re.M`
+    "FURB188",  # Prefer `str.removesuffix()` over conditionally replacing with slice.
+    "PERF102",  # When using only the values of a dict use the `values()` method
+    "PERF402",  # Use `list` or `list.copy` to create a copy of a list
+    "PIE794",   # Class field `valid_unls` is defined multiple times
+    "PLC0206",  # Extracting value from dictionary without calling `.items()`
+    "PLR1704",  # Redefining argument with the local name `p`
+    "PYI041",   # Use `float` instead of `int | float`
+    
+    # Some of these produce dense code.
+    "RUF010",   # Use explicit conversion flag
+    "RUF012",   # Mutable default value for class attribute
+    "RUF015",   # Prefer `next(...)` over single element slice
+    "RUF051",   # Use `pop` instead of `key in dict` followed by `del dict[key]`
+    "RUF100",   # Unused blanket `noqa` directive
+    "RUF059",   # Unpacked variable is never used
+    
+    # Security.
+    "S102",     # Use of `exec` detected
+    "S110",     # `try`-`except`-`pass` detected, consider logging the exception
+    "S112",     # `try`-`except`-`continue` detected, consider logging the exception
+    
+    # Simplicity.
+    "SIM102",   # Use a single `if` statement instead of nested `if` statements
+    "SIM103",   # Return the negated condition directly
+    "SIM113",   # Use `enumerate()` for index variable `id_` in `for` loop
+    "SIM114",   # Combine `if` branches using logical `or` operator
+    "SIM115",   # Use a context manager for opening files
+    "SIM117",   # Use a single `with` statement with multiple contexts instead of nested `with` statements
+    "SIM118",   # Use `key in dict` instead of `key in dict.keys()`
+    "SIM222",   # Use `True` instead of `True or ...`
+    "SIM223",   # Use `False` instead of `False and ...`
+    "SIM905",   # Consider using a list literal instead of `str.split`
+
+    "T100",     # Import for `xxx` found
+    "TRY004",   # Prefer `TypeError` exception for invalid type
+    "UP028",    # Replace `yield` over `for` loop with `yield from`
+    "UP030",    # Use implicit references for positional format fields
+    "UP031",    # Use format specifiers instead of percent format
+    "UP032",    # Use f-string instead of `format` call
+    
+    # Do not enable.
+    "PLW0406",  # Module imports itself. There are also pylint suppressions.
+    "PLW0602",  # Using global for but no assignment is done
+    "PLW1510",  # `subprocess.run` without explicit `check` argument
+
+    # These compare the git executable bit to the presence of a shebang line.
+    # The check is disabled on Windows and WSL, so it can't be verified before
+    # pushing, and the executable bit drifts easily across platforms/editors.
+    "EXE001",   # Shebang is present but file is not executable
+    "EXE002",   # The file is executable but no shebang is present
+
+    # Previous suppressions. Keep these.
+    
     "E402", # Module level import not at top of file
     "E701", # Multiple statements on one line (colon)
     "E702", # Multiple statements on one line (semicolon)
@@ -14,15 +157,18 @@ ignore = [
     "E731", # Do not assign a `lambda` expression, use a `def`
     "E741", # Ambiguous variable name: `l`. Bad style, but only occurs in minor plugins.
 
-    "F401", # `xxx` imported but unused. Pyflakes checks this.
-    "F841", # Local variable `xxx` is assigned to but never used. Pyflakes checks this.
+    # #4855: F401/F841 (unused import/variable) used to be ignored here because
+    # flake8/pyflakes covered them instead. Now that ruff is the only linter,
+    # they're enabled -- ruff's F rules are on by default and not listed here.
+
+    "I001",     # Import block is un-sorted or un-formatted
+    "ISC004",   # Unparenthesized implicit string concatenation in collection
+    "N999",     # Invalid module name: 'test_leoUndo'
 ]
 
 exclude = [
     # Exclude entire folders...
     "leo/external/*.py",
-    "leo/external/npyscreen/*.py",
-    "leo/external/npyscreen/compatibility_code/*.py",
     "leo/plugins/obsolete/*.py",
     "leo/plugins/leo_babel/babel*.py",
     "leo/plugins/leo_babel/tests/*.py",
@@ -36,6 +182,6 @@ exclude = [
     "leo/test/scriptFile.py",  # Generated by *user* scripts.
     "leo/test/beautify_node.py",  # Generated from user scripts.
     "leo/unittests/py3_test_grammar.py",  # Contains many errors on purpose.
-]
+]  # fmt: skip
     
 #@-leo

@@ -22,9 +22,9 @@ class Xml_Importer(Importer):
     minimum_block_size = 2  # Helps handle one-line elements.
 
     # xml_i.add_tags defines all patterns.
-    block_patterns: tuple = tuple()
-    end_patterns: tuple = None
-    start_patterns: tuple = None
+    block_patterns: tuple
+    end_patterns: tuple
+    start_patterns: tuple
 
     def __init__(self, c: Cmdr, tags_setting: str = 'import_xml_tags') -> None:
         """Xml_Importer.__init__"""
@@ -60,7 +60,7 @@ class Xml_Importer(Importer):
         return g.truncate(s, 120)
 
     # @+node:ekr.20230518081757.1: *3* xml_i.find_end_of_block
-    def find_end_of_block(self, i1: int, i2: int) -> int:
+    def find_end_of_block(self, i: int, i2: int) -> int:
         """
         i is the index of the line *following* the start of the block.
 
@@ -68,7 +68,8 @@ class Xml_Importer(Importer):
         """
         # Get the tag that started the block
         tag_stack: list[str] = []
-        tag1: str = None
+        tag1: str = ''
+        i1 = i  # Remember the start of the block.
         line = self.guide_lines[i1 - 1]
         for pattern in self.start_patterns:
             if m := pattern.match(line):
@@ -77,7 +78,6 @@ class Xml_Importer(Importer):
                 break
         else:
             raise ImportError('No opening tag')
-        i = i1
         while i < i2:
             line = self.guide_lines[i]
             i += 1

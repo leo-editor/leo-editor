@@ -6,7 +6,7 @@ from collections.abc import Callable
 from leo.core import leoGlobals as g  # Required.
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
-import leo.plugins.writers.basewriter as basewriter
+from leo.plugins.writers import basewriter
 
 
 # @+others
@@ -20,7 +20,7 @@ class OrgModeWriter(basewriter.BaseWriter):
 
     # @+others
     # @+node:ekr.20171121020009.1: *3* orgw.load_nodetags
-    def load_nodetags(self) -> Callable:
+    def load_nodetags(self) -> Callable | None:
         """
         Load the nodetags.py plugin if necessary.
         Return c.theTagController.

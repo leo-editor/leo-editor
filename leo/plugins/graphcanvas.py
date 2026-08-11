@@ -126,7 +126,7 @@ def toggle_autoload(event):
 
 
 # @+node:bob.20110119123023.7395: ** class graphcanvasUI
-class graphcanvasUI(QtWidgets.QWidget):  # type:ignore
+class graphcanvasUI(QtWidgets.QWidget):
     # @+others
     # @+node:bob.20110119123023.7396: *3* __init__
     def __init__(self, owner=None):
@@ -199,7 +199,7 @@ class graphcanvasUI(QtWidgets.QWidget):  # type:ignore
 
 
 # @+node:bob.20110119123023.7397: ** class GraphicsView
-class GraphicsView(QtWidgets.QGraphicsView):  # type:ignore
+class GraphicsView(QtWidgets.QGraphicsView):
     # @+others
     # @+node:bob.20110119123023.7398: *3* __init__
     def __init__(self, glue, *args, **kargs):
@@ -267,16 +267,16 @@ class GetImage:
             testpath = src
             if '//' in testpath:
                 testpath = testpath.split('//', 1)[-1]
-            #
+
             # file on local file system
             testpath = g.finalize_join(path, testpath)
             if g.os_path_exists(testpath):
                 return QtWidgets.QGraphicsPixmapItem(QtGui.QPixmap(testpath))
-            #
+
             # explicit file://, but no such file exists
             if src.startswith('file://'):
                 return None if fail_ok else GetImage._no_image()
-        #
+
         # no explict file://, so try other protocols
         testpath = src if '//' in src else 'http://%s' % (src)
         data = GetImage.get_url(testpath)
@@ -305,7 +305,7 @@ class GetImage:
 
 
 # @+node:tbrown.20110407091036.17531: ** class nodeBase
-class nodeBase(QtWidgets.QGraphicsItemGroup):  # type:ignore
+class nodeBase(QtWidgets.QGraphicsItemGroup):
     node_types: dict[str, Any] = {}
 
     @classmethod
@@ -618,7 +618,7 @@ nodeBase.node_types[nodeImage.__name__] = nodeImage
 
 
 # @+node:bob.20110121161547.3424: ** class linkItem
-class linkItem(QtWidgets.QGraphicsItemGroup):  # type:ignore
+class linkItem(QtWidgets.QGraphicsItemGroup):
     """Node on the canvas"""
 
     # @+others
@@ -899,7 +899,7 @@ class graphcanvasController:
 
     # @+node:bob.20110119123023.7412: *3* loadLinked
     def loadLinked(self, what='linked'):
-        blc = getattr(self.c, 'backlinkController')
+        blc = getattr(self.c, 'backlinkController', None)
         if not blc:
             return
         while True:
@@ -963,7 +963,7 @@ class graphcanvasController:
         node.u['_bklnk']['x'] = nodeItem.x()
         node.u['_bklnk']['y'] = nodeItem.y()
 
-        blc = getattr(self.c, 'backlinkController')
+        blc = getattr(self.c, 'backlinkController', None)
         if blc:
             for link in blc.linksFrom(node):
                 if (node, link) in self.linkItem:
@@ -1003,8 +1003,7 @@ class graphcanvasController:
             # event is none if this is an internal call
             self.goto()
 
-        blc = getattr(self.c, 'backlinkController')
-
+        blc = getattr(self.c, 'backlinkController', None)
         if not blc:
             return
 
@@ -1026,7 +1025,7 @@ class graphcanvasController:
     # @+node:bob.20110119123023.7418: *3* pressLink (graphcanvas.py)
     def pressLink(self, linkItem, event):
         """nodeItem is telling us it was clicked"""
-        blc = getattr(self.c, 'backlinkController')
+        blc = getattr(self.c, 'backlinkController', None)
         if not blc:
             return
         # pylint: disable=superfluous-parens
@@ -1098,7 +1097,9 @@ class graphcanvasController:
             self.ui.canvas.removeItem(self.linkItem[i])
         self.linkItem = {}
 
-        blc = getattr(self.c, 'backlinkController')
+        blc = getattr(self.c, 'backlinkController', None)
+        if not blc:
+            return
 
         for i in list(self.nodeItem):
             # can't iterate dict because nodeTable can add items on update
@@ -1131,28 +1132,13 @@ class graphcanvasController:
             return
         v = self.node[self.lastNodeItem]
         p = self.c.vnode2position(v)
-        if self.c.positionExists(p):
+        if p and self.c.positionExists(p):
             self.internal_select = True
             self.c.selectPosition(p)
 
     # @+node:tbrown.20110205084504.15370: *3* scale_centers
     def scale_centers(self, direction):
         direction = 0.9 if direction < 0 else 1.1
-
-        minx = maxx = miny = maxy = None
-
-        for i in self.nodeItem:
-            if i.u['_bklnk']['x'] < minx or minx is None:
-                minx = i.u['_bklnk']['x']
-            if i.u['_bklnk']['x'] > maxx or maxx is None:
-                maxx = i.u['_bklnk']['x']
-            if i.u['_bklnk']['y'] < miny or miny is None:
-                miny = i.u['_bklnk']['y']
-            if i.u['_bklnk']['y'] > maxy or maxy is None:
-                maxy = i.u['_bklnk']['y']
-
-        midx = (minx + maxx) / 2.0
-        midy = (miny + maxy) / 2.0
 
         bbox = self.ui.canvas.itemsBoundingRect()
         midx = bbox.center().x()

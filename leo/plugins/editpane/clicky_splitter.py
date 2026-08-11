@@ -8,14 +8,14 @@ content by clicking on the splitter handle
 Terry Brown, TerryNBrown@gmail.com, Sun Oct 29 21:02:25 2017
 """
 
-from leo.core.leoQt import QtWidgets
+from leo.core.leoQt import QtGui, QtWidgets
 from leo.core.leoQt import MouseButton, Orientation
 
 
 class ClickySplitterHandle(QtWidgets.QSplitterHandle):
     """Handle which notifies splitter when it's clicked"""
 
-    def mouseReleaseEvent(self, event):
+    def mouseReleaseEvent(self, event: QtGui.QMouseEvent) -> None:
         """mouse event - mouse released on splitter handle,
 
         Args:
@@ -45,7 +45,7 @@ class ClickySplitter(QtWidgets.QSplitter):
             self._click_state = 'spin'
         else:
             vertical, horizontal = Orientation.Vertical, Orientation.Horizontal
-            self.setOrientation(vertical if self.orientation() == horizontal else vertical)
+            self.setOrientation(horizontal if self.orientation() == horizontal else vertical)
             self._click_state = 'flip'
 
 

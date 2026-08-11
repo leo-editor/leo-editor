@@ -1,7 +1,5 @@
-# coding: utf-8
 # @+leo-ver=5-thin
 # @+node:tbrown.20070117104409: * @file ../plugins/quickMove.py
-# @@first
 # @+<< docstring >>
 # @+node:tbrown.20070117104409.1: ** << docstring >>
 """Creates buttons to move nodes quickly to other nodes.
@@ -135,8 +133,9 @@ Tags
 
 # @+<< imports >>
 # @+node:tbrown.20070117104409.2: ** << imports >>
+from collections.abc import Callable, Sequence
 from copy import deepcopy
-from typing import Any, Sequence
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.plugins.mod_scripting import scriptingController
 
@@ -344,8 +343,8 @@ class quickMove:
         # c.frame.menu.createNewMenu('Move', 'Outline')
 
         self.local_imps: list[tuple] = []  # make table for createMenuItemsFromTable()
-        for func, name, text in self.imps:
-            self.local_imps.append((text, None, func))
+        for fn, _name, text in self.imps:
+            self.local_imps.append((text, None, fn))
 
         self.local_imps.extend(self.table)
         c.frame.menu.createMenuItemsFromTable('Move', self.table)
@@ -419,15 +418,16 @@ class quickMove:
                 # def cb_clear(event=None, c=c, v=v):
                 #     c.quickMove.clearButton(v)
 
-                for cb, txt in [
+                cb_list: list[tuple[Callable, str]] = [
                     (cb_goto_target, 'Goto target'),
                     (cb_permanent, 'Make permanent'),
                     # (cb_clear, 'Clear permanent'),
                     (cb_set_parent, 'Set parent'),
-                ]:
+                ]
+                for cb, txt in cb_list:
                     but = b.button
                     rc = QAction(txt, but)
-                    rc.triggered.connect(cb)  # type:ignore
+                    rc.triggered.connect(cb)
                     # insert rc before Remove Button
                     but.insertAction(but.actions()[-1], rc)
 

@@ -17,7 +17,7 @@ from leo.core import leoGlobals as g
 @g.command('table-align')
 def table_align(self, event=None):
     c = event.get('c')
-    controller = c and getattr(c, 'tableController')
+    controller = c and getattr(c, 'tableController', None)
     if controller:
         controller.align()
 
@@ -25,7 +25,7 @@ def table_align(self, event=None):
 @g.command('table-toggle-enabled')
 def table_toggle_enabled(self, event=None):
     c = event.get('c')
-    controller = c and getattr(c, 'tableController')
+    controller = c and getattr(c, 'tableController', None)
     if controller:
         controller.toggle()
 
@@ -83,7 +83,8 @@ class TableController:
 
         Important: the code must use event.ch, not stroke.
         """
-        w = self.ec.editWidget(event)
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         ch = event.char
         i, s, lines = self.get_table(ch, w)
         if lines:
@@ -144,7 +145,8 @@ class TableController:
     # @+node:ekr.20170218075243.1: *3* table.insert_newline
     def insert_newline(self, event):
         """TableController: override c.editCommands.insertNewLine."""
-        w = self.ec.editWidget(event)
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         i, s, lines = self.get_table('return', w)
         if lines:
             self.put('\n', event)

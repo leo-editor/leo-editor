@@ -153,7 +153,7 @@ class NodewatchController:
 
 
 # @+node:peckj.20131101132841.6451: ** class LeoNodewatchWidget
-class LeoNodewatchWidget(QtWidgets.QWidget):  # type:ignore
+class LeoNodewatchWidget(QtWidgets.QWidget):
     # @+others
     # @+node:peckj.20131101132841.6454: *3* __init__
     def __init__(self, c, parent=None):

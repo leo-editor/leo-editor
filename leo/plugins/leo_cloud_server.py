@@ -35,12 +35,6 @@ Maybe more granular and regular synchronization.
 
 ## General notes
 
- - todo.py used to put datetime.datetime objects in v.u, the tags.py
-   plugin puts set() objects in v.u.  Neither are JSON serializable.
-   Plan is to serialize to text (ISO date and JSON list), and not
-   fix on the way back in - tags.py can coerce the things it expects
-   to be sets to be sets.
-
  - for Phase 1 functionality at least it might be possible to use
    non-server back ends like Google Drive / Drop Box / git / WebDAV.
    Probably worth a layer to handle this for people with out access to a

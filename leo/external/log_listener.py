@@ -8,8 +8,6 @@ Leo's 'listen-for-log' command starts this listener.
 Leo's 'kill-log-listener' command ends this listener.
 
 Start this listener first, then start the broadcaster.
-
-leo/plugins/cursesGui2.py is a typical broadcaster.
 '''
 
 # @+<< log_listener imports >>

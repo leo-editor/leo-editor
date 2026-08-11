@@ -31,7 +31,7 @@ Author: vitalije(at)kviziracija.net
 # @-<< docstring >>
 # @+<< imports: history_tracer.py >>
 # @+node:vitalije.20190928154420.3: ** << imports: history_tracer.py >>
-import datetime
+import datetime as dt
 import time
 import threading
 from urllib.request import urlopen
@@ -69,7 +69,7 @@ def c12_hook(tag, keys):
 def init_idle_checker(tag, keys):
     global idle_checker
 
-    class IdleChecker(QtCore.QObject):  # type:ignore
+    class IdleChecker(QtCore.QObject):
         def __init__(self):
             QtCore.QObject.__init__(self)
             self._tid = self.startTimer(5000)
@@ -77,7 +77,7 @@ def init_idle_checker(tag, keys):
         def stop(self):
             self.killTimer(self._tid)
 
-        def timerEvent(self, ev):
+        def timerEvent(self, ev: QtCore.QTimerEvent) -> None:
             t = time.time()
             for i, cx in enumerate(g.app.commanders()):
                 t1 = cx.user_dict.get('last_command_at', t)
@@ -124,8 +124,8 @@ def save_snapshot(c):
 
 # @+node:vitalije.20190928160538.1: ** snap
 def snap(c):
-    dt = datetime.datetime.utcnow()
-    buf = [c.mFileName, '\n', dt.strftime('%Y-%m-%dT%H:%M:%S.000000'), '\n']
+    today = dt.datetime.now(tz=dt.timezone.utc)  # PR #4829
+    buf = [c.mFileName, '\n', today.strftime('%Y-%m-%dT%H:%M:%S.000000'), '\n']
     nbuf = {}
 
     def it(v, lev):

@@ -50,6 +50,7 @@ python_main_keywords_dict = {
     "ClassType": "keyword3",
     "CodeType": "keyword3",
     "ComplexType": "keyword3",
+    "ConnectionRefusedError": "keyword3",
     "DeprecationWarning": "keyword3",
     "DictProxyType": "keyword3",
     "DictType": "keyword3",

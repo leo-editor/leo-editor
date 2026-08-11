@@ -12,10 +12,7 @@ from leo.core.leoTest2 import LeoUnitTest
 from leo.plugins.importers.java import Java_Importer
 from leo.plugins.importers.python import Python_Importer
 from leo.plugins.importers.c import C_Importer
-import leo.plugins.importers.coffeescript as coffeescript
-import leo.plugins.importers.javascript as javascript
-import leo.plugins.importers.markdown as markdown
-import leo.plugins.importers.otl as otl
+from leo.plugins.importers import coffeescript, javascript, markdown, otl
 
 
 # @+others
@@ -112,7 +109,7 @@ class BaseTestImporter(LeoUnitTest):
         return '@file'
 
     # @+node:ekr.20230527075112.1: *3* BaseTestImporter.new_round_trip_test
-    def new_round_trip_test(self, s: str, expected_s: str = None, strict: bool = True) -> None:
+    def new_round_trip_test(self, s: str, expected_s: str = '', strict: bool = True) -> None:
 
         if not expected_s:  # Leo 6.8.7.
             # Define the *strict* expected results.
@@ -971,7 +968,7 @@ class TestHtml(BaseTestImporter):
         c = self.c
         # Simulate @data import-html-tags, with *only* standard tags.
         tags_list = ['html', 'body', 'head', 'div', 'script', 'table']
-        settingsDict, junk = g.app.loadManager.createDefaultSettingsDicts()
+        settingsDict, _ = g.app.loadManager.createDefaultSettingsDicts()
         c.config.settingsDict = settingsDict
         c.config.set(c.p, 'data', 'import-html-tags', tags_list, warn=True)
 
@@ -2103,8 +2100,8 @@ class TestMarkdown(BaseTestImporter):
             self.assertEqual(level, level2)
             self.assertEqual(name, name2)
         level3, name = x.is_hash('Not a hash')
-        assert level3 is None
-        assert name is None
+        assert level3 == 0
+        assert name == ''
 
     # @+node:ekr.20210904065459.129: *3* TestMarkdown.test_is_underline
     def test_is_underline(self):
@@ -2259,6 +2256,47 @@ class TestMarkdown(BaseTestImporter):
             ),
         )  # fmt: skip
         self.new_run_test(s, expected_results)  # check=False)
+
+    # @+node:axk.20260709133000.4: *3* TestMarkdown.test_markdown_importer_noheader_marker
+    def test_markdown_importer_noheader_marker(self):
+        s = """
+            <!-- leo-noheader level=1 headline=First%20hidden -->
+            First body
+            <!-- leo-noheader level=1 headline=Second%20hidden -->
+            Second body
+            ## Visible child
+            Child body
+            # Visible sibling
+            Sibling body
+        """
+        expected_results = (
+            (
+                0, '',  # Ignore the first headline.
+                '@language md\n'
+                '@tabwidth -4\n'
+            ),
+            (
+                1, 'First hidden',
+                '@noheader\n'
+                'First body\n'
+            ),
+            (
+                1, 'Second hidden',
+                '@noheader\n'
+                'Second body\n'
+            ),
+            (
+                2, 'Visible child',
+                'Child body\n'
+            ),
+            (
+                1, 'Visible sibling',
+                'Sibling body\n'
+            ),
+        )  # fmt: skip
+        p = self.run_test(s)
+        self.check_outline(p, expected_results)
+        self.check_round_trip(p, self.prep(s))
 
     # @+node:ekr.20210904065459.112: *3* TestMarkdown.test_markdown_importer_implicit_section
     def test_markdown_importer_implicit_section(self):
@@ -3721,7 +3759,7 @@ class TestPython(BaseTestImporter):
 
     class HistoryApp(Application):
 
-        subcommands = Dict(dict(
+        subcommands = dict(dict(
             trim = (HistoryTrim, HistoryTrim.description.splitlines()[0]),
             clear = (HistoryClear, HistoryClear.description.splitlines()[0]),
         ))
@@ -3794,7 +3832,7 @@ class TestPython(BaseTestImporter):
             ),
             (
                 2, 'HistoryApp.start',
-                'subcommands = Dict(dict(\n'
+                'subcommands = dict(dict(\n'
                 '    trim = (HistoryTrim, HistoryTrim.description.splitlines()[0]),\n'
                 '    clear = (HistoryClear, HistoryClear.description.splitlines()[0]),\n'
                 '))\n'
@@ -3817,9 +3855,6 @@ class TestPython(BaseTestImporter):
     def test_long_declaration(self):
 
         # ekr-mypy2/mypy/applytype.py
-
-        # Note: the return type uses the python 3.11 syntax for Union.
-
         s = """
         def get_target_type(
             tvar: TypeVarLikeType,
@@ -5258,7 +5293,7 @@ class TestXML(BaseTestImporter):
         c = self.c
         # Simulate @data import-xml-tags, with *only* standard tags.
         tags_list = ['html', 'body', 'head', 'div', 'script', 'table']
-        settingsDict, junk = g.app.loadManager.createDefaultSettingsDicts()
+        settingsDict, _ = g.app.loadManager.createDefaultSettingsDicts()
         c.config.settingsDict = settingsDict
         c.config.set(c.p, 'data', 'import-xml-tags', tags_list, warn=True)
 

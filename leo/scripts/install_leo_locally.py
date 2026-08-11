@@ -15,10 +15,10 @@ https://github.com/leo-editor/leo-editor/issues/3837
 
 import glob
 import os
-import sys
 import subprocess
+import sys
 
-version = '6.8.8'
+version = '6.8.9'
 
 file_name = os.path.basename(__file__)
 
@@ -43,9 +43,10 @@ else:
     wheel_file = f"leo-{version}-py3-none-any.whl"
     #  --no-cache-dir  # slow
     #  --force-reinstall
-    command = rf"python -m pip install {dist_dir}{os.sep}{wheel_file}"
+    python = sys.executable
+    command = rf"{python} -m pip install {dist_dir}{os.sep}{wheel_file}"
     print(command)
-    subprocess.Popen(command, shell=True).communicate()
+    subprocess.run(command, shell=True)
 
     # List site-packages/leo*.
     python_dir = os.path.dirname(sys.executable)

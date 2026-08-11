@@ -16,7 +16,7 @@ import textwrap
 import time
 import unittest
 import warnings
-from typing import Any, TYPE_CHECKING
+from typing import Any, cast, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoApp
 
@@ -65,7 +65,7 @@ def create_app(gui_name: str = 'null') -> Cmdr:
     g.app.config = leoConfig.GlobalConfigManager()
     g.app.jupytextManager = leoJupytext.JupytextManager()
     # Disable dangerous code.
-    g.app.db = g.NullObject('g.app.db')  # type:ignore
+    g.app.db = g.NullObject(ivars=['g.app.db'])
     g.app.pluginsController = g.NullObject('g.app.pluginsController')  # type:ignore
     if gui_name == 'null':
         g.app.gui = NullGui()
@@ -75,12 +75,12 @@ def create_app(gui_name: str = 'null') -> Cmdr:
         raise TypeError(f"create_gui: unknown gui_name: {gui_name!r}")
     t3 = time.process_time()
     # Create the commander, for c.initObjects.
-    c = leoCommands.Commands(fileName=None, gui=g.app.gui)
+    c = leoCommands.Commands(fileName='', gui=g.app.gui)
     # Create minimal config dictionaries.
     settings_d, bindings_d = lm.createDefaultSettingsDicts()
     lm.globalSettingsDict = settings_d
     lm.globalBindingsDict = bindings_d
-    c.config.settingsDict = settings_d
+    cast(Any, c.config).settingsDict = settings_d
     assert g.unitTesting is True  # Defensive.
     t4 = time.process_time()
     if trace and t4 - t3 > 0.1:  # pragma: no cover
@@ -137,7 +137,7 @@ class LeoUnitTest(unittest.TestCase):
         c.selectPosition(self.root_p)
 
     def tearDown(self) -> None:
-        self.c = None
+        self.c = None  # type:ignore
 
     # @+node:ekr.20230703103458.1: *3* LeoUnitTest._set_setting
     def _set_setting(self, c: Cmdr, kind: str, name: str, val: Any) -> None:
@@ -172,7 +172,7 @@ class LeoUnitTest(unittest.TestCase):
             print(f"{p.gnx:<28} {head_s:<20} body: {p.b!r}")
 
     # @+node:ekr.20230720210931.1: *4* LeoUnitTest.dump_clone_info
-    def dump_clone_info(self, c: Cmdr, tag: str = None) -> None:
+    def dump_clone_info(self, c: Cmdr, tag: str = '') -> None:
         """Dump all clone info."""
         print('')
         g.trace(f"{tag or ''} {c.fileName()}")
@@ -184,7 +184,7 @@ class LeoUnitTest(unittest.TestCase):
             )
 
     # @+node:ekr.20220805071838.1: *4* LeoUnitTest.dump_headlines
-    def dump_headlines(self, c: Cmdr, tag: str = None) -> None:  # pragma: no cover
+    def dump_headlines(self, c: Cmdr, tag: str = '') -> None:  # pragma: no cover
         """Dump all headlines."""
         print('')
         g.trace(f"{tag or ''} {c.fileName()}")
@@ -193,13 +193,13 @@ class LeoUnitTest(unittest.TestCase):
             print(f"{p.gnx:25}: {' ' * p.level()}{p.h}")
 
     # @+node:ekr.20220806170537.1: *4* LeoUnitTest.dump_string
-    def dump_string(self, s: str, tag: str = None) -> None:
+    def dump_string(self, s: str, tag: str = '') -> None:
         if tag:
             print(tag)
         g.printObj([f"{i:2} {z.rstrip()}" for i, z in enumerate(g.splitLines(s))])
 
     # @+node:ekr.20211129062220.1: *4* LeoUnitTest.dump_tree
-    def dump_tree(self, root: Position = None, tag: str = None) -> None:  # pragma: no cover
+    def dump_tree(self, root: Position | None = None, tag: str = '') -> None:  # pragma: no cover
         """
         Dump root's tree, or the entire tree if root is None.
         """
@@ -237,7 +237,7 @@ class LeoUnitTest(unittest.TestCase):
     def create_test_outline(self) -> None:
         p = self.c.p
         # Create the following outline:
-        #
+
         # root
         #   child clone a
         #     node clone 1

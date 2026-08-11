@@ -31,13 +31,12 @@ class Pascal_Importer(Importer):
 
     # @+others
     # @+node:ekr.20230518071145.1: *3* pascal_i.find_end_of_block
-    def find_end_of_block(self, i1: int, i2: int) -> int:
+    def find_end_of_block(self, i: int, i2: int) -> int:
         """
         i is the index of the line *following* the start of the block.
 
         Return the index of the start of next block.
         """
-        i = i1
         while i < i2:
             line = self.guide_lines[i]
             if any(pattern.match(line) for pattern in self.patterns):

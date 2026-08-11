@@ -102,7 +102,7 @@ from leo.core.leoQt import QtWidgets
 try:
     import paramiko
 except ImportError:
-    paramiko = None
+    paramiko = None  # type:ignore
     if not g.unitTesting:
         print('sftp.py: can not import paramiko')
 
@@ -218,8 +218,11 @@ class SFTPController:
         parent = None
         title = "Enter Password"
         # Mode is valid keyword.
-        password, ok = QtWidgets.QInputDialog.getText(  # type:ignore
-            parent, title, message, mode=QtWidgets.QLineEdit.Password
+        password, ok = QtWidgets.QInputDialog.getText(
+            parent,
+            title,
+            message,
+            mode=QtWidgets.QLineEdit.Password,  # type:ignore
         )
         password = str(password)
         if ok is False:

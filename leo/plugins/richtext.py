@@ -64,6 +64,7 @@ To make a button to toggle the editor on and off, use::
 # @+<< imports >>
 # @+node:tbrown.20130813134319.14335: ** << imports >> (richtext.py)
 import time
+from typing import Any, cast
 from urllib.parse import unquote
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets, QtWebKit, QtWebKitWidgets
@@ -95,7 +96,7 @@ def init():
 
 
 # @+node:tbrown.20130813134319.5691: ** class CKEEditor
-class CKEEditor(QtWidgets.QWidget):  # type:ignore
+class CKEEditor(QtWidgets.QWidget):
     # @+others
     # @+node:tbrown.20130813134319.7225: *3* __init__ & reloadSettings (CKEEditor)
     def __init__(self, *args, **kwargs):
@@ -137,7 +138,7 @@ class CKEEditor(QtWidgets.QWidget):  # type:ignore
         # read autosave preference
         if not hasattr(self.c, '_ckeeditor_autosave'):
             auto = self.c.config.getBool("richtext-cke-autosave") or False
-            self.c._ckeeditor_autosave = auto
+            cast(Any, self.c)._ckeeditor_autosave = auto
             if auto:
                 g.es("NOTE: automatic saving of rich text edits")
         # load config

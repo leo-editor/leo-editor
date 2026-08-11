@@ -60,7 +60,7 @@ multiprefix = '@multiprefix'
 multipath = '@multipath'
 haveseen: weakref.WeakKeyDictionary = weakref.WeakKeyDictionary()
 files: dict[str, Any] = {}  # Values are positions.
-original_precheck = None
+original_precheck: Any = None
 
 
 # @+others
@@ -70,16 +70,16 @@ def init():
     if g.unitTesting:
         return False
     global original_precheck
-    #
+
     # Append to the module list, not to the g.copy.
     g.globalDirectiveList.append('multipath')
     g.globalDirectiveList.append('multiprefix')
-    #
+
     # Override all instances of at.precheck
     at = leoAtFile.AtFile
     original_precheck = at.precheck
     g.funcToMethod(decorated_precheck, at, name='precheck')
-    #
+
     # g.registerHandler('save1',start)
     g.registerHandler('save2', stop)
     g.registerHandler(('new', 'menu2'), addMenu)

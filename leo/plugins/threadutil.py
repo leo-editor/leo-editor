@@ -146,7 +146,7 @@ class NowOrLater:
 
 
 # @+node:ekr.20121126095734.12427: ** class Repeater
-class Repeater(QtCore.QThread):  # type:ignore
+class Repeater(QtCore.QThread):
     """execute f forever, signal on every run"""
 
     fragment = QtCore.pyqtSignal(object)
@@ -180,7 +180,7 @@ class Repeater(QtCore.QThread):  # type:ignore
 
 
 # @+node:ekr.20121126095734.12424: ** class RRunner
-class RRunner(QtCore.QThread):  # type:ignore
+class RRunner(QtCore.QThread):
     # @+others
     # @+node:ekr.20121126095734.12425: *3* __init__
     def __init__(self, f, parent=None):
@@ -234,7 +234,8 @@ class SysProcessRunner:
             err = str(p.readAllStandardError())
             cb = ent['cb'] or self.default_cb
             later(self.sched)
-            cb(out, err, status, ent)
+            if cb:
+                cb(out, err, status, ent)
 
         cmd = ent['arg'][0]
         args = ent['arg'][1:]
@@ -268,7 +269,7 @@ class ThreadQueue:
 
 
 # @+node:ekr.20121126095734.12436: ** class UnitWorker
-class UnitWorker(QtCore.QThread):  # type:ignore
+class UnitWorker(QtCore.QThread):
     """Work on one work item at a time, start new one when it's done"""
 
     resultReady = QtCore.pyqtSignal()

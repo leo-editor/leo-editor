@@ -13,19 +13,19 @@ Plugins may define their own gui classes by setting g.app.gui.
 # @+node:ekr.20220414080546.1: ** << leoGui imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoFrame
 from leo.core.leoAPI import StringTextWrapper
+from leo.core.leoQt import QtWidgets
+from leo.plugins.qt_frame import LeoQTreeWidget
+from leo.plugins.qt_text import QLineEditWrapper, QTextEditWrapper, QTextMixin
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoFrame import NullFrame, NullIconBarClass
     from leo.core.leoNodes import Position
     from leo.plugins.qt_frame import FindTabManager
-    from leo.plugins.qt_text import QTextMixin
 
-    Value = Any
     Widget = Any  # 'Any' is the correct annotation for base class widgets.
 
 
@@ -39,12 +39,12 @@ class LeoGui:
     """
 
     # @+others
-    # @+node:ekr.20031218072017.3722: *3* LeoGui.__init__
+    # @+node:ekr.20031218072017.3722: *3*  LeoGui.__init__
     def __init__(self, guiName: str) -> None:
         """Ctor for the LeoGui class."""
         self.active = False  # Used only by qt_gui.
         self.consoleOnly = True  # True if g.es goes to console.
-        self.globalFindTabManager: FindTabManager = None
+        self.globalFindTabManager: FindTabManager | None = None
         self.globalFindTab: Widget = None
         self.idleTimeClass: Any = None  # Hard to annotate.
         self.isNullGui = False
@@ -52,34 +52,21 @@ class LeoGui:
         self.leoIcon = None
         self.mGuiName = guiName
         self.mainLoop = None
-        self.plainTextWidget: Widget = None  # For SpellTabHandler class only.
-        self.root: Position = None
-        self.script: Optional[str] = None
+        self.root: Position | None = None
+        self.script: str = ''
         self.splashScreen: Widget = None
         self.utils = None
         # To keep pylint happy.
         self.ScriptingControllerClass = NullScriptingControllerClass
-        #
+
         # Define special keys that may be overridden is subclasses.
         self.ignoreChars: list[str] = []  # Keys that should always be ignored.
         self.FKeys: list[str] = []  # The representation of F-keys.
         self.specialChars: list[str] = []  # A list of characters/keys to be handle specially.
 
-    # @+node:ekr.20260418103905.1: *3* LeoGui.create_wrapper_for_widget
-    def create_wrapper_for_widget(self, c: Cmdr, w: Widget) -> QTextMixin:
-        """May be overridden in subclasses."""
-        return StringTextWrapper(c)
-
     # @+node:ekr.20051206103652: *3* LeoGui.widget_name
     def widget_name(self, w: Widget) -> str:
-        # First try the widget's getName method.
-        if not w:
-            return '<no widget>'
-        if hasattr(w, 'getName'):
-            return w.getName()
-        if hasattr(w, '_name'):
-            return w._name
-        return repr(w)
+        return w.getName() or '' if hasattr(w, 'getName') else ''
 
     # @+node:ekr.20070228154059: *3* LeoGui: May be defined in subclasses
     def dismiss_splash_screen(self) -> None:
@@ -97,235 +84,26 @@ class LeoGui:
     def put_help(self, c: Cmdr, s: str, short_title: str) -> None:
         pass
 
-    # @+node:ekr.20061109212618: *3* LeoGui: Must be defined in subclasses
-    # @+node:ekr.20031218072017.3725: *4* LeoGui.destroySelf
-    def destroySelf(self) -> None:
-        raise NotImplementedError
-
-    # @+node:ekr.20031218072017.3730: *4* LeoGui.dialogs
-    def runAboutLeoDialog(
-        self,
-        c: Cmdr,
-        version: str,
-        theCopyright: str,
-        url: str,
-        email: str,
-    ) -> Any:  # Must be any, for compatibility with testing subclass.
-        """Create and run Leo's About Leo dialog."""
-        raise NotImplementedError
-
-    def runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -> Any:
-        """Create and run an askOK dialog ."""
-        raise NotImplementedError
-
-    def runAskOkCancelNumberDialog(
-        self,
-        c: Cmdr,
-        title: str,
-        message: str,
-        cancelButtonText: str = None,
-        okButtonText: str = None,
-    ) -> Any:
-        """Create and run askOkCancelNumber dialog ."""
-        raise NotImplementedError
-
-    def runAskOkCancelStringDialog(
-        self,
-        c: Cmdr,
-        title: str,
-        message: str,
-        cancelButtonText: str = None,
-        okButtonText: str = None,
-        default: str = "",
-        wide: bool = False,
-    ) -> Any:
-        """Create and run askOkCancelString dialog ."""
-        raise NotImplementedError
-
-    def runAskYesNoDialog(
-        self,
-        c: Cmdr,
-        title: str,
-        message: str = None,
-        yes_all: bool = False,
-        no_all: bool = False,
-    ) -> Any:
-        """Create and run an askYesNo dialog."""
-        raise NotImplementedError
-
-    def runAskYesNoCancelDialog(
-        self,
-        c: Cmdr,
-        title: str,
-        message: str = None,
-        yesMessage: str = "Yes",
-        noMessage: str = "No",
-        yesToAllMessage: str = None,
-        defaultButton: str = "Yes",
-        cancelMessage: str = None,
-    ) -> Any:
-        """Create and run an askYesNoCancel dialog ."""
-        raise NotImplementedError
-
-    def runPropertiesDialog(
-        self,
-        title: str = 'Properties',
-        data: Any = None,
-        callback: Callable = None,
-        buttons: list[str] = None,
-    ) -> Any:
-        """Display a modal TkPropertiesDialog"""
-        raise NotImplementedError
-
-    # @+node:ekr.20031218072017.3731: *4* LeoGui.file dialogs
-    def runOpenFileDialog(
-        self,
-        c: Cmdr,
-        title: str,
-        *,
-        filetypes: list[tuple[str, str]],
-        defaultextension: str = '',  # Not used
-        startpath: str = None,
-    ) -> str:
-        """Create and run an open file dialog ."""
-        raise NotImplementedError
-
-    def runOpenFilesDialog(
-        self,
-        c: Cmdr,
-        title: str,
-        *,
-        filetypes: list[tuple[str, str]],
-        defaultextension: str = '',  # Not used
-        startpath: str = None,
-    ) -> list[str]:
-        """Create and run an open files dialog ."""
-        raise NotImplementedError
-
-    def runSaveFileDialog(
-        self,
-        c: Cmdr,
-        title: str,
-        *,
-        filetypes: list[tuple[str, str]],
-        defaultextension: str = '',  # Not used
-    ) -> str:
-        """Create and run a save file dialog ."""
-        raise NotImplementedError
-
-    # @+node:ekr.20031218072017.3732: *4* LeoGui.panels
-    def createComparePanel(self, c: Cmdr) -> None:
-        """Create Compare panel."""
-        raise NotImplementedError
-
-    def createFindTab(self, c: Cmdr, parentFrame: Widget) -> None:
-        """Create a find tab in the indicated frame."""
-        raise NotImplementedError
-
-    def createFontPanel(self, c: Cmdr) -> None:
-        """Create a hidden Font panel."""
-        raise NotImplementedError
-
-    def createLeoFrame(self, c: Cmdr, title: str) -> Widget:
-        """Create a new Leo frame."""
-        raise NotImplementedError
-
-    # @+node:ekr.20031218072017.3729: *4* LeoGui.runMainLoop
-    def runMainLoop(self) -> None:
-        """Run the gui's main loop."""
-        raise NotImplementedError
-
-    # @+node:ekr.20031218072017.3733: *4* LeoGui.utils
-    # @+at Subclasses are expected to subclass all of the following methods.
-    # These are all do-nothing methods: callers are expected to check for
-    # None returns.
-    # The type of commander passed to methods depends on the type of frame
-    # or dialog being created. The commander may be a Commands instance or
-    # one of its subcommanders.
-    # @+node:ekr.20031218072017.3734: *5* LeoGui.Clipboard
-    def replaceClipboardWith(self, s: str) -> None:
-        raise NotImplementedError
-
-    def getTextFromClipboard(self) -> str:
-        raise NotImplementedError
-
-    # @+node:ekr.20031218072017.3735: *5* LeoGui.Dialog utils
-    def attachLeoIcon(self, window: Widget) -> None:
-        """Attach the Leo icon to a window."""
-        raise NotImplementedError
-
-    def center_dialog(self, dialog: str) -> None:
-        """Center a dialog."""
-        raise NotImplementedError
-
-    def create_labeled_frame(
-        self,
-        parent: str,
-        caption: str = None,
-        relief: str = "groove",
-        bd: int = 2,
-        padx: int = 0,
-        pady: int = 0,
-    ) -> None:
-        """Create a labeled frame."""
-        raise NotImplementedError
-
-    def get_window_info(self, window: str) -> tuple[int, int, int, int]:
-        """Return the window information."""
-        raise NotImplementedError
-
-    # @+node:ekr.20031218072017.3736: *5* LeoGui.Font
-    def getFontFromParams(
-        self,
-        family: str,
-        size: str,
-        slant: str,
-        weight: str,
-        defaultSize: int = 12,
-        tag: str = '',
-    ) -> Any:
-        raise NotImplementedError
-
-    # @+node:ekr.20070212145124: *5* LeoGui.getFullVersion
-    def getFullVersion(self, c: Cmdr = None) -> str:
-        return 'LeoGui: dummy version'
-
-    # @+node:ekr.20070212070820: *5* LeoGui.makeScriptButton
-    def makeScriptButton(
-        self,
-        c: Cmdr,
-        args: str = None,
-        p: Position = None,
-        script: str = None,
-        buttonText: str = None,
-        balloonText: str = 'Script Button',
-        shortcut: str = None,
-        bg: str = 'LightSteelBlue1',
-        define_g: bool = True,
-        define_name: str = '__main__',
-        silent: bool = False,
-    ) -> None:
-        raise NotImplementedError
-
     # @+node:ekr.20061109212618.1: *3* LeoGui: Must be defined only in base class
     # @+node:ekr.20110605121601.18847: *4* LeoGui.create_key_event
     def create_key_event(
         self,
         c: Cmdr,
         *,
-        binding: str = None,
-        char: str = None,
-        event: LeoKeyEvent = None,
-        w: QTextMixin = None,
-        x: int = None,
-        x_root: int = None,
-        y: int = None,
-        y_root: int = None,
+        binding: str = '',
+        char: str = '',
+        w: QTextMixin | None = None,
+        x: int | None = None,
+        x_root: int | None = None,
+        y: int | None = None,
+        y_root: int | None = None,
     ) -> LeoKeyEvent:
         # Do not call strokeFromSetting here!
         # For example, this would wrongly convert Ctrl-C to Ctrl-c,
         # in effect, converting a user binding from Ctrl-Shift-C to Ctrl-C.
-        return LeoKeyEvent(c, char, event, binding, w, x, y, x_root, y_root)
+        return LeoKeyEvent(
+            c, binding=binding, char=char, w=w, x=x, y=y, x_root=x_root, y_root=y_root
+        )
 
     # @+node:ekr.20031218072017.3740: *4* LeoGui.guiName
     def guiName(self) -> str:
@@ -335,7 +113,7 @@ class LeoGui:
             return "invalid gui name"
 
     # @+node:ekr.20031218072017.2231: *4* LeoGui.setScript
-    def setScript(self, script: str = None, scriptFileName: str = None) -> None:
+    def setScript(self, script: str = '', scriptFileName: str = '') -> None:
         self.script = script
         self.scriptFileName = scriptFileName
 
@@ -352,63 +130,129 @@ class LeoGui:
 class LeoKeyEvent:
     """A gui-independent wrapper for gui events."""
 
+    __slots__ = ('c', 'char', 'stroke', 'w', 'x', 'x_root', 'y', 'y_root')
+
     # @+others
-    # @+node:ekr.20110605121601.18846: *3* LeoKeyEvent.__init__
+    # @+node:ekr.20110605121601.18846: *3*  LeoKeyEvent.__init__
     def __init__(
         self,
         c: Cmdr,
-        char: str,
-        event: LeoKeyEvent,
-        binding: Any,
-        w: Any,
-        x: int = None,
-        y: int = None,
-        x_root: int = None,
-        y_root: int = None,
+        *,
+        binding: Any = None,
+        char: str = '',
+        w: Any = None,  # w can be either a Qt widget or one of Leo's wrappers.
+        x: int | None = None,
+        y: int | None = None,
+        x_root: int | None = None,
+        y_root: int | None = None,
     ) -> None:
-        """Ctor for LeoKeyEvent class."""
-        stroke: Any
-        if g.isStroke(binding):
-            g.trace('***** (LeoKeyEvent) oops: already a stroke', binding, g.callers())
-            stroke = binding
-        else:
-            stroke = g.KeyStroke(binding) if binding else None
-        assert g.isStrokeOrNone(stroke), f"(LeoKeyEvent) {stroke!r} {g.callers()}"
-        if 0:  # Doesn't add much.
-            if 'keys' in g.app.debug:
-                print(f"LeoKeyEvent: binding: {binding}, stroke: {stroke}, char: {char!r}")
+        """
+        Ctor for LeoKeyEvent class.
+
+        The `w` kwarg can be either a (Qt) widget or an instance of one of
+        Leo's wrapper classes.
+
+        This method *computes* `event.w`. When `w` is a text-related Qt *widget*,
+        this method ensures that `event.w` is the correct text *wrapper*.
+
+        This method is the "midpoint" of Leo's key-handling code:
+        - The "before" part is Qt's event handling, controlled by eventFiler methods.
+        - The "after" part consists of Leo's command handlers.
+        """
+        tag = 'LeoKeyEvent.__init__:'
         self.c = c
         self.char = char or ''
-        self.event = event  # New in Leo 4.11.
-        self.stroke = stroke
-        self.w = self.widget = w
-        self.wrapper = (
-            w if g.isTextWrapper(w)  # #4623.
-            else g.app.gui.create_wrapper_for_widget(c, w)
-        )  # fmt: skip
-        # Optional ivars
         self.x = x
         self.y = y
-        # Support for fastGotoNode plugin
         self.x_root = x_root
         self.y_root = y_root
 
-    # @+node:ekr.20140907103315.18774: *3* LeoKeyEvent.__repr__
+        # Compute self.stroke.
+        self.stroke: Any = (
+            binding if g.isStroke(binding) else g.KeyStroke(binding) if binding else None
+        )
+        assert g.isStrokeOrNone(self.stroke), f"(LeoKeyEvent) {self.stroke!r} {g.callers()}"
+
+        def info(obj: Any) -> str:
+            return f"char: {self.char!r:>6} {id(obj)} {obj.__class__.__name__} {obj_name(obj)}"
+
+        def obj_name(obj: Any) -> str:
+            return g.app.gui.widget_name(obj)
+
+        def trace(prefix: str, message: str) -> None:
+            if 'keys' in g.app.debug:
+                print(f"{tag} {prefix:>14}: {message}")
+
+        def trace_always(prefix: str, message: str) -> None:
+            print('')
+            print(f"{tag} {prefix:>14}: {message}")
+
+        if w is None:
+            # Special case for headlines.
+            if headline_wrapper := c.headline_wrapper(c.p):
+                self.w = headline_wrapper
+                trace('no w: in headline', self.w.__class__.__name__)
+                return
+            # Default to the widget with focus, if any.
+            w = g.app.gui.get_focus()
+            trace('no w --> ', w.__class__.__name__)
+            if w is None:
+                return
+
+        # trace(f" text? {isinstance(w, QTextMixin):1} w", info(w))
+
+        # Ensure that self.w is a wrapper for all key-related Qt widgets.
+        if c.widget_name(w).startswith('log'):
+            self.w = c.frame.log.logCtrl
+            return
+        if isinstance(w, QTextMixin):
+            trace('QTextMixin', info(w))
+            self.w = w
+            return
+        if wrapper := getattr(w, 'wrapper', None):
+            trace('w.wrapper', info(wrapper))
+            self.w = wrapper
+            return
+        if wrapper := getattr(w, 'leo_wrapper', None):
+            trace('w.leo_wrapper', info(wrapper))
+            self.w = wrapper
+            return
+        if isinstance(w, QtWidgets.QTextEdit):
+            # Inject the `leo_wrapper` ivar into the widget so that this method
+            # will never reallocate another wrapper for this widget.
+            self.w = w.leo_wrapper = QTextEditWrapper(widget=w, name=c.widget_name(w), c=c)
+            trace_always('new wrapper', f"{self.w.__class__.__name__} for {obj_name(w)}")
+            return
+        if isinstance(w, QtWidgets.QLineEdit):
+            self.w = w.leo_wrapper = QLineEditWrapper(widget=w, name=c.widget_name(w), c=c)
+            trace_always('New wrapper', f"{self.w.__class__.__name__} for {obj_name(w)}")
+            return
+        if isinstance(w, LeoQTreeWidget):  # A very special case.
+            self.w = w
+            return
+
+        # Anything should be valid here: we don't expect the wrapper to do key handling.
+        self.w = w
+        if c.widget_name(w).startswith(
+            ('body', 'canvas', 'head', 'mini', 'find-wrapper', 'MainWindow')
+        ):
+            trace('known w', info(w))
+        else:
+            trace('unusual w', info(w))
+
+    # @+node:ekr.20140907103315.18774: *3*  LeoKeyEvent.__repr__
     def __repr__(self) -> str:
-        result = [
-            'LeoKeyEvent:',
-            f"  {'c':>6}: {self.c.shortFileName()}",
-        ]
-        for ivar in ('char', 'event', 'stroke', 'w', 'widget', 'wrapper'):
-            result.append(f"  {ivar:>6}: {getattr(self, ivar)}")
-        return '\n'.join(result)
+        d = {'c': self.c.shortFileName()}
+        for ivar in ('char', 'stroke', 'w'):
+            d[ivar] = getattr(self, ivar)
+        return f"LeoKeyEvent:\n{g.objToString(d)}"
 
     # @+node:ekr.20150511181702.1: *3* LeoKeyEvent.get & __getitem__
-    def get(self, attr: str) -> Value:
+    def get(self, attr: str) -> Any:
         """Compatibility with g.bunch: return an attr."""
         return getattr(self, attr, None)
 
-    def __getitem__(self, attr: str) -> Value:
+    def __getitem__(self, attr: str) -> Any:
         """Compatibility with g.bunch: return an attr."""
         return getattr(self, attr, None)
 
@@ -424,7 +268,7 @@ class NullGui(LeoGui):
     """Null gui class."""
 
     # @+others
-    # @+node:ekr.20031218072017.2225: *3* NullGui.__init__
+    # @+node:ekr.20031218072017.2225: *3*  NullGui.__init__
     def __init__(self, guiName: str = 'nullGui') -> None:
         """ctor for the NullGui class."""
         super().__init__(guiName)
@@ -433,15 +277,18 @@ class NullGui(LeoGui):
         self.isNullGui = True
         self.idleTimeClass: Any = g.NullObject
         self.lastFrame: Widget = None  # The outer frame, to set g.app.log in runMainLoop.
-        self.script = None
+        self.script = ''
 
     # @+node:ekr.20031218072017.3744: *3* NullGui.dialogs
-    def runAboutLeoDialog(
-        self, c: Cmdr, version: str, theCopyright: str, url: str, email: str
-    ) -> str:
+    def openFindDialog(self, c: Cmdr) -> None:
         return None
 
-    def runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -> str:
+    def runAboutLeoDialog(
+        self, c: Cmdr, version: str, theCopyright: str, url: str, email: str
+    ) -> None:
+        return None
+
+    def runAskOkDialog(self, c: Cmdr, title: str, message: str = '', text: str = "Ok") -> str:
         return 'Ok'
 
     def runAskOkCancelNumberDialog(
@@ -449,8 +296,8 @@ class NullGui(LeoGui):
         c: Cmdr,
         title: str,
         message: str,
-        cancelButtonText: str = None,
-        okButtonText: str = None,
+        cancelButtonText: str = '',
+        okButtonText: str = '',
     ) -> str:
         return 'no'
 
@@ -459,8 +306,8 @@ class NullGui(LeoGui):
         c: Cmdr,
         title: str,
         message: str,
-        cancelButtonText: str = None,
-        okButtonText: str = None,
+        cancelButtonText: str = '',
+        okButtonText: str = '',
         default: str = "",
         wide: bool = False,
     ) -> str:
@@ -474,9 +321,9 @@ class NullGui(LeoGui):
         c: Cmdr,
         title: str,
         *,
-        filetypes: list[tuple[str, str]] = None,
+        filetypes: list[tuple[str, str]] | None = None,
         defaultextension: str = '',  # Not used
-        startpath: str = None,
+        startpath: str = '',
     ) -> str:
         return ''
 
@@ -485,7 +332,7 @@ class NullGui(LeoGui):
         c: Cmdr,
         title: str,
         *,
-        filetypes: list[tuple[str, str]] = None,
+        filetypes: list[tuple[str, str]] | None = None,
         defaultextension: str = '',  # Not used
     ) -> str:
         return ''
@@ -495,9 +342,9 @@ class NullGui(LeoGui):
         c: Cmdr,
         title: str,
         *,
-        filetypes: list[tuple[str, str]] = None,
+        filetypes: list[tuple[str, str]] | None = None,
         defaultextension: str = '',  # Not used
-        startpath: str = None,
+        startpath: str = '',
     ) -> list[str]:
         return []
 
@@ -505,7 +352,7 @@ class NullGui(LeoGui):
         self,
         c: Cmdr,
         title: str,
-        message: str = None,
+        message: str = '',
         yes_all: bool = False,
         no_all: bool = False,
     ) -> str:
@@ -515,12 +362,12 @@ class NullGui(LeoGui):
         self,
         c: Cmdr,
         title: str,
-        message: str = None,
+        message: str = '',
         yesMessage: str = "Yes",
         noMessage: str = "No",
-        yesToAllMessage: str = None,
+        yesToAllMessage: str = '',
         defaultButton: str = "Yes",
-        cancelMessage: str = None,
+        cancelMessage: str = '',
     ) -> str:
         return 'cancel'
 
@@ -574,6 +421,9 @@ class NullGui(LeoGui):
     ) -> Any:
         return None
 
+    def getFullVersion(self, c: Cmdr | None = None) -> str:
+        return 'NullGui: dummy version'
+
     def getIconImage(self, name: str) -> None:
         return None
 
@@ -598,16 +448,16 @@ class NullGui(LeoGui):
 
     def isTextWrapper(self, w: Widget) -> bool:
         """Return True if w is a Text widget suitable for text-oriented commands."""
-        return isinstance(w, StringTextWrapper)
+        return issubclass(w.__class__, StringTextWrapper)
 
-    # @+node:ekr.20070301172456: *3* NullGui.panels
+    # @+node:ekr.20070301172456: *3* NullGui: panels
     def createComparePanel(self, c: Cmdr) -> None:
         """Create Compare panel."""
 
-    def createFindTab(self, c: Cmdr, parentFrame: NullFrame) -> None:
+    def createFindTab(self, c: Cmdr, parentFrame: Widget) -> None:
         """Create a find tab in the indicated frame."""
 
-    def createLeoFrame(self, c: Cmdr, title: str) -> NullFrame:
+    def createLeoFrame(self, c: Cmdr, title: str) -> Widget:
         """Create a null Leo Frame."""
         gui = self
         self.lastFrame = leoFrame.NullFrame(c, title, gui)
@@ -633,7 +483,7 @@ class NullScriptingControllerClass:
 
     This keeps pylint happy."""
 
-    def __init__(self, c: Cmdr, iconBar: NullIconBarClass = None) -> None:
+    def __init__(self, c: Cmdr, iconBar: Widget = None) -> None:
         self.c = c
         self.iconBar = iconBar
 
@@ -645,7 +495,7 @@ class NullScriptingControllerClass:
 class StringCheckBox:
     """Simulate a QCheckBox."""
 
-    def __init__(self, name: str, label: str = None) -> None:
+    def __init__(self, name: str, label: str = '') -> None:
         self.label = label
         self.name = name
         self.value = True
@@ -670,7 +520,7 @@ class StringFindTabManager:
     """A string-based FindTabManager class for unit tests."""
 
     # @+others
-    # @+node:ekr.20210221130549.2: *3*  sftm.ctor
+    # @+node:ekr.20210221130549.2: *3*  sftm.__init__
 
     def __init__(self, c: Cmdr) -> None:
         """Ctor for the FindTabManager class."""
@@ -719,9 +569,12 @@ class StringFindTabManager:
         Similar to LeoFind.default_settings, but only for find-tab values.
         """
         return g.Bunch(
+            # State...
+            in_headline     = False,
+            reverse         = False,
             # Find/change strings...
-            find_text   = self.find_findbox.text(),
-            change_text = self.find_replacebox.text(),
+            find_text       = self.find_findbox.text(),
+            change_text     = self.find_replacebox.text(),
             # Find options...
             file_only       = self.radio_button_file_only.isChecked(),
             ignore_case     = self.check_box_ignore_case.isChecked(),
@@ -814,11 +667,11 @@ class StringFindTabManager:
             'entire-outline':  self.radio_button_entire_outline,
             'suboutline-only': self.radio_button_suboutline_only,
         }  # fmt: skip
-        w = d.get(name)
-        if not w.isChecked():
-            w.toggle()
+        if w := d.get(name):
+            if not w.isChecked():
+                w.toggle()
 
-    # @+node:ekr.20210221130549.3: *3* sftm.text getters/setters
+    # @+node:ekr.20210221130549.3: *3* sftm: getters/setters
     def get_find_text(self) -> str:
         s = self.find_findbox.text()
         if s and s[-1] in ('\r', '\n'):
@@ -856,8 +709,8 @@ class StringFindTabManager:
             'search_headline': self.check_box_search_headline,
             'whole_word':      self.check_box_whole_word,
         }  # fmt: skip
-        w = d.get(checkbox_name)
-        w.toggle()
+        if w := d.get(checkbox_name):
+            w.toggle()
 
     # @-others
 
@@ -893,7 +746,7 @@ class StringLineEdit:
 class StringRadioButton:
     """Simulate a QRadioButton."""
 
-    def __init__(self, name: str, label: str = None) -> None:
+    def __init__(self, name: str, label: str = '') -> None:
         self.label = label
         self.name = name
         self.value = True
@@ -915,7 +768,7 @@ class UnitTestGui(NullGui):
     # Presently used only by the import/export unit tests.
     # @+others
     # @+node:ekr.20031218072017.3743: *3* UnitTestGui.__init__
-    def __init__(self, theDict: dict = None) -> None:
+    def __init__(self, theDict: dict | None = None) -> None:
         """ctor for the UnitTestGui class."""
         self.oldGui = g.app.gui
         super().__init__("UnitTestGui")

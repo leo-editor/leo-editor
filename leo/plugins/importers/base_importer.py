@@ -5,8 +5,9 @@
 # @+<< imports, annotations: base_importer.py >>
 # @+node:ekr.20230920091345.1: ** << imports, annotations: base_importer.py >>
 from __future__ import annotations
+from collections.abc import Generator
 import re
-from typing import Generator, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 # This import is safe because these imports happen after initing Leo.
@@ -40,10 +41,10 @@ class Block:
         self.kind = kind
         self.lines = lines
         self.name = name
-        self.parent_v: VNode = None
+        self.parent_v: VNode
         self.start = start
         self.start_body = start_body
-        self.v: VNode = None
+        self.v: VNode
 
     def __repr__(self) -> str:
         kind_name_s = f"{self.kind} {self.name}"
@@ -83,7 +84,7 @@ class Importer:
     minimum_block_size = 0  # 0: create all blocks.
 
     # Must be overridden in subclasses.
-    language: str = None
+    language: str = ''
 
     # May be overridden in subclasses.
     block_patterns: tuple = tuple()
@@ -96,7 +97,7 @@ class Importer:
         """Importer.__init__"""
         assert self.language, g.callers()  # Do not remove.
         self.c = c  # May be None.
-        self.root: Position = None
+        self.root: Position
         delims = g.set_delims_from_language(self.language)
         self.single_comment, self.block1, self.block2 = delims
         self.tab_width = 0  # Must be set later.
@@ -272,6 +273,7 @@ class Importer:
         lines.
         """
         string_delims = self.string_list
+        string_delims_tuple = tuple(string_delims)  # PR #4615: create tuple for s.startswith.
         line_comment, start_comment, end_comment = g.set_delims_from_language(self.language)
         target = ''  # The string ending a multi-line comment or string.
         escape = '\\'
@@ -292,21 +294,21 @@ class Importer:
                 elif target:
                     result_line.append(' ')
                     # Clear the target, but skip any remaining characters of the target.
-                    if g.match(line, i, target):
+                    if line.startswith(target, i):
                         skip_count = max(0, (len(target) - 1))
                         target = ''
                 elif line_comment and line.startswith(line_comment, i):
                     # Skip the rest of the line. It can't contain significant characters.
                     break
-                elif any(g.match(line, i, z) for z in string_delims):
+                elif line.startswith(string_delims_tuple, i):
                     # Allow multi-character string delimiters.
                     result_line.append(' ')
                     for z in string_delims:
-                        if g.match(line, i, z):
+                        if line.startswith(z, i):
                             target = z
                             skip_count = max(0, (len(z) - 1))
                             break
-                elif start_comment and g.match(line, i, start_comment):
+                elif start_comment and line.startswith(start_comment, i):
                     result_line.append(' ')
                     target = end_comment
                     skip_count = max(0, len(start_comment) - 1)
@@ -461,9 +463,6 @@ class Importer:
         self, parent: Position, outer_block: Block, result_blocks: list[Block]
     ) -> None:
         """Carefully generate bodies from the given blocks."""
-        c = self.c
-        at = c.atFileCommands
-
         # Keys: VNodes containing @others directives.
         self.at_others_dict: dict[VNode, bool] = {}
         seen_blocks: dict[Block, bool] = {}
@@ -548,8 +547,7 @@ class Importer:
 
         # Add the tail lines to block.v
         tail_lines = self.lines[children_end : block.end]
-        tail_s = ''.join(tail_lines)
-        if tail_s:
+        if tail_s := ''.join(tail_lines):
             block.v.b = block.v.b + tail_s
 
         # Alter block.end.
@@ -584,7 +582,7 @@ class Importer:
         """Move blank lines from the start of nodes to the end of previous sibling."""
         self.move_blank_lines_helper(parent.children())
 
-    def move_blank_lines_helper(self, children: Generator) -> None:
+    def move_blank_lines_helper(self, children: Generator[Position, None, None]) -> None:
         for child in children:
             self.move_one_blank_line(child)
             self.move_blank_lines_helper(child.children())
@@ -667,8 +665,7 @@ class Importer:
         n = len(lws)
         result: list[str] = []
         for line in lines:
-            stripped_line = line.strip()
-            if stripped_line:
+            if line.strip():
                 assert line[:n].isspace(), repr(line)
                 result.append(line[n:])
             else:

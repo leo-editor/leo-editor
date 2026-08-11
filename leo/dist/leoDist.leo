@@ -148,7 +148,7 @@
 <t tx="EKR.20040519090846">@language rest
 @wrap
 </t>
-<t tx="EKR.20040519090846.1" _mod_time="4741da778b6a1aeb4f2e">MIT License
+<t tx="EKR.20040519090846.1" _mod_time="4741da7f9b3a48e6152e">MIT License
 
 Copyright (c) 1997-2026 by Edward K. Ream.
 
@@ -181,9 +181,9 @@ These parts are are clearly marked in Leo's code as follows:
     Copyright (c) Jupyter Development Team.
     Distributed under the terms of the Modified BSD License.
 </t>
-<t tx="EKR.20040519090846.8" _mod_time="4741da778b6a1aeb4f2e">Metadata-Version: 1.0
+<t tx="EKR.20040519090846.8" _mod_time="4741da88007a62a8752e">Metadata-Version: 1.0
 Name: leo
-Version: 6.8.8
+Version: 6.8.9
 Summary: An IDE, PIM and Outliner. See http://leo-editor.github.io/leo-editor/preface.html.
 Description: See users own descriptions of Leo at leo-editor.github.io/leo-editor/testimonials.html.
 Home-page: http://leo-editor.github.io/leo-editor/
@@ -201,27 +201,25 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9" _mod_time="4741da778b6a1aeb4f2e">Leo https://leo-editor.github.io/leo-editor/ 6.8.8 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+<t tx="EKR.20040519090846.9" _mod_time="4741da88007a62a8752e">Leo https://leo-editor.github.io/leo-editor/ 6.8.9 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor/preface.html).
 
-**The highlights of Leo 6.8.8**
+**The highlights of Leo 6.8.9**
 
-- Replace Leo's legacy beautifier commands by full support for
-  [ruff format](https://docs.astral.sh/ruff/formatter/).
-- Make the ``add-comments`` command compatible with ruff format.
-- Add the ``@bool raise-file-update-dialogs`` setting.
-- Add the ``dump-last-colorizer-trace`` command.
-- Remove support for leoflexx and --gui=browser.
-- Add check_leo.py script.
-- Add gdc.summary_diff_two_revs script helper.
-- Fix several minor bugs.
+- Add Find/Change history. How did we ever live without this?
+- Replace the ``,,`` Easter Egg with Leo's Find commands.
+- Add support for ``@language pug``.
+- Enhanced security for Leo's server.
+- Significant code-level improvements and performance optimizations.
+- Deprecate support for --gui=console.
+- The usual bug fixes.
 
 **Links**
 
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
-- [6.8.8 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.8+)
-- [6.8.8 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.8)
+- [6.8.9 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.9+)
+- [6.8.9 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.9)
 - [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
@@ -1385,7 +1383,7 @@ g.es_print('done')
 </t>
 <t tx="ekr.20180405171433.1">Overview
 
-Create the **release branch**: 6.8.9.
+Create the **release branch**: 6.8.10.
 Change version in this checklist to match.
 
 It's ok to merge devel into release branch
@@ -1404,7 +1402,7 @@ It's ok to merge devel into release branch
 - Copy release notes to LeoReleaseNotes.leo
 </t>
 <t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout `gh-pages`.
-- git merge 6.8.9
+- git merge 6.8.10
 - Run the `find-bad-links` script and fix any errors
 - Run the `make-sphinx` from LeoDocs.leo
   This script copies files from leo/doc/html/_build/html to leo-editor/docs
@@ -1413,8 +1411,10 @@ It's ok to merge devel into release branch
   https://github.com/leo-editor/leo-editor/actions
 - Check Leo's website.
 </t>
-<t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">
-- Run The update_leo_tools.py script *first*.
+<t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Run The update_leo_tools.py script *first*.
+
+- leoGlobals.py: &lt;&lt; leoGlobals: global constants &gt;&gt;
+  Check minimum_python_version and minimum_python_version_tuple.
 
 - Make sure Leo looks good without myLeoSettings.leo.
 
@@ -1427,19 +1427,19 @@ It's ok to merge devel into release branch
 <t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
 git checkout master
-git tag -a v6.8.9 -m "Added v6.8.9 tag"
+git tag -a v6.8.10 -m "Added v6.8.10 tag"
 git push --follow-tags
 </t>
 <t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout devel
 - git merge master
 - update version in leoVersion.py.
 </t>
-<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.8.9 branch:
+<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.8.10 branch:
 
 - git merge master
 - Fix any conflicts and push.
 - git checkout master
-- git merge 6.8.9</t>
+- git merge 6.8.10</t>
 <t tx="ekr.20190618104622.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
 
 This must be done *soon* after the release's actual commit.
@@ -1542,7 +1542,7 @@ python -m pip uninstall leo
 <t tx="ekr.20230301070404.1">LeoDist.leo:
 - Make sure copyright dates are correct.
 - Update version numbers. Search for 6.8.x
-  The final version in PKG-INFO.TXT must be called 6.8.9, not 6.8.9-final.
+  The final version in PKG-INFO.TXT must be called 6.8.10, not 6.8.10-final.
   See Pep 440: https://www.python.org/dev/peps/pep-0440/
 - Update readme.md.
 - Update version in 'PKG-INFO.TXT'
@@ -1558,7 +1558,7 @@ python -m pip uninstall leo
 - Create LeoPyRef.leo by copying leoPy.leo to it, then deleting unwanted nodes.
 - Open LeoPyRef.leo. Verify the diff after saving.
 - Run the the check button.</t>
-<t tx="ekr.20230301084201.1">- Change 6.8.9 (the old version) to 6.8.10.
+<t tx="ekr.20230301084201.1">- Change 6.8.10 (the old version) to 6.8.11.
   Be careful about the new version in this node!
 </t>
 <t tx="ekr.20240206185544.1"></t>
@@ -1620,7 +1620,7 @@ Make *sure* all is well before uploading to pypi.
 
 Any glitch will require new filename *only* for the `.whl` file:
 - Use *build number* (-1, -2) for the new filename:
-  for example, leo-6.8.9-py3-none-any.whl.
+  for example, leo-6.8.10-py3-none-any.whl.
 - Do *not*use `.post1`: it won't work!
 - Do *not* change the filename of `.tar.gz` file.
 - Do *not* change `PKG-INFO.TXT` or Leo's version number!

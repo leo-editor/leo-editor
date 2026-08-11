@@ -50,11 +50,9 @@ FYI: https://gitlab.com/ gives you free private repos.
 
 The plugin stores headline, body, and uA (unknown attributes). The caveat is
 that it must be JSON serializable, this is to avoid pickle flavor issues. I
-don't think this will cause problems except for legacy datetime objects from the
-todo.py plugin and set()s in the tags plugin. I think both can be fixed easily -
-a custom JSON writer can write datetime as iso string time and sets as lists,
-and the tags plugin can coerce lists to sets. I think the todo.py plugin already
-reads iso string time values.
+don't think this will cause problems except for sets in the tags plugin. I think
+both can be fixed easily - a custom JSON writer can write datetime as iso string
+time and sets as lists, and the tags plugin can coerce lists to sets.
 
 My intended use was a common synchronized todo list across machines, which this
 achieves.
@@ -83,7 +81,8 @@ import tempfile
 import threading
 from typing import Any
 from copy import deepcopy
-from datetime import date, datetime
+from datetime import date
+import datetime as dt
 from hashlib import sha1
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import vnode
@@ -120,10 +119,10 @@ def onCreate(tag, keys):
 def onSave(tag, keys):
     c = keys.get('c')
     if not c:
-        return None
-    if getattr(c, '_leo_cloud'):
+        return
+    if getattr(c, '_leo_cloud', None):
         c._leo_cloud.save_clouds()
-    return None  # explicitly not stopping save1 hook
+    return  # explicitly not stopping save1 hook
 
 
 # @+node:ekr.20201012111338.6: ** lc_read_current (leo_cloud.py)
@@ -208,7 +207,7 @@ class LeoCloudIOFileSystem(LeoCloudIOBase):
         LeoCloudIOBase.__init__(self, c, p, kwargs)
         self.basepath = os.path.expanduser(kwargs['root'])
         if not os.path.exists(self.basepath):
-            os.makedirs((self.basepath))
+            os.makedirs(self.basepath)
 
     # @+node:ekr.20201012111338.14: *3* LeoCloudIOFileSystem(LeoCloudIOBase).get_data
     def get_data(self, lc_id):
@@ -260,7 +259,7 @@ class LeoCloudIOGit(LeoCloudIOBase):
         self.remote = kwargs['remote']
         self.local = os.path.expanduser(kwargs['local'])
         if not os.path.exists(self.local):
-            os.makedirs((self.local))
+            os.makedirs(self.local)
         if not os.listdir(self.local):
             self._run_git('git clone "%s" "%s"' % (self.remote, self.local))
         self._run_git('git -C "%s" pull' % self.local)
@@ -508,14 +507,14 @@ class LeoCloud:
                 read = True
             elif read_on_load == 'ask':
                 try:
-                    last_read = datetime.strptime(
+                    last_read = dt.datetime.strptime(  # PR #4829
                         lc_v.u['_leo_cloud']['last_read'], "%Y-%m-%dT%H:%M:%S.%f"
-                    )
+                    ).replace(tzinfo=dt.timezone.utc)
                 except KeyError:
                     last_read = None
                 message = "Read cloud data '%s', overwriting local nodes?" % kwargs['ID']
                 if last_read:
-                    delta = datetime.now() - last_read
+                    delta = dt.datetime.now(tz=dt.timezone.utc) - last_read
                     message = "%s\n%s, %sh:%sm:%ss ago" % (
                         message,
                         last_read.strftime("%a %b %d %H:%M"),
@@ -584,7 +583,8 @@ class LeoCloud:
         # because we want the user to understand why the outline's changed,
         # so just ignore top node dirtiness in self.subtree_changed()
         self.c.setChanged()
-        p.v.u.setdefault('_leo_cloud', {})['last_read'] = datetime.now().isoformat()
+        tz = dt.timezone.utc
+        p.v.u.setdefault('_leo_cloud', {})['last_read'] = dt.datetime.now(tz=tz).isoformat()
 
     # @+node:ekr.20201012111338.34: *3* LeoCloud.recursive_hash
     @staticmethod
@@ -682,7 +682,7 @@ class LeoCloud:
     @staticmethod
     def _to_json_serial(obj):
         """JSON serializer for objects not serializable by default json code"""
-        if isinstance(obj, (datetime, date)):
+        if isinstance(obj, (dt.datetime, date)):
             return obj.isoformat()
         if isinstance(obj, set):
             return list(obj)
@@ -772,7 +772,8 @@ class LeoCloud:
         lc_io.put_subtree(lc_io.lc_id, p.v)
         g.es("Stored %s" % lc_io.lc_id)
         # writing counts as reading, last read time msg. confusing otherwise
-        p.v.u.setdefault('_leo_cloud', {})['last_read'] = datetime.now().isoformat()
+        tz = dt.timezone.utc
+        p.v.u.setdefault('_leo_cloud', {})['last_read'] = dt.datetime.now(tz=tz).isoformat()
 
     # @-others
 

@@ -12,7 +12,7 @@ Terry_N_Brown@yahoo.com, Tue Oct 15 09:53:38 2013
 """
 
 import sys
-import datetime
+import datetime as dt
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
 
@@ -25,7 +25,7 @@ def init():
     return True  # For unit tests.
 
 
-class QNCalendarWidget(QtWidgets.QCalendarWidget):  # type:ignore
+class QNCalendarWidget(QtWidgets.QCalendarWidget):
     def __init__(self, n=3, columns=3, year=None, month=None):
         """set up
 
@@ -44,10 +44,11 @@ class QNCalendarWidget(QtWidgets.QCalendarWidget):  # type:ignore
     def build(self, n=3, columns=3, year=None, month=None):
         self.calendars = []
 
+        now = dt.datetime.now(tz=dt.timezone.utc)  # PR #4829
         if year is None:
-            year = datetime.date.today().year
+            year = now.year
         if month is None:
-            month = datetime.date.today().month
+            month = now.month
 
         layout = QtWidgets.QGridLayout()
         while self.layout().count():
@@ -116,7 +117,7 @@ class QNCalendarWidget(QtWidgets.QCalendarWidget):  # type:ignore
         self.activated.emit(date)
 
 
-class QNDateEdit(QtWidgets.QDateEdit):  # type:ignore
+class QNDateEdit(QtWidgets.QDateEdit):
     def __init__(self, parent=None, n=3, columns=3):
         """set up
 

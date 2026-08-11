@@ -151,7 +151,7 @@ from leo.core import leoGlobals as g
 try:
     from leo.plugins import stickynotes
 except ImportError:
-    stickynotes = None
+    stickynotes = None  # type:ignore
 from leo.plugins.attrib_edit import ListDialog
 
 
@@ -213,7 +213,7 @@ class leoscreen_Controller:
         """remove temporary file"""
         try:
             os.unlink(self.tmpfile)
-        except IOError:
+        except OSError:
             pass
 
     # @+node:tbrown.20100226095909.12786: *3* screen_cmd
@@ -412,7 +412,7 @@ class leoscreen_Controller:
             [('CURRENT: ' if i == self.use_screen else '') + i, False, i]
             for i in out.split('\n')
             if i.startswith('\t')
-        ]  # type:ignore
+        ]
 
         ld = ListDialog(None, 'Pick screen', 'Pick screen', screens)
         ld.exec()

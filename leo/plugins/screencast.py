@@ -452,7 +452,7 @@ class ScreenCastController:
             n2 = 0.095
         p.h = ''
         c.editHeadline()
-        w = tree.edit_widget(p)
+        w = tree.headline_wrapper(p)
         # Support undo.
         undoData = c.undoer.beforeChangeNodeContents(p)
         p.setDirty()
@@ -798,11 +798,11 @@ class ScreenCastController:
         k = c.k
         m.key_w = w
         if len(ch) > 1:
-            key = None
-            stroke = k.strokeFromSetting(ch).s
+            char = ''
+            binding = k.strokeFromSetting(ch).s
         else:
-            stroke = key = ch
-        return leoGui.LeoKeyEvent(c, key, stroke, binding=None, w=w, x=0, y=0, x_root=0, y_root=0)
+            char = binding = ch
+        return leoGui.LeoKeyEvent(c, binding=binding, char=char, w=w, x=0, y=0, x_root=0, y_root=0)
 
     # @+node:ekr.20120914163440.10581: *4* sc.delete_widgets
     def delete_widgets(self):

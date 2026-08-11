@@ -5,7 +5,7 @@
 from leo.core import leoGlobals as g
 
 assert g
-from leo.core.leoQt import QtWidgets
+from leo.core.leoQt import QtGui, QtWidgets
 from leo.core.leoColorizer import JEditColorizer  # LeoHighlighter
 
 
@@ -30,7 +30,7 @@ class LEP_LeoTextEdit(QtWidgets.QTextEdit):
 
     # @+others
     # @+node:tbrown.20171028115508.4: *3* __init__
-    def __init__(self, c=None, lep=None, *args, **kwargs):
+    def __init__(self, c, lep=None, *args, **kwargs):
         """set up"""
         super().__init__(*args, **kwargs)
         self.c = c
@@ -39,13 +39,13 @@ class LEP_LeoTextEdit(QtWidgets.QTextEdit):
         self.highlighter = JEditColorizer(c, self)
 
     # @+node:tbrown.20171028115508.5: *3* focusInEvent
-    def focusInEvent(self, event):
+    def focusInEvent(self, event: QtGui.QFocusEvent) -> None:
         QtWidgets.QTextEdit.focusInEvent(self, event)
         DBG("focusin()")
         self.lep.edit_widget_focus()
 
     # @+node:tbrown.20171028115508.6: *3* focusOutEvent
-    def focusOutEvent(self, event):
+    def focusOutEvent(self, event: QtGui.QFocusEvent) -> None:
         QtWidgets.QTextEdit.focusOutEvent(self, event)
         DBG("focusout()")
 

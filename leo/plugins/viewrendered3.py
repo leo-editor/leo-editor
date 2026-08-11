@@ -16,7 +16,7 @@ and Asciidoc text, images, movies, sounds, rst, html, etc.
 
 # @+others
 # @+node:tom.20240521004125.1: *3* About
-About Viewrendered3 V5.22
+About Viewrendered3 V5.23
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured
@@ -85,14 +85,16 @@ the plugin.
 # @+node:tom.20241124124334.1: *3* New With This Version
 New With This Version
 ======================
-
-The state machine used for processing Markdown and
-Asciidoc nodes was changed to reset to its original
-configuration. This fixed an occasional bug when an
-entire subtree was rendered.
+- Minor import bug fixes.
+- Reformatted part of the docstring.
 # @+node:tom.20241124124347.1: *3* Previous Recent Changes
 Previous Recent Changes
 ========================
+- The state machine used for processing Markdown and
+Asciidoc nodes was changed to reset to its original
+configuration. This fixed an occasional bug when an
+entire subtree was rendered.
+
 - Fixed: the freeze state was getting set to "unfreeze" after an
 update.
 
@@ -196,10 +198,8 @@ possibility is Alt-0 for VR3 and Alt-F10 for VR.
 Limitations and Quirks
 ======================
 
-    #. The plugin requires PyQt5 or PyQt6. All Leo versions since
-       6.0 can use at least PyQt5 so this requirement should
-       always be met. The PyQt6 version must be at least 6.23 to
-       avoid limited rendering capability.
+    #. The plugin requires PyQt6. The PyQt6 version must be at
+       least 6.23 to avoid limited rendering capability.
 
     #. The RsT processor (``docutils``) is fussy about having
        blank lines after blocks. A node may render correctly on
@@ -441,11 +441,17 @@ include a ``?config`` specifier.  The one shown in the example above works well.
 External Processors For Other Languages
 =======================================
 
-VR3 can make use of external processors for executing code blocks in programming languages other than Python.  Examples are Javascript and Julia.  Parameters can be passed to the processor as well.  The command line must have the format::
+VR3 can make use of external processors for executing code
+blocks in programming languages other than Python.  Examples
+are Javascript and Julia.  Parameters can be passed to the 
+processor as well.  The command line must have the format::
 
     <processor> [optional parameters] filename
 
-External language processors must be specified in the file `vr3_config.ini`.  This file is located in the `vr3` directory under Leo's Home directory.  The must be entered in the `[executables]` section. Here is an example::
+External language processors must be specified in the file
+`vr3_config.ini`.  This file is located in the `vr3` directory
+under Leo's Home directory.  The must be entered in the
+`[executables]` section. Here is an example::
 
     [executables]
     javascript = D:\usr\graalvm-ce-java11-20.0.0\languages\js\bin\js.exe
@@ -453,15 +459,25 @@ External language processors must be specified in the file `vr3_config.ini`.  Th
 
 Note that
 
-1. The name of the language (e.g., `julia`) **must** agree with the name of the language used in `@language` directives;
+1. The name of the language (e.g., `julia`) **must** agree with the
+name of the language used in `@language` directives;
 
-2. The full path to the processing executable **must** be included.  VR3 will not use the system path, and the processor need not be on the system path.
+2. The full path to the processing executable **must** be included.
+VR3 will not use the system path, and the processor need not be on
+the system path.
 
-This directory and .ini file must be created by the user.  VR3 will not create them.
+This directory and .ini file must be created by the user.  VR3 will
+not create them.
 
-A language that is specified here will not automatically be executed: only languages known by VR3 will be executed.  Code in known languages will be colorized provided that Leo has a colorizing mode file for that language.  This should normally be the case.  For example, colorizer mode files for both julia and javascript are included in the version of Leo that includes this version of VR3.
+A language that is specified here will not automatically be executed:
+only languages known by VR3 will be executed.  Code in known languages
+will be colorized provided that Leo has a colorizing mode file for
+that language.  This should normally be the case.  For example,
+colorizer mode files for both julia and javascript are included in
+the version of Leo that includes this version of VR3.
 
-VR3 can only successfully execute code if all code blocks in a node or subtree use the same language.
+VR3 can only successfully execute code if all code blocks in a node or
+subtree use the same language.
 
 # @+node:TomP.20210423000029.1: *5* @param Optional Parameters
 Optional Parameters
@@ -928,6 +944,19 @@ are used in `@language` directives.
 
 The languages that can currently be used are `javascript` and `julia`.  This list may be expanded in the future.
 
+# @+node:tom.20220225114320.1: *3* Rendering HTML From Clipboard
+Rendering HTML From Clipboard
+==============================
+
+The VR3 command *vr3-render-html-from-clip* renders the clipboard
+string contents with the assumption that it is HTML. The
+rendering can be exported to the system web browser using the VR3
+*Export* button.
+
+Pressing the *Reload* button restores the view to the current
+node.
+
+Currently VR3 has to be open for the command to work.
 # @+node:tom.20211104225431.1: *3* Easy Plotting Of X-Y Data
 Easy Plotting Of X-Y Data
 --------------------------
@@ -948,19 +977,6 @@ browser when *Other Actions/Help For Plot 2D* is clicked. This
 help is also invoked by the minibuffer command
 *vr3-help-plot-2d*.
 
-# @+node:tom.20220225114320.1: *3* Rendering HTML From Clipboard
-Rendering HTML From Clipboard
-==============================
-
-The VR3 command *vr3-render-html-from-clip* renders the clipboard
-string contents with the assumption that it is HTML. The
-rendering can be exported to the system web browser using the VR3
-*Export* button.
-
-Pressing the *Reload* button restores the view to the current
-node.
-
-Currently VR3 has to be open for the command to work.
 # @+node:TomP.20200115200833.1: *3* Acknowledgments
 Acknowledgments
 ================
@@ -998,7 +1014,7 @@ from contextlib import redirect_stdout
 from enum import Enum, auto
 import html
 from inspect import cleandoc
-from io import StringIO, open as ioOpen
+from io import StringIO
 
 import os
 from pathlib import Path
@@ -1010,7 +1026,7 @@ import string
 import subprocess
 import sys
 import textwrap
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 import webbrowser
 # from urllib.request import urlopen
@@ -1049,7 +1065,8 @@ except ImportError:
     if not g.unitTesting:
         g.trace("Can't import QtWebEngineWidgets")
 
-qwv = None
+QWebEngineSettings: Any = None
+qwv: Any = None
 if has_webengineview:
     qwv = QtWebEngineWidgets.QWebEngineView
     try:
@@ -1275,8 +1292,8 @@ asciidoc = None
 asciidoctor = None
 asciidoc_ok = False
 asciidoc3_ok = False
-asciidoc_dirs: Dict[str, Dict] = {'asciidoc': {}, 'asciidoc3': {}}
-asciidoc_processors: List[Any] = []
+asciidoc_dirs: dict[str, dict] = {'asciidoc': {}, 'asciidoc3': {}}
+asciidoc_processors: list[Any] = []
 asciidoc_has_diagram = False
 # @-<< Misc Globals >>
 # @+<< define html templates >>
@@ -1309,8 +1326,8 @@ latex_template = f'''\
 trace = False  # This global trace is convenient.
 
 # keys are c.hash().
-controllers: Dict[str, Any] = {}  # values: VR3 widgets
-positions: Dict[int, Any] = {}  # values: OPENED_IN_TAB, OPENED_IN_SPLITTER, OPENED_SHARING_BODY
+controllers: dict[str, Any] = {}  # values: VR3 widgets
+positions: dict[int, Any] = {}  # values: OPENED_IN_TAB, OPENED_IN_SPLITTER, OPENED_SHARING_BODY
 
 
 # @+others
@@ -1362,12 +1379,12 @@ def find_dir(name, path):
     return None
 
 
-# @+node:tom.20221231143118.1: ** get_gems()
+# @+node:tom.20221231143118.1: ** get_gems() (VR3)
 def check_gems(gem: str, encoding: str = 'utf-8') -> bool:
     """Check if a particular ruby gem is installed."""
     cmd = f'gem list {gem}'
     # pylint: disable = subprocess-run-check
-    proc = subprocess.run(cmd, shell=True, capture_output=True)
+    proc = subprocess.run(cmd, capture_output=True)
     installed = gem in proc.stdout.decode(encoding)
     return installed
 
@@ -1471,7 +1488,12 @@ def configure_asciidoc():
 
     asciidoc_ok = False
     asciidoc3_ok = False
-    asciidoc_has_diagram = check_gems('asciidoctor-diagram')
+    asciidoc_has_diagram = False
+    try:
+        asciidoc_has_diagram = check_gems('asciidoctor-diagram')
+        asciidoc_has_diagram = True
+    except Exception:
+        g.es('Ruby Gem "asciidoctor-diagram" is not available')
 
     # @+<< get asciidoc >>
     # @+node:tom.20211125003406.3: *3* << get asciidoc >>
@@ -1605,18 +1627,18 @@ def xisVisible():
 def onCreate(tag, keys):
     pass
 
+    # def onCreate(tag: str, keys: dict) -> None:
+    #     c = keys.get('c')
+    #     if not c:
+    #         return
+    #     vr = getVr(c=c)
+    #     g.registerHandler('select2', vr.update)
+    #     g.registerHandler('idle', vr.update)
+    #     vr.active = True
+    #     vr.is_visible = False
+    #     vr.hide()
 
-# @+at
-# def onCreate(tag: str, keys: dict) -> None:
-#     c = keys.get('c')
-#     if not c:
-#         return
-#     vr = getVr(c=c)
-#     g.registerHandler('select2', vr.update)
-#     g.registerHandler('idle', vr.update)
-#     vr.active = True
-#     vr.is_visible = False
-#     vr.hide()
+
 # @+node:TomP.20191215195433.12: *3* vr3.onClose
 def onClose(tag, keys):
     c = keys.get('c')
@@ -1749,13 +1771,12 @@ def viewrendered(event):
     # global controllers
     gui = g.app.gui
     if gui.guiName() != 'qt':
-        return None
+        return
     c = event.get('c')
     if not c:
-        return None
+        return
 
     getVr3({'c': c})
-    return None  # Make pylint happy
 
 
 # @+node:TomP.20200112232719.1: *3* g.command('vr3-execute')
@@ -1791,7 +1812,7 @@ def export_rst_html(event):
     c = vr3.c
     path = c.getPath(c.rootPosition())
     pathname = g.finalize_join(path, VR3_TEMP_FILE)
-    with ioOpen(pathname, 'w', encoding='utf-8') as f:
+    with open(pathname, 'w', encoding='utf-8') as f:
         f.write(_html)
     webbrowser.open_new_tab(pathname)
 
@@ -1819,7 +1840,7 @@ def vr3_help_for_plot_2d(event):
     docstr = cleandoc(doc)
     docstr = 'Help For VR3 Plot 2D\n=====================\n' + docstr
 
-    args: Dict[str, Any] = {'output_encoding': 'utf-8'}
+    args: dict[str, Any] = {'output_encoding': 'utf-8'}
     if vr3.rst_stylesheet and os.path.exists(vr3.rst_stylesheet):
         args['stylesheet_path'] = f'{vr3.rst_stylesheet}'
         args['embed_stylesheet'] = True
@@ -1836,7 +1857,7 @@ def vr3_help_for_plot_2d(event):
 
     path = c.getPath(c.rootPosition())
     pathname = g.finalize_join(path, VR3_TEMP_FILE)
-    with ioOpen(pathname, 'w', encoding='utf-8') as f:
+    with open(pathname, 'w', encoding='utf-8') as f:
         f.write(_html)
     webbrowser.open_new_tab(pathname)
 
@@ -2819,11 +2840,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # pygments cmdline() writes to stdout; we have to redirect it to a file
             g.es('VR3-- creating new MD style sheet')
             style_path = os.path.join(default_style_dir, MD_BASE_STYLESHEET_NAME)
-            with ioOpen(style_path, 'w') as out:
+            with open(style_path, 'w') as out:
                 with redirect_stdout(out):
                     cmdline.main(args)
             # Add some fine-tuning css
-            with ioOpen(style_path, 'a') as out:
+            with open(style_path, 'a') as out:
                 out.write(MD_STYLESHEET_APPEND)
             self.md_stylesheet = 'file:///' + style_path
 
@@ -3012,7 +3033,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # @-<< is_numeric >>
             # @+<< get_data >>
             # @+node:tom.20211104105903.14: *6* << get_data >>
-            def get_data(pagelines) -> Tuple[Any, Any]:
+            def get_data(pagelines) -> tuple[Any, Any]:
                 num_cols = 0
 
                 # Skip lines starting with """ or '''
@@ -3358,7 +3379,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # self.setBackgroundColor(self.background_color, text_name, w)
             w.setReadOnly(True)
             # Create the standard Leo bindings in a wrapper widget.
-            wrapper_widget = qt_text.QTextEditWrapper(w, 'rendering-pane-wrapper', c)
+            wrapper_widget = qt_text.QTextEditWrapper(widget=w, name='rendering-pane-wrapper', c=c)
             c.k.completeAllBindingsForWidget(wrapper_widget)
             w.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)
 
@@ -4205,7 +4226,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 silent=False,
                 namespace=namespace,
                 raiseFlag=False,
-                runPyflakes=False,  # Suppress warnings about pre-defined symbols.
             )
             c.bodyWantsFocusNow()
 
@@ -4237,15 +4257,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 s = node_list[0].b
                 s = self.remove_directives(s)
             isHtml = s and s[0] == '<'
-            # @+at
-            #         # In case we bring back QtSvg again)
-            #         if s.startswith('<svg'):
-            #             if QtSvg is None:
-            #                 g.es(NO_SVG_WIDGET_MSG, color='red')
-            #                 return
-            #             else:
-            #                 self.update_svg(s, keywords)
-            # @@c
+            # In case we bring back QtSvg again)
+            # if s.startswith('<svg'):
+            #     if QtSvg is None:
+            #         g.es(NO_SVG_WIDGET_MSG, color='red')
+            #         return
+            #     else:
+            #         self.update_svg(s, keywords)
             self.rst_html = ''
             if s and isHtml:
                 _code = [n.b for n in node_list]
@@ -4349,7 +4367,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 result += f'\n::\n\n{indented_err_result}\n'
         # @+node:TomP.20200105214743.1: *6* vr3.get html from docutils
         # @@language python
-        args: Dict[str, Any] = {'output_encoding': 'utf-8'}
+        args: dict[str, Any] = {'output_encoding': 'utf-8'}
         if self.rst_stylesheet and os.path.exists(self.rst_stylesheet):
             args['stylesheet_path'] = f'{self.rst_stylesheet}'
             args['embed_stylesheet'] = True
@@ -4421,7 +4439,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         # We are not checking the return code here, so:
         # pylint: disable=subprocess-run-check
-        result = subprocess.run(cmd, shell=False, capture_output=True, text=True, encoding='utf-8')
+        result = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', shell=True)
         return result.stdout, result.stderr
 
     # @-others
@@ -4647,7 +4665,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 # Last line of code block must be followed by at least one blank line and
                 # then a non-blank, non-indented line, unless we reached the end of the node.
                 _last_code_line_num = _first_code_line_num
-                if not _last_code_line_num == _numlines - 1:
+                if _last_code_line_num != _numlines - 1:
                     for j in range(_first_code_line_num, _numlines):
                         if lines[j].startswith(_indentation):
                             continue
@@ -4871,7 +4889,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             w = QtWidgets.QTextBrowser()
 
             def handleClick(url, w=w):
-                wrapper = qt_text.QTextEditWrapper(w, name='vr3-body', c=c)
+                wrapper = qt_text.QTextEditWrapper(widget=w, name='vr3-body', c=c)
                 event = g.Bunch(c=c, w=wrapper)
                 g.openUrlOnClick(event, url=url)
 

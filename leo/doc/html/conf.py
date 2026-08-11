@@ -5,8 +5,8 @@
 
 project = 'Leo'
 copyright = '1997-2026, Edward K. Ream'
-version = '6.8.8'
-release = '6.8.8'
+version = '6.8.9'
+release = '6.8.9'
 
 html_theme = 'classic'
 pygments_style = 'sphinx'
@@ -24,7 +24,7 @@ html_css_files = ['custom.css']  # Relative to html_static_paths.
 
 # Options...
 html_sidebars = {
-   '**': [
+    '**': [
         'relations.html',  # Enable links to the previous and next documents.
         'searchbox.html',  # Enable “quick search” box.
         # 'localtoc.html',  # Use a fine-grained table of contents.

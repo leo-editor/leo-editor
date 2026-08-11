@@ -74,6 +74,7 @@ If True, when expanding as above, skip blank dict entries.
 # @+<< imports >>
 # @+node:ekr.20060904103412.3: ** << imports >>
 import io
+from typing import Any, cast
 import xml.sax
 import xml.sax.saxutils
 from leo.core import leoGlobals as g
@@ -238,18 +239,17 @@ class OpmlController:
             f = open(path, 'rb')
             s = f.read()  # type(s) is bytes for Python 3.x.
             s = self.cleanSaxInputString(s)
-        except IOError:
+        except OSError:
             return g.trace('can not open %s' % path)
 
         try:
             theFile = BytesIO(s)
             parser = xml.sax.make_parser()
-            parser.setFeature(xml.sax.handler.feature_external_ges, 1)
             # Do not include external general entities.
             # The actual feature name is "http://xml.org/sax/features/external-general-entities"
             parser.setFeature(xml.sax.handler.feature_external_pes, 0)
             handler = SaxContentHandler(c, fn)
-            parser.setContentHandler(handler)
+            parser.setContentHandler(handler)  # ty: ignore[invalid-argument-type]
             parser.parse(theFile)  # expat does not support parseString
             sax_node = handler.getNode()
         except xml.sax.SAXParseException:
@@ -317,7 +317,7 @@ class OpmlController:
         v = self.currentVnode
         if not v:
             return
-        for p in c.allNodes_iter():
+        for p in c.all_nodes():
             if p.v == v:
                 c.selectPosition(p)
                 break
@@ -717,7 +717,7 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
         if data is None:
             g.trace('unknown element', name)
         else:
-            junk, func = data
+            _, func = data
             if func:
                 func()
         name2 = self.elementStack.pop()
@@ -727,7 +727,7 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
     def endBodyText(self):
         """End a <leo:body> element."""
         if self.content:
-            self.node.bodyString = ''.join(self.content)
+            cast(Any, self.node).bodyString = ''.join(self.content)
         self.content = []
 
     # @+node:ekr.20060917185948: *4* endOutline
@@ -745,7 +745,7 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
         if data is None:
             g.trace('unknown element', name)
         else:
-            func, junk = data
+            func, _ = data
             if func:
                 func(attrs)
 
@@ -783,7 +783,7 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
 
     # @+node:ekr.20060904141220.34: *5* doOutlineAttributes
     def doOutlineAttributes(self, attrs):
-        node = self.node
+        node = cast(Any, self.node)
         for bunch in self.attrsToList(attrs):
             name, val = bunch.name, bunch.val
             if name == 'text':  # Text is the 'official' opml attribute for headlines.

@@ -35,7 +35,7 @@ DELTA = {  # offsets for selection when moving row/column
 
 # list of separators to try, need a single chr separator that doesn't
 # occur in text
-SEPS = [
+_SEP_CODES = [
     32,
     33,
     34,
@@ -238,7 +238,7 @@ SEPS = [
     56,
     57,
 ]
-SEPS = [chr(i) for i in SEPS]
+SEPS = [chr(i) for i in _SEP_CODES]
 # @-<< data >>
 
 
@@ -467,12 +467,16 @@ class LEP_CSVEdit(QtWidgets.QWidget):
         ui.min_rows.setMinimum(1)
         ui.min_rows.setPrefix("tbl with ")
         ui.min_rows.setSuffix(" rows")
-        ui.min_rows.setValue(self.state['rows'])
+        rows = self.state['rows']
+        assert isinstance(rows, int)
+        ui.min_rows.setValue(rows)
         # separator text and line start / end text
         for attr in 'sep', 'start', 'end':
             buttons2.addWidget(QtWidgets.QLabel(attr.title() + ':'))
             w = QtWidgets.QLineEdit()
-            w.setText(self.state[attr])
+            val = self.state[attr]
+            assert isinstance(val, str)
+            w.setText(val)
             setattr(ui, attr + '_txt', w)
             # w.textEdited.connect(self.delim_changed)
             buttons2.addWidget(w)
@@ -585,14 +589,14 @@ class LEP_CSVEdit(QtWidgets.QWidget):
         self.update_state()
 
     # @+node:ekr.20211210174103.21: *3* focusInEvent
-    def focusInEvent(self, event):
-        QtWidgets.QTextEdit.focusInEvent(self, event)
+    def focusInEvent(self, event: QtGui.QFocusEvent) -> None:
+        QtWidgets.QWidget.focusInEvent(self, event)
         DBG("focusin()")
         self.lep.edit_widget_focus()
 
     # @+node:ekr.20211210174103.22: *3* focusOutEvent
-    def focusOutEvent(self, event):
-        QtWidgets.QTextEdit.focusOutEvent(self, event)
+    def focusOutEvent(self, event: QtGui.QFocusEvent) -> None:
+        QtWidgets.QWidget.focusOutEvent(self, event)
         DBG("focusout()")
 
     # @+node:ekr.20211210174103.23: *3* new_data

@@ -95,7 +95,7 @@ def run(c, all):
         runList(c, aList)
 
     t = threading.Thread(target=thread_target)
-    t.setDaemon(True)  # pylint: disable=deprecated-method
+    t.daemon = True
     t.start()
     timer = g.IdleTime(handler=None, delay=500, tag='at-produce')
     c._at_produce_max = 20
@@ -104,8 +104,9 @@ def run(c, all):
     def timer_callback(tag):
         timer_callback_helper(c, t, timer)
 
-    timer.handler = timer_callback
-    timer.start()
+    if timer:
+        timer.handler = timer_callback
+        timer.start()
 
 
 # @+node:ekr.20040915085351.2: *3* getList
@@ -124,7 +125,7 @@ def getList(c, all):
     return aList
 
 
-# @+node:ekr.20040915085351.6: *3* runList
+# @+node:ekr.20040915085351.6: *3* runList (at_produce.py)
 def runList(c, aList):
     """
     Run all commands in aList (in a separate thread).
@@ -138,13 +139,8 @@ def runList(c, aList):
                 c.at_produce_command = command
                 command = command.lstrip(pr).lstrip()
                 f.write('produce: %s\n' % command)
-                # EKR: 2017/05/05
-                # Replace popen3 per https://docs.python.org/2.4/lib/node245.html
-                # fi, fo, fe  = os.popen3(command)
                 p = subprocess.Popen(
                     command,
-                    # bufsize=bufsize,
-                    # close_fds=True, # Dubious to disable this.
                     stdin=PIPE,
                     stdout=PIPE,
                     stderr=PIPE,

@@ -51,9 +51,9 @@ with some modifications made for Leo embedding.
 import re
 import sys
 import code
-from typing import Any
+from typing import Any, cast
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtWidgets
+from leo.core.leoQt import QtGui, QtWidgets
 from leo.core.leoQt import Key
 
 # A workaround for #1212: segfaults at startup when importing this file.
@@ -73,7 +73,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
 # @+others
 # @+node:peckj.20150428142729.3: ** class MyInterpreter
-class MyInterpreter(QtWidgets.QWidget):  # type:ignore
+class MyInterpreter(QtWidgets.QWidget):
     def __init__(self, parent, c):
         super().__init__(parent)
         hBox = QtWidgets.QHBoxLayout()
@@ -110,19 +110,19 @@ class InteractiveInterpreter(code.InteractiveInterpreter):
 # @+node:peckj.20150428142729.5: ** class PyInterp (QTextEdit)
 if QtWidgets:
 
-    class PyInterp(QtWidgets.QTextEdit):  # type:ignore
+    class PyInterp(QtWidgets.QTextEdit):
         # @+others
         # @+node:peckj.20150428142729.9: *3* PyInterp.__init__
         def __init__(self, parent, c):
             super().__init__(parent)
-            #
+
             # this widget swallows stdout + stderr while focused,
             # but resets them upon losing focus
             if not g.user_dict.get('old_stdout', None):
                 g.user_dict['old_stdout'] = sys.stdout
             if not g.user_dict.get('old_stderr', None):
                 g.user_dict['old_stderr'] = sys.stderr
-            #
+
             # init ivars.
             self.indent = 0
             self.refreshMarker = False  # to change back to >>> from ...
@@ -134,10 +134,10 @@ if QtWidgets:
             self.historyIndex = -1
             self.interpreterLocals = {}
             self.c = c
-            #
+
             # initilize interpreter with self locals
             self.initInterpreter(locals())
-            #
+
             # update p when new node selected
             g.registerHandler('select2', self.select2_hook)
 
@@ -168,7 +168,7 @@ if QtWidgets:
                 # and reinsert the locals back into the interpreter dictionary
                 selfName = interpreterLocals['self'].__class__.__name__
                 interpreterLocalVars = interpreterLocals.pop('self')
-                self.interpreterLocals[selfName] = interpreterLocalVars
+                cast(Any, self.interpreterLocals)[selfName] = interpreterLocalVars
             else:
                 self.interpreterLocals = interpreterLocals
 
@@ -177,7 +177,7 @@ if QtWidgets:
         # @+node:peckj.20150428142729.14: *3* PyInterp.updateInterpreterLocals
         def updateInterpreterLocals(self, newLocals):
             className = newLocals.__class__.__name__
-            self.interpreterLocals[className] = newLocals
+            cast(Any, self.interpreterLocals)[className] = newLocals
 
         # @+node:peckj.20150428142729.15: *3* PyInterp.write
         def write(self, line):
@@ -190,7 +190,7 @@ if QtWidgets:
             length = len(self.document().lastBlock().text()[4:])
             if length == 0:
                 return None
-            #
+
             # should have a better way of doing this but I can't find it.
             # [self.textCursor().deletePreviousChar() for x in xrange(length)]
             for x in range(length):
@@ -217,7 +217,7 @@ if QtWidgets:
                 for i, x in enumerate(history):
                     iSize = len(str(i))
                     delta = len(str(len(history))) - iSize
-                    line = line = ' ' * delta + '%i: %s' % (i, x) + '\n'
+                    line = ' ' * delta + '%i: %s' % (i, x) + '\n'
                     self.write(line)
                 self.updateInterpreterLocals(backup)
                 self.insert_marker()
@@ -251,13 +251,13 @@ if QtWidgets:
             return False
 
         # @+node:peckj.20150428142729.19: *3* PyInterp.keyPressEvent & helper
-        def keyPressEvent(self, event):
+        def keyPressEvent(self, event: QtGui.QKeyEvent) -> None:
             completer: Any
             try:
                 # #1212: Disable this by default.
                 if use_rlcompleter and event.key() == Key.Key_Tab:
                     line = str(self.document().lastBlock().text())[4:]
-                    completer = Completer(self.interpreter.locals)  # type:ignore
+                    completer = Completer(self.interpreter.locals)
                     suggestion = completer.complete(line, 0)
                     if suggestion is not None:
                         self.insertPlainText(suggestion[len(line) :])
@@ -309,7 +309,7 @@ if QtWidgets:
         # @+node:ekr.20180307132016.1: *4* PyInterp.doEnter & helpers
         def doEnter(self, event):
             """Handle the <return> key."""
-            #
+
             # Binding for functions.
             interp = self.interpreter
 
@@ -356,7 +356,7 @@ if QtWidgets:
                 return False
 
             # @-others
-            #
+
             # Set cursor to end of line to avoid line splitting
             textCursor = self.textCursor()
             position = len(self.document().toPlainText())
@@ -364,7 +364,7 @@ if QtWidgets:
             self.setTextCursor(textCursor)
             lines: list[str] = []
             block = self.document().lastBlock()
-            #
+
             # Scan backward, looking for lines.
             while block:
                 line = g.toUnicode(block.text())
@@ -377,26 +377,26 @@ if QtWidgets:
                     lines.insert(0, line[4:])
                 else:
                     lines.insert(0, line)
-            #
+
             # Always end the log line.
             self.append('')
-            #
+
             # Clean the lines and compute the last line.
             last_line = lines[-1].rstrip() if lines else ''
             lines = [z.rstrip() + '\n' for z in lines if z.strip()]
             if self.customCommands(last_line):
                 return
-            #
+
             # Handle the history and set self.indent for insert_marker.
             if last_line.strip():
                 self.history.insert(0, last_line)
                 self.indent = compute_indent(last_line)
-            #
+
             # Check for a continued line.
             if self.indent > 0 and last_line:
                 self.insert_marker()
                 return
-            #
+
             # Execute lines in groups, delimited by indentation.
             indent: int = 0
             ok: bool = True
@@ -418,15 +418,15 @@ if QtWidgets:
             self.insert_marker()
 
         # @+node:peckj.20150428142729.20: *3* PyInterp.focusInEvent
-        def focusInEvent(self, event=None):
+        def focusInEvent(self, event: QtGui.QFocusEvent | None = None) -> None:
             # set stdout+stderr properly
             QtWidgets.QTextEdit.focusInEvent(self, event)
-            sys.stdout = self  # type:ignore
-            sys.stderr = self  # type:ignore
+            sys.stdout = self
+            sys.stderr = self
             self.ensureCursorVisible()
 
         # @+node:peckj.20150428142729.21: *3* PyInterp.focusOutEvent
-        def focusOutEvent(self, event):
+        def focusOutEvent(self, event: QtGui.QFocusEvent) -> None:
             # set stdout+stderr properly
             QtWidgets.QTextEdit.focusOutEvent(self, event)
             sys.stdout = g.user_dict['old_stdout']

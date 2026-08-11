@@ -1,0 +1,52 @@
+# Config for `ty` (https://github.com/astral-sh/ty)
+# See the "ty" job in .github/workflows/ci.yml
+
+# ty is still in beta, and is noticeably stricter than mypy.
+
+[src]
+include = ["leo"]
+exclude = [
+    # Mirrors the [mypy] exclude list in .mypy.ini.
+    "leo/doc",
+    "leo/dist",
+    "leo/editpane",
+    "leo/examples",
+    "leo/extensions",
+    "leo/external",
+    "leo/modes",
+    "leo/plugins/obsolete",
+    "leo/scripts",
+    "leo/themes",
+    "leo/unittests",
+    "leo/www",
+    "leo/plugins/freewin.py",
+    "leo/test/scriptFile.py",
+    "leo/plugins/beautify_node.py",
+    "leo/plugins/viewrendered3*",
+    "leo/plugins/leo_pdf*",
+    "leo/plugins/leo_to_rtf*",
+    "leo/plugins/mnplugins*",
+    "leo/plugins/mod_speedups*",
+    "leo/plugins/settings_finder*",
+    "leo/plugins/stickynotes_plus*",
+    "leo/plugins/qt_main*",
+]
+
+[rules]
+# Like `disable_error_code=attr-defined` in .mypy.ini.
+unresolved-attribute = "ignore"
+
+# Like `ignore_missing_imports = True` in .mypy.ini.
+unresolved-import = "ignore"
+
+# Silence warnings about mypy suppressions that mypy needs.
+unused-type-ignore-comment = "ignore"
+
+# PyQt/PySide stub signatures name event-handler parameters `a0`, `a1`,
+# etc. (they're wrapped C++ methods with no meaningful Python names),
+# so any override using a readable parameter name (`event`, `obj`, ...)
+# trips ty's Liskov keyword-compatibility check. This is a structural
+# mismatch between Qt's stubs and Leo's Qt subclasses throughout
+# leo/plugins (event filters, close/focus/mouse events, JSONEncoder.default,
+# importer find_end_of_block overrides), not a real override bug.
+invalid-method-override = "ignore"

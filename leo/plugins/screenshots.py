@@ -312,6 +312,7 @@ the @slideshow tree whose sanitized name is
 # @+node:ekr.20100908110845.5604: ** << imports >>
 import copy
 import glob
+from typing import Any, cast
 import os
 import shutil
 import subprocess
@@ -327,11 +328,11 @@ from leo.core.leoQt import QtCore
 try:
     from PIL import Image
 except Exception:
-    Image = None
+    Image = None  # type:ignore
 try:
     from PIL import ImageChops
 except ImportError:
-    ImageChops = None
+    ImageChops = None  # type:ignore
 
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
@@ -624,12 +625,10 @@ class ScreenShotController:
     def build(self):
         """Do a complete sphinx build."""
         sc = self
+        assert sc.slideshow_path
         os.chdir(sc.slideshow_path)
-        os.system('make clean')
-        os.system('make html')
-        # cmd = ['make','html']
-        # proc = subprocess.Popen(cmd)
-        # proc.communicate() # Wait
+        subprocess.run(['make', 'clean'], check=False)
+        subprocess.run(['make', 'html'], check=False)
 
     # @+node:ekr.20100915074635.5651: *3* init
     def init(self, p):
@@ -828,6 +827,7 @@ class ScreenShotController:
     def get_directive_fn(self):
         """Compute the path for use in an .. image:: directive."""
         sc = self
+        assert sc.output_fn
         return g.shortFileName(sc.output_fn)
 
     # @+node:ekr.20100911044508.5627: *5* get_output_fn
@@ -866,7 +866,8 @@ class ScreenShotController:
     # @+node:ekr.20101004082701.5738: *5* get_slide_base_name
     def get_slide_base_name(self):
         sc = self
-        junk, name = g.os_path_split(sc.slideshow_path)
+        assert sc.slideshow_path
+        _, name = g.os_path_split(sc.slideshow_path)
         return name
 
     # @+node:ekr.20101004082701.5740: *5* get_slide_fn
@@ -922,7 +923,7 @@ class ScreenShotController:
                     g.error('relative sphinx path given but outline not named')
                     return None
                 leo_fn = g.finalize_join(g.app.loadDir, leo_fn)
-                base, junk = g.os_path_split(leo_fn)
+                base, _ = g.os_path_split(leo_fn)
                 path = g.finalize_join(base, sphinx_path)
         else:
             # The default is the leo/doc/html directory.
@@ -979,7 +980,7 @@ class ScreenShotController:
             g.error('relative wink path given but outline not named')
             return None
         leo_fn = g.finalize_join(g.app.loadDir, leo_fn)
-        base, junk = g.os_path_split(leo_fn)
+        base, _ = g.os_path_split(leo_fn)
         path = g.finalize_join(base, path)
         path = sc.fix(path)
         g.trace(path)
@@ -1046,7 +1047,7 @@ class ScreenShotController:
         sc = self
         assert hasattr(sc, option)
         tag = '@' + option
-        isPath = tag.endswith('_fn') or tag.endswith('_path')
+        isPath = tag.endswith(('_fn', '_path'))
         for p in (sc.slideshow_node, sc.slide_node):
             for child in p.children():
                 h = child.h
@@ -1153,7 +1154,8 @@ class ScreenShotController:
             'Makefile',
             'make.bat',
         )
-        slide_path, junk = g.os_path_split(sc.slide_fn)
+        assert sc.slide_fn
+        slide_path, _ = g.os_path_split(sc.slide_fn)
         for fn in table:
             path = g.finalize_join(slide_path, fn)
             if not g.os_path_exists(path):
@@ -1163,7 +1165,7 @@ class ScreenShotController:
     def copy_file(self, src_path, dst_path, fn):
         src_fn = g.finalize_join(src_path, fn)
         dst_fn = g.finalize_join(dst_path, fn)
-        junk, dst_dir = g.os_path_split(dst_path)
+        _, dst_dir = g.os_path_split(dst_path)
         g.note('creating', g.os_path_join('slides', dst_dir, fn))
         shutil.copyfile(src_fn, dst_fn)
 
@@ -1226,8 +1228,9 @@ class ScreenShotController:
             ('_static       ', static_dir),
         )
         for tag, path in table:
+            assert path is not None
             if tag.strip().endswith('fn'):
-                path, junk = g.os_path_split(path)
+                path, _ = g.os_path_split(path)
             if not g.os_path_exists(path):
                 g.trace(tag, path)
                 g.makeAllNonExistentDirectories(path)
@@ -1241,7 +1244,8 @@ class ScreenShotController:
         h = '@url built slide'
         if not sc.find_node(p, h):
             c.selectPosition(p)
-            junk, fn = g.os_path_split(sc.slide_fn)
+            assert sc.slide_fn
+            _, fn = g.os_path_split(sc.slide_fn)
             if fn.endswith('.txt'):
                 fn = fn[:-4]
             p2 = p.insertAsLastChild()
@@ -1343,14 +1347,6 @@ class ScreenShotController:
         """Return True if p.h matches the pattern."""
         return g.match_word(p.h, 0, pattern)
 
-    # @+node:ekr.20100911044508.5636: *4* open_inkscape_with_list (not used)
-    # def open_inkscape_with_list (self,aList):
-    # """Open inkscape with a list of file."""
-    # sc = self
-    # cmd = [sc.inkscape_bin,"--with-gui"]
-    # cmd.extend(aList)
-    # proc = subprocess.Popen(cmd, stderr=subprocess.PIPE)
-    # proc.communicate() # Wait for Inkscape to terminate.
     # @+node:ekr.20101021065622.5633: *4* remove_built_slide_node
     def remove_built_slide_node(self, p):
         sc = self
@@ -1422,6 +1418,7 @@ class ScreenShotController:
         # "@url working file" inhibits making a new working file.
         if sc.find_node(sc.slide_node, '@url working file'):
             # Make a new output file *only* if the working file is newer.
+            assert sc.working_fn
             if (
                 g.os_path_exists(sc.working_fn)
                 and sc.output_fn
@@ -1447,6 +1444,7 @@ class ScreenShotController:
         g.red('Opening Inkscape...\n')
         sc.c.outerUpdate()
         sc.enable_filters(sc.working_fn, False)
+        assert sc.inkscape_bin and sc.working_fn
         cmd = [sc.inkscape_bin, "--with-gui", sc.working_fn]
         proc = subprocess.Popen(cmd, stderr=subprocess.PIPE)
         proc.communicate()  # Wait for Inkscape to terminate.
@@ -1492,10 +1490,12 @@ class ScreenShotController:
             if sc.verbose:
                 g.note('no output file')
             return
+        output_fn = sc.output_fn
+        assert sc.inkscape_bin and sc.working_fn
         cmd = (
             sc.inkscape_bin,
             "--without-gui",
-            "--export-png=" + sc.output_fn,
+            "--export-png=" + output_fn,
             "--export-area-drawing",
             "--export-area-snap",
             sc.working_fn,
@@ -1503,14 +1503,14 @@ class ScreenShotController:
         proc = subprocess.Popen(cmd, stderr=subprocess.PIPE)
         proc.communicate()  # Wait for Inkscape to terminate.
         if sc.verbose:
-            g.note('wrote:  %s' % g.shortFileName(sc.output_fn))
+            g.note('wrote:  %s' % g.shortFileName(output_fn))
         if Image:  # trim transparent border
             try:
-                img = Image.open(sc.output_fn)
+                img = Image.open(output_fn)
                 img = sc.trim(img, (255, 255, 255, 0))
-                img.save(sc.output_fn)
-            except IOError:
-                g.trace('can not open %s' % sc.output_fn)
+                img.save(output_fn)
+            except OSError:
+                g.trace('can not open %s' % output_fn)
         sc.make_at_url_node_for_output_file()
 
     # @+node:ekr.20100908110845.5555: *5* trim
@@ -1532,6 +1532,7 @@ class ScreenShotController:
         """Write sc.slide_node.b to <sc.slide_fn>, a .html.txt file."""
         sc = self
         fn = sc.slide_fn
+        assert fn
         s = sc.make_slide_contents()
         try:
             f = open(fn, 'w')
@@ -1619,7 +1620,7 @@ class ScreenShotController:
         img_element = ids_d.get('co_shot')
         img_element.set(sc.xlink + 'href', sc.screenshot_fn)
         # adjust screen shot dimensions
-        if Image:
+        if Image and sc.screenshot_fn:
             img = Image.open(sc.screenshot_fn)
             img_element.set('width', str(img.size[0]))
             img_element.set('height', str(img.size[1]))
@@ -1651,6 +1652,7 @@ class ScreenShotController:
     def get_template(self):
         """Load and check the template SVG and return DOM"""
         sc = self
+        assert sc.template_fn
         infile = open(sc.template_fn)
         template = etree.parse(infile)
         ids_d = sc.getIds(template.getroot())
@@ -1753,6 +1755,7 @@ class ScreenShotController:
         """Create the working file from the template."""
         sc = self
         fn = sc.working_fn
+        assert fn
         outfile = open(fn, 'w')
         template.write(outfile)
         if sc.verbose:
@@ -1771,6 +1774,7 @@ class ScreenShotController:
         ok = sc.setup_screen_shot(fn)
         if ok:
             if sc.verbose:
+                assert sc.screenshot_fn
                 g.note('wrote:  %s' % g.shortFileName(sc.screenshot_fn))
                 # g.note('slide node:  %s' % p.h)
             sc.add_image_directive()
@@ -1847,6 +1851,7 @@ class ScreenShotController:
         if sc.select_node:
             cmd.append('--select="%s"' % (sc.select_node))
         if sc.pause_flag:
+            assert sc.screenshot_fn
             g.red('Pausing:', g.shortFileName(sc.screenshot_fn))
             g.note('Please take the screenshot by hand')
             c.outerUpdate()
@@ -1958,7 +1963,7 @@ class ScreenShotController:
         else:
             s = '.. image:: %s' % sc.directive_fn.replace('\\', '/')
         if p.b.find(s) == -1:
-            p.b = p.b.rstrip() + '\n\n%s\n\n' % (s)
+            cast(Any, p).b = p.b.rstrip() + '\n\n%s\n\n' % (s)
 
     # @+node:ekr.20101113193341.5452: *6* delete_at_url_built_slide_node
     def delete_at_url_built_slide_node(self, p):
@@ -2065,11 +2070,12 @@ class ScreenShotController:
     def get_wink_screenshots(self):
         """Return the properly sorted list of wink screenshots."""
         sc = self
+        assert sc.wink_path
         aList = glob.glob(sc.wink_path + '/*.png')
 
         def key(s):
             path, ext = g.os_path_splitext(s)
-            junk, n = g.os_path_split(path)
+            _, n = g.os_path_split(path)
             n = n.strip()
             if n.isdigit():
                 return int(n)

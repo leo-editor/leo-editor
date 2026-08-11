@@ -87,9 +87,6 @@
 <v t="ekr.20200226104131.1"><vh>Future settings</vh>
 <v t="ekr.20190926110217.1"><vh>@string adoc-base-directory = None</vh></v>
 </v>
-<v t="ekr.20260419074741.1"><vh>Unused settings</vh>
-<v t="jlunz.20151119171553.1"><vh>@bool cursor-stay-on-paste = True</vh></v>
-</v>
 </v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20201010141557.1"><vh>@string theme-name = None</vh></v>
@@ -196,7 +193,6 @@
 <v t="tbrown.20120821183537.18663"><vh>@string abbreviations-place-start = &lt;|</vh></v>
 <v t="tbrown.20120820202856.25329"><vh>@string abbreviations-subst-end = }|}</vh></v>
 <v t="tbrown.20120820202856.25328"><vh>@string abbreviations-subst-start = {|{</vh></v>
-<v t="tbrown.20151114110207.1"><vh>@string abbreviations-next-placeholder = ,,</vh></v>
 </v>
 <v t="ekr.20140917051508.19548"><vh>Appearance (change these first)</vh>
 <v t="ekr.20140912075503.19369"><vh>Qt Gui settings</vh>
@@ -204,6 +200,7 @@
 <v t="ekr.20210914081311.1"><vh>@bool highlight-body-line = False</vh></v>
 <v t="ekr.20210914081428.1"><vh>@string line-highlight-color = None</vh></v>
 <v t="ekr.20240726065425.1"><vh>@string qt-layout-name = legacy</vh></v>
+<v t="codex.20260701120000.1"><vh>@bool qt-mac-dont-swap-ctrl-and-meta = False</vh></v>
 <v t="ekr.20140915194122.23431"><vh>Colors</vh>
 <v t="ekr.20140912075503.19318"><vh>Body pane colors</vh>
 <v t="ekr.20140912075503.19319"><vh>@color body-bg = white</vh></v>
@@ -542,7 +539,7 @@
 </v>
 <v t="ekr.20110611092035.16479"><vh>Emacs-like commands settings</vh>
 <v t="ekr.20071006153053"><vh>@bool add-ws-to-kill-ring = False</vh></v>
-<v t="ekr.20070531103454"><vh>@bool globalDynamicAbbrevs = True</vh></v>
+<v t="ekr.20070531103454"><vh>@bool global-dynamic-abbrevs = True</vh></v>
 </v>
 <v t="ekr.20110611092035.16482"><vh>Headline commands settings</vh>
 <v t="ekr.20181018105904.1"><vh>@bool headline-gmt-time = False</vh></v>
@@ -635,9 +632,7 @@
 <v t="ekr.20150403055250.1"><vh>@bool check-for-changed-external-files = True</vh></v>
 <v t="ekr.20090514111518.8379"><vh>@bool check-python-code-on-write = True</vh></v>
 <v t="ekr.20260326111743.1"><vh>@bool raise-file-update-dialogs = False</vh></v>
-<v t="ekr.20221128115636.1"><vh>@bool run-flake8-on-write = False</vh></v>
-<v t="ekr.20161021095001.1"><vh>@bool run-pyflakes-on-write = False</vh></v>
-<v t="ekr.20240924055407.1"><vh>@bool run-pylint-on-write = False</vh></v>
+<v t="vv.20260807130000.1"><vh>@bool run-ruff-on-write = False</vh></v>
 <v t="ekr.20150710084507.1"><vh>@bool syntax-error-popup = False</vh></v>
 <v t="ekr.20150321090958.1"><vh>@bool verbose-check-outline = False</vh></v>
 </v>
@@ -669,7 +664,6 @@
 </v>
 </v>
 <v t="ekr.20041119034357.20"><vh>Find/replace options</vh>
-<v t="ekr.20141024165714.1"><vh>@bool auto-scroll-find-tab = True</vh></v>
 <v t="ekr.20131119143342.20107"><vh>@bool minibuffer-find-mode = False</vh></v>
 <v t="tbrown.20151010094807.1"><vh>@bool show-find-result-in-status = True</vh></v>
 <v t="ekr.20150710065036.1"><vh>@bool preload-find-pattern = False</vh></v>
@@ -1267,7 +1261,8 @@
 <v t="ekr.20180320113441.1"><vh>@item open-theme-file</vh></v>
 <v t="ekr.20131213135427.21955"><vh>@item open-local-settings</vh></v>
 <v t="ekr.20180405110859.1"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22050"><vh>@menu &amp;List/Kill Abbreviations</vh>
+<v t="ekr.20131213135427.22050"><vh>@menu &amp;Abbreviations</vh>
+<v t="felix.20260810004559.1"><vh>@item &amp;toggle-abbrev-mode</vh></v>
 <v t="ekr.20131213135427.22053"><vh>@item abbrev-&amp;list</vh></v>
 <v t="ekr.20131213135427.22059"><vh>@item abbrev-&amp;kill-all</vh></v>
 </v>
@@ -2341,6 +2336,10 @@ The following integer values are supported:
 </t>
 <t tx="btheado.20131124162237.2493"></t>
 <t tx="chris.20180324074923.1"></t>
+<t tx="codex.20260701120000.1">The setting only has effect on MacOS.
+False: Legacy operation: Qt swaps Command and Control into cross-platform roles.
+True:  Tell Qt not to swap Command and Control before QApplication is created.
+</t>
 <t tx="edward.20081129091117.12">horizontal: body pane to the right
 vertical: body pane on the botton
 
@@ -3713,7 +3712,6 @@ mod_scripting.py
 nav_qt.py           # Forward/back buttons &amp; goto-next/prev-history-node
 nodetags.py
 quicksearch.py      # Nav pane.
-todo.py             # Task pane.
 viewrendered.py     # (Or viewrendered3.py) Plugins menu support.
 leo_to_html_outline_viewer.py  # Self-contained HTML Outline Viewer</t>
 <t tx="ekr.20070318065601">True:  Chapter commands are functional.
@@ -9136,8 +9134,6 @@ c.k.simulateCommand('show-color-wheel')
 <t tx="ekr.20140922124047.19516"></t>
 <t tx="ekr.20140922124047.19517"></t>
 <t tx="ekr.20140922124047.20313"></t>
-<t tx="ekr.20141024165714.1">True:  Scroll the find tab ensure find input field visible. (fixes bug 1254861)
-False: Never scroll the find tab automatically.</t>
 <t tx="ekr.20141112072219.1"></t>
 <t tx="ekr.20141204160426.5">New.</t>
 <t tx="ekr.20150216135059.1">With @clean and @file, Leo can store persistent data in nodes. This
@@ -10207,7 +10203,6 @@ de-hoist                            = Ctrl-Alt-Shift-h
 The OSX shortcuts posted by karstenw at the link below solved all of my keycode problems on a Mac:
 
 https://github.com/karstenw/leo-shortcuts-osx/blob/master/myLeoSettings.leo</t>
-<t tx="ekr.20161021095001.1">True: run Pyflakes on each saved file, but only if it has been changed.</t>
 <t tx="ekr.20161025090757.1">Leo&amp;Dist.leo</t>
 <t tx="ekr.20161121044950.1"># The headline must be: @outline-data tree-abbreviations
 
@@ -10277,8 +10272,8 @@ Put notes about each version here.
     )
     # g.trace('===== x:', repr(x))
     if not x: x = 'no-language!'
-    _values = c.abbrev_subst_env['name'] = x.lower()
-    _values = c.abbrev_subst_env['cap_name'] = x.capitalize()
+    _values['name'] = c.abbrev_subst_env['name'] = x.lower()
+    _values['cap_name'] = c.abbrev_subst_env['cap_name'] = x.capitalize()
     return x.lower()
 </t>
 <t tx="ekr.20170123145248.1"></t>
@@ -10301,7 +10296,7 @@ try:
         demo = MyDemo(c, trace=False)
         demo.bind('callout', callout)
         demo.bind('title', title)
-        demo.start(script_string=script_string)
+        demo.start(script_tree=c.p)
 except Exception:
     g.app.demo = None
     raise
@@ -10927,7 +10922,7 @@ See https://jedi.readthedocs.io/en/latest/index.html
     # These plugins/use settings in non-standard ways.
     if setting.startswith((
             'bookmarks', 'datenodes', 'http', 'opml',
-            'rst3', 'todo', 'vim', 'zodb'
+            'rst3', 'vim', 'zodb'
         ),
     ):
         return False
@@ -10984,7 +10979,7 @@ See https://jedi.readthedocs.io/en/latest/index.html
     # These plugins use settings in non-standard ways.
     if setting.startswith((
         'activepath', 'bookmarks', 'datenodes', 'http', 'opml',
-        'rst3', 'todo', 'vim', 'vr3', 'zodb'),
+        'rst3', 'vim', 'vr3', 'zodb'),
     ):
         return False
     #
@@ -11497,7 +11492,6 @@ False: Use the default stylesheet at leo/plugins/viewrendered3.
 # systray.py
 # testRegisterCommand.py
 # textnode.py
-# todo.py
 # tomboy_import.py
 # trace_gc_plugin.py
 # trace_keys.py
@@ -11513,7 +11507,6 @@ False: Use the default stylesheet at leo/plugins/viewrendered3.
 # xsltWithNodes.py
 # zenity_file_dialogs.py
 </t>
-<t tx="ekr.20221128115636.1">True: run flake8 on each saved file, but only if it has been changed.</t>
 <t tx="ekr.20230104130512.1"></t>
 <t tx="ekr.20230104150532.1"></t>
 <t tx="ekr.20230104150550.1"># Headlines starting with any of the following strings are not considered dubious.
@@ -11554,14 +11547,20 @@ Compatibility notes:
     
 - All forms of gnx strings (legacy, UUIDs and KSUIDs) may safely coexist in the same document.
 - All versions of Leo from 4.1 onward can read all forms of gnxs.
-- The "sort by creation date" of the todo plugin will not work with UUIDs or KSUIDs.
 
 For more details, see https://github.com/leo-editor/leo-editor/issues/3047
 </t>
 <t tx="ekr.20230205102733.1">False (legacy): Don't filter body text.
 True:           Remove unindented @language, @others and @wrap directives.
 </t>
-<t tx="ekr.20230221053634.1"># type html;; to insert template and ,, to select next &lt;|placeholder|&gt;
+<t tx="ekr.20230221053634.1"># Good for GitHub issues.
+
+details;;=&lt;details&gt;&lt;summary&gt;&lt;b&gt;&lt;|Title|&gt;&lt;/b&gt;&lt;/summary&gt;
+\:&lt;br&gt;
+\:
+\:&lt;/details&gt;
+
+# type html;; to insert template and ,, to select next &lt;|placeholder|&gt;
 
 html;;=&lt;html&gt;
 \:&lt;head&gt;
@@ -11699,7 +11698,6 @@ vertical-thirds2
     │           │  body │       │
     └───────────┴───────┴───────┘
 </t>
-<t tx="ekr.20240924055407.1">True: run Pylint on each saved file, but only if it has been changed.</t>
 <t tx="ekr.20240926065158.1"># True: When saving a file, beautify external files using ruff format.
 </t>
 <t tx="ekr.20241012050620.1">True: Leo's git-diff command will diff .leo and .leojs files.</t>
@@ -11901,7 +11899,6 @@ If not given, Leo's beautifier uses Leo's pyproject.toml file.
 
 True (Legacy):       Raise a dialog when any file changes externally.
 False (Recommended): Print a log message when any file changes externally.</t>
-<t tx="ekr.20260419074741.1"></t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>
@@ -11911,6 +11908,7 @@ False: (Recommended) The commands act as simple navigation commands, and do not 
 Leo accepts outline 'paste' data in both XML Leo format, or JSON format</t>
 <t tx="felix.20250313152228.1"></t>
 <t tx="felix.20250313152231.1"></t>
+<t tx="felix.20260810004559.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
@@ -11946,7 +11944,6 @@ Leo accepts outline 'paste' data in both XML Leo format, or JSON format</t>
         
     QtCore.QTimer.singleShot(0, later)
 </t>
-<t tx="jlunz.20151119171553.1"></t>
 <t tx="jlunz.20151120072157.1">True: Wrap body text.
 
 </t>
@@ -12117,10 +12114,7 @@ the ``&lt;|`` in::
 
     w;;=while &lt;|condition|&gt;:
     \:    &lt;|code|&gt;
-
-This would expand with the ``&lt;|condition|&gt;`` selected, and ``,,``,
-if that's an abbreviation linked to next_place(), see 
-``@@data abbreviations examples``, would select ``&lt;|code|&gt;``.</t>
+</t>
 <t tx="tbrown.20130813134319.7223"></t>
 <t tx="tbrown.20130813134319.7224">Set this to True for rich text edits to be saved automatically.
 
@@ -12499,9 +12493,6 @@ This setting must be explicitly set to `False` to suppress
 the status line output, just deleting it to get a value of `None`
 won't work - this preserves the default `True` action in the
 absence of this setting.</t>
-<t tx="tbrown.20151114110207.1">"Abbreviation" to trigger the selection of the next placeholder,
-i.e. typing ,, will select the next &lt;|placeholder|&gt; text, after
-removing the &lt;| and |&gt;</t>
 <t tx="tbrown.20160130095933.1">legacy
 ::
 
@@ -12618,5 +12609,6 @@ paste-retaining-clones Paste Node As Clone
 <t tx="vitalije.20170811125150.1"></t>
 <t tx="vitalije.20190928173155.1"></t>
 <t tx="vitalije.20190928173236.1"></t>
+<t tx="vv.20260807130000.1"></t>
 </tnodes>
 </leo_file>

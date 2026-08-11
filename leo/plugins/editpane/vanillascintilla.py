@@ -54,13 +54,13 @@ if Qsci:
             self.setCaretLineBackgroundColor(QtGui.QColor("#ffe4e4"))
 
         # @+node:tbrown.20171028115501.5: *3* focusInEvent
-        def focusInEvent(self, event):
+        def focusInEvent(self, event: QtGui.QFocusEvent) -> None:
             Qsci.QsciScintilla.focusInEvent(self, event)
             DBG("focusin()")
             self.lep.edit_widget_focus()
 
         # @+node:tbrown.20171028115501.6: *3* focusOutEvent
-        def focusOutEvent(self, event):
+        def focusOutEvent(self, event: QtGui.QFocusEvent) -> None:
             Qsci.QsciScintilla.focusOutEvent(self, event)
             DBG("focusout()")
 

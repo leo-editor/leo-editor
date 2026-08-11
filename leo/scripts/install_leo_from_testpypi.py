@@ -11,6 +11,7 @@ https://github.com/leo-editor/leo-editor/issues/3837
 
 import os
 import subprocess
+import sys
 
 print(os.path.basename(__file__))
 
@@ -20,7 +21,8 @@ os.chdir(home_dir)
 
 # Install.
 # --no-build-isolation
-command = 'python -m pip install -i https://test.pypi.org/simple/ leo==6.8.8'
+python = sys.executable
+command = f"{python} -m pip install -i https://test.pypi.org/simple/ leo==6.8.9"
 print(command)
-subprocess.Popen(command, shell=True).communicate()
+subprocess.run(command, shell=True)
 # @-leo

@@ -231,9 +231,10 @@ try:
     import asynchat
     import asyncore
 except Exception:
-    asynchat = asyncore = None
+    asynchat = asyncore = None  # type:ignore
 import http.server
 import json
+from typing import Any, cast
 import io
 import os
 import select
@@ -280,13 +281,13 @@ def init():
     if config.http_active:
         try:
             Server(config.http_ip, config.http_port, RequestHandler)
-        except socket.error as e:
+        except OSError as e:
             g.es(
                 "mod_http server initialization failed (%s:%s): %s"
                 % (config.http_ip, config.http_port, e)
             )
             return False
-        asyncore.read = a_read
+        asyncore.read = cast(Any, a_read)
         g.registerHandler("idle", plugin_wrapper)
         g.es("http serving enabled at %s:%s" % (config.http_ip, config.http_port), color="purple")
     g.plugin_signon(__name__)
@@ -335,7 +336,7 @@ def onFileOpen(tag, keywords):
     getConfiguration(c)
     if config.http_active and not wasactive:  # Ok for unit testing:
         Server('', config.http_port, RequestHandler)
-        asyncore.read = a_read
+        asyncore.read = cast(Any, a_read)
         g.registerHandler("idle", plugin_wrapper)
         g.es("http serving enabled on port %s, " % (config.http_port), color="purple")
 
@@ -383,7 +384,7 @@ def getData(setting):
 class config:
     enabled = None  # True when security check re http-allow-remote-exec passes.
     http_active = False
-    http_timeout = 0
+    http_timeout: float = 0
     http_ip = '127.0.0.1'
     http_port = 8130
     rst2_http_attributename = 'rst_http_attribute'
@@ -413,12 +414,12 @@ if asyncore:
             aList = [g.toEncodedString(z) for z in self.buffer]
             self.out_buffer = b''.join(aList)
             del self.buffer
-            self.set_socket(self.socket, None)
+            self.set_socket(self.socket, None)  # type:ignore
             self.socket.setblocking(False)
             self.connected = True
             try:
                 self.addr = self.socket.getpeername()
-            except socket.error:
+            except OSError:
                 # The addr isn't crucial
                 pass
 
@@ -765,7 +766,7 @@ class LeoActions:
         one_tab_links = []
         if 'www.one-tab.com' in url.lower():
             one_tab_links = query.get('ln', [''])[0]
-            one_tab_links = json.loads(one_tab_links)  # type:ignore
+            one_tab_links = json.loads(one_tab_links)
         c = None  # outline for bookmarks
         previous = None  # previous bookmark for adding selections
         parent = None  # parent node for new bookmarks
@@ -985,8 +986,6 @@ class noLeoNodePath(Exception):
     Most likely a reference to a picture.
     """
 
-    pass
-
 
 # @+node:EKR.20040517080250.13: ** class RequestHandler
 if asynchat:
@@ -1063,7 +1062,7 @@ if asynchat:
             bytesToRead = int(self.headers.getheader('content-length'))
             # set terminator to length (will read bytesToRead bytes)
             self.set_terminator(bytesToRead)
-            self.buffer = StringIO()  # type:ignore
+            self.buffer = StringIO()
             # control will be passed to a new found_terminator
             self.found_terminator = self.handle_post_data  # type:ignore
 
@@ -1121,7 +1120,7 @@ if asynchat:
         def handle_request_line(self):
             """Called when the http request line and headers have been received"""
             # prepare attributes needed in parse_request()
-            self.rfile = BytesIO(self.buffer.getvalue())
+            self.rfile = BytesIO(self.buffer.getvalue())  # type:ignore
             self.raw_requestline = self.rfile.readline()
             self.parse_request()
             # if there is a Query String, decodes it in a QUERY dictionary
@@ -1144,7 +1143,7 @@ if asynchat:
                 self.send_error(501, "Unsupported method (%s)" % self.command)
 
         # @+node:ekr.20110522152535.18256: *3* found_terminator
-        def found_terminator(self):
+        def found_terminator(self) -> None:
             # pylint: disable=method-hidden
             # Control may be passed to another found_terminator.
             self.handle_request_line()
@@ -1183,8 +1182,8 @@ if asyncore:
             try:
                 # pylint: disable=unpacking-non-sequence
                 # The following except statements catch this.
-                conn, addr = self.accept()
-            except socket.error:
+                conn, addr = self.accept()  # type:ignore
+            except OSError:
                 self.log_info('warning: server accept() threw an exception', 'warning')
                 return
             except TypeError:
@@ -1199,7 +1198,7 @@ if asyncore:
 
 # @+node:ekr.20140920145803.17997: ** functions
 # @+node:EKR.20040517080250.47: *3* a_read (asynchore override)
-def a_read(obj):
+def a_read(obj: Any) -> None:
     try:
         obj.handle_read_event()
     except asyncore.ExitNow:
@@ -1290,7 +1289,7 @@ def poll(timeout=0.0):
         # @+node:EKR.20040517080250.41: *4* << try r, w, e = select.select >>
         try:
             r, w, e = select.select(r, w, e, timeout)
-        except select.error:  # as err:
+        except OSError:
             return False  # EKR: EINTR is undefined.
         # @-<< try r, w, e = select.select >>
     for fd in r:

@@ -59,7 +59,7 @@ else:
 
 # misc global variables...
 RunNode = None
-RunList: list[Any] = None  # List of Positions.
+RunList: list[Any] | None = None  # List of Positions.
 WorkDir = None
 ExitCode = None
 
@@ -103,8 +103,8 @@ def OnBodyKey(tag, keywords):
             In.write(p.b.encode(Encoding))
             In.flush()
             g.es(p.b)
-        except IOError as ioerr:
-            g.error("[@run] IOError: " + str(ioerr))
+        except OSError as ioerr:
+            g.error("[@run] OSError: " + str(ioerr))
             return
         c.setBodyText(p, "")
 
@@ -144,8 +144,8 @@ def OnIconDoubleClick(tag, keywords):
                 In.write(b.encode(Encoding) + "\n")
                 In.flush()
                 g.es(b)
-            except IOError as ioerr:
-                g.error("@run IOError: " + str(ioerr))
+            except OSError as ioerr:
+                g.error("@run OSError: " + str(ioerr))
             # @-<< handle double click in @in icon >>
 
 
@@ -210,7 +210,7 @@ class readingThread(threading.Thread):
                 self.TextLock.acquire()
                 try:
                     self.Text = self.Text + g.toUnicode(s, Encoding)
-                except IOError as ioerr:
+                except OSError as ioerr:
                     self.Text = self.Text + "\n" + "[@run] ioerror :" + str(ioerr)
                 self.TextLock.release()
             s = self.File.readline()
@@ -322,7 +322,7 @@ def OpenProcess(p):
     OutThread = readingThread()
     ErrThread = readingThread()
 
-    proc = subprocess.Popen(command, shell=True)
+    proc = subprocess.Popen(command)
     In = proc.stdin
     OutThread.File = proc.stdout  # type:ignore
     ErrThread.File = proc.stderr  # type:ignore

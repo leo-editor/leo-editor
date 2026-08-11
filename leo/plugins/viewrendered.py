@@ -201,9 +201,10 @@ from collections.abc import Callable
 import os
 from pathlib import Path
 import shutil
+import subprocess
 import sys
 import textwrap
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from urllib.request import urlopen
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
@@ -211,6 +212,7 @@ from leo.core.leoQt import QtMultimedia, QtSvg, QUrl
 from leo.core.leoQt import ContextMenuPolicy, WrapMode
 from leo.plugins import qt_text
 
+qwv: Any = None
 try:
     from leo.core.leoQt import WebEngineAttribute, QtWebEngineWidgets
 
@@ -231,7 +233,7 @@ try:
     import docutils
     import docutils.core
 except ImportError:
-    docutils = None
+    docutils = None  # type:ignore
 if docutils:
     try:
         from docutils.core import publish_string
@@ -259,14 +261,14 @@ try:
 
     got_markdown = True
 except ImportError:
-    got_markdown = False  # type:ignore
+    got_markdown = False
 
 # nbformat (@jupyter) support.
 try:
     import nbformat
     from nbconvert import HTMLExporter
 except ImportError:
-    nbformat = None
+    nbformat = None  # type:ignore
 
 try:
     import pyperclip
@@ -317,8 +319,8 @@ def init() -> bool:
 
 # @+node:ekr.20240727091022.1: *3* vr function: getVR
 def getVr(
-    *, c: Any = None, event: Any = None, parent: QtWidgets.QWidget = None
-) -> Optional[QtWidgets.QWidget]:
+    *, c: Any = None, event: Any = None, parent: QtWidgets.QWidget | None = None
+) -> ViewRenderedController | None:
     """Return the ViewRenderedController instance or None."""
     if g.app.gui.guiName() != 'qt':
         return None
@@ -352,8 +354,10 @@ def onCreate(tag: str, keys: dict) -> None:
     if not c:
         return
     vr = getVr(c=c)
-    g.registerHandler('select2', vr.update)
-    g.registerHandler('idle', vr.update)
+    if not vr:
+        return
+    g.registerHandler('select2', vr.update_vr)
+    g.registerHandler('idle', vr.update_vr)
     vr.active = True
     vr.is_visible = False
     vr.hide()
@@ -389,14 +393,14 @@ def show_scrolled_message(tag: str, kw: Any) -> None:
     if not vr:
         return
     # Make sure we will show the message.
-    vr.is_active = True
+    vr.active = True
     vr.is_visible = True
     vr.show()
     # A hack: suppress updates until the node changes.
     vr.gnx = p.v.gnx
     vr.length = len(p.v.b)
     # Render!
-    f = vr.dispatch_dict.get('rest')
+    f = vr.dispatch_dict['rest']
     f(s, kw)
     c.bodyWantsFocusNow()
 
@@ -404,14 +408,14 @@ def show_scrolled_message(tag: str, kw: Any) -> None:
 # @+node:ekr.20110320120020.14490: ** vr.Commands
 # @+node:ekr.20131213163822.16471: *3* g.command('preview')
 @g.command('preview')
-def preview(event: LeoKeyEvent) -> None:
+def preview(event: LeoKeyEvent | None = None) -> None:
     """A synonym for the vr-toggle command."""
     toggle_rendering_pane(event)
 
 
 # @+node:tbrown.20100318101414.5998: *3* g.command('vr')
 @g.command('vr')
-def viewrendered(event: LeoKeyEvent) -> Optional[Any]:
+def viewrendered(event: LeoKeyEvent | None = None) -> Any | None:
     """Open render view for commander"""
     vr = getVr(event=event)
     if vr:
@@ -425,7 +429,7 @@ def viewrendered(event: LeoKeyEvent) -> Optional[Any]:
 
 # @+node:ekr.20130413061407.10362: *3* g.command('vr-contract')
 @g.command('vr-contract')
-def contract_rendering_pane(event: LeoKeyEvent) -> None:
+def contract_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Contract the rendering pane."""
     vr = getVr(event=event)
     if vr:
@@ -435,7 +439,7 @@ def contract_rendering_pane(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20130413061407.10361: *3* g.command('vr-expand')
 @g.command('vr-expand')
-def expand_rendering_pane(event: LeoKeyEvent) -> None:
+def expand_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Expand the rendering pane."""
     vr = getVr(event=event)
     if vr:
@@ -445,7 +449,7 @@ def expand_rendering_pane(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20240507095853.1: *3* g.command('vr-fully-expand')
 @g.command('vr-fully-expand')
-def fully_expand_rendering_pane(event: LeoKeyEvent) -> None:
+def fully_expand_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Expand the rendering pane."""
     vr = getVr(event=event)
     if vr:
@@ -455,7 +459,7 @@ def fully_expand_rendering_pane(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20110917103917.3639: *3* g.command('vr-hide')
 @g.command('vr-hide')
-def hide_rendering_pane(event: LeoKeyEvent) -> None:
+def hide_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Close the rendering pane."""
     vr = getVr(event=event)
     if vr:
@@ -470,7 +474,7 @@ close_rendering_pane = hide_rendering_pane
 
 # @+node:ekr.20110321072702.14507: *3* g.command('vr-lock')
 @g.command('vr-lock')
-def lock_rendering_pane(event: LeoKeyEvent) -> None:
+def lock_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Lock the rendering pane."""
     vr = getVr(event=event)
     if vr and not vr.locked:
@@ -479,7 +483,7 @@ def lock_rendering_pane(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20110320233639.5777: *3* g.command('vr-pause-play')
 @g.command('vr-pause-play-movie')
-def pause_play_movie(event: LeoKeyEvent) -> None:
+def pause_play_movie(event: LeoKeyEvent | None = None) -> None:
     """Pause or play a movie in the rendering pane."""
     vr = getVr(event=event)
     if vr:
@@ -492,7 +496,7 @@ def pause_play_movie(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20110317080650.14386: *3* g.command('vr-show')
 @g.command('vr-show')
-def show_rendering_pane(event: LeoKeyEvent) -> None:
+def show_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Show the rendering pane."""
     vr = getVr(event=event)
     if vr:
@@ -505,7 +509,7 @@ def show_rendering_pane(event: LeoKeyEvent) -> None:
 # @+node:ekr.20131001100335.16606: *3* g.command('vr-toggle-visibility')
 @g.command('vr-toggle-visibility')
 @g.command('vr-toggle')  # Legacy
-def toggle_rendering_pane(event: LeoKeyEvent) -> None:
+def toggle_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Toggle the visibility of the VR pane."""
     vr = getVr(event=event)
     if not vr:
@@ -523,19 +527,19 @@ def toggle_rendering_pane(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20240508082844.1: *3* g.command('vr-toggle-keep-open')
 @g.command('vr-toggle-keep-open')
-def toggle_keep_open(event: LeoKeyEvent) -> None:
+def toggle_keep_open(event: LeoKeyEvent | None = None) -> None:
     """Toggle the visibility of the VR pane."""
     vr = getVr(event=event)
     if vr:
         c = vr.c
         vr.hide()  # So the toggle below will work.
         vr.keep_open = not vr.keep_open
-        vr.update('keep-open', {'c': c, 'force': True})  # type:ignore
+        vr.update_vr('keep-open', {'c': c, 'force': True})
 
 
 # @+node:ekr.20130412180825.10345: *3* g.command('vr-unlock')
 @g.command('vr-unlock')
-def unlock_rendering_pane(event: LeoKeyEvent) -> None:
+def unlock_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Pause or play a movie in the rendering pane."""
     vr = getVr(event=event)
     if vr and vr.locked:
@@ -544,16 +548,16 @@ def unlock_rendering_pane(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20110321151523.14464: *3* g.command('vr-update')
 @g.command('vr-update')
-def update_rendering_pane(event: LeoKeyEvent) -> None:
+def update_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Update the rendering pane"""
     vr = getVr(event=event)
     if vr:
         c = vr.c
-        vr.update(tag='view', keywords={'c': c, 'force': True})  # type:ignore
+        vr.update_vr(tag='view', keywords={'c': c, 'force': True})
 
 
 # @+node:ekr.20110317024548.14375: ** class ViewRenderedController (QWidget)
-class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
+class ViewRenderedController(QtWidgets.QWidget):
     """A class to control rendering in a rendering pane."""
 
     # @+<< vr: default templates >>
@@ -645,30 +649,30 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     # @-<< vr: default templates >>
     # @+others
     # @+node:ekr.20110317080650.14380: *3*  vr.ctor & helpers
-    def __init__(self, c: Cmdr, parent: QWidget = None) -> None:
+    def __init__(self, c: Cmdr, parent: QWidget | None = None) -> None:
         """Ctor for ViewRenderedController class."""
         self.c = c
         # Create the widget.
         super().__init__(parent)
         self.create_pane(parent)
         # Ivars set by reloadSettings.
-        self.auto_create: bool = None
-        self.background_color: str = None
-        self.keep_open: bool = None
-        self.katex_template: str = None
-        self.latex_template: str = None
-        self.mathjax_template: str = None
-        self.typst_template: str = None
-        self.pdf_zoom: int = None
+        self.auto_create: bool = False
+        self.background_color: str = ''
+        self.keep_open: bool = False
+        self.katex_template: str = ''
+        self.latex_template: str = ''
+        self.mathjax_template: str = ''
+        self.typst_template: str = ''
+        self.pdf_zoom: int = 0
         # Widgets managed by destroy_widgets.
-        self.browser: QWidget = None
-        self.gs: QGraphicsScene = None
-        self.gv: QGraphicsView = None
+        self.browser: QWidget | None = None
+        self.gs: QGraphicsScene | None = None
+        self.gv: QGraphicsView | None = None
         self.vp: QMediaPlayer = None
-        self.w: QWidget = None  # The present widget in the rendering pane.
+        self.w: QWidget | None = None  # The present widget in the rendering pane.
         # Set the ivars.
         self.active = True
-        self.gnx: str = None
+        self.gnx: str | None = None
         self.keep_open = False  # True: keep the VR pane open even when showing text.
         self.is_visible = False
         self.length = 0  # The length of previous p.b.
@@ -743,7 +747,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.typst_template = get_template('typst')
 
     # @+node:ekr.20190614065659.1: *4* vr.create_pane
-    def create_pane(self, parent: QWidget) -> None:
+    def create_pane(self, parent: QWidget | None) -> None:
         """Create the VR pane."""
         if g.unitTesting:
             return
@@ -756,8 +760,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     def closeEvent(self, event: QCloseEvent) -> None:
         """Deactivate callbacks when an Outline closes."""
         self.active = False
-        g.unregisterHandler('select2', self.update)
-        g.unregisterHandler('idle', self.update)
+        g.unregisterHandler('select2', self.update_vr)
+        g.unregisterHandler('idle', self.update_vr)
         g.unregisterHandler('scrolledMessage', show_scrolled_message)
         self.destroy_widgets()
 
@@ -833,12 +837,12 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             assert pos is not None
             sb.setSliderPosition(pos)
 
-    # @+node:ekr.20101112195628.5426: *3* vr.update & helpers
+    # @+node:ekr.20101112195628.5426: *3* vr.update_vr & helpers
     # Must have this signature: called by leoPlugins.callTagHandler.
 
-    def update(self, tag: str, keywords: Any) -> None:  # type:ignore
+    def update_vr(self, tag: str, keywords: Any) -> None:
         """
-        vr.update: Update the VR pane.
+        vr.update_vr: Update the VR pane.
         Called at idle time and by the vr-update command.
         """
         p = self.c.p
@@ -859,7 +863,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         if not self.must_update(keywords):
             return
         # Suppress updates until we change nodes.
-        f: Callable = None
+        f: Callable | None = None
         self.node_changed = self.gnx != p.v.gnx
         self.gnx = p.v.gnx
         self.length = len(p.b)  # not s
@@ -883,7 +887,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         else:
             self.hide()
 
-    # @+node:ekr.20241227053437.1: *4* vr.update: helpers
+    # @+node:ekr.20241227053437.1: *4* vr.update_vr: helpers
     # @+node:ekr.20241224074331.1: *5* vr.create_web_engineview
     def create_web_engineview(self) -> QWidget:
         """
@@ -1043,7 +1047,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             self.gs = QtWidgets.QGraphicsScene(splitter)
             self.gv = QtWidgets.QGraphicsView(self.gs)
             w = self.w = self.gv.viewport()  # A QWidget
-            self.embed_widget(w)
+            if w:
+                self.embed_widget(w)
 
         c.executeScript(
             script=s,
@@ -1074,7 +1079,9 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         if not s.strip():
             return
         lines = g.splitLines(s) or []
-        fn = lines and lines[0].strip()
+        if not lines:
+            return
+        fn = lines[0].strip()
         if not fn:
             return
         w = self.get_base_text_widget()
@@ -1192,7 +1199,10 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         """Display the markdown text in `s` in the VR pane."""
         c = self.c
         p = c.p
-        s = s.strip().strip('"""').strip("'''").strip()
+        for prefix in ('"""', "'''"):  # PR #4827
+            if s.startswith(prefix):
+                s = s.removeprefix(prefix).removesuffix(prefix)
+        s = s.strip()
         isHtml = s.startswith('<') and not s.startswith('<<')
         # Do this regardless of whether we show the widget or not.
         w = self.get_base_text_widget()
@@ -1412,7 +1422,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             silent=False,
             namespace=namespace,
             raiseFlag=False,
-            runPyflakes=False,  # Suppress warnings about pre-defined symbols.
         )
         c.bodyWantsFocusNow()
 
@@ -1422,7 +1431,10 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     # @+node:ekr.20110320120020.14477: *4* vr.update_rst & helpers
     def update_rst(self, s: str, keywords: Any) -> None:
         """Show the rst text in `s` in the VR pane."""
-        s = s.strip().strip('"""').strip("'''").strip()
+        for prefix in ('"""', "'''"):  # PR #4827
+            if s.startswith(prefix):
+                s = s.removeprefix(prefix).removesuffix(prefix)
+        s = s.strip()
         isHtml = s.startswith('<') and not s.startswith('<<')
 
         # Do this regardless of whether we show the widget or not.
@@ -1468,8 +1480,10 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         with open("temp.plantuml", "w") as f:
             f.write(s)
         pth_plantuml_jar = "~/.leo"
-        os.system(
-            "cat temp.plantuml | java -jar %s/plantuml.jar -pipe > %s" % (pth_plantuml_jar, path)
+        subprocess.run(
+            "cat temp.plantuml | java -jar %s/plantuml.jar -pipe > %s" % (pth_plantuml_jar, path),
+            shell=True,
+            check=False,
         )
         template = self.image_template % (path)
         template = textwrap.dedent(template).strip()
@@ -1487,19 +1501,21 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         if not h.startswith('@jinja'):
             return
 
-        def find_root(p: Position) -> Optional[tuple[Position, Position]]:
+        def find_root(p: Position) -> tuple[Position, Position] | tuple[None, None]:
             for newp in p.parents():
                 if newp.h.strip() == '@jinja':
                     oldp, p = p, newp
                     return oldp, p
             return None, None
 
-        def find_inputs(p: Position) -> Optional[tuple[Position, Position]]:
+        def find_inputs(p: Position) -> tuple[Position, Position] | tuple[None, None]:
             for newp in p.parents():
                 if newp.h.strip() == '@jinja inputs':
                     oldp, p = p, newp
-                    _, p = find_root(p)
-                    return oldp, p
+                    _, root_p = find_root(p)
+                    if root_p is None:
+                        return None, None
+                    return oldp, root_p
             return None, None
 
         # if on jinja node's children, find the parent
@@ -1510,6 +1526,10 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         elif h.startswith('@jinja variable'):
             # not at @jinja, first find @jinja inputs, then @jinja
             oldp, p = find_inputs(p)
+
+        if p is None:
+            g.es("Could not find enclosing @jinja node.")
+            return
 
         def untangle(c: Cmdr, p: Position) -> str:
             return g.getScript(c, p, useSelectedText=False, useSentinels=False)
@@ -1669,9 +1689,9 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
 
         text_name = 'body-text-renderer'
         w.setObjectName(text_name)
-        w.setReadOnly(True)
+        w.setReadOnly(False)  # #4652.
         # Create the standard Leo bindings in a wrapper widget.
-        wrapper = qt_text.QTextEditWrapper(w, 'rendering-pane-wrapper', c)
+        wrapper = qt_text.QTextEditWrapper(widget=w, name='rendering-pane-wrapper', c=c)
         c.k.completeAllBindingsForWidget(wrapper)
         w.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)
 
@@ -1686,7 +1706,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         w.customContextMenuRequested.connect(contextMenuCallback)
 
         def handleClick(url: str, w: QWidget = w) -> None:
-            wrapper = qt_text.QTextEditWrapper(w, name='vr-body', c=c)
+            wrapper = qt_text.QTextEditWrapper(widget=w, name='vr-body', c=c)
             event = g.Bunch(c=c, w=wrapper)
             g.openUrlOnClick(event, url=url)
 
@@ -1695,7 +1715,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         return w
 
     # @+node:ekr.20110320120020.14483: *4* vr.get_kind
-    def get_kind(self, p: Position) -> Optional[str]:
+    def get_kind(self, p: Position) -> str:
         """Return the proper rendering kind for node p."""
 
         p0 = p  # Special case selected position.
@@ -1727,19 +1747,19 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                 language = m.group(1)
                 if g.isValidLanguage(language):
                     return language
-            return None
+            return ''
 
         # #1287: Honor both kind of directives node by node.
         for p1 in p.self_and_parents():
             language = get_language(p1)
             if language:
                 if language in ('md', 'markdown'):
-                    return language if got_markdown else None
+                    return language if got_markdown else ''
                 if language in ('rest', 'rst'):
-                    return language if got_docutils else None
+                    return language if got_docutils else ''
                 if language in self.dispatch_dict:
                     return language
-        return None
+        return ''
 
     # @+node:ekr.20110320233639.5776: *4* vr.get_fn
     def get_fn(self, s: str, tag: str) -> tuple[bool, str]:

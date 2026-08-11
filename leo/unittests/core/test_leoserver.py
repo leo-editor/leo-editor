@@ -4,13 +4,15 @@
 
 import json
 import os
-import leo.core.leoserver as leoserver
+from leo.core import leoserver
 from leo.core.leoTest2 import LeoUnitTest
+from leo.core import leoGlobals as global_g
 
 # Globals.
 g = None
 g_leoserver = None
 g_server = None
+global_g_es = global_g.es
 
 
 # @+others
@@ -48,6 +50,7 @@ class TestLeoServer(LeoUnitTest):
         g.unitTesting = True
 
     def tearDown(self):
+        global_g.es = global_g_es
         g.unitTesting = False
 
     # @+node:felix.20210621233316.100: *3* TestLeoServer._request
@@ -97,6 +100,7 @@ class TestLeoServer(LeoUnitTest):
             'goto_script',
             'tag_children',
             'insert_file_node',
+            'interactive_search',
             'goto_line_in_leo_outline',
             # Other methods
             'finishCreate',
@@ -128,6 +132,7 @@ class TestLeoServer(LeoUnitTest):
             # "remove_tag": {"tag": "testTag"},
             # "tag_node": {"tag": "testTag"},
             # "apply_config": {"config": {"whatever": True}},
+            "do_arrow": {"char": "Up"},
             "get_focus": {"log": False},
             "set_body": {"body": "new body\n", 'gnx': "ekr.20061008140603"},
             "set_headline": {"name": "new headline"},
@@ -206,25 +211,25 @@ class TestLeoServer(LeoUnitTest):
         log = False
         # Open the file & create the StringFindTabManager.
         self._request("!open_file", {"log": False, "filename": test_dot_leo})
-        #
+
         # Batch find commands: The answer is a count of found nodes.
         for method in ('!find_all', '!clone_find_all', '!clone_find_all_flattened'):
             answer = self._request(method, {"log": log, "find_text": "def"})
             if log:
                 g.printObj(answer, tag=f"{tag}:{method}: answer")  # pragma: no cover
-        #
+
         # Find commands that may select text: The answer is (p, pos, newpos).
         for method in ('!find_next', '!find_previous', '!find_def', '!find_var'):
             answer = self._request(method, {"log": log, "find_text": "def"})
             if log:
                 g.printObj(answer, tag=f"{tag}:{method}: answer")  # pragma: no cover
-        #
+
         # Change commands: The answer is a count of changed nodes.
         for method in ('!replace_all', '!replace_then_find'):
             answer = self._request(method, {"log": log, "find_text": "def", "change_text": "DEF"})
             if log:
                 g.printObj(answer, tag=f"{tag}:{method}: answer")  # pragma: no cover
-        #
+
         # Tag commands. Why they are in leoFind.py??
         for method in ('!clone_find_tag', '!tag_children'):
             answer = self._request(method, {"log": log, "tag": "my-tag"})

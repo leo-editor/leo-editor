@@ -1,0 +1,97 @@
+name: CI
+
+on:
+  push:
+    branches: [devel]
+  pull_request:
+    branches: [devel]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - run: pip install ruff
+      - run: ruff check leo
+      - run: ruff format --check leo
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    env:
+      # No display in CI; run Qt headless instead of pulling in xvfb.
+      QT_QPA_PLATFORM: offscreen
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends
+          libegl1 libgl1 libxkbcommon0 libdbus-1-3 libfontconfig1
+      - run: pip install asttokens Pygments "PyQt6>=6.6" PyQt6-QScintilla
+      - run: python run_ci_unit_tests.py
+
+  leo-sync:
+    # Catch LeoPyRef.leo getting out of sync with its external files.
+    # See check_leo_sync.py.
+    runs-on: ubuntu-latest
+    env:
+      QT_QPA_PLATFORM: offscreen
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends
+          libegl1 libgl1 libxkbcommon0 libdbus-1-3 libfontconfig1
+      - run: pip install "PyQt6>=6.6" PyQt6-QScintilla
+      - run: python -m leo.scripts.check_leo_sync
+
+  docs:
+    # Catch LeoDocs.leo failing to build into Sphinx HTML.
+    # See leo/scripts/build_docs.py.
+    runs-on: ubuntu-latest
+    env:
+      QT_QPA_PLATFORM: offscreen
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends
+          libegl1 libgl1 libxkbcommon0 libdbus-1-3 libfontconfig1
+      - run: pip install "PyQt6>=6.6" PyQt6-QScintilla docutils sphinx
+      - run: python -m leo.scripts.build_docs
+
+  mypy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      # Install optional packages that Leo's devs should have installed.
+      - run: pip install "mypy<2" mypy-extensions typing_extensions
+          types-docutils types-Markdown types-paramiko types-PyYAML
+          types-requests types-six
+          "PyQt6>=6.6" PyQt6-QScintilla PyQt6-WebEngine ty
+          black Jinja2 Pygments docutils pyenchant jedi nbformat nbconvert
+      - run: python -m mypy leo
+      # Require ty: https://github.com/astral-sh/ty to pass.
+      # Run after mypy to reuse the checkout/Python/PyQt6 setup.
+      - run: ty check --python "$(python -c 'import sys; print(sys.prefix)')" leo

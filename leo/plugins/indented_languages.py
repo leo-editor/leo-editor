@@ -45,7 +45,8 @@ Working on this command reminds me why I never want to use or read Lisp!
 # @-<< docstring: indented_languages.py >>
 
 import re
-from typing import Any, Callable, Optional, Union
+from collections.abc import Callable
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position
 from leo.plugins.importers.c import C_Importer
@@ -92,9 +93,9 @@ def import_to_indented_typescript(event: Any) -> None:
 class Indented_Importer:
     """The base class for all indented importers."""
 
-    extensions: list[str] = None  # The file extension for the language.
-    language: str = None  # The name of the language.
-    importer_class: Callable = None  # The importer class
+    extensions: list[str] = None  # type:ignore # The file extension for the language.
+    language: str = None  # type:ignore # The name of the language.
+    importer_class: Callable = None  # type:ignore # The importer class
 
     def __init__(self, c):
         self.c = c
@@ -104,7 +105,7 @@ class Indented_Importer:
 
     # @+others
     # @+node:ekr.20231022073537.1: *3* indented_i.do_import (driver)
-    def do_import(self) -> Optional[Position]:
+    def do_import(self) -> Position | None:
         """
         Base_Indented_Importer.do_import: Create a top-level node containing study outlines for all files in
         c.p and its descendants.
@@ -415,11 +416,11 @@ class Indented_Lisp(Indented_Importer):
     )
 
     # For error messages only. Set in indent_outline.
-    p: Position = None
+    p: Position = None  # type:ignore
 
     # @+others
     # @+node:ekr.20231024045727.1: *3* indented_lisp.find_matching_paren
-    def find_matching_paren(self, i: int, tokens: list[Token]) -> int:
+    def find_matching_paren(self, i: int, tokens: list[Token]) -> int | None:
         """Return the index of the matching closing parenthesis."""
         assert tokens[i].kind == '(', tokens[i]
         start_i = i
@@ -443,7 +444,7 @@ class Indented_Lisp(Indented_Importer):
         return None
 
     # @+node:ekr.20231027085715.1: *3* indented_lisp.flatten
-    def flatten(self, obj: Union[list, Token]) -> list[Token]:
+    def flatten(self, obj: list | Token) -> list[Token]:
         """Flatten the given object."""
         if isinstance(obj, Token):
             return [obj]

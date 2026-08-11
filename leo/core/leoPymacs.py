@@ -26,6 +26,8 @@ Notes:
 
 # As in leo.py we must be very careful about imports.
 
+from typing import Any
+
 g = None  # set by init: do *not* import it here!
 inited = False
 pymacsFile = __file__
@@ -102,17 +104,17 @@ def init():
 
 
 # @+node:ekr.20061024075542.1: ** open (pymacs)
-def open(fileName=None):
+def open(fileName=None) -> Any:
     # global g
     init()
+    assert g
     if g.unitTesting:
         return None
     if not fileName:
         g.es_print('', 'leoPymacs.open:', 'no file name')
         return None
     # openWithFileName checks to see if the file is already open.
-    c = g.openWithFileName(fileName)
-    if c:
+    if c := g.openWithFileName(fileName):
         g.es_print('', 'leoPymacs.open:', c)
     else:
         g.es_print('', 'leoPymacs.open:', 'can not open', fileName)
@@ -122,6 +124,8 @@ def open(fileName=None):
 # @+node:ekr.20061024084200: ** run-script (pymacs)
 def run_script(c, script, p=None):
     # global g
+    assert g
+    assert g.app
 
     # It is possible to use script=None, in which case p must be defined.
     init()

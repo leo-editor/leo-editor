@@ -25,9 +25,7 @@ leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
 os.chdir(leo_editor_dir)
 
 args = ' '.join(sys.argv[1:])
-isWindows = sys.platform.startswith('win')
-python = 'py' if isWindows else 'python'
-
+python = sys.executable
 command = rf'{python} -m unittest {args}'
-subprocess.Popen(command, shell=True).communicate()
+subprocess.run(command, shell=True)
 # @-leo
