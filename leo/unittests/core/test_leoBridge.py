@@ -3,6 +3,9 @@
 """Tests of leoBridge.py"""
 
 import os
+import subprocess
+import sys
+import textwrap
 from leo.core import leoBridge
 from leo.core.leoTest2 import LeoUnitTest
 
@@ -31,6 +34,51 @@ class TestBridge(LeoUnitTest):
         self.assertTrue(os.path.exists(test_dot_leo), msg=test_dot_leo)
         c = controller.openLeoFile(test_dot_leo)
         self.assertTrue(c)
+
+    def test_null_bridge_does_not_import_qt(self):
+        """The null bridge must work when PyQt6 is not installed."""
+        repo_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+        test_dot_leo = os.path.join(repo_dir, 'leo', 'test', 'test.leo')
+        script = textwrap.dedent(
+            f"""
+            import importlib.abc
+            import sys
+
+            class BlockPyQt(importlib.abc.MetaPathFinder):
+                def find_spec(self, fullname, path=None, target=None):
+                    if fullname == 'PyQt6' or fullname.startswith('PyQt6.'):
+                        raise ImportError(f'Unexpected Qt import: {{fullname}}')
+                    return None
+
+            sys.meta_path.insert(0, BlockPyQt())
+
+            from leo.core import leoBridge
+
+            bridge = leoBridge.controller(
+                gui='nullGui',
+                loadPlugins=False,
+                readSettings=False,
+                silent=True,
+                useCaches=False,
+            )
+            assert bridge.isOpen()
+            assert bridge.globals().app.gui.guiName() == 'nullGui'
+            c = bridge.openLeoFile({test_dot_leo!r})
+            assert c
+            assert not any(
+                name == 'PyQt6' or name.startswith('PyQt6.')
+                for name in sys.modules
+            )
+            assert not any(name.startswith('leo.plugins.qt_') for name in sys.modules)
+            """
+        )
+        result = subprocess.run(
+            [sys.executable, '-c', script],
+            cwd=repo_dir,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
 
     # @-others
 

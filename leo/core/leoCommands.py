@@ -144,7 +144,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoGui
     from leo.core.qt_frame import LeoQtMenu
     from leo.plugins.qt_gui import StyleSheetManager
-    from leo.plugins.qt_text import QTextMixin
+    from leo.core.leoAPI import TextMixin as QTextMixin
 
     Args = Any
     KWargs = Any

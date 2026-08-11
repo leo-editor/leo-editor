@@ -19,17 +19,6 @@ import platform
 from leo.core import leoGlobals as g
 from leo.core import leoExternalFiles
 from leo.core.leoCache import GlobalCacher
-from leo.core.leoQt import QCloseEvent
-
-# For casts
-from leo.core.leoBackground import BackgroundProcessManager
-from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoExternalFiles import ExternalFilesController
-from leo.core.leoNodes import NodeIndices, Position
-from leo.core.leoPlugins import LeoPluginsController
-from leo.core.leoSessions import SessionManager
-from leo.plugins.qt_events import LossageData
-from leo.plugins.qt_idle_time import IdleTime
 
 # @-<< leoApp imports >>
 # @+<< leoApp annotations >>
@@ -37,6 +26,15 @@ from leo.plugins.qt_idle_time import IdleTime
 if TYPE_CHECKING:  # pragma: no cover
     from subprocess import Popen
     from types import ModuleType
+
+    from leo.core.leoBackground import BackgroundProcessManager
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoExternalFiles import ExternalFilesController
+    from leo.core.leoNodes import NodeIndices, Position
+    from leo.core.leoPlugins import LeoPluginsController
+    from leo.core.leoSessions import SessionManager
+    from leo.plugins.qt_events import LossageData
+    from leo.plugins.qt_idle_time import IdleTime
 
     # Do not import these at the top level: they would cause circular imports.
     from leo.core.leoConfig import GlobalConfigManager
@@ -209,17 +207,17 @@ class LeoApp:
         # We can't always use a cast here because doing so would create circular imports.
         # In those two places we suppress the otherwise valid mypy complaints.
 
-        self.backgroundProcessManager = cast(BackgroundProcessManager, None)
+        self.backgroundProcessManager = cast('BackgroundProcessManager', None)
         self.config: GlobalConfigManager = None  # type:ignore  # g.app.config
-        self.externalFilesController = cast(ExternalFilesController, None)
+        self.externalFilesController = cast('ExternalFilesController', None)
         self.db: dict | SqlitePickleShare | g.NullObject = {}  # g.app.global_cacher.
         self.global_cacher: dict | GlobalCacher | g.NullObject = {}
         self.idleTimeManager = cast(IdleTimeManager, None)
         self.jupytextManager: JupytextManager = None  # type:ignore
         self.loadManager = cast(LoadManager, None)
-        self.nodeIndices = cast(NodeIndices, None)
-        self.pluginsController = cast(LeoPluginsController, None)
-        self.sessionManager = cast(SessionManager, None)
+        self.nodeIndices = cast('NodeIndices', None)
+        self.pluginsController = cast('LeoPluginsController', None)
+        self.sessionManager = cast('SessionManager', None)
 
         # Global status vars for the Commands class...
         self.commandName = ''  # The name of the command being executed.
@@ -1452,6 +1450,8 @@ class LeoApp:
             g.trace()
 
         # #2433 - use the same method as clicking on the close box.
+        from leo.core.leoQt import QCloseEvent
+
         g.app.gui.close_event(QCloseEvent())
 
     # @+node:ekr.20230703100758.1: *4* app.saveSession

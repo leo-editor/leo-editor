@@ -16,10 +16,7 @@ from collections.abc import Callable
 from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoFrame
-from leo.core.leoAPI import StringTextWrapper
-from leo.core.leoQt import QtWidgets
-from leo.plugins.qt_frame import LeoQTreeWidget
-from leo.plugins.qt_text import QLineEditWrapper, QTextEditWrapper, QTextMixin
+from leo.core.leoAPI import StringTextWrapper, TextMixin
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
@@ -92,7 +89,7 @@ class LeoGui:
         *,
         binding: str = '',
         char: str = '',
-        w: QTextMixin | None = None,
+        w: Any = None,
         x: int | None = None,
         x_root: int | None = None,
         y: int | None = None,
@@ -118,7 +115,7 @@ class LeoGui:
         self.scriptFileName = scriptFileName
 
     # @+node:ekr.20110605121601.18845: *4* LeoGui.event_generate
-    def event_generate(self, c: Cmdr, char: str, shortcut: str, w: QTextMixin) -> None:
+    def event_generate(self, c: Cmdr, char: str, shortcut: str, w: Any) -> None:
         event = self.create_key_event(c, binding=shortcut, char=char, w=w)
         c.k.masterKeyHandler(event)
         c.outerUpdate()
@@ -199,15 +196,11 @@ class LeoKeyEvent:
             if w is None:
                 return
 
-        # trace(f" text? {isinstance(w, QTextMixin):1} w", info(w))
+        # trace(f" text? {isinstance(w, TextMixin):1} w", info(w))
 
         # Ensure that self.w is a wrapper for all key-related Qt widgets.
         if c.widget_name(w).startswith('log'):
             self.w = c.frame.log.logCtrl
-            return
-        if isinstance(w, QTextMixin):
-            trace('QTextMixin', info(w))
-            self.w = w
             return
         if wrapper := getattr(w, 'wrapper', None):
             trace('w.wrapper', info(wrapper))
@@ -217,19 +210,28 @@ class LeoKeyEvent:
             trace('w.leo_wrapper', info(wrapper))
             self.w = wrapper
             return
-        if isinstance(w, QtWidgets.QTextEdit):
-            # Inject the `leo_wrapper` ivar into the widget so that this method
-            # will never reallocate another wrapper for this widget.
-            self.w = w.leo_wrapper = QTextEditWrapper(widget=w, name=c.widget_name(w), c=c)
-            trace_always('new wrapper', f"{self.w.__class__.__name__} for {obj_name(w)}")
-            return
-        if isinstance(w, QtWidgets.QLineEdit):
-            self.w = w.leo_wrapper = QLineEditWrapper(widget=w, name=c.widget_name(w), c=c)
-            trace_always('New wrapper', f"{self.w.__class__.__name__} for {obj_name(w)}")
-            return
-        if isinstance(w, LeoQTreeWidget):  # A very special case.
-            self.w = w
-            return
+        if g.app.gui.guiName() == 'qt':
+            from leo.core.leoQt import QtWidgets
+            from leo.plugins.qt_frame import LeoQTreeWidget
+            from leo.plugins.qt_text import QLineEditWrapper, QTextEditWrapper
+
+            if isinstance(w, TextMixin):
+                trace('QTextMixin', info(w))
+                self.w = w
+                return
+            if isinstance(w, QtWidgets.QTextEdit):
+                # Inject the `leo_wrapper` ivar into the widget so that this method
+                # will never reallocate another wrapper for this widget.
+                self.w = w.leo_wrapper = QTextEditWrapper(widget=w, name=c.widget_name(w), c=c)
+                trace_always('new wrapper', f"{self.w.__class__.__name__} for {obj_name(w)}")
+                return
+            if isinstance(w, QtWidgets.QLineEdit):
+                self.w = w.leo_wrapper = QLineEditWrapper(widget=w, name=c.widget_name(w), c=c)
+                trace_always('New wrapper', f"{self.w.__class__.__name__} for {obj_name(w)}")
+                return
+            if isinstance(w, LeoQTreeWidget):  # A very special case.
+                self.w = w
+                return
 
         # Anything should be valid here: we don't expect the wrapper to do key handling.
         self.w = w

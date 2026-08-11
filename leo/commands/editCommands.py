@@ -11,7 +11,7 @@ from typing import cast, Any, TYPE_CHECKING
 
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
-from leo.plugins.qt_text import QTextMixin
+from leo.core.leoAPI import TextMixin as QTextMixin
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr

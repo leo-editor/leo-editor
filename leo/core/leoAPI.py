@@ -7,9 +7,8 @@ Abstract base classes and Protocol classes for Leo's gui.
 # @+<< leoAPI.py: imports and annotations >>
 # @+node:ekr.20250329041628.1: ** << leoAPI.py: imports and annotations >>
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
-from leo.plugins.qt_text import QTextMixin
 
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
@@ -17,8 +16,23 @@ if TYPE_CHECKING:
 
 
 # @+others
-# @+node:ekr.20070228074228.1: ** class StringTextWrapper(QTextMixin)
-class StringTextWrapper(QTextMixin):
+# @+node:ekr.20260811120000.1: ** class TextMixin
+class TextMixin:
+    """GUI-neutral base class for Leo's text wrappers."""
+
+    def __init__(self, c: Cmdr | None = None) -> None:
+        self.c = c
+        self.changingText = False
+        self.enabled = True
+        self.tags: dict[str, str] = {}
+        self.permanent = True
+        self.useScintilla = False
+        self.virtualInsertPoint: int | None = None
+        self.widget: Any | None = None
+
+
+# @+node:ekr.20070228074228.1: ** class StringTextWrapper (TextMixin)
+class StringTextWrapper(TextMixin):
     """A class that represents Leo's body pane as a Python string."""
 
     # @+others
@@ -26,7 +40,6 @@ class StringTextWrapper(QTextMixin):
     def __init__(self, c: Cmdr | None, name: str) -> None:
         """Ctor for the StringTextWrapper class."""
         super().__init__(c)
-        self.c = c
         self.name = name
         self.ins = 0
         self.sel = 0, 0

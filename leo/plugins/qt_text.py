@@ -8,6 +8,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any, cast, TYPE_CHECKING
 from leo.core import leoGlobals as g
+from leo.core.leoAPI import TextMixin
 from leo.core.leoQt import QtCore, QtGui, Qsci, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier
 from leo.core.leoQt import MouseButton, MoveMode, MoveOperation
@@ -145,7 +146,7 @@ def helpForRMarginGuides(self, event=None):
 
 
 # @+node:ekr.20140901062324.18719: **   class QTextMixin
-class QTextMixin:
+class QTextMixin(TextMixin):
     """
     A mixin class for StringTextWrapper, QTextEditWrapper and QScintillaWrapper classes.
 

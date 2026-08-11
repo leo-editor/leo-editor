@@ -12,7 +12,6 @@ import time
 from typing import cast, Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
-from leo.plugins.qt_frame import FindTabManager
 from leo.core.leoNodes import Position
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -21,7 +20,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoKeys import KeyHandlerClass as KeyHandler
     from leo.core.leoNodes import VNode
-    from leo.plugins.qt_text import QTextMixin
+    from leo.plugins.qt_frame import FindTabManager
+    from leo.core.leoAPI import TextMixin as QTextMixin
 # @-<< leoFind imports & annotations >>
 # @+<< Theory of operation of find/change >>
 # @+node:ekr.20031218072017.2414: ** << Theory of operation of find/change >>
@@ -97,7 +97,7 @@ class LeoFind:
         self.k: KeyHandler = c.k
 
         # Created by dw.createFindTab.
-        self.ftm = cast(FindTabManager, None)
+        self.ftm = cast('FindTabManager', None)
         self.re_obj = cast(re.Pattern, None)
 
         # The work "widget".

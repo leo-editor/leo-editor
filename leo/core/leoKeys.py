@@ -18,7 +18,6 @@ from typing import Any, cast, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.external import codewise
 from leo.core.leoFrame import NullLog
-from leo.core.leoQt import QtWidgets
 
 try:
     import jedi
@@ -28,14 +27,14 @@ except ImportError:
 # @+<< leoKeys annotations >>
 # @+node:ekr.20220414165644.1: ** << leoKeys annotations >>
 if TYPE_CHECKING:  # pragma: no cover
+    from leo.core.leoAPI import TextMixin as QTextMixin
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGlobals import BindingInfo
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
     from leo.plugins.qt_frame import LeoQtLog
-    from leo.plugins.qt_text import QTextMixin
 
-    QWidget = QtWidgets.QWidget
+    QWidget = Any
     Stroke = Any
     Widget = Any  # 'Any' is the correct annotation for base class widgets.
 

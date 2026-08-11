@@ -28,6 +28,7 @@ from leo.core.leoAPI import StringTextWrapper
 # @+node:ekr.20220415013957.1: ** << leoFrame annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoColorizer import BaseColorizer
+    from leo.core.leoAPI import TextMixin as QTextMixin
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import (
         LeoKeyEvent,
@@ -51,7 +52,6 @@ if TYPE_CHECKING:  # pragma: no cover
         QMinibufferWrapper,
         QScintillaWrapper,
         QTextEditWrapper,
-        QTextMixin,
     )
 
     Widget = Any  # 'Any' is the correct annotation for base class widgets.

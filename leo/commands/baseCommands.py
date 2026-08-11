@@ -9,9 +9,9 @@ from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
+    from leo.core.leoAPI import TextMixin as QTextMixin
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
-    from leo.plugins.qt_text import QTextMixin
 
 # @-<< baseCommands imports & abbreviations >>
 
