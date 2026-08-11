@@ -749,6 +749,8 @@ class LeoLog:
         Otherwise, return False.
         """
         c = self.c
+        if s.strip() and g.app.gui.guiName() == 'qt' and not g.unitTesting:
+            print(s)  # PR #4906.
         if not c:
             return False  # PR #4812
         assert c
