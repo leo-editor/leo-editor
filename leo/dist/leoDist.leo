@@ -126,7 +126,7 @@
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
 </v>
-<v t="ekr.20260811100533.1" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a73735803000000302e3271067d710768037d7108580700000069735f6475706571094930300a73735803000000302e33710a7d710b68037d710c580700000069735f64757065710d4930300a73735803000000302e34710e7d710f68037d7110580700000069735f6475706571114930300a7373752e"><vh>--- deleted from checklist</vh>
+<v t="ekr.20260811100533.1" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a73735803000000302e3271067d7107580b0000005f5f626f6f6b6d61726b7371087d7109580700000069735f64757065710a4930300a73735803000000302e33710b7d710c580b0000005f5f626f6f6b6d61726b73710d7d710e580700000069735f64757065710f4930300a73735803000000302e3471107d7111580b0000005f5f626f6f6b6d61726b7371127d7113580700000069735f6475706571144930300a7373752e"><vh>--- deleted from checklist</vh>
 <v t="ekr.20260811100533.2" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>(Not needed) Web docs</vh></v>
 <v t="ekr.20260811100533.3"><vh>(Not needed) Create pypi distro</vh></v>
 <v t="ekr.20260811100533.4" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>(Needed?) Publish release</vh></v>
@@ -186,7 +186,7 @@ These parts are are clearly marked in Leo's code as follows:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.8.9
+Version: 6.8.10
 Summary: An IDE, PIM and Outliner. See http://leo-editor.github.io/leo-editor/preface.html.
 Description: See users own descriptions of Leo at leo-editor.github.io/leo-editor/testimonials.html.
 Home-page: http://leo-editor.github.io/leo-editor/
@@ -204,25 +204,28 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">Leo https://leo-editor.github.io/leo-editor/ 6.8.9 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+<t tx="EKR.20040519090846.9">Leo https://leo-editor.github.io/leo-editor/ 6.8.10 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor/preface.html).
 
-**The highlights of Leo 6.8.9**
+**The highlights of Leo 6.8.10**
 
-- Add Find/Change history. How did we ever live without this?
-- Replace the ``,,`` Easter Egg with Leo's Find commands.
-- Add support for ``@language pug``.
-- Enhanced security for Leo's server.
-- Significant code-level improvements and performance optimizations.
-- Deprecate support for --gui=console.
+- Add authentication &amp; secure websockets to leoserver.py.
+- Add the ``show-node-files`` command.
+- Add the ``clone-diff-pr`` command.
+- Add the ``c.p`` setter.
+- Update most theme files.
+- Add ``vv-dark.leo`` theme.
+- Add a Leo launcher generator for MacOS.
+- Remove the ``todo.py`` plugin.
+- **Breaking changes to Leo's API**: See the What's New section for details.
 - The usual bug fixes.
 
 **Links**
 
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
-- [6.8.9 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.9+)
-- [6.8.9 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.9)
+- [6.8.10 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.10+)
+- [6.8.10 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.10)
 - [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
@@ -1482,8 +1485,8 @@ Public announcements, after creating a package.
    please include 2-3 lines of HTML code at the very end of your submission,
    using the following template:
 
-    &lt;P&gt;&lt;A HREF="https://leo-editor.github.io/leo-editor/"&gt;Leo 6.8.9&lt;/A&gt;
-    Leo 6.8.9 released (11-8-2024)
+    &lt;P&gt;&lt;A HREF="https://leo-editor.github.io/leo-editor/"&gt;Leo 6.8.10&lt;/A&gt;
+    Leo 6.8.10 released (11-8-2024)
 
 
   - Check it by visiting the archive:
