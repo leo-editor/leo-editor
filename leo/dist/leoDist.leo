@@ -126,17 +126,17 @@
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
 </v>
-<v t="ekr.20260811093931.1" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a73735803000000302e3171067d710768037d7108580700000069735f6475706571094930300a73735803000000302e34710a7d710b68037d710c580700000069735f64757065710d4930300a73735803000000302e37710e7d710f68037d7110580700000069735f6475706571114930300a73735803000000302e3971127d711368037d7114580700000069735f6475706571154930300a7373752e"><vh>Distribution checklist</vh>
-<v t="ekr.20260811093931.2" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Pre-testing</vh></v>
-<v t="ekr.20260811093931.3" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Update version data</vh></v>
-<v t="ekr.20260811093931.4"><vh>LeoSettings.leo</vh></v>
-<v t="ekr.20260811093931.5"><vh>LeoPyRef.leo</vh></v>
-<v t="ekr.20260811093931.6" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>LeoDocs.leo</vh></v>
-<v t="ekr.20260811093931.7"><vh>LeoDist.leo</vh></v>
-<v t="ekr.20260811093931.8"><vh>Run the publish.yml and publish-doc scripts</vh></v>
-<v t="ekr.20260811093931.9" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>After-merge testing in main</vh></v>
-<v t="ekr.20260811093931.10"><vh>Update this checklist</vh></v>
-<v t="ekr.20260811093931.11" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Announcements</vh></v>
+<v t="ekr.20260811100339.1" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a73735803000000302e3171067d710768037d7108580700000069735f6475706571094930300a73735803000000302e34710a7d710b68037d710c580700000069735f64757065710d4930300a73735803000000302e37710e7d710f68037d7110580700000069735f6475706571114930300a73735803000000302e3971127d711368037d7114580700000069735f6475706571154930300a7373752e"><vh>Distribution checklist</vh>
+<v t="ekr.20260811100339.2" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Pre-testing</vh></v>
+<v t="ekr.20260811100339.3" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Update version data</vh></v>
+<v t="ekr.20260811100339.4"><vh>LeoSettings.leo</vh></v>
+<v t="ekr.20260811100339.5"><vh>LeoPyRef.leo</vh></v>
+<v t="ekr.20260811100339.6" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>LeoDocs.leo</vh></v>
+<v t="ekr.20260811100339.7"><vh>LeoDist.leo</vh></v>
+<v t="ekr.20260811100339.8"><vh>Run the publish.yml and publish-doc scripts</vh></v>
+<v t="ekr.20260811100339.9" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>After-merge testing in main</vh></v>
+<v t="ekr.20260811100339.10"><vh>Update this checklist</vh></v>
+<v t="ekr.20260811100339.11" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Announcements</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1446,12 +1446,20 @@ python -m pip uninstall leo
 -restore sitecustomize.py if necessary.
 </t>
 <t tx="ekr.20240206185544.1"></t>
-<t tx="ekr.20260811093931.1">@language rest
+<t tx="ekr.20260811100339.1">@language rest
+
+.. This is the distribution checklist for Leo 6.8.10.
+
+.. GitHub release page
+https://github.com/leo-editor/leo-editor/releases
+
+.. All GitHub actions
+https://github.com/leo-editor/leo-editor/blob/devel/.github/workflows
 </t>
-<t tx="ekr.20260811093931.10">- Change 6.8.10 (the old version) to 6.8.11.
+<t tx="ekr.20260811100339.10">- Change 6.8.10 (the old version) to 6.8.11.
   Be careful about the new version in this node!
 </t>
-<t tx="ekr.20260811093931.11" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Announce to leo-editor first.
+<t tx="ekr.20260811100339.11" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Announce to leo-editor first.
 
 Public announcements, after creating a package.
 
@@ -1476,7 +1484,7 @@ Public announcements, after creating a package.
 - My blog: http://edreamleo.blogspot.com/
   **Paste GitHub announcement**.
 </t>
-<t tx="ekr.20260811093931.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Run The update_leo_tools.py script *first*.
+<t tx="ekr.20260811100339.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Run The update_leo_tools.py script *first*.
 
 - leoGlobals.py: &lt;&lt; leoGlobals: global constants &gt;&gt;
   Check minimum_python_version and minimum_python_version_tuple.
@@ -1489,7 +1497,7 @@ Public announcements, after creating a package.
   https://github.com/leo-editor/leo-editor/issues/2867
 
 - (Not needed: done via the ci.yml action) Test on Linux.</t>
-<t tx="ekr.20260811093931.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
+<t tx="ekr.20260811100339.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
 - Update version constant.
 - Update static date.
 - Update date of the release, in &lt;&lt; version dates &gt;&gt; section.
@@ -1503,15 +1511,15 @@ Update versions in script files:
 - scripts/install_leo_locally
 
 </t>
-<t tx="ekr.20260811093931.4">- Run all "check" buttons in leoSettings.leo.
+<t tx="ekr.20260811100339.4">- Run all "check" buttons in leoSettings.leo.
 
 </t>
-<t tx="ekr.20260811093931.5">Do *not* use the (disabled) write-LeoPyRef button in LeoPy.leo. It is buggy.
+<t tx="ekr.20260811100339.5">Do *not* use the (disabled) write-LeoPyRef button in LeoPy.leo. It is buggy.
 
 - Create LeoPyRef.leo by copying leoPy.leo to it, then deleting unwanted nodes.
 - Open LeoPyRef.leo. Verify the diff after saving.
 - Run the the check button.</t>
-<t tx="ekr.20260811093931.6" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure copyright dates are correct.
+<t tx="ekr.20260811100339.6" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure copyright dates are correct.
 - Update the version numbers in index.html and conf.py:
   Search for 6.8.
 - Update the release notes. *Make sure to update links*.
@@ -1521,7 +1529,7 @@ Update versions in script files:
 - Copy release notes to leoDist.leo, the node `@clean ../../README.md`.
 - Copy release notes to LeoReleaseNotes.leo
 </t>
-<t tx="ekr.20260811093931.7">LeoDist.leo:
+<t tx="ekr.20260811100339.7">LeoDist.leo:
 - Make sure copyright dates are correct.
 - Update version numbers. Search for 6.8.x
   The final version in PKG-INFO.TXT must be called 6.8.10, not 6.8.10-final.
@@ -1532,9 +1540,9 @@ Update versions in script files:
 - Make sure no distributed .leo file contains xml-stylesheet elements.
   Run @button check .leo files in leoDist.leo.
 </t>
-<t tx="ekr.20260811093931.8">### To do.
+<t tx="ekr.20260811100339.8">### To do.
 </t>
-<t tx="ekr.20260811093931.9" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout main
+<t tx="ekr.20260811100339.9" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout main
 - run leo/scripts/full_test_leo.py
 
 </t>
