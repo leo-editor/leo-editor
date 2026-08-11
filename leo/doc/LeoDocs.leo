@@ -28147,26 +28147,26 @@ Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor
 <t tx="ekr.20260810021658.1">.. _`PR #4721`: https://github.com/leo-editor/leo-editor/pull/4721
 .. _`PR #4737`: https://github.com/leo-editor/leo-editor/pull/4737
 .. _`PR #4747`: https://github.com/leo-editor/leo-editor/pull/4747
-.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4753
-.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4781
-.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4782
-.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4783
-.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4790
-.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4788
-.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4770
-.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4771
-.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4810
-.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4812
-.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4814
-.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4825
-.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4827
-.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4824
-.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4848
-.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4851
-.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4852
-.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4849
-.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4856
-.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4870
+.. _`PR #4753`: https://github.com/leo-editor/leo-editor/pull/4753
+.. _`PR #4781`: https://github.com/leo-editor/leo-editor/pull/4781
+.. _`PR #4782`: https://github.com/leo-editor/leo-editor/pull/4782
+.. _`PR #4783`: https://github.com/leo-editor/leo-editor/pull/4783
+.. _`PR #4790`: https://github.com/leo-editor/leo-editor/pull/4790
+.. _`PR #4788`: https://github.com/leo-editor/leo-editor/pull/4788
+.. _`PR #4770`: https://github.com/leo-editor/leo-editor/pull/4770
+.. _`PR #4771`: https://github.com/leo-editor/leo-editor/pull/4771
+.. _`PR #4810`: https://github.com/leo-editor/leo-editor/pull/4810
+.. _`PR #4812`: https://github.com/leo-editor/leo-editor/pull/4812
+.. _`PR #4814`: https://github.com/leo-editor/leo-editor/pull/4814
+.. _`PR #4825`: https://github.com/leo-editor/leo-editor/pull/4825
+.. _`PR #4827`: https://github.com/leo-editor/leo-editor/pull/4827
+.. _`PR #4824`: https://github.com/leo-editor/leo-editor/pull/4824
+.. _`PR #4848`: https://github.com/leo-editor/leo-editor/pull/4848
+.. _`PR #4851`: https://github.com/leo-editor/leo-editor/pull/4851
+.. _`PR #4852`: https://github.com/leo-editor/leo-editor/pull/4852
+.. _`PR #4849`: https://github.com/leo-editor/leo-editor/pull/4849
+.. _`PR #4856`: https://github.com/leo-editor/leo-editor/pull/4856
+.. _`PR #4870`: https://github.com/leo-editor/leo-editor/pull/4870
 
 **Enhancements**
 
