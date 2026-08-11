@@ -28,5 +28,5 @@ for command in [
 ]:
     print('')
     print(command)
-    subprocess.run(command)
+    subprocess.run(command, shell=True)
 # @-leo

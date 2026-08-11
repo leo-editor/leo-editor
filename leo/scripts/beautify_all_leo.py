@@ -45,5 +45,5 @@ targets = (
 # Use -m so that __name__ == '__main__'.
 python = sys.executable
 command = f"{python} -m ruff format {args} {' '.join(targets)}"
-subprocess.run(command)
+subprocess.run(command, shell=True)
 # @-leo

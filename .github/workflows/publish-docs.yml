@@ -1,0 +1,65 @@
+name: Publish docs
+
+# Manually rebuilds Leo's documentation from leo/doc/LeoDocs.leo (see
+# leo/scripts/build_docs.py). No generated HTML is ever committed to git:
+#
+# - Every run uploads the built site as a plain workflow artifact, so it
+#   can be downloaded and reviewed before anything goes live.
+# - Re-running with the "publish" input checked additionally deploys the
+#   same build straight to GitHub Pages via actions/deploy-pages.
+#
+# The "publish" path requires the repo's Pages source (Settings > Pages >
+# Build and deployment) to be set to "GitHub Actions" -- it will fail
+# clearly if that hasn't been switched from the legacy branch-based source.
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Deploy to GitHub Pages (requires Pages source = "GitHub Actions"). Leave unchecked to just build a reviewable artifact.'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      QT_QPA_PLATFORM: offscreen
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends
+          libegl1 libgl1 libxkbcommon0 libdbus-1-3 libfontconfig1
+      - run: pip install "PyQt6>=6.6" PyQt6-QScintilla docutils sphinx
+      - run: python -m leo.scripts.build_docs --out built-docs
+
+      - name: Upload reviewable artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: leo-docs-html
+          path: built-docs/
+
+      - name: Package for Pages
+        if: ${{ inputs.publish }}
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: built-docs/
+
+  deploy:
+    if: ${{ inputs.publish }}
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

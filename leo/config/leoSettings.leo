@@ -1261,7 +1261,8 @@
 <v t="ekr.20180320113441.1"><vh>@item open-theme-file</vh></v>
 <v t="ekr.20131213135427.21955"><vh>@item open-local-settings</vh></v>
 <v t="ekr.20180405110859.1"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22050"><vh>@menu &amp;List/Kill Abbreviations</vh>
+<v t="ekr.20131213135427.22050"><vh>@menu &amp;Abbreviations</vh>
+<v t="felix.20260810004559.1"><vh>@item &amp;toggle-abbrev-mode</vh></v>
 <v t="ekr.20131213135427.22053"><vh>@item abbrev-&amp;list</vh></v>
 <v t="ekr.20131213135427.22059"><vh>@item abbrev-&amp;kill-all</vh></v>
 </v>
@@ -10202,7 +10203,6 @@ de-hoist                            = Ctrl-Alt-Shift-h
 The OSX shortcuts posted by karstenw at the link below solved all of my keycode problems on a Mac:
 
 https://github.com/karstenw/leo-shortcuts-osx/blob/master/myLeoSettings.leo</t>
-<t tx="ekr.20161021095001.1">True: run Pyflakes on each saved file, but only if it has been changed.</t>
 <t tx="ekr.20161025090757.1">Leo&amp;Dist.leo</t>
 <t tx="ekr.20161121044950.1"># The headline must be: @outline-data tree-abbreviations
 
@@ -11507,7 +11507,6 @@ False: Use the default stylesheet at leo/plugins/viewrendered3.
 # xsltWithNodes.py
 # zenity_file_dialogs.py
 </t>
-<t tx="ekr.20221128115636.1">True: run flake8 on each saved file, but only if it has been changed.</t>
 <t tx="ekr.20230104130512.1"></t>
 <t tx="ekr.20230104150532.1"></t>
 <t tx="ekr.20230104150550.1"># Headlines starting with any of the following strings are not considered dubious.
@@ -11699,7 +11698,6 @@ vertical-thirds2
     │           │  body │       │
     └───────────┴───────┴───────┘
 </t>
-<t tx="ekr.20240924055407.1">True: run Pylint on each saved file, but only if it has been changed.</t>
 <t tx="ekr.20240926065158.1"># True: When saving a file, beautify external files using ruff format.
 </t>
 <t tx="ekr.20241012050620.1">True: Leo's git-diff command will diff .leo and .leojs files.</t>
@@ -11910,6 +11908,7 @@ False: (Recommended) The commands act as simple navigation commands, and do not 
 Leo accepts outline 'paste' data in both XML Leo format, or JSON format</t>
 <t tx="felix.20250313152228.1"></t>
 <t tx="felix.20250313152231.1"></t>
+<t tx="felix.20260810004559.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
@@ -12610,5 +12609,6 @@ paste-retaining-clones Paste Node As Clone
 <t tx="vitalije.20170811125150.1"></t>
 <t tx="vitalije.20190928173155.1"></t>
 <t tx="vitalije.20190928173236.1"></t>
+<t tx="vv.20260807130000.1"></t>
 </tnodes>
 </leo_file>
