@@ -44,6 +44,7 @@ matplotlib      # VR3 plugin.
 numpy           # VR3 plugin.
 pyenchant       # The spell tab.
 sphinx          # For documentation.
+sphinx-book-theme
 urllib3
 websockets      # For leoserver.
 

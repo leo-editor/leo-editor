@@ -19,7 +19,6 @@ Usage:
 import argparse
 import glob
 import os
-import shutil
 import subprocess
 import sys
 
@@ -61,14 +60,6 @@ def run_sphinx(out_dir: str) -> int:
     return subprocess.call(cmd)
 
 
-def copy_home_page(out_dir: str) -> str:
-    """Copy Leo's hand-maintained home page into the Sphinx output directory."""
-    source = os.path.join(leo_editor_dir, 'docs', 'index.html')
-    target = os.path.join(out_dir, 'index.html')
-    shutil.copy2(source, target)
-    return target
-
-
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -90,10 +81,6 @@ def main() -> int:
 
     rc = run_sphinx(args.out)
     if rc == 0:
-        home_page = copy_home_page(args.out)
-        if not os.path.isfile(home_page):
-            print(f"ERROR: home page was not created: {home_page}", file=sys.stderr)
-            return 1
         print(f"sphinx-build OK -> {args.out}")
     return rc
 

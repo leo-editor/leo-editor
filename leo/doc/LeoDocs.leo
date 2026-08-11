@@ -189,6 +189,7 @@
 </v>
 </v>
 <v t="ekr.20040414161647"><vh>Leo's Documentation</vh>
+<v t=".20260810204531.45"><vh>@rst html/index.html</vh></v>
 <v t="ekr.20170215081358.1"><vh> Table of contents</vh>
 <v t="ekr.20170215075612.1"><vh>@rst html/leo_toc.html</vh></v>
 </v>
@@ -2179,6 +2180,61 @@
 <v t="ekr.20260716061137.1"><vh>Breaking changes to Leo's API</vh></v>
 </vnodes>
 <tnodes>
+<t tx=".20260810204531.45">Leo: organize code and ideas your way
+======================================
+
+.. raw:: html
+
+   &lt;div class="leo-hero"&gt;
+     &lt;div&gt;
+       &lt;p class="leo-eyebrow"&gt;A programmable editor, outliner, and knowledge base&lt;/p&gt;
+       &lt;h1&gt;See your work from every angle.&lt;/h1&gt;
+       &lt;p class="leo-tagline"&gt;
+         Leo keeps code, writing, and research in a flexible outline. Cloned nodes
+         let the same idea appear in multiple places—without duplicating it.
+       &lt;/p&gt;
+       &lt;div class="leo-actions"&gt;
+         &lt;a class="leo-button leo-button-primary" href="getting-started.html"&gt;Get started&lt;/a&gt;
+         &lt;a class="leo-button leo-button-secondary" href="https://github.com/leo-editor/leo-editor"&gt;View on GitHub&lt;/a&gt;
+       &lt;/div&gt;
+     &lt;/div&gt;
+     &lt;div class="leo-hero-image"&gt;
+       &lt;img src="_static/DarkScreenShot.png" alt="Leo showing an outline beside an editor pane"&gt;
+     &lt;/div&gt;
+   &lt;/div&gt;
+
+   &lt;h2&gt;One workspace, many ways to think&lt;/h2&gt;
+   &lt;div class="leo-features"&gt;
+     &lt;article class="leo-card"&gt;
+       &lt;h3&gt;Outline anything&lt;/h3&gt;
+       &lt;p&gt;Navigate large projects as a meaningful hierarchy instead of a pile of files.&lt;/p&gt;
+     &lt;/article&gt;
+     &lt;article class="leo-card"&gt;
+       &lt;h3&gt;Reuse without copying&lt;/h3&gt;
+       &lt;p&gt;Leo's clones place one node in multiple contexts while keeping its content in sync.&lt;/p&gt;
+     &lt;/article&gt;
+     &lt;article class="leo-card"&gt;
+       &lt;h3&gt;Automate your workflow&lt;/h3&gt;
+       &lt;p&gt;Use Python scripts, commands, and plugins to shape Leo around the way you work.&lt;/p&gt;
+     &lt;/article&gt;
+   &lt;/div&gt;
+
+Explore Leo
+-----------
+
+.. toctree::
+   :hidden:
+
+   Documentation &lt;leo_toc&gt;
+
+* `Getting Started &lt;getting-started.html&gt;`_
+* `Tutorials &lt;tutorial.html&gt;`_
+* `Users Guide &lt;usersguide.html&gt;`_
+* `Leo and other programs &lt;leoandotherprograms.html&gt;`_
+* `Advanced Topics &lt;intermediatetopics.html&gt;`_
+* `Appendices &lt;appendices.html&gt;`_
+* `More links &lt;toc-more-links.html&gt;`_
+</t>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
 
 - Per-installation or per-machine settings.

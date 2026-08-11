@@ -319,6 +319,7 @@ dependencies = [
   "pyenchant",       # The spell tab.
  
   "sphinx",
+  "sphinx-book-theme",
   "urllib3",
   "websockets",      # For leoserver.
 
