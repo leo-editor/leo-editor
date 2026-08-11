@@ -191,7 +191,7 @@ class CheckLeo:
     def create_live_objects(self) -> tuple[Any, Any, Any, Any]:
         """Use Leo's bridge to create live objects for Leo's c, g, and p symbols."""
 
-        import leo.core.leoBridge as leoBridge
+        from leo.core import leoBridge
         from leo.core.leoNodes import VNode
         from leo.plugins.qt_gui import LeoQtGui
         from leo.plugins.qt_frame import LeoQtFrame
@@ -294,12 +294,11 @@ class Visitor(ast.NodeVisitor):
 
     def __init__(self, known_objects: dict[str, Any]) -> None:
         # Per-file data.
-        self.args_stack: list[str] = []
         self.context_stack: list[ast.AST] = []
         self.known_objects = known_objects
 
     # @+others
-    # @+node:ekr.20251202084740.1: *3* Visitor.context_name
+    # @+node:ekr.20251202084740.1: *3* Visitor.context_name (not used)
     def context_name(self) -> str:
         """Return the name of the present traversal context."""
         node = self.context_stack[-1]
@@ -521,12 +520,9 @@ class Visitor(ast.NodeVisitor):
         stats_contexts += 1
         try:
             self.context_stack.append(node)
-            args = self.get_args(node)
-            self.args_stack.append(args)
             self.generic_visit(node)
         finally:
             self.context_stack.pop()
-            self.args_stack.pop()
 
     def get_func_args(self) -> list[str]:
         return self.context_stack[-1]
