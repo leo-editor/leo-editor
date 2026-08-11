@@ -182,6 +182,7 @@
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ekr.20090428133936.2"><vh>@edit html/conf.py</vh></v>
 <v t="ekr.20241124083101.1"><vh>@edit _static/custom.css</vh></v>
+<v t=".20260811190042.45"><vh>@edit _static/LeoLogo-dark.svg</vh></v>
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home pages</vh>
 <v t="ekr.20230110155708.1"><vh>@file html/redirect_index.html</vh></v>

@@ -16,12 +16,15 @@ html_theme_options = {
     'use_repository_button': True,
     'home_page_in_toc': True,
     'show_navbar_depth': 2,
+    'logo': {
+        'image_light': '../_static/LeoLogo.svg',
+        'image_dark': '../_static/LeoLogo-dark.svg',
+    },
 }
 pygments_style = 'sphinx'
 source_suffix = '.html.txt'
 
 html_last_updated_fmt = '%B %d, %Y'
-html_logo = '../_static/LeoLogo.svg'
 html_title = 'Leo'
 html_use_index = False  # Not necessary for glossary.
 html_use_smartypants = False
