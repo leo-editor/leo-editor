@@ -126,7 +126,15 @@
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
 </v>
-<v t="ekr.20260811100339.1" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a73735803000000302e3171067d710768037d7108580700000069735f6475706571094930300a73735803000000302e34710a7d710b68037d710c580700000069735f64757065710d4930300a73735803000000302e37710e7d710f68037d7110580700000069735f6475706571114930300a73735803000000302e3971127d711368037d7114580700000069735f6475706571154930300a7373752e"><vh>Distribution checklist</vh>
+<v t="ekr.20260811100533.1" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a73735803000000302e3271067d710768037d7108580700000069735f6475706571094930300a73735803000000302e33710a7d710b68037d710c580700000069735f64757065710d4930300a73735803000000302e34710e7d710f68037d7110580700000069735f6475706571114930300a7373752e"><vh>--- deleted from checklist</vh>
+<v t="ekr.20260811100533.2" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>(Not needed) Web docs</vh></v>
+<v t="ekr.20260811100533.3"><vh>(Not needed) Create pypi distro</vh></v>
+<v t="ekr.20260811100533.4" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>(Needed?) Publish release</vh></v>
+<v t="ekr.20260811100533.5" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>(Not needed) Merge main into branch</vh></v>
+<v t="ekr.20260811100533.6" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>(Superseded) Create git tag in main</vh></v>
+</v>
+<v t="ekr.20260811100553.1"><vh>--- checklist: to do</vh></v>
+<v t="ekr.20260811100339.1" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a73735803000000302e3171067d7107580b0000005f5f626f6f6b6d61726b7371087d7109580700000069735f64757065710a4930300a73735803000000302e34710b7d710c580b0000005f5f626f6f6b6d61726b73710d7d710e580700000069735f64757065710f4930300a73735803000000302e3771107d7111580b0000005f5f626f6f6b6d61726b7371127d7113580700000069735f6475706571144930300a73735803000000302e3971157d7116580b0000005f5f626f6f6b6d61726b7371177d7118580700000069735f6475706571194930300a7373752e"><vh>Distribution checklist</vh>
 <v t="ekr.20260811100339.2" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Pre-testing</vh></v>
 <v t="ekr.20260811100339.3" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Update version data</vh></v>
 <v t="ekr.20260811100339.4"><vh>LeoSettings.leo</vh></v>
@@ -1546,6 +1554,102 @@ Update versions in script files:
 - run leo/scripts/full_test_leo.py
 
 </t>
+<t tx="ekr.20260811100533.1"></t>
+<t tx="ekr.20260811100533.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout `gh-pages`.
+- git merge 6.8.10
+- Run the `find-bad-links` script and fix any errors
+- Run the `make-sphinx` from LeoDocs.leo
+  This script copies files from leo/doc/html/_build/html to leo-editor/docs
+- Commit the changes and push.
+- Check the GitHub Pages actions page:
+  https://github.com/leo-editor/leo-editor/actions
+- Check Leo's website.
+</t>
+<t tx="ekr.20260811100533.3">.. How to create pypi distributions:
+.. https://github.com/leo-editor/leo-editor/issues/3837
+
+*Note*: All scripts mentioned below are *Python* scripts in leo/scripts.
+
+This checklist may seem daunting. In most cases errors are harmless, so don't despair.
+
+Step 1: Create and test the distribution files in leo/dist:
+
+- Do *not* change `PKG-INFO.TXT` if there are problems with file name in later steps!
+- Run the `build_leo` script to create `.whl` and `.tar.gz` files in the leo/dist directory.
+  - Ignore warnings like `no previously-included files matching...`.
+  - Make sure the filenames are as expected!
+- *** Delete the `leo-editor/leo.egg-info` directory!
+- (Optional) Run the `inspect_wheel` script to inspect the metadata in the `.whl` file.
+
+Step 2: Install locally and test:
+
+Everything, including filenames, must be perfect before uploading to testpypi or pypi.
+
+- Run the `install_leo_locally` script. It should:
+  - create a leo folder in the `Python3.x/Lib/site-packages` directory.
+  - create three leo executables in the `Python3.x/scripts` directory.
+  - When in doubt, run `pip cache purge`.
+- Run the `run_installed_leo` script to test the distribution.
+- Run the `uninstall_leo` script to uninstall Leo. It should report:
+  - Two deleted folders from `Python3.x/Lib/site-packages`.
+  - Three deleted scripts `Python3.x/scripts`.
+- Optional(test that `pip install leo` installs all dependencies.
+  - Run the `pip_uninstall_all` script to uninstall all packages.
+  - Re-run the `install_leo_locally` script.
+  - Re-run the `run_installed_leo` script.
+  - Re-run the `uninstall_leo` script.
+
+When all is well, go to step 3:
+
+Step 3: Upload to testpypi and test:
+
+- Run the `upload_leo_to_testpypi` script.
+  Fix the name of the `.whl` file (see below) if the upload fails.
+- Run the `install_leo_from_testpypi` script.
+- Open testpypi: https://test.pypi.org/project/leo/
+- Test and uninstall as in step 2 above.
+
+Step 4: Upload to pypi and test:
+
+Make *sure* all is well before uploading to pypi.
+
+- Run the `upload_leo_to_pypi` script.
+  Fix the name of the `.whl` file (see below) if the upload fails.
+- Run the `install_leo_from_pypi` script.
+- Open pypi: https://pypi.org/project/leo/
+- Test and uninstall as in step 2 above.
+
+*How to handle errors in steps 3 and 4*
+
+Any glitch will require new filename *only* for the `.whl` file:
+- Use *build number* (-1, -2) for the new filename:
+  for example, leo-6.8.10-py3-none-any.whl.
+- Do *not*use `.post1`: it won't work!
+- Do *not* change the filename of `.tar.gz` file.
+- Do *not* change `PKG-INFO.TXT` or Leo's version number!
+</t>
+<t tx="ekr.20260811100533.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
+
+This must be done *soon* after the release's actual commit.
+There is a "Draft New Release" button at the top-right of the page.
+</t>
+<t tx="ekr.20260811100533.5" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From devel:
+
+- git merge main
+- Fix any conflicts and push.
+- git checkout master
+- git merge 6.8.10</t>
+<t tx="ekr.20260811100533.6" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
+
+git checkout main
+git tag -a v6.8.10 -m "Added v6.8.10 tag"
+git push --follow-tags
+</t>
+<t tx="ekr.20260811100553.1">@language rest
+
+- See how the old dev releases worked.
+- Create a new dev release.
+- Delete old dev releases.</t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 
