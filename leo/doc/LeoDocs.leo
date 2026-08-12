@@ -1459,6 +1459,7 @@
 </v>
 </v>
 <v t="ekr.20180125034510.1"><vh>Release Notes</vh>
+<v t="ekr.20260812065654.1"><vh>@rst html/release-notes.html</vh>
 <v t="ekr.20250422050948.1"><vh>Leo 6.8.x release notes</vh>
 <v t="ekr.20260716061125.1"><vh>Leo 6.8.10 release notes</vh></v>
 <v t="ekr.20260531063735.1"><vh>Leo 6.8.9 release notes</vh></v>
@@ -2167,8 +2168,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20260531063902.1"></v>
-<v t="ekr.20260531063735.1"></v>
+</v>
 <v t="ekr.20260810021658.1"></v>
 <v t="ekr.20260716061125.1"></v>
 </vnodes>
@@ -28218,6 +28218,14 @@ Use these "truthy" tests instead::
     if s:
     if not s:
 
+</t>
+<t tx="ekr.20260812065654.1">#############
+Release Notes
+#############
+
+.. contents:: Contents
+    :depth: 0
+    :local:
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
