@@ -6856,7 +6856,7 @@ This section discusses the @&lt;file&gt; directives. These directives create or 
 
 **Note**: ``@file``, ``@clean`` and ``@auto`` are the recommended ways of creating external files. ``@asis`` and ``@nosent`` are for special occasions.
 
-**Note**: All these directive must appear in headlines.
+**Note**: All these directives must appear in headlines.
 
 The following table compares the various ways of creating external files. Later sections provide more details::
 
@@ -6870,6 +6870,19 @@ The following table compares the various ways of creating external files. Later 
     @edit            no         no           no    
     @file            yes        yes          no
     @nosent          no         yes          yes
+
+The three sentinel-free directives with no importer serve different purposes:
+
+- An ``@edit`` node contains the entire external file in one node. It must not
+  have children. Leo can read changes made to the external file back into that
+  node.
+- An ``@nosent`` node may contain a tree. When Leo writes the file, it expands
+  ``@others``, section references, and other file directives. Leo can not update
+  the tree from changes made to the external file.
+- An ``@asis`` node may also contain a tree, but Leo writes the body text of its
+  nodes in outline order without expansions. For example, ``@others`` is written
+  as literal text. Leo can not update the tree from changes made to the external
+  file.
 
 **Note 1**: ``@auto`` nodes read files using language-specific importers.
 By default, the file's extension determines the importer::
