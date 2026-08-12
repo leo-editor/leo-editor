@@ -32,6 +32,13 @@ html[data-theme="dark"] {
     max-width: 85%;
 }
 
+.bd-sidebar-primary .sidebar-primary-items__start > .sidebar-primary-item:first-child {
+    background: var(--pst-color-background);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
 .leo-hero {
     align-items: center;
     display: grid;
