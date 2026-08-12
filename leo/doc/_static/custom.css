@@ -32,11 +32,19 @@ html[data-theme="dark"] {
     max-width: 85%;
 }
 
-.bd-sidebar-primary .sidebar-primary-items__start > .sidebar-primary-item:first-child {
-    background: var(--pst-color-background);
-    position: sticky;
-    top: 0;
-    z-index: 1;
+.bd-sidebar-primary {
+    overflow: hidden;
+}
+
+.bd-sidebar-primary .sidebar-primary-items__start {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.bd-sidebar-primary .sidebar-primary-items__start > .sidebar-primary-item:last-child {
+    overflow-y: auto;
 }
 
 .leo-hero {
