@@ -1,3 +1,5 @@
+# @+leo-ver=5-thin
+# @+node:ekr.20181009072707.1: * @file ../../run_ci_unit_tests.py
 import os
 import sys
 import traceback
@@ -30,3 +32,4 @@ except Exception:
         print(line.rstrip())
     sys.stdout.flush()
     os._exit(1)
+# @-leo
