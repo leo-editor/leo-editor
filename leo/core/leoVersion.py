@@ -9,8 +9,6 @@ leoVersion.version:     Leo's version number.
 """
 
 # GitHub release pase: https://github.com/leo-editor/leo-editor/releases
-# Add a suffix to change the pypi hash.
-# Build suffix: -20
 # @+<< version dates >>
 # @+node:ekr.20141117073519.12: ** << version dates >>
 # @@nocolor-node
@@ -72,7 +70,7 @@ try:
     version = _installed_version('leo')
 except Exception:
     # Not pip-installed (e.g. running from a git checkout): version is unknown.
-    version = '0.0.0.dev0'
+    version = 'Leo 6.8.10-devel'
 static_date = 'August 13, 2026'
 # @@language python
 # @@tabwidth -4

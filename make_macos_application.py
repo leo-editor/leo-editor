@@ -264,10 +264,24 @@ def parse_args() -> argparse.Namespace:
         default=DEFAULT_APP_PATH,
         help=f"Application bundle to replace (default: {DEFAULT_APP_PATH})",
     )
-    parser.add_argument("--source-root", type=Path, default=SOURCE_ROOT, help=f"Leo checkout to bundle (default: {SOURCE_ROOT})")
-    parser.add_argument("--venv-path", type=Path, default=DEFAULT_VENV_PATH, help=f"uv-managed Python venv to create/use (default: {DEFAULT_VENV_PATH})")
-    parser.add_argument("--python", help="Python version or executable to pass to 'uv venv --python'.")
-    parser.add_argument("--skip-venv-install", action="store_true", help="Do not create/update the uv-managed venv.")
+    parser.add_argument(
+        "--source-root",
+        type=Path,
+        default=SOURCE_ROOT,
+        help=f"Leo checkout to bundle (default: {SOURCE_ROOT})",
+    )
+    parser.add_argument(
+        "--venv-path",
+        type=Path,
+        default=DEFAULT_VENV_PATH,
+        help=f"uv-managed Python venv to create/use (default: {DEFAULT_VENV_PATH})",
+    )
+    parser.add_argument(
+        "--python", help="Python version or executable to pass to 'uv venv --python'."
+    )
+    parser.add_argument(
+        "--skip-venv-install", action="store_true", help="Do not create/update the uv-managed venv."
+    )
     parser.add_argument(
         "--icon-source",
         type=Path,
@@ -299,7 +313,10 @@ def main() -> int:
         )
     except PermissionError as e:
         print(f"Permission denied: {e}", file=sys.stderr)
-        print("Try running this script with privileges that can write to /Applications.", file=sys.stderr)
+        print(
+            "Try running this script with privileges that can write to /Applications.",
+            file=sys.stderr,
+        )
         return 1
     return 0
 
