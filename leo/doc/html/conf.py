@@ -1,9 +1,10 @@
+# flake8: noqa  # Required for ci.yml.
 """leo/doc/html/conf.py"""
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 # https://www.sphinx-doc.org/en/master/usage/theming.html#builtin-themes
 
 project = 'Leo'
-author = '' # Edward K. Ream and contributors'
+author = 'Edward K. Ream and contributors'
 copyright = '1997-2026, Edward K. Ream'
 version = '6.8.10'
 release = '6.8.10'
