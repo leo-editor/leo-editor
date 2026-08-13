@@ -126,7 +126,7 @@
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
 </v>
-<v t="ekr.20260811100339.1" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a73735803000000302e3171067d7107580b0000005f5f626f6f6b6d61726b7371087d7109580700000069735f64757065710a4930300a73735803000000302e34710b7d710c580b0000005f5f626f6f6b6d61726b73710d7d710e580700000069735f64757065710f4930300a73735803000000302e3971107d7111580b0000005f5f626f6f6b6d61726b7371127d7113580700000069735f6475706571144930300a73735804000000302e313271157d7116580b0000005f5f626f6f6b6d61726b7371177d7118580700000069735f6475706571194930300a7373752e"><vh>Distribution checklist</vh>
+<v t="ekr.20260811100339.1" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a73735803000000302e3171067d7107580b0000005f5f626f6f6b6d61726b7371087d7109580700000069735f64757065710a4930300a73735803000000302e34710b7d710c580b0000005f5f626f6f6b6d61726b73710d7d710e580700000069735f64757065710f4930300a73735804000000302e313071107d7111580b0000005f5f626f6f6b6d61726b7371127d7113580700000069735f6475706571144930300a73735804000000302e313371157d7116580b0000005f5f626f6f6b6d61726b7371177d7118580700000069735f6475706571194930300a7373752e"><vh>Distribution checklist</vh>
 <v t="ekr.20260811100339.2" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Pre-testing</vh></v>
 <v t="ekr.20260811100339.3" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Update version data</vh></v>
 <v t="ekr.20260811100339.4"><vh>LeoSettings.leo</vh></v>
@@ -134,6 +134,7 @@
 <v t="ekr.20260811100339.6" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>LeoDocs.leo</vh></v>
 <v t="ekr.20260811100339.7"><vh>LeoDist.leo</vh></v>
 <v t="ekr.20260813091710.1"><vh>Run the publish-doc.yml action</vh></v>
+<v t="ekr.20260813162422.1"><vh>Create tag</vh></v>
 <v t="ekr.20260811100339.8"><vh>Run the publish.yml action</vh></v>
 <v t="ekr.20260813092403.1"><vh>Merge devel into main</vh></v>
 <v t="ekr.20260811100339.9" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>After-merge testing in main</vh></v>
@@ -1539,16 +1540,7 @@ Update versions in script files:
 - Make sure no distributed .leo file contains xml-stylesheet elements.
   Run @button check .leo files in leoDist.leo.
 </t>
-<t tx="ekr.20260811100339.8">
-.. All GitHub actions
-https://github.com/leo-editor/leo-editor/blob/devel/.github/workflows
-
-.. Step one:  Create the release tag in "devel"
-
-git tag -a v6.8.10 -m "Added v6.8.10 tag"
-git push --follow-tags
-
-.. Step Two: Create on the ..GitHub release page
+<t tx="ekr.20260811100339.8">.. Create the release on the ..GitHub release page
 https://github.com/leo-editor/leo-editor/releases
 
 - Click the Draft New Release button.
@@ -1557,20 +1549,30 @@ https://github.com/leo-editor/leo-editor/releases
 - Choose the "Latest" or "Pre-lease" in the "Release label" area at the bottom.
 - Click Publish release.
 
-This will automatically create the PyPi release
-
-
+This will automatically create the PyPi release.
 
 </t>
 <t tx="ekr.20260811100339.9" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout main
 - run leo/scripts/full_test_leo.py
 
 </t>
-<t tx="ekr.20260813091710.1">.. All GitHub actions
+<t tx="ekr.20260813091710.1">.. Run the publish-doc action
+https://github.com/leo-editor/leo-editor/actions/workflows/publish-docs.yml
+
+.. Check the results
 https://github.com/leo-editor/leo-editor/blob/devel/.github/workflows
 </t>
-<t tx="ekr.20260813092403.1"></t>
-<t tx="ekr.20260813092546.1"></t>
+<t tx="ekr.20260813092403.1">- git checkout main
+- git merge devel</t>
+<t tx="ekr.20260813092546.1">leoVersion.py:
+- Update version constant.
+- Update static date.
+</t>
+<t tx="ekr.20260813162422.1">.. Create the release tag in "devel"
+
+git tag -a v6.8.10 -m "Added v6.8.10 tag"
+git push --follow-tags
+</t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 
