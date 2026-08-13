@@ -7300,7 +7300,7 @@ What's New in Leo
 ##################
 
 .. contents:: Contents
-    :depth: 0
+    :depth: 2
     :local:
 </t>
 <t tx="ekr.20101025080245.5798"></t>
@@ -28238,7 +28238,7 @@ Release Notes
 #############
 
 .. contents:: Contents
-    :depth: 0
+    :depth: 2
     :local:
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
