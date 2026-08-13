@@ -25262,8 +25262,8 @@ Bugs
 <t tx="ekr.20230111163935.1">c.backup_helper(sub_dir='leoDocs')
 </t>
 <t tx="ekr.20230111171223.1">def find_docs_links():
-    """Find all links in all .html files in the leo-editor/docs directory."""
-    docs_path = g.os_path_finalize_join(g.app.loadDir,'..','..','docs')
+    """Find all links in all .html files in the leo-editor/leo/doc/html directory."""
+    docs_path = g.os_path_finalize_join(g.app.loadDir,'..','doc', 'html')
     if not os.path.exists(docs_path):
         g.es_print(f"Not found: {docs_path!r}")
         return []
