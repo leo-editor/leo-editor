@@ -8,8 +8,7 @@ leoVersion.static_date: The date of official releases.
 leoVersion.version:     Leo's version number.
 """
 
-# Add a suffix to change the pypi hash.
-# Build suffix: -20
+# GitHub release pase: https://github.com/leo-editor/leo-editor/releases
 # @+<< version dates >>
 # @+node:ekr.20141117073519.12: ** << version dates >>
 # @@nocolor-node

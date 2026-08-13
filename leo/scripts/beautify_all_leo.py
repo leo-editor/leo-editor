@@ -34,6 +34,7 @@ args = " ".join(
     )
 )
 targets = (
+    f"{leo_editor_dir}",  # For top-level apps and scripts.
     f"leo{os.sep}commands",
     f"leo{os.sep}core",
     f"leo{os.sep}doc{os.sep}html",  # For conf.py
