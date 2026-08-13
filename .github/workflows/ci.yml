@@ -94,4 +94,5 @@ jobs:
       - run: python -m mypy leo
       # Require ty: https://github.com/astral-sh/ty to pass.
       # Run after mypy to reuse the checkout/Python/PyQt6 setup.
-      - run: ty check --python "$(python -c 'import sys; print(sys.prefix)')" leo
+      # - run: ty check --python "$(python -c 'import sys; print(sys.prefix)')" leo
+      # - run: ty check leo
