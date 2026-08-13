@@ -45,17 +45,19 @@
 </v>
 <v t="ekr.20170427114412.1"><vh>scripts</vh>
 <v t="ekr.20170428084123.1"><vh>Recursive import script</vh></v>
-<v t="ekr.20260503063616.1"><vh>--- diff scripts</vh>
+<v t="ekr.20260503063616.1"><vh>--- (do not delete) diff scripts</vh>
 <v t="ekr.20260721065927.1"><vh>script: diff main/6.8.10</vh></v>
 <v t="ekr.20260503052547.1"><vh>script: diff main/devel</vh></v>
 <v t="ekr.20260709152903.1"><vh>script: diff-branches/revs (leo/plugins/qt_text.py)</vh></v>
 <v t="ekr.20190402091335.1"><vh>script: diff-branches/revs (master, 6.8.8, leo/core)</vh></v>
+<v t="ekr.20180816105258.1"><vh>script: diff-branches/revs (one file)</vh></v>
 <v t="ekr.20220319145807.1"><vh>script: diff-two-revs-wo-comments</vh>
 <v t="ekr.20220319151900.1"><vh>function: make_diff_outlines_ignoring_comments</vh></v>
 <v t="ekr.20220319152417.1"><vh>function: strip_comments</vh></v>
 </v>
 <v t="ekr.20260116001413.1"><vh>script: summary-diff (main, 6.8.10, leo/commands)</vh></v>
 <v t="ekr.20260112121427.1"><vh>script: summary-diff (main, 6.8.10, leo/core)</vh></v>
+<v t="ekr.20260806163514.1"><vh>script: summary-diff (main, 6.8.10: all files)</vh></v>
 </v>
 <v t="ekr.20260503063649.1"><vh>--- other scripts</vh>
 <v t="ekr.20240403111007.1"><vh>script: add toolbar buttons</vh></v>
@@ -172,20 +174,34 @@
 <v t="ekr.20031218072017.3749"><vh>@file leoMenu.py</vh></v>
 </v>
 <v t="ekr.20180225010644.1"><vh>Other files</vh>
-<v t="ekr.20180225010707.1"><vh>In leo-editor directory</vh>
-<v t="ekr.20240317061516.1"><vh>@edit ../../MANIFEST.in</vh></v>
+<v t="ekr.20260809041420.1"><vh>--- (do not delete) In .github/workflows</vh>
+<v t="ekr.20260804062205.1"><vh>@clean ../../.github/workflows/ci.yml</vh></v>
+<v t="ekr.20260809041303.1"><vh>@clean ../../.github/workflows/publish.yml</vh></v>
+<v t="ekr.20260811072323.1"><vh>@clean ../../.github/workflows/publish-docs.yml</vh></v>
+</v>
+<v t="ekr.20180225010707.1"><vh>--- (do not delete) In leo-editor</vh>
+<v t="ekr.20260813051101.1"><vh>--- (do not delete) leo-editor: build files</vh>
 <v t="ekr.20220222130955.1"><vh>@clean ../../.mypy.ini</vh></v>
-<v t="ekr.20231108150521.1"><vh>@edit ../../CONTRIBUTING.md</vh></v>
+<v t="ekr.20240317061516.1"><vh>@clean ../../MANIFEST.in</vh></v>
+<v t="ekr.20240206161713.1"><vh>@clean ../../setup.cfg </vh></v>
+<v t="ekr.20240227064614.1"><vh>@file ../../pyproject.toml</vh></v>
+<v t="ekr.20240201175949.1"><vh>@file ../../requirements.txt</vh></v>
+<v t="ekr.20240406013108.1"><vh>@file ../../ruff.toml</vh></v>
+</v>
+<v t="ekr.20260813051203.1"><vh>--- (do not delete) leo-editor: workflow scripts</vh>
+<v t="ekr.20181009072707.1"><vh>@file ../../run_ci_unit_tests.py</vh></v>
+<v t="ekr.20181014073705.1"><vh>@file ../../run_pytest_tests.py</vh></v>
+</v>
+<v t="ekr.20260813051148.1"><vh>--- (do not delete) leo-editor: other scripts</vh>
 <v t="ekr.20210302164046.1"><vh>@edit ../../launchLeo.py</vh></v>
+<v t="ekr.20150304125314.4"><vh>@file ../../leo_to_html.xsl</vh></v>
+<v t="ekr.20150304130753.4"><vh>leo-viewer/leo_to_html.xsl</vh></v>
+</v>
+<v t="ekr.20260813051733.1"><vh>--- (do not delete) leo-editor: user top-level files</vh>
+<v t="ekr.20231108150521.1"><vh>@edit ../../CONTRIBUTING.md</vh></v>
 <v t="ekr.20240319094534.1"><vh>@edit ../../PKG-INFO.TXT</vh></v>
 <v t="ekr.20240206153029.1"><vh>@edit ../../README.md</vh></v>
-<v t="ekr.20240206161713.1"><vh>@edit ../../setup.cfg</vh></v>
-<v t="ekr.20150304125314.4"><vh>@file ../../leo_to_html.xsl</vh></v>
-<v t="ekr.20240227064614.1"><vh>@file ../../pyproject.toml</vh></v>
-<v t="ekr.20240406013108.1"><vh>@file ../../ruff.toml</vh></v>
-<v t="ekr.20240201175949.1"><vh>@file ../../requirements.txt</vh></v>
-<v t="ekr.20181014073705.1"><vh>@file ../../run_pytest_tests.py</vh></v>
-<v t="ekr.20150304130753.4"><vh>leo-viewer/leo_to_html.xsl</vh></v>
+</v>
 </v>
 <v t="ekr.20180225010913.1"><vh>In leo/core</vh>
 <v t="ekr.20210202110241.1"><vh>@file leoclient.py</vh></v>
@@ -195,8 +211,8 @@
 </v>
 <v t="ekr.20180225010743.1"><vh>In leo/external</vh>
 <v t="ekr.20190607124533.1"><vh>@nopylint</vh>
-<v t="ekr.20220823195205.1"><vh>@edit ../external/leoftsindex.py</vh></v>
-<v t="ekr.20160123142722.1"><vh>@edit ../external/make_stub_files.cfg</vh></v>
+<v t="ekr.20220823195205.1"><vh>@clean ../external/leoftsindex.py</vh></v>
+<v t="ekr.20160123142722.1"><vh>@clean ../external/make_stub_files.cfg</vh></v>
 <v t="ekr.20180708145905.1"><vh>@clean ../external/py2cs_theory.md</vh>
 <v t="ekr.20180708152000.1"><vh>The problem</vh></v>
 <v t="ekr.20180708152018.1"><vh>Design</vh></v>
@@ -233,7 +249,7 @@
 <v t="ekr.20231103124615.1"><vh>@file ../modes/rust.py</vh></v>
 <v t="ekr.20231012163843.1"><vh>@file ../modes/scheme.py</vh></v>
 </v>
-<v t="ekr.20221204070905.1"><vh>In leo/scripts</vh>
+<v t="ekr.20221204070905.1"><vh>--- (do not delete) In leo/scripts</vh>
 <v t="ekr.20240321122705.1"><vh>--- build scripts</vh>
 <v t="mhw.20190808083008.1"><vh>@file ../scripts/add-desktop-links.leox</vh></v>
 <v t="mhw.20190808083008.1"></v>
@@ -435,13 +451,13 @@
 <v t="ekr.20140723122936.18137"><vh>@file ../plugins/importers/xml.py</vh></v>
 </v>
 <v t="ekr.20180504192522.1"><vh>leo_babel</vh>
-<v t="ekr.20230624114517.1"><vh>@edit ../plugins/leo_babel/__init__.py</vh></v>
+<v t="ekr.20230624114517.1"><vh>@clean ../plugins/leo_babel/__init__.py</vh></v>
 <v t="ekr.20180504191650.36"><vh>examples</vh>
 <v t="bob.20170716135108.2"><vh>@file ../plugins/leo_babel/examples/slowOut.py</vh></v>
 <v t="bob.20170716135108.3"><vh>@file ../plugins/leo_babel/examples/slowOutNoFlush.py</vh></v>
 </v>
 <v t="ekr.20180504191650.42"><vh>tests</vh>
-<v t="ekr.20180504191650.68"><vh>@edit ../plugins/leo_babel/tests/__init__.py</vh></v>
+<v t="ekr.20180504191650.68"><vh>@clean ../plugins/leo_babel/tests/__init__.py</vh></v>
 <v t="bob.20180206123613.1"><vh>@file ../plugins/leo_babel/tests/idle_time.py</vh></v>
 <v t="bob.20180205135005.1"><vh>@file ../plugins/leo_babel/tests/lib_test.py</vh></v>
 <v t="bob.20180125160225.1"><vh>@file ../plugins/leo_babel/tests/tests.py</vh></v>
@@ -972,6 +988,33 @@ c.backup_helper(sub_dir='leoPy')
 <t tx="ekr.20150514035207.1"></t>
 <t tx="ekr.20160122104332.1">@language python
 </t>
+<t tx="ekr.20160123142722.1"># An example configuration file for make_stub_files.py.
+# By default, this is ~/stubs/make_stub_files.cfg.
+# Can be changed using the --config=path command-line option.
+
+[Global]
+
+files:
+
+    # Files to be used *only* if no files are given on the command line.
+    # glob.glob wildcards are supported.
+
+    # c:/Repos/leo-editor/leo/core/leoAst.py
+    # c:/Repos/leo-editor/leo/core/*.py
+    # c:/Repos/leo-editor/plugins/*.py
+
+output_directory: ~/stubs
+
+prefix_lines:
+    # Lines to be inserted at the start of each stub file.
+    from collections.abc import Iterable
+    from typing import TypeVar
+    T = TypeVar('T', int, float, complex)
+
+[Def Name Patterns]
+
+[General Patterns]
+</t>
 <t tx="ekr.20170427114412.1"></t>
 <t tx="ekr.20170428084123.1">@language python
 """Recursively import all python files in a directory and clean the result."""
@@ -1029,6 +1072,7 @@ print('done! wrote %s' % fn)
 <t tx="ekr.20180225010913.1"></t>
 <t tx="ekr.20180504191650.36"></t>
 <t tx="ekr.20180504191650.42"></t>
+<t tx="ekr.20180504191650.68"></t>
 <t tx="ekr.20180504192522.1"></t>
 <t tx="ekr.20180708145905.1">@language rest
 @wrap
@@ -1143,6 +1187,23 @@ Stripped of defensive code, the do_Str visitor is just:
 **ts.leading_lines(node)** returns a list of otherwise ignored lines that
 precede the node's line that have not already been returned.
 **ts.leading_string(node)** is a convenience method that returns ''.join(ts.leading_lines(node)). The visitors of the CoffeeScriptTraverser class show how to use these methods.
+</t>
+<t tx="ekr.20180816105258.1">g.cls()
+import os
+import leo.commands.editFileCommands as efc
+
+path = g.finalize_join(g.app.loadDir, '..', '..')
+# print(f"os.chdir({path})")
+os.chdir(path)
+
+# Any revspec is valid as an argument to the "branch1" and "branch2" args.
+# See https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection
+
+efc.GitDiffController(c).diff_two_branches(
+    branch1='devel',  # old branch/rev
+    branch2='ekr-generalize-g.stat',  # new branch/rev
+    fn='leo/core/leoGlobals.py',  # Don't use back slashes.
+)
 </t>
 <t tx="ekr.20181030041436.1"></t>
 <t tx="ekr.20190402091335.1">from leo.commands import editFileCommands as efc
@@ -1885,6 +1946,116 @@ assert core_p and command_p and globals_p
     # 'toString', 'toUnicode', 'trace', 'translateString',
     # 'underline', 'undoHelper', 'unl', 'values', 'visit',
     # 'warn', 'warning', 'word',</t>
+<t tx="ekr.20220823195205.1">"""
+Stand alone GUI free index builder for Leo's full text search system::
+
+  python leoftsindex.py &lt;file1&gt; &lt;file2&gt; &lt;file3&gt;...
+
+If the file name starts with @ it's a assumed to be a simple
+text file listing files to be indexed.
+
+If &lt;file&gt; does not contain '#' it's assumed to be a .leo file
+to index, and is indexed.
+
+If &lt;file&gt; does contain '#' it's assumed to be a .leo file
+containing a list of .leo files to index, with the list in
+the node indicated by the UNL after the #, e.g.::
+
+   path/to/myfile.leo#Lists--&gt;List of outlines
+
+In the latter case, if the node identified by the UNL has children,
+the list of files to scan is built from the first line of the body
+of each child node of the identified node (works well with bookmarks.py).
+If the node identified by the UNL does not have children, the
+node's body is assumed to be a simple text listing of paths to .leo files).
+
+.. note::
+
+    It may be necessary to quote the "file" on the command line,
+    as the '#' may be interpreted as a comment delimiter::
+
+        python leoftsindex.py "workbook.leo#Links"
+
+
+"""
+
+import sys
+
+# add folder containing 'leo' folder to path
+# sys.path.append("/home/tbrown/Package/leo/bzr/leo.repo/trunk")
+import leo.core.leoBridge as leoBridge
+import leo.plugins.leofts as leofts
+
+controller = leoBridge.controller(
+    gui='nullGui',
+    loadPlugins=False,  # True: attempt to load plugins.
+    readSettings=False,  # True: read standard settings files.
+    silent=False,  # True: don't print signon messages.
+    verbose=False,
+)
+g = controller.globals()
+
+# list of "files" to process
+files = sys.argv[1:]
+
+# set up leofts
+leofts.set_leo(g)
+g._gnxcache = leofts.GnxCache()
+fts = leofts.get_fts()
+
+fn2c = {}  # cache to avoid loading same outline twice
+done = set()  # outlines scanned, to avoid repetition repetition
+
+todo = list(files)
+
+while todo:
+    item = todo.pop(0)
+
+    print("INDEX: %s" % item)
+
+    if '#' in item:
+        fn, node = item.split('#', 1)
+    else:
+        fn, node = item, None
+
+    if node:
+        c = fn2c.setdefault(fn, controller.openLeoFile(fn))
+        found, dummy, p = g.recursiveUNLSearch(node.split('--&gt;'), c)
+        if not found:
+            print("Could not find '%s'" % item)
+            break
+        if not p:
+            p = c.p
+        if p.hasChildren():
+            # use file named in first node of each child
+            files = [chl.b.strip().split('\n', 1)[0].strip() for chl in p.children()]
+        else:
+            # use all files listed in body
+            files = [i.strip() for i in p.b.strip().split('\n')]
+
+    elif fn.startswith('@'):
+        todo.extend(open(fn[1:]).read().strip().split('\n'))
+        files = []
+
+    else:
+        files = [fn]
+
+    for fn in files:
+        # file names may still have '#' if taken from a node list
+        real_name = fn.split('#', 1)[0]
+        if real_name in done:
+            continue
+        done.add(real_name)
+
+        if len(files) != 1:
+            print(" FILE: %s" % real_name)
+
+        c = fn2c.setdefault(real_name, controller.openLeoFile(fn))
+        fts.drop_document(real_name)
+        fts.index_nodes(c)
+@language python
+@tabwidth -4
+</t>
 <t tx="ekr.20220904210247.1"># This is a copy of the @enabled-plugins node from leoSettings.leo,
 # ensuring that the @enabled-plugins node in myLeoSettings.leo has no effect.
 
@@ -1937,6 +2108,7 @@ writers = 'leo.unittests.plugins.test_writers'
 # f"{plugins}.test_plugins",
 # f"{plugins}.test_writers",
 </t>
+<t tx="ekr.20230624114517.1"></t>
 <t tx="ekr.20230720115916.1">g.cls()
 import leo.commands.editFileCommands as efc
 
@@ -1950,7 +2122,7 @@ x.node_history(path, gnxs, limit=60)
 </t>
 <t tx="ekr.20231107062256.1">"""Ensure that all expected @&lt;file&gt; nodes exist."""
 g.cls()
-import glob  #noqa
+import glob  #noqa  # Because of g.cls()
 import os
 join, sep = os.path.join, os.sep
 
@@ -2022,6 +2194,46 @@ print('done')</t>
 <t tx="ekr.20240107154430.1"></t>
 <t tx="ekr.20240204082420.1"></t>
 <t tx="ekr.20240204082924.1"></t>
+<t tx="ekr.20240206161713.1">@language ini
+
+[bdist_wheel]
+
+# Leo only supports Python 3, so universal should be zero.
+universal=0
+
+[metadata]
+
+# Becomes the home-page in `pip show leo`.
+url = https://leo-editor.github.io/leo-editor/
+</t>
+<t tx="ekr.20240317061516.1">@language python
+
+# Order matters!
+
+# Include *everything* in the leo folder.
+graft leo
+
+global-exclude *.py[cod] *.__pycache__ *.so
+global-exclude *mypy_cache *.mypy_cache, *.mypy_stubs, *.gitattributes, *.htmlcov
+
+# Add files in the top-level leo-editor folder.
+
+include *.py
+include *.TXT
+
+# No longer required.
+# obscure pip bug fix https://github.com/pypa/setuptools/issues/1694
+#include pyproject.toml
+
+# Tweaks
+
+prune leo/unittests/htmlcov
+prune leo/doc/html
+include leo/doc/html/conf.py
+
+# #3853.
+include leo/doc/_static
+</t>
 <t tx="ekr.20240321122614.1"># These are Leo's test scripts.
 
 # Run these scripts from the leo-editor folder.
@@ -3028,6 +3240,262 @@ if c.isChanged():
 os.system('cover-todo.cmd')
 
 </t>
+<t tx="ekr.20260804062205.1">name: CI
+
+on:
+  push:
+    branches: [devel]
+  pull_request:
+    branches: [devel]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - run: pip install ruff
+      - run: ruff check leo
+      - run: ruff format --check leo
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    env:
+      # No display in CI; run Qt headless instead of pulling in xvfb.
+      QT_QPA_PLATFORM: offscreen
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - run: sudo apt-get update &amp;&amp; sudo apt-get install -y --no-install-recommends
+          libegl1 libgl1 libxkbcommon0 libdbus-1-3 libfontconfig1
+      - run: pip install asttokens Pygments "PyQt6&gt;=6.6" PyQt6-QScintilla
+      - run: python run_ci_unit_tests.py
+
+  leo-sync:
+    # Catch LeoPyRef.leo getting out of sync with its external files.
+    # See check_leo_sync.py.
+    runs-on: ubuntu-latest
+    env:
+      QT_QPA_PLATFORM: offscreen
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: sudo apt-get update &amp;&amp; sudo apt-get install -y --no-install-recommends
+          libegl1 libgl1 libxkbcommon0 libdbus-1-3 libfontconfig1
+      - run: pip install "PyQt6&gt;=6.6" PyQt6-QScintilla
+      - run: python -m leo.scripts.check_leo_sync
+
+  docs:
+    # Catch LeoDocs.leo failing to build into Sphinx HTML.
+    # See leo/scripts/build_docs.py.
+    runs-on: ubuntu-latest
+    env:
+      QT_QPA_PLATFORM: offscreen
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: sudo apt-get update &amp;&amp; sudo apt-get install -y --no-install-recommends
+          libegl1 libgl1 libxkbcommon0 libdbus-1-3 libfontconfig1
+      - run: pip install "PyQt6&gt;=6.6" PyQt6-QScintilla docutils sphinx sphinx-book-theme
+      - run: python -m leo.scripts.build_docs
+
+  mypy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      # Install optional packages that Leo's devs should have installed.
+      - run: pip install "mypy&lt;2" mypy-extensions typing_extensions
+          types-docutils types-Markdown types-paramiko types-PyYAML
+          types-requests types-six
+          "PyQt6&gt;=6.6" PyQt6-QScintilla PyQt6-WebEngine ty
+          black Jinja2 Pygments docutils pyenchant jedi nbformat nbconvert
+      - run: python -m mypy leo
+      # Require ty: https://github.com/astral-sh/ty to pass.
+      # Run after mypy to reuse the checkout/Python/PyQt6 setup.
+      # - run: ty check --python "$(python -c 'import sys; print(sys.prefix)')" leo
+      # - run: ty check leo
+</t>
+<t tx="ekr.20260806163514.1">g.cls()
+from leo.commands import editFileCommands as efc
+
+# Any branch or rev is valid.
+efc.GitDiffController(c).summary_diff_two_revs(
+    rev1='main',    # Old
+    rev2='6.8.10',     # New
+    # path='leo/commands',  # Limit diffs to this directory, relative to the nearest git repo.
+)  # fmt: skip
+</t>
 <t tx="ekr.20260808003136.1"></t>
+<t tx="ekr.20260809041303.1">name: Publish
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing release tag to build and upload assets for (e.g. v6.8.5)'
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag || github.event.release.tag_name }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Set version and release date from release tag
+        run: |
+          VERSION="${{ github.event.inputs.tag || github.event.release.tag_name }}"
+          VERSION="${VERSION#v}"
+          sed -i "s/^version = .*/version = \"$VERSION\"/" pyproject.toml
+          echo "Set version to $VERSION"
+
+          RELEASE_DATE="$(date -u +'%B %-d, %Y')"
+          sed -i "s/^static_date = .*/static_date = '$RELEASE_DATE'/" leo/core/leoVersion.py
+          echo "Set static_date to $RELEASE_DATE"
+
+      - run: python -m pip install --upgrade build
+      - run: python -m build
+      - run: ls -la dist/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  github-release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ github.event.inputs.tag || github.event.release.tag_name }}"
+          gh release upload "$TAG" dist/*.whl dist/*.tar.gz \
+            --clobber --repo ${{ github.repository }}
+
+  pypi:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - uses: pypa/gh-action-pypi-publish@release/v1
+</t>
+<t tx="ekr.20260809041420.1"></t>
+<t tx="ekr.20260811072323.1">name: Publish docs
+
+# Manually rebuilds Leo's documentation from leo/doc/LeoDocs.leo (see
+# leo/scripts/build_docs.py). No generated HTML is ever committed to git:
+#
+# - Every run uploads the built site as a plain workflow artifact, so it
+#   can be downloaded and reviewed before anything goes live.
+# - Re-running with the "publish" input checked additionally deploys the
+#   same build straight to GitHub Pages via actions/deploy-pages.
+#
+# The "publish" path requires the repo's Pages source (Settings &gt; Pages &gt;
+# Build and deployment) to be set to "GitHub Actions" -- it will fail
+# clearly if that hasn't been switched from the legacy branch-based source.
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Deploy to GitHub Pages (requires Pages source = "GitHub Actions"). Leave unchecked to just build a reviewable artifact.'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      QT_QPA_PLATFORM: offscreen
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: sudo apt-get update &amp;&amp; sudo apt-get install -y --no-install-recommends
+          libegl1 libgl1 libxkbcommon0 libdbus-1-3 libfontconfig1
+      - run: pip install "PyQt6&gt;=6.6" PyQt6-QScintilla docutils sphinx sphinx-book-theme
+      - run: python -m leo.scripts.build_docs --out built-docs
+
+      - name: Upload reviewable artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: leo-docs-html
+          path: built-docs/
+
+      - name: Package for Pages
+        if: ${{ inputs.publish }}
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: built-docs/
+
+  deploy:
+    if: ${{ inputs.publish }}
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+</t>
+<t tx="ekr.20260813051101.1"></t>
+<t tx="ekr.20260813051148.1"></t>
+<t tx="ekr.20260813051203.1"></t>
+<t tx="ekr.20260813051733.1"></t>
 </tnodes>
 </leo_file>
