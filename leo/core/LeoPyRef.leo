@@ -3256,8 +3256,8 @@ jobs:
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
@@ -3275,8 +3275,8 @@ jobs:
       # No display in CI; run Qt headless instead of pulling in xvfb.
       QT_QPA_PLATFORM: offscreen
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
@@ -3292,8 +3292,8 @@ jobs:
     env:
       QT_QPA_PLATFORM: offscreen
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
@@ -3309,8 +3309,8 @@ jobs:
     env:
       QT_QPA_PLATFORM: offscreen
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
@@ -3322,8 +3322,8 @@ jobs:
   mypy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
@@ -3331,13 +3331,12 @@ jobs:
       - run: pip install "mypy&lt;2" mypy-extensions typing_extensions
           types-docutils types-Markdown types-paramiko types-PyYAML
           types-requests types-six
-          "PyQt6&gt;=6.6" PyQt6-QScintilla PyQt6-WebEngine ty
+          "PyQt6&gt;=6.6" PyQt6-QScintilla PyQt6-WebEngine "ty==0.0.71"
           black Jinja2 Pygments docutils pyenchant jedi nbformat nbconvert
       - run: python -m mypy leo
       # Require ty: https://github.com/astral-sh/ty to pass.
       # Run after mypy to reuse the checkout/Python/PyQt6 setup.
-      # - run: ty check --python "$(python -c 'import sys; print(sys.prefix)')" leo
-      # - run: ty check leo
+      - run: ty check leo
 </t>
 <t tx="ekr.20260806163514.1">g.cls()
 from leo.commands import editFileCommands as efc

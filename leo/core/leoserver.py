@@ -4862,7 +4862,7 @@ class LeoServer:
                 try:
                     childIndex = int(childIndex_s)
                 except Exception:  # pragma: no cover.
-                    raise ServerError(f"{tag}: bad childIndex: {childIndex!r}")
+                    raise ServerError(f"{tag}: bad childIndex: {childIndex_s!r}")
                 gnx = d.get('gnx')
                 if gnx is None:  # pragma: no cover.
                     raise ServerError(f"{tag}: no gnx in {d}.")
