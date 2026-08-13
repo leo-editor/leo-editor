@@ -1268,9 +1268,7 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20260810021658.1"><vh>What's new in Leo 6.8.10</vh>
-<v t="ekr.20260813142912.1"><vh>Summary of full changelog</vh></v>
-</v>
+<v t="ekr.20260810021658.1"><vh>What's new in Leo 6.8.10</vh></v>
 <v t="ekr.20260531063902.1"><vh>What's new in Leo 6.8.9</vh></v>
 <v t="ekr.20251204122149.1"><vh>What's new in Leo 6.8.8</vh></v>
 <v t="ekr.20250830050946.1"><vh>What's new in Leo 6.8.7</vh></v>
@@ -28195,7 +28193,7 @@ Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor
 - `PR #4814`_: Update most theme files.
 - `PR #4852`_: Add ``vv-dark.leo`` theme file.
 
-## Settings
+**Settings**
 
 - `PR #4770`_: Add ``@bool qt-mac-dont-swap-ctrl-and-meta`` setting.
 - `PR #4856`_: Add ``@bool run-ruff-on-write``. Remove:``@bool run-flake8-on-write``, ``@bool run-pyflakes-on-write``, ``@bool run-pylint-on-write``, and ``@bool run-ruff-on-write``
@@ -28242,13 +28240,8 @@ Use these "truthy" tests instead::
 .. _`PR #4818`: https://github.com/leo-editor/leo-editor/pull/4818
 
 - @exlee made their first contribution in `PR #4769`_.
-* @amir-rezaei made their first contribution in `PR #4816`_.
-* @Sanjays2402 made their first contribution in `PR #4818`_.
-
-**Full Changelog**
-
-https://github.com/leo-editor/leo-editor/compare/v6.8.9...v6.8.10.pre.dev4
-
+- @amir-rezaei made their first contribution in `PR #4816`_.
+- @Sanjays2402 made their first contribution in `PR #4818`_.
 </t>
 <t tx="ekr.20260812065654.1">#############
 Release Notes
@@ -28257,129 +28250,6 @@ Release Notes
 .. contents:: Contents
     :depth: 2
     :local:
-</t>
-<t tx="ekr.20260813142912.1">@language rest
-@nowrap
-
-* Authentication &amp; Secure Websockets docs by @boltex in https://github.com/leo-editor/leo-editor/pull/4721
-* PR fixes #4702: remove all traces of npyscreen and cursesGui2.py by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4706
-* PR: Allow qt gui in bridge by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4720
-* PR fixes #4723: fix slides by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4730
-* PR fixes #4728: quirp in test_find-prev by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4733
-* PR fixes #4729: error messages by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4732
-* PR fixes small abbreviation quirps by @boltex in https://github.com/leo-editor/leo-editor/pull/4734
-* PR fixes #4735: no default for empty events by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4736
-* Updated abbreviation documentation by @boltex in https://github.com/leo-editor/leo-editor/pull/4737
-* one-line fix for issue #4738 by @jknGH in https://github.com/leo-editor/leo-editor/pull/4741
-* PR: Cleanup redrawing and recoloring code by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4740
-* Felix leoserver fix nav icon by @boltex in https://github.com/leo-editor/leo-editor/pull/4746
-* PR: Fix blunder in PR #4740: disable drawing *only* during startup by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4748
-* PR fixes #4747: show-node-files command by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4749
-* PR fixes #4727: honor the --select=UNL command-line arg by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4750
-* PR fixes #4744: clean leoAPI.py by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4745
-* PR: --trace=verbose enables traces for the dump-last-colorizer-trace command by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4751
-* PR: Tweak colorizer traces by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4752
-* PR: remove mypy suppressions by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4753
-* Fix setAllAncestorAtFileNodesDirty  by @boltex in https://github.com/leo-editor/leo-editor/pull/4756
-* Boltex/issue4758 by @boltex in https://github.com/leo-editor/leo-editor/pull/4759
-* Fix macOS tabbed outline shortcut dispatch by @exlee in https://github.com/leo-editor/leo-editor/pull/4769
-* PR one for #4766: require strict_optional in leoNodes.py by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4767
-* PR2 fixes #4766: Require strict_optional for leoGlobals.py by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4772
-* PR3: require strict_optional in leoCommands.py by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4773
-* PR fixes #4780: clone-diff-pr by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4781
-* PR: Require strict_optional for leoApp.py and leoConfig.py by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4779
-* PR: Use full optional syntax for vars and kwargs by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4782
-* PR: Improve annotations of event: LeoKeyEvent by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4783
-* PR Add more defaults for LeoKeyEvent by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4790
-* Restore onTextChanged so IME/paste/drag input is saved to the VNode (#4785) by @wangzhaohe in https://github.com/leo-editor/leo-editor/pull/4786
-* PR fixes #4792: detect binary files by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4793
-* Make @auto-md nodes respect @noheader by @exlee in https://github.com/leo-editor/leo-editor/pull/4788
-* PR: Skip a clipboard test depending on the contents of the clipboard by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4796
-* Fixed local config using multiple @menuat directives. by @boltex in https://github.com/leo-editor/leo-editor/pull/4798
-* PR: check all calls to routines whose API has changed by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4801
-* Add macOS setting to preserve Qt Control/Command key roles by @exlee in https://github.com/leo-editor/leo-editor/pull/4770
-* Add macOS Leo launcher generator by @exlee in https://github.com/leo-editor/leo-editor/pull/4771
-* Preserve duplicate shortcuts across repeated binding rebuilds by @exlee in https://github.com/leo-editor/leo-editor/pull/4775
-* Fix external editor launch on POSIX by @exlee in https://github.com/leo-editor/leo-editor/pull/4777
-* PR fixes #4789: startup fails with invalid cache by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4795
-* Add missing support for .leojs file extension in specific places. by @boltex in https://github.com/leo-editor/leo-editor/pull/4806
-* PR fixes #4809: add c.p setter by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4810
-* PR fixes #4807: g.readFileIntoString should return None by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4808
-* Add walrus operators to Leo's core files by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4804
-* PR: Add new ruff  lint suppressions by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4820
-* docs: fix typo in pyproject.toml dependencies comment by @amir-rezaei in https://github.com/leo-editor/leo-editor/pull/4816
-* PR: Require strict optional for leo/core files by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4812
-* Fix line-number gutter not appearing by @Sanjays2402 in https://github.com/leo-editor/leo-editor/pull/4818
-* PR fixes #4819: diff_two_branches does not make clones by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4823
-* Update most themes, especially dark themes, to make radiobuttons work ... by @tbpassin in https://github.com/leo-editor/leo-editor/pull/4814
-* PR fixes #4815: document sections by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4825
-* PR: fix ruff lint errors on Linux by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4826
-* PR fixes #4821: remove ruff suppressions for useful tests by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4827
-* PR fixes #4757: better annotations for generators by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4824
-* PR fixes #4828: fix deprecated datetime methods by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4829
-* PR:  by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4834
-* Fix ci.yml: suppress EXE001/EXE002 (WSL/Windows-invisible ruff rules) by @vivainio in https://github.com/leo-editor/leo-editor/pull/4830
-* Add mypy check to CI by @vivainio in https://github.com/leo-editor/leo-editor/pull/4836
-* Fix mypy arg-type error in EventWrapper.keyRelease by @vivainio in https://github.com/leo-editor/leo-editor/pull/4835
-* Add non-blocking ty (astral-sh) check job to CI by @vivainio in https://github.com/leo-editor/leo-editor/pull/4833
-* Fix mypy arg-type error on QAction.triggered.connect in quickMove.py by @vivainio in https://github.com/leo-editor/leo-editor/pull/4838
-* PR: Fix bugs in todo.py by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4840
-* PR 2: cover todo.py by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4841
-* CI: add unit test job running leo/unittests headlessly by @vivainio in https://github.com/leo-editor/leo-editor/pull/4843
-* PR: Move unit tests for todo.py to the attic by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4844
-* PR: don't run any unit tests with Leo's qt gui by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4845
-* PR: Improve icon-related commands and retire todo.py by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4842
-* PR: further simplify icon machinery by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4846
-* Work through ty's diagnostics: 733 -&gt; 110, mypy clean throughout (v2, clean rebase) by @vivainio in https://github.com/leo-editor/leo-editor/pull/4848
-* Work through ty's remaining diagnostics: 112 -&gt; 22 (deprecation warnings only) by @vivainio in https://github.com/leo-editor/leo-editor/pull/4851
-* Replace deprecated os.system/spawn*/popen calls with subprocess by @vivainio in https://github.com/leo-editor/leo-editor/pull/4853
-* Add vv dark theme by @vivainio in https://github.com/leo-editor/leo-editor/pull/4852
-* Prepare for ruff format --check in CI by @vivainio in https://github.com/leo-editor/leo-editor/pull/4849
-* Use 'lf' line endings everywhere by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4857
-* Remove stale todo.py stub from LeoPyRef.leo by @vivainio in https://github.com/leo-editor/leo-editor/pull/4858
-* Normalize sentinel indentation in viewrendered3.py's commented QtSvg block by @vivainio in https://github.com/leo-editor/leo-editor/pull/4860
-* Fix stale filename in LeoPyRef.leo after run_travis_unit_tests.py rename by @vivainio in https://github.com/leo-editor/leo-editor/pull/4859
-* Add CI check: LeoPyRef.leo must stay in sync with its mirrored files by @vivainio in https://github.com/leo-editor/leo-editor/pull/4862
-* Re-normalize viewrendered3.py sentinel indentation (fixes leo-sync CI) by @vivainio in https://github.com/leo-editor/leo-editor/pull/4863
-* ci.yml: enable ty check and ruff format --check by @vivainio in https://github.com/leo-editor/leo-editor/pull/4861
-* Standardize on ruff, remove flake8/pyflakes/pylint by @vivainio in https://github.com/leo-editor/leo-editor/pull/4856
-* Fix #4864: AtFile doc-part sentinels ignore leaf-local indentation by @vivainio in https://github.com/leo-editor/leo-editor/pull/4865
-* PR: improve ruff checks by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4869
-* Fix ty errors for optional enchant/jedi/nbformat imports by @vivainio in https://github.com/leo-editor/leo-editor/pull/4870
-* PR: ruff doesn't understand c, g, p by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4872
-* Paint right margin guide before the text is painted. by @tbpassin in https://github.com/leo-editor/leo-editor/pull/4867
-* PR fixes #4876: Beautify with --no-cache option by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4879
-* PR fixes #4878: Delete fast_test_leo.py by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4880
-* #4875: make @clean _mod_time purely in-memory, session-scoped (Option B) by @vivainio in https://github.com/leo-editor/leo-editor/pull/4881
-* Fix ic.languageForExtension: empty-string default masked the extension_dict fallback by @vivainio in https://github.com/leo-editor/leo-editor/pull/4882
-* PR: Fix various quirps by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4883
-* Bump version to 6.8.10.dev0 to test publish.yml by @vivainio in https://github.com/leo-editor/leo-editor/pull/4885
-* Fix publish.yml duplicate-run trigger; bump to 6.8.10.dev1 by @vivainio in https://github.com/leo-editor/leo-editor/pull/4886
-* Derive version from release tag in CI; stop manually bumping version strings by @vivainio in https://github.com/leo-editor/leo-editor/pull/4887
-* PR: run `ty leo` from full_test_leo.py by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4890
-* Fix subprocess.run command strings by @vivainio in https://github.com/leo-editor/leo-editor/pull/4898
-* Add CI check and manual publish workflow for docs by @vivainio in https://github.com/leo-editor/leo-editor/pull/4893
-* Include home page in published docs by @vivainio in https://github.com/leo-editor/leo-editor/pull/4899
-* Move homepage sources out of docs directory by @vivainio in https://github.com/leo-editor/leo-editor/pull/4902
-* Improve menu entries for abbreviations by @boltex in https://github.com/leo-editor/leo-editor/pull/4895
-* Add support for additional uppercase file extensions in LeoApp. by @boltex in https://github.com/leo-editor/leo-editor/pull/4896
-* PR fixes #4892: delete top-level docs folder by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4900
-* PR: tweak check_leo.py by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4905
-* PR: print html links to console when using qt gui by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4906
-* PR: Require ty by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4904
-* Adopt Sphinx Book Theme for Leo documentation by @vivainio in https://github.com/leo-editor/leo-editor/pull/4903
-* Update documentation for Leo 6.8.10 by @vivainio in https://github.com/leo-editor/leo-editor/pull/4908
-* Fix documentation navbar controls by @vivainio in https://github.com/leo-editor/leo-editor/pull/4909
-* Reduce documentation sidebar logo size by @vivainio in https://github.com/leo-editor/leo-editor/pull/4910
-* Keep documentation lion visible while scrolling by @vivainio in https://github.com/leo-editor/leo-editor/pull/4914
-* Keep documentation search visible while scrolling by @vivainio in https://github.com/leo-editor/leo-editor/pull/4916
-* Clarify @asis, @edit, and @nosent directives by @vivainio in https://github.com/leo-editor/leo-editor/pull/4917
-* PR: Last(?) changes to LeoDocs.leo for Leo 6.8.10 by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4918
-* Update CI actions to Node.js 24 versions by @vivainio in https://github.com/leo-editor/leo-editor/pull/4921
-* PR: Update release files by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4907
-* Fix #4919: pin ty and resolve new diagnostics by @vivainio in https://github.com/leo-editor/leo-editor/pull/4923
-* PR: tracing_utils.py:to_unicode: fall back to reporting original string by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4925
-
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
