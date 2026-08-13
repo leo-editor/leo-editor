@@ -37,6 +37,7 @@ targets = (
     f"{leo_editor_dir}",
     f"leo{os.sep}commands",
     f"leo{os.sep}core",
+    f"leo{os.sep}doc{os.sep}html",  # For conf.py
     f"leo{os.sep}external",
     f"leo{os.sep}modes",
     f"leo{os.sep}plugins",
