@@ -16308,6 +16308,8 @@ Leo's Documentation Page
     Leo and other programs  &lt;leoandotherprograms&gt;
     Advanced Topics         &lt;intermediatetopics&gt;
     Appendices              &lt;appendices&gt;
+    What's New              &lt;what-is-new&gt;
+    Release Notes           &lt;release-notes&gt;
     More links              &lt;toc-more-links&gt;
 </t>
 <t tx="ekr.20170215081358.1"></t>
@@ -26442,7 +26444,6 @@ More Leo Links
     Screencasts         &lt;screencasts&gt;
     History of Leo      &lt;history&gt;
     Glossary            &lt;glossary&gt;
-    What's New          &lt;what-is-new&gt;
     Still more links    &lt;leoLinks&gt;
     </t>
 <t tx="ekr.20230124061650.1">.. _`Black`: https://github.com/psf/black
