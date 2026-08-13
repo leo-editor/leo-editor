@@ -1268,7 +1268,9 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20260810021658.1"><vh>What's new in Leo 6.8.10</vh></v>
+<v t="ekr.20260810021658.1"><vh>What's new in Leo 6.8.10</vh>
+<v t="ekr.20260813142912.1"><vh>Summary of full changelog</vh></v>
+</v>
 <v t="ekr.20260531063902.1"><vh>What's new in Leo 6.8.9</vh></v>
 <v t="ekr.20251204122149.1"><vh>What's new in Leo 6.8.8</vh></v>
 <v t="ekr.20250830050946.1"><vh>What's new in Leo 6.8.7</vh></v>
@@ -2171,7 +2173,6 @@
 </v>
 <v t="ekr.20260810021658.1"></v>
 <v t="ekr.20260716061125.1"></v>
-<v t="ekr.20260813142912.1"><vh>--- New release notes</vh></v>
 </vnodes>
 <tnodes>
 <t tx=".20260810204531.45">Leo: organize code and ideas your way
@@ -28194,7 +28195,7 @@ Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor
 - `PR #4814`_: Update most theme files.
 - `PR #4852`_: Add ``vv-dark.leo`` theme file.
 
-**Settings**
+## Settings
 
 - `PR #4770`_: Add ``@bool qt-mac-dont-swap-ctrl-and-meta`` setting.
 - `PR #4856`_: Add ``@bool run-ruff-on-write``. Remove:``@bool run-flake8-on-write``, ``@bool run-pyflakes-on-write``, ``@bool run-pylint-on-write``, and ``@bool run-ruff-on-write``
@@ -28233,6 +28234,21 @@ Use these "truthy" tests instead::
     if s:
     if not s:
 
+
+**New contributors**
+
+.. _`PR #4769`: https://github.com/leo-editor/leo-editor/pull/4769
+.. _`PR #4816`: https://github.com/leo-editor/leo-editor/pull/4816
+.. _`PR #4818`: https://github.com/leo-editor/leo-editor/pull/4818
+
+- @exlee made their first contribution in `PR #4769`_.
+* @amir-rezaei made their first contribution in `PR #4816`_.
+* @Sanjays2402 made their first contribution in `PR #4818`_.
+
+**Full Changelog**
+
+https://github.com/leo-editor/leo-editor/compare/v6.8.9...v6.8.10.pre.dev4
+
 </t>
 <t tx="ekr.20260812065654.1">#############
 Release Notes
@@ -28243,6 +28259,7 @@ Release Notes
     :local:
 </t>
 <t tx="ekr.20260813142912.1">@language rest
+@nowrap
 
 * Authentication &amp; Secure Websockets docs by @boltex in https://github.com/leo-editor/leo-editor/pull/4721
 * PR fixes #4702: remove all traces of npyscreen and cursesGui2.py by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4706
@@ -28363,12 +28380,7 @@ Release Notes
 * Fix #4919: pin ty and resolve new diagnostics by @vivainio in https://github.com/leo-editor/leo-editor/pull/4923
 * PR: tracing_utils.py:to_unicode: fall back to reporting original string by @edreamleo in https://github.com/leo-editor/leo-editor/pull/4925
 
-## New Contributors
-* @exlee made their first contribution in https://github.com/leo-editor/leo-editor/pull/4769
-* @amir-rezaei made their first contribution in https://github.com/leo-editor/leo-editor/pull/4816
-* @Sanjays2402 made their first contribution in https://github.com/leo-editor/leo-editor/pull/4818
-
-**Full Changelog**: https://github.com/leo-editor/leo-editor/compare/v6.8.9...v6.8.10.pre.dev4</t>
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
