@@ -183,6 +183,7 @@ def to_unicode(s: Any, encoding: str = 'utf-8') -> str:
         trace(callers())
     except Exception:
         es_exception()
+        s2 = ''
         print(f"{tag}: unexpected error! encoding: {encoding!r}, s2:\n{s2!r}")
         trace(callers())
     return s2

@@ -1553,6 +1553,9 @@ class ViewRenderedController(QtWidgets.QWidget):
             )
             return
 
+        if Template is None:
+            g.es("Jinja2 is not installed.")
+            return
         tmpl = Template(Path(template_path).read_text())
         out = tmpl.render(template_data)
         w = self.get_base_text_widget()

@@ -89,10 +89,9 @@ jobs:
       - run: pip install "mypy<2" mypy-extensions typing_extensions
           types-docutils types-Markdown types-paramiko types-PyYAML
           types-requests types-six
-          "PyQt6>=6.6" PyQt6-QScintilla PyQt6-WebEngine ty
+          "PyQt6>=6.6" PyQt6-QScintilla PyQt6-WebEngine "ty==0.0.71"
           black Jinja2 Pygments docutils pyenchant jedi nbformat nbconvert
       - run: python -m mypy leo
       # Require ty: https://github.com/astral-sh/ty to pass.
       # Run after mypy to reuse the checkout/Python/PyQt6 setup.
-      # - run: ty check --python "$(python -c 'import sys; print(sys.prefix)')" leo
-      # - run: ty check leo
+      - run: ty check leo
