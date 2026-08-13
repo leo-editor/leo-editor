@@ -6,8 +6,8 @@
 project = 'Leo'
 author = 'Edward K. Ream and contributors'
 copyright = '1997-2026, Edward K. Ream'
-version = '6.8.9'
-release = '6.8.9'
+version = '6.8.10'
+release = '6.8.10'
 
 html_theme = 'sphinx_book_theme'
 html_theme_options = {
@@ -39,8 +39,3 @@ master_doc = 'index'
 # These folders are copied to the documentation's HTML output.
 html_static_path = ['../_static']  # 'screen-shots' aren't going to change.
 html_css_files = ['custom.css']  # Relative to html_static_paths.
-
-# Options...
-# extensions = []
-# templates_path = []
-# exclude_trees = []              # Don't search these for source files.
