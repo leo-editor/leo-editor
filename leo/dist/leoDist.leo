@@ -1554,7 +1554,7 @@ https://github.com/leo-editor/leo-editor/releases
 - Click the Draft New Release button.
 - Use the "Select Tag" button to select the v6.8.10.
 - Copy the release notes from LeoDocs.leo.
-- Choose the "Latest" or "Pre-lease" in the "Release label" area at the bottom.
+- Choose the "Latest" or "Pre-release" in the "Release label" area at the bottom.
 - Click Publish release.
 
 This will automatically create the PyPi release
