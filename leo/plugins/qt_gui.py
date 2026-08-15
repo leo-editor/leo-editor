@@ -123,8 +123,15 @@ class LeoQtGui(leoGui.LeoGui):
         QtWidgets.QApplication.setDesktopSettingsAware(True)
         # Create objects...
         self.qtApp = QtWidgets.QApplication(sys.argv)
+        if sys.platform.startswith('linux'):
+            # Match packaging/linux/leo.desktop when Leo starts in a terminal.
+            self.qtApp.setDesktopFileName('leo')
         self.reloadSettings()
         self.appIcon = self.getIconImage('leoapp32.png')
+        if self.appIcon:
+            # Set the application icon as well as each window's icon. Desktop
+            # shells use QApplication.windowIcon() for terminal launches.
+            self.qtApp.setWindowIcon(self.appIcon)
 
         # Define various classes key stokes.
         # @+<< define FKeys >>
