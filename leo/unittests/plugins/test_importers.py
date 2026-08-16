@@ -6,7 +6,6 @@ import glob
 import importlib
 import textwrap
 from unittest import mock
-import pytest
 from leo.core import leoGlobals as g
 from leo.core.leoJupytext import JupytextManager
 from leo.core.leoNodes import Position

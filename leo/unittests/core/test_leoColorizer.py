@@ -1747,8 +1747,29 @@ class TestTreeSitterColorizer(LeoUnitTest):
         self.assertIn('name.variable', self.tag_at(x, text, 'value'))
         self.assertIn('keyword.type', self.tag_at(x, text, 'Widget'))
         self.assertIn('name.constant', self.tag_at(x, text, 'MAX_ITEMS'))
-        self.assertIn('name.attribute', self.tag_at(x, text, 'output'))
+        # 'output' is the callee of self.output(...): tree-sitter's query
+        # matches it as both @function (call pattern) and @attribute (generic
+        # attribute-access pattern), and 'function' must win -- it's a call,
+        # not a plain attribute read. See test_attribute_access_not_a_call.
+        self.assertIn('function', self.tag_at(x, text, 'output'))
+        self.assertNotIn('name.attribute', self.tag_at(x, text, 'output'))
         self.assertIn('name.label', self.tag_at(x, text, 'theme'))
+
+    def test_attribute_access_not_a_call(self):
+        """A plain (non-call) attribute access still gets 'name.attribute'."""
+        c = self.c
+        x = leoTreeSitter.TreeSitterColorizer(c, None)
+        x.language = 'python'
+        x.enabled = True
+        text = self.prep(
+            """
+            def render(self):
+                return self.value
+            """
+        )
+        x.reparse(text)
+        self.assertIn('name.attribute', self.tag_at(x, text, 'value'))
+        self.assertNotIn('function', self.tag_at(x, text, 'value'))
 
     def test_tree_sitter_colors_leo_directives(self):
         """All Leo directives override decorator-like tree-sitter captures."""
@@ -1966,6 +1987,72 @@ class TestTreeSitterColorizer(LeoUnitTest):
         text2 = 'x = 12\n'
         x.reparse(text2)
         self.assertGreater(x.reparse_epoch, epoch1)
+
+    # @+node:vv.20260816120000.1: *3* TestTreeSitterColorizer.test_nocolor_directive_suppresses_coloring
+    def test_nocolor_directive_suppresses_coloring(self):
+        """@nocolor must stop tree-sitter coloring until a following @color."""
+        c = self.c
+        x = leoTreeSitter.TreeSitterColorizer(c, None)
+        x.language = 'python'
+        x.enabled = True
+        text = self.prep(
+            """
+            def before():
+                pass
+
+            @nocolor
+
+            def middle():
+                pass
+
+            @color
+
+            def after():
+                pass
+            """
+        )
+        x.reparse(text)
+        calls = []
+        x.setTag = lambda tag, s, i, j: calls.append((tag, s[i:j]))
+        offset = 0
+        for line in text.splitlines():
+            x.colorLine(line, offset)
+            offset += len(line) + 1
+        colored_names = {captured_text for _, captured_text in calls}
+        self.assertIn('before', colored_names)
+        self.assertNotIn('middle', colored_names)
+        self.assertIn('after', colored_names)
+
+    # @+node:vv.20260816120000.2: *3* TestTreeSitterColorizer.test_killcolor_directive_is_permanent
+    def test_killcolor_directive_is_permanent(self):
+        """@killcolor must suppress coloring for the rest of the node, ignoring a later @color."""
+        c = self.c
+        x = leoTreeSitter.TreeSitterColorizer(c, None)
+        x.language = 'python'
+        x.enabled = True
+        text = self.prep(
+            """
+            def before():
+                pass
+
+            @killcolor
+
+            @color
+
+            def after():
+                pass
+            """
+        )
+        x.reparse(text)
+        calls = []
+        x.setTag = lambda tag, s, i, j: calls.append((tag, s[i:j]))
+        offset = 0
+        for line in text.splitlines():
+            x.colorLine(line, offset)
+            offset += len(line) + 1
+        colored_names = {captured_text for _, captured_text in calls}
+        self.assertIn('before', colored_names)
+        self.assertNotIn('after', colored_names)
 
     # @-others
 

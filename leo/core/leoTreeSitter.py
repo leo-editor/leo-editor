@@ -136,6 +136,25 @@ class TreeSitterColorizer(JEditColorizer):
         'operator': 'operator',
     }
 
+    # tree-sitter capture name -> priority, used to pick a winner when two
+    # patterns capture the *same* byte range (e.g. `self.baz(...)` matches
+    # both `(call function: (attribute attribute: (identifier) @function))`
+    # and the generic `(attribute attribute: (identifier) @attribute)`).
+    # Higher wins. Captures with no entry here default to 0.
+    capture_priority = {
+        'comment': 5,
+        'string': 5,
+        'number': 5,
+        'keyword': 4,
+        'constant.builtin': 4,
+        'function': 3,
+        'type': 3,
+        'decorator': 3,
+        'builtin.pseudo': 2,
+        'constant': 2,
+        'type.annotation': 2,
+    }
+
     def __init__(self, c: Cmdr, widget: QWidget) -> None:
         """Ctor for TreeSitterColorizer class."""
         # Set these *before* calling super().__init__(): JEditColorizer.__init__
@@ -145,6 +164,7 @@ class TreeSitterColorizer(JEditColorizer):
         self.ts_parsers: dict[str, Any] = {}  # language name -> Parser, or None.
         self.ts_queries: dict[str, Any] = {}  # language name -> Query, or None.
         self.captures: list[tuple[int, int, str]] = []  # Sorted (start, end, tag) triples.
+        self.nocolor_ranges: list[tuple[int, int]] = []  # (start, end) char offsets; see compute_nocolor_ranges().
         self.source_text: str | None = None
         self.tree: Any = None  # The last tree_sitter.Tree for the *current* node, or None.
         self.old_v: VNode | None = None
@@ -163,6 +183,11 @@ class TreeSitterColorizer(JEditColorizer):
         this colorizer on doesn't take away highlighting for the ~150
         languages tree-sitter grammars don't (yet) cover here.
         """
+        # Needed on both branches: JEditColorizer.init() (the else branch,
+        # below) calls this too, but the tree-sitter branch bypasses that
+        # call entirely, so without this a node with custom @section-delims
+        # would leak its delimiters into whichever node is colored next.
+        self.init_section_delims()
         self.use_tree_sitter = self.tsSupported(self.language)
         if self.use_tree_sitter:
             # A different node may use a different language: never carry a tree across nodes.
@@ -186,6 +211,7 @@ class TreeSitterColorizer(JEditColorizer):
         old_text, old_tree = self.source_text, self.tree
         self.source_text = text
         self.captures = []
+        self.nocolor_ranges = self.compute_nocolor_ranges(text)
         self.tree = None
         self.reparse_epoch += 1
         if self.language not in self.grammar_modules:
@@ -201,13 +227,26 @@ class TreeSitterColorizer(JEditColorizer):
             tree = parser.parse(text.encode('utf-8'))
         self.tree = tree
         char_offsets = self.byte_to_char_offsets(text)
-        captures: list[tuple[int, int, str]] = []
+        # Merge captures that share the exact same byte range (a node can be
+        # matched by more than one pattern, e.g. `self.baz(...)`'s `baz` is
+        # both @function and @attribute) by keeping only the highest-priority
+        # tag, so colorLine() doesn't apply two tags to the same text and let
+        # whichever sorts last silently win.
+        best: dict[tuple[int, int], tuple[int, str]] = {}
         for name, nodes in QueryCursor(query).captures(tree.root_node).items():
             tag = self.capture_to_tag.get(name)
             if not tag:
                 continue
+            priority = self.capture_priority.get(name, 0)
             for node in nodes:
-                captures.append((char_offsets[node.start_byte], char_offsets[node.end_byte], tag))
+                key = (node.start_byte, node.end_byte)
+                prev = best.get(key)
+                if prev is None or priority > prev[0]:
+                    best[key] = (priority, tag)
+        captures = [
+            (char_offsets[start_byte], char_offsets[end_byte], tag)
+            for (start_byte, end_byte), (_, tag) in best.items()
+        ]
         captures.sort()
         self.captures = captures
 
@@ -215,14 +254,29 @@ class TreeSitterColorizer(JEditColorizer):
         """Return the tree_sitter.Language for `language`, loading it lazily. May be None."""
         if language not in self.ts_languages:
             module = self.grammar_modules.get(language)
-            self.ts_languages[language] = Language(module.language()) if module else None
+            ts_language = None
+            if module:
+                try:
+                    ts_language = Language(module.language())
+                except Exception:
+                    # E.g. an ABI mismatch between the `tree-sitter` runtime and
+                    # this grammar module. Fall back to JEditColorizer for this
+                    # language rather than crashing colorizer construction.
+                    g.es_exception()
+            self.ts_languages[language] = ts_language
         return self.ts_languages[language]
 
     def get_parser(self, language: str) -> Any:
         """Return a cached tree_sitter.Parser for `language`. May be None."""
         if language not in self.ts_parsers:
             ts_language = self.get_language(language)
-            self.ts_parsers[language] = Parser(ts_language) if ts_language else None
+            parser = None
+            if ts_language:
+                try:
+                    parser = Parser(ts_language)
+                except Exception:
+                    g.es_exception()
+            self.ts_parsers[language] = parser
         return self.ts_parsers[language]
 
     def get_query(self, language: str) -> Any:
@@ -345,8 +399,56 @@ class TreeSitterColorizer(JEditColorizer):
         # JEditColorizer relies on, not a competing one.
         self.setState(self.reparse_epoch)
 
+    def compute_nocolor_ranges(self, text: str) -> list[tuple[int, int]]:
+        """
+        Return sorted (start, end) character-offset ranges of `text` where
+        coloring is suppressed by @nocolor/@nocolor-node/@killcolor, mirroring
+        JEditColorizer's match_at_color/match_at_nocolor/restartNoColor state
+        machine: only a directive at column 0 of a line toggles state, and
+        @killcolor/@nocolor-node can never be undone by a later @color within
+        the same node (restartNoColor's own `if self.in_killcolor: return`
+        guard has no code path back to the colored state either).
+
+        tree-sitter reparses the whole node on every edit (see reparse()), so
+        this recomputes the full picture in one pass instead of needing
+        JEditColorizer's per-block persisted-state machinery.
+        """
+        ranges: list[tuple[int, int]] = []
+        disabled = False
+        permanent = False
+        disabled_start = 0
+        offset = 0
+        for line in text.splitlines(keepends=True):
+            if not permanent and (
+                g.match_word(line, 0, '@nocolor-node') or g.match_word(line, 0, '@killcolor')
+            ):
+                if not disabled:
+                    disabled_start = offset
+                    disabled = True
+                permanent = True
+            elif (
+                not disabled
+                and g.match_word(line, 0, '@nocolor')
+                and not g.match(line, 0, '@nocolor-')
+            ):
+                disabled_start = offset
+                disabled = True
+            elif disabled and not permanent and g.match_word(line, 0, '@color'):
+                ranges.append((disabled_start, offset))
+                disabled = False
+            offset += len(line)
+        if disabled:
+            ranges.append((disabled_start, offset))
+        return ranges
+
+    def in_nocolor_range(self, offset: int) -> bool:
+        """True if character offset `offset` falls inside a suppressed-coloring range."""
+        return any(start <= offset < end for start, end in self.nocolor_ranges)
+
     def colorLine(self, s: str, offset: int) -> None:
         """Colorize line `s`, whose first character is at character offset `offset`."""
+        if self.in_nocolor_range(offset):
+            return
         end_offset = offset + len(s)
         for start, end, tag in self.captures:
             if start >= end_offset:

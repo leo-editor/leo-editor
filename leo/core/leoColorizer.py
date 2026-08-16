@@ -82,7 +82,9 @@ def make_colorizer(
     c: Cmdr, widget: QWidget
 ) -> JEditColorizer | PygmentsColorizer:
     """Return an instance of JEditColorizer, PygmentsColorizer, or TreeSitterColorizer."""
-    if c.config.getBool('use-tree-sitter', default=False):
+    # Keep this default in sync with python.py's do_import(): both read the
+    # same setting for the same feature, and leoSettings.leo ships True.
+    if c.config.getBool('use-tree-sitter', default=True):
         # A local import avoids a cycle: TreeSitterColorizer subclasses
         # JEditColorizer from this module.
         from leo.core.leoTreeSitter import TreeSitterColorizer
