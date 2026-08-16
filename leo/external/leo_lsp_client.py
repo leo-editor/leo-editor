@@ -123,6 +123,7 @@ class LspClient:
         self._lock = threading.Lock()
         self._write_lock = threading.Lock()  # Guards proc.stdin: writers may be on any thread.
         self._pending: dict[int, dict] = {}  # For the blocking request() API.
+        self._waiting: set[int] = set()  # ids a blocking request() call is still polling for.
         self._callbacks: dict[int, Callable[[dict | None], None]] = {}  # For request_async().
         self._doc_versions: dict[str, int] = {}
         self._started = False
@@ -205,7 +206,10 @@ class LspClient:
                                 ),
                             ),
                             hover=types.HoverClientCapabilities(
-                                content_format=[types.MarkupKind.PlainText, types.MarkupKind.Markdown],
+                                content_format=[
+                                    types.MarkupKind.PlainText,
+                                    types.MarkupKind.Markdown,
+                                ],
                             ),
                             publish_diagnostics=types.PublishDiagnosticsClientCapabilities(),
                         ),
@@ -249,20 +253,26 @@ class LspClient:
         not an exception, since this thread has no caller to raise to.
         """
         stdout = self.proc.stdout
-        buf = b''
         try:
             while True:
-                chunk = stdout.read(1)
-                if not chunk:
-                    break
-                buf += chunk
-                if not buf.endswith(b'\r\n\r\n'):
+                headers: dict[str, str] = {}
+                while True:
+                    # A buffered readline() per header line, not one syscall
+                    # per byte -- LSP headers are just a handful of lines.
+                    line = stdout.readline()
+                    if not line:
+                        return
+                    line = line.rstrip(b'\r\n')
+                    if not line:
+                        break
+                    key, _, value = line.partition(b':')
+                    headers[key.strip().lower().decode('ascii', errors='replace')] = (
+                        value.strip().decode('ascii', errors='replace')
+                    )
+                try:
+                    length = int(headers.get('content-length', '0'))
+                except ValueError:
                     continue
-                length = 0
-                for header in buf.decode('ascii', errors='replace').split('\r\n'):
-                    if header.lower().startswith('content-length'):
-                        length = int(header.split(':', 1)[1].strip())
-                buf = b''
                 body = stdout.read(length)
                 try:
                     msg = json.loads(body)
@@ -272,7 +282,15 @@ class LspClient:
                     with self._lock:
                         callback = self._callbacks.pop(msg['id'], None)
                         if callback is None:
-                            self._pending[msg['id']] = msg
+                            # Only keep it if a blocking request() is still
+                            # polling for this id -- otherwise (its own
+                            # timeout already fired, or this is a late
+                            # response to a request_async whose timer
+                            # already popped the callback) nobody will ever
+                            # read it back out of _pending, so discard it
+                            # instead of leaking it there forever.
+                            if msg['id'] in self._waiting:
+                                self._pending[msg['id']] = msg
                     # Call outside the lock: callback may itself call back
                     # into this client (e.g. sync_document), which must not
                     # deadlock on self._lock.
@@ -345,16 +363,22 @@ class LspClient:
         raises TimeoutError / the server's reported error.
         """
         msg_id = self._next_id()
-        self._send(_converter.unstructure(self._build_request(method, params, msg_id)))
-        deadline = time.time() + timeout
-        while time.time() < deadline:
+        with self._lock:
+            self._waiting.add(msg_id)
+        try:
+            self._send(_converter.unstructure(self._build_request(method, params, msg_id)))
+            deadline = time.time() + timeout
+            while time.time() < deadline:
+                with self._lock:
+                    if msg_id in self._pending:
+                        msg = self._pending.pop(msg_id)
+                        break
+                time.sleep(0.01)
+            else:
+                raise TimeoutError(f"leo_lsp_client: no response to {method!r}")
+        finally:
             with self._lock:
-                if msg_id in self._pending:
-                    msg = self._pending.pop(msg_id)
-                    break
-            time.sleep(0.01)
-        else:
-            raise TimeoutError(f"leo_lsp_client: no response to {method!r}")
+                self._waiting.discard(msg_id)
         if 'error' in msg:
             raise RuntimeError(f"leo_lsp_client: {method} failed: {msg['error']}")
         return self._structure_result(msg, types.METHOD_TO_TYPES[method][1])
@@ -379,8 +403,14 @@ class LspClient:
         """
         msg_id = self._next_id()
         response_cls = types.METHOD_TO_TYPES[method][1]
+        timer: threading.Timer | None = None
 
         def deliver(raw_msg: dict | None) -> None:
+            # Read at call time, after `timer` below is assigned -- a real
+            # response means the timeout is moot, so stop it instead of
+            # leaving it running (and its thread alive) for no reason.
+            if timer is not None:
+                timer.cancel()
             if raw_msg is None or 'error' in raw_msg:
                 callback(None)
                 return
@@ -500,9 +530,10 @@ class LspClient:
     def hover(self, uri: str, line: int, character: int, timeout: float = 2.0) -> str:
         """Return plain hover text at the given 0-based position.
 
-        Blocks, with a short default timeout: the Qt tooltip event that
-        drives this (see qt_text.py's LeoQTextBrowser.eventFilter) needs
-        an immediate string to display, so there's no async variant.
+        Blocks, with a short default timeout. Handy for tests and headless
+        scripts; GUI callers must use hover_async instead -- a hover result
+        driving a Qt tooltip must never block the event loop while waiting
+        on the server (#4871 review).
         """
         try:
             result = self.request(
@@ -515,14 +546,45 @@ class LspClient:
             )
         except (TimeoutError, RuntimeError):
             return ''
+        return self._hover_result_text(result)
+
+    def hover_async(
+        self,
+        uri: str,
+        line: int,
+        character: int,
+        callback: Callable[[str], None],
+        timeout: float = 2.0,
+    ) -> None:
+        """Non-blocking counterpart to hover().
+
+        callback(text) fires later with the plain hover text, or '' on
+        error/timeout/no-hover-available. See request_async for the
+        threading contract.
+        """
+        self.request_async(
+            types.TEXT_DOCUMENT_HOVER,
+            types.HoverParams(
+                text_document=types.TextDocumentIdentifier(uri=uri),
+                position=types.Position(line=line, character=character),
+            ),
+            lambda result: callback(self._hover_result_text(result)),
+            timeout=timeout,
+        )
+
+    @staticmethod
+    def _hover_result_text(result: Any) -> str:
+        """Flatten a Hover request's typed/raw result into plain text."""
         if result is None:
             return ''
         # result.contents is typed (MarkupContent | str |
         # MarkedStringWithLanguage | Sequence[...]) when it structures
         # cleanly; _structure_result falls back to the raw dict/list
         # otherwise (see its docstring), so handle both shapes.
-        contents = result.contents if isinstance(result, types.Hover) else result.get('contents', '')
-        text = self._hover_text(contents)
+        contents = (
+            result.contents if isinstance(result, types.Hover) else result.get('contents', '')
+        )
+        text = LspClient._hover_text(contents)
         # LSP markdown commonly wraps type signatures in a fenced code block.
         lines = text.splitlines()
         if lines and lines[0].startswith('```'):

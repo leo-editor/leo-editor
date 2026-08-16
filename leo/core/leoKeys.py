@@ -189,6 +189,7 @@ class _LspBridge(QtCore.QObject):
 
     completions_ready = QtCore.pyqtSignal(int, str, list)  # generation, prefix, labels
     diagnostics_ready = QtCore.pyqtSignal(str)  # uri
+    hover_ready = QtCore.pyqtSignal(int, str, QtCore.QPoint)  # generation, text, global_pos
 
 
 # @+node:ekr.20061031131434.4: ** class AutoCompleterClass
@@ -229,6 +230,9 @@ class AutoCompleterClass:
         # after the user has moved on to a different prefix/node/file.
         self._lsp_bridge: _LspBridge | None = None
         self._lsp_generation = 0
+        self._lsp_hover_generation = (
+            0  # Guards a slow hover response against a newer hover request.
+        )
         self.lsp_change_serial = 0  # Debounce serial for schedule_lsp_diagnostics.
         self._lsp_warned_commands: set[str] = set()  # Commands already reported as unlaunchable.
         self.reloadSettings()
@@ -896,6 +900,50 @@ class AutoCompleterClass:
             prefix = '.'.join(aList[:-1]) + '.'
         return s if s.startswith(prefix) else prefix + s
 
+    # @+node:spike4871.20260816120000.1: *5* ac._lsp_map_position
+    def _lsp_map_position(
+        self, p: Position, row: int, column: int
+    ) -> tuple[Position, str, list[str], int, int] | None:
+        """
+        Map a node-local (row, column) body-pane position to a file-global
+        one, returning (root, source, source_lines, target_row, column),
+        or None if p isn't part of an @file tree or the position is out of
+        range.
+
+        Every physical line of a node is written to the external file at
+        the same indent offset (that's how Leo expands @others), so the
+        column just needs the (global - local) indent delta of the one
+        target line; the row offset is n0, the node's first line in the
+        external file (gotoCommands.find_node_start). Shared by every
+        single-point LSP lookup (completions, hover, goto-definition) so
+        the mapping logic -- and any future fix to it -- lives in one
+        place (#4871 review).
+        """
+        c = self.c
+        lines = g.splitLines(p.b)
+        if row >= len(lines):
+            return None
+        goto = c.gotoCommands
+        root, fileName = goto.find_root(p)
+        if not root or not fileName:
+            return None
+        source = goto.get_external_file_with_sentinels(root=root)
+        n0 = goto.find_node_start(p=p, s=source)
+        if n0 is None:
+            return None
+        source_lines = g.splitLines(source)
+        target_row = n0 + row
+        if target_row >= len(source_lines):
+            return None
+        local_line = lines[row]
+        global_line = source_lines[target_row]
+        column += max(
+            0,
+            (len(global_line) - len(global_line.lstrip()))
+            - (len(local_line) - len(local_line.lstrip())),
+        )
+        return root, source, source_lines, target_row, column
+
     # @+node:spike4871.20260808120000.1: *5* ac.get_lsp_completions (#4871)
     def get_lsp_completions(self, prefix: str) -> list[str]:
         """
@@ -927,31 +975,12 @@ class AutoCompleterClass:
         w = c.frame.body.wrapper
         i = w.getInsertPoint()
         p = c.p
-        body_s = p.b
 
-        goto = c.gotoCommands
-        root, fileName = goto.find_root(p)
-        if not root or not fileName:
+        row, column = g.convertPythonIndexToRowCol(p.b, i)
+        mapped = self._lsp_map_position(p, row, column)
+        if mapped is None:
             return []
-        source = goto.get_external_file_with_sentinels(root=root)
-        n0 = goto.find_node_start(p=p, s=source) or 0
-
-        lines = g.splitLines(body_s)
-        row, column = g.convertPythonIndexToRowCol(body_s, i)
-        if row >= len(lines):
-            return []
-        line = lines[row]
-
-        source_lines = g.splitLines(source)
-        for lsp_line, g_line in enumerate(source_lines[n0:]):
-            if line.lstrip() == g_line.lstrip():
-                indent1 = len(line) - len(line.lstrip())
-                indent2 = len(g_line) - len(g_line.lstrip())
-                if indent2 >= indent1:
-                    column += abs(indent2 - indent1)
-                    break
-        else:
-            return []
+        root, source, source_lines, target_line_no, column = mapped
 
         # ty only returns completions when there's no text after the cursor
         # on the same physical line (confirmed by spiking: a dangling "self."
@@ -960,11 +989,10 @@ class AutoCompleterClass:
         # one character further in). Work around it with a "phantom EOL":
         # send the server a copy of the source with just the cursor's line
         # truncated at the cursor, so it always sees end-of-line there. The
-        # untruncated `source` is still what get_jedi_completions/future
-        # diagnostics work with -- this copy exists only for this request.
+        # untruncated `source` is still what diagnostics work with -- this
+        # copy exists only for this request.
         dot = prefix.rfind('.')
         typed = prefix[dot + 1 :] if dot != -1 else prefix
-        target_line_no = n0 + lsp_line
         truncated_lines = list(source_lines)
         truncated_lines[target_line_no] = truncated_lines[target_line_no][:column] + '\n'
         truncated_source = ''.join(truncated_lines)
@@ -999,8 +1027,13 @@ class AutoCompleterClass:
             # exists because we cut the line short). Push the real source
             # back so the next publishDiagnostics notification -- which
             # on_diagnostics relays to the GUI thread -- reflects the
-            # truth.
-            client.sync_document(uri, source, language_id=language_id)
+            # truth. Only the current (latest) request's captured `source`
+            # is still accurate, though: if a newer keystroke already fired
+            # its own request, restoring *this* callback's older snapshot
+            # would clobber that newer request's truncated document with
+            # stale content (#4871 review).
+            if generation == self._lsp_generation:
+                client.sync_document(uri, source, language_id=language_id)
             bridge.completions_ready.emit(generation, prefix, names)
 
         client.sync_document(uri, truncated_source, language_id=language_id)
@@ -1023,6 +1056,7 @@ class AutoCompleterClass:
             self._lsp_bridge = _LspBridge()
             self._lsp_bridge.completions_ready.connect(self._on_lsp_completions_ready)
             self._lsp_bridge.diagnostics_ready.connect(self._on_lsp_diagnostics_ready)
+            self._lsp_bridge.hover_ready.connect(self._on_lsp_hover_ready)
         return self._lsp_bridge
 
     # @+node:spike4871.20260808140000.3: *5* ac._make_lsp_diagnostics_pusher
@@ -1065,8 +1099,12 @@ class AutoCompleterClass:
             return
         if self.k.getState('auto-complete') != 1:
             return
-        if names:
-            self.completionsDict[prefix] = [self.add_prefix(prefix, z) for z in names]
+        # Always apply the response, even an empty one: an empty `names`
+        # can be the server's authoritative "no completions here" answer,
+        # not just "no answer yet" -- skipping the update on empty left
+        # the earlier get_leo_completions fallback list stuck on screen
+        # after the real (empty) LSP answer landed (#4871 review).
+        self.completionsDict[prefix] = [self.add_prefix(prefix, z) for z in names]
         if self.get_autocompleter_prefix() == prefix:
             self.compute_completion_list()
 
@@ -1086,6 +1124,19 @@ class AutoCompleterClass:
         if leo_lsp_client.path_to_uri(g.fullPath(c, root)) != uri:
             return
         self.show_lsp_diagnostics()
+
+    # @+node:spike4871.20260816120000.2: *5* ac._on_lsp_hover_ready
+    def _on_lsp_hover_ready(self, generation: int, text: str, global_pos: QtCore.QPoint) -> None:
+        """
+        Qt slot (runs on the GUI thread): show a hover tooltip once its
+        async request answers. Guarded by generation so a slow response
+        for a hover the mouse has since left doesn't pop up unexpectedly
+        somewhere else (e.g. after the mouse moved to a new position that
+        fired its own, newer hover request).
+        """
+        if generation != self._lsp_hover_generation or not text:
+            return
+        QtWidgets.QToolTip.showText(global_pos, text)
 
     # @+node:spike4871.20260808130000.3: *5* ac.schedule_lsp_diagnostics & helpers
     def schedule_lsp_diagnostics(self) -> None:
@@ -1131,44 +1182,44 @@ class AutoCompleterClass:
         if serial == self.lsp_change_serial and self.c.exists:
             self.show_lsp_diagnostics()
 
-    def get_lsp_hover(self, body_position: int) -> str:
-        """Return LSP hover text for a body-pane character position."""
+    def request_lsp_hover(self, body_position: int, global_pos: QtCore.QPoint) -> None:
+        """
+        Fire an async LSP hover request for a body-pane character position.
+
+        Non-blocking (#4871 review): a synchronous hover() call used to
+        run on the GUI thread from qt_text.py's tooltip eventFilter,
+        freezing the whole UI for up to hover()'s timeout (2s default) on
+        every mouse-hover. This fires the request in the background and
+        shows the tooltip once the answer arrives via
+        _on_lsp_hover_ready -- the same bridge-signal pattern
+        get_lsp_completions uses for the completion popup.
+        """
         if not self.use_lsp:
-            return ''
+            return
         c, p = self.c, self.c.p
-        body_s = p.b
-        row, column = g.convertPythonIndexToRowCol(body_s, body_position)
-        lines = g.splitLines(body_s)
-        if row >= len(lines):
-            return ''
-        goto = c.gotoCommands
-        root, fileName = goto.find_root(p)
-        if not root or not fileName:
-            return ''
-        source = goto.get_external_file_with_sentinels(root=root)
-        n0 = goto.find_node_start(p=p, s=source)
-        if n0 is None:
-            return ''
-        source_lines = g.splitLines(source)
-        target_row = n0 + row
-        if target_row >= len(source_lines):
-            return ''
-        local_line = lines[row]
-        global_line = source_lines[target_row]
-        column += max(
-            0,
-            (len(global_line) - len(global_line.lstrip()))
-            - (len(local_line) - len(local_line.lstrip())),
-        )
+        row, column = g.convertPythonIndexToRowCol(p.b, body_position)
+        mapped = self._lsp_map_position(p, row, column)
+        if mapped is None:
+            return
+        root, _source, _source_lines, target_row, column = mapped
         abs_path = g.fullPath(c, root)
         client = self._get_lsp_client(root, abs_path)
         if client is None:
-            return ''
+            return
+        bridge = self._ensure_lsp_bridge()
+        if bridge is None:
+            return  # No live QApplication -- nothing to deliver to.
+        self._lsp_hover_generation += 1
+        generation = self._lsp_hover_generation
         uri = leo_lsp_client.path_to_uri(abs_path)
-        try:
-            return client.hover(uri, target_row, column)
-        except Exception:
-            return ''
+
+        def deliver(text: str) -> None:
+            # Runs on LspClient's reader/timer thread -- never touch
+            # widgets here; hand off via the bridge signal instead (see
+            # _LspBridge's docstring).
+            bridge.hover_ready.emit(generation, text, global_pos)
+
+        client.hover_async(uri, target_row, column, deliver)
 
     # @+node:spike4871.20260809120000.1: *5* ac.lsp_goto_definition & helper
     @ac_cmd('lsp-goto-definition')
@@ -1182,41 +1233,20 @@ class AutoCompleterClass:
         outline manages (stdlib, a venv package, ...) there's nothing to
         select -- report the location instead of failing silently.
 
-        Row/col mapping mirrors get_lsp_hover (a single cursor position),
-        not get_lsp_completions (which maps a whole truncated line for
-        the phantom-EOL workaround) -- this is a one-shot lookup at one
-        point, the same shape of problem as hover.
+        Row/col mapping uses the same node-local-to-file-global logic as
+        get_lsp_completions and request_lsp_hover (_lsp_map_position): a
+        one-shot lookup at one point, the same shape of problem as hover.
         """
         if not self.use_lsp:
             return
         c = self.c
         w = c.frame.body.wrapper
         p = c.p
-        body_s = p.b
-        row, column = g.convertPythonIndexToRowCol(body_s, w.getInsertPoint())
-        lines = g.splitLines(body_s)
-        if row >= len(lines):
+        row, column = g.convertPythonIndexToRowCol(p.b, w.getInsertPoint())
+        mapped = self._lsp_map_position(p, row, column)
+        if mapped is None:
             return
-
-        goto = c.gotoCommands
-        root, fileName = goto.find_root(p)
-        if not root or not fileName:
-            return
-        source = goto.get_external_file_with_sentinels(root=root)
-        n0 = goto.find_node_start(p=p, s=source)
-        if n0 is None:
-            return
-        source_lines = g.splitLines(source)
-        target_row = n0 + row
-        if target_row >= len(source_lines):
-            return
-        local_line = lines[row]
-        global_line = source_lines[target_row]
-        column += max(
-            0,
-            (len(global_line) - len(global_line.lstrip()))
-            - (len(local_line) - len(local_line.lstrip())),
-        )
+        root, source, _source_lines, target_row, column = mapped
 
         abs_path = g.fullPath(c, root)
         client = self._get_lsp_client(root, abs_path)
@@ -1247,7 +1277,7 @@ class AutoCompleterClass:
         # cursor on the right line, give the body focus -- the same
         # machinery goto-global-line uses for compiler/traceback line
         # numbers (gotoCommands.py).
-        goto.find_file_line(target_line + 1, target_root)
+        c.gotoCommands.find_file_line(target_line + 1, target_root)
 
     def _find_at_file_node_for_path(self, abs_path: str) -> Position | None:
         """

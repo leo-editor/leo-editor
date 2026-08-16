@@ -593,7 +593,11 @@ if QtWidgets:
         # @+node:spike4871.20260808150000.1: *3* LeoQTextBrowser.eventFilter
         def eventFilter(self, obj: QObject, event: QEvent) -> bool:
             """Show an LSP diagnostic while hovering its squiggly range."""
-            if obj is self.viewport() and event.type() == QtCore.QEvent.Type.ToolTip:
+            if (
+                obj is self.viewport()
+                and event.type() == QtCore.QEvent.Type.ToolTip
+                and getattr(self.leo_c.k.autoCompleter, 'use_lsp', False)
+            ):
                 position = self.cursorForPosition(event.pos()).position()
                 for selection in getattr(self, 'leo_lsp_selections', []):
                     cursor = selection.cursor
@@ -602,10 +606,13 @@ if QtWidgets:
                         if message:
                             QtWidgets.QToolTip.showText(event.globalPos(), message, self)
                             return True
-                message = self.leo_c.k.autoCompleter.get_lsp_hover(position)
-                if message:
-                    QtWidgets.QToolTip.showText(event.globalPos(), message, self)
-                    return True
+                # Hover text needs a round trip to the LSP server -- fire it
+                # in the background instead of blocking the GUI thread here;
+                # the tooltip appears once ac._on_lsp_hover_ready delivers
+                # the answer (#4871 review: a synchronous hover() call used
+                # to freeze the whole UI for up to its timeout on every
+                # mouse-hover).
+                self.leo_c.k.autoCompleter.request_lsp_hover(position, event.globalPos())
                 QtWidgets.QToolTip.hideText()
                 event.ignore()
                 return True
