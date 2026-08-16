@@ -37,7 +37,7 @@ else:
     python = sys.executable
     command = f"{python} -m pip uninstall leo"
     print(command)
-    subprocess.Popen(command, shell=True).communicate()
+    subprocess.run(command, shell=True)
 
     if 0:  # This hack should no longer be necessary.
         # Delete the leo/leo.egg-info directory.

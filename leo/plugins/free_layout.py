@@ -216,7 +216,7 @@ class FreeLayoutController:
         w = top and top.find_child(QtWidgets.QWidget, 'outlineFrame')
         while w:
             w = w.parent()
-            if isinstance(w, NestedSplitter):
+            if NestedSplitter is not None and isinstance(w, NestedSplitter):
                 return w
         return None
 

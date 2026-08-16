@@ -1263,7 +1263,8 @@
 <v t="ekr.20180320113441.1"><vh>@item open-theme-file</vh></v>
 <v t="ekr.20131213135427.21955"><vh>@item open-local-settings</vh></v>
 <v t="ekr.20180405110859.1"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22050"><vh>@menu &amp;List/Kill Abbreviations</vh>
+<v t="ekr.20131213135427.22050"><vh>@menu &amp;Abbreviations</vh>
+<v t="felix.20260810004559.1"><vh>@item &amp;toggle-abbrev-mode</vh></v>
 <v t="ekr.20131213135427.22053"><vh>@item abbrev-&amp;list</vh></v>
 <v t="ekr.20131213135427.22059"><vh>@item abbrev-&amp;kill-all</vh></v>
 </v>
@@ -11948,6 +11949,7 @@ False: (Recommended) The commands act as simple navigation commands, and do not 
 Leo accepts outline 'paste' data in both XML Leo format, or JSON format</t>
 <t tx="felix.20250313152228.1"></t>
 <t tx="felix.20250313152231.1"></t>
+<t tx="felix.20260810004559.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

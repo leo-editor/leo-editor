@@ -2873,9 +2873,8 @@ class VNode:
             s = g.toUnicode(s, reportErrors=True)
             v._headString = s.replace('\n', '')
             self.contentModified()  # #1413.
-        # #4394: Clear the the mod_time.
-        if '_mod_time' in v.u:
-            del v.u['_mod_time']
+        # #4394, #4875: Clear the cached mod time (in-memory only).
+        v.context.mod_time_cache.pop(v.gnx, None)
         # Update the icon last.
         v.updateIcon()
 

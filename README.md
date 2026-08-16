@@ -1,22 +1,25 @@
-Leo https://leo-editor.github.io/leo-editor/ 6.8.9 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+Leo https://leo-editor.github.io/leo-editor/ 6.8.10 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor/preface.html).
 
-**The highlights of Leo 6.8.9**
+**The highlights of Leo 6.8.10**
 
-- Add Find/Change history. How did we ever live without this?
-- Replace the ``,,`` Easter Egg with Leo's Find commands.
-- Add support for ``@language pug``.
-- Enhanced security for Leo's server.
-- Significant code-level improvements and performance optimizations.
-- Deprecate support for --gui=console.
+- Add authentication & secure websockets to leoserver.py.
+- Add the ``show-node-files`` command.
+- Add the ``clone-diff-pr`` command.
+- Add the ``c.p`` setter.
+- Update most theme files.
+- Add ``vv-dark.leo`` theme.
+- Add a Leo launcher generator for MacOS.
+- Remove the ``todo.py`` plugin.
+- **Breaking changes to Leo's API**: See the What's New section for details.
 - The usual bug fixes.
 
 **Links**
 
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
-- [6.8.9 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.9+)
-- [6.8.9 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.9)
+- [6.8.10 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.10+)
+- [6.8.10 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.10)
 - [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)

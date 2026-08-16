@@ -279,6 +279,7 @@ def init():
         return False
     getGlobalConfiguration()
     if config.http_active:
+        assert asyncore is not None
         try:
             Server(config.http_ip, config.http_port, RequestHandler)
         except OSError as e:
@@ -330,6 +331,7 @@ def plugin_wrapper(tag, keywords):
 
 # @+node:bwmulder.20050326191345.1: *3* onFileOpen (not used) (mod_http.py)
 def onFileOpen(tag, keywords):
+    assert asyncore is not None
     c = keywords.get("new_c")
     g.trace('c', repr(c))
     wasactive = config.http_active

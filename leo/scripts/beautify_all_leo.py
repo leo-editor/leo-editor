@@ -29,12 +29,15 @@ assert os.path.exists(toml_file), toml_file
 args = " ".join(
     (
         f"--config {toml_file}",
+        '--no-cache',
         # '--verbose',
     )
 )
 targets = (
+    f"{leo_editor_dir}",  # For top-level apps and scripts.
     f"leo{os.sep}commands",
     f"leo{os.sep}core",
+    f"leo{os.sep}doc{os.sep}html",  # For conf.py
     f"leo{os.sep}external",
     f"leo{os.sep}modes",
     f"leo{os.sep}plugins",
@@ -44,5 +47,5 @@ targets = (
 # Use -m so that __name__ == '__main__'.
 python = sys.executable
 command = f"{python} -m ruff format {args} {' '.join(targets)}"
-subprocess.Popen(command, shell=True).communicate()
+subprocess.run(command, shell=True)
 # @-leo

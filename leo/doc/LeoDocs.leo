@@ -69,16 +69,6 @@
 <v t="ekr.20230110153129.1"><vh>find_web_links</vh></v>
 <v t="ekr.20230110153501.1"><vh>find_broken_links</vh></v>
 </v>
-<v t="ekr.20260605070320.1"><vh>@button make-sphinx</vh>
-<v t="ekr.20260605070320.2"><vh>copy_files</vh></v>
-<v t="ekr.20260605070320.3"><vh>copy_recursive</vh></v>
-<v t="ekr.20260605070320.4"><vh>get_leo_version</vh></v>
-<v t="ekr.20260605070320.5"><vh>git_status</vh></v>
-<v t="ekr.20260605070320.6"><vh>make_html</vh></v>
-<v t="ekr.20260605070320.7"><vh>patch_home_page</vh></v>
-<v t="ekr.20260605070320.8"><vh>run</vh></v>
-<v t="ekr.20260605070320.9"><vh>write_intermediate_files</vh></v>
-</v>
 </v>
 <v t="ekr.20131017051340.16850"><vh>Scripts</vh>
 <v t="ekr.20180523085905.1"><vh>Scripts that get GitHub issues</vh>
@@ -182,13 +172,15 @@
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ekr.20090428133936.2"><vh>@edit html/conf.py</vh></v>
 <v t="ekr.20241124083101.1"><vh>@edit _static/custom.css</vh></v>
+<v t=".20260811190042.45"><vh>@edit _static/LeoLogo-dark.svg</vh></v>
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home pages</vh>
-<v t="ekr.20230110155708.1"><vh>@file ../../docs/redirect_index.html</vh></v>
-<v t="ekr.20100808060203.4273"><vh>@file ../../docs/index.html</vh></v>
+<v t="ekr.20230110155708.1"><vh>@file html/redirect_index.html</vh></v>
+<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 </v>
 <v t="ekr.20040414161647"><vh>Leo's Documentation</vh>
+<v t=".20260810204531.45"><vh>@rst html/index.html</vh></v>
 <v t="ekr.20170215081358.1"><vh> Table of contents</vh>
 <v t="ekr.20170215075612.1"><vh>@rst html/leo_toc.html</vh></v>
 </v>
@@ -380,7 +372,7 @@
 </v>
 </v>
 <v t="ekr.20050831195331.1"><vh>FAQ</vh>
-<v t="ekr.20050830115714"><vh>@rst html\FAQ.html</vh>
+<v t="ekr.20050830115714"><vh>@rst html/FAQ.html</vh>
 <v t="ekr.20050830120007"><vh>@rst-no-head Links (FAQ)</vh></v>
 <v t="ekr.20050830115714.1"><vh>Learning to use Leo</vh>
 <v t="ekr.20161207052511.1"><vh>How can I learn Leo, or python, or anything</vh></v>
@@ -522,8 +514,8 @@
 </v>
 </v>
 <v t="ekr.20091130111843.6787"><vh>Tutorials</vh>
-<v t="ekr.20091130111843.6788"><vh>@rst html\tutorial.html</vh></v>
-<v t="ekr.20131008041326.16203"><vh>@rst html\tutorial-basics.html</vh>
+<v t="ekr.20091130111843.6788"><vh>@rst html/tutorial.html</vh></v>
+<v t="ekr.20131008041326.16203"><vh>@rst html/tutorial-basics.html</vh>
 <v t="ekr.20131002055813.15973"><vh>Leo's main window</vh></v>
 <v t="ekr.20170215105125.1"><vh>Commands</vh></v>
 <v t="ekr.20170215031129.1"><vh>Outlines and clones</vh></v>
@@ -545,7 +537,7 @@
 </v>
 <v t="ekr.20131005214621.16090"><vh>Summary</vh></v>
 </v>
-<v t="ekr.20131008041326.16222"><vh>@rst html\tutorial-pim.html</vh>
+<v t="ekr.20131008041326.16222"><vh>@rst html/tutorial-pim.html</vh>
 <v t="ekr.20131004073415.16044"><vh>Clones</vh></v>
 <v t="ekr.20131018100353.16706"><vh>Clones create views</vh></v>
 <v t="ekr.20131009100732.16760"><vh>Using abbreviations and templates</vh></v>
@@ -553,7 +545,7 @@
 <v t="ekr.20170312083548.1"><vh>Using Chapters</vh></v>
 <v t="ekr.20131008041326.16066"><vh>Summary</vh></v>
 </v>
-<v t="ekr.20131008041326.16241"><vh>@rst html\tutorial-rst3.html</vh>
+<v t="ekr.20131008041326.16241"><vh>@rst html/tutorial-rst3.html</vh>
 <v t="ekr.20131102044158.16488"><vh>Install docutils and (optional) sphinx</vh></v>
 <v t="ekr.20131009100732.16748"><vh>Create the @rst node</vh></v>
 <v t="ekr.20131027064821.17144"><vh>The output and intermediate files</vh></v>
@@ -574,7 +566,7 @@
 <v t="ekr.20131005214621.16128"><vh>Summary</vh></v>
 <v t="ekr.20131009100732.16753"><vh>Further study</vh></v>
 </v>
-<v t="ekr.20040403171740"><vh>@rst html\tutorial-scripting.html</vh>
+<v t="ekr.20040403171740"><vh>@rst html/tutorial-scripting.html</vh>
 <v t="ekr.20131013060803.16852"><vh>Hello world</vh></v>
 <v t="ekr.20170313111502.1"><vh>Create outline nodes</vh></v>
 <v t="ekr.20170313111626.1"><vh>Generate an output file from nodes</vh></v>
@@ -588,7 +580,7 @@
 <v t="ekr.20131017051340.16735"><vh>Example position scripts</vh></v>
 </v>
 </v>
-<v t="ekr.20180126061923.1"><vh>@rst html\tutorial-tips.html</vh>
+<v t="ekr.20180126061923.1"><vh>@rst html/tutorial-tips.html</vh>
 <v t="ekr.20180126063015.1"><vh>The most important tips</vh>
 <v t="ekr.20180126061429.16"><vh>You don't have to remember command names</vh></v>
 <v t="ekr.20180126061429.15"><vh>Learn to use clones</vh></v>
@@ -933,7 +925,7 @@
 <v t="mhw.20191008134029.1"><vh>@rst html/leoandasciidoc.html</vh></v>
 </v>
 <v t="ekr.20061025065357"><vh>Leo and Emacs</vh>
-<v t="ekr.20061025065357.1"><vh>@rst html\emacs.html</vh>
+<v t="ekr.20061025065357.1"><vh>@rst html/emacs.html</vh>
 <v t="ekr.20170315072706.1"><vh>Leo vs org mode</vh></v>
 <v t="ekr.20140720203932.17747"><vh>Using org-mode (.org) files in Leo</vh></v>
 <v t="ekr.20061025081359"><vh>Controlling Leo from Emacs using Pymacs</vh></v>
@@ -942,7 +934,7 @@
 </v>
 </v>
 <v t="TL.20080804095315.1"><vh>Leo and Vim</vh>
-<v t="TL.20080804095315.2"><vh>@rst html\vimBindings.html</vh>
+<v t="TL.20080804095315.2"><vh>@rst html/vimBindings.html</vh>
 <v t="ekr.20140810085801.18230"><vh>Using Leo's native vim mode</vh>
 <v t="ekr.20140810153947.6747"><vh>Supported commands</vh></v>
 <v t="ekr.20140810153947.6752"><vh>Differences from the real vim</vh></v>
@@ -962,7 +954,7 @@
 </v>
 </v>
 <v t="ekr.20241027051721.1"><vh>Leo and Jupyter Notebooks</vh>
-<v t="ekr.20241027051739.1"><vh>@rst html\jupyternotebooks.html</vh>
+<v t="ekr.20241027051739.1"><vh>@rst html/jupyternotebooks.html</vh>
 <v t="ekr.20241107063856.1"><vh>Creating and populating @jupytext trees</vh></v>
 <v t="ekr.20241105100428.1"><vh>Reading @jupytext trees</vh></v>
 <v t="ekr.20241107070438.1"><vh>Editing @jupytext trees</vh></v>
@@ -972,7 +964,7 @@
 </v>
 </v>
 <v t="ekr.20070317033759"><vh>Embedding Leo with the leoBridge module</vh>
-<v t="ekr.20070317033759.1"><vh>@rst html\leoBridge.html</vh>
+<v t="ekr.20070317033759.1"><vh>@rst html/leoBridge.html</vh>
 <v t="ekr.20070317033759.3"><vh>Overview</vh></v>
 <v t="ekr.20071210094621"><vh>Running leoBridge from within Leo</vh></v>
 </v>
@@ -997,7 +989,7 @@
 <v t="ekr.20101025080245.5799"><vh>Advanced Topics</vh>
 <v t="ekr.20131008041326.16099"><vh>@rst html/intermediatetopics.html</vh></v>
 <v t="ekr.20060612102055"><vh>Writing Plugins</vh>
-<v t="ekr.20060612103240"><vh>@rst html\writingPlugins.html</vh>
+<v t="ekr.20060612103240"><vh>@rst html/writingPlugins.html</vh>
 <v t="ekr.20131008041326.16053"><vh>About Plugins</vh></v>
 <v t="EKR.20040524104904.224"><vh>Important security warnings</vh></v>
 <v t="peckj.20130813123907.6841"><vh>Documenting plugins</vh></v>
@@ -1009,7 +1001,7 @@
 </v>
 </v>
 <v t="ekr.20060527105211"><vh>Debugging with Leo</vh>
-<v t="ekr.20060527105617"><vh>@rst html\debuggers.html</vh>
+<v t="ekr.20060527105617"><vh>@rst html/debuggers.html</vh>
 <v t="ekr.20070116062405"><vh>Using g.trace and g.pdb</vh></v>
 <v t="ekr.20060527112801"><vh>Settings for winpdb</vh></v>
 <v t="ekr.20070115172724"><vh>Debugging scripts with winpdb</vh>
@@ -1020,7 +1012,7 @@
 </v>
 </v>
 <v t="ekr.20131015104133.16763"><vh>A scripting miscellany</vh>
-<v t="ekr.20131015091948.16784"><vh>@rst html\scripting-miscellany.html</vh>
+<v t="ekr.20131015091948.16784"><vh>@rst html/scripting-miscellany.html</vh>
 <v t="ekr.20131014053720.16816"><vh>\@button example</vh></v>
 <v t="ekr.20150817125512.1"><vh>Comparing two similar outlines</vh></v>
 <v t="tom.20230107235603.1"><vh>Converting Body Text To Title Case</vh></v>
@@ -1100,10 +1092,10 @@
 </v>
 </v>
 <v t="ekr.20131019035402.17557"><vh>The Leonine world</vh>
-<v t="ekr.20131019035402.17573"><vh>@rst html\leonine-world.html</vh></v>
+<v t="ekr.20131019035402.17573"><vh>@rst html/leonine-world.html</vh></v>
 </v>
 <v t="ekr.20180505114327.1"><vh>Leo University</vh>
-<v t="ekr.20180509042555.1"><vh>@rst html\leo-university.html</vh>
+<v t="ekr.20180509042555.1"><vh>@rst html/leo-university.html</vh>
 <v t="ekr.20180505114327.5"><vh>Lesson 1: Think process, not knowledge</vh></v>
 <v t="ekr.20180505114327.7"><vh>Lesson 2: Learn Leo's debugging tools</vh></v>
 <v t="ekr.20180505114327.8"><vh>Lesson 3: Running unit tests</vh></v>
@@ -1118,7 +1110,7 @@
 </v>
 </v>
 <v t="ekr.20131008041326.16091"><vh>Cheat Sheet</vh>
-<v t="ekr.20131007143750.16070"><vh>@rst html\cheatsheet.html</vh>
+<v t="ekr.20131007143750.16070"><vh>@rst html/cheatsheet.html</vh>
 <v t="ekr.20131019061259.16693"><vh>Key bindings</vh>
 <v t="ekr.20131015035606.16778"><vh>Selecting outline nodes</vh></v>
 <v t="ekr.20131015035606.16800"><vh>Moving outline nodes</vh></v>
@@ -1276,6 +1268,7 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20260810021658.1"><vh>What's new in Leo 6.8.10</vh></v>
 <v t="ekr.20260531063902.1"><vh>What's new in Leo 6.8.9</vh></v>
 <v t="ekr.20251204122149.1"><vh>What's new in Leo 6.8.8</vh></v>
 <v t="ekr.20250830050946.1"><vh>What's new in Leo 6.8.7</vh></v>
@@ -1466,7 +1459,9 @@
 </v>
 </v>
 <v t="ekr.20180125034510.1"><vh>Release Notes</vh>
+<v t="ekr.20260812065654.1"><vh>@rst html/release-notes.html</vh>
 <v t="ekr.20250422050948.1"><vh>Leo 6.8.x release notes</vh>
+<v t="ekr.20260716061125.1"><vh>Leo 6.8.10 release notes</vh></v>
 <v t="ekr.20260531063735.1"><vh>Leo 6.8.9 release notes</vh></v>
 <v t="ekr.20251204122305.1"><vh>Leo 6.8.8 release notes</vh></v>
 <v t="ekr.20250830050853.1"><vh>Leo 6.8.7 release notes</vh></v>
@@ -2173,12 +2168,66 @@
 </v>
 </v>
 </v>
-<v t="ekr.20260531063902.1"></v>
-<v t="ekr.20260531063735.1"></v>
-<v t="ekr.20260716061125.1"><vh>Leo 6.8.10 release notes</vh></v>
-<v t="ekr.20260716061137.1"><vh>Breaking changes to Leo's API</vh></v>
+</v>
+<v t="ekr.20260810021658.1"></v>
+<v t="ekr.20260716061125.1"></v>
 </vnodes>
 <tnodes>
+<t tx=".20260810204531.45">Leo: organize code and ideas your way
+======================================
+
+.. raw:: html
+
+   &lt;div class="leo-hero"&gt;
+     &lt;div&gt;
+       &lt;p class="leo-eyebrow"&gt;A programmable editor, outliner, and knowledge base&lt;/p&gt;
+       &lt;h1&gt;See your work from every angle.&lt;/h1&gt;
+       &lt;p class="leo-tagline"&gt;
+         Leo keeps code, writing, and research in a flexible outline. Cloned nodes
+         let the same idea appear in multiple places—without duplicating it.
+       &lt;/p&gt;
+       &lt;div class="leo-actions"&gt;
+         &lt;a class="leo-button leo-button-primary" href="getting-started.html"&gt;Get started&lt;/a&gt;
+         &lt;a class="leo-button leo-button-secondary" href="https://github.com/leo-editor/leo-editor"&gt;View on GitHub&lt;/a&gt;
+       &lt;/div&gt;
+     &lt;/div&gt;
+     &lt;div class="leo-hero-image"&gt;
+       &lt;img src="_static/DarkScreenShot.png" alt="Leo showing an outline beside an editor pane"&gt;
+     &lt;/div&gt;
+   &lt;/div&gt;
+
+   &lt;h2&gt;One workspace, many ways to think&lt;/h2&gt;
+   &lt;div class="leo-features"&gt;
+     &lt;article class="leo-card"&gt;
+       &lt;h3&gt;Outline anything&lt;/h3&gt;
+       &lt;p&gt;Navigate large projects as a meaningful hierarchy instead of a pile of files.&lt;/p&gt;
+     &lt;/article&gt;
+     &lt;article class="leo-card"&gt;
+       &lt;h3&gt;Reuse without copying&lt;/h3&gt;
+       &lt;p&gt;Leo's clones place one node in multiple contexts while keeping its content in sync.&lt;/p&gt;
+     &lt;/article&gt;
+     &lt;article class="leo-card"&gt;
+       &lt;h3&gt;Automate your workflow&lt;/h3&gt;
+       &lt;p&gt;Use Python scripts, commands, and plugins to shape Leo around the way you work.&lt;/p&gt;
+     &lt;/article&gt;
+   &lt;/div&gt;
+
+Explore Leo
+-----------
+
+.. toctree::
+   :hidden:
+
+   Documentation &lt;leo_toc&gt;
+
+* `Getting Started &lt;getting-started.html&gt;`_
+* `Tutorials &lt;tutorial.html&gt;`_
+* `Users Guide &lt;usersguide.html&gt;`_
+* `Leo and other programs &lt;leoandotherprograms.html&gt;`_
+* `Advanced Topics &lt;intermediatetopics.html&gt;`_
+* `Appendices &lt;appendices.html&gt;`_
+* `More links &lt;toc-more-links.html&gt;`_
+</t>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
 
 - Per-installation or per-machine settings.
@@ -4996,7 +5045,8 @@ See the following sections for details.
 <t tx="ekr.20070513113903"></t>
 <t tx="ekr.20070610174018">This section contains settings for this file.
 
-It also contains other information of little interest to most Leo users.</t>
+It also contains other information of little interest to most Leo users.
+</t>
 <t tx="ekr.20070622212132">::
 
     activate-cmds-menu
@@ -6806,7 +6856,7 @@ This section discusses the @&lt;file&gt; directives. These directives create or 
 
 **Note**: ``@file``, ``@clean`` and ``@auto`` are the recommended ways of creating external files. ``@asis`` and ``@nosent`` are for special occasions.
 
-**Note**: All these directive must appear in headlines.
+**Note**: All these directives must appear in headlines.
 
 The following table compares the various ways of creating external files. Later sections provide more details::
 
@@ -6820,6 +6870,19 @@ The following table compares the various ways of creating external files. Later 
     @edit            no         no           no    
     @file            yes        yes          no
     @nosent          no         yes          yes
+
+The three sentinel-free directives with no importer serve different purposes:
+
+- An ``@edit`` node contains the entire external file in one node. It must not
+  have children. Leo can read changes made to the external file back into that
+  node.
+- An ``@nosent`` node may contain a tree. When Leo writes the file, it expands
+  ``@others``, section references, and other file directives. Leo can not update
+  the tree from changes made to the external file.
+- An ``@asis`` node may also contain a tree, but Leo writes the body text of its
+  nodes in outline order without expansions. For example, ``@others`` is written
+  as literal text. Leo can not update the tree from changes made to the external
+  file.
 
 **Note 1**: ``@auto`` nodes read files using language-specific importers.
 By default, the file's extension determines the importer::
@@ -7237,7 +7300,7 @@ What's New in Leo
 ##################
 
 .. contents:: Contents
-    :depth: 0
+    :depth: 2
     :local:
 </t>
 <t tx="ekr.20101025080245.5798"></t>
@@ -16245,6 +16308,8 @@ Leo's Documentation Page
     Leo and other programs  &lt;leoandotherprograms&gt;
     Advanced Topics         &lt;intermediatetopics&gt;
     Appendices              &lt;appendices&gt;
+    What's New              &lt;what-is-new&gt;
+    Release Notes           &lt;release-notes&gt;
     More links              &lt;toc-more-links&gt;
 </t>
 <t tx="ekr.20170215081358.1"></t>
@@ -25199,8 +25264,8 @@ Bugs
 <t tx="ekr.20230111163935.1">c.backup_helper(sub_dir='leoDocs')
 </t>
 <t tx="ekr.20230111171223.1">def find_docs_links():
-    """Find all links in all .html files in the leo-editor/docs directory."""
-    docs_path = g.os_path_finalize_join(g.app.loadDir,'..','..','docs')
+    """Find all links in all .html files in the leo-editor/leo/doc/html directory."""
+    docs_path = g.os_path_finalize_join(g.app.loadDir,'..','doc', 'html')
     if not os.path.exists(docs_path):
         g.es_print(f"Not found: {docs_path!r}")
         return []
@@ -25448,7 +25513,7 @@ any change to one clone inevitably affects all other clones.
 <t tx="ekr.20230121061309.1"></t>
 <t tx="ekr.20230121061335.1"></t>
 <t tx="ekr.20230121061433.1"></t>
-<t tx="ekr.20230121110340.1" _mod_time="4741da464e3720be372e">@language batch
+<t tx="ekr.20230121110340.1">@language batch
 echo off
 echo off
 cd C:\Repos\leo-editor\leo\doc\html
@@ -25456,7 +25521,7 @@ echo make clean
 call make clean
 </t>
 <t tx="ekr.20230121110345.1"></t>
-<t tx="ekr.20230121110533.1" _mod_time="4741da464e3720ce992e">@language batch
+<t tx="ekr.20230121110533.1">@language batch
 echo off
 echo off
 cd C:\Repos\leo-editor\leo\doc\html
@@ -26379,7 +26444,6 @@ More Leo Links
     Screencasts         &lt;screencasts&gt;
     History of Leo      &lt;history&gt;
     Glossary            &lt;glossary&gt;
-    What's New          &lt;what-is-new&gt;
     Still more links    &lt;leoLinks&gt;
     </t>
 <t tx="ekr.20230124061650.1">.. _`Black`: https://github.com/psf/black
@@ -28063,254 +28127,91 @@ Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor
 - PR `PR #4631`_, `PR #4637`_, `PR #4639`_:  Remove the confusion between wrappers and widgets.
 - PR `PR #4678`_: Remove unnecessary ``type-ignore`` suppressions.
 </t>
-<t tx="ekr.20260605070320.1">@language python
-"""
-Run this script from the `gh-pages` branch.
+<t tx="ekr.20260716061125.1">Leo https://leo-editor.github.io/leo-editor/ 6.8.10 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
-1. Generate intermediate files for all headlines in the table.
-2. Run `make html` from the leo/doc/html directory.
+Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor/preface.html).
 
-After running this script, copy files
-- from leo/doc/html/_build/html to leo-editor/docs
-- from leo/doc/html/_build/html/_static to leo/editor-docs/_static
-"""
+**The highlights of Leo 6.8.10**
 
-@language python
+- Add authentication &amp; secure websockets to leoserver.py.
+- Add the ``show-node-files`` command.
+- Add the ``clone-diff-pr`` command.
+- Add the ``c.p`` setter.
+- Update most theme files.
+- Add ``vv-dark.leo`` theme.
+- Add a Leo launcher generator for MacOS.
+- Remove the ``todo.py`` plugin.
+- **Breaking changes to Leo's API**: See the What's New section for details.
+- The usual bug fixes.
 
-g.cls()
-g.cls()
+**Links**
 
-from datetime import datetime
-import glob
-import os
-import re
-import shutil
-from sphinx import __version__ as sphinx_version
-
-trace = False
-headlines = [
-    "Leo's Documentation"
-]
-
-join = os.path.join
-norm = os.path.normpath
-
-def finalize(s):
-    return g.os_path_finalize(norm(s))
-
-@others  # define helpers
-
-if c.isChanged():  # Save this file initially.
-    c.save()
-run()
-if c.isChanged():  # Save this file again if we have patched the home page.
-    c.save()
+- [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
+- [6.8.10 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.10+)
+- [6.8.10 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.10)
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
+- [Forum](https://groups.google.com/group/leo-editor)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 </t>
-<t tx="ekr.20260605070320.2">def copy_files(from_directory: str, to_directory: str) -&gt; None:
-    """Copy *all* html files from `from_directory` to `to_directory`."""
-    if not os.path.exists(to_directory):
-        print(f"Directory not found: {to_directory!r}")
-        return
-    files = glob.glob(f"{from_directory}{os.sep}*")
-    files = [z for z in files if os.path.isfile(z)]
-    # Announce.
-    written = 0
-    for f in files:
-        try:
-            fn = finalize(f)
-            shutil.copy2(fn, to_directory)
-            written += 1
-        except Exception as e:
-            print(f"Not Copied {e} {fn}")
-    print(f"Copied {written:3} files from {from_directory:55} to {to_directory}")
-</t>
-<t tx="ekr.20260605070320.3">def copy_recursive(from_directory: str, to_directory: str) -&gt; None:
+<t tx="ekr.20260810021658.1">.. _`PR #4721`: https://github.com/leo-editor/leo-editor/pull/4721
+.. _`PR #4737`: https://github.com/leo-editor/leo-editor/pull/4737
+.. _`PR #4747`: https://github.com/leo-editor/leo-editor/pull/4747
+.. _`PR #4753`: https://github.com/leo-editor/leo-editor/pull/4753
+.. _`PR #4781`: https://github.com/leo-editor/leo-editor/pull/4781
+.. _`PR #4782`: https://github.com/leo-editor/leo-editor/pull/4782
+.. _`PR #4783`: https://github.com/leo-editor/leo-editor/pull/4783
+.. _`PR #4790`: https://github.com/leo-editor/leo-editor/pull/4790
+.. _`PR #4788`: https://github.com/leo-editor/leo-editor/pull/4788
+.. _`PR #4770`: https://github.com/leo-editor/leo-editor/pull/4770
+.. _`PR #4771`: https://github.com/leo-editor/leo-editor/pull/4771
+.. _`PR #4810`: https://github.com/leo-editor/leo-editor/pull/4810
+.. _`PR #4812`: https://github.com/leo-editor/leo-editor/pull/4812
+.. _`PR #4814`: https://github.com/leo-editor/leo-editor/pull/4814
+.. _`PR #4825`: https://github.com/leo-editor/leo-editor/pull/4825
+.. _`PR #4827`: https://github.com/leo-editor/leo-editor/pull/4827
+.. _`PR #4824`: https://github.com/leo-editor/leo-editor/pull/4824
+.. _`PR #4848`: https://github.com/leo-editor/leo-editor/pull/4848
+.. _`PR #4851`: https://github.com/leo-editor/leo-editor/pull/4851
+.. _`PR #4852`: https://github.com/leo-editor/leo-editor/pull/4852
+.. _`PR #4849`: https://github.com/leo-editor/leo-editor/pull/4849
+.. _`PR #4856`: https://github.com/leo-editor/leo-editor/pull/4856
+.. _`PR #4870`: https://github.com/leo-editor/leo-editor/pull/4870
 
-    if os.path.exists(to_directory):
-        val = shutil.copytree(from_directory, to_directory, dirs_exist_ok=True)
-        g.trace(val)
-    else:
-        print(f"Directory not found: {to_directory!r}")
-</t>
-<t tx="ekr.20260605070320.4">conf_version_pat = re.compile(r"version\s*= '([0-9]+\.[0-9]+\.[0-9]+)'")
+**Enhancements**
 
-def get_leo_version():
-    """Return the version in conf.py"""    
-    h = '@edit html/conf.py'
-    p = g.findNodeAnywhere(c, h)
-    assert p, h
-    for m in conf_version_pat.finditer(p.b):
-        version = m.group(1)
-        if version:
-            return version
-    assert False, 'no version in conf.py'
-</t>
-<t tx="ekr.20260605070320.5">def git_status():
-    """Report git status"""
-    leo_path = finalize(join(g.app.loadDir, '..', '..'))
-    os.chdir(leo_path)
-    g.execute_shell_commands([
-        'git status',
-    ])
+- `PR #4721`_: Add authentication &amp; secure websockets to leoserver.py.
+- `PR #4747`_: Add the ``show-node-files`` command.
+- `PR #4781`_: Add the ``clone-diff-pr`` command.
+- `PR #4788`_: ``@auto-md`` nodes respect ``@noheader``.
+- `PR #4771`_: Add a Leo launcher generator for MacOS.
+- `PR #4810`_: Add ``c.p`` setter.
+- `PR #4814`_: Update most theme files.
+- `PR #4852`_: Add ``vv-dark.leo`` theme file.
 
-</t>
-<t tx="ekr.20260605070320.6">def make_html(html_path):
-    """
-    Run the `make html` command in the leo/doc/html directory.
-    """
-    cwd = finalize(os.getcwd())
-    assert cwd.lower() == html_path.lower(), (cwd, html_path)
-    
-    if 0:  # `make clean` is good for testing.
-        g.execute_shell_commands(['make clean'])
-        
-    if 1:  # Simplest, safest.
-        g.execute_shell_commands(['make html'])
-    elif 0:  # Works. Arguments are from the MakeFile.
-        g.execute_shell_commands([
-            'python -m sphinx -b html -d _build/doctrees . _build/html',
-        ])
-    else:  # Fastest, but depends on sphinx's API.
-        from sphinx.cmd import build
-        args = '-b html -d _build/doctrees . _build/html'
-        argv = args.split(' ')
-        build.build_main(argv)</t>
-<t tx="ekr.20260605070320.7">date_pat = re.compile(r'^(.*?)(Last updated on\s*)(.+)(.*)$')
-leo_version_pat = re.compile(r'^(.*?)Leo\s*([0-9]+\.[0-9]+\.[0-9]+)(.*)$')
-sphinx_version_pat = re.compile(r'^(.*?)Sphinx\s*([0-9]+\.[0-9]+\.[0-9]+)(.*)$')
+**Settings**
 
-def patch_home_page():
-    """
-    Update (in *this*file) the "Last updated" and "Created using" fields in
-    the node `@file ../../docs/index.html` or its descendants.
-    """
-    today = datetime.today()
-    date = datetime.date(today).strftime("%B %d, %Y")  # Same as conf.py.
-    leo_version = get_leo_version()
+- `PR #4770`_: Add ``@bool qt-mac-dont-swap-ctrl-and-meta`` setting.
+- `PR #4856`_: Add ``@bool run-ruff-on-write``. Remove:``@bool run-flake8-on-write``, ``@bool run-pyflakes-on-write``, ``@bool run-pylint-on-write``, and ``@bool run-ruff-on-write``
 
-    def date_repl(m: re.Match) -&gt; str:
-        s = m.group(0)
-        i, j = m.start(3), m.end(3)
-        return s[:i] + date + s[j:]
-    
-    def leo_version_repl(m: re.Match) -&gt; str:
-        s = m.group(0)
-        i, j = m.start(2), m.end(2)
-        return s[:i] + leo_version + s[j:]
+**Code changes**
 
-    def sphinx_version_repl(m: re.Match) -&gt; str:
-        s = m.group(0)
-        i, j = m.start(2), m.end(2)
-        return s[:i] + sphinx_version + s[j:]
+- `PR #4753`_, `PR #4782`_, `PR #4782`_, `PR #4790`_, `PR #4812`_, `PR #4827`_, `PR #4824`_: Improve mypy annotations in 150+ files.
+- `PR #4848`_, - `PR #4851`_, `PR #4870`_: Remove ``ty`` complaints in 100+ files.
+- `PR #4849`_, `PR #4856`_: Make all files compatible with ``ruff format``. This is a huge step forward.
 
-    table = (
-        (date_pat, date_repl),
-        (leo_version_pat, leo_version_repl),
-        (sphinx_version_pat, sphinx_version_repl),
-    )
-    h = '@file ../../docs/index.html'
-    home_page = g.findNodeAnywhere(c, h)
-    if not home_page:
-        g.trace(f"Not found: {h!r}")
-        return
-    any_changed = False
-    for p in home_page.self_and_subtree():
-        old_lines = g.splitLines(p.b)
-        new_lines = old_lines[:]
-        for i, old_line in enumerate(old_lines):
-            new_line = old_line
-            for pattern, repl in table:
-                new_line = re.sub(pattern, repl, new_line)
-                if new_line != old_lines[i]:
-                    print('')
-                    print(f"Changed line {i:&lt;2} of {p.h}")
-                    print(new_line.rstrip())
-                    new_lines[i] = old_lines[i] = new_line
-                    changed = True
-        if new_lines != g.splitLines(p.b):
-            p.b = ''.join(new_lines)
-            print('')
-            c.setChanged()
-            home_page.setDirty()
-            any_changed = True</t>
-<t tx="ekr.20260605070320.8">@language python
+**Documentation**
 
-def run():
-    """
-    Make all html files using sphinx and copy the results to leo-editor/docs.
-    """
-    # Step 1. Compute all paths.
+- `PR #4737`_: Update documentation for abbreviations.
+- `PR #4825`_: Document section syntax.
 
-    # Base paths. Not finalized.
-    docs = join(g.app.loadDir, '..', '..', 'docs')
-    doc = join(g.app.loadDir, '..', 'doc')
-    
-    # We will cd to the html path.
-    html_path = finalize(join(doc, 'html'))
+**Breaking changes to Leo's API**
 
-    # We will copy all files from build_path to docs_path.
-    build_path = finalize(join(doc, 'html', '_build', 'html'))
-    docs_path = finalize(docs)
-    
-    # We will copy the static folder from doc/html/_build/html/_static to docs.
-    # We *must* use the _build-related path to update sphinx .css files.
-    docs_static_path = finalize(join(docs, '_static'))
-    doc_static_path = finalize(join(doc, 'html', '_build', 'html', '_static' ))
-    
-    doc_slides_path = finalize(join(doc, 'html', '_build', 'html', 'slides'))  ### New
-    docs_slides_path = finalize(join(docs, 'slides'))  ###
-    
-    # Step 2: Make sure all paths exist.
-    paths = (build_path, docs_path, docs_static_path, html_path)
-    fails = [z for z in paths if not g.os_path_exists(z)]
-    if fails:
-        g.printObj(fails, tag='run: Missing paths...')
-        return
-        
-    # Step 3: Do nothing else outside 'gh-pages' branch.
-    if not g.gitBranchName().startswith('gh-pages'):
-        g.es_print('Run `make-sphinx` from `gh-pages` branch')
-        return
-    try:
-        old_p = c.p
-        os.chdir(html_path)
-        patch_home_page()
-        write_intermediate_files()
-        make_html(html_path)
-        print('')
-        copy_files(build_path, docs_path)
-        copy_files(doc_static_path, docs_static_path)
-        copy_recursive(doc_slides_path, docs_slides_path)
-        print('')
-        git_status()
-    finally:
-        c.selectPosition(old_p)
-</t>
-<t tx="ekr.20260605070320.9">def write_intermediate_files() -&gt; int:
-    """Return True if the rst3 command wrote any intermediate files."""
-    total_n = 0
-    for headline in headlines:
-        p = g.findTopLevelNode(c, headline)
-        if p:
-            c.selectPosition(p)
-            n = c.rstCommands.rst3()
-            total_n += n
-        else:
-            g.es_print(f"Not found: {headline!r}")
-            return False
-    if total_n == 0:
-        g.es_print('No intermediate files changed', color='red')
-    return total_n &gt; 0</t>
-<t tx="ekr.20260716061125.1"></t>
-<t tx="ekr.20260716061137.1">Leo 6.8.10 changes the values *returned* by several methods. As described below, in some cases these changes might break existing scripts or plugins.
-
-### Changed string functions
-
-The functions and methods listed below now return an empty string instead of None. Tests against None will no longer work as expected--the "truthy" tests below must be used instead::
-
-    if s:
-    if not s:
-
+The functions and methods listed below now return an empty string instead of None:
 
 - AtFile.readFileToUnicode.
 - g.findAtTabWidthDirectives.
@@ -28324,40 +28225,32 @@ The functions and methods listed below now return an empty string instead of Non
 - g.stripBOM.
 - g.readFileIntoEncodedString.
 - RecentFilesManager.sanitize.
-- RecursiveImportController.resolve_dir_arg.
 
-The following methods now return an empty string instead of None:
+For these routines, *tests against None will no longer work as expected*.
+Use these "truthy" tests instead::
 
-- SettingsDict.get_setting and SettingsDict.get_string_setting.
+    if s:
+    if not s:
 
-### Changed commander functions
 
-The functions below may return None instead of a commander:
+**New contributors**
 
-- g.openUNLFile and g.openUrlHelper.
-- g.handleUnl.
+.. _`PR #4769`: https://github.com/leo-editor/leo-editor/pull/4769
+.. _`PR #4816`: https://github.com/leo-editor/leo-editor/pull/4816
+.. _`PR #4818`: https://github.com/leo-editor/leo-editor/pull/4818
 
-*Note* g.openWithFileName now *always* returns a valid commander. This is *not* a breaking change.
+- @exlee made their first contribution in `PR #4769`_.
+- @amir-rezaei made their first contribution in `PR #4816`_.
+- @Sanjays2402 made their first contribution in `PR #4818`_.
+</t>
+<t tx="ekr.20260812065654.1">#############
+Release Notes
+#############
 
-### Changed position functions
-
-The functions below may return None instead of a position:
-
-- g.findUnl, g.findGnx, and g.findAnyUnl.
-
-### Deleted global functions and methods
-
-- AtFile.chmod.
-
-mypy revealed that the following functions  were impossible to use.
-
-- g.execute_shell_commands_with_options.
-- g.computeBaseDir.
-- g.computeCommands.
-
-### Other breaking changes
-
-- LeoImportCommands.removeSentinelsCommand: Remove unused ``toString`` kwarg.</t>
+.. contents:: Contents
+    :depth: 2
+    :local:
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

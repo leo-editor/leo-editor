@@ -234,7 +234,7 @@ packages = [
 
 [project]
 requires-python = ">= 3.10"
-version = "6.8.9"  # No space.
+version = "0.0.0.dev0"  # Placeholder: publish.yml stamps the real version from the release tag at build time.
 name = "leo"
 
 #@+<< developer info >>
@@ -305,6 +305,7 @@ dependencies = [
   "pytest",
   "pytest-cov",      # For coverage testing.
   "ruff",
+  "ty==0.0.71",
 
   # General packages for plugins, leoserver and commands...
 
@@ -320,6 +321,7 @@ dependencies = [
   "pyenchant",       # The spell tab.
  
   "sphinx",
+  "sphinx-book-theme",
   "urllib3",
   "websockets",      # For leoserver.
 

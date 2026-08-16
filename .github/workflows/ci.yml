@@ -14,15 +14,13 @@ jobs:
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
       - run: pip install ruff
       - run: ruff check leo
-      # Requires #4857 (normalizes leo/modes to lf) to be merged first;
-      # see issue #4847.
       - run: ruff format --check leo
 
   test:
@@ -35,8 +33,8 @@ jobs:
       # No display in CI; run Qt headless instead of pulling in xvfb.
       QT_QPA_PLATFORM: offscreen
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
@@ -46,15 +44,14 @@ jobs:
       - run: python run_ci_unit_tests.py
 
   leo-sync:
-    # Catches leo/core/LeoPyRef.leo drifting out of sync with the plain
-    # files it mirrors (stale/renamed filenames, un-refreshed content) --
-    # see leo/scripts/check_leo_sync.py.
+    # Catch LeoPyRef.leo getting out of sync with its external files.
+    # See check_leo_sync.py.
     runs-on: ubuntu-latest
     env:
       QT_QPA_PLATFORM: offscreen
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
@@ -63,31 +60,38 @@ jobs:
       - run: pip install "PyQt6>=6.6" PyQt6-QScintilla
       - run: python -m leo.scripts.check_leo_sync
 
-  mypy:
+  docs:
+    # Catch LeoDocs.leo failing to build into Sphinx HTML.
+    # See leo/scripts/build_docs.py.
     runs-on: ubuntu-latest
+    env:
+      QT_QPA_PLATFORM: offscreen
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends
+          libegl1 libgl1 libxkbcommon0 libdbus-1-3 libfontconfig1
+      - run: pip install "PyQt6>=6.6" PyQt6-QScintilla docutils sphinx sphinx-book-theme
+      - run: python -m leo.scripts.build_docs
+
+  mypy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+      # Install optional packages that Leo's devs should have installed.
       - run: pip install "mypy<2" mypy-extensions typing_extensions
           types-docutils types-Markdown types-paramiko types-PyYAML
           types-requests types-six
-          "PyQt6>=6.6" PyQt6-QScintilla PyQt6-WebEngine ty
+          "PyQt6>=6.6" PyQt6-QScintilla PyQt6-WebEngine "ty==0.0.71"
           black Jinja2 Pygments docutils pyenchant jedi nbformat nbconvert
-      # These are optional runtime deps for individual plugins/commands
-      # (leoBeautify.py, viewrendered.py, leoColorizer.py, spellCommands.py,
-      # leoKeys.py), each guarded by 'try: import X except: X = None'.
-      # Installing them here matches a typical dev environment (they're
-      # common enough to often be present) so mypy/ty check the same code
-      # path CI and contributors actually see, instead of only the
-      # ignore_missing_imports fallback.
       - run: python -m mypy leo
-      # ty (https://github.com/astral-sh/ty) is an actively-developed, much
-      # faster alternative to mypy, still in beta. It's noticeably stricter
-      # than our current mypy config in some areas (see ty.toml). It's clean
-      # against this codebase, so it now blocks the build like mypy does.
-      # Runs in this job, after mypy, to reuse the same checkout/Python/PyQt6
-      # setup instead of paying for a second one.
-      - run: ty check --python "$(python -c 'import sys; print(sys.prefix)')" leo
+      # Require ty: https://github.com/astral-sh/ty to pass.
+      # Run after mypy to reuse the checkout/Python/PyQt6 setup.
+      - run: ty check leo

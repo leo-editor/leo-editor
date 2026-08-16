@@ -27,5 +27,5 @@ os.chdir(leo_editor_dir)
 args = ' '.join(sys.argv[1:])
 python = sys.executable
 command = rf'{python} -m unittest {args}'
-subprocess.Popen(command, shell=True).communicate()
+subprocess.run(command, shell=True)
 # @-leo

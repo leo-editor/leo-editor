@@ -126,29 +126,27 @@
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
 </v>
-<v t="ekr.20180405171433.1" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a73735803000000302e3371067d7107580b0000005f5f626f6f6b6d61726b7371087d7109580700000069735f64757065710a4930300a73735803000000302e35710b7d710c580b0000005f5f626f6f6b6d61726b73710d7d710e580700000069735f64757065710f4930300a73735803000000302e3671107d7111580b0000005f5f626f6f6b6d61726b7371127d7113580700000069735f6475706571144930300a73735803000000302e3871157d7116580b0000005f5f626f6f6b6d61726b7371177d7118580700000069735f6475706571194930300a73735803000000302e39711a7d711b580b0000005f5f626f6f6b6d61726b73711c7d711d580700000069735f64757065711e4930300a73735804000000302e3130711f7d7120580b0000005f5f626f6f6b6d61726b7371217d7122580700000069735f6475706571234930300a73735804000000302e313171247d7125580b0000005f5f626f6f6b6d61726b7371267d7127580700000069735f6475706571284930300a73735804000000302e313271297d712a580b0000005f5f626f6f6b6d61726b73712b7d712c580700000069735f64757065712d4930300a73735804000000302e3134712e7d712f580b0000005f5f626f6f6b6d61726b7371307d7131580700000069735f6475706571324930300a7373752e"><vh>Distribution checklist</vh>
-<v t="ekr.20180405171433.4" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Pre-testing (in release branch)</vh></v>
-<v t="ekr.20230301070738.1"><vh>LeoSettings.leo</vh></v>
-<v t="ekr.20230301070807.1"><vh>LeoPyRef.leo</vh></v>
-<v t="ekr.20180405171433.2" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>LeoDocs.leo</vh></v>
-<v t="ekr.20230301070404.1"><vh>LeoDist.leo</vh></v>
-<v t="ekr.20180405171433.3" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Web docs</vh></v>
-<v t="ekr.20250730064836.1" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Update version files in release branch</vh></v>
-<v t="ekr.20240321104936.1"><vh>Create pypi distro</vh></v>
-<v t="ekr.20190618104430.1" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Merge release branch into master</vh></v>
-<v t="ekr.20190802115604.1" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>After-merge testing in master</vh></v>
-<v t="ekr.20180405171433.7" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Create git tag in master</vh></v>
-<v t="ekr.20190618104622.1" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Publish release</vh></v>
-<v t="ekr.20181001112218.1" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Update version in devel</vh></v>
-<v t="ekr.20230301084201.1"><vh>Update this checklist</vh></v>
-<v t="ekr.20190618104704.1" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Announcements</vh></v>
+<v t="ekr.20260811100339.1" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a73735803000000302e3171067d7107580b0000005f5f626f6f6b6d61726b7371087d7109580700000069735f64757065710a4930300a73735803000000302e34710b7d710c580b0000005f5f626f6f6b6d61726b73710d7d710e580700000069735f64757065710f4930300a73735803000000302e3971107d7111580b0000005f5f626f6f6b6d61726b7371127d7113580700000069735f6475706571144930300a73735804000000302e313271157d7116580b0000005f5f626f6f6b6d61726b7371177d7118580700000069735f6475706571194930300a7373752e"><vh>Distribution checklist</vh>
+<v t="ekr.20260811100339.2" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Pre-testing</vh></v>
+<v t="ekr.20260811100339.3" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Update version data</vh></v>
+<v t="ekr.20260811100339.4"><vh>LeoSettings.leo</vh></v>
+<v t="ekr.20260811100339.5"><vh>LeoPyRef.leo</vh></v>
+<v t="ekr.20260811100339.6" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>LeoDocs.leo</vh></v>
+<v t="ekr.20260811100339.7"><vh>LeoDist.leo</vh></v>
+<v t="ekr.20260813091710.1"><vh>Run the publish-doc.yml action</vh></v>
+<v t="ekr.20260811100339.8"><vh>Run the publish.yml action</vh></v>
+<v t="ekr.20260813092403.1"><vh>Merge devel into main</vh></v>
+<v t="ekr.20260811100339.9" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>After-merge testing in main</vh></v>
+<v t="ekr.20260813092546.1"><vh>Update version data in devel</vh></v>
+<v t="ekr.20260811100339.10"><vh>Update this checklist</vh></v>
+<v t="ekr.20260811100339.11" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Announcements</vh></v>
 </v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
 @wrap
 </t>
-<t tx="EKR.20040519090846.1" _mod_time="4741da7f9b3a48e6152e">MIT License
+<t tx="EKR.20040519090846.1">MIT License
 
 Copyright (c) 1997-2026 by Edward K. Ream.
 
@@ -181,9 +179,9 @@ These parts are are clearly marked in Leo's code as follows:
     Copyright (c) Jupyter Development Team.
     Distributed under the terms of the Modified BSD License.
 </t>
-<t tx="EKR.20040519090846.8" _mod_time="4741da88007a62a8752e">Metadata-Version: 1.0
+<t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.8.9
+Version: 6.8.10
 Summary: An IDE, PIM and Outliner. See http://leo-editor.github.io/leo-editor/preface.html.
 Description: See users own descriptions of Leo at leo-editor.github.io/leo-editor/testimonials.html.
 Home-page: http://leo-editor.github.io/leo-editor/
@@ -201,25 +199,28 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9" _mod_time="4741da88007a62a8752e">Leo https://leo-editor.github.io/leo-editor/ 6.8.9 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+<t tx="EKR.20040519090846.9">Leo https://leo-editor.github.io/leo-editor/ 6.8.10 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor/preface.html).
 
-**The highlights of Leo 6.8.9**
+**The highlights of Leo 6.8.10**
 
-- Add Find/Change history. How did we ever live without this?
-- Replace the ``,,`` Easter Egg with Leo's Find commands.
-- Add support for ``@language pug``.
-- Enhanced security for Leo's server.
-- Significant code-level improvements and performance optimizations.
-- Deprecate support for --gui=console.
+- Add authentication &amp; secure websockets to leoserver.py.
+- Add the ``show-node-files`` command.
+- Add the ``clone-diff-pr`` command.
+- Add the ``c.p`` setter.
+- Update most theme files.
+- Add ``vv-dark.leo`` theme.
+- Add a Leo launcher generator for MacOS.
+- Remove the ``todo.py`` plugin.
+- **Breaking changes to Leo's API**: See the What's New section for details.
 - The usual bug fixes.
 
 **Links**
 
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
-- [6.8.9 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.9+)
-- [6.8.9 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.9)
+- [6.8.10 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.10+)
+- [6.8.10 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.10)
 - [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
@@ -339,7 +340,7 @@ This checklist is obsolete, for the following reasons:
 <t tx="ekr.20101027135430.1493">http://nsis.sourceforge.net/Docs/Chapter4.html#4.5</t>
 <t tx="ekr.20101027160251.1497">http://nsis.sourceforge.net/Docs/nsDialogs/Readme.html</t>
 <t tx="ekr.20101027160251.1500"></t>
-<t tx="ekr.20141016105045.2119" _mod_time="4741d958732079955b2e"># .gitattributes file for Leo distribution
+<t tx="ekr.20141016105045.2119"># .gitattributes file for Leo distribution
 
 # Commit this file after changing it!
 
@@ -360,6 +361,9 @@ docs/*                          export-ignore
 leo/core/leoPy.leo              export-ignore
 leo/core/ekrLeoPy.leo           export-ignore
 leo/test/unittest/.leo_shadow/  export-ignore
+
+*.py                             text eol=lf
+leo/modes/*.py                   -text -eol
 </t>
 <t tx="ekr.20141117135127.2"></t>
 <t tx="ekr.20141117135127.3"></t>
@@ -1381,99 +1385,7 @@ g.es_print('done')
 - python setup.py bdist_wheel
 - twine upload dist/leo*.whl
 </t>
-<t tx="ekr.20180405171433.1">Overview
-
-Create the **release branch**: 6.8.10.
-Change version in this checklist to match.
-
-It's ok to merge devel into release branch
-*unless* devel contains work for the *next* release.
-
-@language rest
-</t>
-<t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure copyright dates are correct.
-- Update the version numbers in index.html and conf.py:
-  Search for 6.8.
-- Update the release notes. *Make sure to update links*.
-- Create new "what's new" section.
-- Remove top-level clones.
-- Spell check entire file, starting at the "Web pages" node.
-- Copy release notes to leoDist.leo, the node `@clean ../../README.md`.
-- Copy release notes to LeoReleaseNotes.leo
-</t>
-<t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout `gh-pages`.
-- git merge 6.8.10
-- Run the `find-bad-links` script and fix any errors
-- Run the `make-sphinx` from LeoDocs.leo
-  This script copies files from leo/doc/html/_build/html to leo-editor/docs
-- Commit the changes and push.
-- Check the GitHub Pages actions page:
-  https://github.com/leo-editor/leo-editor/actions
-- Check Leo's website.
-</t>
-<t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Run The update_leo_tools.py script *first*.
-
-- leoGlobals.py: &lt;&lt; leoGlobals: global constants &gt;&gt;
-  Check minimum_python_version and minimum_python_version_tuple.
-
-- Make sure Leo looks good without myLeoSettings.leo.
-
-- Make sure Leo runs with Python 3.10.
-
-- Run the full-test-leo script. See #2867:
-  https://github.com/leo-editor/leo-editor/issues/2867
-
-- Test on Linux.</t>
-<t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
-
-git checkout master
-git tag -a v6.8.10 -m "Added v6.8.10 tag"
-git push --follow-tags
-</t>
-<t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout devel
-- git merge master
-- update version in leoVersion.py.
-</t>
-<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.8.10 branch:
-
-- git merge master
-- Fix any conflicts and push.
-- git checkout master
-- git merge 6.8.10</t>
-<t tx="ekr.20190618104622.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
-
-This must be done *soon* after the release's actual commit.
-There is a "Draft New Release" button at the top-right of the page.
-</t>
-<t tx="ekr.20190618104704.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Announce to leo-editor first.
-
-Public announcements, after creating a package.
-
-- Announce to SourceForge:  http://sourceforge.net/projects/leo/
-   **Markdown accepted, so paste release notes in LeoDocs.leo.**.
-
-- Announce to Python-announce-list using email:
-   python-announce-list@python.org
-   **Paste source-forge or leo-editor announcement**.
-   
-   To make it easier to include your announcement on www.python.org's front page,
-   please include 2-3 lines of HTML code at the very end of your submission,
-   using the following template:
-
-    &lt;P&gt;&lt;A HREF="https://leo-editor.github.io/leo-editor/"&gt;Leo 6.8.9&lt;/A&gt;
-    Leo 6.8.9 released (11-8-2024)
-
-
-  - Check it by visiting the archive:
-    https://mail.python.org/archives/list/python-announce-list@python.org/
-  
-- My blog: http://edreamleo.blogspot.com/
-  **Paste GitHub announcement**.
-</t>
-<t tx="ekr.20190802115604.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout master
-- full-test-leo
-</t>
-<t tx="ekr.20210814054641.1" _mod_time="4741da5a5ae8fea4c22e">@language unknown_language
+<t tx="ekr.20210814054641.1">@language unknown_language
 
 # Order matters!
 
@@ -1539,93 +1451,52 @@ python -m pip uninstall leo
 
 -restore sitecustomize.py if necessary.
 </t>
-<t tx="ekr.20230301070404.1">LeoDist.leo:
-- Make sure copyright dates are correct.
-- Update version numbers. Search for 6.8.x
-  The final version in PKG-INFO.TXT must be called 6.8.10, not 6.8.10-final.
-  See Pep 440: https://www.python.org/dev/peps/pep-0440/
-- Update readme.md.
-- Update version in 'PKG-INFO.TXT'
-- Check readme.md spelling.
-- Make sure no distributed .leo file contains xml-stylesheet elements.
-  Run @button check .leo files in leoDist.leo.
-</t>
-<t tx="ekr.20230301070738.1">- Run all "check" buttons in leoSettings.leo.
+<t tx="ekr.20240206185544.1"></t>
+<t tx="ekr.20260811100339.1">@language rest
 
 </t>
-<t tx="ekr.20230301070807.1">Do *not* use the (disabled) write-LeoPyRef button in LeoPy.leo. It is buggy.
-
-- Create LeoPyRef.leo by copying leoPy.leo to it, then deleting unwanted nodes.
-- Open LeoPyRef.leo. Verify the diff after saving.
-- Run the the check button.</t>
-<t tx="ekr.20230301084201.1">- Change 6.8.10 (the old version) to 6.8.11.
+<t tx="ekr.20260811100339.10">- Change 6.8.10 (the old version) to 6.8.11.
   Be careful about the new version in this node!
 </t>
-<t tx="ekr.20240206185544.1"></t>
-<t tx="ekr.20240321104936.1">.. How to create pypi distributions:
-.. https://github.com/leo-editor/leo-editor/issues/3837
+<t tx="ekr.20260811100339.11" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Announce to leo-editor first.
 
-*Note*: All scripts mentioned below are *Python* scripts in leo/scripts.
+Public announcements, after creating a package.
 
-This checklist may seem daunting. In most cases errors are harmless, so don't despair.
+- Announce to SourceForge:  http://sourceforge.net/projects/leo/
+   **Markdown accepted, so paste release notes in LeoDocs.leo.**.
 
-Step 1: Create and test the distribution files in leo/dist:
+- Announce to Python-announce-list using email:
+   python-announce-list@python.org
+   **Paste source-forge or leo-editor announcement**.
+   
+   To make it easier to include your announcement on www.python.org's front page,
+   please include 2-3 lines of HTML code at the very end of your submission,
+   using the following template:
 
-- Do *not* change `PKG-INFO.TXT` if there are problems with file name in later steps!
-- Run the `build_leo` script to create `.whl` and `.tar.gz` files in the leo/dist directory.
-  - Ignore warnings like `no previously-included files matching...`.
-  - Make sure the filenames are as expected!
-- *** Delete the `leo-editor/leo.egg-info` directory!
-- (Optional) Run the `inspect_wheel` script to inspect the metadata in the `.whl` file.
+    &lt;P&gt;&lt;A HREF="https://leo-editor.github.io/leo-editor/"&gt;Leo 6.8.10&lt;/A&gt;
+    Leo 6.8.10 released (11-8-2024)
 
-Step 2: Install locally and test:
 
-Everything, including filenames, must be perfect before uploading to testpypi or pypi.
-
-- Run the `install_leo_locally` script. It should:
-  - create a leo folder in the `Python3.x/Lib/site-packages` directory.
-  - create three leo executables in the `Python3.x/scripts` directory.
-  - When in doubt, run `pip cache purge`.
-- Run the `run_installed_leo` script to test the distribution.
-- Run the `uninstall_leo` script to uninstall Leo. It should report:
-  - Two deleted folders from `Python3.x/Lib/site-packages`.
-  - Three deleted scripts `Python3.x/scripts`.
-- Optional(test that `pip install leo` installs all dependencies.
-  - Run the `pip_uninstall_all` script to uninstall all packages.
-  - Re-run the `install_leo_locally` script.
-  - Re-run the `run_installed_leo` script.
-  - Re-run the `uninstall_leo` script.
-
-When all is well, go to step 3:
-
-Step 3: Upload to testpypi and test:
-
-- Run the `upload_leo_to_testpypi` script.
-  Fix the name of the `.whl` file (see below) if the upload fails.
-- Run the `install_leo_from_testpypi` script.
-- Open testpypi: https://test.pypi.org/project/leo/
-- Test and uninstall as in step 2 above.
-
-Step 4: Upload to pypi and test:
-
-Make *sure* all is well before uploading to pypi.
-
-- Run the `upload_leo_to_pypi` script.
-  Fix the name of the `.whl` file (see below) if the upload fails.
-- Run the `install_leo_from_pypi` script.
-- Open pypi: https://pypi.org/project/leo/
-- Test and uninstall as in step 2 above.
-
-*How to handle errors in steps 3 and 4*
-
-Any glitch will require new filename *only* for the `.whl` file:
-- Use *build number* (-1, -2) for the new filename:
-  for example, leo-6.8.10-py3-none-any.whl.
-- Do *not*use `.post1`: it won't work!
-- Do *not* change the filename of `.tar.gz` file.
-- Do *not* change `PKG-INFO.TXT` or Leo's version number!
+  - Check it by visiting the archive:
+    https://mail.python.org/archives/list/python-announce-list@python.org/
+  
+- My blog: http://edreamleo.blogspot.com/
+  **Paste GitHub announcement**.
 </t>
-<t tx="ekr.20250730064836.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
+<t tx="ekr.20260811100339.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Run The update_leo_tools.py script *first*.
+
+- leoGlobals.py: &lt;&lt; leoGlobals: global constants &gt;&gt;
+  Check minimum_python_version and minimum_python_version_tuple.
+
+- Make sure Leo looks good without myLeoSettings.leo.
+
+- Make sure Leo runs with Python 3.10.
+
+- Run the leo/scripts/full_test_leo.py script. See #2867:
+  https://github.com/leo-editor/leo-editor/issues/2867
+
+- (Not needed: done via the ci.yml action) Test on Linux.</t>
+<t tx="ekr.20260811100339.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
 - Update version constant.
 - Update static date.
 - Update date of the release, in &lt;&lt; version dates &gt;&gt; section.
@@ -1639,6 +1510,67 @@ Update versions in script files:
 - scripts/install_leo_locally
 
 </t>
+<t tx="ekr.20260811100339.4">- Run all "check" buttons in leoSettings.leo.
+
+</t>
+<t tx="ekr.20260811100339.5">Do *not* use the (disabled) write-LeoPyRef button in LeoPy.leo. It is buggy.
+
+- Create LeoPyRef.leo by copying leoPy.leo to it, then deleting unwanted nodes.
+- Open LeoPyRef.leo. Verify the diff after saving.
+- Run the the check button.</t>
+<t tx="ekr.20260811100339.6" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure copyright dates are correct.
+- Update the version numbers in index.html and conf.py:
+  Search for 6.8.
+- Update the release notes. *Make sure to update links*.
+- Create new "what's new" section.
+- Remove top-level clones.
+- Spell check entire file, starting at the "Web pages" node.
+- Copy release notes to leoDist.leo, the node `@clean ../../README.md`.
+- Copy release notes to LeoReleaseNotes.leo
+</t>
+<t tx="ekr.20260811100339.7">LeoDist.leo:
+- Make sure copyright dates are correct.
+- Update version numbers. Search for 6.8.x
+  The final version in PKG-INFO.TXT must be called 6.8.10, not 6.8.10-final.
+  See Pep 440: https://www.python.org/dev/peps/pep-0440/
+- Update readme.md.
+- Update version in 'PKG-INFO.TXT'
+- Check readme.md spelling.
+- Make sure no distributed .leo file contains xml-stylesheet elements.
+  Run @button check .leo files in leoDist.leo.
+</t>
+<t tx="ekr.20260811100339.8">
+.. All GitHub actions
+https://github.com/leo-editor/leo-editor/blob/devel/.github/workflows
+
+.. Step one:  Create the release tag in "devel"
+
+git tag -a v6.8.10 -m "Added v6.8.10 tag"
+git push --follow-tags
+
+.. Step Two: Create on the ..GitHub release page
+https://github.com/leo-editor/leo-editor/releases
+
+- Click the Draft New Release button.
+- Use the "Select Tag" button to select the v6.8.10.
+- Copy the release notes from LeoDocs.leo.
+- Choose the "Latest" or "Pre-release" in the "Release label" area at the bottom.
+- Click Publish release.
+
+This will automatically create the PyPi release
+
+
+
+</t>
+<t tx="ekr.20260811100339.9" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout main
+- run leo/scripts/full_test_leo.py
+
+</t>
+<t tx="ekr.20260813091710.1">.. All GitHub actions
+https://github.com/leo-editor/leo-editor/blob/devel/.github/workflows
+</t>
+<t tx="ekr.20260813092403.1"></t>
+<t tx="ekr.20260813092546.1"></t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 
@@ -1967,7 +1899,7 @@ scripts held in Scripts.leo. My current thinking is the scripts should be moved
 to or at least managed from Dist.
 
 -matt  </t>
-<t tx="mhw.20191107064521.1" _mod_time="4741d9587320af92dd2e">@language unknown_language
+<t tx="mhw.20191107064521.1">@language unknown_language
 [Desktop Entry]
 Encoding=UTF-8
 Version=master

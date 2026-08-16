@@ -31,6 +31,7 @@ black           # For unit tests.
 pytest
 pytest-cov      # For coverage testing.
 ruff
+ty==0.0.71
 
 # General packages for plugins, leoserver and commands...
 
@@ -45,6 +46,7 @@ matplotlib      # VR3 plugin.
 numpy           # VR3 plugin.
 pyenchant       # The spell tab.
 sphinx          # For documentation.
+sphinx-book-theme
 urllib3
 websockets      # For leoserver.
 
