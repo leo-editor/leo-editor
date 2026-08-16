@@ -354,7 +354,7 @@ class TreeSitterColorizer(JEditColorizer):
         column = len(prefix[line_start:].encode('utf-8'))
         return (row, column)
 
-    def recolor(self, s: str) -> None:
+    def recolor(self, s: str, *, from_tree_sitter: bool = False) -> None:
         """
         TreeSitterColorizer.recolor: Recolor a *single* line, s.
         QSyntaxHighlighter calls this method repeatedly and automatically.

@@ -3642,7 +3642,7 @@ class PygmentsColorizer(JEditColorizer):
         return lexer
 
     # @+node:ekr.20190319151826.79: *3* pyg_c.recolor
-    def recolor(self, s: str) -> None:
+    def recolor(self, s: str, *, from_tree_sitter: bool = False) -> None:
         """
         PygmentsColorizer.recolor: Recolor a *single* line, s.
         QSyntaxHighligher calls this method repeatedly and automatically.
