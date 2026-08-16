@@ -139,6 +139,7 @@
 <v t="ekr.20120420054855.14241"><vh>@file leoSessions.py</vh></v>
 <v t="ekr.20080708094444.1"><vh>@file leoShadow.py</vh></v>
 <v t="ekr.20180121041003.1"><vh>@file leoTips.py</vh></v>
+<v t="vv.20260806220000.1"><vh>@file leoTreeSitter.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@file leoUndo.py</vh></v>
 <v t="ekr.20131109170017.16504"><vh>@file leoVim.py</vh></v>
 </v>
@@ -430,6 +431,7 @@
 <v t="ekr.20140723122936.18148"><vh>@file ../plugins/importers/php.py</vh></v>
 <v t="ekr.20250501.100"><vh>@file ../plugins/importers/pug.py</vh></v>
 <v t="ekr.20211209153303.1"><vh>@file ../plugins/importers/python.py</vh></v>
+<v t="vv.20260807090000.1"><vh>@file ../plugins/importers/python_ts.py</vh></v>
 <v t="ekr.20200316100818.1"><vh>@file ../plugins/importers/rust.py</vh></v>
 <v t="ekr.20231012140553.1"><vh>@file ../plugins/importers/scheme.py</vh></v>
 <v t="ekr.20170615153639.2"><vh>@file ../plugins/importers/tcl.py</vh></v>
