@@ -29,6 +29,7 @@ html[data-theme="dark"] {
 }
 
 .bd-sidebar-primary .navbar-brand .logo__image {
+    --pst-color-background: cornsilk;
     max-width: 85%;
 }
 
