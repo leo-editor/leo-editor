@@ -117,15 +117,18 @@ leo/doc/What is Leo-*
 leo/doc/Whetting Your Appetite-*
 
 # #3853: Create an *empty* leo/doc/_build folder.
-# leo/doc/_build
-leo/doc/_build/*
-# leo/doc/_static now contains an "almost empty" .gitignore file
-# leo/doc/_static
-leo/doc/_templates
+
+### Don't exist
+### leo/doc/_build
+### leo/doc/_build/*
+### leo/doc/_templates
+### leo/doc/html/build
+### leo/doc/html/_build
+
+### leo/doc/_static
+
 leo/doc/html/*.html
 leo/doc/html/*.html.txt
-leo/doc/html/build
-leo/doc/html/_build
 
 leo/plugins/leoPlugins.leo
 leo/plugins/temacs_ext/
