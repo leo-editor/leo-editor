@@ -109,7 +109,6 @@
 <v t="ekr.20141016105045.2119"><vh>@clean ../../.gitattributes</vh></v>
 <v t="EKR.20040519090846.1"><vh>@clean ../../LICENSE</vh></v>
 <v t="ekr.20210814054641.1"><vh>@clean ../../MANIFEST.in</vh></v>
-<v t="EKR.20040519090846.8"><vh>@clean ../../PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@clean ../../README.md</vh></v>
 <v t="maphew.20200424174643.1"><vh>Conda</vh>
 <v t="maphew.20200426185115.1"><vh>Outdated Preliminary build recipe</vh></v>
@@ -176,26 +175,6 @@ These parts are are clearly marked in Leo's code as follows:
 
     Copyright (c) Jupyter Development Team.
     Distributed under the terms of the Modified BSD License.
-</t>
-<t tx="EKR.20040519090846.8">Metadata-Version: 1.0
-Name: leo
-Version: 6.8.10
-Summary: An IDE, PIM and Outliner. See http://leo-editor.github.io/leo-editor/preface.html.
-Description: See users own descriptions of Leo at leo-editor.github.io/leo-editor/testimonials.html.
-Home-page: http://leo-editor.github.io/leo-editor/
-Author: Edward K. Ream
-Author-email: edreamleo@gmail.com
-License: MIT
-Keywords: Outliner, IDE, PIM, DAG, Scripting
-Platform: Windows, Linux, MacOS
-Classifier: Development Status :: 6 - Mature
-Classifier: Operating System :: MacOS
-Classifier: Operating System :: Microsoft :: Windows
-Classifier: Operating System :: POSIX :: Linux
-Classifier: Programming Language :: Python
-Classifier: Topic :: Software Development
-Classifier: Topic :: Text Processing
-Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
 <t tx="EKR.20040519090846.9">Leo https://leo-editor.github.io/leo-editor/ 6.8.10 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
@@ -1500,7 +1479,6 @@ Public announcements, after creating a package.
 - Update date of the release, in &lt;&lt; version dates &gt;&gt; section.
 
 Update versions in script files:
-- PKG-INFO.TXT
 - pyproject.toml
 - scripts/install_leo_from_pypi.py
 - scripts/install_leo_locally
@@ -1527,10 +1505,9 @@ Update versions in script files:
 <t tx="ekr.20260811100339.7">LeoDist.leo:
 - Make sure copyright dates are correct.
 - Update version numbers. Search for 6.8.x
-  The final version in PKG-INFO.TXT must be called 6.8.10, not 6.8.10-final.
+  The final version must be called 6.8.10, not 6.8.10-final.
   See Pep 440: https://www.python.org/dev/peps/pep-0440/
 - Update readme.md.
-- Update version in 'PKG-INFO.TXT'
 - Check readme.md spelling.
 - Make sure no distributed .leo file contains xml-stylesheet elements.
   Run @button check .leo files in leoDist.leo.
