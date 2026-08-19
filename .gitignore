@@ -97,7 +97,6 @@ stdin.txt
 
 leo/*.zip
 
-# leo/core/commit_timestamp.json
 leo/core/LeoPy.leo
 leo/core/leoPy.leo
 leo/core/unittest
@@ -105,65 +104,64 @@ leo/core/unittest
 leo/dist/*.zip
 leo/dist/*.exe
 
-leo/doc/leoTechReport.*
-leo/doc/Clones and views-*
-leo/doc/External files-*
-leo/doc/Installation-*
-leo/doc/Leo basics step by step-*
-leo/doc/Leo's NSIS Installer-*
-leo/doc/Scripting Leo-*
-leo/doc/Using Leo's minibuffer-*
-leo/doc/What is Leo-*
-leo/doc/Whetting Your Appetite-*
+### leo/doc/leoTechReport.*
+### leo/doc/Clones and views-*
+### leo/doc/External files-*
+### leo/doc/Installation-*
+### leo/doc/Leo basics step by step-*
+### leo/doc/Leo's NSIS Installer-*
+### leo/doc/Scripting Leo-*
+### leo/doc/Using Leo's minibuffer-*
+### leo/doc/What is Leo-*
+### leo/doc/Whetting Your Appetite-*
 
-# #3853: Create an *empty* leo/doc/_build folder.
-# leo/doc/_build
-leo/doc/_build/*
-# leo/doc/_static now contains an "almost empty" .gitignore file
-# leo/doc/_static
-leo/doc/_templates
+###  leo/doc/_build/*
+### leo/doc/html/build
+### leo/doc/html/_build
+### leo/doc/_templates
+
 leo/doc/html/*.html
 leo/doc/html/*.html.txt
-leo/doc/html/build
-leo/doc/html/_build
 
 leo/plugins/leoPlugins.leo
 leo/plugins/temacs_ext/
 
-leo/rust/orange/target
-leo/rust/orange/target/*
-leo/rust/orange/Cargo.lock
+### leo/rust/orange/target
+### leo/rust/orange/target/*
+### leo/rust/orange/Cargo.lock
 
-leo/test/*.css
-leo/test/at_ignore_test.txt
-leo/test/dynamicUnitTest.leo
-leo/test/clean
-leo/test/clean/*.*
-leo/test/dirty-test.py
-leo/test/c_plus_plus_test.cpp
-leo/test/pylint-leo-rc.txt
-
-leo/test/.leo
-leo/test/ropeProject/*.*
 leo/test/scriptFile.py
-leo/test/beautify_node.py
-leo/test/leoProfile.txt
-leo/test/testzip.zip
-leo/test/*.html
 
-leo/test/unittest/createdFile.txt
-leo/test/unittest/input/testLeoAtFile.py.txt
-leo/test/unittest/test_1.py
-leo/test/unittest/output/*.*
+### leo/test/*.css
+### leo/test/at_ignore_test.txt
+### leo/test/dynamicUnitTest.leo
+### leo/test/clean
+### leo/test/clean/*.*
+### leo/test/dirty-test.py
+### leo/test/c_plus_plus_test.cpp
+### leo/test/pylint-leo-rc.txt
 
-leo/core/scriptFile.py
-leoGuiPlugins.leo
-leo/doc/html/ed.hup
-.pythoscope
-leo/test/unicode-ä-test
-leo/test/under_indent.py
-ekr-macros.txt
-annotate.txt
+### leo/test/.leo
+### leo/test/ropeProject/*.*
 
-leo/core/leoProjects.txt
-leo/plugins/spellpyx.txt
+### leo/test/beautify_node.py
+### leo/test/leoProfile.txt
+### leo/test/testzip.zip
+### leo/test/*.html
+
+### leo/test/unittest/createdFile.txt
+### leo/test/unittest/input/testLeoAtFile.py.txt
+### leo/test/unittest/test_1.py
+### leo/test/unittest/output/*.*
+
+### leo/core/scriptFile.py
+### leoGuiPlugins.leo
+### leo/doc/html/ed.hup
+### .pythoscope
+### leo/test/unicode-ä-test
+### leo/test/under_indent.py
+### ekr-macros.txt
+### annotate.txt
+
+### leo/core/leoProjects.txt
+### leo/plugins/spellpyx.txt
