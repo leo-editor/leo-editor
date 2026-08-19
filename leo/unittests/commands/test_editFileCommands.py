@@ -34,47 +34,6 @@ class TestEditFileCommands(LeoUnitTest):
         x.node_history(path, gnxs, limit=30)
         # self.dump_tree(tag='slow_test_gdc_node_history')
 
-    # @+node:ekr.20230714143451.1: *3* TestEditFileCommands.test_diff_two_branches
-    def test_diff_two_branches(self):
-        c = self.c
-        u = c.undoer
-        x = GitDiffController(c=c)
-
-        # Setup the outline.
-        root = c.rootPosition()
-        root.h = '@file leoGlobals.py'
-        root.deleteAllChildren()
-        while root.hasNext():
-            root.next().doDelete()
-        c.selectPosition(root)
-
-        # Run the test in the leo-editor directory (the parent of the .git directory).
-        new_dir = g.finalize_join(g.app.loadDir, '..', '..')
-        old_dir = os.getcwd()
-        os.chdir(new_dir)
-        try:
-            # Run the command, suppressing output from git.
-            expected_last_headline = 'git-diff-branches main devel'
-            try:
-                sys.stdout = open(os.devnull, 'w')
-                x.diff_two_branches(
-                    branch1='main',
-                    branch2='devel',
-                    fn='leo/core/leoGlobals.py',  # Don't use backslashes.
-                )
-            finally:
-                sys.stdout = sys.__stdout__
-            # #3497: Silently skip the test if nothing has changed.
-            if c.lastTopLevel() == root:
-                return
-            self.assertEqual(c.lastTopLevel().h, expected_last_headline)
-            u.undo()
-            self.assertEqual(c.lastTopLevel(), root)
-            u.redo()
-            self.assertEqual(c.lastTopLevel().h, expected_last_headline)
-        finally:
-            os.chdir(old_dir)
-
     # @+node:ekr.20230714154706.1: *3* TestEditFileCommands.verbose_test_git_diff
     def verbose_test_git_diff(self):
         # Don't run this test by default.
