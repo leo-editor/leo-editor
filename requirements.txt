@@ -14,15 +14,15 @@ twine>=5.1.0
 setuptools>=80.4.0
 
 # For mypy.
-mypy
-mypy-extensions
-typing_extensions
-types-docutils
-types-Markdown
-types-paramiko
-types-PyYAML
-types-requests
-types-six
+# mypy
+# mypy-extensions
+# typing_extensions
+# types-docutils
+# types-Markdown
+# types-paramiko
+# types-PyYAML
+# types-requests
+# types-six
 
 # For testing.
 asttokens       # For unit tests.
