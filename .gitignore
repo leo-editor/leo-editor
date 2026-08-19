@@ -1,4 +1,5 @@
 # Byte-compiled / optimized / DLL files
+
 profile.txt
 __pycache__/
 .mypy_cache/
@@ -23,12 +24,7 @@ leo/.vscode/
 /build/
 /dist/
 
-# The wax_off script uses the mypy_stub folder, but
-# eventually all stub (.pyi) files move to the same folder as their corresponding .py files
 /mypy_stubs/
-# Don't add the helper directories.
-# mypy_stubs/3.*/
-# mypy_stubs/*.txt
 
 # Transcrypt folder.
 __target__
@@ -69,8 +65,7 @@ pip-wheel-metadata/
 /.pytest_cache/
 
 ./MANIFEST
-#./setup.cfg
-leo/test/unittest/rst_write_test.txt
+
 *.exe
 *.o
 *.~*
@@ -107,5 +102,46 @@ leo/doc/html/*.html.txt
 
 leo/plugins/leoPlugins.leo
 leo/plugins/temacs_ext/
+
+leo/test/scriptFile.py
+
+./MANIFEST
+#./setup.cfg
+leo/test/unittest/rst_write_test.txt
+*.exe
+*.o
+*.~*
+*~
+*.tmp
+*.pyc
+*.pyo
+*Thumbs.db
+*.zip
+*.*.swp # vim swap files
+./*.zip
+./*.exe
+
+.ropeProject
+
+gradient.png
+log.txt
+stdout.txt
+stdin.txt
+
+leo/*.zip
+
+leo/core/LeoPy.leo
+leo/core/leoPy.leo
+leo/core/unittest
+
+leo/dist/*.zip
+leo/dist/*.exe
+
+leo/doc/html/*.html
+leo/doc/html/*.html.txt
+
+leo/plugins/leoPlugins.leo
+leo/plugins/temacs_ext/
+
 
 leo/test/scriptFile.py
