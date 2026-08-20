@@ -812,11 +812,11 @@ class GitDiffController:
         if not directory:
             return
         if aList := g.execGitCommand("git rev-parse main", directory):
-            devel_rev = aList[0]
-            devel_rev = devel_rev[:8]
-            g.trace('devel_rev', devel_rev)
+            main_rev = aList[0]
+            main_rev = main_rev[:8]
+            # g.trace('main_rev', main_rev)
             self.clone_diff_two_revs(
-                rev1=devel_rev,  # Before: Latest main commit.
+                rev1=main_rev,  # Before: Latest main commit.
                 rev2='HEAD',  # After: Latest branch commit
             )
         else:
@@ -834,7 +834,7 @@ class GitDiffController:
         if aList := g.execGitCommand("git rev-parse main", directory):
             main_rev = aList[0]
             main_rev = main_rev[:8]
-            g.trace('main_rev', main_rev)
+            # g.trace('main_rev', main_rev)
             self.diff_two_revs(
                 rev1=main_rev,  # Before: Latest main commit.
                 rev2='HEAD',  # After: Latest branch commit
