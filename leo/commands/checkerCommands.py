@@ -594,7 +594,6 @@ class TyCommand:
         command = [sys.executable, '-m', 'ty', 'check', fn]
         result = subprocess.run(command, capture_output=True, text=True)
         raw_s = (result.stdout + result.stderr).replace('All checks passed!', '').strip()
-        g.printObj(raw_s, tag=root.h)
         # Strip out cruft.
         s = ''.join(z for z in g.splitLines(raw_s))
         if s:
