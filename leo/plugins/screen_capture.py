@@ -104,11 +104,6 @@ class Recorder:
             # @verbatim
             # @setting in future, if pointer capture does not occur in
             # all environments - pointer is captured in
-            # Leo Log Window
-            # Leo 4.11 devel, build 5727, 2013-04-19 10:16:15
-            # Python 2.7.4, qt version 4.8.4
-            # linux2
-            # Xubuntu Xfce4 desktop
             cursor = self.widget.cursor()
             pos = self.widget.mapFromGlobal(cursor.pos())
             painter = QtGui.QPainter()

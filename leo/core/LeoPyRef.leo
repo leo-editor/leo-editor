@@ -37,7 +37,6 @@
 <v t="ekr.20220306092217.1"><vh>@command test-one</vh>
 <v t="ekr.20240608035218.1"><vh>&lt;&lt; test-one: test kind &gt;&gt;</vh></v>
 <v t="ekr.20240528034319.1"><vh>&lt;&lt; test the beautifier &gt;&gt;</vh></v>
-<v t="ekr.20240417150035.1"><vh>&lt;&lt; old commands &gt;&gt;</vh></v>
 <v t="ekr.20230511074046.1"><vh>&lt;&lt; prefixes &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20260802055601.1"><vh>@command cover-todo</vh></v>
@@ -199,7 +198,6 @@
 </v>
 <v t="ekr.20260813051733.1"><vh>--- (do not delete) leo-editor: user top-level files</vh>
 <v t="ekr.20231108150521.1"><vh>@edit ../../CONTRIBUTING.md</vh></v>
-<v t="ekr.20240319094534.1"><vh>@edit ../../PKG-INFO.TXT</vh></v>
 <v t="ekr.20240206153029.1"><vh>@edit ../../README.md</vh></v>
 </v>
 </v>
@@ -252,19 +250,14 @@
 <v t="ekr.20221204070905.1"><vh>--- (do not delete) In leo/scripts</vh>
 <v t="ekr.20240321122705.1"><vh>--- build scripts</vh>
 <v t="mhw.20190808083008.1"><vh>@file ../scripts/add-desktop-links.leox</vh></v>
-<v t="mhw.20190808083008.1"></v>
-<v t="ekr.20240321122822.1"><vh>@file ../scripts/build_leo.py</vh></v>
-<v t="ekr.20240321122917.1"><vh>@file ../scripts/inspect_wheel.py</vh></v>
 <v t="ekr.20240321123226.1"><vh>@file ../scripts/install_leo_from_pypi.py</vh></v>
-<v t="ekr.20240321123225.3"><vh>@file ../scripts/install_leo_from_testpypi.py</vh></v>
 <v t="ekr.20240321123214.1"><vh>@file ../scripts/install_leo_locally.py</vh></v>
 <v t="ekr.20240322173704.1"><vh>@file ../scripts/pip_install_r.py</vh></v>
 <v t="ekr.20240322173731.1"><vh>@file ../scripts/pip_uninstall_all.py</vh></v>
 <v t="ekr.20240321123224.1"><vh>@file ../scripts/run_installed_leo.py</vh></v>
 <v t="ekr.20240321123225.1"><vh>@file ../scripts/uninstall_leo.py</vh></v>
 <v t="ekr.20260414092941.1"><vh>@file ../scripts/update_leo_tools.py</vh></v>
-<v t="ekr.20240321123225.4"><vh>@file ../scripts/upload_leo_to_pypi.py</vh></v>
-<v t="ekr.20240321123225.2"><vh>@file ../scripts/upload_leo_to_testpypi.py</vh></v>
+<v t="ekr.20260818055843.1"><vh>@clean ../scripts/build_docs.py</vh></v>
 </v>
 <v t="ekr.20240321122614.1"><vh>--- test scripts</vh>
 <v t="ekr.20240323050520.1"><vh>@file ../scripts/beautify_all_leo.py</vh></v>
@@ -1200,7 +1193,7 @@ os.chdir(path)
 # See https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection
 
 efc.GitDiffController(c).diff_two_branches(
-    branch1='devel',  # old branch/rev
+    branch1='v6.8.10',  # old branch/rev
     branch2='ekr-generalize-g.stat',  # new branch/rev
     fn='leo/core/leoGlobals.py',  # Don't use back slashes.
 )
@@ -1405,13 +1398,13 @@ See #2025: https://github.com/leo-editor/leo-editor/issues/2025
 
 Note: I have chosen *not* to update the gnx's. Félix deserves the credit for the changes.
 
-A script to restore gnx's in sentinels in leoserver.py from the devel branch to the felix-server2 branch.
+A script to restore gnx's in sentinels in leoserver.py from the main branch to the felix-server2 branch.
 
-devel-leoserver.py: the version of leoserver.py from devel
+main-leoserver.py: the version of leoserver.py from main
 felix_server.py:    The version of leoserver.py from felix-server-2
 new_server.py:      leoserver.py, with updated gnx's.
 
-After running this script, `kdiff3 devel-leoserver.py new-leoserver.py` shows *only*
+After running this script, `kdiff3 main-leoserver.py new-leoserver.py` shows *only*
 the expected changes to sentinel lines.
 """
 
@@ -1419,7 +1412,7 @@ g.cls()
 import difflib
 import os
 verbose = True
-ekr_server = r'c:\diffs\devel-leoserver.py'
+ekr_server = r'c:\diffs\main-leoserver.py'
 felix_server = r'c:\diffs\felix-server2-leoserver.py'
 new_server = r'c:\diffs\new-leoserver.py'
 assert os.path.exists(ekr_server), ekr_server
@@ -1523,7 +1516,7 @@ if 1:
 </t>
 <t tx="ekr.20210630103405.1">g.cls()
 import difflib, os, re
-ekr_server = r'c:\diffs\devel-leoserver.py'
+ekr_server = r'c:\diffs\main-leoserver.py'
 felix_server = r'c:\diffs\felix-server2-leoserver.py'
 with open(ekr_server) as f:
     a1_s = f.read()
@@ -2321,19 +2314,6 @@ for i in range(20):
 print('Done!')
 
 @language python
-</t>
-<t tx="ekr.20240417150035.1"># 'python c:/test/mypy_test.py',
-# 'python -m mypy c:/test/mypy_test.py',
-# 'python -m ruff check c:/test/mypy_test.py',
-# 'python -m pyflakes c:/test/mypy_test.py',
-
-# f"{misc}.test_check_leo.TestCheckLeo",
-# f"{core}.test_leoserver.TestLeoServer.test_find_commands",
-# f"{core}.test_leoFind.TestFind.test_find_var",
-# f"{core}.test_leoTokens.TestTokenBasedOrange",
-# f"{core}.test_leoTokens.TestTokens",
-# f"{core}.test_leoTokens.TestTokenBasedOrange.test_blank_lines_after_function",
-# f"{core}.test_leoAtFile.TestAtFile.test_putBody_unterminated_at_doc_part",
 </t>
 <t tx="ekr.20240528034319.1"># Can be run from the command line as follows:
 # python -c "import leo.core.leoTokens" --all --report --write leo/core/leoAst.py
@@ -3192,8 +3172,8 @@ efc.GitDiffController(c).summary_diff_two_revs(
 <t tx="ekr.20260503052547.1">from leo.commands import editFileCommands as efc
 
 efc.GitDiffController(c).diff_two_revs(
-    rev1='main',  # Old
-    rev2='devel',  # New
+    rev1='v6.8.10',  # Old
+    rev2='main',  # New
     # Optional path, relative to the git directory.
     # path='leo/core',
 )
@@ -3244,9 +3224,9 @@ os.system('cover-todo.cmd')
 
 on:
   push:
-    branches: [devel]
+    branches: [main]
   pull_request:
-    branches: [devel]
+    branches: [main]
 
 jobs:
   lint:
@@ -3319,7 +3299,7 @@ jobs:
       - run: pip install "PyQt6&gt;=6.6" PyQt6-QScintilla docutils sphinx sphinx-book-theme
       - run: python -m leo.scripts.build_docs
 
-  mypy:
+  ty:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -3328,12 +3308,13 @@ jobs:
           python-version: "3.12"
           cache: pip
       # Install optional packages that Leo's devs should have installed.
-      - run: pip install "mypy&lt;2" mypy-extensions typing_extensions
-          types-docutils types-Markdown types-paramiko types-PyYAML
-          types-requests types-six
-          "PyQt6&gt;=6.6" PyQt6-QScintilla PyQt6-WebEngine "ty==0.0.71"
+      # - run: pip install "mypy&lt;2" mypy-extensions typing_extensions
+      #     types-docutils types-Markdown types-paramiko types-PyYAML
+      #     types-requests types-six
+      - run: pip install "ty==0.0.71"
+          "PyQt6&gt;=6.6" PyQt6-QScintilla PyQt6-WebEngine 
           black Jinja2 Pygments docutils pyenchant jedi nbformat nbconvert
-      - run: python -m mypy leo
+      # - run: python -m mypy leo
       # Require ty: https://github.com/astral-sh/ty to pass.
       # Run after mypy to reuse the checkout/Python/PyQt6 setup.
       - run: ty check leo
@@ -3496,5 +3477,95 @@ jobs:
 <t tx="ekr.20260813051148.1"></t>
 <t tx="ekr.20260813051203.1"></t>
 <t tx="ekr.20260813051733.1"></t>
+<t tx="ekr.20260818055843.1">"""
+build_docs.py: Regenerate Leo's documentation from leo/doc/LeoDocs.leo.
+
+Two-stage pipeline, both stages driven headlessly (no Leo GUI needed):
+
+1. Run Leo's rst3 command over the LeoDocs.leo outline. This writes the
+   reStructuredText intermediate files (leo/doc/html/*.html.txt and
+   leo/doc/html/slides/**/*.html.txt) from the bodies of its @rst nodes.
+   readSettings=True so the outline's own @settings tree is honored --
+   in particular @bool rst3_call_docutils = False, which keeps this stage
+   from invoking docutils itself; Sphinx does that in stage 2.
+2. Run sphinx-build over leo/doc/html (using its conf.py/Makefile config)
+   to turn those intermediates into final HTML.
+
+Usage:
+    python -m leo.scripts.build_docs [--out DIR]
+"""
+
+import argparse
+import glob
+import os
+import subprocess
+import sys
+
+os.environ.setdefault('QT_QPA_PLATFORM', 'offscreen')
+
+leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
+os.chdir(leo_editor_dir)
+sys.path.insert(0, leo_editor_dir)
+
+from leo.core import leoBridge  # noqa: E402
+
+
+def run_rst3() -&gt; int:
+    """Regenerate the .html.txt intermediates from LeoDocs.leo. Return the count written."""
+    leo_path = os.path.join(leo_editor_dir, 'leo', 'doc', 'LeoDocs.leo')
+    bridge = leoBridge.controller(
+        gui='nullGui',
+        loadPlugins=False,
+        readSettings=True,
+        silent=True,
+        verbose=False,
+    )
+    c = bridge.openLeoFile(leo_path)
+    # rst3() only searches the subtree of the current position (see
+    # g.findRootsWithPredicate), and @rst trees are scattered across many
+    # top-level nodes in LeoDocs.leo -- not gathered under one parent.
+    # Run it once per top-level tree so every @rst node gets picked up.
+    total = 0
+    for p in c.rootPosition().self_and_siblings(copy=False):
+        c.selectPosition(p)
+        total += c.rstCommands.rst3()
+    return total
+
+
+def run_sphinx(out_dir: str) -&gt; int:
+    html_dir = os.path.join(leo_editor_dir, 'leo', 'doc', 'html')
+    cmd = ['sphinx-build', '-b', 'html', html_dir, out_dir]
+    print(' '.join(cmd))
+    return subprocess.call(cmd)
+
+
+def main() -&gt; int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--out',
+        default=os.path.join(leo_editor_dir, 'leo', 'doc', 'html', '_build', 'html'),
+        help='Directory to write the built HTML to.',
+    )
+    args = parser.parse_args()
+
+    n = run_rst3()
+    print(f"rst3: wrote {n} changed intermediate file(s)")
+    # n only counts files that *changed*; on a no-op rebuild it's legitimately 0.
+    # Check existence instead, as a sanity gate before handing off to sphinx-build.
+    html_dir = os.path.join(leo_editor_dir, 'leo', 'doc', 'html')
+    existing = glob.glob(os.path.join(html_dir, '*.html.txt'))
+    if not existing:
+        print("ERROR: no .html.txt intermediates found -- check LeoDocs.leo", file=sys.stderr)
+        return 1
+
+    rc = run_sphinx(args.out)
+    if rc == 0:
+        print(f"sphinx-build OK -&gt; {args.out}")
+    return rc
+
+
+if __name__ == '__main__':
+    sys.exit(main())
+</t>
 </tnodes>
 </leo_file>

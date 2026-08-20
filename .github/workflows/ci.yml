@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [devel]
+    branches: [main]
   pull_request:
-    branches: [devel]
+    branches: [main]
 
 jobs:
   lint:
@@ -77,7 +77,7 @@ jobs:
       - run: pip install "PyQt6>=6.6" PyQt6-QScintilla docutils sphinx sphinx-book-theme
       - run: python -m leo.scripts.build_docs
 
-  mypy:
+  ty:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -86,12 +86,13 @@ jobs:
           python-version: "3.12"
           cache: pip
       # Install optional packages that Leo's devs should have installed.
-      - run: pip install "mypy<2" mypy-extensions typing_extensions
-          types-docutils types-Markdown types-paramiko types-PyYAML
-          types-requests types-six
-          "PyQt6>=6.6" PyQt6-QScintilla PyQt6-WebEngine "ty==0.0.71"
+      # - run: pip install "mypy<2" mypy-extensions typing_extensions
+      #     types-docutils types-Markdown types-paramiko types-PyYAML
+      #     types-requests types-six
+      - run: pip install "ty==0.0.71"
+          "PyQt6>=6.6" PyQt6-QScintilla PyQt6-WebEngine 
           black Jinja2 Pygments docutils pyenchant jedi nbformat nbconvert
-      - run: python -m mypy leo
+      # - run: python -m mypy leo
       # Require ty: https://github.com/astral-sh/ty to pass.
       # Run after mypy to reuse the checkout/Python/PyQt6 setup.
       - run: ty check leo

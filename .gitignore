@@ -1,4 +1,5 @@
 # Byte-compiled / optimized / DLL files
+
 profile.txt
 __pycache__/
 .mypy_cache/
@@ -23,12 +24,7 @@ leo/.vscode/
 /build/
 /dist/
 
-# The wax_off script uses the mypy_stub folder, but
-# eventually all stub (.pyi) files move to the same folder as their corresponding .py files
 /mypy_stubs/
-# Don't add the helper directories.
-# mypy_stubs/3.*/
-# mypy_stubs/*.txt
 
 # Transcrypt folder.
 __target__
@@ -44,10 +40,6 @@ htmlcov/
 .leo
 *.leo_db
 .leo_shadow
-
-
-# Files in leo/proto
-leo/proto/*
 
 # C extensions
 *.so
@@ -71,6 +63,47 @@ pip-wheel-metadata/
 
 # Test results
 /.pytest_cache/
+
+./MANIFEST
+
+*.exe
+*.o
+*.~*
+*~
+*.tmp
+*.pyc
+*.pyo
+*Thumbs.db
+*.zip
+*.*.swp # vim swap files
+./*.zip
+./*.exe
+
+.ropeProject
+
+gradient.png
+log.txt
+stdout.txt
+stdin.txt
+
+### Leo files that should be ignored...
+
+leo/*.zip
+
+leo/core/LeoPy.leo
+leo/core/leoPy.leo
+leo/core/unittest
+
+leo/dist/*.zip
+leo/dist/*.exe
+
+leo/doc/html/*.html
+leo/doc/html/*.html.txt
+
+leo/plugins/leoPlugins.leo
+leo/plugins/temacs_ext/
+
+leo/test/scriptFile.py
 
 ./MANIFEST
 #./setup.cfg
@@ -104,64 +137,11 @@ leo/core/unittest
 leo/dist/*.zip
 leo/dist/*.exe
 
-### leo/doc/leoTechReport.*
-### leo/doc/Clones and views-*
-### leo/doc/External files-*
-### leo/doc/Installation-*
-### leo/doc/Leo basics step by step-*
-### leo/doc/Leo's NSIS Installer-*
-### leo/doc/Scripting Leo-*
-### leo/doc/Using Leo's minibuffer-*
-### leo/doc/What is Leo-*
-### leo/doc/Whetting Your Appetite-*
-
-###  leo/doc/_build/*
-### leo/doc/html/build
-### leo/doc/html/_build
-### leo/doc/_templates
-
 leo/doc/html/*.html
 leo/doc/html/*.html.txt
 
 leo/plugins/leoPlugins.leo
 leo/plugins/temacs_ext/
 
-### leo/rust/orange/target
-### leo/rust/orange/target/*
-### leo/rust/orange/Cargo.lock
 
 leo/test/scriptFile.py
-
-### leo/test/*.css
-### leo/test/at_ignore_test.txt
-### leo/test/dynamicUnitTest.leo
-### leo/test/clean
-### leo/test/clean/*.*
-### leo/test/dirty-test.py
-### leo/test/c_plus_plus_test.cpp
-### leo/test/pylint-leo-rc.txt
-
-### leo/test/.leo
-### leo/test/ropeProject/*.*
-
-### leo/test/beautify_node.py
-### leo/test/leoProfile.txt
-### leo/test/testzip.zip
-### leo/test/*.html
-
-### leo/test/unittest/createdFile.txt
-### leo/test/unittest/input/testLeoAtFile.py.txt
-### leo/test/unittest/test_1.py
-### leo/test/unittest/output/*.*
-
-### leo/core/scriptFile.py
-### leoGuiPlugins.leo
-### leo/doc/html/ed.hup
-### .pythoscope
-### leo/test/unicode-ä-test
-### leo/test/under_indent.py
-### ekr-macros.txt
-### annotate.txt
-
-### leo/core/leoProjects.txt
-### leo/plugins/spellpyx.txt
