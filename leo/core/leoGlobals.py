@@ -460,6 +460,7 @@ cmd_instance_dict: dict[str, list[str]] = {
 mypy_pat = re.compile(r'^(.+?):([0-9]+):\s*(error|note)\s*(.*)\s*$')
 python_pat = re.compile(r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$')
 ruff_pat = re.compile(r'^(.+?):([0-9]+):[0-9]+:.*$')  # ruff's --output-format=concise.
+ty_pat = re.compile(r'^\s*-->\s*(.+?):([0-9]+):[0-9]+.*$')
 
 
 # @-<< define global error regexes >>

@@ -283,7 +283,7 @@ def ruff_command(event: LeoKeyEvent | None = None) -> None:
     if ruff:
         RuffCommand(c).run(c.p)
     else:
-        g.es_print('can not import ruff')
+        g.print_unique_message('can not import ruff')
 
 
 # @+node:ekr.20260820160919.1: *3* ty command
@@ -294,7 +294,7 @@ def ty_command(event: LeoKeyEvent | None = None) -> None:
     @<file> node in an ancestor.
 
     Unlike running ruff outside of Leo, Leo's ruff command creates
-    clickable links in Leo's log pane for each error. See g.ruff_pat.
+    clickable links in Leo's log pane for each error. See g.ty_pat.
     """
     c = event.c if event else None
     if not c:
@@ -304,7 +304,7 @@ def ty_command(event: LeoKeyEvent | None = None) -> None:
     if ty:
         TyCommand(c).run(c.p)
     else:
-        g.es_print('can not import ruff')
+        g.print_unique_message('can not import ty')
 
 
 # @+node:ekr.20230221105941.1: ** class CheckNodes
@@ -556,7 +556,7 @@ class RuffCommand:
 class TyCommand:
     """A class to run ty on all Python @<file> nodes in c.p's tree."""
 
-    # See g.ruff_pat for the regex that creates clickable links.
+    # See g.ty_pat for the regex that creates clickable links.
 
     def __init__(self, c: Cmdr) -> None:
         """ctor for RuffCommand class."""
@@ -565,7 +565,7 @@ class TyCommand:
     # @+others
     # @+node:ekr.20260820160750.2: *3* ty.check_all
     def check_all(self, roots: list[Position]) -> None:
-        """Run ruff on all files in roots."""
+        """Run ty on all files in roots."""
         c = self.c
         for root in roots:
             fn = os.path.normpath(c.fullPath(root))
@@ -575,32 +575,27 @@ class TyCommand:
     def check_file(self, fn: str, root: Position) -> None:
         """Run ty on one file."""
         c = self.c
-        if not ruff:
+        if not ty:
             g.print_unique_message('install ty with `pip install ty`')
             return
         command = f"{sys.executable} -m ty check {fn}"
         bpm = g.app.backgroundProcessManager
-        bpm.start_process(c, command, fn=fn, kind='ruff')
+        bpm.start_process(c, command, fn=fn, kind='ty')
 
     # @+node:ekr.20260820160750.4: *3* ty.check_on_write (sync, for on-write checking)
     def check_on_write(self, root: Position) -> bool:
         """
-        Run ty synchronously on root's file. Return True if ruff reports no errors.
-
-        Unlike check_file (which uses the BackgroundProcessManager so the GUI
-        doesn't block while checking a whole tree), this runs in the foreground:
-        it's used for run-ruff-on-write, which checks a single just-saved file
-        and needs a real pass/fail result before the write completes.
+        Run ty synchronously on root's file. Return True if ty reports no errors.
         """
         c = self.c
-        if not ruff:
+        if not ty:
             return True
         fn = os.path.normpath(c.fullPath(root))
         command = [sys.executable, '-m', 'ty', 'check', fn]
         result = subprocess.run(command, capture_output=True, text=True)
         raw_s = (result.stdout + result.stderr).replace('All checks passed!', '').strip()
+        g.printObj(raw_s, tag=root.h)
         # Strip out cruft.
-        ### s = ''.join(z for z in g.splitLines(raw_s) if not z.startswith('Found')).strip()
         s = ''.join(z for z in g.splitLines(raw_s))
         if s:
             c.frame.log.put_html_links(s)
@@ -609,28 +604,29 @@ class TyCommand:
     # @+node:ekr.20260820160750.5: *3* ty.check_script_file
     def check_script_file(self, fn: str, script_p: Position) -> bool:
         """
-        Run ruff synchronously the file. Return True if ruff reports no errors.
+        Run ty synchronously the file. Return True if ty reports no errors.
 
         Used by execute-script.
         """
         c = self.c
-        if not ruff:
+        if not ty:
             return True
         command = [
             sys.executable,
             '-m',
-            'ruff',
+            'ty',
             'check',
             '--isolated',  # Ignore all configuration files.
             '--config',
             'builtins=["c", "g", "p"]',
-            '--output-format=concise',
             fn,
-        ]  # fmt: skip
+        ]
         result = subprocess.run(command, capture_output=True, text=True)
         raw_s = (result.stdout + result.stderr).replace('All checks passed!', '').strip()
         # Strip out cruft.
-        s = ''.join(z for z in g.splitLines(raw_s) if not z.startswith('Found')).strip()
+        s = ''.join(
+            z for z in g.splitLines(raw_s)
+        ).strip()  ### if not z.startswith('Found')).strip()
         s = s.replace(fn, c.p.h)  # A hack.
         if s:
             c.frame.log.put_html_links(s, script_p=script_p)
@@ -638,10 +634,10 @@ class TyCommand:
 
     # @+node:ekr.20260820160750.6: *3* ty.run (entry)
     def run(self, p: Position) -> None:
-        """Run ruff on all Python @<file> nodes in c.p's tree."""
+        """Run ty on all Python @<file> nodes in c.p's tree."""
         c = self.c
-        if not ruff:
-            print('install ruff with `pip install ruff`')
+        if not ty:
+            print('install ty with `pip install ty`')
             return
         root = p.copy()
         # Make sure the parent of the leo directory is on sys.path.
