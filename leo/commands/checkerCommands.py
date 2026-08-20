@@ -449,7 +449,7 @@ class RuffCommand:
         """Run ruff on one file."""
         c = self.c
         if not ruff:
-            print('install ruff with `pip install ruff`')
+            g.print_unique_message('install ruff with `pip install ruff`')
             return
         command = f"{sys.executable} -m ruff check --output-format=concise {fn}"
         bpm = g.app.backgroundProcessManager
@@ -526,6 +526,7 @@ class RuffCommand:
     # @-others
 
 
+# @+node:ekr.20260820125628.1: ** class TyCommand
 # @-others
 # @@language python
 # @@tabwidth -4
