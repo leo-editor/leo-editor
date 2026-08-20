@@ -188,7 +188,7 @@ class AutoCompleterClass:
 
         # Declare ivars.
         self.qcompleter: Callable
-        self.qw: Any  # The object that supports qcompletion methods.
+        self.qw: Any = None  # The object that supports qcompletion methods.
         self.w: Widget  # The widget that gets focus after autocomplete is done.
 
         # Init ivars.
@@ -343,10 +343,9 @@ class AutoCompleterClass:
         c, p, u = self.c, self.c.p, self.c.undoer
         w = self.w or c.frame.body.wrapper
         c.k.keyboardQuit()  # #2927: Deletes completer tabs.
-        if self.use_qcompleter:
-            if self.qw:
-                self.qw.end_completer()
-                self.qw = None  # Bug fix: 2013/09/24.
+        if self.use_qcompleter and self.qw:
+            self.qw.end_completer()
+            self.qw = None  # Bug fix: 2013/09/24.
         # Restore the selection range that may have been destroyed by changing tabs.
         c.widgetWantsFocusNow(w)
         i, j = w.getSelectionRange()
@@ -933,11 +932,6 @@ class AutoCompleterClass:
         if not g.isTextWrapper(w):
             return
         c.widgetWantsFocusNow(w)
-
-        # Don't make this undoable.
-        # oldText = w.getAllText()
-        # oldSel = w.getSelectionRange()
-        # bunch = u.beforeChangeBody(p)
         i = w.getInsertPoint()
         w.insert(i, s)
         if select:
@@ -945,17 +939,6 @@ class AutoCompleterClass:
             w.setSelectionRange(i, j, insert=j)
         else:
             w.setInsertPoint(i + len(s))
-
-        # Don't make this undoable.
-        # if 0:
-        # u.doTyping(p, 'Typing',
-        # oldSel=oldSel,
-        # oldText=oldText,
-        # newText=w.getAllText(),
-        # newInsert=w.getInsertPoint(),
-        # newSel=w.getSelectionRange())
-        # else:
-        # u.afterChangeBody(p, 'auto-complete', bunch)
         if self.use_qcompleter and self.qw:
             c.widgetWantsFocusNow(self.qw.leo_qc)
 
