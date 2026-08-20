@@ -23,7 +23,7 @@ os.chdir(leo_editor_dir)
 
 python = sys.executable
 for command in [
-    f"{python} -m pip install --upgrade mypy",
+    # f"{python} -m pip install --upgrade mypy",
     f"{python} -m pip install --upgrade ruff",
 ]:
     print('')

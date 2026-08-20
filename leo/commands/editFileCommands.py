@@ -811,16 +811,16 @@ class GitDiffController:
         directory = self.get_parent_of_git_directory()
         if not directory:
             return
-        if aList := g.execGitCommand("git rev-parse devel", directory):
+        if aList := g.execGitCommand("git rev-parse main", directory):
             devel_rev = aList[0]
             devel_rev = devel_rev[:8]
             g.trace('devel_rev', devel_rev)
             self.clone_diff_two_revs(
-                rev1=devel_rev,  # Before: Latest devel commit.
+                rev1=devel_rev,  # Before: Latest main commit.
                 rev2='HEAD',  # After: Latest branch commit
             )
         else:
-            g.es_print('FAIL: git rev-parse devel')
+            g.es_print('FAIL: git rev-parse main')
 
     # @+node:ekr.20201208115447.1: *4* gdc.diff_pull_request
     def diff_pull_request(self) -> None:
@@ -831,16 +831,16 @@ class GitDiffController:
         directory = self.get_parent_of_git_directory()
         if not directory:
             return
-        if aList := g.execGitCommand("git rev-parse devel", directory):
+        if aList := g.execGitCommand("git rev-parse main", directory):
             devel_rev = aList[0]
             devel_rev = devel_rev[:8]
             g.trace('devel_rev', devel_rev)
             self.diff_two_revs(
-                rev1=devel_rev,  # Before: Latest devel commit.
+                rev1=devel_rev,  # Before: Latest main commit.
                 rev2='HEAD',  # After: Latest branch commit
             )
         else:
-            g.es_print('FAIL: git rev-parse devel')
+            g.es_print('FAIL: git rev-parse main')
 
     # @+node:ekr.20180506064102.10: *4* gdc.diff_two_branches
     def diff_two_branches(self, branch1: str, branch2: str, fn: str) -> None:
