@@ -529,7 +529,7 @@ class Commands:
         c = self
         from leo.core import leoConfig
 
-        c.config = leoConfig.LocalConfigManager(c, previousSettings)  # type:ignore
+        c.config = leoConfig.LocalConfigManager(c, previousSettings)
 
     # @+node:ekr.20031218072017.2814: *4* c.__repr__ & __str__
     def __repr__(self) -> str:
@@ -1256,8 +1256,7 @@ class Commands:
         with open(fname, 'wt', encoding='utf8') as out:
             out.write(script)
         tree = ast.parse(script, filename=fname)
-        # A mypy bug? the script can be str.
-        rewrite_asserts(tree, script, config=cfg)  # type:ignore
+        rewrite_asserts(tree, g.toEncodedString(script), config=cfg)
         co = compile(tree, fname, "exec", dont_inherit=True)
         sys.path.insert(0, os.getcwd())
         sys.path.insert(0, g.os_path_dirname(c.fileName()))  # per SegundoBob
@@ -5016,7 +5015,7 @@ class Commands:
                 assert limit
                 return current != limit
             # A chapter.
-            return current != limit.firstChild()  # type:ignore # Bug!?!
+            return current != limit.firstChild()
         return current != c.rootPosition()
 
     # @+node:ekr.20031218072017.2974: *6* c.canPasteOutline
