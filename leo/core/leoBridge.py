@@ -1,8 +1,6 @@
 #! /usr/bin/env python
-# type:ignore
 # @+leo-ver=5-thin
 # @+node:ekr.20070227091955.1: * @file leoBridge.py
-# @@first
 # @@first
 """A module to allow full access to Leo commanders from outside Leo."""
 
@@ -120,7 +118,7 @@ class BridgeController:
         self.initLeo()
 
     # @+node:ekr.20070227092442.4: *3* bridge.globals
-    def globals(self) -> ModuleType:
+    def globals(self) -> ModuleType | None:
         """Return a fully initialized leoGlobals module."""
         return self.g if self.isOpen() else None
 
@@ -215,7 +213,7 @@ class BridgeController:
             def dummyDoHook(tag: str, *args: Args, **keys: KWargs) -> None:
                 pass
 
-            g.doHook = dummyDoHook
+            g.doHook = dummyDoHook  # type:ignore
         g.doHook("start1")  # Load plugins.
         g.app.computeSignon()
         g.app.initing = False
