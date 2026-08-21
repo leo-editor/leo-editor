@@ -2273,8 +2273,7 @@ class SettingsTreeParser(ParserBaseClass):
         elif kind in self.control_types or kind in self.basic_types:
             if f := self.dispatchDict.get(kind):
                 try:
-                    # mypy: can not call function of unknown type.
-                    return f(p, kind, name, val)  # type:ignore
+                    return f(p, kind, name, val)
                 except Exception:
                     g.es_exception()
             else:
