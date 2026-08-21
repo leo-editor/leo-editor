@@ -291,7 +291,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             if not fileName:
                 return
             # Read the file into the hidden commander.
-            c2 = g.createHiddenCommander(fileName)  # type:ignore # The next line tests c2.
+            c2 = g.createHiddenCommander(fileName)
             if not c2:
                 return
         # Compute the inserted, deleted and changed dicts.
@@ -328,7 +328,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             if d2.get(key):
                 p1 = d1.get(key)
                 p2 = d2.get(key)
-                if p1 and p2 and p1.h != p2.h or p1.b != p2.b:  # type:ignore
+                if p1 and p2 and p1.h != p2.h or p1.b != p2.b:
                     changed[key] = p2  # Show the node in the *other* file.
         return inserted, deleted, changed
 
@@ -1052,14 +1052,14 @@ class GitDiffController:
             contents0 = contents_list[i]
             body0 = contents0[range0[0] : range0[1]]
         else:
-            gnx0 = range0 = contents0 = body0 = None  # type:ignore
+            gnx0 = range0 = contents0 = body0 = None
         if nodes1:
             gnx1 = nodes1[0][1]
             range1 = nodes1[0][2]
             contents1 = contents_list[i + 1]
             body1 = contents1[range1[0] : range1[1]]
         else:
-            gnx1 = range1 = contents1 = body1 = None  # type:ignore
+            gnx1 = range1 = contents1 = body1 = None
         return g.Bunch(
             i=i,
             kind=kind,
