@@ -18,17 +18,17 @@ try:
     from mypy import api as mypy_api
 except Exception:
     mypy = None  # type:ignore
-    mypy_api = None  # type:ignore
+    mypy_api = None
 
 try:
     import ruff
 except Exception:
-    ruff = None  # type:ignore
+    ruff = None
 
 try:
     import ty
 except Exception:
-    ty = None  # type:ignore
+    ty = None
 
 # Leo imports.
 from leo.core import leoGlobals as g
