@@ -19,7 +19,9 @@ exclude = [
     "leo/themes",
     "leo/unittests",
     "leo/www",
+    "leo/plugins/QNCalendarWidget.py",
     "leo/plugins/freewin.py",
+    "leo/plugins/xdb_pane.py",
     "leo/test/scriptFile.py",
     "leo/plugins/beautify_node.py",
     "leo/plugins/viewrendered3*",
@@ -40,7 +42,7 @@ unresolved-attribute = "ignore"
 # Like `ignore_missing_imports = True` in .mypy.ini.
 unresolved-import = "ignore"
 
-# Enable warnings about unused suppressions.
+# Warn about unused suppressions.
 unused-type-ignore-comment = "warn"
 
 # Ignore warnings about overridden methods.
