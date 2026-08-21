@@ -16,7 +16,7 @@ if TYPE_CHECKING:  # pragma: no cover
     except Exception:
         from typing import Any
 
-        Self = Any  # type:ignore
+        Self = Any
 
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
