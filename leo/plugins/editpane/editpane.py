@@ -555,7 +555,7 @@ class LeoEditPane(QtWidgets.QWidget):
             self.view_widget.update_text(text)
 
     # @+node:tbrown.20171028115438.36: *3* render
-    def render(self, checked):  # type:ignore
+    def render(self, checked):
         pass
 
     # @+node:tbrown.20171028115438.37: *3* set_widget
