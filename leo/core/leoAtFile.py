@@ -17,11 +17,12 @@ import tokenize
 from typing import cast, Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
+from leo.core.leoNodes import Position
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
-    from leo.core.leoNodes import Position, VNode
+    from leo.core.leoNodes import VNode
 
     Args = Any
     Value = Any
@@ -123,8 +124,7 @@ class AtFile:
         # Basic status vars.
         self.errors = 0
         self.language: str = ''
-        self.root: Position
-        self.root = None  # type:ignore # Avoid a cast here.
+        self.root = cast(Position, None)
         # Dialogs.
         self.canCancelFlag = False
         self.cancelFlag = False
@@ -376,7 +376,7 @@ class AtFile:
         # Remember the full path to this node.
         at.setPathUa(at.root, fn)
         if is_at_shadow:  # pragma: no cover
-            fn = at.openAtShadowFileForReading(fn)  # type:ignore # We are about to test fn.
+            fn = at.openAtShadowFileForReading(fn)
             if not fn:
                 return fail
         assert fn
@@ -997,7 +997,7 @@ class AtFile:
         at, c = self, self.c
         # Set defaults.
         encoding = c.config.default_derived_file_encoding
-        readVersion = None
+        readVersion = ''
         new_df, start, end, isThin = False, '', '', False
         # Example: \*@+leo-ver=5-thin-encoding=utf-8,.*/
         pattern = re.compile(r'(.+)@\+leo(-ver=([0123456789]+))?(-thin)?(-encoding=(.*)(\.))?(.*)')
@@ -1012,21 +1012,21 @@ class AtFile:
         # group(8): closing delim.
         m = pattern.match(s)
         if valid := bool(m):
-            start = m.group(1)  # type:ignore # start delim
+            start = m.group(1)  # start delim
             valid = bool(start)
         if valid:
-            if new_df := bool(m.group(2)):  # type:ignore # -ver=
+            if new_df := bool(m.group(2)):  # -ver=
                 # Set the version number.
-                if m.group(3):  # type:ignore
-                    readVersion = m.group(3)  # type:ignore
+                if m.group(3):
+                    readVersion = m.group(3)
                 else:
                     valid = False
         if valid:
             # set isThin
-            isThin = bool(m.group(4))  # type:ignore
-        if valid and m.group(5):  # type:ignore
+            isThin = bool(m.group(4))
+        if valid and m.group(5):
             # set encoding.
-            encoding = m.group(6)  # type:ignore
+            encoding = m.group(6)
             if encoding and encoding.endswith(','):
                 # Leo 4.2 or after.
                 encoding = encoding[:-1]
@@ -1034,10 +1034,10 @@ class AtFile:
                 g.es_print("bad encoding in derived file:", encoding)
                 valid = False
         if valid:
-            end = m.group(8)  # type:ignore  # closing delim
+            end = m.group(8)  # closing delim
         if valid:
             at.encoding = encoding
-            at.readVersion = readVersion  # type:ignore
+            at.readVersion = readVersion
         return valid, new_df, start, end, isThin
 
     # @+node:ekr.20130911110233.11284: *5* at.readFileToUnicode & helpers
@@ -2649,7 +2649,7 @@ class AtFile:
         """Report a syntax error."""
         g.error(f"Syntax error in: {p.h}")
         typ, val, tb = sys.exc_info()
-        if message := hasattr(val, 'message') and val.message:  # type:ignore
+        if message := hasattr(val, 'message') and val.message:
             g.es_print(message)
         if val is None:
             return
@@ -3206,9 +3206,9 @@ class AtFile:
             if g.unitTesting:
                 raise
             _, nag, _ = sys.exc_info()
-            badline = nag.get_lineno()  # type:ignore
-            line = nag.get_line()  # type:ignore
-            message = nag.get_msg()  # type:ignore
+            badline = nag.get_lineno()
+            line = nag.get_line()
+            message = nag.get_msg()
             g.error("indentation error in", p.h, "line", badline)
             g.es(message)
             line2 = repr(str(line))[1:-1]
@@ -3461,8 +3461,7 @@ class FastAtRead:
         # The global fc.gnxDict. Keys are gnx's, values are vnodes.
         self.gnx2vnode: dict[str, VNode] = gnx2vnode
         self.path: str = ''
-        self.root: Position
-        self.root = None  # type:ignore  # cast doesn't work here!
+        self.root = cast(Position, None)
 
         # compiled patterns...
         self.after_pat = cast(re.Pattern, None)
