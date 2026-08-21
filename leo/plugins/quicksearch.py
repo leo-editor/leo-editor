@@ -582,7 +582,7 @@ class QuickSearchController:
         else:
             hpat = pat[2:]
             bpat = pat[2:]
-            flags = 0  # type:ignore
+            flags = 0
         combo = self.widgetUI.comboBox.currentText()
         bNodes: Iterable[Position]
         hNodes: Iterable[Position]
@@ -671,7 +671,7 @@ class QuickSearchController:
             flags = re.IGNORECASE
         else:
             hpat = pat[2:]
-            flags = 0  # type:ignore
+            flags = 0
         combo = self.widgetUI.comboBox.currentText()
         hNodes: Iterable
         if combo == "All":
