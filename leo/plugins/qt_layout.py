@@ -696,7 +696,7 @@ class LayoutCacheWidget(QWidget):
         # In building the SPLITTER dict we replace the placeholder
         # by VR3_OBJ_NAME if it exists, otherwise VR_OBJ_NAME.
         SPLITTERS: dict[str, Any] = dict()
-        for k, v in layout['SPLITTERS'].items():  # type:ignore
+        for k, v in layout['SPLITTERS'].items():
             if k == VRX_PLACEHOLDER_NAME:
                 k = VR3_OBJ_NAME if has_vr3 else VR_OBJ_NAME
             SPLITTERS[k] = v
@@ -713,7 +713,7 @@ class LayoutCacheWidget(QWidget):
                 self.created_splitter_dict[name] = splitter
 
         SPLITTER_DICT: dict[str, QSplitter] = OrderedDict()
-        for name in ORIENTATIONS:  # type:ignore
+        for name in ORIENTATIONS:
             splitter = self.find_splitter_by_name(name)
             if splitter is not None and SPLITTER_DICT.get(name, None) is None:
                 SPLITTER_DICT[name] = splitter
@@ -791,7 +791,7 @@ class LayoutCacheWidget(QWidget):
         # @+<< resize splitters >>
         # @+node:tom.20240923194438.12: *5* << resize splitters >> restoreFromLayout
         for splt in SPLITTER_DICT.values():
-            g.app.gui.equalize_splitter(splt)  # type: ignore[attr-defined]
+            g.app.gui.equalize_splitter(splt)
         # @-<< resize splitters >>
         editor.show()
 
