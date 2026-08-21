@@ -77,8 +77,9 @@ if TYPE_CHECKING:  # pragma: no cover
 # @-<< leoGlobals: annotations >>
 # @+<< leoGlobals: global constants >>
 # @+node:ekr.20240515093718.1: ** << leoGlobals: global constants >>
-in_bridge = False  # True: leoApp object loads a null Gui by default.
-in_vs_code = False  # #2098.
+in_bridge: bool = False  # True: leoApp object loads a null Gui by default.
+in_leo_server: bool = False
+in_vs_code: bool = False  # #2098.
 minimum_python_version = '3.10'
 minimum_python_version_tuple = (3, 10, 0)
 python_version_tuple = sys.version_info[:3]
