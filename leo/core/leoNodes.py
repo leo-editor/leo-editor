@@ -220,7 +220,7 @@ class NodeIndices:
             return  # the gnx is not well formed or n in ('',None)
         if id_ == self.userId and t == self.timeString:
             try:
-                n2 = int(n)  # type:ignore
+                n2 = int(n)
                 if n2 > self.lastIndex:
                     self.lastIndex = n2
                     if not g.unitTesting:
