@@ -633,6 +633,7 @@
 <v t="ekr.20090514111518.8379"><vh>@bool check-python-code-on-write = True</vh></v>
 <v t="ekr.20260326111743.1"><vh>@bool raise-file-update-dialogs = False</vh></v>
 <v t="vv.20260807130000.1"><vh>@bool run-ruff-on-write = False</vh></v>
+<v t="ekr.20260820160658.1"><vh>@bool run-ty-on-write = False</vh></v>
 <v t="ekr.20150710084507.1"><vh>@bool syntax-error-popup = False</vh></v>
 <v t="ekr.20150321090958.1"><vh>@bool verbose-check-outline = False</vh></v>
 </v>
@@ -11899,6 +11900,7 @@ If not given, Leo's beautifier uses Leo's pyproject.toml file.
 
 True (Legacy):       Raise a dialog when any file changes externally.
 False (Recommended): Print a log message when any file changes externally.</t>
+<t tx="ekr.20260820160658.1"></t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>

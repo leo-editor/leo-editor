@@ -729,6 +729,7 @@ class LeoLog:
         g.mypy_pat,
         g.python_pat,
         g.ruff_pat,
+        g.ty_pat,
     )
 
     # This table encodes which groups extract the filename and line_number from global regex patterns.
@@ -739,6 +740,7 @@ class LeoLog:
         (1, 2, g.mypy_pat),
         (1, 2, g.python_pat),
         (1, 2, g.ruff_pat),
+        (1, 2, g.ty_pat),
     ]
 
     def put_html_links(self, s: str, script_p: Position | None = None) -> bool:
