@@ -33,20 +33,15 @@ exclude = [
 ]
 
 [rules]
+
 # Like `disable_error_code=attr-defined` in .mypy.ini.
 unresolved-attribute = "ignore"
 
 # Like `ignore_missing_imports = True` in .mypy.ini.
 unresolved-import = "ignore"
 
-# Silence warnings about mypy suppressions that mypy needs.
-unused-type-ignore-comment = "ignore"
+# Enable warnings about unused suppressions.
+unused-type-ignore-comment = "warn"
 
-# PyQt/PySide stub signatures name event-handler parameters `a0`, `a1`,
-# etc. (they're wrapped C++ methods with no meaningful Python names),
-# so any override using a readable parameter name (`event`, `obj`, ...)
-# trips ty's Liskov keyword-compatibility check. This is a structural
-# mismatch between Qt's stubs and Leo's Qt subclasses throughout
-# leo/plugins (event filters, close/focus/mouse events, JSONEncoder.default,
-# importer find_end_of_block overrides), not a real override bug.
+# Ignore warnings about overridden methods.
 invalid-method-override = "ignore"
