@@ -28,7 +28,7 @@ try:
     import lxml
     import lxml.html
 except ImportError:
-    lxml = None  # type:ignore
+    lxml = None
 
 # Leo imports...
 from leo.core import leoGlobals as g
@@ -792,7 +792,7 @@ class LeoImportCommands:
                 fn = c.relativeDirectory(fn)
                 p.h = f"{treeType} {fn}"
                 u.afterInsertNode(p, 'Import', undoData)
-                p = self.createOutline(parent=p, treeType=self.treeType)  # type:ignore
+                p = self.createOutline(parent=p, treeType=self.treeType)
                 if p:  # createOutline may fail.
                     p.contract()
                     p.setDirty()
