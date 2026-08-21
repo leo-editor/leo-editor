@@ -53,7 +53,7 @@ from leo.core import leoGlobals as g  # pylint: disable=import-self
 try:
     import tkinter as Tk
 except Exception:
-    Tk = None  # type:ignore
+    Tk = None
 
 # Abbreviations...
 StringIO = io.StringIO
@@ -930,11 +930,11 @@ class EmergencyDialog:
     # @+node:ekr.20120219154958.10495: *4* emergencyDialog.createTopFrame
     def createTopFrame(self) -> None:
         """Create the Tk.Toplevel widget for a leoTkinterDialog."""
-        self.root = Tk.Tk()  # type:ignore
-        self.top = Tk.Toplevel(self.root)  # type:ignore
+        self.root = Tk.Tk()
+        self.top = Tk.Toplevel(self.root)
         self.top.title(self.title)
         self.root.withdraw()  # This root window should *never* be shown.
-        self.frame = Tk.Frame(self.top)  # type:ignore
+        self.frame = Tk.Frame(self.top)
         self.frame.pack(side="top", expand=1, fill="both")
         label = Tk.Label(self.frame, text=self.message, bg='white')
         label.pack(pady=10)
@@ -1033,7 +1033,7 @@ class KeyStroke:
             return False
         if hasattr(other, 's'):
             return self.s < other.s
-        return self.s < other  # type:ignore  # Required.
+        return self.s < other  # Required.
 
     def __le__(self, other: KeyStroke) -> bool:
         return self.__lt__(other) or self.__eq__(other)
@@ -1983,9 +1983,9 @@ class RedirectClass:
             return
         if not self.old:
             if stdout:
-                self.old, sys.stdout = sys.stdout, self  # type:ignore
+                self.old, sys.stdout = sys.stdout, self
             else:
-                self.old, sys.stderr = sys.stderr, self  # type:ignore
+                self.old, sys.stderr = sys.stderr, self
 
     # @+node:ekr.20041012082437.4: *5* undirect
     def undirect(self, stdout: bool = True) -> None:
@@ -2148,11 +2148,11 @@ class TkIDDialog(EmergencyDialog):
     # @+node:ekr.20191013145757.1: *4* leo_id_dialog.createTopFrame
     def createTopFrame(self) -> None:
         """Create the Tk.Toplevel widget for a leoTkinterDialog."""
-        self.root = Tk.Tk()  # type:ignore
-        self.top = Tk.Toplevel(self.root)  # type:ignore
+        self.root = Tk.Tk()
+        self.top = Tk.Toplevel(self.root)
         self.top.title(self.title)
         self.root.withdraw()
-        self.frame = Tk.Frame(self.top)  # type:ignore
+        self.frame = Tk.Frame(self.top)
         self.frame.pack(side="top", expand=1, fill="both")
         label = Tk.Label(self.frame, text=self.message, bg='white')
         label.pack(pady=10)
@@ -2912,7 +2912,7 @@ def objToString(
             try:
                 keys = sorted(obj, key=str)
             except TypeError:  # Unsortable keys.
-                keys = obj.keys()  # type:ignore
+                keys = obj.keys()
             for key in keys:
                 result_list.append(f"key: {str(key)}:\n{obj.get(key)}\n")
             result_list.append('}')
@@ -3295,7 +3295,7 @@ def get_directives_dict(p: Position) -> dict[str, str]:
     d = {}
     # The headline has higher precedence because it is more visible.
     for kind, s in (('head', p.h), ('body', p.b)):
-        anIter = g.directives_pat.finditer(s)  # type:ignore # anIter will exist
+        anIter = g.directives_pat.finditer(s)  # anIter will exist
         for m in anIter:
             word = m.group(1).strip()
             i = m.start(1)
@@ -5092,7 +5092,7 @@ def execGitCommand(command: str, directory: str) -> list[str]:
             shlex.split(command), stdout=subprocess.PIPE, stderr=None, shell=True
         )
         out, err = proc.communicate()
-        lines = [g.toUnicode(z) for z in g.splitLines(out or '')]  # type:ignore # Don't change this!
+        lines = [g.toUnicode(z) for z in g.splitLines(g.toUnicode(out) or '')]
     finally:
         os.chdir(old_dir)
     return lines
@@ -6502,7 +6502,7 @@ def es(*args: Args, **kwargs: KWargs) -> None:
     color = d.get('color', '')
     if color == 'suppress':
         return  # New in 4.3.
-    color = g.actualColor(color)  # type:ignore
+    color = g.actualColor(color)
     tabName = d.get('tabName') or 'Log'
     newline = d.get('newline')
     s = g.translateArgs(args, d)
@@ -6644,7 +6644,7 @@ def getLastTracebackFileAndLineNumber() -> tuple[str, int]:
     typ, val, tb = sys.exc_info()
     if typ is SyntaxError:
         # IndentationError is a subclass of SyntaxError.
-        return val.filename, val.lineno  # type:ignore
+        return val.filename, val.lineno
     # Data is a list of tuples, one per stack entry.
     # Tuples have the form (filename,lineNumber,functionName,text).
     if data := traceback.extract_tb(tb):
