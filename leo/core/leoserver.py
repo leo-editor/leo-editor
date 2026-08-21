@@ -38,7 +38,7 @@ import warnings
 try:
     import tkinter as Tk
 except Exception:
-    Tk = None  # ty-peignore
+    Tk = None
 # #2300
 try:
     import websockets as _websockets_module
@@ -53,7 +53,7 @@ try:
 
     # Redirect `websockets` itself
     if major_version >= 14:
-        import websockets.legacy.server as ws_module  # ty-peignore
+        import websockets.legacy.server as ws_module
     else:
         ws_module = _websockets_module
     websockets: types.ModuleType = ws_module
@@ -2534,7 +2534,7 @@ class LeoServer:
                 print("Make sure nodetags.py is an active plugin in myLeoSettings.leo")
                 print("", flush=True)
             if hasattr(tc, 'add_tag'):
-                tc.add_tag(p, tag_param)  # ty-peignore
+                tc.add_tag(p, tag_param)
         except Exception as e:
             raise ServerError(f"{tag}: Running tag_node gave exception: {e}")
         return self._make_response()
@@ -2558,7 +2558,7 @@ class LeoServer:
                 print("", flush=True)
             if hasattr(tc, 'remove_tag'):
                 if v.u and '__node_tags' in v.u:
-                    tc.remove_tag(p, tag_param)  # ty-peignore
+                    tc.remove_tag(p, tag_param)
         except Exception as e:
             raise ServerError(f"{tag}: Running remove_tag gave exception: {e}")
         return self._make_response()
@@ -2581,7 +2581,7 @@ class LeoServer:
                     print("", flush=True)
                 if hasattr(tc, 'initialize_taglist'):
                     # reset tag list: some may have been removed
-                    tc.initialize_taglist()  # ty-peignore
+                    tc.initialize_taglist()
         except Exception as e:
             raise ServerError(f"{tag}: Running remove_tags gave exception: {e}")
         return self._make_response()
