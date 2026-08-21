@@ -184,7 +184,7 @@ class LiveCodeDisplay:
                     if isinstance(node, ast.AugAssign):
                         todo = [node.target]
                     else:
-                        todo = list(node.targets)  # type:ignore
+                        todo = list(node.targets)
                     while todo:
                         target = todo.pop(0)
                         if isinstance(target, ast.Tuple):

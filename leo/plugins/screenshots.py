@@ -328,11 +328,11 @@ from leo.core.leoQt import QtCore
 try:
     from PIL import Image
 except Exception:
-    Image = None  # type:ignore
+    Image = None
 try:
     from PIL import ImageChops
 except ImportError:
-    ImageChops = None  # type:ignore
+    ImageChops = None
 
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.

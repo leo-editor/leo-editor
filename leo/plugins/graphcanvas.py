@@ -45,7 +45,7 @@ try:
 except Exception:
     pydot = None
     try:
-        import pygraphviz  # type:ignore
+        import pygraphviz
     except ImportError:
         pygraphviz = None
 #

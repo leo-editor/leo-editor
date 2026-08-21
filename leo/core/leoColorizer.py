@@ -3185,7 +3185,7 @@ if QtGui:
             self.reloadSettings()
 
         # @+node:ekr.20110605121601.18567: *3* leo_h.highlightBlock
-        def highlightBlock(self, s: str) -> None:  # type:ignore
+        def highlightBlock(self, s: str) -> None:
             """Called by QSyntaxHighlighter"""
             self.n_calls += 1
             s = g.toUnicode(s)

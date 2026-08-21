@@ -358,7 +358,7 @@ class Rust_Importer(Importer):
                 assert i == progress + 1, (i, progress)
                 if m := pattern.match(line):
                     # Rescan the line.
-                    i = find_curly_bracket_line(i - 1)  # type:ignore  # We are about to test i.
+                    i = find_curly_bracket_line(i - 1)
                     if i is None:
                         i = progress + 1
                         continue
