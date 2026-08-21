@@ -88,6 +88,7 @@ class AtFile:
         'beautifyOnWrite',
         'checkPythonCodeOnWrite',
         'runRuffOnWrite',
+        'runTyOnWrite',
         # Testing hacks.
         'at_shadow_test_hack',  # Injected by TestShadow.makePrivateLines.
     )
@@ -159,6 +160,7 @@ class AtFile:
         self.beautifyOnWrite = False
         self.checkPythonCodeOnWrite = False
         self.runRuffOnWrite = False
+        self.runTyOnWrite = False
         # Initialize all user switches.
         self.reloadSettings()
 
@@ -169,6 +171,7 @@ class AtFile:
         self.beautifyOnWrite = c.config.getBool('beautify-python-code-on-write', default=False)
         self.checkPythonCodeOnWrite = c.config.getBool('check-python-code-on-write', default=True)
         self.runRuffOnWrite = c.config.getBool('run-ruff-on-write', default=False)
+        self.runTyOnWrite = c.config.getBool('run-ty-on-write', default=False)
 
     # @+node:ekr.20250403154610.1: *4* at.initAllIvars
     def initAllIvars(self, root: Position) -> None:
@@ -2620,6 +2623,8 @@ class AtFile:
             ok = self.runRuffFormat(contents, root, fileName)
         if ok and self.runRuffOnWrite:  # Third. Creates clickable links.
             ok = self.runRuff(root)
+        if ok and self.runTyOnWrite:  # Fourth. Creates clickable links.
+            ok = self.runTy(root)
         if not ok:
             g.app.syntax_error_files.append(g.shortFileName(fileName))
 
@@ -2720,6 +2725,20 @@ class AtFile:
 
             if checkerCommands.ruff:
                 x = checkerCommands.RuffCommand(self.c)
+                return x.check_on_write(root)
+            return True  # Suppress error if ruff can not be imported.
+        except Exception:
+            g.es_exception()
+            return True  # Pretend all is well
+
+    # @+node:ekr.20260820171228.1: *6* at.runTy
+    def runTy(self, root: Position) -> bool:  # pragma: no cover
+        """Run ty check on the selected node. Return True if no errors."""
+        try:
+            from leo.commands import checkerCommands
+
+            if checkerCommands.ty:
+                x = checkerCommands.TyCommand(self.c)
                 return x.check_on_write(root)
             return True  # Suppress error if ruff can not be imported.
         except Exception:
