@@ -2309,7 +2309,7 @@ class StyleSheetManager:
         """
         if top is None:
             top = self.c.frame.top
-        master = top.leo_master or top  # type:ignore
+        master = top.leo_master or top
         return master
 
     # @+node:ekr.20140913054442.19391: *4* StyleSheetManager.set selected_style_sheet
