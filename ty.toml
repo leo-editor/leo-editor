@@ -43,7 +43,7 @@ unresolved-attribute = "ignore"
 unresolved-import = "ignore"
 
 # Warn about unused suppressions.
-unused-type-ignore-comment = "warn"
+unused-type-ignore-comment = "error"
 
 # Ignore warnings about overridden methods.
 invalid-method-override = "ignore"
