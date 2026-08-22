@@ -4795,7 +4795,7 @@ def toggleMinibuffer(event: LeoKeyEvent | None = None) -> None:
 def toggleStatusBar(event: LeoKeyEvent | None = None) -> None:
     if c := event.get('c') if event else None:
         dw = c.frame.top
-        w = dw.statusBar
+        w = dw.statusBar()
         if w.isVisible():
             w.hide()
         else:
