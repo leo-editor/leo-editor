@@ -1,4 +1,4 @@
-# Config for `ty`: https://github.com/astral-sh/ty
+# Config for `ty`: https://docs.astral.sh/ty/configuration/
 # See the `ty` job in .github/workflows/ci.yml
 
 [src]
@@ -32,16 +32,15 @@ exclude = [
     "leo/plugins/qt_main*",
 ]
 
-[rules]
+[analysis]
+strict-equality-semantics = true
 
+[rules]
 # Like `disable_error_code=attr-defined` in .mypy.ini.
 unresolved-attribute = "ignore"
-
 # Like `ignore_missing_imports = True` in .mypy.ini.
 unresolved-import = "ignore"
-
 # Warn about unused suppressions.
 unused-type-ignore-comment = "warn"
-
 # Ignore warnings about overridden methods.
 invalid-method-override = "ignore"
