@@ -496,7 +496,7 @@ class RuffCommand:
             return True
         fn = os.path.normpath(c.fullPath(root))
         command = [sys.executable, '-m', 'ruff', 'check', '--output-format=concise', fn]
-        result = subprocess.run(command, capture_output=True, text=True)
+        result = subprocess.run(command, capture_output=True, text=True, check=False)
         raw_s = (result.stdout + result.stderr).replace('All checks passed!', '').strip()
         # Strip out cruft.
         s = ''.join(z for z in g.splitLines(raw_s) if not z.startswith('Found')).strip()
@@ -525,7 +525,7 @@ class RuffCommand:
             '--output-format=concise',
             fn,
         ]  # fmt: skip
-        result = subprocess.run(command, capture_output=True, text=True)
+        result = subprocess.run(command, capture_output=True, text=True, check=False)
         raw_s = (result.stdout + result.stderr).replace('All checks passed!', '').strip()
         # Strip out cruft.
         s = ''.join(z for z in g.splitLines(raw_s) if not z.startswith('Found')).strip()
@@ -592,7 +592,7 @@ class TyCommand:
             return True
         fn = os.path.normpath(c.fullPath(root))
         command = [sys.executable, '-m', 'ty', 'check', fn]
-        result = subprocess.run(command, capture_output=True, text=True)
+        result = subprocess.run(command, capture_output=True, text=True, check=False)
         raw_s = (result.stdout + result.stderr).replace('All checks passed!', '').strip()
         # Strip out cruft.
         s = ''.join(z for z in g.splitLines(raw_s))
@@ -620,7 +620,7 @@ class TyCommand:
             'builtins=["c", "g", "p"]',
             fn,
         ]
-        result = subprocess.run(command, capture_output=True, text=True)
+        result = subprocess.run(command, capture_output=True, text=True, check=False)
         raw_s = (result.stdout + result.stderr).replace('All checks passed!', '').strip()
         # Strip out cruft.
         s = ''.join(

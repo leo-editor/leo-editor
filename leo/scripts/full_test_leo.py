@@ -41,5 +41,5 @@ for command in [
     rf'{python} -m leo.scripts.check_leo',
     rf'{python} -m leo.scripts.ty_leo',
 ]:
-    subprocess.run(command, shell=True)
+    subprocess.run(command, shell=True, check=False)
 # @-leo

@@ -27,7 +27,7 @@ os.chdir(leo_editor_dir)
 python = sys.executable
 args = ''.join(sys.argv[1:])
 command = rf"{python} -m mypy {args} leo"
-subprocess.run(command, shell=True)
+subprocess.run(command, shell=True, check=False)
 
 # @@language python
 # @-leo

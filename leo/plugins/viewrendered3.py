@@ -4431,10 +4431,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
         cmd = [exepath]
         cmd.extend(self.params)
         cmd.append(progfile)
-
-        # We are not checking the return code here, so:
-        # pylint: disable=subprocess-run-check
-        result = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', shell=True)
+        result = subprocess.run(
+            cmd, capture_output=True, text=True, encoding='utf-8', shell=True, check=False
+        )
         return result.stdout, result.stderr
 
     # @-others

@@ -1407,7 +1407,7 @@ class Commands:
         d['script_gnx'] = g.app.scriptDict.get('script_gnx')
         if namespace:
             d.update(namespace)
-        # A kludge: reset c.inCommand here to handle the case where we *never* return.
+        # Reset c.inCommand here to handle the case where we *never* return.
         # (This can happen when there are multiple event loops.)
         # This does not prevent zombie windows if the script puts up a dialog...
         try:
@@ -1416,9 +1416,11 @@ class Commands:
             if c.write_script_file:
                 scriptFile = self.writeScriptFile(script)
                 if (
-                    scriptFile and language == 'python' and not g.unitTesting
+                    scriptFile
+                    and language == 'python'
+                    and not g.unitTesting
                     and c.config.getBool('run-ruff-on-write', default=False)
-                ):  # fmt: skip
+                ):
                     from leo.commands import checkerCommands
 
                     if checkerCommands.ruff:
@@ -1426,14 +1428,13 @@ class Commands:
                         if not x.check_script_file(scriptFile, script_p):
                             g.app.syntax_error_files.append(scriptFile)
                             c.syntaxErrorDialog()
-                            return
+                            return None
                 exec(compile(script, scriptFile or '<string>', 'exec'), d)
             else:
                 exec(script, d)
-            # Return the optional value of a 'result' global, if defined, to be returned.
-            return d.get("result")
         finally:
             g.inScript = g.app.inScript = False
+        return d.get("result")
 
     # @+node:ekr.20171123135625.6: *5* c.redirectScriptOutput
     def redirectScriptOutput(self) -> None:
@@ -5316,7 +5317,7 @@ class Commands:
 
         # Run the command.
         try:
-            subprocess.run(command, shell=True)  # Wait for results.
+            subprocess.run(command, shell=True, check=False)
             results = g.readFile(filename)
             if g.isWindows:
                 results = results.replace('\r', '')
