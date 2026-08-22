@@ -4681,6 +4681,7 @@ def hideOutlinePane(event: LeoKeyEvent | None = None) -> None:
 # @+node:ekr.20231102130902.1: *4* 'hide-status-bar'
 @g.command('hide-status-bar')
 def hideStatusBar(event: LeoKeyEvent | None = None) -> None:
+    """Hide the status bar."""
     if c := event.get('c') if event else None:
         dw = c.frame.top
         dw.statusBar().hide()
@@ -4760,6 +4761,7 @@ def showQtWidgets(event: LeoKeyEvent | None = None) -> None:
 # @+node:ekr.20241027141138.1: *4* 'show-status-bar'
 @g.command('show-status-bar')
 def showStatusBar(event: LeoKeyEvent | None = None) -> None:
+    """Show the status bar"""
     if c := event.get('c') if event else None:
         dw = c.frame.top
         dw.statusBar().show()
