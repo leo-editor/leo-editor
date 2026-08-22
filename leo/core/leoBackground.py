@@ -134,7 +134,7 @@ class BackgroundProcessManager:
     def end(self) -> None:
         """End the present process."""
         try:
-            self.pid.kill()  # type:ignore
+            self.pid.kill()
         except OSError:
             pass
         self.timer.stop()
@@ -149,7 +149,7 @@ class BackgroundProcessManager:
             self.process_queue = []
         else:
             self.process_queue = [z for z in self.process_queue if z.kind != kind]
-        if self.pid and kind in ('all', self.data.kind):  # type:ignore
+        if self.pid and kind in ('all', self.data.kind):
             self.put_log(f"killing {kind} process")
             try:
                 self.pid.kill()
@@ -231,7 +231,7 @@ class BackgroundProcessManager:
             self.data = self.process_queue.pop(0)
             self.data.callback()  # The callback starts the next process.
         else:
-            c, kind = self.data.c, self.data.kind  # type:ignore
+            c, kind = self.data.c, self.data.kind
             message = f"{kind}: finished"
             print(message)
             c.frame.log.put(message + '\n')  # Don't use g.es here.

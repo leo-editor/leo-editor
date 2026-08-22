@@ -38,7 +38,7 @@ import warnings
 try:
     import tkinter as Tk
 except Exception:
-    Tk = None  # type:ignore
+    Tk = None
 # #2300
 try:
     import websockets as _websockets_module
@@ -53,7 +53,7 @@ try:
 
     # Redirect `websockets` itself
     if major_version >= 14:
-        import websockets.legacy.server as ws_module  # type:ignore
+        import websockets.legacy.server as ws_module
     else:
         ws_module = _websockets_module
     websockets: types.ModuleType = ws_module
@@ -364,7 +364,7 @@ class ServerExternalFilesController(ExternalFilesController):
     # @+node:felix.20210626222905.7: *3* sefc.utilities
     # @+node:felix.20210626222905.8: *4* sefc.ask
     # The base class returns str.
-    def ask(self, c: Cmdr, path: str, p: Position = None) -> bool:  # type:ignore
+    def ask(self, c: Cmdr, path: str, p: Position | None = None) -> bool:
         """
         Ask user whether to overwrite an @<file> tree.
         Return True if the user agrees by default, or skips and asks
@@ -975,13 +975,13 @@ class LeoServer:
             verbose=False,  # True: prints messages that would be sent to the log pane.
         )
         self.g = g = self.bridge.globals()  # Also sets global 'g' object
-        g.in_leo_server = True  # #2098.
-        g.leoServer = self  # Set server singleton global reference
+        g.in_leo_server = True  # type:ignore # #2098.
+        g.leoServer = self  # type:ignore # Set server singleton global reference
         self.leoServerConfig: Param = None  # type:ignore
 
         # * Intercept Log Pane output: Sends to client's log pane
-        g.es = self._es  # pointer - not a function call
-        g.es_print = self._es  # Also like es, because es_print would double strings in client
+        g.es = self._es  # type:ignore # pointer - not a function call
+        g.es_print = self._es  # type:ignore # Also like es, because es_print would double strings in client
 
         # Set in _init_connection
         self.web_socket = None  # Main Control Client
@@ -992,8 +992,8 @@ class LeoServer:
         self.bad_commands_list = self._bad_commands(self.dummy_c)
 
         # * Replacement instances to Leo's codebase : getScript, IdleTime and externalFilesController
-        g.getScript = self._getScript
-        g.IdleTime = self._idleTime
+        g.getScript = self._getScript  # type:ignore
+        g.IdleTime = self._idleTime  # type:ignore
 
         # * hook open2 for commander creation completion and inclusion in windowList
 
@@ -1022,7 +1022,7 @@ class LeoServer:
         if c:
             if not hasattr(c, 'patched_quicksearch_controller'):
                 # Add ftm. This won't happen if opened outside leoserver
-                c.findCommands.ftm = StringFindTabManager(c)  # type: ignore
+                c.findCommands.ftm = StringFindTabManager(c)  # type:ignore
                 cc = QuickSearchController(c)
                 # Patch up quick-search controller to the commander
                 cast(Any, c).patched_quicksearch_controller = cc
@@ -2534,7 +2534,7 @@ class LeoServer:
                 print("Make sure nodetags.py is an active plugin in myLeoSettings.leo")
                 print("", flush=True)
             if hasattr(tc, 'add_tag'):
-                tc.add_tag(p, tag_param)  # type:ignore
+                tc.add_tag(p, tag_param)
         except Exception as e:
             raise ServerError(f"{tag}: Running tag_node gave exception: {e}")
         return self._make_response()
@@ -2558,7 +2558,7 @@ class LeoServer:
                 print("", flush=True)
             if hasattr(tc, 'remove_tag'):
                 if v.u and '__node_tags' in v.u:
-                    tc.remove_tag(p, tag_param)  # type:ignore
+                    tc.remove_tag(p, tag_param)
         except Exception as e:
             raise ServerError(f"{tag}: Running remove_tag gave exception: {e}")
         return self._make_response()
@@ -2581,7 +2581,7 @@ class LeoServer:
                     print("", flush=True)
                 if hasattr(tc, 'initialize_taglist'):
                     # reset tag list: some may have been removed
-                    tc.initialize_taglist()  # type:ignore
+                    tc.initialize_taglist()
         except Exception as e:
             raise ServerError(f"{tag}: Running remove_tags gave exception: {e}")
         return self._make_response()

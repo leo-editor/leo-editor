@@ -262,7 +262,7 @@ class QTextMixin:
         if Qsci:
             classes.append(Qsci.QsciScintilla)
         assert isinstance(self.widget, tuple(classes)), self.widget
-        QtWidgets.QTextBrowser.setFocus(self.widget)  # type:ignore # required.
+        QtWidgets.QTextBrowser.setFocus(self.widget)
 
     # @+node:ekr.20140901062324.18717: *4* QTextMixin.Generic text
     # @+node:ekr.20140901062324.18703: *5* QTextMixin.appendText

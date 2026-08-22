@@ -36,55 +36,55 @@ except Exception:
 try:
     from PyQt6 import QtDesigner
 except Exception:
-    QtDesigner = None  # type:ignore
+    QtDesigner = None
     _missing_modules.append('PyQt6.QtDesigner')
 
 try:
     from PyQt6 import QtMultimedia
 except Exception:
-    QtMultimedia = None  # type:ignore
+    QtMultimedia = None
     _missing_modules.append('PyQt6.QtMultimedia')
 
 try:
     from PyQt6 import QtNetwork
 except Exception:
-    QtNetwork = None  # type:ignore
+    QtNetwork = None
     _missing_modules.append('PyQt6.QtNetwork')
 
 try:
     from PyQt6 import QtOpenGL
 except Exception:
-    QtOpenGL = None  # type:ignore
+    QtOpenGL = None
     _missing_modules.append('PyQt6.QtOpenGL')
 
 try:
     from PyQt6 import QtPrintSupport as printsupport
 except Exception:
-    printsupport = None  # type:ignore
+    printsupport = None
     _missing_modules.append('PyQt6.QtPrintSupport')
 
 try:
     from PyQt6 import QtWebEngineCore  # included with PyQt6-WebEngine
 except Exception:
-    QtWebEngineCore = None  # type:ignore
+    QtWebEngineCore = None
     _missing_modules.append('PyQt6.QtWebEngineCore')
 
 try:
     from PyQt6 import QtWebEngineWidgets
 except Exception:
-    QtWebEngineWidgets = None  # type:ignore
+    QtWebEngineWidgets = None
     _missing_modules.append('PyQt6.QtWebEngineWidgets')
 
 try:
     from PyQt6 import QtSvg
 except Exception:
-    QtSvg = None  # type:ignore
+    QtSvg = None
     _missing_modules.append('PyQt6.QtSvg')
 
 try:
     from PyQt6 import uic
 except Exception:
-    uic = None  # type:ignore
+    uic = None
     # On Linux, uic may be a standalone program.
     _missing_modules.append('uic')
 # @-<< leoQt.py: import optional Qt modules >>

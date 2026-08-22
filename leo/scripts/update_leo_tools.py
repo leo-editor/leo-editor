@@ -25,8 +25,9 @@ python = sys.executable
 for command in [
     # f"{python} -m pip install --upgrade mypy",
     f"{python} -m pip install --upgrade ruff",
+    f"{python} -m pip install --upgrade ty",
 ]:
     print('')
     print(command)
-    subprocess.run(command, shell=True)
+    subprocess.run(command, shell=True, check=False)
 # @-leo

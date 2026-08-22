@@ -39,9 +39,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from types import ModuleType
 
     # Do not import these at the top level: they would cause circular imports.
-    from leo.core.leoConfig import GlobalConfigManager
     from leo.core.leoGui import LeoKeyEvent, LeoFrame, LeoGui
-    from leo.core.leoJupytext import JupytextManager
     from leo.commands.spellCommands import SqlitePickleShare
 
     StringIO = io.StringIO
@@ -130,6 +128,10 @@ class LeoApp:
 
         leoGlobals.py contains global switches to be set by hand.
         """
+        # For casts. They would cause circular imports if imported at the top level.
+        from leo.core.leoConfig import GlobalConfigManager
+        from leo.core.leoJupytext import JupytextManager
+
         # @+<< LeoApp: command-line arguments >>
         # @+node:ekr.20161028035755.1: *5* << LeoApp: command-line arguments >>
         # Default: write session data only if no files on command line.
@@ -210,12 +212,12 @@ class LeoApp:
         # In those two places we suppress the otherwise valid mypy complaints.
 
         self.backgroundProcessManager = cast(BackgroundProcessManager, None)
-        self.config: GlobalConfigManager = None  # type:ignore  # g.app.config
+        self.config = cast(GlobalConfigManager, None)  # g.app.config
         self.externalFilesController = cast(ExternalFilesController, None)
         self.db: dict | SqlitePickleShare | g.NullObject = {}  # g.app.global_cacher.
         self.global_cacher: dict | GlobalCacher | g.NullObject = {}
         self.idleTimeManager = cast(IdleTimeManager, None)
-        self.jupytextManager: JupytextManager = None  # type:ignore
+        self.jupytextManager = cast(JupytextManager, None)
         self.loadManager = cast(LoadManager, None)
         self.nodeIndices = cast(NodeIndices, None)
         self.pluginsController = cast(LeoPluginsController, None)
@@ -1378,7 +1380,7 @@ class LeoApp:
         if g.app.externalFilesController:
             g.app.externalFilesController.shut_down()
             # Disable further processing. Disable the otherwise valid mypy complaint.
-            g.app.externalFilesController = None  # type:ignore
+            g.app.externalFilesController = cast(ExternalFilesController, None)
 
     # @+node:ekr.20031218072017.2615: *4* app.destroyWindow
     def destroyWindow(self, frame: LeoFrame) -> None:
@@ -2091,7 +2093,7 @@ class LoadManager:
             d1 = lm.globalSettingsDict.copy()
             d2 = lm.globalBindingsDict.copy()
         else:
-            d1 = d2 = None  # type:ignore
+            d1 = d2 = None
         return PreviousSettings(d1, d2)
 
     # @+node:ekr.20120214132927.10723: *4* LM.mergeShortcutsDicts & helpers
@@ -3417,11 +3419,7 @@ class LoadManager:
             c.redraw()
         elif c.looksLikeDerivedFile(fn):
             # Create an @file node. Not undoable!
-            p = c.importCommands.importDerivedFiles(  # type:ignore  # We will test p next.
-                parent=c.rootPosition(),
-                paths=[fn],
-                command='',
-            )
+            p = c.importCommands.importDerivedFiles(parent=c.rootPosition(), paths=[fn], command='')
             if not p:
                 return None
             if p.hasBack():

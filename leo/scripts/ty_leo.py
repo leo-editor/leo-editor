@@ -17,5 +17,5 @@ os.chdir(leo_editor_dir)
 args = ' '.join(sys.argv[1:])
 python = sys.executable
 command = rf'{python} -m ty check leo {args}'
-subprocess.run(command, shell=True)
+subprocess.run(command, shell=True, check=False)
 # @-leo

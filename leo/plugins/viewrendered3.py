@@ -1518,7 +1518,7 @@ def configure_asciidoc():
             print('.... Patching asciidoc')
             from asciidoc.api import Options
 
-            AsciiDocAPI.__init__ = new_init  # type:ignore
+            AsciiDocAPI.__init__ = new_init
 
         asciidoc_ok = True
 
@@ -1540,7 +1540,7 @@ def configure_asciidoc():
         from asciidoc3.asciidoc3api import AsciiDoc3API
         from asciidoc3 import asciidoc3 as ad3
 
-        ad3_file = ad3.__file__  # type:ignore
+        ad3_file = ad3.__file__
         asciidoc3_ok = True
     except ImportError:
         asciidoc3_ok = False
@@ -2589,7 +2589,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             """
 
             setattr(self, menu_var_name, False)
-            _action = QAction(label, self, checkable=True)  # type:ignore
+            _action = QAction(label, self, checkable=True)
             _action.triggered.connect(lambda: set_menu_var(menu_var_name, _action))
             menu.addAction(_action)
 
@@ -2619,7 +2619,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             nothing.
             """
 
-            _action = QAction(label, self, checkable=True)  # type:ignore
+            _action = QAction(label, self, checkable=True)
             _action.triggered.connect(lambda: set_default_kind(kind))
             group.addAction(_action)
             menu.addAction(_action)
@@ -2653,12 +2653,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
         menu = QtWidgets.QMenu()
         set_action("Entire Tree", 'show_whole_tree')
 
-        _action = QAction('Lock to Tree Root', self, checkable=True)  # type:ignore
+        _action = QAction('Lock to Tree Root', self, checkable=True)
         _action.triggered.connect(lambda checked: set_tree_lock(checked))
         menu.addAction(_action)
         self.action_lock_to_tree = _action
 
-        _action = QAction('Freeze', self, checkable=True)  # type:ignore
+        _action = QAction('Freeze', self, checkable=True)
         _action.triggered.connect(lambda checked: set_freeze(checked))
         menu.addAction(_action)
         self.action_freeze = _action
@@ -2685,15 +2685,15 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         # "Other Actions"
         menu = QtWidgets.QMenu()
-        _action = QAction('Plot 2D', self, checkable=False)  # type:ignore
+        _action = QAction('Plot 2D', self, checkable=False)
         _action.triggered.connect(lambda: c.doCommandByName('vr3-plot-2d'))
         menu.addAction(_action)
 
-        _action = QAction('Help For Plot 2D', self, checkable=False)  # type:ignore
+        _action = QAction('Help For Plot 2D', self, checkable=False)
         _action.triggered.connect(lambda: c.doCommandByName('vr3-help-plot-2d'))
         menu.addAction(_action)
 
-        _action = QAction('Reload', self, checkable=False)  # type:ignore
+        _action = QAction('Reload', self, checkable=False)
         _action.triggered.connect(lambda: c.doCommandByName('vr3-update'))
         menu.addAction(_action)
 
@@ -3195,7 +3195,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
     # @+node:TomP.20191215195433.49: *3* vr3.update & helpers
     # Must have this signature: called by leoPlugins.callTagHandler.
-    def update(self, tag, keywords):  # type:ignore
+    def update(self, tag, keywords):
         """Update the vr3 pane. Called at idle time.
 
         If the VR3 variable "freeze" is True, do not update.
@@ -3343,12 +3343,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         s = keywords['s'] = '\n'.join([l for l in lines if not l.startswith('#@')])
 
         f = self.dispatch_dict.get(node_kind)
-        f(
-            [
-                s,
-            ],
-            keywords,
-        )  # type:ignore
+        f([s], keywords)
 
         # Prevent VR3 from showing the selected node at
         # the next idle-time callback,
@@ -3584,9 +3579,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # @+<< Find available processors >>
             # @+node:tom.20211122104636.1: *6* << Find available processors >>
             if asciidoc_ok:
-                asciidoc_processors.append(AsciiDocAPI())  # type:ignore
+                asciidoc_processors.append(AsciiDocAPI())
             if asciidoc3_ok:
-                asciidoc_processors.append(AsciiDoc3API(ad3_file))  # type:ignore
+                asciidoc_processors.append(AsciiDoc3API(ad3_file))
             if not asciidoc_processors:
                 h = '<h1>No asciidoc processors found</h1>'
                 self.rst_html = h
@@ -4436,10 +4431,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
         cmd = [exepath]
         cmd.extend(self.params)
         cmd.append(progfile)
-
-        # We are not checking the return code here, so:
-        # pylint: disable=subprocess-run-check
-        result = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', shell=True)
+        result = subprocess.run(
+            cmd, capture_output=True, text=True, encoding='utf-8', shell=True, check=False
+        )
         return result.stdout, result.stderr
 
     # @-others
@@ -5508,7 +5502,7 @@ class StateMachine:
                 next = State.BASE
                 # _lang = self.base_lang
 
-        action(self, line, tag, language)  # type:ignore
+        action(self, line, tag, language)
         self.state = next
 
     # @-<< do_state >>

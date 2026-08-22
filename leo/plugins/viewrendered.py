@@ -253,7 +253,7 @@ else:
 try:
     from jinja2 import Template
 except ImportError:
-    Template = None  # type:ignore
+    Template = None
 
 # Markdown.
 try:

@@ -46,7 +46,7 @@ if TYPE_CHECKING:  # pragma: no cover
     try:
         from typing import Self  # Introduced in Python 3.11
     except Exception:
-        Self = Any  # type:ignore
+        Self = Any
     KWargs = Any
     Lexer = Callable
     QWidget = QtWidgets.QWidget
@@ -3185,7 +3185,7 @@ if QtGui:
             self.reloadSettings()
 
         # @+node:ekr.20110605121601.18567: *3* leo_h.highlightBlock
-        def highlightBlock(self, s: str) -> None:  # type:ignore
+        def highlightBlock(self, s: str) -> None:
             """Called by QSyntaxHighlighter"""
             self.n_calls += 1
             s = g.toUnicode(s)

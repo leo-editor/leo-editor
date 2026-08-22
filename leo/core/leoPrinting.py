@@ -18,7 +18,7 @@ try:  # #1973
     from leo.core.leoQt import DialogCode
 except Exception:
     printsupport = QtGui = None  # type:ignore
-    DialogCode = None  # type:ignore
+    DialogCode = None
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr

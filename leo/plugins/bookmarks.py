@@ -856,7 +856,7 @@ class BookMarkDisplay:
         text = g.toEncodedString(text, 'utf-8')
         x = hashlib.md5(text).hexdigest()[-6:]
         add = int('bb', 16) if not dark else int('33', 16)
-        x = tuple(int(x[2 * i : 2 * i + 2], 16) // 4 + add for i in range(3))  # type:ignore
+        x = tuple(int(x[2 * i : 2 * i + 2], 16) // 4 + add for i in range(3))
         x = '%02x%02x%02x' % x
         return x
 

@@ -529,7 +529,7 @@ class Commands:
         c = self
         from leo.core import leoConfig
 
-        c.config = leoConfig.LocalConfigManager(c, previousSettings)  # type:ignore
+        c.config = leoConfig.LocalConfigManager(c, previousSettings)
 
     # @+node:ekr.20031218072017.2814: *4* c.__repr__ & __str__
     def __repr__(self) -> str:
@@ -1256,8 +1256,7 @@ class Commands:
         with open(fname, 'wt', encoding='utf8') as out:
             out.write(script)
         tree = ast.parse(script, filename=fname)
-        # A mypy bug? the script can be str.
-        rewrite_asserts(tree, script, config=cfg)  # type:ignore
+        rewrite_asserts(tree, g.toEncodedString(script), config=cfg)
         co = compile(tree, fname, "exec", dont_inherit=True)
         sys.path.insert(0, os.getcwd())
         sys.path.insert(0, g.os_path_dirname(c.fileName()))  # per SegundoBob
@@ -1408,7 +1407,7 @@ class Commands:
         d['script_gnx'] = g.app.scriptDict.get('script_gnx')
         if namespace:
             d.update(namespace)
-        # A kludge: reset c.inCommand here to handle the case where we *never* return.
+        # Reset c.inCommand here to handle the case where we *never* return.
         # (This can happen when there are multiple event loops.)
         # This does not prevent zombie windows if the script puts up a dialog...
         try:
@@ -1417,9 +1416,11 @@ class Commands:
             if c.write_script_file:
                 scriptFile = self.writeScriptFile(script)
                 if (
-                    scriptFile and language == 'python' and not g.unitTesting
+                    scriptFile
+                    and language == 'python'
+                    and not g.unitTesting
                     and c.config.getBool('run-ruff-on-write', default=False)
-                ):  # fmt: skip
+                ):
                     from leo.commands import checkerCommands
 
                     if checkerCommands.ruff:
@@ -1427,14 +1428,13 @@ class Commands:
                         if not x.check_script_file(scriptFile, script_p):
                             g.app.syntax_error_files.append(scriptFile)
                             c.syntaxErrorDialog()
-                            return
+                            return None
                 exec(compile(script, scriptFile or '<string>', 'exec'), d)
             else:
                 exec(script, d)
-            # Return the optional value of a 'result' global, if defined, to be returned.
-            return d.get("result")
         finally:
             g.inScript = g.app.inScript = False
+        return d.get("result")
 
     # @+node:ekr.20171123135625.6: *5* c.redirectScriptOutput
     def redirectScriptOutput(self) -> None:
@@ -5016,7 +5016,7 @@ class Commands:
                 assert limit
                 return current != limit
             # A chapter.
-            return current != limit.firstChild()  # type:ignore # Bug!?!
+            return current != limit.firstChild()
         return current != c.rootPosition()
 
     # @+node:ekr.20031218072017.2974: *6* c.canPasteOutline
@@ -5317,7 +5317,7 @@ class Commands:
 
         # Run the command.
         try:
-            subprocess.run(command, shell=True)  # Wait for results.
+            subprocess.run(command, shell=True, check=False)
             results = g.readFile(filename)
             if g.isWindows:
                 results = results.replace('\r', '')

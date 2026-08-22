@@ -7,14 +7,15 @@
 from __future__ import annotations
 from collections.abc import Callable
 import re
-from typing import Any, TYPE_CHECKING
+from typing import cast, Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
+from leo.core.leoNodes import Position
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.plugins.qt_frame import LeoQtTreeTab
-    from leo.core.leoNodes import Position
+
 
 # @-<< leoChapters imports & annotations >>
 
@@ -389,7 +390,7 @@ class Chapter:
         self.selectLockout = False  # True: in chapter.select logic.
         # State variables: saved/restored when the chapter is unselected/selected.
         self.p: Position = c.p
-        self.root: Position
+        self.root = cast(Position, None)
         if cc.tt:
             cc.tt.createTab(name)
 
@@ -430,7 +431,7 @@ class Chapter:
             return
 
         # Remember the root (it may have changed) for dehoist.
-        self.root = root = self.findRootNode()  # type:ignore
+        self.root = root = self.findRootNode()
         if not root:
             # Might happen during unit testing or startup.
             return

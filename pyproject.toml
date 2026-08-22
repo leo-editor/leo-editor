@@ -305,7 +305,7 @@ dependencies = [
   "pytest",
   "pytest-cov",      # For coverage testing.
   "ruff",
-  "ty==0.0.71",
+  "ty==0.0.73",
 
   # General packages for plugins, leoserver and commands...
 

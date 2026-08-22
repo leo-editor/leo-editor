@@ -586,7 +586,7 @@ class FastRead:
                     if uaDict := gnx2ua[gnx]:  # A defaultdict(dict)
                         v.unknownAttributes = uaDict
                     # Recursively create the children.
-                    v_element_visitor(v_dict.get('children', []), v)  # type:ignore # required.
+                    v_element_visitor(v_dict.get('children', []), v)  # type:ignore
 
         gnx = 'hidden-root-vnode-gnx'
         hidden_v = leoNodes.VNode(context=c, gnx=gnx)
@@ -638,7 +638,7 @@ class FileCommands:
         # For writing...
         self.read_only = False
         self.rootPosition: Position
-        self.outputFile: io.StringIO
+        self.outputFile: io.StringIO | None
         self.usingClipboard = False
         self.currentPosition: Position | None = None
         # New in 3.12...
@@ -1626,7 +1626,7 @@ class FileCommands:
                 self.put_t_elements()
                 self.putPostlog()
                 s = self.outputFile.getvalue()
-                self.outputFile = None  # type:ignore
+                self.outputFile = None
         finally:  # Restore
             self.descendentTnodeUaDictList = tua
             self.descendentVnodeUaDictList = vua
@@ -1670,7 +1670,7 @@ class FileCommands:
         self.put_t_elements()
         self.putPostlog()
         s = self.outputFile.getvalue()
-        self.outputFile = None  # type:ignore
+        self.outputFile: io.StringIO | None = None
         return s
 
     # @+node:ekr.20031218072017.3046: *5* fc.write_Leo_file

@@ -28,5 +28,5 @@ for command in [
     f"{python} -m pip list",
 ]:
     print(command)
-    subprocess.run(command, shell=True)
+    subprocess.run(command, shell=True, check=False)
 # @-leo

@@ -13,7 +13,7 @@ from typing import Any, cast, TYPE_CHECKING
 try:
     import enchant
 except Exception:  # May throw WinError(!)
-    enchant = None  # type:ignore
+    enchant = None
 from leo.commands.baseCommands import BaseEditCommandsClass
 from leo.core import leoGlobals as g
 
@@ -780,7 +780,7 @@ class SpellTabHandler:
                 # Don't check words following `(http|https)://`.
                 i, j = g.getLine(s, ins + start)
                 line = s[i:j]
-                m = self.re_http.match(line)  # type:ignore # See next line.
+                m = self.re_http.match(line)
                 if m and word in m.group(2):
                     continue
 

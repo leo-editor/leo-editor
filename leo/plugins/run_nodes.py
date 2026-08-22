@@ -324,8 +324,8 @@ def OpenProcess(p):
 
     proc = subprocess.Popen(command)
     In = proc.stdin
-    OutThread.File = proc.stdout  # type:ignore
-    ErrThread.File = proc.stderr  # type:ignore
+    OutThread.File = proc.stdout
+    ErrThread.File = proc.stderr
     OutThread.start()
     ErrThread.start()
     # Mark and select the node.

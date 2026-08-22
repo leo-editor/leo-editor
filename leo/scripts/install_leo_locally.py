@@ -46,7 +46,7 @@ else:
     python = sys.executable
     command = rf"{python} -m pip install {dist_dir}{os.sep}{wheel_file}"
     print(command)
-    subprocess.run(command, shell=True)
+    subprocess.run(command, shell=True, check=False)
 
     # List site-packages/leo*.
     python_dir = os.path.dirname(sys.executable)

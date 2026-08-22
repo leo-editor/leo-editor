@@ -102,7 +102,7 @@ from leo.core.leoQt import QtWidgets
 try:
     import paramiko
 except ImportError:
-    paramiko = None  # type:ignore
+    paramiko = None
     if not g.unitTesting:
         print('sftp.py: can not import paramiko')
 

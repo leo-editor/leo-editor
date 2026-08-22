@@ -42,7 +42,7 @@ try:  # #1973
 except Exception:
     QtWidgets = None  # type:ignore
     MouseButton = None  # type:ignore
-    NestedSplitter = None  # type:ignore
+    NestedSplitter = None
 
 # Do not call g.assertUi('qt') here. It's too early in the load process.
 # @-<< free_layout imports >>

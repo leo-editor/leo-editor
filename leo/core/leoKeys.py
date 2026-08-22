@@ -23,7 +23,7 @@ from leo.core.leoQt import QtWidgets
 try:
     import jedi
 except ImportError:
-    jedi = None  # type:ignore
+    jedi = None
 # @-<< leoKeys imports >>
 # @+<< leoKeys annotations >>
 # @+node:ekr.20220414165644.1: ** << leoKeys annotations >>
@@ -580,7 +580,7 @@ class AutoCompleterClass:
             try:
                 import jedi
             except ImportError:
-                jedi = None  # type:ignore
+                jedi = None
                 if not self.jedi_warning:
                     self.jedi_warning = True
                     g.es_print('can not import jedi')
@@ -1418,7 +1418,7 @@ class GetArg:
         if hasattr(handler, 'tab_callback'):
             self.reset_tab_cycling()
             k.functionTail = tail  # For k.getFileName.
-            handler.tab_callback()  # type:ignore
+            handler.tab_callback()
             return True
         return False
 
@@ -2578,7 +2578,7 @@ class KeyHandlerClass:
                 c.gotoCommands.find_file_line(n=int(commandName))
 
         else:
-            func = c.commandsDict.get(commandName)  # type:ignore
+            func = c.commandsDict.get(commandName)
         if func is not None:
             # These must be done *after* getting the command.
             k.clearState()
@@ -2586,7 +2586,7 @@ class KeyHandlerClass:
             if commandName != 'repeat-complex-command':
                 k.mb_history.insert(0, commandName)
             w = event.w if event else None
-            if hasattr(w, 'permanent') and not w.permanent:  # type:ignore
+            if hasattr(w, 'permanent') and not w.permanent:
                 # In a headline that is being edited.
                 c.endEditing()
                 c.bodyWantsFocusNow()

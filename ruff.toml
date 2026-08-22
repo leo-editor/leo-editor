@@ -17,10 +17,8 @@ quote-style = "preserve"
 
 [lint]
 
-# #4855: pylint-leo-rc-ref.txt enabled only the basic/classes/format/imports/typecheck/variables
-# checkers (minus its own ~60 message disables, plus the design/similarities categories, which
-# have no ruff equivalent -- see #4855). These are ruff's PL* rules that overlap: same message,
-# same numeric id (e.g. pylint's W0602 <-> ruff's PLW0602), just with a `PL` prefix.
+# #4855: pylint-leo-rc-ref.txt about 60 message disables.
+# These are ruff's PL* rules that overlap: same message and same numeric id with a `PL` prefix.
 extend-select = [
 
     # basic
@@ -156,10 +154,6 @@ ignore = [
     "E711", # Comparison to `None` should be `cond is None`
     "E731", # Do not assign a `lambda` expression, use a `def`
     "E741", # Ambiguous variable name: `l`. Bad style, but only occurs in minor plugins.
-
-    # #4855: F401/F841 (unused import/variable) used to be ignored here because
-    # flake8/pyflakes covered them instead. Now that ruff is the only linter,
-    # they're enabled -- ruff's F rules are on by default and not listed here.
 
     "I001",     # Import block is un-sorted or un-formatted
     "ISC004",   # Unparenthesized implicit string concatenation in collection

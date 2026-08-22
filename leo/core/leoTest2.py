@@ -137,7 +137,7 @@ class LeoUnitTest(unittest.TestCase):
         c.selectPosition(self.root_p)
 
     def tearDown(self) -> None:
-        self.c = None  # type:ignore
+        self.c = None
 
     # @+node:ekr.20230703103458.1: *3* LeoUnitTest._set_setting
     def _set_setting(self, c: Cmdr, kind: str, name: str, val: Any) -> None:

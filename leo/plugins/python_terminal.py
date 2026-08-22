@@ -64,7 +64,7 @@ use_rlcompleter = False
 if use_rlcompleter:
     from rlcompleter import Completer
 else:
-    Completer = None  # type:ignore
+    Completer = None
 
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.

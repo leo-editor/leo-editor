@@ -14,7 +14,8 @@
 <v t="ekr.20140902155015.18674"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="ekr.20250715195948.1"><vh>@bool report-changed-at-clean-nodes = False</vh></v>
 <v t="ekr.20221129012213.1"><vh>@bool run-flake8-on-write = False</vh></v>
-<v t="ekr.20260808003136.1"><vh>@bool run-ruff-on-write = True</vh></v>
+<v t="ekr.20260808003136.1"><vh>@bool run-ruff-on-write = False</vh></v>
+<v t="ekr.20260820160722.1"><vh>@bool run-ty-on-write = False</vh></v>
 <v t="ekr.20210530065000.2"><vh>@data exec-script-commands</vh></v>
 <v t="ekr.20210530065000.3"><vh>@data exec-script-patterns</vh></v>
 <v t="ekr.20150425145248.1"><vh>@data history-list</vh></v>
@@ -183,6 +184,7 @@
 <v t="ekr.20220222130955.1"><vh>@clean ../../.mypy.ini</vh></v>
 <v t="ekr.20240317061516.1"><vh>@clean ../../MANIFEST.in</vh></v>
 <v t="ekr.20240206161713.1"><vh>@clean ../../setup.cfg </vh></v>
+<v t="ekr.20260821134304.1"><vh>@clean ../../ty.toml</vh></v>
 <v t="ekr.20240227064614.1"><vh>@file ../../pyproject.toml</vh></v>
 <v t="ekr.20240201175949.1"><vh>@file ../../requirements.txt</vh></v>
 <v t="ekr.20240406013108.1"><vh>@file ../../ruff.toml</vh></v>
@@ -3566,6 +3568,57 @@ def main() -&gt; int:
 
 if __name__ == '__main__':
     sys.exit(main())
+</t>
+<t tx="ekr.20260820160722.1"></t>
+<t tx="ekr.20260821134304.1"># Config for `ty` (https://github.com/astral-sh/ty)
+# See the "ty" job in .github/workflows/ci.yml
+
+# ty is still in beta, and is noticeably stricter than mypy.
+
+[src]
+include = ["leo"]
+exclude = [
+    # Mirrors the [mypy] exclude list in .mypy.ini.
+    "leo/doc",
+    "leo/dist",
+    "leo/editpane",
+    "leo/examples",
+    "leo/extensions",
+    "leo/external",
+    "leo/modes",
+    "leo/plugins/obsolete",
+    "leo/scripts",
+    "leo/themes",
+    "leo/unittests",
+    "leo/www",
+    "leo/plugins/QNCalendarWidget.py",
+    "leo/plugins/freewin.py",
+    "leo/plugins/xdb_pane.py",
+    "leo/test/scriptFile.py",
+    "leo/plugins/beautify_node.py",
+    "leo/plugins/viewrendered3*",
+    "leo/plugins/leo_pdf*",
+    "leo/plugins/leo_to_rtf*",
+    "leo/plugins/mnplugins*",
+    "leo/plugins/mod_speedups*",
+    "leo/plugins/settings_finder*",
+    "leo/plugins/stickynotes_plus*",
+    "leo/plugins/qt_main*",
+]
+
+[rules]
+
+# Like `disable_error_code=attr-defined` in .mypy.ini.
+unresolved-attribute = "ignore"
+
+# Like `ignore_missing_imports = True` in .mypy.ini.
+unresolved-import = "ignore"
+
+# Warn about unused suppressions.
+unused-type-ignore-comment = "warn"
+
+# Ignore warnings about overridden methods.
+invalid-method-override = "ignore"
 </t>
 </tnodes>
 </leo_file>

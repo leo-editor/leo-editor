@@ -20,11 +20,11 @@ def init():
 def onStart(tag, keywords):
     g.pr("\nglobals...")
     for s in globals():
-        if s not in __builtins__:  # type:ignore
+        if s not in __builtins__:
             g.pr(s)
     g.pr("\nlocals...")
     for s in locals():
-        if s not in __builtins__:  # type:ignore
+        if s not in __builtins__:
             g.pr(s)
 
 
