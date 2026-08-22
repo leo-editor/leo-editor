@@ -1,7 +1,5 @@
-# Config for `ty` (https://github.com/astral-sh/ty)
-# See the "ty" job in .github/workflows/ci.yml
-
-# ty is still in beta, and is noticeably stricter than mypy.
+# Config for `ty`: https://github.com/astral-sh/ty
+# See the `ty` job in .github/workflows/ci.yml
 
 [src]
 include = ["leo"]
