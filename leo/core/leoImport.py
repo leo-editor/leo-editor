@@ -28,7 +28,7 @@ try:
     import lxml
     import lxml.html
 except ImportError:
-    lxml = None
+    lxml = None  # type:ignore
 
 # Leo imports...
 from leo.core import leoGlobals as g
