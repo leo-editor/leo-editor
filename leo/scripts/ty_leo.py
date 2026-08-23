@@ -15,6 +15,7 @@ print(os.path.basename(__file__))
 leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
 os.chdir(leo_editor_dir)
 
+
 # @+others
 # @+node:ekr.20260823160000.1: ** check_optional_deps
 def check_optional_deps() -> bool:
@@ -39,13 +40,17 @@ def check_optional_deps() -> bool:
         except Exception:
             missing.append(pip_name)
     if missing:
-        print('ty_leo.py: missing packages that some `# type:ignore` comments assume are installed:')
+        print(
+            'ty_leo.py: missing packages that some `# type:ignore` comments assume are installed:'
+        )
         for name in missing:
             print(f'  {name}')
         print('Install them with: pip install -r requirements.txt')
         print('Without them, ty reports spurious unused-type-ignore-comment diagnostics.')
         return False
     return True
+
+
 # @-others
 
 if not check_optional_deps():
