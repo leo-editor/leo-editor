@@ -23,12 +23,12 @@ try:
     assert docutils.core
 except ImportError:
     # print('leoImport.py: can not import docutils')
-    docutils = None  # type:ignore
+    docutils = None  # ty:ignore[invalid-assignment]
 try:
     import lxml
     import lxml.html
 except ImportError:
-    lxml = None  # type:ignore
+    lxml = None
 
 # Leo imports...
 from leo.core import leoGlobals as g

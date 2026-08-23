@@ -266,8 +266,8 @@ class LeoFrame:
 
         # Add required inits.
         self.menu = None
-        self.miniBufferWidget = None  # type:ignore
-        self.top = None  # type:ignore
+        self.miniBufferWidget = None  # ty:ignore[invalid-assignment]
+        self.top = None  # ty:ignore[invalid-assignment]
 
         # Other ivars...
         self.es_newlines = 0  # newline count for this log stream.

@@ -17,7 +17,7 @@ try:
     import mypy
     from mypy import api as mypy_api
 except Exception:
-    mypy = None  # type:ignore
+    mypy = None  # ty:ignore[invalid-assignment]
     mypy_api = None
 
 try:
