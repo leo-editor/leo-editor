@@ -40,8 +40,9 @@ unresolved-attribute = "ignore"
 # Like `ignore_missing_imports = True` in .mypy.ini.
 unresolved-import = "ignore"
 
-# Warn about unused suppressions.
-unused-type-ignore-comment = "warn"
+# Don't warn about unused suppressions.
+# They can arise because of environmental differences.
+unused-type-ignore-comment = "ignore"
 
 # Ignore warnings about overridden methods.
 invalid-method-override = "ignore"
