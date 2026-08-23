@@ -85,11 +85,10 @@ jobs:
         with:
           python-version: "3.14"
           cache: pip
-      # Install optional packages that Leo's devs should have installed.
-      # - run: pip install "mypy<2" mypy-extensions typing_extensions
-      #     types-docutils types-Markdown types-paramiko types-PyYAML
-      #     types-requests types-six
+      # Install optional packages that Leo's devs should have installed,
+      # so ty resolves their imports the same way it does on devs' machines.
       - run: pip install "ty==0.0.73"
           "PyQt6>=6.6" PyQt6-QScintilla PyQt6-WebEngine
           black Jinja2 Pygments docutils pyenchant jedi nbformat nbconvert
+          "mypy<2" lxml PyYAML
       - run: ty check leo
