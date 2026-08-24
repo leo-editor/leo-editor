@@ -269,11 +269,13 @@ class TestCommands(LeoUnitTest):
     def test_docstrings(self):
         """Global test that all commands have a docstring"""
         c = self.c
+        missing: list[str] = []
         for command_name, func in c.commandsDict.items():
             assert inspect.isfunction(func), (command_name, func.__name__)
-            # sig = inspect.signature(func)
-            # params = sig.parameters
-            # assert 'event' in params, f"{func.__name__}{params}"
+            s = g.getDocStringForFunction(func)
+            if not s.strip():
+                missing.append(func.__name__)
+        assert not missing, g.objToString(list(sorted(missing)), tag='Missing docstrings')
 
     # @-others
 
