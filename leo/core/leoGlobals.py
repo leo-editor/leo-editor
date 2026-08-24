@@ -7650,8 +7650,6 @@ def getDocString(s: str) -> str:
 def getDocStringForFunction(func: Callable) -> str:
     """Return the docstring for a function that creates a Leo command."""
 
-    g.trace(g.callers())
-
     def name(func: Callable) -> str:
         return str(func.__name__) if hasattr(func, '__name__') else '<no __name__>'
 

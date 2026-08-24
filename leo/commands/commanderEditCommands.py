@@ -729,6 +729,7 @@ def insertBodyTime(self: Self, event: LeoKeyEvent | None = None) -> None:
 # @+node:ekr.20171123135625.52: ** c_ec.justify-toggle-auto
 @g.commander_command("justify-toggle-auto")
 def justify_toggle_auto(self: Self, event: LeoKeyEvent | None = None) -> None:
+    """Toggle justification per the @autojustify setting"""
     c = self
     if c.editCommands.autojustify == 0:
         c.editCommands.autojustify = abs(c.config.getInt("autojustify") or 0)

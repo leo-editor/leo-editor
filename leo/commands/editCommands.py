@@ -265,6 +265,7 @@ def merge_node_with_prev_node(event: LeoKeyEvent | None = None) -> None:
 # @+node:ekr.20190926103245.1: *3* @g.command('next-or-end-of-line')
 @g.command('next-or-end-of-line')
 def nextOrEndOfLine(event: LeoKeyEvent | None = None) -> None:
+    """Do end-of-line or next-line"""
     # by Brian Theado.
     if c := event.get('c') if event else None:
         lineScrollHelper(c, 'next-', 'end-', '')
@@ -273,6 +274,7 @@ def nextOrEndOfLine(event: LeoKeyEvent | None = None) -> None:
 # @+node:ekr.20190926103246.2: *3* @g.command('next-or-end-of-line-extend-selection')
 @g.command('next-or-end-of-line-extend-selection')
 def nextOrEndOfLineExtendSelection(event: LeoKeyEvent | None = None) -> None:
+    """Do end-of-line-extend-selection or next-line-extend-selection"""
     # by Brian Theado.
     if c := event.get('c') if event else None:
         lineScrollHelper(c, 'next-', 'end-', '-extend-selection')
@@ -281,6 +283,7 @@ def nextOrEndOfLineExtendSelection(event: LeoKeyEvent | None = None) -> None:
 # @+node:ekr.20190926103246.1: *3* @g.command('previous-or-beginning-of-line')
 @g.command('previous-or-beginning-of-line')
 def previousOrBeginningOfLine(event: LeoKeyEvent | None = None) -> None:
+    """Do beginning-of-line or previous-line"""
     # by Brian Theado.
     if c := event.get('c') if event else None:
         lineScrollHelper(c, 'previous-', 'beginning-', '')
@@ -289,6 +292,7 @@ def previousOrBeginningOfLine(event: LeoKeyEvent | None = None) -> None:
 # @+node:ekr.20190926103246.3: *3* @g.command('previous-or-beginning-of-line-extend-selection')
 @g.command('previous-or-beginning-of-line-extend-selection')
 def previousOrBeginningOfLineExtendSelection(event: LeoKeyEvent | None = None) -> None:
+    """Do beginning-of-line-extend-selection or previous-line-extend-selection"""
     # by Brian Theado.
     if c := event.get('c') if event else None:
         lineScrollHelper(c, 'previous-', 'beginning-', '-extend-selection')
@@ -2765,6 +2769,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     @cmd('back-to-home-extend-selection')
     def backToHomeExtendSelection(self, event: LeoKeyEvent | None = None) -> None:
+        """Smart home, extending selection"""
         self.backToHome(event, extend=True)
 
     # @+node:ekr.20150514063305.291: *4* ec.backToIndentation

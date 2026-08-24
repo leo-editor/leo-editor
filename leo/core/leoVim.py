@@ -2147,10 +2147,12 @@ class VimCommands:
     # @+node:ekr.20150509050905.1: *4* vc.e_command & tabnew_command
     @cmd(':e')
     def e_command(self, event: LeoKeyEvent | None = None) -> None:
+        """Handle the vim :e command"""
         self.Tabnew(self)
 
     @cmd(':tabnew')
     def tabnew_command(self, event: LeoKeyEvent | None = None) -> None:
+        """Handle the vim :tabnew command"""
         self.Tabnew(self)
 
     # @+node:ekr.20140815160132.18824: *4* vc.print_dot (:print-dot)
@@ -2189,6 +2191,7 @@ class VimCommands:
     # @+node:ekr.20150509050918.1: *4* vc.r_command
     @cmd(':r')
     def r_command(self, event: LeoKeyEvent | None = None) -> None:
+        """Handle the vim :r (load-file-at-cursor) command."""
         self.LoadFileAtCursor(self)
 
     # @+node:ekr.20140815160132.18826: *4* vc.revert (:e!)
@@ -2200,10 +2203,12 @@ class VimCommands:
     # @+node:ekr.20150509050755.1: *4* vc.s_command & percent_s_command
     @cmd(':%s')
     def percent_s_command(self, event: LeoKeyEvent | None = None) -> None:
+        """Handle the Vim :%s command"""
         self.Substitution(self, all_lines=True)
 
     @cmd(':s')
     def s_command(self, event: LeoKeyEvent | None = None) -> None:
+        """Handle the Vim :s command"""
         self.Substitution(self, all_lines=False)
 
     # @+node:ekr.20140815160132.18827: *4* vc.shell_command (:!)
