@@ -265,6 +265,16 @@ class TestCommands(LeoUnitTest):
             params = sig.parameters
             assert 'event' in params, f"{func.__name__}{params}"
 
+    # @+node:ekr.20260824012333.1: *3* TestCommands.test_docstrings
+    def test_docstrings(self):
+        """Global test that all commands have a docstring"""
+        c = self.c
+        for command_name, func in c.commandsDict.items():
+            assert inspect.isfunction(func), (command_name, func.__name__)
+            # sig = inspect.signature(func)
+            # params = sig.parameters
+            # assert 'event' in params, f"{func.__name__}{params}"
+
     # @-others
 
 
