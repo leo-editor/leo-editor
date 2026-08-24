@@ -47,7 +47,7 @@ def init() -> bool:
     """
     Return True if this plugin is enabled.
 
-    Called only if the qt_layout.py plugin is explicitly enabled.
+    Called only if the `@enabled-plugins` setting explicitly enables this plugin.
     """
     g.registerHandler("create-optional-menus", create_layout_menu)
     g.plugin_signon(__name__)
