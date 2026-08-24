@@ -5,7 +5,8 @@ The basic machinery to support applying layouts of the main Leo panels.
 
 Leo always imports this module during startup when using the qt gui.
 
-If enabled explicitly, this plugin adds a menu item in the Plugins menu.
+If enabled explicitly in the `@enabled-plugins` setting, this plugin adds a
+menu item in the Plugins menu.
 """
 
 # @+<< qt_layout: imports & annotations >>
