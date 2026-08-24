@@ -32,6 +32,9 @@ exclude = [
     "leo/plugins/qt_main*",
 ]
 
+[analysis]
+strict-equality-semantics = true
+
 [rules]
 
 # Like `disable_error_code=attr-defined` in .mypy.ini.
