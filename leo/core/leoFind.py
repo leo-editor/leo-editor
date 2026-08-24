@@ -1002,7 +1002,7 @@ class LeoFind:
     # @+node:ekr.20141113094129.6: *4* find.focus-to-find
     @cmd('focus-to-find')
     def focus_to_find(self, event: LeoKeyEvent | None = None) -> None:
-        """Show the Find Tab and put the focus their or in the minibuffer"""
+        """Show the Find Tab and put the focus there or in the minibuffer"""
         c = self.c
         if c.config.getBool('use-find-dialog', default=True):
             g.app.gui.openFindDialog(c)
