@@ -275,7 +275,7 @@ class TestCommands(LeoUnitTest):
             s = g.getDocStringForFunction(func)
             if not s.strip():
                 missing.append(func.__name__)
-        assert not missing, g.objToString(list(sorted(missing)), tag='Missing docstrings')
+        assert not missing, 'Missing docstrings...\n  ' + '\n  '.join(list(sorted(missing)))
 
     # @-others
 
