@@ -1,6 +1,12 @@
 # @+leo-ver=5-thin
 # @+node:tom.20240923194438.1: * @file ../plugins/qt_layout.py
-"""The basic machinery to support applying layouts of the main Leo panels."""
+"""
+The basic machinery to support applying layouts of the main Leo panels.
+
+This plugin is imported during Leo's startup.
+
+If enabled explicitly, it adds a menu item in the Plugins menu.
+"""
 
 # @+<< qt_layout: imports & annotations >>
 # @+node:tom.20240923194438.2: ** << qt_layout: imports & annotations >>
@@ -32,14 +38,20 @@ VR3_MODULE_NAME = 'viewrendered3.py'
 LAYOUT_REGISTRY: dict[str, str] = {}  # {layout_name: layout_docstring}
 # @-<< qt_layout: declarations >>
 
+__plugin_name__ = "qt_layout"
+
 
 # @+others
 # @+node:ekr.20241008174359.1: ** Top-level functions: qt_layout.py
 # @+node:ekr.20241008141246.1: *3* function: init (qt_layout.py)
 def init() -> bool:
     """
-    qt_layout is not a true plugin, but return True just in case.
+    Return True if this plugin is enabled.
+
+    Called only if the qt_layout.py plugin is explicitly enabled.
     """
+    g.registerHandler("create-optional-menus", create_layout_menu)
+    g.plugin_signon(__name__)
     return True
 
 
@@ -54,6 +66,11 @@ def is_module_loaded(module_name: str) -> bool:
     """Return True if the plugins controller has loaded the module."""
     controller = g.app.pluginsController
     return controller.isLoaded(module_name)
+
+
+# @+node:ekr.20260824080746.1: *3* function: create_layout_menu (qt_layout.py)
+def create_layout_menu(tag: str, kwargs: Any) -> None:
+    g.trace(f"{tag=}, {g.callers()=}")  ###
 
 
 # @+node:tom.20241015161609.1: *3* decorator:  register_layout (qt_layout.py)
