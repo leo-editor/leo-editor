@@ -53,6 +53,7 @@ from leo.plugins.qt_text import QTextMixin
 
 assert Qt
 assert qt_commands
+QWidget = QtWidgets.QWidget
 # @-<< qt_gui imports  >>
 # @+<< qt_gui annotations >>
 # @+node:ekr.20220415183421.1: ** << qt_gui annotations >>
@@ -79,7 +80,6 @@ if TYPE_CHECKING:  # pragma: no cover
     QSplitter = QtWidgets.QSplitter
     QTabWidget = QtWidgets.QTabWidget
     QVBoxLayout = QtWidgets.QVBoxLayout
-    QWidget = QtWidgets.QWidget
 
 
 # @-<< qt_gui annotations >>

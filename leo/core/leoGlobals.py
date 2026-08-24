@@ -7650,6 +7650,8 @@ def getDocString(s: str) -> str:
 def getDocStringForFunction(func: Callable) -> str:
     """Return the docstring for a function that creates a Leo command."""
 
+    g.trace(g.callers())
+
     def name(func: Callable) -> str:
         return str(func.__name__) if hasattr(func, '__name__') else '<no __name__>'
 
@@ -7663,16 +7665,19 @@ def getDocStringForFunction(func: Callable) -> str:
 
     if name(func) == 'minibufferCallback':
         func = get_defaults(func, 0)
-        if s := getattr(func, '__doc__', '').strip():
+        s = getattr(func, '__doc__', None)
+        if s and s.strip():
             return s
     if name(func) == 'commonCommandCallback':
         script = get_defaults(func, 1)
         if s := g.getDocString(script):  # Do a text scan for the function.
             return s
     # Now the general cases.  Prefer __doc__ to docstring()
-    if s := getattr(func, '__doc__', '').strip():
+    s = getattr(func, '__doc__', None)
+    if s and s.strip():
         return s
-    if s := getattr(func, 'docstring', '').strip():
+    s = getattr(func, 'docstring', None)
+    if s and s.strip():
         return s
     return ''
 

@@ -4645,6 +4645,7 @@ def hideBodyPane(event: LeoKeyEvent | None = None) -> None:
 # @+node:ekr.20231102130853.1: *4* 'hide-icon-bar'
 @g.command('hide-icon-bar')
 def hideIconBar(event: LeoKeyEvent | None = None) -> None:
+    """Hide the icon bar."""
     if c := event.get('c') if event else None:
         dw = c.frame.top
         dw.iconBar.hide()
@@ -4663,6 +4664,7 @@ def hideLogPane(event: LeoKeyEvent | None = None) -> None:
 # @+node:ekr.20231102131048.1: *4* 'hide-minibuffer'
 @g.command('hide-minibuffer')
 def hideMinibuffer(event: LeoKeyEvent | None = None) -> None:
+    """Hide the minibuffer."""
     if c := event.get('c') if event else None:
         dw = c.frame.top
         dw.leo_minibuffer_frame.hide()
@@ -4681,15 +4683,17 @@ def hideOutlinePane(event: LeoKeyEvent | None = None) -> None:
 # @+node:ekr.20231102130902.1: *4* 'hide-status-bar'
 @g.command('hide-status-bar')
 def hideStatusBar(event: LeoKeyEvent | None = None) -> None:
+    """Hide the status bar."""
     if c := event.get('c') if event else None:
         dw = c.frame.top
-        dw.statusBar.hide()
+        dw.statusBar().hide()
 
 
 # @+node:ekr.20241027140853.1: *3* show-* commands
 # @+node:ekr.20241027140945.1: *4* 'show-icon-bar'
 @g.command('show-icon-bar')
 def showIconBar(event: LeoKeyEvent | None = None) -> None:
+    """Show the icon bar."""
     if c := event.get('c') if event else None:
         dw = c.frame.top
         dw.iconBar.show()
@@ -4698,6 +4702,7 @@ def showIconBar(event: LeoKeyEvent | None = None) -> None:
 # @+node:ekr.20241027141052.1: *4* 'show-minibuffer'
 @g.command('show-minibuffer')
 def showMinibuffer(event: LeoKeyEvent | None = None) -> None:
+    """Show the minibuffer."""
     if c := event.get('c') if event else None:
         dw = c.frame.top
         dw.leo_minibuffer_frame.show()
@@ -4760,15 +4765,17 @@ def showQtWidgets(event: LeoKeyEvent | None = None) -> None:
 # @+node:ekr.20241027141138.1: *4* 'show-status-bar'
 @g.command('show-status-bar')
 def showStatusBar(event: LeoKeyEvent | None = None) -> None:
+    """Show the status bar"""
     if c := event.get('c') if event else None:
         dw = c.frame.top
-        dw.statusBar.show()
+        dw.statusBar().show()
 
 
 # @+node:ekr.20241027140920.1: *3* toggle-* commands
 # @+node:ekr.20241027141012.1: *4* 'toggle-icon-bar'
 @g.command('toggle-icon-bar')
 def toggleIconBar(event: LeoKeyEvent | None = None) -> None:
+    """Toggle the visibility of the icon bar."""
     if c := event.get('c') if event else None:
         dw = c.frame.top
         w = dw.iconBar
@@ -4781,6 +4788,7 @@ def toggleIconBar(event: LeoKeyEvent | None = None) -> None:
 # @+node:ekr.20241027141108.1: *4* 'toggle-minibuffer'
 @g.command('toggle-minibuffer')
 def toggleMinibuffer(event: LeoKeyEvent | None = None) -> None:
+    """Toggle the visibility of the minibuffer."""
     if c := event.get('c') if event else None:
         dw = c.frame.top
         w = dw.leo_minibuffer_frame
@@ -4793,9 +4801,10 @@ def toggleMinibuffer(event: LeoKeyEvent | None = None) -> None:
 # @+node:ekr.20241027141155.1: *4* 'toggle-status-bar'
 @g.command('toggle-status-bar')
 def toggleStatusBar(event: LeoKeyEvent | None = None) -> None:
+    """Toggle the visibility of the status bar."""
     if c := event.get('c') if event else None:
         dw = c.frame.top
-        w = dw.statusBar
+        w = dw.statusBar()
         if w.isVisible():
             w.hide()
         else:
@@ -4805,6 +4814,7 @@ def toggleStatusBar(event: LeoKeyEvent | None = None) -> None:
 # @+node:ekr.20240505045118.1: *4* 'toggle-unl-view'
 @g.command('toggle-unl-view')
 def toggleUnlView(event: LeoKeyEvent | None = None) -> None:
+    """Toggle the unl view."""
     c = event.get('c') if event else None
     if c and c.frame.statusLine:
         # This is not a convenience method.
