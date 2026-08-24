@@ -3,9 +3,9 @@
 """
 The basic machinery to support applying layouts of the main Leo panels.
 
-This plugin is imported during Leo's startup.
+Leo always imports this module during startup when using the qt gui.
 
-If enabled explicitly, it adds a menu item in the Plugins menu.
+If enabled explicitly, this plugin adds a menu item in the Plugins menu.
 """
 
 # @+<< qt_layout: imports & annotations >>
@@ -37,8 +37,6 @@ VR3_MODULE_NAME = 'viewrendered3.py'
 
 LAYOUT_REGISTRY: dict[str, str] = {}  # {layout_name: layout_docstring}
 # @-<< qt_layout: declarations >>
-
-__plugin_name__ = "qt_layout"
 
 
 # @+others
