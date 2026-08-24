@@ -35,6 +35,7 @@ def onCreate(tag, keys):
 
 @g.command('print-hello2')
 def hello_command2(event):
+    """The print-hello2 command (testing only)"""
     g.es_print('Hello 2 from %s' % (g.shortFileName(__file__)), color='red')
 
 

@@ -350,6 +350,7 @@ def showLayouts(event: LeoKeyEvent | None) -> None:
 # @+node:tom.20250106123058.1: *3* command: show_layout_name
 @g.command('show-current-layout')
 def show_layout_name(event: LeoKeyEvent | None = None) -> None:
+    """Show the name of the current layout of Leo's outline"""
     c = event.get('c') if event else None
     if not c:
         return

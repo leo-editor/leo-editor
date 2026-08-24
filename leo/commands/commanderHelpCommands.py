@@ -67,6 +67,7 @@ def editOneSetting(self: Self, event: LeoKeyEvent | None = None) -> None:
 # @+node:vitalije.20170708172746.1: ** c_help.editShortcut
 @g.commander_command('edit-shortcut')
 def editShortcut(self: Self, event: LeoKeyEvent | None = None) -> None:
+    """Edit the shortcut of an @button or @command node"""
     k = self.k
     if k.isEditShortcutSensible():
         # k.setState('input-shortcut', 'input-shortcut')

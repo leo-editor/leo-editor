@@ -479,12 +479,14 @@ class LeoFrame:
     # @+node:felix.20250313154127.1: *4* LeoFrame.Window Layouts
     @frame_cmd('horizontal-window-layout')
     def horizontalWindowLayout(self, event: LeoKeyEvent | None = None) -> None:
+        """Change the layout of Leo's window to the horizontal (legacy) layout"""
         c = self.c
         c.inCommand = False  # Allow inner command
         c.doCommandByName('layout-legacy')
 
     @frame_cmd('vertical-window-layout')
     def verticalWindowLayout(self, event: LeoKeyEvent | None = None) -> None:
+        """Change the layout of Leo's window to the vertical layout"""
         c = self.c
         c.inCommand = False  # Allow inner command
         c.doCommandByName('layout-vertical-thirds')
