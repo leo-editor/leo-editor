@@ -20,7 +20,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: pip
       - run: pip install ruff
-      - run: ruff check leo
+      - run: ruff check leo --output-format=github
       - run: ruff format --check leo
 
   test:
@@ -79,6 +79,8 @@ jobs:
 
   ty:
     runs-on: ubuntu-latest
+    env:
+      TY_OUTPUT_FORMAT: github
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
