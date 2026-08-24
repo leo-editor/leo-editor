@@ -1481,6 +1481,7 @@ class Commands:
     # @+node:ekr.20260619021703.1: *4* @cmd redraw (c.redraw_command)
     @cmd('redraw')
     def redraw_command(self, event: LeoKeyEvent | None = None) -> None:
+        """Redraw the outline"""
         if c := event.get('c') if event else None:
             c.redraw()
 

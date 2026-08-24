@@ -891,6 +891,7 @@ class SpellTabHandler:
 # @+node:ekr.20180209141207.1: ** @g.command('show-spell-info')
 @g.command('show-spell-info')
 def show_spell_info(event: LeoKeyEvent | None = None) -> None:
+    """Show the location of the main and user spelling dictionaries"""
     if c := event.get('c') if event else None:
         c.spellCommands.handler.spellController.show_info()
 
