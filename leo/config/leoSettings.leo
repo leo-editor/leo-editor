@@ -2291,6 +2291,7 @@
 </v>
 <v t="ekr.20140915194122.23428"></v>
 <v t="ekr.20260111055007.1"></v>
+<v t="ekr.20070224073109.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -3712,6 +3713,7 @@ contextmenu.py      # Required by the vim.py and xemacs.py plugins.
 mod_scripting.py
 nav_qt.py           # Forward/back buttons &amp; goto-next/prev-history-node
 nodetags.py
+qt_layout.py        # Creates qt_layout menu in the Plugins menu.
 quicksearch.py      # Nav pane.
 viewrendered.py     # (Or viewrendered3.py) Plugins menu support.
 leo_to_html_outline_viewer.py  # Self-contained HTML Outline Viewer</t>
