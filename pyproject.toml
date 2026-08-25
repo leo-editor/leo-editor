@@ -281,9 +281,19 @@ readme = "README.md"
 #@+node:ekr.20240713074535.1: ** << pyproject.toml: dependencies >>
 # Warning: these dependencies should match those in requirements.txt.
 
-dependencies = [
+# `dependencies`: the minimum needed to launch Leo and edit outlines.
+# Everything else is optional: `pip install leo[plugins]`, `leo[dev]`, or `leo[full]` (both).
+# See #4891.
 
-  # For build devs.
+dependencies = [
+  "PyQt6>= 6.6",
+  "PyQt6-QScintilla",
+]
+
+[project.optional-dependencies]
+
+# For build/release devs, type-checking and the test suite.
+dev = [
   "build>=1.2.1",
   "twine>=5.1.0",
 
@@ -297,8 +307,7 @@ dependencies = [
   # "types-PyYAML",
   # "types-requests",
   # "types-six",
-  
-  # For testing.
+
   "asttokens",       # For unit tests.
   "beautifulsoup4",  # For link testing.
   "black",           # For unit tests.
@@ -306,9 +315,10 @@ dependencies = [
   "pytest-cov",      # For coverage testing.
   "ruff",
   "ty==0.0.73",
+]
 
-  # General packages for plugins, leoserver and commands...
-
+# Packages needed by specific plugins, leoserver and commands, but not to run Leo itself.
+plugins = [
   "docutils",        # For Sphinx and rST plugins.
   # "flexx",         # For --gui=browser (leoflexx.py plugin).
   "jedi",            # For autocompletion.
@@ -319,19 +329,20 @@ dependencies = [
   # "meta",          # livecode.py plugin.
   "numpy",           # VR3 plugin.
   "pyenchant",       # The spell tab.
+  "PyQt6-WebEngine", # Render-pane HTML/Markdown view; degrades to QTextBrowser without it.
   "PyYAML",          # auto_colorize2_0.py plugin.
+  "Send2Trash; platform_system == 'Windows'",  # For picture_viewer plugin.
 
   "sphinx",
   "sphinx-book-theme",
   "urllib3",
   "websockets",      # For leoserver.
+]
 
-  # Gui packages...
-
-  "PyQt6>= 6.6",
-  "PyQt6-QScintilla",
-  "PyQt6-WebEngine",
-  "Send2Trash; platform_system == 'Windows'",  # For picture_viewer plugin.
+# Everything: matches plain `pip install leo` before optional-dependencies existed.
+full = [
+  "leo[dev]",
+  "leo[plugins]",
 ]
 
 #@-<< pyproject.toml: dependencies >>

@@ -3,12 +3,19 @@
 # leo-editor/requirements.txt.
 
 # The dependencies here should match those in pyproject.toml.
+# This file installs everything: the equivalent of `pip install leo[full]`. See #4891.
 
 # @+<< requirements.txt: dependencies >>
 # @+node:ekr.20241022091142.1: ** << requirements.txt: dependencies >>
 # Warning: these dependencies should match those in pyproject.toml.
 
-# For build devs.
+# Gui packages: the minimum needed to launch Leo and edit outlines.
+
+PyQt6>= 6.6
+PyQt6-QScintilla
+
+# For build/release devs, type-checking and the test suite (pyproject.toml: [dev]).
+
 build>=1.2.1
 twine>=5.1.0
 setuptools>=80.4.0
@@ -24,7 +31,6 @@ setuptools>=80.4.0
 # types-requests
 # types-six
 
-# For testing.
 asttokens       # For unit tests.
 beautifulsoup4  # For link testing.
 black           # For unit tests.
@@ -33,7 +39,7 @@ pytest-cov      # For coverage testing.
 ruff
 ty==0.0.73
 
-# General packages for plugins, leoserver and commands...
+# Packages needed by specific plugins, leoserver and commands (pyproject.toml: [plugins]).
 
 docutils        # For Sphinx and rST plugins.
 # flexx           # leoflexx.py plugin.
@@ -45,18 +51,13 @@ matplotlib      # VR3 plugin.
 # meta          # livecode.py plugin.
 numpy           # VR3 plugin.
 pyenchant       # The spell tab.
+PyQt6-WebEngine # Render-pane HTML/Markdown view; degrades to QTextBrowser without it.
 PyYAML          # auto_colorize2_0.py plugin.
+Send2Trash; platform_system=="Windows"  # For picture_viewer plugin.
 sphinx          # For documentation.
 sphinx-book-theme
 urllib3
 websockets      # For leoserver.
-
-# Gui packages...
-
-PyQt6>= 6.6
-PyQt6-QScintilla
-PyQt6-WebEngine
-Send2Trash; platform_system=="Windows"  # For picture_viewer plugin.
 # @-<< requirements.txt: dependencies >>
 
 # @@language python
