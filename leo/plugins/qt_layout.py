@@ -1,14 +1,15 @@
 # @+leo-ver=5-thin
 # @+node:tom.20240923194438.1: * @file ../plugins/qt_layout.py
+# @+<< qt_layout: docstring>>
+# @+node:ekr.20260825062842.1: ** << qt_layout: docstring>>
 """
-The basic machinery to support applying layouts of the main Leo panels.
+The basic machinery to support applying Qt layouts to Leo's outline.
 
-Leo always imports this module during startup when using the qt gui.
-
-If enabled explicitly in the `@enabled-plugins` setting, this plugin adds a
-menu item in the Plugins menu.
+This plugin adds the qt_layout menu (and submenus) to the Plugins menu
+*only* if enabled explictly via the `@enabled-plugins`
 """
 
+# @-<< qt_layout: docstring>>
 # @+<< qt_layout: imports & annotations >>
 # @+node:tom.20240923194438.2: ** << qt_layout: imports & annotations >>
 from __future__ import annotations

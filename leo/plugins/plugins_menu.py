@@ -299,8 +299,7 @@ class PlugIn:
         The g.command decorator sets func.is_command & func.command_name.
         """
         self.othercmds = {}
-        for key in self.mod.__dict__.keys():  ###
-            func = self.mod.__dict__[key]
+        for func in self.mod.__dict__.values():
             if getattr(func, 'is_command', None):
                 self.othercmds[func.command_name] = func
 
