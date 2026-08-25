@@ -159,7 +159,7 @@ def createPluginsMenu(tag: str, keywords: KWargs) -> None:
     for group_name in PluginDatabase.getGroups():
         PluginDatabase.setMenu(group_name, c.frame.menu.createNewMenu(group_name, menu_name))
     for z in plugins_list:
-        if 'qt_layout' in z.name:
+        if 'qt_layout' in repr(z):
             g.trace(z)  ###
         addPluginMenuItem(z, c)
 
@@ -255,14 +255,14 @@ class PlugIn:
     hastoplevel: Any
 
     # @+others
-    # @+node:EKR.20040517080555.4: *3* PlugIn.__init__ & helper
-    def __init__(self, plgMod: ModuleType, c: Cmdr | None = None) -> None:
+    # @+node:EKR.20040517080555.4: *3* PlugIn.__init__
+    def __init__(self, _module: ModuleType, c: Cmdr | None = None) -> None:
         """
-        @param plgMod: Module object for the plugin represented by this instance.
+        @param _module: Module object for the plugin represented by this instance.
         @param c:  Leo-editor "commander" for the current .leo file
         """
         self.c = c
-        self.mod = plgMod
+        self.mod = _module
         self.name = self.moduleName = None
         self.doc = self.version = None
         try:
@@ -280,13 +280,13 @@ class PlugIn:
         self.version = self.mod.__dict__.get("__version__", "<unknown>")
         # g.pr(self.version,g.shortFileName(filename))
         # Configuration...
-        assert plgMod.__file__
-        self.configfilename = "%s.ini" % os.path.splitext(plgMod.__file__)[0]
+        assert _module.__file__
+        self.configfilename = "%s.ini" % os.path.splitext(_module.__file__)[0]
         # True if this can be configured.
         self.hasconfig = os.path.isfile(self.configfilename)
         # Look for an applyConfiguration function in the module.
         # This is used to apply changes in configuration from the properties window
-        self.hasapply = hasattr(plgMod, "applyConfiguration")
+        self.hasapply = hasattr(_module, "applyConfiguration")
         self.create_menu()  # Create menu items from cmd_* functions.
         # Use a toplevel menu item instead of the default About.
         try:
@@ -294,15 +294,20 @@ class PlugIn:
         except KeyError:
             self.hastoplevel = False
 
-    # @+node:EKR.20040517080555.7: *4* create_menu (Plugin)
+    # @+node:EKR.20040517080555.7: *3* Plugin.create_menu
     def create_menu(self) -> None:
         """
         Add items in the main menu for each decorated command in this plugin.
         The g.command decorator sets func.is_command & func.command_name.
         """
         self.othercmds = {}
-        for item in self.mod.__dict__.keys():
-            func = self.mod.__dict__[item]
+        trace = 'qt_layout' in repr(self)
+        # if 'qt_layout' in repr(self):  ###
+        #     g.printObj(list(self.mod.__dict__.keys()))
+        for key in self.mod.__dict__.keys():
+            func = self.mod.__dict__[key]
+            if trace:
+                g.trace(key, getattr(func, 'is_command', 'None'))
             if getattr(func, 'is_command', None):
                 self.othercmds[func.command_name] = func
 

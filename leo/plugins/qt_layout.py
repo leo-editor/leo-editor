@@ -84,19 +84,18 @@ def register_layout(name: str) -> Callable:
 
 
 # @+node:ekr.20241008174351.1: ** Layout commands
-# @+at
 # Read Me or Suffer
 #
 # The help-for-layouts and show-layout commands use these docstrings,
 # so the following constraints apply to the following docstrings:
 #
-# 1. All docstrings must start with a newline.
-# 2. Use a *single* ':', followed by a blank line
-#    to denote the start of a layout diagram or
-#    any other verbatim text.
-# 3. All verbatim text must end with a blank line unless
-#    the verbatim text ends the docstring.
-# @@c
+# - All docstrings must start with a newline.
+#
+# - Use a *single* ':', followed by a blank line to denote
+#   the start of a layout diagram or any other verbatim text.
+#
+# - All verbatim text must end with a blank line unless
+#   the verbatim text ends the docstring.
 # @+node:tom.20240928171510.1: *3* command: 'layout-big-tree'
 @g.command('layout-big-tree')
 @register_layout('layout-big-tree')
