@@ -69,7 +69,7 @@ def is_module_loaded(module_name: str) -> bool:
 
 # @+node:ekr.20260824080746.1: *3* function: create_layout_menu (qt_layout.py)
 def create_layout_menu(tag: str, kwargs: Any) -> None:
-    g.trace(f"{tag=}, {g.callers()=}")  ###
+    g.trace(f"TO DO: {tag=}")  ###
 
 
 # @+node:tom.20241015161609.1: *3* decorator:  register_layout (qt_layout.py)

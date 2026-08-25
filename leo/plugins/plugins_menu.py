@@ -140,26 +140,28 @@ def createPluginsMenu(tag: str, keywords: KWargs) -> None:
         return
     menu_name = keywords.get('menu_name', '&Plugins')
     pc = g.app.pluginsController
-    lmd = pc.loadedModules
-    if not lmd:
+    loaded_modules = pc.loadedModules
+    if not loaded_modules:
         return  # #4753
 
-    impModSpecList = list(lmd.keys())
+    keys = list(loaded_modules.keys())
 
     def key(s: str) -> str:
         return s.split('.')[-1].lower()
 
-    impModSpecList.sort(key=key)
-    plgObList: list[PlugIn] = [PlugIn(lmd[impModSpec], c) for impModSpec in impModSpecList]
+    keys.sort(key=key)
+    plugins_list: list[PlugIn] = [PlugIn(loaded_modules[key], c) for key in keys]
     c.pluginsMenu = pluginMenu = c.frame.menu.createNewMenu(menu_name)
-    # 2013/12/13: Add any items in @menu plugins
-    add_menu_from_settings(c)
+    add_menu_from_settings(c)  # Add any items in @menu plugins
     PluginDatabase.setMenu("Default", pluginMenu)
+
     # Add group menus
     for group_name in PluginDatabase.getGroups():
         PluginDatabase.setMenu(group_name, c.frame.menu.createNewMenu(group_name, menu_name))
-    for plgObj in plgObList:
-        addPluginMenuItem(plgObj, c)
+    for z in plugins_list:
+        if 'qt_layout' in z.name:
+            g.trace(z)  ###
+        addPluginMenuItem(z, c)
 
 
 # @+node:ekr.20131213072223.19531: *4* add_menu_from_settings
@@ -303,6 +305,10 @@ class PlugIn:
             func = self.mod.__dict__[item]
             if getattr(func, 'is_command', None):
                 self.othercmds[func.command_name] = func
+
+    # @+node:ekr.20260825054421.1: *3* Plugin.__repr__
+    def __repr__(self) -> str:
+        return f"<PlugIn {self.name=}>"
 
     # @+node:EKR.20040517080555.8: *3* PlugIn.about
     def about(self, event: Event | None = None) -> None:
