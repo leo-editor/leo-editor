@@ -299,8 +299,6 @@ class LeoMenu:
             return
         if not menu:
             return
-        if 'qt_layout' in repr(menu):  ###
-            g.trace(menu, len(table))  ###
         self.traceMenuTable(table)
         for data in table:
             label, command, done = self.getMenuEntryInfo(data, menu)

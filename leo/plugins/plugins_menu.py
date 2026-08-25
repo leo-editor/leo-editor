@@ -159,8 +159,6 @@ def createPluginsMenu(tag: str, keywords: KWargs) -> None:
     for group_name in PluginDatabase.getGroups():
         PluginDatabase.setMenu(group_name, c.frame.menu.createNewMenu(group_name, menu_name))
     for z in plugins_list:
-        if 'qt_layout' in repr(z):
-            g.trace(z)  ###
         addPluginMenuItem(z, c)
 
 
@@ -301,13 +299,8 @@ class PlugIn:
         The g.command decorator sets func.is_command & func.command_name.
         """
         self.othercmds = {}
-        trace = 'qt_layout' in repr(self)
-        # if 'qt_layout' in repr(self):  ###
-        #     g.printObj(list(self.mod.__dict__.keys()))
-        for key in self.mod.__dict__.keys():
+        for key in self.mod.__dict__.keys():  ###
             func = self.mod.__dict__[key]
-            if trace:
-                g.trace(key, getattr(func, 'is_command', 'None'))
             if getattr(func, 'is_command', None):
                 self.othercmds[func.command_name] = func
 
