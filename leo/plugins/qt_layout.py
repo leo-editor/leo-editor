@@ -73,6 +73,8 @@ def register_layout(name: str) -> Callable:
     def decorator(func: Callable) -> Callable:
         # Register the function's name and docstring in the dictionary
         LAYOUT_REGISTRY[name] = func.__doc__ or ''
+        # PR #4958: Inject the following into *this* callback for use
+        #           by Plugin.create_menu and ga.compute_tab_list.
         func.is_command = True  # PR #4958.
         func.command_name = func.__name__  # PR #4958
         return func  # Ensure the original function is returned
