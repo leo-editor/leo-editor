@@ -622,7 +622,7 @@ class LayoutCacheWidget(QWidget):
 
         splitter: Any = self.find_widget(name)
         if is_splitter(splitter):
-            return splitter  # type:ignore  # We've just checked the type.
+            return splitter
         splitter = self.created_splitter_dict.get(name, None)
         if is_splitter(splitter):
             return splitter  # type:ignore  # We've just checked the type.
