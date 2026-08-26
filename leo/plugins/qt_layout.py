@@ -361,7 +361,7 @@ def showLayouts(event: LeoKeyEvent | None) -> None:
     g.es(listing_s, tabName='layouts')
 
 
-# @+node:tom.20250106123058.1: *3* command: show_layout_name
+# @+node:tom.20250106123058.1: *3* command: 'show-current-layout'
 @g.command('show-current-layout')
 def show_layout_name(event: LeoKeyEvent | None = None) -> None:
     """Show the name of the current layout of Leo's outline"""
@@ -620,8 +620,7 @@ class LayoutCacheWidget(QWidget):
         def is_splitter(obj: object) -> bool:
             return obj is not None and isinstance(obj, QSplitter)
 
-        splitter: Any
-        splitter = self.find_widget(name)
+        splitter: Any = self.find_widget(name)
         if is_splitter(splitter):
             return splitter  # type:ignore  # We've just checked the type.
         splitter = self.created_splitter_dict.get(name, None)
