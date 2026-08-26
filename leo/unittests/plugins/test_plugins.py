@@ -140,7 +140,7 @@ class TestPlugins(LeoUnitTest):
             'mod_scripting.py',
             'nodetags.py',  # #2031: Qt imports are optional.
             'pyplot_backend.py',  # Not a real plugin.
-            'qt_layout.py',  # Not a real plugin.
+            'qt_layout.py',  # A special case.
         )
         pattern = re.compile(r'\b(QtCore|QtGui|QtWidgets)\b')  # Don't search for Qt.
         for fn in files:

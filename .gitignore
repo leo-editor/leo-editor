@@ -145,3 +145,4 @@ leo/plugins/temacs_ext/
 
 
 leo/test/scriptFile.py
+leo/test/beautify_node.py

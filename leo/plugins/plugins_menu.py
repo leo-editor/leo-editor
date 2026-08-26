@@ -140,26 +140,26 @@ def createPluginsMenu(tag: str, keywords: KWargs) -> None:
         return
     menu_name = keywords.get('menu_name', '&Plugins')
     pc = g.app.pluginsController
-    lmd = pc.loadedModules
-    if not lmd:
+    loaded_modules = pc.loadedModules
+    if not loaded_modules:
         return  # #4753
 
-    impModSpecList = list(lmd.keys())
+    keys = list(loaded_modules.keys())
 
     def key(s: str) -> str:
         return s.split('.')[-1].lower()
 
-    impModSpecList.sort(key=key)
-    plgObList: list[PlugIn] = [PlugIn(lmd[impModSpec], c) for impModSpec in impModSpecList]
+    keys.sort(key=key)
+    plugins_list: list[PlugIn] = [PlugIn(loaded_modules[key], c) for key in keys]
     c.pluginsMenu = pluginMenu = c.frame.menu.createNewMenu(menu_name)
-    # 2013/12/13: Add any items in @menu plugins
-    add_menu_from_settings(c)
+    add_menu_from_settings(c)  # Add any items in @menu plugins
     PluginDatabase.setMenu("Default", pluginMenu)
+
     # Add group menus
     for group_name in PluginDatabase.getGroups():
         PluginDatabase.setMenu(group_name, c.frame.menu.createNewMenu(group_name, menu_name))
-    for plgObj in plgObList:
-        addPluginMenuItem(plgObj, c)
+    for z in plugins_list:
+        addPluginMenuItem(z, c)
 
 
 # @+node:ekr.20131213072223.19531: *4* add_menu_from_settings
@@ -253,14 +253,14 @@ class PlugIn:
     hastoplevel: Any
 
     # @+others
-    # @+node:EKR.20040517080555.4: *3* PlugIn.__init__ & helper
-    def __init__(self, plgMod: ModuleType, c: Cmdr | None = None) -> None:
+    # @+node:EKR.20040517080555.4: *3* PlugIn.__init__
+    def __init__(self, _module: ModuleType, c: Cmdr | None = None) -> None:
         """
-        @param plgMod: Module object for the plugin represented by this instance.
+        @param _module: Module object for the plugin represented by this instance.
         @param c:  Leo-editor "commander" for the current .leo file
         """
         self.c = c
-        self.mod = plgMod
+        self.mod = _module
         self.name = self.moduleName = None
         self.doc = self.version = None
         try:
@@ -278,13 +278,13 @@ class PlugIn:
         self.version = self.mod.__dict__.get("__version__", "<unknown>")
         # g.pr(self.version,g.shortFileName(filename))
         # Configuration...
-        assert plgMod.__file__
-        self.configfilename = "%s.ini" % os.path.splitext(plgMod.__file__)[0]
+        assert _module.__file__
+        self.configfilename = "%s.ini" % os.path.splitext(_module.__file__)[0]
         # True if this can be configured.
         self.hasconfig = os.path.isfile(self.configfilename)
         # Look for an applyConfiguration function in the module.
         # This is used to apply changes in configuration from the properties window
-        self.hasapply = hasattr(plgMod, "applyConfiguration")
+        self.hasapply = hasattr(_module, "applyConfiguration")
         self.create_menu()  # Create menu items from cmd_* functions.
         # Use a toplevel menu item instead of the default About.
         try:
@@ -292,17 +292,20 @@ class PlugIn:
         except KeyError:
             self.hastoplevel = False
 
-    # @+node:EKR.20040517080555.7: *4* create_menu (Plugin)
+    # @+node:EKR.20040517080555.7: *3* Plugin.create_menu
     def create_menu(self) -> None:
         """
         Add items in the main menu for each decorated command in this plugin.
         The g.command decorator sets func.is_command & func.command_name.
         """
         self.othercmds = {}
-        for item in self.mod.__dict__.keys():
-            func = self.mod.__dict__[item]
+        for func in self.mod.__dict__.values():
             if getattr(func, 'is_command', None):
                 self.othercmds[func.command_name] = func
+
+    # @+node:ekr.20260825054421.1: *3* Plugin.__repr__
+    def __repr__(self) -> str:
+        return f"<PlugIn {self.name=}>"
 
     # @+node:EKR.20040517080555.8: *3* PlugIn.about
     def about(self, event: Event | None = None) -> None:

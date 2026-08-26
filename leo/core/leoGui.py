@@ -221,11 +221,11 @@ class LeoKeyEvent:
             # Inject the `leo_wrapper` ivar into the widget so that this method
             # will never reallocate another wrapper for this widget.
             self.w = w.leo_wrapper = QTextEditWrapper(widget=w, name=c.widget_name(w), c=c)
-            trace_always('new wrapper', f"{self.w.__class__.__name__} for {obj_name(w)}")
+            trace('New wrapper', f"{self.w.__class__.__name__} for {obj_name(w)}")
             return
         if isinstance(w, QtWidgets.QLineEdit):
             self.w = w.leo_wrapper = QLineEditWrapper(widget=w, name=c.widget_name(w), c=c)
-            trace_always('New wrapper', f"{self.w.__class__.__name__} for {obj_name(w)}")
+            trace('New wrapper', f"{self.w.__class__.__name__} for {obj_name(w)}")
             return
         if isinstance(w, LeoQTreeWidget):  # A very special case.
             self.w = w

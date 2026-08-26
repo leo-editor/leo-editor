@@ -1,7 +1,15 @@
 # @+leo-ver=5-thin
 # @+node:tom.20240923194438.1: * @file ../plugins/qt_layout.py
-"""The basic machinery to support applying layouts of the main Leo panels."""
+# @+<< qt_layout: docstring>>
+# @+node:ekr.20260825062842.1: ** << qt_layout: docstring>>
+"""
+The basic machinery to support applying Qt layouts to Leo's outline.
 
+This plugin adds the qt_layout menu (and submenus) to the Plugins menu
+*only* if enabled explictly via the `@enabled-plugins`
+"""
+
+# @-<< qt_layout: docstring>>
 # @+<< qt_layout: imports & annotations >>
 # @+node:tom.20240923194438.2: ** << qt_layout: imports & annotations >>
 from __future__ import annotations
@@ -38,8 +46,11 @@ LAYOUT_REGISTRY: dict[str, str] = {}  # {layout_name: layout_docstring}
 # @+node:ekr.20241008141246.1: *3* function: init (qt_layout.py)
 def init() -> bool:
     """
-    qt_layout is not a true plugin, but return True just in case.
+    Return True if this plugin is enabled.
+
+    Called only if the `@enabled-plugins` setting explicitly enables this plugin.
     """
+    g.plugin_signon(__name__)
     return True
 
 
@@ -62,25 +73,28 @@ def register_layout(name: str) -> Callable:
     def decorator(func: Callable) -> Callable:
         # Register the function's name and docstring in the dictionary
         LAYOUT_REGISTRY[name] = func.__doc__ or ''
+        # PR #4958: Inject the following into *this* callback for use
+        #           by Plugin.create_menu and ga.compute_tab_list.
+        func.is_command = True  # PR #4958.
+        func.command_name = func.__name__  # PR #4958
         return func  # Ensure the original function is returned
 
     return decorator
 
 
 # @+node:ekr.20241008174351.1: ** Layout commands
-# @+at
 # Read Me or Suffer
 #
 # The help-for-layouts and show-layout commands use these docstrings,
-# so the following constraints apply to the following docstrings:
+# so the following constraints apply to them:
 #
-# 1. All docstrings must start with a newline.
-# 2. Use a *single* ':', followed by a blank line
-#    to denote the start of a layout diagram or
-#    any other verbatim text.
-# 3. All verbatim text must end with a blank line unless
-#    the verbatim text ends the docstring.
-# @@c
+# - All docstrings must start with a newline.
+#
+# - Use a *single* ':', followed by a blank line to denote
+#   the start of a layout diagram or any other verbatim text.
+#
+# - All verbatim text must end with a blank line unless
+#   the verbatim text ends the docstring.
 # @+node:tom.20240928171510.1: *3* command: 'layout-big-tree'
 @g.command('layout-big-tree')
 @register_layout('layout-big-tree')
@@ -153,7 +167,7 @@ def big_tree(event: LeoKeyEvent | None = None) -> None:
 # @+node:ekr.20241008180407.1: *3* command: 'layout-legacy'
 @g.command('layout-legacy')
 @register_layout('layout-legacy')
-def quadrants(event: LeoKeyEvent | None = None) -> None:
+def legacy(event: LeoKeyEvent | None = None) -> None:
     """
     Create Leo's legacy layout:
 
@@ -222,7 +236,7 @@ def render_focused(event: LeoKeyEvent | None = None) -> None:
 # @+node:tom.20240930101515.1: *3* command: 'layout-restore-to-setting'
 @g.command('layout-restore-to-setting')
 @register_layout('layout-restore-to-setting')
-def restoreDefaultLayout(event: LeoKeyEvent | None = None) -> None:
+def restore_to_setting(event: LeoKeyEvent | None = None) -> None:
     """
     Select the layout specified by the `@string qt-layout-name` setting in effect
     for this outline. Use the **legacy** layout if the user's setting is erroneous.
@@ -243,7 +257,7 @@ def restoreDefaultLayout(event: LeoKeyEvent | None = None) -> None:
 # @+node:tom.20241005163724.1: *3* command: 'layout-swap-log-panel'
 @g.command('layout-swap-log-panel')
 @register_layout('layout-swap-log-panel')
-def swapLogPanel(event: LeoKeyEvent | None = None) -> None:
+def swap_log_panel(event: LeoKeyEvent | None = None) -> None:
     """
     Move the Log frame between main and secondary splitters.
 
@@ -327,7 +341,7 @@ def vertical_thirds2(event: LeoKeyEvent | None = None) -> None:
 # @+node:tom.20241022170042.1: *3* command: 'show-layouts'
 @g.command('layout-show-layouts')
 @g.command('show-layouts')
-def showLayouts(event: LeoKeyEvent | None) -> None:
+def show_layouts(event: LeoKeyEvent | None) -> None:
     """Show all layout diagrams in the Log Frame's `layouts` tab."""
     if not event:
         return
@@ -347,9 +361,9 @@ def showLayouts(event: LeoKeyEvent | None) -> None:
     g.es(listing_s, tabName='layouts')
 
 
-# @+node:tom.20250106123058.1: *3* command: show_layout_name
+# @+node:tom.20250106123058.1: *3* command: 'show-current-layout'
 @g.command('show-current-layout')
-def show_layout_name(event: LeoKeyEvent | None = None) -> None:
+def show_current_layout(event: LeoKeyEvent | None = None) -> None:
     """Show the name of the current layout of Leo's outline"""
     c = event.get('c') if event else None
     if not c:
@@ -606,10 +620,9 @@ class LayoutCacheWidget(QWidget):
         def is_splitter(obj: object) -> bool:
             return obj is not None and isinstance(obj, QSplitter)
 
-        splitter: Any
-        splitter = self.find_widget(name)
+        splitter: Any = self.find_widget(name)
         if is_splitter(splitter):
-            return splitter  # type:ignore  # We've just checked the type.
+            return splitter
         splitter = self.created_splitter_dict.get(name, None)
         if is_splitter(splitter):
             return splitter  # type:ignore  # We've just checked the type.
