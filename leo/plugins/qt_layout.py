@@ -167,7 +167,7 @@ def big_tree(event: LeoKeyEvent | None = None) -> None:
 # @+node:ekr.20241008180407.1: *3* command: 'layout-legacy'
 @g.command('layout-legacy')
 @register_layout('layout-legacy')
-def quadrants(event: LeoKeyEvent | None = None) -> None:
+def legacy(event: LeoKeyEvent | None = None) -> None:
     """
     Create Leo's legacy layout:
 
@@ -236,7 +236,7 @@ def render_focused(event: LeoKeyEvent | None = None) -> None:
 # @+node:tom.20240930101515.1: *3* command: 'layout-restore-to-setting'
 @g.command('layout-restore-to-setting')
 @register_layout('layout-restore-to-setting')
-def restoreDefaultLayout(event: LeoKeyEvent | None = None) -> None:
+def restore_to_setting(event: LeoKeyEvent | None = None) -> None:
     """
     Select the layout specified by the `@string qt-layout-name` setting in effect
     for this outline. Use the **legacy** layout if the user's setting is erroneous.
@@ -257,7 +257,7 @@ def restoreDefaultLayout(event: LeoKeyEvent | None = None) -> None:
 # @+node:tom.20241005163724.1: *3* command: 'layout-swap-log-panel'
 @g.command('layout-swap-log-panel')
 @register_layout('layout-swap-log-panel')
-def swapLogPanel(event: LeoKeyEvent | None = None) -> None:
+def swap_log_panel(event: LeoKeyEvent | None = None) -> None:
     """
     Move the Log frame between main and secondary splitters.
 
@@ -341,7 +341,7 @@ def vertical_thirds2(event: LeoKeyEvent | None = None) -> None:
 # @+node:tom.20241022170042.1: *3* command: 'show-layouts'
 @g.command('layout-show-layouts')
 @g.command('show-layouts')
-def showLayouts(event: LeoKeyEvent | None) -> None:
+def show_layouts(event: LeoKeyEvent | None) -> None:
     """Show all layout diagrams in the Log Frame's `layouts` tab."""
     if not event:
         return
@@ -363,7 +363,7 @@ def showLayouts(event: LeoKeyEvent | None) -> None:
 
 # @+node:tom.20250106123058.1: *3* command: 'show-current-layout'
 @g.command('show-current-layout')
-def show_layout_name(event: LeoKeyEvent | None = None) -> None:
+def show_current_layout(event: LeoKeyEvent | None = None) -> None:
     """Show the name of the current layout of Leo's outline"""
     c = event.get('c') if event else None
     if not c:
