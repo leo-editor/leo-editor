@@ -5,6 +5,7 @@
 # @+<< checkerCommands imports >>
 # @+node:ekr.20161021092038.1: ** << checkerCommands imports >>
 from __future__ import annotations
+import importlib.util
 import os
 import re
 import subprocess
@@ -13,12 +14,10 @@ import time
 from typing import TYPE_CHECKING
 
 # Third-party imports.
-try:
-    import mypy
-    from mypy import api as mypy_api
-except Exception:
-    mypy = None  # type:ignore
-    mypy_api = None
+# Mypy ships full type stubs, so importing it here (and reassigning the name if
+# missing) would need an ignore comment that ty only wants when mypy is absent.
+# Checking availability via importlib avoids the import -- and that ignore -- entirely.
+MYPY_AVAILABLE = importlib.util.find_spec('mypy') is not None
 
 try:
     import ruff
@@ -259,7 +258,7 @@ def mypy_command(event: LeoKeyEvent | None = None) -> None:
         return
     if c.isChanged():
         c.save()
-    if mypy_api:
+    if MYPY_AVAILABLE:
         MypyCommand(c).run(c.p)
     else:
         g.es_print('can not import mypy')
@@ -414,7 +413,7 @@ class MypyCommand:
     def check_all(self, roots: list[Position]) -> None:
         """Run mypy on all files in paths."""
         c = self.c
-        if not mypy:
+        if not MYPY_AVAILABLE:
             print('install mypy with `pip install mypy`')
             return
         self.unknown_path_names = []
@@ -426,7 +425,7 @@ class MypyCommand:
     def check_file(self, fn: str, root: Position) -> None:
         """Run mypy on one file."""
         c = self.c
-        if not mypy:
+        if not MYPY_AVAILABLE:
             print('install mypy with `pip install mypy`')
             return
         command = f"{sys.executable} -m mypy {fn}"
@@ -437,7 +436,7 @@ class MypyCommand:
     def run(self, p: Position) -> None:
         """Run mypy on all Python @<file> nodes in c.p's tree."""
         c = self.c
-        if not mypy:
+        if not MYPY_AVAILABLE:
             print('install mypy with `pip install mypy`')
             return
         root = p.copy()
