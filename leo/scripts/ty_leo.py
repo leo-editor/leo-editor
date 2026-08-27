@@ -24,7 +24,6 @@ def check_optional_deps() -> bool:
     packages = [
         ('docutils', 'docutils'),
         ('lxml', 'lxml'),
-        ('mypy', 'mypy'),
         ('nbformat', 'nbformat'),
         ('Pygments', 'pygments'),
         ('PyQt6', 'PyQt6.QtWidgets'),
