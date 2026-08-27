@@ -30,7 +30,7 @@ beautifulsoup4  # For link testing.
 black           # For unit tests.
 pytest
 pytest-cov      # For coverage testing.
-ruff
+ruff==0.16.4
 ty==0.0.73
 
 # General packages for plugins, leoserver and commands...
