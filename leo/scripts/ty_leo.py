@@ -4,7 +4,7 @@
 ty_leo.py: Run ty on all of Leo.
 """
 
-import importlib
+import importlib.util
 import os
 import subprocess
 import sys
@@ -19,7 +19,12 @@ os.chdir(leo_editor_dir)
 # @+others
 # @+node:ekr.20260823160000.1: ** check_optional_deps
 def check_optional_deps() -> bool:
-    """Return True if every package that a `# type:ignore` fallback assumes is present is importable. See #4952."""
+    """Return True if every package that a `# type:ignore` fallback assumes is present is resolvable. See #4952."""
+    # ty resolves types from a package's on-disk source, it never actually runs the
+    # package's import machinery. So check resolvability with find_spec instead of
+    # actually importing: a package like pyenchant can be pip-installed and fully
+    # resolvable for typing purposes while still failing a real import because the
+    # unrelated native libenchant C library isn't present on the system. See #4961.
     # (pip package name, importable module name)
     packages = [
         ('docutils', 'docutils'),
@@ -35,8 +40,10 @@ def check_optional_deps() -> bool:
     missing = []
     for pip_name, module_name in packages:
         try:
-            importlib.import_module(module_name)
+            found = importlib.util.find_spec(module_name) is not None
         except Exception:
+            found = False
+        if not found:
             missing.append(pip_name)
     if missing:
         print(
