@@ -307,11 +307,11 @@ def getVr(event: LeoKeyEvent | None) -> ViewRenderedController | None:
     """
     # First, get c.
     if not event:
-        g.trace('no event!')
+        # g.trace('no event!')
         return None
     c = event.get('c')
     if not c:
-        g.trace('no event.c!')
+        # g.trace('no event.c!')
         return None
     vr = getattr(c, 'vr', None)
     if not vr:
