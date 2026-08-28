@@ -212,69 +212,6 @@ from leo.core.leoQt import QtMultimedia, QtSvg, QUrl
 from leo.core.leoQt import ContextMenuPolicy, WrapMode
 from leo.plugins import qt_text
 
-qwv: Any = None
-try:
-    from leo.core.leoQt import WebEngineAttribute, QtWebEngineWidgets
-
-    qwv = QtWebEngineWidgets.QWebEngineView
-    has_webengineview = True
-except Exception:
-    has_webengineview = False
-    try:
-        qwv = QtWidgets.QTextBrowser
-    except Exception as e:
-        g.trace(e)
-        qwv = None
-
-# Optional third-party imports...
-
-# Docutils.
-try:
-    import docutils
-    import docutils.core
-except ImportError:
-    docutils = None  # type:ignore
-if docutils:
-    try:
-        from docutils.core import publish_string
-        from docutils.utils import SystemMessage
-
-        got_docutils = True
-    except ImportError:
-        got_docutils = False
-        g.es_exception()
-    except SyntaxError:
-        got_docutils = False
-        g.es_exception()
-else:
-    got_docutils = False
-
-# Jinja.
-try:
-    from jinja2 import Template
-except ImportError:
-    Template = None
-
-# Markdown.
-try:
-    from markdown import markdown
-
-    got_markdown = True
-except ImportError:
-    got_markdown = False
-
-# nbformat (@jupyter) support.
-try:
-    import nbformat
-    from nbconvert import HTMLExporter
-except ImportError:
-    nbformat = None  # type:ignore
-
-try:
-    import pyperclip
-except Exception:
-    pyperclip = None
-
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 # @-<< vr: imports >>
@@ -296,6 +233,7 @@ trace = False  # This global trace is convenient.
 asciidoctor_exec = shutil.which('asciidoctor')
 asciidoc3_exec = shutil.which('asciidoc3')
 pandoc_exec = shutil.which('pandoc')
+got_docutils: bool = False
 
 
 # @+others
@@ -322,12 +260,9 @@ def getVr(event: LeoKeyEvent | None) -> ViewRenderedController | None:
 # @+node:tbrown.20100318101414.5995: *3* vr function: init
 def init() -> bool:
     """Return True if the plugin has loaded successfully."""
-    # global got_docutils
-
     if not g.app.gui.guiName().startswith('qt'):
         return False
-    if not got_docutils:
-        g.es_print('Warning: viewrendered.py running without docutils.')
+
     # Always enable this plugin, even if imports fail.
     g.plugin_signon(__name__)
     g.registerHandler('close-frame', onClose)
@@ -342,6 +277,7 @@ def initVr(c: Cmdr, parent: QtWidgets.QWidget | None = None) -> None:
 
     Should be called only once, from DynamicWindow.create_layout.
     """
+    global got_docutils
     if g.app.gui.guiName() != 'qt':
         return
     if not c:
@@ -353,6 +289,17 @@ def initVr(c: Cmdr, parent: QtWidgets.QWidget | None = None) -> None:
     if vr:
         g.trace('Already inited!')
         return
+
+    # Issue docutils warning.
+    try:
+        import docutils  # noqa: F401 (silences only the unused import warning)
+        import docutils.core  # noqa: F401 (silences only the unused import warning)
+
+        got_docutils = True
+    except ImportError:
+        g.es_print('Warning: viewrendered.py running without docutils.')
+        got_docutils = False
+
     # init c.vr.
     vr = ViewRenderedController(c)
     c.vr = vr  # type:ignore
@@ -661,7 +608,7 @@ class ViewRenderedController(QtWidgets.QWidget):
         self.gs: QGraphicsScene | None = None
         self.gv: QGraphicsView | None = None
         self.vp: QMediaPlayer = None
-        self.w: QWidget | None = None  # The present widget in the rendering pane.
+        self.w: Any = None  # The present widget in the rendering pane.
         # Set the ivars.
         self.active = True
         self.gnx: str | None = None
@@ -883,10 +830,17 @@ class ViewRenderedController(QtWidgets.QWidget):
 
     # @+node:ekr.20241227053437.1: *4* vr.update_vr: helpers
     # @+node:ekr.20241224074331.1: *5* vr.create_web_engineview
-    def create_web_engineview(self) -> QWidget:
+    def create_web_engineview(self) -> Any:
         """
         Return a *new* QWebEngineView instance, deleting any previous instance.
         """
+        try:
+            from leo.core.leoQt import WebEngineAttribute, QtWebEngineWidgets
+
+            qwv = QtWebEngineWidgets.QWebEngineView
+        except Exception:
+            return None
+
         c = self.c
         # Kill the old QWebEngineView!
         self.destroy_widgets()
@@ -909,13 +863,15 @@ class ViewRenderedController(QtWidgets.QWidget):
         return w
 
     # @+node:ekr.20241226173150.1: *5* vr.create_web_engineview_with_pdf
-    def create_web_engineview_with_pdf(self) -> QWidget:
+    def create_web_engineview_with_pdf(self) -> QWidget | None:
         """
         Return a *new* QWebEngineView instance with support for pdf,
         deleting any previous instance.
         """
         # Create the QWebEngineView if possible and embed the widget.
         w = self.create_web_engineview()
+        if not w:
+            return None
         assert w == self.w, g.callers()
         if isinstance(w, QtWidgets.QTextBrowser):
             # create_web_engineview has issued the warning.
@@ -938,7 +894,7 @@ class ViewRenderedController(QtWidgets.QWidget):
         self.w = None
 
     # @+node:ekr.20110320120020.14486: *5* vr.embed_widget
-    def embed_widget(self, w: QWidget) -> None:
+    def embed_widget(self, w: Any) -> None:
         """Embed widget w in the layout."""
         assert w == self.w, g.callers()  # Invariant.
 
@@ -1058,6 +1014,8 @@ class ViewRenderedController(QtWidgets.QWidget):
 
         # Create a new QWebEngineView.
         w = self.create_web_engineview()
+        if not w:
+            return
 
         # Set the html.
         w.setHtml(s)
@@ -1102,12 +1060,23 @@ class ViewRenderedController(QtWidgets.QWidget):
         w.show()
         c.bodyWantsFocusNow()
 
-        if pyperclip:
+        try:
+            import pyperclip
+
             pyperclip.copy(s)
+        except Exception:
+            pass
 
     # @+node:ekr.20180311090852.1: *5* vr.get_jupyter_source
     def get_jupyter_source(self, c: Cmdr) -> str:
         """Return the html for the @jupyter node."""
+        # # nbformat (@jupyter) support.
+        try:
+            import nbformat
+            from nbconvert import HTMLExporter
+        except ImportError:
+            return ''
+
         body = c.p.b.lstrip()
         if body.startswith('<'):
             # Assume the body is html.
@@ -1140,7 +1109,7 @@ class ViewRenderedController(QtWidgets.QWidget):
 
         # Create a new QWebEngineView.
         w = self.create_web_engineview()
-        if not has_webengineview:
+        if not w:
             g.print_unique_message('katex rendering requires PyQt6-WebEngine')
             w.setHtml(s)
             self.show()
@@ -1158,7 +1127,7 @@ class ViewRenderedController(QtWidgets.QWidget):
 
         # Create a new QWebEngineView.
         w = self.create_web_engineview()
-        if not has_webengineview:
+        if not w:
             g.print_unique_message('LaTeX rendering requires PyQt6-WebEngine')
             w.setHtml(s)
             self.show()
@@ -1176,7 +1145,7 @@ class ViewRenderedController(QtWidgets.QWidget):
 
         # Create a new QWebEngineView.
         w = self.create_web_engineview()
-        if not has_webengineview:
+        if not w:
             g.print_unique_message('mathjax rendering requires PyQt6-WebEngine')
             w.setHtml(s)
             self.show()
@@ -1191,6 +1160,11 @@ class ViewRenderedController(QtWidgets.QWidget):
     # @+node:peckj.20130207132858.3671: *4* vr.update_md & helper
     def update_md(self, s: str, keywords: Any) -> None:
         """Display the markdown text in `s` in the VR pane."""
+        try:
+            from markdown import markdown
+        except ImportError:
+            markdown = None
+
         c = self.c
         p = c.p
         for prefix in ('"""', "'''"):  # PR #4827
@@ -1203,7 +1177,7 @@ class ViewRenderedController(QtWidgets.QWidget):
         assert self.w
         if s:
             self.show()
-        if got_markdown:
+        if markdown:
             force = keywords.get('force')
             colorizer = c.frame.body.colorizer
             language = colorizer.scanLanguageDirectives(p)
@@ -1218,6 +1192,12 @@ class ViewRenderedController(QtWidgets.QWidget):
     # @+node:ekr.20160921134552.1: *5* vr.convert_to_markdown
     def convert_to_markdown(self, s: str) -> str:
         """Convert s to html using the markdown processor."""
+        try:
+            from markdown import markdown
+            from docutils.utils import SystemMessage
+        except ImportError:
+            return ''
+
         c, p = self.c, self.c.p
         path = c.getPath(p)
         if not os.path.isdir(path):
@@ -1345,7 +1325,7 @@ class ViewRenderedController(QtWidgets.QWidget):
 
         # Create a new QWebEngineView.
         w = self.create_web_engineview_with_pdf()
-        if not has_webengineview:
+        if not w:
             g.print_unique_message('@pdf rendering requires PyQt6-WebEngine')
             w.setHtml(s)
             self.show()
@@ -1446,6 +1426,13 @@ class ViewRenderedController(QtWidgets.QWidget):
     def convert_to_html(self, s: str) -> str:
         """Convert s to html using docutils."""
         c, p = self.c, self.c.p
+
+        try:
+            from docutils.core import publish_string
+            from docutils.utils import SystemMessage
+        except ImportError:
+            return ''
+
         # Update the current path.
         path = c.getPath(p)
         if not os.path.isdir(path):
@@ -1486,6 +1473,7 @@ class ViewRenderedController(QtWidgets.QWidget):
         w.setHtml(template)
         w.setReadOnly(True)
 
+    # @+node:ekr.20260828081137.1: *4* vr.update_jinga
     def update_jinja(self, s: str, keywords: Any) -> None:
         h = self.c.p.h
         p = self.c.p
@@ -1493,6 +1481,11 @@ class ViewRenderedController(QtWidgets.QWidget):
         oldp = None
 
         if not h.startswith('@jinja'):
+            return
+
+        try:
+            from jinja2 import Template
+        except ImportError:
             return
 
         def find_root(p: Position) -> tuple[Position, Position] | tuple[None, None]:
@@ -1618,7 +1611,7 @@ class ViewRenderedController(QtWidgets.QWidget):
         """Display the typest text in `s` in the VR pane."""
         # Create a new QWebEngineView.
         w = self.create_web_engineview_with_pdf()
-        if not has_webengineview:
+        if not w:
             g.print_unique_message('typst rendering requires PyQt6-WebEngine')
             w.setHtml(s)
             self.show()
@@ -1715,6 +1708,11 @@ class ViewRenderedController(QtWidgets.QWidget):
     def get_kind(self, p: Position) -> str:
         """Return the proper rendering kind for node p."""
 
+        try:
+            from markdown import markdown
+        except ImportError:
+            markdown = None
+
         p0 = p  # Special case selected position.
 
         def get_language(p: Position) -> str:
@@ -1751,7 +1749,7 @@ class ViewRenderedController(QtWidgets.QWidget):
             language = get_language(p1)
             if language:
                 if language in ('md', 'markdown'):
-                    return language if got_markdown else ''
+                    return language if markdown else ''
                 if language in ('rest', 'rst'):
                     return language if got_docutils else ''
                 if language in self.dispatch_dict:
