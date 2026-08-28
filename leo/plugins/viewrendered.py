@@ -253,7 +253,7 @@ def getVr(event: LeoKeyEvent | None) -> ViewRenderedController | None:
         return None
     vr = getattr(c, 'vr', None)
     if not vr:
-        g.print_unique_message(f"{c.shortFileName()}: viewrendered commands disabled")
+        g.es_print_unique_message(f"{c.shortFileName()}: viewrendered commands disabled")
     return vr
 
 
