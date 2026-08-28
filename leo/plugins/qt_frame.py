@@ -233,7 +233,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.createOutlinePane(ss)
         self.createLogPane(ss)
         # self.vr_parent_frame = ms
-        _ = vrm.getVr(c=c, parent=ms)
+        vrm.initVr(c=c, parent=ms)
 
         return ms, ss
 

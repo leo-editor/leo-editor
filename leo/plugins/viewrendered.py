@@ -300,6 +300,25 @@ pandoc_exec = shutil.which('pandoc')
 
 # @+others
 # @+node:ekr.20110320120020.14491: ** vr.Top-level functions
+# @+node:ekr.20260828053307.1: *3* vr function: getVR
+def getVr(event: LeoKeyEvent | None) -> ViewRenderedController | None:
+    """
+    Return the singleton instance for this commander.
+    """
+    # First, get c.
+    if not event:
+        g.trace('no event!')
+        return None
+    c = event.get('c')
+    if not c:
+        g.trace('no event.c!')
+        return None
+    vr = getattr(c, 'vr', None)
+    if not vr:
+        g.print_unique_message(f"{c.shortFileName()}: viewrendered.py not enabled")
+    return vr
+
+
 # @+node:tbrown.20100318101414.5995: *3* vr function: init
 def init() -> bool:
     """Return True if the plugin has loaded successfully."""
@@ -311,51 +330,41 @@ def init() -> bool:
         g.es_print('Warning: viewrendered.py running without docutils.')
     # Always enable this plugin, even if imports fail.
     g.plugin_signon(__name__)
-    g.registerHandler('after-create-leo-frame', onCreate)
     g.registerHandler('close-frame', onClose)
     g.registerHandler('scrolledMessage', show_scrolled_message)
     return True
 
 
-# @+node:ekr.20240727091022.1: *3* vr function: getVR
-def getVr(
-    *, c: Any = None, event: Any = None, parent: QtWidgets.QWidget | None = None
-) -> ViewRenderedController | None:
-    """Return the ViewRenderedController instance or None."""
+# @+node:ekr.20240727091022.1: *3* vr function: initVR
+def initVr(c: Cmdr, parent: QtWidgets.QWidget | None = None) -> None:
+    """
+    Set c.vr, but *only* if this plugin is enabled.
+
+    Should be called only once, from DynamicWindow.create_layout.
+    """
     if g.app.gui.guiName() != 'qt':
-        return None
-
-    # First, get c.
-    if c:
-        pass
-    elif event:
-        c = event.get('c')
-        if not c:
-            return None
-    else:
-        g.trace('"c" or "event" kwarg required', g.callers())
-        return None
-    vr = getattr(c, 'vr', None)
-    if not vr:
-        vr = ViewRenderedController(c)
-        c.vr = vr
-        if parent:
-            vr.setParent(parent)
-        else:
-            dw = c.frame.top
-            if dw:
-                dw.insert_vr_frame(vr)
-    return vr
-
-
-# @+node:ekr.20110317024548.14376: *3* vr function: onCreate
-def onCreate(tag: str, keys: dict) -> None:
-    c = keys.get('c')
+        return
     if not c:
+        g.trace('no c!')
         return
-    vr = getVr(c=c)
-    if not vr:
+    if 'viewrendered.py' not in c.config.getEnabledPlugins():
+        g.trace('viewrendered.py not enabled!')
         return
+    vr = getattr(c, 'vr', None)
+    if vr:
+        g.trace('Already inited!')
+        return
+    # init c.vr.
+    vr = ViewRenderedController(c)
+    c.vr = vr  # type:ignore
+    if parent:
+        vr.setParent(parent)
+    else:
+        dw = c.frame.top
+        if dw:
+            dw.insert_vr_frame(vr)
+
+    # Leo 6.8.11: Do this here instead of on_create.
     g.registerHandler('select2', vr.update_vr)
     g.registerHandler('idle', vr.update_vr)
     vr.active = True
@@ -383,14 +392,13 @@ def show_scrolled_message(tag: str, kw: Any) -> None:
     c = kw.get('c')
     if not c:
         return
+    vr = c.vr
+    if not vr:
+        return
     p = c and c.p
     s = kw.get('msg')
     if not s.strip():
         g.trace('No message', g.callers())
-        return
-    # Create the VR pane if necessary.
-    vr = getVr(c=c)
-    if not vr:
         return
     # Make sure we will show the message.
     vr.active = True
@@ -415,24 +423,19 @@ def preview(event: LeoKeyEvent | None = None) -> None:
 
 # @+node:tbrown.20100318101414.5998: *3* g.command('vr')
 @g.command('vr')
-def viewrendered(event: LeoKeyEvent | None = None) -> Any | None:
+def viewrendered(event: LeoKeyEvent | None = None) -> None:
     """Open render view for commander"""
-    vr = getVr(event=event)
-    if vr:
-        c = vr.c
+    if vr := getVr(event=event):
         vr.show()
         vr.is_visible = True
-        c.bodyWantsFocusNow()
-        return vr
-    return None
+        vr.c.bodyWantsFocusNow()
 
 
 # @+node:ekr.20130413061407.10362: *3* g.command('vr-contract')
 @g.command('vr-contract')
 def contract_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Contract the rendering pane."""
-    vr = getVr(event=event)
-    if vr:
+    if vr := getVr(event):
         vr.show()
         vr.contract()
 
@@ -441,8 +444,7 @@ def contract_rendering_pane(event: LeoKeyEvent | None = None) -> None:
 @g.command('vr-expand')
 def expand_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Expand the rendering pane."""
-    vr = getVr(event=event)
-    if vr:
+    if vr := getVr(event):
         vr.show()
         vr.expand()
 
@@ -451,8 +453,7 @@ def expand_rendering_pane(event: LeoKeyEvent | None = None) -> None:
 @g.command('vr-fully-expand')
 def fully_expand_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Expand the rendering pane."""
-    vr = getVr(event=event)
-    if vr:
+    if vr := getVr(event):
         vr.show()
         vr.fully_expand()
 
@@ -461,8 +462,7 @@ def fully_expand_rendering_pane(event: LeoKeyEvent | None = None) -> None:
 @g.command('vr-hide')
 def hide_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Close the rendering pane."""
-    vr = getVr(event=event)
-    if vr:
+    if vr := getVr(event):
         vr.hide()
         vr.is_visible = False
 
@@ -485,8 +485,7 @@ def lock_rendering_pane(event: LeoKeyEvent | None = None) -> None:
 @g.command('vr-pause-play-movie')
 def pause_play_movie(event: LeoKeyEvent | None = None) -> None:
     """Pause or play a movie in the rendering pane."""
-    vr = getVr(event=event)
-    if vr:
+    if vr := getVr(event):
         vp = vr.vp
         if not vp:
             return
@@ -498,8 +497,7 @@ def pause_play_movie(event: LeoKeyEvent | None = None) -> None:
 @g.command('vr-show')
 def show_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Show the rendering pane."""
-    vr = getVr(event=event)
-    if vr:
+    if vr := getVr(event):
         c = vr.c
         vr.show()  # QWidget.show.
         vr.is_visible = True
@@ -511,26 +509,22 @@ def show_rendering_pane(event: LeoKeyEvent | None = None) -> None:
 @g.command('vr-toggle')  # Legacy
 def toggle_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Toggle the visibility of the VR pane."""
-    vr = getVr(event=event)
-    if not vr:
-        return
-    c = vr.c
-    vr.is_visible = not vr.is_visible
-    if vr.is_visible:
-        g.es('VR pane on', color='red')
-        vr.show()
-    else:
-        g.es('VR pane off', color='red')
-        vr.hide()
-    c.bodyWantsFocusNow()
+    if vr := getVr(event):
+        vr.is_visible = not vr.is_visible
+        if vr.is_visible:
+            g.es('VR pane on', color='red')
+            vr.show()
+        else:
+            g.es('VR pane off', color='red')
+            vr.hide()
+        vr.c.bodyWantsFocusNow()
 
 
 # @+node:ekr.20240508082844.1: *3* g.command('vr-toggle-keep-open')
 @g.command('vr-toggle-keep-open')
 def toggle_keep_open(event: LeoKeyEvent | None = None) -> None:
     """Toggle the visibility of the VR pane."""
-    vr = getVr(event=event)
-    if vr:
+    if vr := getVr(event):
         c = vr.c
         vr.hide()  # So the toggle below will work.
         vr.keep_open = not vr.keep_open
@@ -550,8 +544,7 @@ def unlock_rendering_pane(event: LeoKeyEvent | None = None) -> None:
 @g.command('vr-update')
 def update_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Update the rendering pane"""
-    vr = getVr(event=event)
-    if vr:
+    if vr := getVr(event):
         c = vr.c
         vr.update_vr(tag='view', keywords={'c': c, 'force': True})
 
@@ -846,6 +839,8 @@ class ViewRenderedController(QtWidgets.QWidget):
         Called at idle time and by the vr-update command.
         """
         p = self.c.p
+        if not self.c.vr:
+            return
         if not self.active:
             try:
                 # Save the scroll position.

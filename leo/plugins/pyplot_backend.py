@@ -8,7 +8,6 @@ This is *NOT* a real plugin.
 # @+<< pyplot_backend imports >>
 # @+node:ekr.20160928074801.1: ** << pyplot_backend imports >>
 from leo.core import leoGlobals as g
-from leo.plugins import viewrendered as vr
 from leo.core.leoQt import FocusPolicy
 
 try:
@@ -103,7 +102,7 @@ class LeoFigureManagerQT(FigureManager):
         self.canvas = canvas
 
         # New code for Leo: embed the canvas in the viewrendered area.
-        self.vr_controller = vc = vr.getVr(c=c)
+        self.vr_controller = vc = c.vr
         self.splitter = gui.find_widget_by_name(c, 'main_splitter')
         self.frame = w = QtWidgets.QFrame()
         w.setLayout(QtWidgets.QVBoxLayout())
