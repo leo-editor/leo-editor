@@ -315,7 +315,7 @@ def getVr(event: LeoKeyEvent | None) -> ViewRenderedController | None:
         return None
     vr = getattr(c, 'vr', None)
     if not vr:
-        g.print_unique_message(f"{c.shortFileName()}: viewrendered.py not enabled")
+        g.print_unique_message(f"{c.shortFileName()}: viewrendered commands disabled")
     return vr
 
 
@@ -348,7 +348,6 @@ def initVr(c: Cmdr, parent: QtWidgets.QWidget | None = None) -> None:
         g.trace('no c!')
         return
     if 'viewrendered.py' not in c.config.getEnabledPlugins():
-        g.trace('viewrendered.py not enabled!')
         return
     vr = getattr(c, 'vr', None)
     if vr:
