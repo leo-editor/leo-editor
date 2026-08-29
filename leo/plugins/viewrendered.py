@@ -301,8 +301,7 @@ def initVr(c: Cmdr, parent: QtWidgets.QWidget | None = None) -> None:
         got_docutils = False
 
     # init c.vr.
-    vr = ViewRenderedController(c)
-    c.vr = vr  # type:ignore
+    c.vr = vr = ViewRenderedController(c)  # ty:ignore[invalid-assignment]
     if parent:
         vr.setParent(parent)
     else:
@@ -338,7 +337,7 @@ def show_scrolled_message(tag: str, kw: Any) -> None:
     c = kw.get('c')
     if not c:
         return
-    vr = c.vr
+    vr = getattr(c, 'vr', None)
     if not vr:
         return
     p = c and c.p
@@ -784,8 +783,9 @@ class ViewRenderedController(QtWidgets.QWidget):
         vr.update_vr: Update the VR pane.
         Called at idle time and by the vr-update command.
         """
-        p = self.c.p
-        if not self.c.vr:
+        c = self.c
+        p = c.p
+        if not getattr(c, 'vr', None):
             return
         if not self.active:
             try:
