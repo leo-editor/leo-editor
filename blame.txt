@@ -1,0 +1,1833 @@
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600    1) # @+leo-ver=5-thin
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600    2) # @+node:tbrown.20100318101414.5990: * @file ../plugins/viewrendered.py
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600    3) # @+<< vr: docstring >>
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600    4) # @+node:tbrown.20100318101414.5991: ** << vr: docstring >>
+7b11e6de671 (Edward K. Ream    2021-10-11 04:41:00 -0500    5) """
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500    6) 
+309752abe7a (Edward K. Ream    2013-08-05 08:36:25 -0500    7) Creates a window for *live* rendering of reSTructuredText, markdown text,
+7b1d4b32411 (Edward K. Ream    2018-03-11 13:19:11 -0500    8) images, movies, sounds, rst, html, jupyter notebooks, etc.
+db5633914ba (Edward K. Ream    2011-06-20 12:21:36 -0500    9) 
+db5633914ba (Edward K. Ream    2011-06-20 12:21:36 -0500   10) Dependencies
+db5633914ba (Edward K. Ream    2011-06-20 12:21:36 -0500   11) ============
+db5633914ba (Edward K. Ream    2011-06-20 12:21:36 -0500   12) 
+01efdd98498 (Jake Peck         2013-02-08 09:18:48 -0500   13) This plugin uses docutils, http://docutils.sourceforge.net/, to render reStructuredText,
+db5633914ba (Edward K. Ream    2011-06-20 12:21:36 -0500   14) so installing docutils is highly recommended when using this plugin.
+e57edd94702 (Terry Brown       2010-03-18 12:45:53 -0500   15) 
+01efdd98498 (Jake Peck         2013-02-08 09:18:48 -0500   16) This plugin uses markdown, http://http://pypi.python.org/pypi/Markdown, to render Markdown,
+01efdd98498 (Jake Peck         2013-02-08 09:18:48 -0500   17) so installing markdown is highly recommended when using this plugin.
+01efdd98498 (Jake Peck         2013-02-08 09:18:48 -0500   18) 
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   19) Commands
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   20) ========
+87ae47100b4 (Edward K. Ream    2011-03-19 17:09:25 -0500   21) 
+efc9b0d681b (Terry Brown       2010-11-27 16:22:07 -0600   22) viewrendered.py creates the following (``Alt-X``) commands:
+efc9b0d681b (Terry Brown       2010-11-27 16:22:07 -0600   23) 
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   24) ``viewrendered (abbreviated vr)``
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   25)     Opens a new rendering window.
+8ec4e29f6b0 (Edward K. Ream    2016-02-28 18:20:36 -0600   26) 
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   27)     By default, the rendering pane renders body text as reStructuredText,
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   28)     with all Leo directives removed.
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   29)     However, if the body text starts with ``<`` (after removing directives),
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   30)     the body text is rendered as html.
+8ec4e29f6b0 (Edward K. Ream    2016-02-28 18:20:36 -0600   31) 
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   32)     **Important**: The default rendering just described does not apply to nodes
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   33)     whose headlines begin with @image, @html, @movie, @networkx, @svg and @url.
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   34)     See the section called **Special Renderings** below.
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   35) 
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   36)     Rendering sets the process current directory (os.chdir()) to the path
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   37)     to the node being rendered, to allow relative paths to work in ``.. image::`` directives.
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   38) 
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   39) .. ``viewrendered-big``
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   40) ..    as above, but zoomed in, useful for presentations
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   41) .. ``viewrendered-html``
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   42) ..    displays the html source generated from reStructuredText, useful for
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   43) ..    debugging
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   44) 
+896c23f56be (Davy39            2014-12-14 03:24:04 +0800   45) ``vr-hide``
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   46)     Makes the rendering pane invisible, but does not destroy it.
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   47) 
+bcf0f3634db (Edward K. Ream    2014-09-24 10:07:20 -0500   48) ``vr-lock`` and ``vr-unlock``
+bcf0f3634db (Edward K. Ream    2014-09-24 10:07:20 -0500   49)     Locks and unlocks the rendering pane.
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   50)     When unlocked (the initial state), the rendering pane renders the contents
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   51)     of the presently selected node.
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   52)     When locked, the rendering pane does not change when other nodes are selected.
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   53)     This is useful for playing movies in the rendering pane.
+8ec4e29f6b0 (Edward K. Ream    2016-02-28 18:20:36 -0600   54) 
+bcf0f3634db (Edward K. Ream    2014-09-24 10:07:20 -0500   55) ``vr-pause-play-movie``
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   56)     This command has effect only if the rendering pane is presently showing a movie.
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   57)     It pauses the movie if playing, or resumes the movie if paused.
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   58) 
+bcf0f3634db (Edward K. Ream    2014-09-24 10:07:20 -0500   59) ``vr-show``
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   60)     Makes the rendering pane visible.
+efc9b0d681b (Terry Brown       2010-11-27 16:22:07 -0600   61) 
+bcf0f3634db (Edward K. Ream    2014-09-24 10:07:20 -0500   62) ``vr-toggle``
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   63)     Shows the rendering pane if invisible, otherwise hides it.
+8ec4e29f6b0 (Edward K. Ream    2016-02-28 18:20:36 -0600   64) 
+bcf0f3634db (Edward K. Ream    2014-09-24 10:07:20 -0500   65) ``vr-update``
+05301f78424 (Edward K. Ream    2011-03-22 05:19:30 -0500   66)     Forces an update of the rendering pane.
+05301f78424 (Edward K. Ream    2011-03-22 05:19:30 -0500   67)     This is especially useful for @graphics-script nodes:
+f2078c57d7e (Edward K. Ream    2011-03-22 05:23:33 -0500   68)     such nodes are update automatically only when selected,
+f2078c57d7e (Edward K. Ream    2011-03-22 05:23:33 -0500   69)     not when the body text changes.
+8ec4e29f6b0 (Edward K. Ream    2016-02-28 18:20:36 -0600   70) 
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   71) Rendering reStructuredText
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   72) ==========================
+efc9b0d681b (Terry Brown       2010-11-27 16:22:07 -0600   73) 
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   74) For example, both::
+e57edd94702 (Terry Brown       2010-03-18 12:45:53 -0500   75) 
+e57edd94702 (Terry Brown       2010-03-18 12:45:53 -0500   76)     Heading
+e57edd94702 (Terry Brown       2010-03-18 12:45:53 -0500   77)     -------
+e57edd94702 (Terry Brown       2010-03-18 12:45:53 -0500   78) 
+e57edd94702 (Terry Brown       2010-03-18 12:45:53 -0500   79)     `This` is **really** a line of text.
+e57edd94702 (Terry Brown       2010-03-18 12:45:53 -0500   80) 
+e57edd94702 (Terry Brown       2010-03-18 12:45:53 -0500   81) and::
+e57edd94702 (Terry Brown       2010-03-18 12:45:53 -0500   82) 
+e57edd94702 (Terry Brown       2010-03-18 12:45:53 -0500   83)     <h1>Heading<h1>
+e57edd94702 (Terry Brown       2010-03-18 12:45:53 -0500   84) 
+e57edd94702 (Terry Brown       2010-03-18 12:45:53 -0500   85)     <tt>This</tt> is <b>really</b> a line of text.
+e57edd94702 (Terry Brown       2010-03-18 12:45:53 -0500   86) 
+e57edd94702 (Terry Brown       2010-03-18 12:45:53 -0500   87) will look something like:
+e57edd94702 (Terry Brown       2010-03-18 12:45:53 -0500   88) 
+87ae47100b4 (Edward K. Ream    2011-03-19 17:09:25 -0500   89)     **Heading**
+87ae47100b4 (Edward K. Ream    2011-03-19 17:09:25 -0500   90) 
+87ae47100b4 (Edward K. Ream    2011-03-19 17:09:25 -0500   91)     `This` is **really** a line of text.
+8ec4e29f6b0 (Edward K. Ream    2016-02-28 18:20:36 -0600   92) 
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500   93) **Important**: reStructuredText errors and warnings will appear in red in the rendering pane.
+e57edd94702 (Terry Brown       2010-03-18 12:45:53 -0500   94) 
+01efdd98498 (Jake Peck         2013-02-08 09:18:48 -0500   95) Rendering markdown
+01efdd98498 (Jake Peck         2013-02-08 09:18:48 -0500   96) ==================
+01efdd98498 (Jake Peck         2013-02-08 09:18:48 -0500   97) Please see the markdown syntax document at http://daringfireball.net/projects/markdown/syntax
+01efdd98498 (Jake Peck         2013-02-08 09:18:48 -0500   98) for more information on markdown.
+01efdd98498 (Jake Peck         2013-02-08 09:18:48 -0500   99) 
+01efdd98498 (Jake Peck         2013-02-08 09:18:48 -0500  100) Unless ``@string view-rendered-default-kind`` is set to ``md``, markdown rendering must be
+01efdd98498 (Jake Peck         2013-02-08 09:18:48 -0500  101) specified by putting it in a ``@md`` node.
+01efdd98498 (Jake Peck         2013-02-08 09:18:48 -0500  102) 
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  103) Special Renderings
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  104) ===================
+87ae47100b4 (Edward K. Ream    2011-03-19 17:09:25 -0500  105) 
+309752abe7a (Edward K. Ream    2013-08-05 08:36:25 -0500  106) As stated above, the rendering pane renders body text as reStructuredText
+309752abe7a (Edward K. Ream    2013-08-05 08:36:25 -0500  107) by default, with all Leo directives removed. However, if the body text
+309752abe7a (Edward K. Ream    2013-08-05 08:36:25 -0500  108) starts with ``<`` (after removing directives), the body text is rendered as
+309752abe7a (Edward K. Ream    2013-08-05 08:36:25 -0500  109) html.
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  110) 
+afebab2c6e4 (Edward K. Ream    2018-03-11 09:20:00 -0500  111) This plugin renders @md, @image, @jupyter, @html, @movie, @networkx and @svg nodes as follows:
+309752abe7a (Edward K. Ream    2013-08-05 08:36:25 -0500  112) 
+309752abe7a (Edward K. Ream    2013-08-05 08:36:25 -0500  113) **Note**: For @image, @movie and @svg nodes, either the headline or the first line of body text may
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  114) contain a filename.  If relative, the filename is resolved relative to Leo's load directory.
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  115) 
+309752abe7a (Edward K. Ream    2013-08-05 08:36:25 -0500  116) - ``@md`` renderes the body text as markdown, as described above.
+309752abe7a (Edward K. Ream    2013-08-05 08:36:25 -0500  117) 
+05301f78424 (Edward K. Ream    2011-03-22 05:19:30 -0500  118) - ``@graphics-script`` executes the script in the body text in a context containing
+05301f78424 (Edward K. Ream    2011-03-22 05:19:30 -0500  119)   two predefined variables:
+8ec4e29f6b0 (Edward K. Ream    2016-02-28 18:20:36 -0600  120) 
+05301f78424 (Edward K. Ream    2011-03-22 05:19:30 -0500  121)     - gs is the QGraphicsScene for the rendering pane.
+05301f78424 (Edward K. Ream    2011-03-22 05:19:30 -0500  122)     - gv is the QGraphicsView for the rendering pane.
+8ec4e29f6b0 (Edward K. Ream    2016-02-28 18:20:36 -0600  123) 
+05301f78424 (Edward K. Ream    2011-03-22 05:19:30 -0500  124)   Using these variables, the script in the body text may create graphics to the rendering pane.
+05301f78424 (Edward K. Ream    2011-03-22 05:19:30 -0500  125) 
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  126) - ``@image`` renders the file as an image.
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  127) 
+59c313b2f6e (Edward K. Ream    2019-11-04 10:27:54 -0600  128)     The headline should start with @image.
+59c313b2f6e (Edward K. Ream    2019-11-04 10:27:54 -0600  129)     All other characters in the headline are ignored.
+bf05958751b (Edward K. Ream    2021-09-21 12:46:26 -0500  130) 
+59c313b2f6e (Edward K. Ream    2019-11-04 10:27:54 -0600  131)     The first line of the body should be the full path to the image file.
+59c313b2f6e (Edward K. Ream    2019-11-04 10:27:54 -0600  132)     All other lines are ignored.
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  133) 
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  134) - ``@html`` renders the body text as html.
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  135) 
+7b1d4b32411 (Edward K. Ream    2018-03-11 13:19:11 -0500  136) - ``@jupyter`` renders the output from Jupyter Notebooks.
+afebab2c6e4 (Edward K. Ream    2018-03-11 09:20:00 -0500  137) 
+7b1d4b32411 (Edward K. Ream    2018-03-11 13:19:11 -0500  138)   The contents of the @jupyter node can be either a url to the notebook or
+7b1d4b32411 (Edward K. Ream    2018-03-11 13:19:11 -0500  139)   the actual JSON notebook itself.
+bf05958751b (Edward K. Ream    2021-09-21 12:46:26 -0500  140) 
+7b1d4b32411 (Edward K. Ream    2018-03-11 13:19:11 -0500  141)   Use file:// urls for local files. Some examples:
+bf05958751b (Edward K. Ream    2021-09-21 12:46:26 -0500  142) 
+7b1d4b32411 (Edward K. Ream    2018-03-11 13:19:11 -0500  143)       Windows: file:///c:/Test/a_notebook.ipynb
+bf05958751b (Edward K. Ream    2021-09-21 12:46:26 -0500  144) 
+7b1d4b32411 (Edward K. Ream    2018-03-11 13:19:11 -0500  145)       Linux:   file:///home/a_notebook.ipynb
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  146) 
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  147) - ``@movie`` plays the file as a movie.  @movie also works for music files.
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  148) 
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  149) - ``@networkx`` is non-functional at present.  It is intended to
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  150)   render the body text as a networkx graph.
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  151)   See http://networkx.lanl.gov/
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  152) 
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  153) - ``@svg`` renders the file as a (possibly animated!) svg (Scalable Vector Image).
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  154)   See http://en.wikipedia.org/wiki/Scalable_Vector_Graphics
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  155)   **Note**: if the first character of the body text is ``<`` after removing Leo directives,
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  156)   the contents of body pane is taken to be an svg image.
+bf05958751b (Edward K. Ream    2021-09-21 12:46:26 -0500  157) 
+fe91b27120c (Edward K. Ream    2020-02-28 08:24:39 -0600  158) Relative file names
+fe91b27120c (Edward K. Ream    2020-02-28 08:24:39 -0600  159) ===================
+fe91b27120c (Edward K. Ream    2020-02-28 08:24:39 -0600  160) 
+fe91b27120c (Edward K. Ream    2020-02-28 08:24:39 -0600  161) vr.convert_to_html resolves relative paths using whatever @path directive
+fe91b27120c (Edward K. Ream    2020-02-28 08:24:39 -0600  162) is in effect for a particular node. It also does `os.chdir(path)` for that
+fe91b27120c (Edward K. Ream    2020-02-28 08:24:39 -0600  163) path.
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  164) 
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  165) Settings
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  166) ========
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  167) 
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  168) - ``@color rendering-pane-background-color = white``
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  169)   The background color the rendering pane when rendering text.
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  170) 
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  171) - ``@bool view-rendered-auto-create = False``
+193c7ee5931 (Edward K. Ream    2011-05-26 19:20:15 -0500  172)   When True, show the rendering pane when Leo opens an outline.
+8ec4e29f6b0 (Edward K. Ream    2016-02-28 18:20:36 -0600  173) 
+193c7ee5931 (Edward K. Ream    2011-05-26 19:20:15 -0500  174) - ``@bool view-rendered-auto-hide = False``
+193c7ee5931 (Edward K. Ream    2011-05-26 19:20:15 -0500  175)   When True, hide the rendering pane for text-only renderings.
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  176) 
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  177) - ``@string view-rendered-default-kind = rst``
+01efdd98498 (Jake Peck         2013-02-08 09:18:48 -0500  178)   The default kind of rendering.  One of (big,rst,md,html)
+8ec4e29f6b0 (Edward K. Ream    2016-02-28 18:20:36 -0600  179) 
+8b4036737c8 (Jake Peck         2013-02-11 12:23:50 -0500  180) - ``@string view-rendered-md-extensions = extra``
+8b4036737c8 (Jake Peck         2013-02-11 12:23:50 -0500  181)   A comma-delineated list of markdown extensions to use.
+8ec4e29f6b0 (Edward K. Ream    2016-02-28 18:20:36 -0600  182)   Suitable extensions can be seen here:
+8b4036737c8 (Jake Peck         2013-02-11 12:23:50 -0500  183)   http://pythonhosted.org/Markdown/extensions/index.html
+8b4036737c8 (Jake Peck         2013-02-11 12:23:50 -0500  184) 
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  185) Acknowledgments
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  186) ================
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  187) 
+02ebea317ff (Edward K. Ream    2024-05-20 21:27:24 -0500  188) Terry Brown created this initial version of this plugin.
+26d498f7c01 (Edward K. Ream    2011-03-21 10:08:34 -0500  189) 
+02ebea317ff (Edward K. Ream    2024-05-20 21:27:24 -0500  190) Edward K. Ream generalized this plugin.
+e57edd94702 (Terry Brown       2010-03-18 12:45:53 -0500  191) 
+01efdd98498 (Jake Peck         2013-02-08 09:18:48 -0500  192) Jacob Peck added markdown support to this plugin.
+01efdd98498 (Jake Peck         2013-02-08 09:18:48 -0500  193) 
+7b11e6de671 (Edward K. Ream    2021-10-11 04:41:00 -0500  194) """
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  195) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  196) # @-<< vr: docstring >>
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  197) # @+<< vr: imports >>
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  198) # @+node:tbrown.20100318101414.5993: ** << vr: imports >>
+c4b67fd617e (Edward K. Ream    2022-12-13 11:13:20 -0600  199) from __future__ import annotations
+deca30a158b (Edward K. Ream    2023-06-09 12:48:04 -0500  200) from collections.abc import Callable
+cbd6d955740 (Edward K. Ream    2020-12-18 10:27:34 -0600  201) import os
+5c962334d1b (Edward K. Ream    2021-02-23 15:37:03 -0600  202) from pathlib import Path
+c78d6bacfb6 (Edward K. Ream    2021-08-16 03:36:52 -0500  203) import shutil
+bbf0980b9a8 (Ville Vainio      2026-08-07 12:03:11 +0300  204) import subprocess
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  205) import sys
+73eaf41fff7 (Edward K. Ream    2021-08-09 07:18:02 -0500  206) import textwrap
+6b13d422830 (Edward K. Ream    2026-06-24 06:27:19 -0500  207) from typing import Any, TYPE_CHECKING
+cbd6d955740 (Edward K. Ream    2020-12-18 10:27:34 -0600  208) from urllib.request import urlopen
+849f3d5f2f6 (Edward K. Ream    2020-12-17 20:15:18 -0600  209) from leo.core import leoGlobals as g
+8c0c0853e7c (Edward K. Ream    2024-05-08 07:30:55 -0500  210) from leo.core.leoQt import QtCore, QtWidgets
+8a9d63818da (Edward K. Ream    2024-12-26 02:57:27 -0600  211) from leo.core.leoQt import QtMultimedia, QtSvg, QUrl
+8a6de88a56c (Edward K. Ream    2024-08-24 06:46:15 -0500  212) from leo.core.leoQt import ContextMenuPolicy, WrapMode
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  213) from leo.plugins import qt_text
+e8541487c36 (Edward K. Ream    2024-05-15 10:19:22 -0500  214) 
+2d0584a05ed (Edward K. Ream    2021-05-18 12:13:43 -0500  215) # Fail fast, right after all imports.
+2d0584a05ed (Edward K. Ream    2021-05-18 12:13:43 -0500  216) g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  217) # @-<< vr: imports >>
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  218) # @+<< vr: annotations >>
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  219) # @+node:ekr.20220828161918.1: ** << vr: annotations >>
+f041b379efe (Edward K. Ream    2022-09-12 01:32:12 -0500  220) if TYPE_CHECKING:  # pragma: no cover
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500  221)     from leo.core.leoCommands import Commands as Cmdr
+d79efccd317 (Edward K. Ream    2025-03-30 09:01:42 -0500  222)     from leo.core.leoGui import LeoKeyEvent
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500  223)     from leo.core.leoNodes import Position, VNode
+d79efccd317 (Edward K. Ream    2025-03-30 09:01:42 -0500  224)     from leo.core.leoQt import QtGui
+baea2f38003 (Edward K. Ream    2025-03-30 08:49:08 -0500  225)     from QtMultimedia import QMediaPlayer
+cde097cfb84 (Edward K. Ream    2024-03-24 14:36:50 -0500  226) 
+d79efccd317 (Edward K. Ream    2025-03-30 09:01:42 -0500  227)     QCloseEvent = QtGui.QCloseEvent
+baea2f38003 (Edward K. Ream    2025-03-30 08:49:08 -0500  228)     QGraphicsScene = QtWidgets.QGraphicsScene
+baea2f38003 (Edward K. Ream    2025-03-30 08:49:08 -0500  229)     QGraphicsView = QtWidgets.QGraphicsView
+43cd62035ec (Edward K. Ream    2024-03-24 14:34:12 -0500  230)     QWidget = QtWidgets.QWidget
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  231) # @-<< vr: annotations >>
+79223d34c94 (Edward K. Ream    2022-03-18 14:09:58 -0500  232) trace = False  # This global trace is convenient.
+c78d6bacfb6 (Edward K. Ream    2021-08-16 03:36:52 -0500  233) asciidoctor_exec = shutil.which('asciidoctor')
+c78d6bacfb6 (Edward K. Ream    2021-08-16 03:36:52 -0500  234) asciidoc3_exec = shutil.which('asciidoc3')
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  235) pandoc_exec = shutil.which('pandoc')
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  236) got_docutils: bool = False
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  237) 
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  238) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  239) # @+others
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  240) # @+node:ekr.20110320120020.14491: ** vr.Top-level functions
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  241) # @+node:ekr.20260828053307.1: *3* vr function: getVR
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  242) def getVr(event: LeoKeyEvent | None) -> ViewRenderedController | None:
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  243)     """
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  244)     Return the singleton instance for this commander.
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  245)     """
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  246)     # First, get c.
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  247)     if not event:
+1b505f90901 (Edward K. Ream    2026-08-28 06:52:47 -0500  248)         # g.trace('no event!')
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  249)         return None
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  250)     c = event.get('c')
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  251)     if not c:
+1b505f90901 (Edward K. Ream    2026-08-28 06:52:47 -0500  252)         # g.trace('no event.c!')
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  253)         return None
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  254)     vr = getattr(c, 'vr', None)
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  255)     if not vr:
+b861706bb28 (Edward K. Ream    2026-08-28 08:53:26 -0500  256)         g.es_print_unique_message(f"{c.shortFileName()}: viewrendered commands disabled")
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  257)     return vr
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  258) 
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  259) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  260) # @+node:tbrown.20100318101414.5995: *3* vr function: init
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500  261) def init() -> bool:
+4c106f71f51 (Edward K. Ream    2021-10-11 05:09:22 -0500  262)     """Return True if the plugin has loaded successfully."""
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  263)     if not g.app.gui.guiName().startswith('qt'):
+0bf9f4ca448 (Edward K. Ream    2018-10-10 09:44:07 -0500  264)         return False
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  265) 
+0589aa3b6a9 (Edward K. Ream    2017-11-26 11:04:13 -0600  266)     # Always enable this plugin, even if imports fail.
+0589aa3b6a9 (Edward K. Ream    2017-11-26 11:04:13 -0600  267)     g.plugin_signon(__name__)
+0e850d6198a (Edward K. Ream    2024-12-25 04:06:05 -0600  268)     g.registerHandler('close-frame', onClose)
+0589aa3b6a9 (Edward K. Ream    2017-11-26 11:04:13 -0600  269)     g.registerHandler('scrolledMessage', show_scrolled_message)
+0589aa3b6a9 (Edward K. Ream    2017-11-26 11:04:13 -0600  270)     return True
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  271) 
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  272) 
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  273) # @+node:ekr.20240727091022.1: *3* vr function: initVR
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  274) def initVr(c: Cmdr, parent: QtWidgets.QWidget | None = None) -> None:
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  275)     """
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  276)     Set c.vr, but *only* if this plugin is enabled.
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  277) 
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  278)     Should be called only once, from DynamicWindow.create_layout.
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  279)     """
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  280)     global got_docutils
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  281)     if g.app.gui.guiName() != 'qt':
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  282)         return
+59aaf808443 (Edward K. Ream    2019-06-14 10:14:27 -0500  283)     if not c:
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  284)         g.trace('no c!')
+59aaf808443 (Edward K. Ream    2019-06-14 10:14:27 -0500  285)         return
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  286)     if 'viewrendered.py' not in c.config.getEnabledPlugins():
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  287)         return
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  288)     vr = getattr(c, 'vr', None)
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  289)     if vr:
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  290)         g.trace('Already inited!')
+7e1e0416a68 (Ville Vainio      2026-08-06 17:19:16 +0300  291)         return
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  292) 
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  293)     # Issue docutils warning.
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  294)     try:
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  295)         import docutils  # noqa: F401 (silences only the unused import warning)
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  296)         import docutils.core  # noqa: F401 (silences only the unused import warning)
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  297) 
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  298)         got_docutils = True
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  299)     except ImportError:
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  300)         g.es_print('Warning: viewrendered.py running without docutils.')
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  301)         got_docutils = False
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  302) 
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  303)     # init c.vr.
+d012130638d (Edward K. Ream    2026-08-29 02:28:11 -0500  304)     c.vr = vr = ViewRenderedController(c)  # ty:ignore[invalid-assignment]
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  305)     if parent:
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  306)         vr.setParent(parent)
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  307)     else:
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  308)         dw = c.frame.top
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  309)         if dw:
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  310)             dw.insert_vr_frame(vr)
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  311) 
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  312)     # Leo 6.8.11: Do this here instead of on_create.
+e00c4585662 (Edward K. Ream    2026-06-23 18:46:40 -0500  313)     g.registerHandler('select2', vr.update_vr)
+e00c4585662 (Edward K. Ream    2026-06-23 18:46:40 -0500  314)     g.registerHandler('idle', vr.update_vr)
+cf8034716f3 (Edward K. Ream    2024-05-08 09:11:39 -0500  315)     vr.active = True
+fd7537f5c17 (Edward K. Ream    2024-05-08 10:17:39 -0500  316)     vr.is_visible = False
+fd7537f5c17 (Edward K. Ream    2024-05-08 10:17:39 -0500  317)     vr.hide()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  318) 
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  319) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  320) # @+node:vitalije.20170712174157.1: *3* vr function: onClose
+d4333eeaabd (Edward K. Ream    2023-06-08 21:38:51 -0500  321) def onClose(tag: str, keys: dict) -> None:
+3118aba9e0e (Edward K. Ream    2024-05-10 16:20:17 -0500  322)     """
+0e850d6198a (Edward K. Ream    2024-12-25 04:06:05 -0600  323)     Handle a close event in the Leo outline.
+3118aba9e0e (Edward K. Ream    2024-05-10 16:20:17 -0500  324)     """
+0e850d6198a (Edward K. Ream    2024-12-25 04:06:05 -0600  325)     c = keys.get('c')
+0e850d6198a (Edward K. Ream    2024-12-25 04:06:05 -0600  326)     if not c:
+0e850d6198a (Edward K. Ream    2024-12-25 04:06:05 -0600  327)         return
+0e850d6198a (Edward K. Ream    2024-12-25 04:06:05 -0600  328)     vr = getattr(c, 'vr', None)
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  329)     if vr:
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  330)         vr.closeEvent(event=None)
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  331) 
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  332) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  333) # @+node:tbrown.20110629132207.8984: *3* vr function: show_scrolled_message
+a99cc6f5f9d (Edward K. Ream    2024-05-12 17:31:39 -0500  334) def show_scrolled_message(tag: str, kw: Any) -> None:
+afb8cb6ac69 (Edward K. Ream    2013-04-12 20:08:28 -0500  335)     if g.unitTesting:
+a99cc6f5f9d (Edward K. Ream    2024-05-12 17:31:39 -0500  336)         return  # This just slows the unit tests.
+a62e7ec7314 (Terry Brown       2011-06-29 15:35:47 -0500  337)     c = kw.get('c')
+a99cc6f5f9d (Edward K. Ream    2024-05-12 17:31:39 -0500  338)     if not c:
+a99cc6f5f9d (Edward K. Ream    2024-05-12 17:31:39 -0500  339)         return
+d012130638d (Edward K. Ream    2026-08-29 02:28:11 -0500  340)     vr = getattr(c, 'vr', None)
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  341)     if not vr:
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  342)         return
+a99cc6f5f9d (Edward K. Ream    2024-05-12 17:31:39 -0500  343)     p = c and c.p
+a99cc6f5f9d (Edward K. Ream    2024-05-12 17:31:39 -0500  344)     s = kw.get('msg')
+a99cc6f5f9d (Edward K. Ream    2024-05-12 17:31:39 -0500  345)     if not s.strip():
+a99cc6f5f9d (Edward K. Ream    2024-05-12 17:31:39 -0500  346)         g.trace('No message', g.callers())
+a99cc6f5f9d (Edward K. Ream    2024-05-12 17:31:39 -0500  347)         return
+a99cc6f5f9d (Edward K. Ream    2024-05-12 17:31:39 -0500  348)     # Make sure we will show the message.
+7e1e0416a68 (Ville Vainio      2026-08-06 17:19:16 +0300  349)     vr.active = True
+a99cc6f5f9d (Edward K. Ream    2024-05-12 17:31:39 -0500  350)     vr.is_visible = True
+f520b66dcac (Edward K. Ream    2024-07-27 11:13:17 -0500  351)     vr.show()
+eef303a2d0f (Edward K. Ream    2024-05-14 07:59:14 -0500  352)     # A hack: suppress updates until the node changes.
+a99cc6f5f9d (Edward K. Ream    2024-05-12 17:31:39 -0500  353)     vr.gnx = p.v.gnx
+5b341cd2095 (Edward K. Ream    2024-07-29 07:29:25 -0500  354)     vr.length = len(p.v.b)
+a99cc6f5f9d (Edward K. Ream    2024-05-12 17:31:39 -0500  355)     # Render!
+7e1e0416a68 (Ville Vainio      2026-08-06 17:19:16 +0300  356)     f = vr.dispatch_dict['rest']
+a99cc6f5f9d (Edward K. Ream    2024-05-12 17:31:39 -0500  357)     f(s, kw)
+a99cc6f5f9d (Edward K. Ream    2024-05-12 17:31:39 -0500  358)     c.bodyWantsFocusNow()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  359) 
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  360) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  361) # @+node:ekr.20110320120020.14490: ** vr.Commands
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  362) # @+node:ekr.20131213163822.16471: *3* g.command('preview')
+8b15feed394 (Edward K. Ream    2013-12-14 16:55:21 -0600  363) @g.command('preview')
+5e9278019df (Edward K. Ream    2026-07-09 10:59:10 -0500  364) def preview(event: LeoKeyEvent | None = None) -> None:
+4c106f71f51 (Edward K. Ream    2021-10-11 05:09:22 -0500  365)     """A synonym for the vr-toggle command."""
+d50f5dd8c95 (Edward K. Ream    2013-12-13 16:52:15 -0600  366)     toggle_rendering_pane(event)
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  367) 
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  368) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  369) # @+node:tbrown.20100318101414.5998: *3* g.command('vr')
+afb8cb6ac69 (Edward K. Ream    2013-04-12 20:08:28 -0500  370) @g.command('vr')
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  371) def viewrendered(event: LeoKeyEvent | None = None) -> None:
+afb8cb6ac69 (Edward K. Ream    2013-04-12 20:08:28 -0500  372)     """Open render view for commander"""
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  373)     if vr := getVr(event=event):
+28351bd8b3a (Edward K. Ream    2024-07-27 12:38:15 -0500  374)         vr.show()
+f66779619f1 (Edward K. Ream    2024-07-27 11:55:25 -0500  375)         vr.is_visible = True
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  376)         vr.c.bodyWantsFocusNow()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  377) 
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  378) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  379) # @+node:ekr.20130413061407.10362: *3* g.command('vr-contract')
+b152f086798 (Edward K. Ream    2013-04-13 07:19:44 -0500  380) @g.command('vr-contract')
+5e9278019df (Edward K. Ream    2026-07-09 10:59:10 -0500  381) def contract_rendering_pane(event: LeoKeyEvent | None = None) -> None:
+4c106f71f51 (Edward K. Ream    2021-10-11 05:09:22 -0500  382)     """Contract the rendering pane."""
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  383)     if vr := getVr(event):
+9abf06eb947 (Edward K. Ream    2024-05-08 02:34:38 -0500  384)         vr.show()
+f520b66dcac (Edward K. Ream    2024-07-27 11:13:17 -0500  385)         vr.contract()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  386) 
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  387) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  388) # @+node:ekr.20130413061407.10361: *3* g.command('vr-expand')
+b152f086798 (Edward K. Ream    2013-04-13 07:19:44 -0500  389) @g.command('vr-expand')
+5e9278019df (Edward K. Ream    2026-07-09 10:59:10 -0500  390) def expand_rendering_pane(event: LeoKeyEvent | None = None) -> None:
+4c106f71f51 (Edward K. Ream    2021-10-11 05:09:22 -0500  391)     """Expand the rendering pane."""
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  392)     if vr := getVr(event):
+f520b66dcac (Edward K. Ream    2024-07-27 11:13:17 -0500  393)         vr.show()
+f520b66dcac (Edward K. Ream    2024-07-27 11:13:17 -0500  394)         vr.expand()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  395) 
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  396) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  397) # @+node:ekr.20240507095853.1: *3* g.command('vr-fully-expand')
+95726d73321 (Edward K. Ream    2024-05-07 10:09:44 -0500  398) @g.command('vr-fully-expand')
+5e9278019df (Edward K. Ream    2026-07-09 10:59:10 -0500  399) def fully_expand_rendering_pane(event: LeoKeyEvent | None = None) -> None:
+95726d73321 (Edward K. Ream    2024-05-07 10:09:44 -0500  400)     """Expand the rendering pane."""
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  401)     if vr := getVr(event):
+9abf06eb947 (Edward K. Ream    2024-05-08 02:34:38 -0500  402)         vr.show()
+f520b66dcac (Edward K. Ream    2024-07-27 11:13:17 -0500  403)         vr.fully_expand()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  404) 
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  405) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  406) # @+node:ekr.20110917103917.3639: *3* g.command('vr-hide')
+bd32aba243f (Edward K. Ream    2012-05-24 14:56:58 -0500  407) @g.command('vr-hide')
+5e9278019df (Edward K. Ream    2026-07-09 10:59:10 -0500  408) def hide_rendering_pane(event: LeoKeyEvent | None = None) -> None:
+4c106f71f51 (Edward K. Ream    2021-10-11 05:09:22 -0500  409)     """Close the rendering pane."""
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  410)     if vr := getVr(event):
+f520b66dcac (Edward K. Ream    2024-07-27 11:13:17 -0500  411)         vr.hide()
+f520b66dcac (Edward K. Ream    2024-07-27 11:13:17 -0500  412)         vr.is_visible = False
+9abf06eb947 (Edward K. Ream    2024-05-08 02:34:38 -0500  413) 
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  414) 
+bd32aba243f (Edward K. Ream    2012-05-24 14:56:58 -0500  415) # Compatibility
+67e0a12c309 (Edward K. Ream    2015-06-10 12:52:44 -0500  416) 
+bd32aba243f (Edward K. Ream    2012-05-24 14:56:58 -0500  417) close_rendering_pane = hide_rendering_pane
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  418) 
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  419) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  420) # @+node:ekr.20110321072702.14507: *3* g.command('vr-lock')
+afb8cb6ac69 (Edward K. Ream    2013-04-12 20:08:28 -0500  421) @g.command('vr-lock')
+5e9278019df (Edward K. Ream    2026-07-09 10:59:10 -0500  422) def lock_rendering_pane(event: LeoKeyEvent | None = None) -> None:
+4c106f71f51 (Edward K. Ream    2021-10-11 05:09:22 -0500  423)     """Lock the rendering pane."""
+f520b66dcac (Edward K. Ream    2024-07-27 11:13:17 -0500  424)     vr = getVr(event=event)
+f520b66dcac (Edward K. Ream    2024-07-27 11:13:17 -0500  425)     if vr and not vr.locked:
+2ddebb17764 (Edward K. Ream    2019-06-15 08:05:47 -0500  426)         vr.lock()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  427) 
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  428) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  429) # @+node:ekr.20110320233639.5777: *3* g.command('vr-pause-play')
+bcf0f3634db (Edward K. Ream    2014-09-24 10:07:20 -0500  430) @g.command('vr-pause-play-movie')
+5e9278019df (Edward K. Ream    2026-07-09 10:59:10 -0500  431) def pause_play_movie(event: LeoKeyEvent | None = None) -> None:
+4c106f71f51 (Edward K. Ream    2021-10-11 05:09:22 -0500  432)     """Pause or play a movie in the rendering pane."""
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  433)     if vr := getVr(event):
+f520b66dcac (Edward K. Ream    2024-07-27 11:13:17 -0500  434)         vp = vr.vp
+f520b66dcac (Edward K. Ream    2024-07-27 11:13:17 -0500  435)         if not vp:
+f520b66dcac (Edward K. Ream    2024-07-27 11:13:17 -0500  436)             return
+f520b66dcac (Edward K. Ream    2024-07-27 11:13:17 -0500  437)         f = vp.pause if vp.isPlaying() else vp.play
+f520b66dcac (Edward K. Ream    2024-07-27 11:13:17 -0500  438)         f()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  439) 
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  440) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  441) # @+node:ekr.20110317080650.14386: *3* g.command('vr-show')
+afb8cb6ac69 (Edward K. Ream    2013-04-12 20:08:28 -0500  442) @g.command('vr-show')
+5e9278019df (Edward K. Ream    2026-07-09 10:59:10 -0500  443) def show_rendering_pane(event: LeoKeyEvent | None = None) -> None:
+4c106f71f51 (Edward K. Ream    2021-10-11 05:09:22 -0500  444)     """Show the rendering pane."""
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  445)     if vr := getVr(event):
+f520b66dcac (Edward K. Ream    2024-07-27 11:13:17 -0500  446)         c = vr.c
+7fcb201f244 (Edward K. Ream    2024-12-09 15:23:26 -0600  447)         vr.show()  # QWidget.show.
+f520b66dcac (Edward K. Ream    2024-07-27 11:13:17 -0500  448)         vr.is_visible = True
+f520b66dcac (Edward K. Ream    2024-07-27 11:13:17 -0500  449)         c.bodyWantsFocusNow()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  450) 
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  451) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  452) # @+node:ekr.20131001100335.16606: *3* g.command('vr-toggle-visibility')
+0d0b5f91f19 (Edward K. Ream    2024-05-08 08:50:14 -0500  453) @g.command('vr-toggle-visibility')
+0d0b5f91f19 (Edward K. Ream    2024-05-08 08:50:14 -0500  454) @g.command('vr-toggle')  # Legacy
+5e9278019df (Edward K. Ream    2026-07-09 10:59:10 -0500  455) def toggle_rendering_pane(event: LeoKeyEvent | None = None) -> None:
+0d0b5f91f19 (Edward K. Ream    2024-05-08 08:50:14 -0500  456)     """Toggle the visibility of the VR pane."""
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  457)     if vr := getVr(event):
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  458)         vr.is_visible = not vr.is_visible
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  459)         if vr.is_visible:
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  460)             g.es('VR pane on', color='red')
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  461)             vr.show()
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  462)         else:
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  463)             g.es('VR pane off', color='red')
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  464)             vr.hide()
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  465)         vr.c.bodyWantsFocusNow()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  466) 
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  467) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  468) # @+node:ekr.20240508082844.1: *3* g.command('vr-toggle-keep-open')
+0d0b5f91f19 (Edward K. Ream    2024-05-08 08:50:14 -0500  469) @g.command('vr-toggle-keep-open')
+5e9278019df (Edward K. Ream    2026-07-09 10:59:10 -0500  470) def toggle_keep_open(event: LeoKeyEvent | None = None) -> None:
+0d0b5f91f19 (Edward K. Ream    2024-05-08 08:50:14 -0500  471)     """Toggle the visibility of the VR pane."""
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  472)     if vr := getVr(event):
+f520b66dcac (Edward K. Ream    2024-07-27 11:13:17 -0500  473)         c = vr.c
+0d0b5f91f19 (Edward K. Ream    2024-05-08 08:50:14 -0500  474)         vr.hide()  # So the toggle below will work.
+f520b66dcac (Edward K. Ream    2024-07-27 11:13:17 -0500  475)         vr.keep_open = not vr.keep_open
+bb2e420229e (Edward K. Ream    2026-06-23 18:41:48 -0500  476)         vr.update_vr('keep-open', {'c': c, 'force': True})
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  477) 
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  478) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  479) # @+node:ekr.20130412180825.10345: *3* g.command('vr-unlock')
+afb8cb6ac69 (Edward K. Ream    2013-04-12 20:08:28 -0500  480) @g.command('vr-unlock')
+5e9278019df (Edward K. Ream    2026-07-09 10:59:10 -0500  481) def unlock_rendering_pane(event: LeoKeyEvent | None = None) -> None:
+4c106f71f51 (Edward K. Ream    2021-10-11 05:09:22 -0500  482)     """Pause or play a movie in the rendering pane."""
+f520b66dcac (Edward K. Ream    2024-07-27 11:13:17 -0500  483)     vr = getVr(event=event)
+f520b66dcac (Edward K. Ream    2024-07-27 11:13:17 -0500  484)     if vr and vr.locked:
+2ddebb17764 (Edward K. Ream    2019-06-15 08:05:47 -0500  485)         vr.unlock()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  486) 
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  487) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  488) # @+node:ekr.20110321151523.14464: *3* g.command('vr-update')
+6f64e46cef1 (Edward K. Ream    2012-05-24 08:45:55 -0500  489) @g.command('vr-update')
+5e9278019df (Edward K. Ream    2026-07-09 10:59:10 -0500  490) def update_rendering_pane(event: LeoKeyEvent | None = None) -> None:
+4c106f71f51 (Edward K. Ream    2021-10-11 05:09:22 -0500  491)     """Update the rendering pane"""
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  492)     if vr := getVr(event):
+f520b66dcac (Edward K. Ream    2024-07-27 11:13:17 -0500  493)         c = vr.c
+bb2e420229e (Edward K. Ream    2026-06-23 18:41:48 -0500  494)         vr.update_vr(tag='view', keywords={'c': c, 'force': True})
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  495) 
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  496) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  497) # @+node:ekr.20110317024548.14375: ** class ViewRenderedController (QWidget)
+19d7c930d70 (Edward K. Ream    2026-06-23 11:22:39 -0500  498) class ViewRenderedController(QtWidgets.QWidget):
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  499)     """A class to control rendering in a rendering pane."""
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  500) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  501)     # @+<< vr: default templates >>
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  502)     # @+node:ekr.20241231164944.1: *3* << vr: default templates >>
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  503)     # @+others
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  504)     # @+node:ekr.20170324090828.1: *4* vr.default_image template
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  505)     default_image_template = '''\
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  506)     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  507)      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  508)     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  509)     <head></head>
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  510)     <body bgcolor=white>
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  511)     <img src="%s">
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  512)     </body>
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  513)     </html>
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  514)     '''
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  515)     # @+node:ekr.20241231121842.1: *4* vr.default_katex_template
+eb056b66c77 (Edward K. Ream    2024-12-31 21:23:37 -0600  516)     default_katex_template = textwrap.dedent(r'''
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  517)     <!DOCTYPE html>
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  518)     <html>
+f664cb1be4f (Edward K. Ream    2024-12-31 20:10:21 -0600  519)     <head>
+f664cb1be4f (Edward K. Ream    2024-12-31 20:10:21 -0600  520)         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.19/dist/katex.min.css"
+f664cb1be4f (Edward K. Ream    2024-12-31 20:10:21 -0600  521)             integrity="sha384-7lU0muIg/i1plk7MgygDUp3/bNRA65orrBub4/OSWHECgwEsY83HaS1x3bljA/XV"
+f664cb1be4f (Edward K. Ream    2024-12-31 20:10:21 -0600  522)             crossorigin="anonymous">
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  523) 
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  524)         <!-- The loading of KaTeX is deferred to speed up page rendering -->
+f664cb1be4f (Edward K. Ream    2024-12-31 20:10:21 -0600  525)         <script defer
+f664cb1be4f (Edward K. Ream    2024-12-31 20:10:21 -0600  526)             src="https://cdn.jsdelivr.net/npm/katex@0.16.19/dist/katex.min.js"
+f664cb1be4f (Edward K. Ream    2024-12-31 20:10:21 -0600  527)             integrity="sha384-RdymN7NRJ+XoyeRY4185zXaxq9QWOOx3O7beyyrRK4KQZrPlCDQQpCu95FoCGPAE"
+f664cb1be4f (Edward K. Ream    2024-12-31 20:10:21 -0600  528)             crossorigin="anonymous"></script>
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  529) 
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  530)         <!-- To automatically render math in text elements, include the auto-render extension: -->
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  531)         <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.19/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+f664cb1be4f (Edward K. Ream    2024-12-31 20:10:21 -0600  532)             onload="renderMathInElement(document.body);">
+f664cb1be4f (Edward K. Ream    2024-12-31 20:10:21 -0600  533)         </script>
+f664cb1be4f (Edward K. Ream    2024-12-31 20:10:21 -0600  534)     </head>
+f664cb1be4f (Edward K. Ream    2024-12-31 20:10:21 -0600  535)     <body>
+f664cb1be4f (Edward K. Ream    2024-12-31 20:10:21 -0600  536)     [[body]]
+f664cb1be4f (Edward K. Ream    2024-12-31 20:10:21 -0600  537)     </body>
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  538)     </html>
+f664cb1be4f (Edward K. Ream    2024-12-31 20:10:21 -0600  539)     ''')
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  540)     # @+node:ekr.20241231122327.1: *4* vr.default_latex template
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  541)     default_latex_template = r'''
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  542)     \documentclass[12pt, letter-paper]{article}
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  543)     \usepackage{graphicx} % Images.
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  544)     \usepackage{tikz} % Evaluate expressions.
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  545)     \usepackage{hyperref} % For \href.
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  546)     \hypersetup{colorlinks=true, urlcolor=cyan}
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  547)     \urlstyle{same}
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  548)     \usepackage{pgfplots} % For inline plots.
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  549)     \usepackage{amsmath} % For alignment.
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  550)     \usepackage[
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  551)         bindingoffset=0.2in, footskip=.25in,
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  552)         left=0.5in, right=2.5in, top=0.5in, bottom=0.5in,
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  553)     ]{geometry}
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  554) 
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  555)     \title{My Title}
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  556)     \author{Edward K. Ream}
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  557)     \date{December 2024}
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  558) 
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  559)     \pagenumbering{gobble}
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  560)     \setlength{\parskip}{6pt}
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  561)     \setlength{\parindent}{0pt}
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  562)     \pgfplotsset{compat=1.18}
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  563) 
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  564)     \begin{document}
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  565)     % \maketitle
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  566) 
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  567)     \section*{Section name}
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  568) 
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  569) 
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  570)     \end{document}
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  571)     '''
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  572)     # @+node:ekr.20241224072714.1: *4* vr.default_mathjax_template
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  573)     default_mathjax_template = '''
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  574)     <head>
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  575)       <script type="text/x-mathjax-config">
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  576)         MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  577)       </script>
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  578)       <script type="text/javascript" async
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  579)         src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML">
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  580)       </script>
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  581)     </head>
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  582)     '''
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  583)     # @+node:ekr.20241231180612.1: *4* vr.default_typst_template
+31fe475d751 (Edward K. Ream    2024-12-31 18:18:20 -0600  584)     default_typst_template = None
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  585) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  586)     # @-others
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  587)     # @-<< vr: default templates >>
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  588)     # @+others
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  589)     # @+node:ekr.20110317080650.14380: *3*  vr.ctor & helpers
+7e1e0416a68 (Ville Vainio      2026-08-06 17:19:16 +0300  590)     def __init__(self, c: Cmdr, parent: QWidget | None = None) -> None:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  591)         """Ctor for ViewRenderedController class."""
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  592)         self.c = c
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  593)         # Create the widget.
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  594)         super().__init__(parent)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  595)         self.create_pane(parent)
+09b30970e71 (Edward K. Ream    2024-05-19 13:13:04 -0500  596)         # Ivars set by reloadSettings.
+a5561e1d671 (Edward K. Ream    2026-07-30 04:44:45 -0500  597)         self.auto_create: bool = False
+a5561e1d671 (Edward K. Ream    2026-07-30 04:44:45 -0500  598)         self.background_color: str = ''
+a5561e1d671 (Edward K. Ream    2026-07-30 04:44:45 -0500  599)         self.keep_open: bool = False
+a5561e1d671 (Edward K. Ream    2026-07-30 04:44:45 -0500  600)         self.katex_template: str = ''
+a5561e1d671 (Edward K. Ream    2026-07-30 04:44:45 -0500  601)         self.latex_template: str = ''
+a5561e1d671 (Edward K. Ream    2026-07-30 04:44:45 -0500  602)         self.mathjax_template: str = ''
+a5561e1d671 (Edward K. Ream    2026-07-30 04:44:45 -0500  603)         self.typst_template: str = ''
+a5561e1d671 (Edward K. Ream    2026-07-30 04:44:45 -0500  604)         self.pdf_zoom: int = 0
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  605)         # Widgets managed by destroy_widgets.
+7e1e0416a68 (Ville Vainio      2026-08-06 17:19:16 +0300  606)         self.browser: QWidget | None = None
+7e1e0416a68 (Ville Vainio      2026-08-06 17:19:16 +0300  607)         self.gs: QGraphicsScene | None = None
+7e1e0416a68 (Ville Vainio      2026-08-06 17:19:16 +0300  608)         self.gv: QGraphicsView | None = None
+baea2f38003 (Edward K. Ream    2025-03-30 08:49:08 -0500  609)         self.vp: QMediaPlayer = None
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  610)         self.w: Any = None  # The present widget in the rendering pane.
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  611)         # Set the ivars.
+09b30970e71 (Edward K. Ream    2024-05-19 13:13:04 -0500  612)         self.active = True
+7e1e0416a68 (Ville Vainio      2026-08-06 17:19:16 +0300  613)         self.gnx: str | None = None
+0d0b5f91f19 (Edward K. Ream    2024-05-08 08:50:14 -0500  614)         self.keep_open = False  # True: keep the VR pane open even when showing text.
+fd7537f5c17 (Edward K. Ream    2024-05-08 10:17:39 -0500  615)         self.is_visible = False
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  616)         self.length = 0  # The length of previous p.b.
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  617)         self.locked = False
+2dfc0eddc01 (Edward K. Ream    2024-12-26 17:52:39 -0600  618)         self.pdf_qwv = None  # The singleton qwv instance, with support for pdf.
+0e850d6198a (Edward K. Ream    2024-12-25 04:06:05 -0600  619)         self.qwv = None  # The singleton qwv instance.
+09cd64c8b0b (Edward K. Ream    2026-04-14 06:27:49 -0500  620)         self.scrollbar_pos_dict: dict[VNode, int] = {}
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  621)         self.reloadSettings()
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  622)         self.node_changed = True
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  623)         # Init.
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  624)         self.create_dispatch_dict()
+fd7537f5c17 (Edward K. Ream    2024-05-08 10:17:39 -0500  625)         self.is_visible = self.auto_create
+fd7537f5c17 (Edward K. Ream    2024-05-08 10:17:39 -0500  626)         if self.auto_create:
+fd7537f5c17 (Edward K. Ream    2024-05-08 10:17:39 -0500  627)             self.show()
+fd7537f5c17 (Edward K. Ream    2024-05-08 10:17:39 -0500  628)         else:
+fd7537f5c17 (Edward K. Ream    2024-05-08 10:17:39 -0500  629)             self.hide()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  630) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  631)     # @+node:ekr.20110320120020.14478: *4* vr.create_dispatch_dict
+d4333eeaabd (Edward K. Ream    2023-06-08 21:38:51 -0500  632)     def create_dispatch_dict(self) -> dict[str, Callable]:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  633)         d = {
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  634)             'asciidoc': self.update_asciidoc,
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  635)             'big': self.update_rst,
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  636)             'html': self.update_html,
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  637)             'graphics-script': self.update_graphics_script,
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  638)             'image': self.update_image,
+af5795272cc (Edward K. Ream    2024-12-24 16:44:49 -0600  639)             'jinja': self.update_jinja,
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  640)             'jupyter': self.update_jupyter,
+904bd9a4800 (Edward K. Ream    2024-12-31 20:18:51 -0600  641)             'katex': self.update_katex,
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  642)             'latex': self.update_latex,
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  643)             'markdown': self.update_md,
+af5795272cc (Edward K. Ream    2024-12-24 16:44:49 -0600  644)             'mathjax': self.update_mathjax,
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  645)             'md': self.update_md,
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  646)             'movie': self.update_movie,
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  647)             'networkx': self.update_networkx,
+2dfc0eddc01 (Edward K. Ream    2024-12-26 17:52:39 -0600  648)             # 'pandoc': self.update_pandoc,
+80f0358c678 (Edward K. Ream    2025-01-01 08:32:59 -0600  649)             'pdf': self.update_pdf,
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600  650)             'pyplot': self.update_pyplot,
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  651)             'rest': self.update_rst,
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  652)             'rst': self.update_rst,
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  653)             'svg': self.update_svg,
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  654)             'plantuml': self.update_plantuml,
+904bd9a4800 (Edward K. Ream    2024-12-31 20:18:51 -0600  655)             'typst': self.update_typst,
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  656)             # 'url': self.update_url,
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  657)             # 'xml': self.update_xml,
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  658)         }
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  659)         self.dispatch_dict = d
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  660)         return d
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  661) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  662)     # @+node:ekr.20171114150510.1: *4* vr.reloadSettings
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500  663)     def reloadSettings(self) -> None:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  664)         c = self.c
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  665)         c.registerReloadSettings(self)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  666)         self.auto_create = c.config.getBool('view-rendered-auto-create', False)
+09b30970e71 (Edward K. Ream    2024-05-19 13:13:04 -0500  667)         self.keep_open = c.config.getBool('view-rendered-keep-open', True)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  668)         self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  669)         self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  670)         self.pdf_zoom = c.config.getInt('view-rendered-pdf-zoom') or 100
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600  671) 
+7ed7f89ef83 (Edward K. Ream    2025-01-02 06:52:35 -0600  672)         # Templates...
+7ed7f89ef83 (Edward K. Ream    2025-01-02 06:52:35 -0600  673) 
+7ed7f89ef83 (Edward K. Ream    2025-01-02 06:52:35 -0600  674)         def get_template(kind: str) -> str:
+7ed7f89ef83 (Edward K. Ream    2025-01-02 06:52:35 -0600  675)             setting_name = f"view-rendered-{kind}-template"
+7ed7f89ef83 (Edward K. Ream    2025-01-02 06:52:35 -0600  676)             aList = c.config.getData(setting_name, strip_comments=True, strip_data=True)
+7ed7f89ef83 (Edward K. Ream    2025-01-02 06:52:35 -0600  677)             if aList is None:
+7ed7f89ef83 (Edward K. Ream    2025-01-02 06:52:35 -0600  678)                 return getattr(self, f"default_{kind}_template")
+7ed7f89ef83 (Edward K. Ream    2025-01-02 06:52:35 -0600  679)             return '\n'.join(aList)
+7ed7f89ef83 (Edward K. Ream    2025-01-02 06:52:35 -0600  680) 
+7ed7f89ef83 (Edward K. Ream    2025-01-02 06:52:35 -0600  681)         self.image_template = get_template('image')
+7ed7f89ef83 (Edward K. Ream    2025-01-02 06:52:35 -0600  682)         self.katex_template = get_template('katex')
+7ed7f89ef83 (Edward K. Ream    2025-01-02 06:52:35 -0600  683)         self.latex_template = get_template('latex')
+7ed7f89ef83 (Edward K. Ream    2025-01-02 06:52:35 -0600  684)         self.mathjax_template = get_template('mathjax')
+7ed7f89ef83 (Edward K. Ream    2025-01-02 06:52:35 -0600  685)         self.typst_template = get_template('typst')
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  686) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  687)     # @+node:ekr.20190614065659.1: *4* vr.create_pane
+7e1e0416a68 (Ville Vainio      2026-08-06 17:19:16 +0300  688)     def create_pane(self, parent: QWidget | None) -> None:
+fd7537f5c17 (Edward K. Ream    2024-05-08 10:17:39 -0500  689)         """Create the VR pane."""
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  690)         if g.unitTesting:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  691)             return
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  692)         # Create the inner contents.
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  693)         self.setObjectName('viewrendered_pane')
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  694)         self.setLayout(QtWidgets.QVBoxLayout())
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  695)         self.layout().setContentsMargins(0, 0, 0, 0)
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  696) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  697)     # @+node:tbrown.20110621120042.22676: *3* vr.closeEvent
+d79efccd317 (Edward K. Ream    2025-03-30 09:01:42 -0500  698)     def closeEvent(self, event: QCloseEvent) -> None:
+cf8034716f3 (Edward K. Ream    2024-05-08 09:11:39 -0500  699)         """Deactivate callbacks when an Outline closes."""
+cf8034716f3 (Edward K. Ream    2024-05-08 09:11:39 -0500  700)         self.active = False
+bb2e420229e (Edward K. Ream    2026-06-23 18:41:48 -0500  701)         g.unregisterHandler('select2', self.update_vr)
+bb2e420229e (Edward K. Ream    2026-06-23 18:41:48 -0500  702)         g.unregisterHandler('idle', self.update_vr)
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  703)         g.unregisterHandler('scrolledMessage', show_scrolled_message)
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  704)         self.destroy_widgets()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  705) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  706)     # @+node:ekr.20130413061407.10363: *3* vr.contract & expand
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  707)     def contract(self) -> None:
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  708)         self.change_size(-100)
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  709) 
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  710)     def expand(self) -> None:
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  711)         self.change_size(100)
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  712) 
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  713)     def change_size(self, delta: int) -> None:
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  714)         splitter = self.parent()
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  715)         if not splitter:
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  716)             return
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  717)         i = splitter.indexOf(self)
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  718)         assert i > -1
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  719)         sizes = splitter.sizes()
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  720)         n = len(sizes)
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  721)         for j, size in enumerate(sizes):
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  722)             if j == i:
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  723)                 sizes[j] = max(0, size + delta)
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  724)             else:
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  725)                 sizes[j] = max(0, size - int(delta / (n - 1)))
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  726)         splitter.setSizes(sizes)
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  727) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  728)     # @+node:ekr.20240507100254.1: *3* vr.fully_expand
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  729)     def fully_expand(self) -> None:
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  730)         """Cover the body pane with the VR pane."""
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  731)         splitter = self.parent()
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  732)         if splitter and isinstance(splitter, QtWidgets.QSplitter):
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  733)             i = splitter.indexOf(self)
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  734)             splitter.moveSplitter(0, i)
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  735)         self.show()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  736) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  737)     # @+node:ekr.20110321072702.14508: *3* vr.lock/unlock
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  738)     def lock(self) -> None:
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  739)         """Lock the VR pane."""
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  740)         g.note('rendering pane locked')
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  741)         self.locked = True
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  742) 
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  743)     def unlock(self) -> None:
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  744)         """Unlock the VR pane."""
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  745)         g.note('rendering pane unlocked')
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  746)         self.locked = False
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  747) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  748)     # @+node:ekr.20240507100402.1: *3* vr.restore_body
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  749)     def restore_body(self) -> None:
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  750)         """Restore the visibility of the body pane."""
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  751)         splitter = self.parent()  # A NestedSplitter
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  752)         if splitter and isinstance(splitter, QtWidgets.QSplitter):
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  753)             i = splitter.indexOf(self)
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  754)             splitter.moveSplitter(int(sum(splitter.sizes()) / 2), i)
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  755)         self.show()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  756) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  757)     # @+node:ekr.20160921071239.1: *3* vr.set_html
+d79efccd317 (Edward K. Ream    2025-03-30 09:01:42 -0500  758)     def set_html(self, s: str, w: QWidget) -> None:
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  759)         """Set text in w to s, preserving scroll position."""
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  760)         p = self.c.p
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  761)         sb = w.verticalScrollBar()
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  762)         if sb:
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  763)             d = self.scrollbar_pos_dict
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  764)             if self.node_changed:
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  765)                 # Set the scrollbar.
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  766)                 pos = d.get(p.v, sb.sliderPosition())
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  767)                 sb.setSliderPosition(pos)
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  768)             else:
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  769)                 # Save the scrollbars
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  770)                 d[p.v] = pos = sb.sliderPosition()
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  771)         # if trace: g.trace('\n'+s)
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  772)         w.setHtml(s)
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  773)         if sb:
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  774)             # Restore the scrollbars
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  775)             assert pos is not None
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600  776)             sb.setSliderPosition(pos)
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  777) 
+bb2e420229e (Edward K. Ream    2026-06-23 18:41:48 -0500  778)     # @+node:ekr.20101112195628.5426: *3* vr.update_vr & helpers
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  779)     # Must have this signature: called by leoPlugins.callTagHandler.
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  780) 
+bb2e420229e (Edward K. Ream    2026-06-23 18:41:48 -0500  781)     def update_vr(self, tag: str, keywords: Any) -> None:
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600  782)         """
+bb2e420229e (Edward K. Ream    2026-06-23 18:41:48 -0500  783)         vr.update_vr: Update the VR pane.
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600  784)         Called at idle time and by the vr-update command.
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600  785)         """
+d012130638d (Edward K. Ream    2026-08-29 02:28:11 -0500  786)         c = self.c
+d012130638d (Edward K. Ream    2026-08-29 02:28:11 -0500  787)         p = c.p
+d012130638d (Edward K. Ream    2026-08-29 02:28:11 -0500  788)         if not getattr(c, 'vr', None):
+c3370e9159f (Edward K. Ream    2026-08-28 06:40:02 -0500  789)             return
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  790)         if not self.active:
+cf8034716f3 (Edward K. Ream    2024-05-08 09:11:39 -0500  791)             try:
+cf8034716f3 (Edward K. Ream    2024-05-08 09:11:39 -0500  792)                 # Save the scroll position.
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  793)                 w = self.w
+cf8034716f3 (Edward K. Ream    2024-05-08 09:11:39 -0500  794)                 if w and w.__class__ == QtWidgets.QTextBrowser:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  795)                     sb = w.verticalScrollBar()
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  796)                     self.scrollbar_pos_dict[p.v] = sb.sliderPosition()
+cf8034716f3 (Edward K. Ream    2024-05-08 09:11:39 -0500  797)             except Exception:
+cf8034716f3 (Edward K. Ream    2024-05-08 09:11:39 -0500  798)                 g.es_exception()
+2e7d0ed4f8b (Edward K. Ream    2024-05-08 09:23:37 -0500  799)             return
+2e7d0ed4f8b (Edward K. Ream    2024-05-08 09:23:37 -0500  800)         if self.locked:
+2e7d0ed4f8b (Edward K. Ream    2024-05-08 09:23:37 -0500  801)             return
+fd7537f5c17 (Edward K. Ream    2024-05-08 10:17:39 -0500  802)         if not self.is_visible:
+fd7537f5c17 (Edward K. Ream    2024-05-08 10:17:39 -0500  803)             return
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  804)         if not self.must_update(keywords):
+2e7d0ed4f8b (Edward K. Ream    2024-05-08 09:23:37 -0500  805)             return
+2e7d0ed4f8b (Edward K. Ream    2024-05-08 09:23:37 -0500  806)         # Suppress updates until we change nodes.
+7e1e0416a68 (Ville Vainio      2026-08-06 17:19:16 +0300  807)         f: Callable | None = None
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  808)         self.node_changed = self.gnx != p.v.gnx
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  809)         self.gnx = p.v.gnx
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  810)         self.length = len(p.b)  # not s
+2e7d0ed4f8b (Edward K. Ream    2024-05-08 09:23:37 -0500  811)         # Remove Leo directives.
+2e7d0ed4f8b (Edward K. Ream    2024-05-08 09:23:37 -0500  812)         s = keywords.get('s') if 's' in keywords else p.b
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  813)         s = self.remove_directives(s)
+2e7d0ed4f8b (Edward K. Ream    2024-05-08 09:23:37 -0500  814)         # Dispatch based on the computed kind.
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  815)         kind = keywords.get('flags') if 'flags' in keywords else self.get_kind(p)
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600  816)         # g.trace('kind', repr(kind))
+2e7d0ed4f8b (Edward K. Ream    2024-05-08 09:23:37 -0500  817)         if kind or keywords.get('force'):
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  818)             f = self.dispatch_dict.get(kind)
+2e7d0ed4f8b (Edward K. Ream    2024-05-08 09:23:37 -0500  819)         else:
+2e7d0ed4f8b (Edward K. Ream    2024-05-08 09:23:37 -0500  820)             # Do *not* try to render plain text.
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  821)             w = self.get_base_text_widget()
+2e7d0ed4f8b (Edward K. Ream    2024-05-08 09:23:37 -0500  822)             w.setPlainText(s)
+2e7d0ed4f8b (Edward K. Ream    2024-05-08 09:23:37 -0500  823)         if f:
+2e7d0ed4f8b (Edward K. Ream    2024-05-08 09:23:37 -0500  824)             f(s, keywords)
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  825)             self.show()
+2e7d0ed4f8b (Edward K. Ream    2024-05-08 09:23:37 -0500  826)         elif self.keep_open:
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  827)             self.show()
+2e7d0ed4f8b (Edward K. Ream    2024-05-08 09:23:37 -0500  828)         else:
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  829)             self.hide()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  830) 
+bb2e420229e (Edward K. Ream    2026-06-23 18:41:48 -0500  831)     # @+node:ekr.20241227053437.1: *4* vr.update_vr: helpers
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  832)     # @+node:ekr.20241224074331.1: *5* vr.create_web_engineview
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  833)     def create_web_engineview(self) -> Any:
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  834)         """
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  835)         Return a *new* QWebEngineView instance, deleting any previous instance.
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  836)         """
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  837)         try:
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  838)             from leo.core.leoQt import WebEngineAttribute, QtWebEngineWidgets
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  839) 
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  840)             qwv = QtWebEngineWidgets.QWebEngineView
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  841)         except Exception:
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  842)             return None
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  843) 
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  844)         c = self.c
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  845)         # Kill the old QWebEngineView!
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  846)         self.destroy_widgets()
+6bf8fd18cb6 (Edward K. Ream    2024-05-07 10:41:17 -0500  847) 
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  848)         # Always create a new QWebEngineView.
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  849)         self.qwv = self.w = w = qwv()
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  850)         self.embed_widget(w)
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  851)         if isinstance(w, QtWidgets.QTextBrowser):
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  852)             return w
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  853) 
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  854)         # Allow remote access.
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  855)         settings = w.settings()
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  856)         wa = WebEngineAttribute.LocalContentCanAccessRemoteUrls
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  857)         settings.setAttribute(wa, True)
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  858) 
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  859)         # Set the font size, but this does very little.
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  860)         n = c.config.getInt('qweb-view-font-size') or 16
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  861)         n = abs(n)
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  862)         settings.setFontSize(settings.FontSize.DefaultFontSize, n)
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  863)         return w
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  864) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  865)     # @+node:ekr.20241226173150.1: *5* vr.create_web_engineview_with_pdf
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  866)     def create_web_engineview_with_pdf(self) -> QWidget | None:
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  867)         """
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  868)         Return a *new* QWebEngineView instance with support for pdf,
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  869)         deleting any previous instance.
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  870)         """
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  871)         # Create the QWebEngineView if possible and embed the widget.
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  872)         w = self.create_web_engineview()
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  873)         if not w:
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  874)             return None
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  875)         assert w == self.w, g.callers()
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  876)         if isinstance(w, QtWidgets.QTextBrowser):
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  877)             # create_web_engineview has issued the warning.
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  878)             return w
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  879) 
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  880)         # Allow rendering of .pdf files.
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  881)         settings = w.settings()
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  882)         settings.setAttribute(settings.WebAttribute.PluginsEnabled, True)
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  883)         return w
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  884) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  885)     # @+node:ekr.20241227044803.1: *5* vr.destroy_widgets
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  886)     def destroy_widgets(self) -> None:
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  887)         """Destroy all widgets."""
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  888)         # g.trace(g.shortFileName(self.c.fileName()))
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  889)         for ivar in ('gs', 'gv', 'pdf_qwv', 'qwv', 'vp'):
+dc0fe83ff95 (Edward K. Ream    2024-12-27 09:34:40 -0600  890)             var = getattr(self, ivar, None)
+dc0fe83ff95 (Edward K. Ream    2024-12-27 09:34:40 -0600  891)             if var is not None:
+dc0fe83ff95 (Edward K. Ream    2024-12-27 09:34:40 -0600  892)                 del var
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  893)             setattr(self, ivar, None)
+dc0fe83ff95 (Edward K. Ream    2024-12-27 09:34:40 -0600  894)         self.w = None
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  895) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  896)     # @+node:ekr.20110320120020.14486: *5* vr.embed_widget
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500  897)     def embed_widget(self, w: Any) -> None:
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  898)         """Embed widget w in the layout."""
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  899)         assert w == self.w, g.callers()  # Invariant.
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  900) 
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  901)         # Delete all previous widgets.
+6bf8fd18cb6 (Edward K. Ream    2024-05-07 10:41:17 -0500  902)         layout = self.layout()
+6bf8fd18cb6 (Edward K. Ream    2024-05-07 10:41:17 -0500  903)         for i in range(layout.count()):
+6bf8fd18cb6 (Edward K. Ream    2024-05-07 10:41:17 -0500  904)             layout.removeItem(layout.itemAt(0))
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  905) 
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  906)         # Add the new widget.
+6bf8fd18cb6 (Edward K. Ream    2024-05-07 10:41:17 -0500  907)         self.layout().addWidget(w)
+6bf8fd18cb6 (Edward K. Ream    2024-05-07 10:41:17 -0500  908)         w.show()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  909) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  910)     # @+node:ekr.20110320120020.14476: *5* vr.must_update
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500  911)     def must_update(self, keywords: Any) -> bool:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  912)         """Return True if we must update the rendering pane."""
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  913)         c, p = self.c, self.c.p
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  914)         if g.unitTesting:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  915)             return False
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  916)         if c != keywords.get('c') or not self.active:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  917)             return False
+cf8034716f3 (Edward K. Ream    2024-05-08 09:11:39 -0500  918)         if keywords.get('force'):
+cf8034716f3 (Edward K. Ream    2024-05-08 09:11:39 -0500  919)             return True
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  920)         if self.locked:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  921)             return False
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  922)         if self.gnx != p.v.gnx:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  923)             return True
+95926162584 (Edward K. Ream    2024-05-14 03:51:33 -0500  924)         if self.length != len(p.b):
+2cc48a589a6 (Edward K. Ream    2024-05-11 06:41:28 -0500  925)             self.length = len(p.b)  # Suppress updates until next change.
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  926)             return self.get_kind(p) != 'pyplot'
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  927)         return False
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  928) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  929)     # @+node:ekr.20191004143229.1: *4* vr.update_asciidoc & helpers
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500  930)     def update_asciidoc(self, s: str, keywords: Any) -> None:
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  931)         """Update asciidoc in the VR pane."""
+3b6ebfe4317 (Edward K. Ream    2025-05-02 15:29:10 -0500  932)         # global asciidoctor_exec, asciidoc3_exec
+3b6ebfe4317 (Edward K. Ream    2025-05-02 15:29:10 -0500  933) 
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  934)         # Do this regardless of whether we show the widget or not.
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  935)         w = self.get_base_text_widget()
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  936)         assert self.w
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  937)         if s:
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  938)             self.show()
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  939)         if asciidoctor_exec or asciidoc3_exec:
+afebab2c6e4 (Edward K. Ream    2018-03-11 09:20:00 -0500  940)             try:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  941)                 s2 = self.convert_to_asciidoctor(s)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  942)                 self.set_html(s2, w)
+aea94d4193a (Edward K. Ream    2019-04-22 07:24:05 -0500  943)                 return
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  944)             except Exception:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  945)                 g.es_exception()
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  946)         self.update_rst(s, keywords)
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  947) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  948)     # @+node:ekr.20191004143805.1: *5* vr.convert_to_asciidoctor
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500  949)     def convert_to_asciidoctor(self, s: str) -> str:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  950)         """Convert s to html using the asciidoctor or asciidoc processor."""
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  951)         c, p = self.c, self.c.p
+b6528a4ffea (Edward K. Ream    2025-04-22 10:52:43 -0500  952)         path = c.getPath(p)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  953)         if not os.path.isdir(path):
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  954)             path = os.path.dirname(path)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  955)         if os.path.isdir(path):
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  956)             os.chdir(path)
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  957)         s = self.run_asciidoctor(s)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  958)         return g.toUnicode(s)
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  959) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  960)     # @+node:ekr.20191004144128.1: *5* vr.run_asciidoctor
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500  961)     def run_asciidoctor(self, s: str) -> str:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  962)         """
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  963)         Process s with asciidoctor or asciidoc3.
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  964)         return the contents of the html file.
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  965)         The caller handles all exceptions.
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  966)         """
+3b6ebfe4317 (Edward K. Ream    2025-05-02 15:29:10 -0500  967)         # global asciidoctor_exec, asciidoc3_exec
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  968)         assert asciidoctor_exec or asciidoc3_exec, g.callers()
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  969)         home = g.os.path.expanduser('~')
+eb67cb66584 (Edward K. Ream    2023-04-10 17:17:01 -0500  970)         i_path = g.finalize_join(home, 'vr_input.adoc')
+eb67cb66584 (Edward K. Ream    2023-04-10 17:17:01 -0500  971)         o_path = g.finalize_join(home, 'vr_output.html')
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  972)         # Write the input file.
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  973)         with open(i_path, 'w') as f:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  974)             f.write(s)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  975)         # Call the external program to write the output file.
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  976)         prog = 'asciidoctor' if asciidoctor_exec else 'asciidoc3'
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  977)         # The -e option deletes css.
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  978)         command = f"{prog} {i_path} -b html5 -o {o_path}"
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  979)         g.execute_shell_commands(command)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  980)         # Read the output file and return it.
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  981)         with open(o_path, 'r') as f:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  982)             return f.read()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600  983) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600  984)     # @+node:ekr.20110321151523.14463: *4* vr.update_graphics_script
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500  985)     def update_graphics_script(self, s: str, keywords: Any) -> None:
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600  986)         """Display the graphics script in `s` in the VR pane."""
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  987)         c = self.c
+e8541487c36 (Edward K. Ream    2024-05-15 10:19:22 -0500  988)         if g.unitTesting:
+e8541487c36 (Edward K. Ream    2024-05-15 10:19:22 -0500  989)             return
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  990)         force = keywords.get('force')
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  991)         if self.gs and not force:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500  992)             return
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  993) 
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  994)         # Create the widgets.
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  995)         if not self.gs:
+72e6eb9106e (Edward K. Ream    2024-05-20 07:22:09 -0500  996)             splitter = g.app.gui.get_top_splitter()
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  997)             self.gs = QtWidgets.QGraphicsScene(splitter)
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500  998)             self.gv = QtWidgets.QGraphicsView(self.gs)
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600  999)             w = self.w = self.gv.viewport()  # A QWidget
+e5d15886b35 (Ville Vainio      2026-08-07 12:24:53 +0300 1000)             if w:
+e5d15886b35 (Ville Vainio      2026-08-07 12:24:53 +0300 1001)                 self.embed_widget(w)
+8c0c0853e7c (Edward K. Ream    2024-05-08 07:30:55 -0500 1002) 
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1003)         c.executeScript(
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1004)             script=s,
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600 1005)             namespace={'gs': self.gs, 'gv': self.gv},
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600 1006)         )
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1007) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1008)     # @+node:ekr.20110321005148.14534: *4* vr.update_html
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1009)     update_html_count = 0
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1010) 
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500 1011)     def update_html(self, s: str, keywords: Any) -> None:
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1012)         """Display the html text in `s` in the VR pane."""
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1013)         c = self.c
+8a9d63818da (Edward K. Ream    2024-12-26 02:57:27 -0600 1014) 
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1015)         # Create a new QWebEngineView.
+8a9d63818da (Edward K. Ream    2024-12-26 02:57:27 -0600 1016)         w = self.create_web_engineview()
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1017)         if not w:
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1018)             return
+8a9d63818da (Edward K. Ream    2024-12-26 02:57:27 -0600 1019) 
+8a9d63818da (Edward K. Ream    2024-12-26 02:57:27 -0600 1020)         # Set the html.
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1021)         w.setHtml(s)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1022)         w.show()
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1023)         c.bodyWantsFocusNow()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1024) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1025)     # @+node:ekr.20110320120020.14482: *4* vr.update_image
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500 1026)     def update_image(self, s: str, keywords: Any) -> None:
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1027)         """
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1028)         Display an image in the VR pane.
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1029)         The first line of `s` should be a `@image <path>`.
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1030)         """
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1031)         if not s.strip():
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1032)             return
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1033)         lines = g.splitLines(s) or []
+e5d15886b35 (Ville Vainio      2026-08-07 12:24:53 +0300 1034)         if not lines:
+e5d15886b35 (Ville Vainio      2026-08-07 12:24:53 +0300 1035)             return
+e5d15886b35 (Ville Vainio      2026-08-07 12:24:53 +0300 1036)         fn = lines[0].strip()
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1037)         if not fn:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1038)             return
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600 1039)         w = self.get_base_text_widget()
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1040)         ok, path = self.get_fn(fn, '@image')
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1041)         if not ok:
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1042)             w.setPlainText(f"@image: file not found: {path!r}")
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1043)             return
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1044)         path = path.replace('\\', '/')
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600 1045)         template = self.image_template % (path)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1046)         template = textwrap.dedent(template).strip()
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1047)         self.show()
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1048)         w.setHtml(template)
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1049) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1050)     # @+node:ekr.20170105124347.1: *4* vr.update_jupyter & helper
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1051)     update_jupyter_count = 0
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1052) 
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500 1053)     def update_jupyter(self, s: str, keywords: Any) -> None:
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1054)         """Update an @jupyter node in the VR pane."""
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1055)         c = self.c
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600 1056)         w = self.get_base_text_widget()
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1057)         s = self.get_jupyter_source(c)
+b9c964e91a6 (tbpassin          2022-05-21 14:02:09 -0400 1058)         w.hide()  # This forces a proper update.
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1059)         w.setHtml(s)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1060)         w.show()
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1061)         c.bodyWantsFocusNow()
+b9c964e91a6 (tbpassin          2022-05-21 14:02:09 -0400 1062) 
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1063)         try:
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1064)             import pyperclip
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1065) 
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500 1066)             pyperclip.copy(s)
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1067)         except Exception:
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1068)             pass
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1069) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1070)     # @+node:ekr.20180311090852.1: *5* vr.get_jupyter_source
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1071)     def get_jupyter_source(self, c: Cmdr) -> str:
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1072)         """Return the html for the @jupyter node."""
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1073)         # # nbformat (@jupyter) support.
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1074)         try:
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1075)             import nbformat
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1076)             from nbconvert import HTMLExporter
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1077)         except ImportError:
+00000000000 (Not Committed Yet 2026-08-29 02:37:05 -0500 1078)             nbformat = None  # ty:ignore[invalid-assignment]
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1079) 
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1080)         body = c.p.b.lstrip()
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1081)         if body.startswith('<'):
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1082)             # Assume the body is html.
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1083)             return body
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1084)         if body.startswith('{'):
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1085)             # Leo 5.7.1: Allow raw JSON.
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1086)             s = body
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1087)         else:
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1088)             url = c.p.h.split()[1]
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1089)             if not url:
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1090)                 return ''
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1091)             if not nbformat:
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1092)                 return 'can not import nbformat to render url: %r' % url
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1093)             try:
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1094)                 s = urlopen(url).read().decode()
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1095)             except Exception:
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1096)                 return 'url not found: %s' % url
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1097) 
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1098)         try:
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1099)             nb = nbformat.reads(s, as_version=4)
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1100)             e = HTMLExporter()
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1101)             (s, junk_resources) = e.from_notebook_node(nb)
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1102)         except nbformat.reader.NotJSONError:
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1103)             pass  # Assume the result is html.
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1104)         return s
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1105) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1106)     # @+node:ekr.20241231121212.1: *4* vr.update_katex
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600 1107)     def update_katex(self, s: str, keywords: Any) -> None:
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1108)         """Display the katex text `s` in the VR pane."""
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600 1109) 
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600 1110)         # Create a new QWebEngineView.
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600 1111)         w = self.create_web_engineview()
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1112)         if not w:
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1113)             g.print_unique_message('katex rendering requires PyQt6-WebEngine')
+f664cb1be4f (Edward K. Ream    2024-12-31 20:10:21 -0600 1114)             w.setHtml(s)
+f664cb1be4f (Edward K. Ream    2024-12-31 20:10:21 -0600 1115)             self.show()
+f664cb1be4f (Edward K. Ream    2024-12-31 20:10:21 -0600 1116)             return
+f664cb1be4f (Edward K. Ream    2024-12-31 20:10:21 -0600 1117) 
+f664cb1be4f (Edward K. Ream    2024-12-31 20:10:21 -0600 1118)         # Replace whole-line katex comments with html comments.
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1119)         s = ''.join([z for z in g.splitLines(s) if not z.strip().startswith('%')])
+f664cb1be4f (Edward K. Ream    2024-12-31 20:10:21 -0600 1120)         contents = self.katex_template.replace('[[body]]', s)
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600 1121)         w.setHtml(contents)
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600 1122)         self.show()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1123) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1124)     # @+node:ekr.20170324064811.1: *4* vr.update_latex
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500 1125)     def update_latex(self, s: str, keywords: Any) -> None:
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1126)         """Display the LaTeX text `s` in the VR pane."""
+8a9d63818da (Edward K. Ream    2024-12-26 02:57:27 -0600 1127) 
+904bd9a4800 (Edward K. Ream    2024-12-31 20:18:51 -0600 1128)         # Create a new QWebEngineView.
+8a9d63818da (Edward K. Ream    2024-12-26 02:57:27 -0600 1129)         w = self.create_web_engineview()
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1130)         if not w:
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1131)             g.print_unique_message('LaTeX rendering requires PyQt6-WebEngine')
+904bd9a4800 (Edward K. Ream    2024-12-31 20:18:51 -0600 1132)             w.setHtml(s)
+904bd9a4800 (Edward K. Ream    2024-12-31 20:18:51 -0600 1133)             self.show()
+904bd9a4800 (Edward K. Ream    2024-12-31 20:18:51 -0600 1134)             return
+8a9d63818da (Edward K. Ream    2024-12-26 02:57:27 -0600 1135) 
+904bd9a4800 (Edward K. Ream    2024-12-31 20:18:51 -0600 1136)         # Replace whole-line latex comments with html comments.
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1137)         s = ''.join([z for z in g.splitLines(s) if not z.strip().startswith('%')])
+904bd9a4800 (Edward K. Ream    2024-12-31 20:18:51 -0600 1138)         contents = self.latex_template + '\n\n' + s
+af5795272cc (Edward K. Ream    2024-12-24 16:44:49 -0600 1139)         w.setHtml(contents)
+af5795272cc (Edward K. Ream    2024-12-24 16:44:49 -0600 1140)         self.show()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1141) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1142)     # @+node:ekr.20241224072334.1: *4* vr.update_mathjax
+af5795272cc (Edward K. Ream    2024-12-24 16:44:49 -0600 1143)     def update_mathjax(self, s: str, keywords: Any) -> None:
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1144)         """Display the mathjax text `s` in the VR pane."""
+8a9d63818da (Edward K. Ream    2024-12-26 02:57:27 -0600 1145) 
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600 1146)         # Create a new QWebEngineView.
+8a9d63818da (Edward K. Ream    2024-12-26 02:57:27 -0600 1147)         w = self.create_web_engineview()
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1148)         if not w:
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1149)             g.print_unique_message('mathjax rendering requires PyQt6-WebEngine')
+46d373bbc21 (Edward K. Ream    2025-01-01 06:16:52 -0600 1150)             w.setHtml(s)
+46d373bbc21 (Edward K. Ream    2025-01-01 06:16:52 -0600 1151)             self.show()
+46d373bbc21 (Edward K. Ream    2025-01-01 06:16:52 -0600 1152)             return
+8a9d63818da (Edward K. Ream    2024-12-26 02:57:27 -0600 1153) 
+46d373bbc21 (Edward K. Ream    2025-01-01 06:16:52 -0600 1154)         # Replace whole-line latex comments with html comments.
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1155)         s = ''.join([z for z in g.splitLines(s) if not z.strip().startswith('%')])
+5bcf24eb3b8 (Edward K. Ream    2025-01-01 06:18:36 -0600 1156)         contents = self.mathjax_template + '\n\n' + s
+af5795272cc (Edward K. Ream    2024-12-24 16:44:49 -0600 1157)         w.setHtml(contents)
+af5795272cc (Edward K. Ream    2024-12-24 16:44:49 -0600 1158)         self.show()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1159) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1160)     # @+node:peckj.20130207132858.3671: *4* vr.update_md & helper
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500 1161)     def update_md(self, s: str, keywords: Any) -> None:
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1162)         """Display the markdown text in `s` in the VR pane."""
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1163)         try:
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1164)             from markdown import markdown
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1165)         except ImportError:
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1166)             markdown = None
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1167) 
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1168)         c = self.c
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1169)         p = c.p
+ffaa923a57c (Edward K. Ream    2026-07-29 15:15:17 -0500 1170)         for prefix in ('"""', "'''"):  # PR #4827
+ffaa923a57c (Edward K. Ream    2026-07-29 15:15:17 -0500 1171)             if s.startswith(prefix):
+ffaa923a57c (Edward K. Ream    2026-07-29 15:15:17 -0500 1172)                 s = s.removeprefix(prefix).removesuffix(prefix)
+ffaa923a57c (Edward K. Ream    2026-07-29 15:15:17 -0500 1173)         s = s.strip()
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1174)         isHtml = s.startswith('<') and not s.startswith('<<')
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1175)         # Do this regardless of whether we show the widget or not.
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600 1176)         w = self.get_base_text_widget()
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1177)         assert self.w
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1178)         if s:
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1179)             self.show()
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1180)         if markdown:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1181)             force = keywords.get('force')
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1182)             colorizer = c.frame.body.colorizer
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1183)             language = colorizer.scanLanguageDirectives(p)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1184)             if force or language in ('rst', 'rest', 'markdown', 'md'):
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1185)                 if not isHtml:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1186)                     s = self.convert_to_markdown(s)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1187)             self.set_html(s, w)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1188)         else:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1189)             # g.trace('markdown not available: using rst')
+371c05dffdf (Edward K. Ream    2021-09-25 10:18:22 -0500 1190)             self.update_rst(s, keywords)
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1191) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1192)     # @+node:ekr.20160921134552.1: *5* vr.convert_to_markdown
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500 1193)     def convert_to_markdown(self, s: str) -> str:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1194)         """Convert s to html using the markdown processor."""
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1195)         try:
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1196)             from markdown import markdown
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1197)             from docutils.utils import SystemMessage
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1198)         except ImportError:
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1199)             return ''
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1200) 
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1201)         c, p = self.c, self.c.p
+b6528a4ffea (Edward K. Ream    2025-04-22 10:52:43 -0500 1202)         path = c.getPath(p)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1203)         if not os.path.isdir(path):
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1204)             path = os.path.dirname(path)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1205)         if os.path.isdir(path):
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1206)             os.chdir(path)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1207)         try:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1208)             mdext = c.config.getString('view-rendered-md-extensions') or 'extra'
+e3d3fc7e38b (Edward K. Ream    2024-04-07 03:53:36 -0500 1209)             mdext_list = [x.strip() for x in mdext.split(',')]
+e3d3fc7e38b (Edward K. Ream    2024-04-07 03:53:36 -0500 1210)             s = markdown(s, extensions=mdext_list)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1211)             s = g.toUnicode(s)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1212)         except SystemMessage as sm:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1213)             msg = sm.args[0]
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1214)             if 'SEVERE' in msg or 'FATAL' in msg:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1215)                 s = 'MD error:\n%s\n\n%s' % (msg, s)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1216)         return s
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1217) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1218)     # @+node:ekr.20110320120020.14481: *4* vr.update_movie
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1219)     movie_warning = False
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1220) 
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500 1221)     def update_movie(self, s: str, keywords: Any) -> None:
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1222)         """
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1223)         Show an @movie in the VR pane.
+1e9a0d813b1 (Edward K. Ream    2025-05-05 18:06:26 -0500 1224) 
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1225)         The first line of `s` should be the path to the movie.
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1226)         """
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1227)         ok, path = self.get_fn(s, '@movie')
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1228)         if not ok:
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600 1229)             w = self.get_base_text_widget()
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1230)             w.setPlainText('Not found: %s' % (path))
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1231)             return
+cf89a855032 (Edward K. Ream    2024-03-23 21:20:26 -0500 1232)         if not QtMultimedia:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1233)             if not self.movie_warning:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1234)                 self.movie_warning = True
+cf89a855032 (Edward K. Ream    2024-03-23 21:20:26 -0500 1235)                 g.es_print('No QtMultimedia module')
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600 1236)             w = self.get_base_text_widget()
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1237)             w.setPlainText('')
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1238)             return
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1239)         if self.vp:
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1240)             vp = self.vp
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1241)             self.vp.stop()
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1242)             self.vp.deleteLater()
+b61aa4c3ef8 (Edward K. Ream    2024-03-24 20:37:34 -0500 1243) 
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1244)         # Create a fresh player.
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1245)         g.es_print('playing', path)
+b61aa4c3ef8 (Edward K. Ream    2024-03-24 20:37:34 -0500 1246)         url = QtCore.QUrl.fromLocalFile(path)
+b61aa4c3ef8 (Edward K. Ream    2024-03-24 20:37:34 -0500 1247)         content = QtMultimedia.QMediaContent(url)
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1248)         self.vp = vp = QtMultimedia.QMediaPlayer()
+b61aa4c3ef8 (Edward K. Ream    2024-03-24 20:37:34 -0500 1249)         vp.setMedia(content)
+b61aa4c3ef8 (Edward K. Ream    2024-03-24 20:37:34 -0500 1250)         # Won't play .mp4 files: https://bugreports.qt.io/browse/QTBUG-32783
+b61aa4c3ef8 (Edward K. Ream    2024-03-24 20:37:34 -0500 1251)         vp.play()
+b61aa4c3ef8 (Edward K. Ream    2024-03-24 20:37:34 -0500 1252) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1253)     # @+node:ekr.20110320120020.14484: *4* vr.update_networkx
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500 1254)     def update_networkx(self, s: str, keywords: Any) -> None:
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1255)         """Dispaly a networkx graphic in `s` in the VR pane."""
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600 1256)         w = self.get_base_text_widget()
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1257)         w.setPlainText('')  # 'Networkx: len: %s' % (len(s)))
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1258)         self.show()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1259) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1260)     # @+node:ekr.20191006155748.1: *4* vr.update_pandoc & helpers (disabled)
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1261)     def update_pandoc(self, s: str, keywords: Any) -> None:
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1262)         """
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1263)         Display an @pandoc node in the VR pane.
+1e9a0d813b1 (Edward K. Ream    2025-05-05 18:06:26 -0500 1264) 
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1265)         This code has been disabled.
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1266)         """
+3b6ebfe4317 (Edward K. Ream    2025-05-02 15:29:10 -0500 1267)         # global pandoc_exec
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600 1268)         w = self.get_base_text_widget()
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1269)         assert self.w
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1270)         if s:
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1271)             self.show()
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1272)         if pandoc_exec:
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1273)             try:
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1274)                 s2 = self.convert_to_pandoc(s)
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1275)                 self.set_html(s2, w)
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1276)             except Exception:
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1277)                 g.es_exception()
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1278)             return
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1279)         self.update_rst(s, keywords)
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1280) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1281)     # @+node:ekr.20191006155748.3: *5* vr.convert_to_pandoc
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1282)     def convert_to_pandoc(self, s: str) -> str:
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1283)         """Convert s to html using the asciidoctor or asciidoc processor."""
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1284)         c, p = self.c, self.c.p
+b6528a4ffea (Edward K. Ream    2025-04-22 10:52:43 -0500 1285)         path = c.getPath(p)
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1286)         if not os.path.isdir(path):
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1287)             path = os.path.dirname(path)
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1288)         if os.path.isdir(path):
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1289)             os.chdir(path)
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1290)         s = self.run_pandoc(s)
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1291)         return g.toUnicode(s)
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1292) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1293)     # @+node:ekr.20191006155748.4: *5* vr.run_pandoc
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1294)     def run_pandoc(self, s: str) -> str:
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1295)         """
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1296)         Process s with pandoc.
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1297)         return the contents of the html file.
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1298)         The caller handles all exceptions.
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1299)         """
+3b6ebfe4317 (Edward K. Ream    2025-05-02 15:29:10 -0500 1300)         # global pandoc_exec
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1301)         assert pandoc_exec, g.callers()
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1302)         home = g.os.path.expanduser('~')
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1303)         i_path = g.finalize_join(home, 'vr_input.pandoc')
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1304)         o_path = g.finalize_join(home, 'vr_output.html')
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1305)         # Write the input file.
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1306)         with open(i_path, 'w') as f:
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1307)             f.write(s)
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1308)         # Call pandoc to write the output file.
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1309)         # --quiet does no harm.
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1310)         command = f"pandoc {i_path} -t html5 -o {o_path}"
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1311)         g.execute_shell_commands(command)
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1312)         # Read the output file and return it.
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1313)         with open(o_path, 'r') as f:
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1314)             return f.read()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1315) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1316)     # @+node:ekr.20241226011006.1: *4* vr.update_pdf
+80f0358c678 (Edward K. Ream    2025-01-01 08:32:59 -0600 1317)     def update_pdf(self, s: str, keywords: Any) -> None:
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1318)         """
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1319)         Display a pdf file in the VR pane.
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1320)         The first line of `s` should be a `@pdf <path>`.
+6645e2eb0ce (Edward K. Ream    2025-01-08 04:48:45 -0600 1321)         Resolve relative paths using the outline's directory.
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1322)         """
+80f0358c678 (Edward K. Ream    2025-01-01 08:32:59 -0600 1323)         if not s.strip():
+80f0358c678 (Edward K. Ream    2025-01-01 08:32:59 -0600 1324)             return
+80f0358c678 (Edward K. Ream    2025-01-01 08:32:59 -0600 1325) 
+80f0358c678 (Edward K. Ream    2025-01-01 08:32:59 -0600 1326)         # Create a new QWebEngineView.
+80f0358c678 (Edward K. Ream    2025-01-01 08:32:59 -0600 1327)         w = self.create_web_engineview_with_pdf()
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1328)         if not w:
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1329)             g.print_unique_message('@pdf rendering requires PyQt6-WebEngine')
+80f0358c678 (Edward K. Ream    2025-01-01 08:32:59 -0600 1330)             w.setHtml(s)
+80f0358c678 (Edward K. Ream    2025-01-01 08:32:59 -0600 1331)             self.show()
+80f0358c678 (Edward K. Ream    2025-01-01 08:32:59 -0600 1332)             return
+80f0358c678 (Edward K. Ream    2025-01-01 08:32:59 -0600 1333) 
+6645e2eb0ce (Edward K. Ream    2025-01-08 04:48:45 -0600 1334)         ok, path = self.get_fn(s, '@pdf')
+6645e2eb0ce (Edward K. Ream    2025-01-08 04:48:45 -0600 1335)         if not ok:
+6645e2eb0ce (Edward K. Ream    2025-01-08 04:48:45 -0600 1336)             s = f"File not found: {path}"
+6645e2eb0ce (Edward K. Ream    2025-01-08 04:48:45 -0600 1337)             g.print_unique_message(s)
+6645e2eb0ce (Edward K. Ream    2025-01-08 04:48:45 -0600 1338)             w.setHtml(s)
+6645e2eb0ce (Edward K. Ream    2025-01-08 04:48:45 -0600 1339)             self.show()
+6645e2eb0ce (Edward K. Ream    2025-01-08 04:48:45 -0600 1340)             return
+6645e2eb0ce (Edward K. Ream    2025-01-08 04:48:45 -0600 1341) 
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1342)         # Load the file.
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1343)         url = QUrl.fromLocalFile(path)
+80f0358c678 (Edward K. Ream    2025-01-01 08:32:59 -0600 1344)         # https://www.rfc-editor.org/rfc/rfc8118
+80f0358c678 (Edward K. Ream    2025-01-01 08:32:59 -0600 1345)         url.setFragment(f"zoom={self.pdf_zoom}")
+80f0358c678 (Edward K. Ream    2025-01-01 08:32:59 -0600 1346)         w.load(url)
+80f0358c678 (Edward K. Ream    2025-01-01 08:32:59 -0600 1347)         self.show()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1348) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1349)     # @+node:ekr.20160928023915.1: *4* vr.update_pyplot
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1350)     def update_pyplot(self, s: str, keywords: Any) -> None:
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1351)         """
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1352)         Execute the pyplot script in `s` and show the results in the VR pane.
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1353)         """
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1354)         c = self.c
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1355)         try:
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1356)             import matplotlib
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1357)             import matplotlib.pyplot as plt
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1358)             from matplotlib import animation
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1359)             import numpy as np
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1360)         except Exception:
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1361)             g.print_unique_message('VR: missing imports: cannot process @pyplot node')
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1362)             return
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1363)         backend = plt.get_backend()  # Returns 'qtagg' initially.
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1364)         if backend != 'module://leo.plugins.pyplot_backend':
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1365)             backend = g.finalize_join(g.app.loadDir, '..', 'plugins', 'pyplot_backend.py')
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1366)             if g.os_path_exists(backend):
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1367)                 try:
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1368)                     matplotlib.use('module://leo.plugins.pyplot_backend')
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1369)                 except ImportError:
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1370)                     g.trace('===== FAIL: pyplot.backend')
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1371)             else:
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1372)                 g.trace('===== MISSING: pyplot.backend')
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1373) 
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1374)         plt.ion()  # Set interactive mode.
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1375) 
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1376)         if 0:  # Embedding works without this!
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1377)             self.embed_pyplot_widget()
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1378) 
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1379)         # pyplot will throw RuntimeError if we close the pane.
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1380)         namespace = {
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1381)             'animation': animation,
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1382)             'matplotlib': matplotlib,
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1383)             'numpy': np,
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1384)             'np': np,
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1385)             'pyplot': plt,
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1386)             'plt': plt,
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1387)         }
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1388)         c.executeScript(
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1389)             event=None,
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1390)             args=None,
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1391)             p=None,
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1392)             script=None,
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1393)             useSelectedText=False,
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1394)             define_g=True,
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1395)             define_name='__main__',
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1396)             silent=False,
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1397)             namespace=namespace,
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1398)             raiseFlag=False,
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1399)         )
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1400)         c.bodyWantsFocusNow()
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1401) 
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1402)         # Be courteous to other users - restore default pyplot drawing target
+2a3bca9dcd3 (Edward K. Ream    2024-12-27 04:42:11 -0600 1403)         matplotlib.use('QtAgg')
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1404) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1405)     # @+node:ekr.20110320120020.14477: *4* vr.update_rst & helpers
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500 1406)     def update_rst(self, s: str, keywords: Any) -> None:
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1407)         """Show the rst text in `s` in the VR pane."""
+ffaa923a57c (Edward K. Ream    2026-07-29 15:15:17 -0500 1408)         for prefix in ('"""', "'''"):  # PR #4827
+ffaa923a57c (Edward K. Ream    2026-07-29 15:15:17 -0500 1409)             if s.startswith(prefix):
+ffaa923a57c (Edward K. Ream    2026-07-29 15:15:17 -0500 1410)                 s = s.removeprefix(prefix).removesuffix(prefix)
+ffaa923a57c (Edward K. Ream    2026-07-29 15:15:17 -0500 1411)         s = s.strip()
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1412)         isHtml = s.startswith('<') and not s.startswith('<<')
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600 1413) 
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1414)         # Do this regardless of whether we show the widget or not.
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600 1415)         w = self.get_base_text_widget()
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1416)         if s:
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1417)             self.show()
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1418)         if got_docutils:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1419)             if not isHtml:
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1420)                 s = self.convert_to_html(s)
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1421)             self.set_html(s, w)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1422)         else:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1423)             w.setPlainText(s)
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1424) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1425)     # @+node:ekr.20160920221324.1: *5* vr.convert_to_html
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500 1426)     def convert_to_html(self, s: str) -> str:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1427)         """Convert s to html using docutils."""
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1428)         c, p = self.c, self.c.p
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1429) 
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1430)         try:
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1431)             from docutils.core import publish_string
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1432)             from docutils.utils import SystemMessage
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1433)         except ImportError:
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1434)             return ''
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1435) 
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1436)         # Update the current path.
+b6528a4ffea (Edward K. Ream    2025-04-22 10:52:43 -0500 1437)         path = c.getPath(p)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1438)         if not os.path.isdir(path):
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1439)             path = os.path.dirname(path)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1440)         if os.path.isdir(path):
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1441)             os.chdir(path)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1442)         try:
+2cc48a589a6 (Edward K. Ream    2024-05-11 06:41:28 -0500 1443)             # Suppress all error messages.
+2cc48a589a6 (Edward K. Ream    2024-05-11 06:41:28 -0500 1444)             sys.stderr = open(os.devnull, "w")
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1445)             # Call docutils to get the string.
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1446)             s = publish_string(s, writer_name='html')
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1447)             s = g.toUnicode(s)
+2cc48a589a6 (Edward K. Ream    2024-05-11 06:41:28 -0500 1448)         except SystemMessage:
+2cc48a589a6 (Edward K. Ream    2024-05-11 06:41:28 -0500 1449)             # msg = sm.args[0]
+2cc48a589a6 (Edward K. Ream    2024-05-11 06:41:28 -0500 1450)             # if 'SEVERE' in msg or 'FATAL' in msg:
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1451)             # s = 'RST error:\n%s\n\n%s' % (msg, s)
+2cc48a589a6 (Edward K. Ream    2024-05-11 06:41:28 -0500 1452)             pass
+2cc48a589a6 (Edward K. Ream    2024-05-11 06:41:28 -0500 1453)         finally:
+2cc48a589a6 (Edward K. Ream    2024-05-11 06:41:28 -0500 1454)             sys.stderr = sys.__stderr__
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1455)         return s
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1456) 
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500 1457)     def update_plantuml(self, s: str, keywords: Any) -> None:
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600 1458)         w = self.get_base_text_widget()
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1459)         path = self.c.p.h[9:].strip()
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1460)         print("Plantuml output file name: ", path)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1461)         with open("temp.plantuml", "w") as f:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1462)             f.write(s)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1463)         pth_plantuml_jar = "~/.leo"
+bbf0980b9a8 (Ville Vainio      2026-08-07 12:03:11 +0300 1464)         subprocess.run(
+bbf0980b9a8 (Ville Vainio      2026-08-07 12:03:11 +0300 1465)             "cat temp.plantuml | java -jar %s/plantuml.jar -pipe > %s" % (pth_plantuml_jar, path),
+bbf0980b9a8 (Ville Vainio      2026-08-07 12:03:11 +0300 1466)             shell=True,
+bbf0980b9a8 (Ville Vainio      2026-08-07 12:03:11 +0300 1467)             check=False,
+600ab4df519 (Edward K. Ream    2026-01-16 06:02:03 -0600 1468)         )
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600 1469)         template = self.image_template % (path)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1470)         template = textwrap.dedent(template).strip()
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1471)         self.show()
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1472)         w.setReadOnly(False)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1473)         w.setHtml(template)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1474)         w.setReadOnly(True)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1475) 
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1476)     # @+node:ekr.20260828081137.1: *4* vr.update_jinga
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500 1477)     def update_jinja(self, s: str, keywords: Any) -> None:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1478)         h = self.c.p.h
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1479)         p = self.c.p
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1480)         c = self.c
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1481)         oldp = None
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1482) 
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1483)         if not h.startswith('@jinja'):
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1484)             return
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1485) 
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1486)         try:
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1487)             from jinja2 import Template
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1488)         except ImportError:
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1489)             return
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1490) 
+7e1e0416a68 (Ville Vainio      2026-08-06 17:19:16 +0300 1491)         def find_root(p: Position) -> tuple[Position, Position] | tuple[None, None]:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1492)             for newp in p.parents():
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1493)                 if newp.h.strip() == '@jinja':
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1494)                     oldp, p = p, newp
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1495)                     return oldp, p
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1496)             return None, None
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1497) 
+7e1e0416a68 (Ville Vainio      2026-08-06 17:19:16 +0300 1498)         def find_inputs(p: Position) -> tuple[Position, Position] | tuple[None, None]:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1499)             for newp in p.parents():
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1500)                 if newp.h.strip() == '@jinja inputs':
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1501)                     oldp, p = p, newp
+7e1e0416a68 (Ville Vainio      2026-08-06 17:19:16 +0300 1502)                     _, root_p = find_root(p)
+7e1e0416a68 (Ville Vainio      2026-08-06 17:19:16 +0300 1503)                     if root_p is None:
+7e1e0416a68 (Ville Vainio      2026-08-06 17:19:16 +0300 1504)                         return None, None
+7e1e0416a68 (Ville Vainio      2026-08-06 17:19:16 +0300 1505)                     return oldp, root_p
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1506)             return None, None
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1507) 
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1508)         # if on jinja node's children, find the parent
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1509)         if h.strip() == '@jinja template' or h.strip() == '@jinja inputs':
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1510)             # not at @jinja, find from parents
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1511)             oldp, p = find_root(p)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1512) 
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1513)         elif h.startswith('@jinja variable'):
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1514)             # not at @jinja, first find @jinja inputs, then @jinja
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1515)             oldp, p = find_inputs(p)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1516) 
+7e1e0416a68 (Ville Vainio      2026-08-06 17:19:16 +0300 1517)         if p is None:
+7e1e0416a68 (Ville Vainio      2026-08-06 17:19:16 +0300 1518)             g.es("Could not find enclosing @jinja node.")
+7e1e0416a68 (Ville Vainio      2026-08-06 17:19:16 +0300 1519)             return
+7e1e0416a68 (Ville Vainio      2026-08-06 17:19:16 +0300 1520) 
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500 1521)         def untangle(c: Cmdr, p: Position) -> str:
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1522)             return g.getScript(c, p, useSelectedText=False, useSentinels=False)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1523) 
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1524)         template_data = {}
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1525)         for child in p.children():
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1526)             if child.h == '@jinja template':
+eb67cb66584 (Edward K. Ream    2023-04-10 17:17:01 -0500 1527)                 template_path = g.finalize_join(c.getNodePath(p), untangle(c, child).strip())
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1528)             elif child.h == '@jinja inputs':
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1529)                 for template_var_node in child.children():
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1530)                     # pylint: disable=line-too-long
+600ab4df519 (Edward K. Ream    2026-01-16 06:02:03 -0600 1531)                     template_data[template_var_node.h.replace('@jinja variable', '').strip()] = (
+600ab4df519 (Edward K. Ream    2026-01-16 06:02:03 -0600 1532)                         untangle(c, template_var_node).strip()
+600ab4df519 (Edward K. Ream    2026-01-16 06:02:03 -0600 1533)                     )
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1534) 
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1535)         if not template_path:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1536)             g.es(
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1537)                 "No template_path given. "
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1538)                 "Your @jinja node should contain a child node 'template' "
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1539)                 "with the path to the template (relative or absolute)"
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1540)             )
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1541)             return
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1542) 
+b6d97172e50 (Ville Vainio      2026-08-13 21:39:14 +0300 1543)         if Template is None:
+b6d97172e50 (Ville Vainio      2026-08-13 21:39:14 +0300 1544)             g.es("Jinja2 is not installed.")
+b6d97172e50 (Ville Vainio      2026-08-13 21:39:14 +0300 1545)             return
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1546)         tmpl = Template(Path(template_path).read_text())
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1547)         out = tmpl.render(template_data)
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600 1548)         w = self.get_base_text_widget()
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1549)         self.show()
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1550)         w.setPlainText(out)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1551)         p.b = out
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1552)         c.redraw(p)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1553) 
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1554)         # focus back on entry node
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1555)         if oldp:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1556)             c.redraw(oldp)
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1557) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1558)     # @+node:ekr.20110320120020.14479: *4* vr.update_svg
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1559)     # http://doc.trolltech.com/4.4/qtsvg.html
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1560)     # http://doc.trolltech.com/4.4/painting-svgviewer.html
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500 1561)     def update_svg(self, s: str, keywords: Any) -> None:
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1562)         """
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1563)         Show an svg image in the VR pane.
+1e9a0d813b1 (Edward K. Ream    2025-05-05 18:06:26 -0500 1564) 
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1565)         `s` may be a path to the image or the image itself.
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1566)         """
+8a9d63818da (Edward K. Ream    2024-12-26 02:57:27 -0600 1567)         if 0:  # Use webengine. Works, but scaling is too big.
+8a9d63818da (Edward K. Ream    2024-12-26 02:57:27 -0600 1568)             w = self.create_web_engineview()
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1569)             w.setHtml(s)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1570)             w.show()
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1571)         else:  # Legacy:  Better scaling.
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1572)             if hasattr(QtSvg, "QSvgWidget"):  # #2134
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1573)                 QSvgWidget = QtSvg.QSvgWidget
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1574)             else:
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1575)                 try:
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1576)                     from PyQt6 import QtSvgWidgets
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1577) 
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1578)                     QSvgWidget = QtSvgWidgets.QSvgWidget
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1579)                 except Exception:
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1580)                     QSvgWidget = None
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1581)             if not QSvgWidget:
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1582)                 g.print_unique_message('svg rendering requires PyQt6-WebEngine')
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600 1583)                 w = self.get_base_text_widget()
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1584)                 w.setPlainText(s)
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1585)                 return
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600 1586)             if isinstance(self.w, QSvgWidget):
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1587)                 w = self.w
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600 1588)             else:
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600 1589)                 w = self.w = QSvgWidget()
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600 1590)                 self.embed_widget(w)
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600 1591) 
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600 1592)             # Compute the contents.
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1593)             if s.strip().startswith('<'):
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1594)                 # Assume it is the svg (xml) source.
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1595)                 # Sensitive to leading blank lines.
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1596)                 s = textwrap.dedent(s).strip()
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1597)                 s_bytes = g.toEncodedString(s)
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1598)                 self.show()
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1599)                 w.load(QtCore.QByteArray(s_bytes))
+dcad84317ba (Edward K. Ream    2011-03-21 00:46:21 -0500 1600)                 w.show()
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1601)             else:
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1602)                 # Get a filename from the headline or body text.
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1603)                 ok, path = self.get_fn(s, '@svg')
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1604)                 if ok:
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1605)                     self.show()
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1606)                     w.load(path)
+878f03ba289 (Edward K. Ream    2024-12-26 01:03:48 -0600 1607)                     w.show()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1608) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1609)     # @+node:ekr.20241231121247.1: *4* vr.update_typst
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600 1610)     def update_typst(self, s: str, keywords: Any) -> None:
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1611)         """Display the typest text in `s` in the VR pane."""
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600 1612)         # Create a new QWebEngineView.
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600 1613)         w = self.create_web_engineview_with_pdf()
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1614)         if not w:
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1615)             g.print_unique_message('typst rendering requires PyQt6-WebEngine')
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600 1616)             w.setHtml(s)
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600 1617)             self.show()
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600 1618)             return
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600 1619) 
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1620)         sfn = 'temp.tex'
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1621)         tex_path = self.resolve_path(sfn)
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1622)         if not tex_path:
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1623)             g.print_unique_message(f"File not found: {sfn}")
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1624)             return
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1625) 
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1626)         # Create the .pdf file.
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600 1627)         pdf_path = tex_path.replace('.tex', '.pdf')
+31fe475d751 (Edward K. Ream    2024-12-31 18:18:20 -0600 1628)         contents = self.typst_template + '\n\n' + s.strip() + '\n'
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600 1629)         with open(tex_path, 'w') as f:
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600 1630)             f.write(contents)
+80f0358c678 (Edward K. Ream    2025-01-01 08:32:59 -0600 1631)             g.print_unique_message(f"Wrote {tex_path}")
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1632)         g.execute_shell_commands(
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1633)             [
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1634)                 f"typst compile {tex_path}",  # Invoke the typst app.
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1635)             ]
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1636)         )
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1637) 
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1638)         # Render the .pdf file.
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600 1639)         url = QUrl.fromLocalFile(pdf_path)
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600 1640)         # https://www.rfc-editor.org/rfc/rfc8118
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600 1641)         url.setFragment(f"zoom={self.pdf_zoom}")
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600 1642)         w.load(url)
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600 1643)         self.show()
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1644) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1645)     # @+node:ekr.20110321005148.14537: *4* vr.update_url
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500 1646)     def update_url(self, s: str, keywords: Any) -> None:
+9c0810cd503 (Edward K. Ream    2025-01-02 08:33:21 -0600 1647)         """Display the url in `s` in the VR pane."""
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1648)         c, p = self.c, self.c.p
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1649)         colorizer = c.frame.body.colorizer
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1650)         language = colorizer.scanLanguageDirectives(p)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1651)         if language == 'asciidoc':
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1652)             p.update_asciidoc(s, keywords)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1653)         elif language in ('rest', 'rst'):
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1654)             self.update_rst(s, keywords)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1655)         elif language in ('markdown', 'md'):
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1656)             self.update_md(s, keywords)
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1657)         elif self.default_kind in ('rest', 'rst'):
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1658)             self.update_rst(s, keywords)
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1659)         elif self.default_kind in ('markdown', 'md'):
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1660)             self.update_md(s, keywords)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1661)         else:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1662)             # Do nothing.
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1663)             g.trace('ignore', s)
+992afd0f2ff (Edward K. Ream    2024-12-27 06:51:18 -0600 1664)             w = self.get_base_text_widget()
+97282792e83 (Edward K. Ream    2024-05-08 09:44:13 -0500 1665)             self.show()
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1666)             w.setPlainText('')
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1667) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1668)     # @+node:ekr.20110322031455.5765: *3* vr: utils...
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1669)     # @+node:ekr.20190424083049.1: *4* vr.get_base_text_widget
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1670)     def get_base_text_widget(self) -> QWidget:
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1671)         """Create a QTextBrowser."""
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1672)         c = self.c
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1673)         if isinstance(self.w, QtWidgets.QTextBrowser):
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1674)             return self.w
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1675) 
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1676)         self.destroy_widgets()
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1677)         self.browser = self.w = w = QtWidgets.QTextBrowser()
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1678)         self.embed_widget(w)  # Creates w.wrapper
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1679) 
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1680)         text_name = 'body-text-renderer'
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1681)         w.setObjectName(text_name)
+9eac2530a5d (Edward K. Ream    2026-05-08 03:47:17 -0500 1682)         w.setReadOnly(False)  # #4652.
+5d7e5c589f2 (Edward K. Ream    2026-03-27 06:44:43 -0500 1683)         # Create the standard Leo bindings in a wrapper widget.
+31d02040497 (Edward K. Ream    2026-04-28 02:28:46 -0500 1684)         wrapper = qt_text.QTextEditWrapper(widget=w, name='rendering-pane-wrapper', c=c)
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1685)         c.k.completeAllBindingsForWidget(wrapper)
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1686)         w.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1687) 
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1688)         def contextMenuCallback(point: Any) -> None:
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1689)             """LeoQtTree: Callback for customContextMenuRequested events."""
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1690)             # #1286.
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1691)             w = self  # Required.
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1692)             g.app.gui.onContextMenu(c, w, point)
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1693) 
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1694)         # #1286.
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1695)         w.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1696)         w.customContextMenuRequested.connect(contextMenuCallback)
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1697) 
+baea2f38003 (Edward K. Ream    2025-03-30 08:49:08 -0500 1698)         def handleClick(url: str, w: QWidget = w) -> None:
+31d02040497 (Edward K. Ream    2026-04-28 02:28:46 -0500 1699)             wrapper = qt_text.QTextEditWrapper(widget=w, name='vr-body', c=c)
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1700)             event = g.Bunch(c=c, w=wrapper)
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1701)             g.openUrlOnClick(event, url=url)
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1702) 
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1703)         w.anchorClicked.connect(handleClick)
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1704)         w.setOpenLinks(False)
+87adbdf634d (Edward K. Ream    2024-12-28 02:21:11 -0600 1705)         return w
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1706) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1707)     # @+node:ekr.20110320120020.14483: *4* vr.get_kind
+f0c6ae454f5 (Edward K. Ream    2026-07-03 19:39:15 -0500 1708)     def get_kind(self, p: Position) -> str:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1709)         """Return the proper rendering kind for node p."""
+82b0f5debf3 (Edward K. Ream    2024-05-11 08:45:46 -0500 1710) 
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1711)         try:
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1712)             from markdown import markdown
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1713)         except ImportError:
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1714)             markdown = None
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1715) 
+c962e9a1cb7 (Edward K. Ream    2024-05-11 07:41:23 -0500 1716)         p0 = p  # Special case selected position.
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1717) 
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500 1718)         def get_language(p: Position) -> str:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1719)             """
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1720)             Return the language in effect at position p.
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1721)             Headline directives over-ride normal Leo directives in body text.
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1722)             """
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1723)             h = p.h
+82b0f5debf3 (Edward K. Ream    2024-05-11 08:45:46 -0500 1724)             # Case 1: Look for headline directives.
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1725)             if h.startswith('@'):
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1726)                 i = g.skip_id(h, 1, chars='-')
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1727)                 word = h[1:i].lower().strip()
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1728)                 if word in self.dispatch_dict:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1729)                     return word
+c962e9a1cb7 (Edward K. Ream    2024-05-11 07:41:23 -0500 1730) 
+82b0f5debf3 (Edward K. Ream    2024-05-11 08:45:46 -0500 1731)             # Case 2: Look at body text in c.p.
+82b0f5debf3 (Edward K. Ream    2024-05-11 08:45:46 -0500 1732)             #         We *must* assume the first @language directive is in effect.
+c962e9a1cb7 (Edward K. Ream    2024-05-11 07:41:23 -0500 1733)             if p == p0:
+82b0f5debf3 (Edward K. Ream    2024-05-11 08:45:46 -0500 1734)                 # Careful: never use c.target_language as a default.
+c962e9a1cb7 (Edward K. Ream    2024-05-11 07:41:23 -0500 1735)                 return g.findFirstValidAtLanguageDirective(p.b)
+82b0f5debf3 (Edward K. Ream    2024-05-11 08:45:46 -0500 1736) 
+82b0f5debf3 (Edward K. Ream    2024-05-11 08:45:46 -0500 1737)             # Case 3: Look at body text in ancestor nodes.
+82b0f5debf3 (Edward K. Ream    2024-05-11 08:45:46 -0500 1738)             #         Ignore nodes with ambiguous @language directives!
+82b0f5debf3 (Edward K. Ream    2024-05-11 08:45:46 -0500 1739)             m_list = list(g.g_language_pat.finditer(p.b))
+82b0f5debf3 (Edward K. Ream    2024-05-11 08:45:46 -0500 1740)             if len(m_list) == 1:
+82b0f5debf3 (Edward K. Ream    2024-05-11 08:45:46 -0500 1741)                 m = m_list[0]
+82b0f5debf3 (Edward K. Ream    2024-05-11 08:45:46 -0500 1742)                 language = m.group(1)
+82b0f5debf3 (Edward K. Ream    2024-05-11 08:45:46 -0500 1743)                 if g.isValidLanguage(language):
+82b0f5debf3 (Edward K. Ream    2024-05-11 08:45:46 -0500 1744)                     return language
+f0c6ae454f5 (Edward K. Ream    2026-07-03 19:39:15 -0500 1745)             return ''
+c962e9a1cb7 (Edward K. Ream    2024-05-11 07:41:23 -0500 1746) 
+c962e9a1cb7 (Edward K. Ream    2024-05-11 07:41:23 -0500 1747)         # #1287: Honor both kind of directives node by node.
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500 1748)         for p1 in p.self_and_parents():
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1749)             language = get_language(p1)
+c962e9a1cb7 (Edward K. Ream    2024-05-11 07:41:23 -0500 1750)             if language:
+04eec23cb23 (Edward K. Ream    2024-05-11 07:54:28 -0500 1751)                 if language in ('md', 'markdown'):
+debe2b4e06f (Edward K. Ream    2026-08-28 08:51:40 -0500 1752)                     return language if markdown else ''
+04eec23cb23 (Edward K. Ream    2024-05-11 07:54:28 -0500 1753)                 if language in ('rest', 'rst'):
+f0c6ae454f5 (Edward K. Ream    2026-07-03 19:39:15 -0500 1754)                     return language if got_docutils else ''
+c962e9a1cb7 (Edward K. Ream    2024-05-11 07:41:23 -0500 1755)                 if language in self.dispatch_dict:
+c962e9a1cb7 (Edward K. Ream    2024-05-11 07:41:23 -0500 1756)                     return language
+f0c6ae454f5 (Edward K. Ream    2026-07-03 19:39:15 -0500 1757)         return ''
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1758) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1759)     # @+node:ekr.20110320233639.5776: *4* vr.get_fn
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1760)     def get_fn(self, s: str, tag: str) -> tuple[bool, str]:
+6645e2eb0ce (Edward K. Ream    2025-01-08 04:48:45 -0600 1761)         """
+6645e2eb0ce (Edward K. Ream    2025-01-08 04:48:45 -0600 1762)         Return an absolute path using s or c.p.h.
+1e9a0d813b1 (Edward K. Ream    2025-05-05 18:06:26 -0500 1763) 
+6645e2eb0ce (Edward K. Ream    2025-01-08 04:48:45 -0600 1764)         Resolve relative paths using the outline's directory.
+6645e2eb0ce (Edward K. Ream    2025-01-08 04:48:45 -0600 1765)         """
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1766)         c = self.c
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1767)         fn = s or c.p.h[len(tag) :]
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1768)         fn = fn.strip()
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1769) 
+384fb56cac2 (Edward K. Ream    2024-12-31 18:02:45 -0600 1770)         # Similar to code in g.computeFileUrl.
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1771)         if fn.startswith('~'):
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1772)             fn = fn[1:]
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1773)             fn = g.finalize(fn)
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1774)         else:
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1775)             # Handle ancestor @path directives.
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1776)             if c and c.fileName():
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1777)                 base = c.getNodePath(c.p)
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1778)                 fn = g.finalize_join(g.os_path_dirname(c.fileName()), base, fn)
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1779)             else:
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1780)                 fn = g.finalize(fn)
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1781)         ok = g.os_path_exists(fn)
+6645e2eb0ce (Edward K. Ream    2025-01-08 04:48:45 -0600 1782)         g.trace(fn)
+71c9bc97588 (Edward K. Ream    2024-12-28 02:11:20 -0600 1783)         return ok, fn
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1784) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1785)     # @+node:ekr.20110321005148.14536: *4* vr.get_url
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500 1786)     def get_url(self, s: str, tag: str) -> str:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1787)         p = self.c.p
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1788)         url = s or p.h[len(tag) :]
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1789)         url = url.strip()
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1790)         return url
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1791) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1792)     # @+node:ekr.20110320120020.14485: *4* vr.remove_directives
+2a88649f6ae (Edward K. Ream    2022-08-28 16:43:57 -0500 1793)     def remove_directives(self, s: str) -> str:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1794)         lines = g.splitLines(s)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1795)         result = []
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1796)         for s1 in lines:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1797)             if s1.startswith('@'):
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1798)                 i = g.skip_id(s1, 1)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1799)                 word = s1[1:i]
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1800)                 if word in g.globalDirectiveList:
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1801)                     continue
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1802)             result.append(s1)
+0ea9073395b (Edward K. Ream    2022-04-23 13:27:04 -0500 1803)         return ''.join(result)
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1804) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1805)     # @+node:ekr.20250102053905.1: *4* vr.resolve_path
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1806)     def resolve_path(self, path: str) -> str:
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1807)         """Resolve the given path to an absolute path."""
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1808)         c = self.c
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1809)         if not os.path.isfile(path):
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1810)             return ''
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1811)         if os.path.isabs(path):
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1812)             return path
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1813) 
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1814)         # Similar to code in g.computeFileUrl.
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1815)         if path.startswith('~'):
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1816)             path = path[1:]
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1817)             path = g.finalize(path)
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1818)         else:
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1819)             # Handle ancestor @path directives.
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1820)             if c and c.fileName():
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1821)                 base = c.getNodePath(c.p)
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1822)                 path = g.finalize_join(g.os_path_dirname(c.fileName()), base, path)
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1823)             else:
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1824)                 path = g.finalize(path)
+c418a1109b6 (Edward K. Ream    2025-01-02 06:11:06 -0600 1825)         return path
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1826) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1827)     # @-others
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1828) 
+d2f3e6892d1 (Edward K. Ream    2026-01-10 05:53:04 -0600 1829) 
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1830) # @-others
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1831) # @@language python
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1832) # @@tabwidth -4
+6660ac5cb04 (Edward K. Ream    2026-01-10 05:41:57 -0600 1833) # @-leo
