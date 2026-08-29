@@ -403,7 +403,7 @@ class LeoQtGui(leoGui.LeoGui):
         """Put the help command."""
         if g.unitTesting:
             return
-        s = textwrap.dedent(s.rstrip())
+        s = textwrap.dedent(s)
         if s.startswith('<') and not s.startswith('<<'):
             pass  # how to do selective replace??
         pc = g.app.pluginsController
@@ -417,9 +417,8 @@ class LeoQtGui(leoGui.LeoGui):
                 break
         else:
             # Neither VR nor VR3 plugins are enabled.
-            if short_title:
-                g.es_print(f"\n===== {short_title}\n")
-            g.es_print(s)
+            message = f"===== {short_title}\n\n{s}" if short_title else s
+            g.es(message, tabName='Help')
             return
         # Use the VR or VR3 plugin.
         kw = {
