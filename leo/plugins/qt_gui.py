@@ -399,8 +399,10 @@ class LeoQtGui(leoGui.LeoGui):
         self._contextmenu = menu
 
     # @+node:ekr.20170612065255.1: *3* LeoQtGui.put_help
-    def put_help(self, c: Cmdr, s: str, short_title: str = '') -> Any:
+    def put_help(self, c: Cmdr, s: str, short_title: str = '') -> None:
         """Put the help command."""
+        if g.unitTesting:
+            return
         s = textwrap.dedent(s.rstrip())
         if s.startswith('<') and not s.startswith('<<'):
             pass  # how to do selective replace??
@@ -414,27 +416,24 @@ class LeoQtGui(leoGui.LeoGui):
                 vr = pc.loadOnePlugin(name)
                 break
         else:
-            vr = pc.loadOnePlugin('viewrendered.py')
-        if vr:
-            kw = {
-                'c': c,
-                'flags': 'rst',
-                'kind': 'rst',
-                'label': '',
-                'msg': s,
-                'name': 'Apropos',
-                'short_title': short_title,
-                'title': '',
-            }
-            vr.show_scrolled_message(tag='Apropos', kw=kw)
-            c.bodyWantsFocus()
-            if g.unitTesting:
-                vr.close_rendering_pane(event={'c': c})
-        elif g.unitTesting:
-            pass
-        else:
-            g.es(s)
-        return vr  # For unit tests
+            # Neither VR nor VR3 plugins are enabled.
+            if short_title:
+                g.es_print(f"\n===== {short_title}\n")
+            g.es_print(s)
+            return
+        # Use the VR or VR3 plugin.
+        kw = {
+            'c': c,
+            'flags': 'rst',
+            'kind': 'rst',
+            'label': '',
+            'msg': s,
+            'name': 'Apropos',
+            'short_title': short_title,
+            'title': '',
+        }
+        vr.show_scrolled_message(tag='Apropos', kw=kw)
+        c.bodyWantsFocus()
 
     # @+node:ekr.20110605121601.18521: *3* LeoQtGui.runAtIdle
     def runAtIdle(self, aFunc: Callable) -> None:

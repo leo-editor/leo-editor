@@ -270,8 +270,8 @@ def init() -> bool:
     return True
 
 
-# @+node:ekr.20240727091022.1: *3* vr function: initVR
-def initVr(c: Cmdr, parent: QtWidgets.QWidget | None = None) -> None:
+# @+node:ekr.20240727091022.1: *3* vr function: initVr
+def initVr(c: Cmdr, *, parent: QtWidgets.QWidget | None = None) -> None:
     """
     Set c.vr, but *only* if this plugin is enabled.
 
@@ -337,14 +337,14 @@ def show_scrolled_message(tag: str, kw: Any) -> None:
     c = kw.get('c')
     if not c:
         return
-    vr = getattr(c, 'vr', None)
-    if not vr:
-        return
     p = c and c.p
     s = kw.get('msg')
     if not s.strip():
         g.trace('No message', g.callers())
         return
+    vr = getattr(c, 'vr', None)
+    if vr is None:
+        return  # Should never happen.
     # Make sure we will show the message.
     vr.active = True
     vr.is_visible = True
