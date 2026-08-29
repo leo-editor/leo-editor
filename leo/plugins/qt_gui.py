@@ -1263,9 +1263,8 @@ class LeoQtGui(leoGui.LeoGui):
             pc = g.app.pluginsController
             # Load viewrendered (and call vr.onCreate) *only* if not already loaded.
             if not pc.isLoaded('viewrendered.py') and not pc.isLoaded('viewrendered3.py'):
-                if vr := pc.loadOnePlugin('viewrendered.py'):
+                if pc.loadOnePlugin('viewrendered.py'):
                     g.blue('viewrendered plugin loaded.')
-                    vr.onCreate('tag', {'c': c})
             # @-<< load viewrendered plugin >>
             if retval := send():
                 return retval
