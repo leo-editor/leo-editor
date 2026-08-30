@@ -608,7 +608,6 @@ class ViewRenderedController(QtWidgets.QWidget):
         self.web_widget_key: str = ''  # For get_base_text_widget.
 
         # Widgets managed by destroy_widgets.
-        ### self.browser: QWidget | None = None
         self.gs: QGraphicsScene | None = None
         self.gv: QGraphicsView | None = None
         self.vp: QMediaPlayer = None
@@ -704,8 +703,6 @@ class ViewRenderedController(QtWidgets.QWidget):
         self.active = False
         g.unregisterHandler('select2', self.update_vr)
         g.unregisterHandler('idle', self.update_vr)
-        ### g.unregisterHandler('scrolledMessage', show_scrolled_message)
-        ### self.destroy_widgets()
 
     # @+node:ekr.20130413061407.10363: *3* vr.contract & expand
     def contract(self) -> None:
