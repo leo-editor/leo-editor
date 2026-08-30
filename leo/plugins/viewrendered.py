@@ -234,6 +234,7 @@ asciidoctor_exec = shutil.which('asciidoctor')
 asciidoc3_exec = shutil.which('asciidoc3')
 pandoc_exec = shutil.which('pandoc')
 got_docutils: bool = False
+use_web_engine: bool = True  # True: best for TeX and mathjax.
 
 
 # @+others
@@ -616,7 +617,6 @@ class ViewRenderedController(QtWidgets.QWidget):
         self.length = 0  # The length of previous p.b.
         self.locked = False
         self.pdf_qwv = None  # The singleton qwv instance, with support for pdf.
-        self.qwv = None  # The singleton qwv instance.
         self.scrollbar_pos_dict: dict[VNode, int] = {}
         self.reloadSettings()
         self.node_changed = True
@@ -834,19 +834,24 @@ class ViewRenderedController(QtWidgets.QWidget):
         """
         Return a *new* QWebEngineView instance, deleting any previous instance.
         """
-        try:
-            from leo.core.leoQt import WebEngineAttribute, QtWebEngineWidgets
-
-            qwv = QtWebEngineWidgets.QWebEngineView
-        except Exception:
-            return None
-
         c = self.c
         # Kill the old QWebEngineView!
         self.destroy_widgets()
 
-        # Always create a new QWebEngineView.
-        self.qwv = self.w = w = qwv()
+        if use_web_engine:
+            # Allocate a new instance.QtWebEngineWidgets if possible.
+            try:
+                from leo.core.leoQt import WebEngineAttribute, QtWebEngineWidgets
+
+                w = QtWebEngineWidgets.QWebEngineView()
+            except Exception:
+                w = QtWidgets.QTextBrowser()
+        else:
+            w = QtWidgets.QTextBrowser()
+
+        # Set the ivars and embed the widget.
+        g.trace(w.__class__.__name__)  ###
+        self.w = w
         self.embed_widget(w)
         if isinstance(w, QtWidgets.QTextBrowser):
             return w
@@ -1012,12 +1017,8 @@ class ViewRenderedController(QtWidgets.QWidget):
         """Display the html text in `s` in the VR pane."""
         c = self.c
 
-        # Create a new QWebEngineView.
+        # Create a new QWebEngineView or QTextBrowser.
         w = self.create_web_engineview()
-        if not w:
-            return
-
-        # Set the html.
         w.setHtml(s)
         w.show()
         c.bodyWantsFocusNow()
@@ -1107,13 +1108,8 @@ class ViewRenderedController(QtWidgets.QWidget):
     def update_katex(self, s: str, keywords: Any) -> None:
         """Display the katex text `s` in the VR pane."""
 
-        # Create a new QWebEngineView.
+        # Create a new QWebEngineView or QTextBrowser.
         w = self.create_web_engineview()
-        if not w:
-            g.print_unique_message('katex rendering requires PyQt6-WebEngine')
-            w.setHtml(s)
-            self.show()
-            return
 
         # Replace whole-line katex comments with html comments.
         s = ''.join([z for z in g.splitLines(s) if not z.strip().startswith('%')])
@@ -1125,13 +1121,8 @@ class ViewRenderedController(QtWidgets.QWidget):
     def update_latex(self, s: str, keywords: Any) -> None:
         """Display the LaTeX text `s` in the VR pane."""
 
-        # Create a new QWebEngineView.
+        # Create a new QWebEngineView or QTextBrowser.
         w = self.create_web_engineview()
-        if not w:
-            g.print_unique_message('LaTeX rendering requires PyQt6-WebEngine')
-            w.setHtml(s)
-            self.show()
-            return
 
         # Replace whole-line latex comments with html comments.
         s = ''.join([z for z in g.splitLines(s) if not z.strip().startswith('%')])
@@ -1143,13 +1134,8 @@ class ViewRenderedController(QtWidgets.QWidget):
     def update_mathjax(self, s: str, keywords: Any) -> None:
         """Display the mathjax text `s` in the VR pane."""
 
-        # Create a new QWebEngineView.
+        # Create a new QWebEngineView or QTextBrowser.
         w = self.create_web_engineview()
-        if not w:
-            g.print_unique_message('mathjax rendering requires PyQt6-WebEngine')
-            w.setHtml(s)
-            self.show()
-            return
 
         # Replace whole-line latex comments with html comments.
         s = ''.join([z for z in g.splitLines(s) if not z.strip().startswith('%')])
@@ -1524,7 +1510,7 @@ class ViewRenderedController(QtWidgets.QWidget):
         template_data = {}
         for child in p.children():
             if child.h == '@jinja template':
-                template_path = g.finalize_join(c.getNodePath(p), untangle(c, child).strip())
+                template_path = g.finalize_join(c.getPath(p), untangle(c, child).strip())
             elif child.h == '@jinja inputs':
                 for template_var_node in child.children():
                     # pylint: disable=line-too-long
@@ -1774,12 +1760,11 @@ class ViewRenderedController(QtWidgets.QWidget):
         else:
             # Handle ancestor @path directives.
             if c and c.fileName():
-                base = c.getNodePath(c.p)
+                base = c.getPath(c.p)
                 fn = g.finalize_join(g.os_path_dirname(c.fileName()), base, fn)
             else:
                 fn = g.finalize(fn)
         ok = g.os_path_exists(fn)
-        g.trace(fn)
         return ok, fn
 
     # @+node:ekr.20110321005148.14536: *4* vr.get_url
@@ -1818,7 +1803,7 @@ class ViewRenderedController(QtWidgets.QWidget):
         else:
             # Handle ancestor @path directives.
             if c and c.fileName():
-                base = c.getNodePath(c.p)
+                base = c.getPath(c.p)
                 path = g.finalize_join(g.os_path_dirname(c.fileName()), base, path)
             else:
                 path = g.finalize(path)
