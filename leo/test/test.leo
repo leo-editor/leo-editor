@@ -8,6 +8,7 @@
 <vnodes>
 <v t="ekr.20180311131353.1" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000007374725f6c656f5f706f7371035804000000332c3131710473732e"><vh>test.leo: semi-official tests</vh></v>
 <v t="ekr.20230622114548.1"><vh>@settings</vh>
+<v t="ekr.20260829075120.1"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20231231164138.1"><vh>@data unl-path-prefixes</vh></v>
 <v t="ekr.20230623064935.1"><vh>@data history-list</vh></v>
 <v t="ekr.20230622114556.1"><vh>@button copy-test</vh></v>
@@ -20,6 +21,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20260829075120.1"></v>
 <v t="ekr.20231231164138.1"></v>
 <v t="ekr.20241206101317.1" descendentVnodeUnknownAttributes="7d71002858010000003071017d71025808000000616e6e6f7461746571037d71042858080000007072696f7269747971054d0f27580a000000707269736574646174657106580a000000323032342d30342d3130710775735805000000302e312e3271087d7109580b0000005f5f626f6f6b6d61726b73710a7d710b580700000069735f64757065710c4930300a73735809000000302e312e322e302e30710d7d710e580b0000005f5f626f6f6b6d61726b73710f7d7110580700000069735f6475706571114930300a73735805000000302e322e3071127d7113580b0000005f5f626f6f6b6d61726b7371147d7115580700000069735f6475706571164930300a73735805000000302e322e3171177d7118580b0000005f5f626f6f6b6d61726b7371197d711a580700000069735f64757065711b4930300a7373752e"><vh>Projects</vh>
 <v t="ekr.20241206101317.2"><vh>--- demo.py stuff</vh>
@@ -679,10 +681,9 @@
 </v>
 <v t="ekr.20251214045245.14"><vh>Tests: graphics</vh>
 <v t="ekr.20251214045245.15"><vh>run turtledemo/penrose.py</vh></v>
-<v t="ekr.20251214045245.16"><vh>mathjax rendering (VR3 only)</vh>
-<v t="ekr.20251214045245.17"><vh>markdown example from .ipynb file</vh></v>
-<v t="ekr.20251214045245.18"><vh>mathjax-test2.html (works)</vh></v>
-<v t="ekr.20251214045245.19"><vh>VR3: test TeX markup (works)</vh></v>
+<v t="ekr.20251214045245.16"><vh>mathjax rendering (VR3 or VR w/ webengine)</vh>
+<v t="ekr.20251214045245.18"><vh>mathjax-test2.html</vh></v>
+<v t="ekr.20251214045245.19"><vh>test TeX markup</vh></v>
 </v>
 <v t="ekr.20251214045245.20"><vh>working VR examples</vh>
 <v t="ekr.20251214045245.21"><vh>at-html tests</vh>
@@ -720,6 +721,7 @@
 <v t="ekr.20251214045245.46"><vh>markdown test (including url)</vh></v>
 <v t="ekr.20251214045245.47"><vh>markdown test (math)</vh></v>
 <v t="ekr.20251214045245.48"><vh>markdown test (link)</vh></v>
+<v t="ekr.20251214045245.17"><vh>markdown example from .ipynb file</vh></v>
 </v>
 <v t="ekr.20251214045245.49"><vh>rst tests</vh>
 <v t="ekr.20251214045245.50"><vh>rst test (including url)</vh></v>
@@ -847,6 +849,8 @@
 <v t="ekr.20251214045245.150"><vh>test of two @doc parts</vh></v>
 </v>
 </v>
+<v t="ekr.20251214045245.20"></v>
+<v t="ekr.20251214045245.16"></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180311131353.1" str_leo_pos="3,11"></t>
@@ -19161,6 +19165,27 @@ end
 %% f_ch01_ex02_2
 subplot(1,2,1), semilogy(diag(S),'k') 
 subplot(1,2,2), plot(cumsum(diag(S))/sum(diag(S)),'k') 
+</t>
+<t tx="ekr.20260829075120.1"># Essential plugins (from leoSettings.leo)
+
+plugins_menu.py
+mod_scripting.py
+
+# Standard plugins (from leoSettings.leo)
+       
+nav_qt.py           # Forward and back buttons. Same as goto-next/prev-history-node
+qt_layout.py        # Creates qt_layout menu in the Plugins menu.
+
+viewrendered.py
+# viewrendered3.py
+
+# Testing only.
+
+# contextmenu.py      # Improved right-click context menus.  
+# mod_autosave.py     # Creates .bak files.
+# nodetags.py         # Supports tags via uA's.
+# quicksearch.py      # Nav pane.
+# screen_capture.py   # screen-capture-* commands.
 </t>
 </tnodes>
 </leo_file>
