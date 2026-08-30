@@ -586,7 +586,7 @@ class ViewRenderedController(QtWidgets.QWidget):
     # @-others
     # @-<< vr: default templates >>
     # @+others
-    # @+node:ekr.20110317080650.14380: *3*  vr.ctor & helpers
+    # @+node:ekr.20110317080650.14380: *3*  vr.__init__ & helpers
     def __init__(self, c: Cmdr, parent: QWidget | None = None) -> None:
         """Ctor for ViewRenderedController class."""
         self.c = c
@@ -894,19 +894,6 @@ class ViewRenderedController(QtWidgets.QWidget):
         settings = w.settings()
         settings.setAttribute(settings.WebAttribute.PluginsEnabled, True)
         return w
-
-    # @+node:ekr.20241227044803.1: *5* vr.destroy_widgets (to be deleted)
-    def destroy_widgets(self) -> None:
-        """Destroy all widgets."""
-        g.trace(g.callers())
-        if 0:
-            # g.trace(g.shortFileName(self.c.fileName()))
-            for ivar in ('gs', 'gv', 'pdf_qwv', 'qwv', 'vp'):
-                var = getattr(self, ivar, None)
-                if var is not None:
-                    del var
-                setattr(self, ivar, None)
-        self.w = None
 
     # @+node:ekr.20110320120020.14486: *5* vr.embed_widget
     def embed_widget(self, w: Any) -> None:
