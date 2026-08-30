@@ -234,9 +234,6 @@ asciidoctor_exec = shutil.which('asciidoctor')
 asciidoc3_exec = shutil.which('asciidoc3')
 pandoc_exec = shutil.which('pandoc')
 got_docutils: bool = False
-widgets: dict[str, Any] = {}  # Keys: class names. Values. Global widgets.
-base_widget_key: str = ''  # For create_web_engineview.
-web_widget_key: str = ''  # For get_base_text_widget.
 
 
 # @+others
@@ -605,6 +602,11 @@ class ViewRenderedController(QtWidgets.QWidget):
         self.mathjax_template: str = ''
         self.typst_template: str = ''
         self.pdf_zoom: int = 0
+        # Widgets global to this outline.
+        self.widgets: dict[str, Any] = {}  # Keys: class names. Values. Global widgets.
+        self.base_widget_key: str = ''  # For create_web_engineview.
+        self.web_widget_key: str = ''  # For get_base_text_widget.
+
         # Widgets managed by destroy_widgets.
         ### self.browser: QWidget | None = None
         self.gs: QGraphicsScene | None = None
@@ -837,12 +839,11 @@ class ViewRenderedController(QtWidgets.QWidget):
         Return a *new* QWebEngineView instance, deleting any previous instance.
         """
         c = self.c
-        global web_widget_key, widgets
 
-        if web_widget_key:
-            g.trace(f"Exists: {web_widget_key=}")
-            self.w = widgets.get(web_widget_key)
-            assert self.w, web_widget_key
+        if self.web_widget_key:
+            g.trace(f"Exists: {self.web_widget_key=}")
+            self.w = self.widgets.get(self.web_widget_key)
+            assert self.w, self.web_widget_key
             return self.w
 
         # Allocate a new instance.QtWebEngineWidgets if possible.
@@ -850,15 +851,15 @@ class ViewRenderedController(QtWidgets.QWidget):
             from leo.core.leoQt import WebEngineAttribute, QtWebEngineWidgets
 
             w = QtWebEngineWidgets.QWebEngineView()
-            web_widget_key = 'QWebEngineView'
+            self.web_widget_key = 'QWebEngineView'
 
         except Exception:
             w = QtWidgets.QTextBrowser()
-            web_widget_key = 'QTextBrowser'
+            self.web_widget_key = 'QTextBrowser'
 
         # Set the ivars and embed the widget.
-        g.trace(f"Allocate {web_widget_key=}, {w=}")
-        widgets[web_widget_key] = self.w = w
+        g.trace(f"Allocate {self.web_widget_key=}, {w=}")
+        self.widgets[self.web_widget_key] = self.w = w
         self.embed_widget(w)
         if isinstance(w, QtWidgets.QTextBrowser):
             return w
@@ -1665,20 +1666,25 @@ class ViewRenderedController(QtWidgets.QWidget):
     def get_base_text_widget(self) -> QWidget:
         """Create a QTextBrowser."""
         c = self.c
-        global base_widget_key, widgets
 
         # Do nothing if widget is active.
         if isinstance(self.w, QtWidgets.QTextBrowser):
+            g.trace(f"Active: {self.base_widget_key=}")
+            self.embed_widget(self.w)  # Creates w.wrapper
             return self.w
 
-        if base_widget_key:
-            g.trace(f"Exists: {base_widget_key=}")
-            self.w = widgets.get(base_widget_key)
-            assert self.w, base_widget_key
+        if self.base_widget_key:
+            g.trace(f"Exists: {self.base_widget_key=}")
+            self.w = self.widgets.get(self.base_widget_key)
+            assert self.w, self.base_widget_key
+            self.embed_widget(self.w)  # Creates w.wrapper
             return self.w
 
         # Allocate the widget once.
-        widgets[base_widget_key] = self.w = w = QtWidgets.QTextBrowser()
+        self.base_widget_key = 'QTextBrowser'
+        self.widgets[self.base_widget_key] = self.w = w = QtWidgets.QTextBrowser()
+
+        g.trace(f"Allocate {self.base_widget_key=}, {w=}")
         self.embed_widget(w)  # Creates w.wrapper
 
         text_name = 'body-text-renderer'
