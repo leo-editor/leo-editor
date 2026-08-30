@@ -245,11 +245,9 @@ def getVr(event: LeoKeyEvent | None) -> ViewRenderedController | None:
     """
     # First, get c.
     if not event:
-        # g.trace('no event!')
         return None
     c = event.get('c')
     if not c:
-        # g.trace('no event.c!')
         return None
     vr = getattr(c, 'vr', None)
     if not vr:
@@ -811,7 +809,6 @@ class ViewRenderedController(QtWidgets.QWidget):
         s = self.remove_directives(s)
         # Dispatch based on the computed kind.
         kind = keywords.get('flags') if 'flags' in keywords else self.get_kind(p)
-        # g.trace('kind', repr(kind))
         if kind or keywords.get('force'):
             f = self.dispatch_dict.get(kind)
         else:
@@ -847,7 +844,6 @@ class ViewRenderedController(QtWidgets.QWidget):
             w = QtWidgets.QTextBrowser()
 
         # Set the ivars and embed the widget.
-        # g.trace(f"Allocate {w=}")
         self.graphics_widget = self.w = w
         self.embed_widget(w)
         if isinstance(w, QtWidgets.QTextBrowser):
@@ -1158,7 +1154,6 @@ class ViewRenderedController(QtWidgets.QWidget):
                     s = self.convert_to_markdown(s)
             self.set_html(s, w)
         else:
-            # g.trace('markdown not available: using rst')
             self.update_rst(s, keywords)
 
     # @+node:ekr.20160921134552.1: *5* vr.convert_to_markdown
@@ -1655,7 +1650,6 @@ class ViewRenderedController(QtWidgets.QWidget):
 
         # Allocate the widget once.
         self.w = self.text_widget = w = QtWidgets.QTextBrowser()
-        # g.trace(f"Allocate {w=}")
         self.embed_widget(w)  # Creates w.wrapper
         text_name = 'body-text-renderer'
         w.setObjectName(text_name)
