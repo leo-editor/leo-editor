@@ -837,7 +837,7 @@ class ViewRenderedController(QtWidgets.QWidget):
         c = self.c
 
         if self.web_widget_key:
-            g.trace(f"Exists: {self.web_widget_key=}")
+            # g.trace(f"Exists: {self.web_widget_key=}")
             self.w = self.widgets.get(self.web_widget_key)
             assert self.w, self.web_widget_key
             return self.w
@@ -854,7 +854,7 @@ class ViewRenderedController(QtWidgets.QWidget):
             self.web_widget_key = 'QTextBrowser'
 
         # Set the ivars and embed the widget.
-        g.trace(f"Allocate {self.web_widget_key=}, {w=}")
+        # g.trace(f"Allocate {self.web_widget_key=}, {w=}")
         self.widgets[self.web_widget_key] = self.w = w
         self.embed_widget(w)
         if isinstance(w, QtWidgets.QTextBrowser):
@@ -1652,12 +1652,12 @@ class ViewRenderedController(QtWidgets.QWidget):
 
         # Do nothing if widget is active.
         if isinstance(self.w, QtWidgets.QTextBrowser):
-            g.trace(f"Active: {self.base_widget_key=}")
+            # g.trace(f"Active: {self.base_widget_key=}")
             self.embed_widget(self.w)  # Creates w.wrapper
             return self.w
 
         if self.base_widget_key:
-            g.trace(f"Exists: {self.base_widget_key=}")
+            # g.trace(f"Exists: {self.base_widget_key=}")
             self.w = self.widgets.get(self.base_widget_key)
             assert self.w, self.base_widget_key
             self.embed_widget(self.w)  # Creates w.wrapper
@@ -1667,12 +1667,12 @@ class ViewRenderedController(QtWidgets.QWidget):
         self.base_widget_key = 'QTextBrowser'
         self.widgets[self.base_widget_key] = self.w = w = QtWidgets.QTextBrowser()
 
-        g.trace(f"Allocate {self.base_widget_key=}, {w=}")
+        # g.trace(f"Allocate {self.base_widget_key=}, {w=}")
         self.embed_widget(w)  # Creates w.wrapper
-
         text_name = 'body-text-renderer'
         w.setObjectName(text_name)
         w.setReadOnly(False)  # #4652.
+
         # Create the standard Leo bindings in a wrapper widget.
         wrapper = qt_text.QTextEditWrapper(widget=w, name='rendering-pane-wrapper', c=c)
         c.k.completeAllBindingsForWidget(wrapper)
