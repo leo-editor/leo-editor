@@ -602,16 +602,15 @@ class ViewRenderedController(QtWidgets.QWidget):
         self.mathjax_template: str = ''
         self.typst_template: str = ''
         self.pdf_zoom: int = 0
-        # Widgets global to this outline.
-        self.widgets: dict[str, Any] = {}  # Keys: class names. Values. Global widgets.
+        # Keys indicating the kind of allocated widgets.
         self.base_widget_key: str = ''  # For create_web_engineview.
         self.web_widget_key: str = ''  # For get_base_text_widget.
-
-        # Widgets managed by destroy_widgets.
+        # Widgets global to this outline.
         self.gs: QGraphicsScene | None = None
         self.gv: QGraphicsView | None = None
-        self.vp: QMediaPlayer = None
+        self.vp: QMediaPlayer | None = None
         self.w: Any = None  # The present widget in the rendering pane.
+        self.widgets: dict[str, Any] = {}  # Keys: class names. Values. Widgets.
         # Set the ivars.
         self.active = True
         self.gnx: str | None = None
