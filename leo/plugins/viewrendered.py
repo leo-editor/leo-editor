@@ -823,96 +823,6 @@ class ViewRenderedController(QtWidgets.QWidget):
         else:
             self.hide()
 
-    # @+node:ekr.20241227053437.1: *4* vr.update_vr: helpers
-    # @+node:ekr.20241224074331.1: *5* vr.create_web_engineview
-    def create_web_engineview(self) -> Any:
-        """
-        Return a *new* QWebEngineView instance, deleting any previous instance.
-        """
-        c = self.c
-
-        if self.graphics_widget:
-            if self.w.__class__.__name__ == 'QSvgWidget':
-                self.w.hide()
-            self.w = self.graphics_widget
-            return self.w
-
-        # Allocate a new instance.QtWebEngineWidgets if possible.
-        try:
-            from leo.core.leoQt import WebEngineAttribute, QtWebEngineWidgets
-
-            w = QtWebEngineWidgets.QWebEngineView()
-        except Exception:
-            w = QtWidgets.QTextBrowser()
-
-        # Set the ivars and embed the widget.
-        self.graphics_widget = self.w = w
-        self.embed_widget(w)
-        if isinstance(w, QtWidgets.QTextBrowser):
-            return w
-
-        # Allow remote access.
-        settings = w.settings()
-        wa = WebEngineAttribute.LocalContentCanAccessRemoteUrls
-        settings.setAttribute(wa, True)
-
-        # Set the font size, but this does very little.
-        n = c.config.getInt('qweb-view-font-size') or 16
-        n = abs(n)
-        settings.setFontSize(settings.FontSize.DefaultFontSize, n)
-        return w
-
-    # @+node:ekr.20241226173150.1: *5* vr.create_web_engineview_with_pdf
-    def create_web_engineview_with_pdf(self) -> QWidget | None:
-        """
-        Return a *new* QWebEngineView instance with support for pdf,
-        deleting any previous instance.
-        """
-        # Create the QWebEngineView if possible and embed the widget.
-        w = self.create_web_engineview()
-        assert w == self.w, g.callers()
-        if isinstance(w, QtWidgets.QTextBrowser):
-            # create_web_engineview has issued the warning.
-            return w
-
-        # Allow rendering of .pdf files.
-        settings = w.settings()
-        settings.setAttribute(settings.WebAttribute.PluginsEnabled, True)
-        return w
-
-    # @+node:ekr.20110320120020.14486: *5* vr.embed_widget
-    def embed_widget(self, w: Any) -> None:
-        """Embed widget w in the layout."""
-        assert w == self.w, g.callers()  # Invariant.
-
-        # Delete all previous widgets.
-        layout = self.layout()
-        for i in range(layout.count()):
-            layout.removeItem(layout.itemAt(0))
-
-        # Add the new widget.
-        self.layout().addWidget(w)
-        w.show()
-
-    # @+node:ekr.20110320120020.14476: *5* vr.must_update
-    def must_update(self, keywords: Any) -> bool:
-        """Return True if we must update the rendering pane."""
-        c, p = self.c, self.c.p
-        if g.unitTesting:
-            return False
-        if c != keywords.get('c') or not self.active:
-            return False
-        if keywords.get('force'):
-            return True
-        if self.locked:
-            return False
-        if self.gnx != p.v.gnx:
-            return True
-        if self.length != len(p.b):
-            self.length = len(p.b)  # Suppress updates until next change.
-            return self.get_kind(p) != 'pyplot'
-        return False
-
     # @+node:ekr.20191004143229.1: *4* vr.update_asciidoc & helpers
     def update_asciidoc(self, s: str, keywords: Any) -> None:
         """Update asciidoc in the VR pane."""
@@ -1029,6 +939,88 @@ class ViewRenderedController(QtWidgets.QWidget):
         template = textwrap.dedent(template).strip()
         self.show()
         w.setHtml(template)
+
+    # @+node:ekr.20260828081137.1: *4* vr.update_jinga
+    def update_jinja(self, s: str, keywords: Any) -> None:
+        h = self.c.p.h
+        p = self.c.p
+        c = self.c
+        oldp = None
+
+        if not h.startswith('@jinja'):
+            return
+
+        try:
+            from jinja2 import Template
+        except ImportError:
+            return
+
+        def find_root(p: Position) -> tuple[Position, Position] | tuple[None, None]:
+            for newp in p.parents():
+                if newp.h.strip() == '@jinja':
+                    oldp, p = p, newp
+                    return oldp, p
+            return None, None
+
+        def find_inputs(p: Position) -> tuple[Position, Position] | tuple[None, None]:
+            for newp in p.parents():
+                if newp.h.strip() == '@jinja inputs':
+                    oldp, p = p, newp
+                    _, root_p = find_root(p)
+                    if root_p is None:
+                        return None, None
+                    return oldp, root_p
+            return None, None
+
+        # if on jinja node's children, find the parent
+        if h.strip() == '@jinja template' or h.strip() == '@jinja inputs':
+            # not at @jinja, find from parents
+            oldp, p = find_root(p)
+
+        elif h.startswith('@jinja variable'):
+            # not at @jinja, first find @jinja inputs, then @jinja
+            oldp, p = find_inputs(p)
+
+        if p is None:
+            g.es("Could not find enclosing @jinja node.")
+            return
+
+        def untangle(c: Cmdr, p: Position) -> str:
+            return g.getScript(c, p, useSelectedText=False, useSentinels=False)
+
+        template_data = {}
+        for child in p.children():
+            if child.h == '@jinja template':
+                template_path = g.finalize_join(c.getPath(p), untangle(c, child).strip())
+            elif child.h == '@jinja inputs':
+                for template_var_node in child.children():
+                    # pylint: disable=line-too-long
+                    template_data[template_var_node.h.replace('@jinja variable', '').strip()] = (
+                        untangle(c, template_var_node).strip()
+                    )
+
+        if not template_path:
+            g.es(
+                "No template_path given. "
+                "Your @jinja node should contain a child node 'template' "
+                "with the path to the template (relative or absolute)"
+            )
+            return
+
+        if Template is None:
+            g.es("Jinja2 is not installed.")
+            return
+        tmpl = Template(Path(template_path).read_text())
+        out = tmpl.render(template_data)
+        w = self.get_base_text_widget()
+        self.show()
+        w.setPlainText(out)
+        p.b = out
+        c.redraw(p)
+
+        # focus back on entry node
+        if oldp:
+            c.redraw(oldp)
 
     # @+node:ekr.20170105124347.1: *4* vr.update_jupyter & helper
     update_jupyter_count = 0
@@ -1287,6 +1279,11 @@ class ViewRenderedController(QtWidgets.QWidget):
         The first line of `s` should be a `@pdf <path>`.
         Resolve relative paths using the outline's directory.
         """
+
+        # Hide the svg widget.
+        if self.w.__class__.__name__ == 'QSvgWidget':
+            self.w.hide()
+
         if not s.strip():
             return
 
@@ -1312,6 +1309,26 @@ class ViewRenderedController(QtWidgets.QWidget):
         url.setFragment(f"zoom={self.pdf_zoom}")
         w.load(url)
         self.show()
+
+    # @+node:ekr.20260831063201.1: *4* vr.update_plantuml
+    def update_plantuml(self, s: str, keywords: Any) -> None:
+        w = self.get_base_text_widget()
+        path = self.c.p.h[9:].strip()
+        print("Plantuml output file name: ", path)
+        with open("temp.plantuml", "w") as f:
+            f.write(s)
+        pth_plantuml_jar = "~/.leo"
+        subprocess.run(
+            "cat temp.plantuml | java -jar %s/plantuml.jar -pipe > %s" % (pth_plantuml_jar, path),
+            shell=True,
+            check=False,
+        )
+        template = self.image_template % (path)
+        template = textwrap.dedent(template).strip()
+        self.show()
+        w.setReadOnly(False)
+        w.setHtml(template)
+        w.setReadOnly(True)
 
     # @+node:ekr.20160928023915.1: *4* vr.update_pyplot
     def update_pyplot(self, s: str, keywords: Any) -> None:
@@ -1420,107 +1437,6 @@ class ViewRenderedController(QtWidgets.QWidget):
         finally:
             sys.stderr = sys.__stderr__
         return s
-
-    def update_plantuml(self, s: str, keywords: Any) -> None:
-        w = self.get_base_text_widget()
-        path = self.c.p.h[9:].strip()
-        print("Plantuml output file name: ", path)
-        with open("temp.plantuml", "w") as f:
-            f.write(s)
-        pth_plantuml_jar = "~/.leo"
-        subprocess.run(
-            "cat temp.plantuml | java -jar %s/plantuml.jar -pipe > %s" % (pth_plantuml_jar, path),
-            shell=True,
-            check=False,
-        )
-        template = self.image_template % (path)
-        template = textwrap.dedent(template).strip()
-        self.show()
-        w.setReadOnly(False)
-        w.setHtml(template)
-        w.setReadOnly(True)
-
-    # @+node:ekr.20260828081137.1: *4* vr.update_jinga
-    def update_jinja(self, s: str, keywords: Any) -> None:
-        h = self.c.p.h
-        p = self.c.p
-        c = self.c
-        oldp = None
-
-        if not h.startswith('@jinja'):
-            return
-
-        try:
-            from jinja2 import Template
-        except ImportError:
-            return
-
-        def find_root(p: Position) -> tuple[Position, Position] | tuple[None, None]:
-            for newp in p.parents():
-                if newp.h.strip() == '@jinja':
-                    oldp, p = p, newp
-                    return oldp, p
-            return None, None
-
-        def find_inputs(p: Position) -> tuple[Position, Position] | tuple[None, None]:
-            for newp in p.parents():
-                if newp.h.strip() == '@jinja inputs':
-                    oldp, p = p, newp
-                    _, root_p = find_root(p)
-                    if root_p is None:
-                        return None, None
-                    return oldp, root_p
-            return None, None
-
-        # if on jinja node's children, find the parent
-        if h.strip() == '@jinja template' or h.strip() == '@jinja inputs':
-            # not at @jinja, find from parents
-            oldp, p = find_root(p)
-
-        elif h.startswith('@jinja variable'):
-            # not at @jinja, first find @jinja inputs, then @jinja
-            oldp, p = find_inputs(p)
-
-        if p is None:
-            g.es("Could not find enclosing @jinja node.")
-            return
-
-        def untangle(c: Cmdr, p: Position) -> str:
-            return g.getScript(c, p, useSelectedText=False, useSentinels=False)
-
-        template_data = {}
-        for child in p.children():
-            if child.h == '@jinja template':
-                template_path = g.finalize_join(c.getPath(p), untangle(c, child).strip())
-            elif child.h == '@jinja inputs':
-                for template_var_node in child.children():
-                    # pylint: disable=line-too-long
-                    template_data[template_var_node.h.replace('@jinja variable', '').strip()] = (
-                        untangle(c, template_var_node).strip()
-                    )
-
-        if not template_path:
-            g.es(
-                "No template_path given. "
-                "Your @jinja node should contain a child node 'template' "
-                "with the path to the template (relative or absolute)"
-            )
-            return
-
-        if Template is None:
-            g.es("Jinja2 is not installed.")
-            return
-        tmpl = Template(Path(template_path).read_text())
-        out = tmpl.render(template_data)
-        w = self.get_base_text_widget()
-        self.show()
-        w.setPlainText(out)
-        p.b = out
-        c.redraw(p)
-
-        # focus back on entry node
-        if oldp:
-            c.redraw(oldp)
 
     # @+node:ekr.20110320120020.14479: *4* vr.update_svg
     # http://doc.trolltech.com/4.4/qtsvg.html
@@ -1634,11 +1550,101 @@ class ViewRenderedController(QtWidgets.QWidget):
             self.show()
             w.setPlainText('')
 
+    # @+node:ekr.20241227053437.1: *4* vr.update_vr: helpers
+    # @+node:ekr.20241224074331.1: *5* vr.create_web_engineview
+    def create_web_engineview(self) -> Any:
+        """
+        Return a *new* QWebEngineView instance.
+        """
+        c = self.c
+
+        if self.w and self.w.__class__.__name__ != 'QTextBrowser':
+            self.w.hide()
+
+        # Allocate a new instance.QtWebEngineWidgets if possible.
+        try:
+            from leo.core.leoQt import WebEngineAttribute, QtWebEngineWidgets
+
+            w = QtWebEngineWidgets.QWebEngineView()
+        except Exception:
+            w = QtWidgets.QTextBrowser()
+
+        # Set the ivars and embed the widget.
+        self.graphics_widget = self.w = w
+        self.embed_widget(w)
+        if isinstance(w, QtWidgets.QTextBrowser):
+            return w
+
+        # Allow remote access.
+        settings = w.settings()
+        wa = WebEngineAttribute.LocalContentCanAccessRemoteUrls
+        settings.setAttribute(wa, True)
+
+        # Set the font size, but this does very little.
+        n = c.config.getInt('qweb-view-font-size') or 16
+        n = abs(n)
+        settings.setFontSize(settings.FontSize.DefaultFontSize, n)
+        return w
+
+    # @+node:ekr.20241226173150.1: *5* vr.create_web_engineview_with_pdf
+    def create_web_engineview_with_pdf(self) -> QWidget | None:
+        """
+        Return a *new* QWebEngineView instance with support for pdf.
+        """
+
+        # Create the QWebEngineView if possible and embed the widget.
+        w = self.create_web_engineview()
+        assert w == self.w, g.callers()
+        if isinstance(w, QtWidgets.QTextBrowser):
+            # create_web_engineview has issued the warning.
+            return w
+
+        # Allow rendering of .pdf files.
+        settings = w.settings()
+        settings.setAttribute(settings.WebAttribute.PluginsEnabled, True)
+        return w
+
+    # @+node:ekr.20110320120020.14486: *5* vr.embed_widget
+    def embed_widget(self, w: Any) -> None:
+        """Embed widget w in the layout."""
+        assert w == self.w, g.callers()  # Invariant.
+
+        # Delete all previous widgets.
+        layout = self.layout()
+        for i in range(layout.count()):
+            layout.removeItem(layout.itemAt(0))
+
+        # Add the new widget.
+        self.layout().addWidget(w)
+        w.show()
+
+    # @+node:ekr.20110320120020.14476: *5* vr.must_update
+    def must_update(self, keywords: Any) -> bool:
+        """Return True if we must update the rendering pane."""
+        c, p = self.c, self.c.p
+        if g.unitTesting:
+            return False
+        if c != keywords.get('c') or not self.active:
+            return False
+        if keywords.get('force'):
+            return True
+        if self.locked:
+            return False
+        if self.gnx != p.v.gnx:
+            return True
+        if self.length != len(p.b):
+            self.length = len(p.b)  # Suppress updates until next change.
+            return self.get_kind(p) != 'pyplot'
+        return False
+
     # @+node:ekr.20110322031455.5765: *3* vr: utils...
     # @+node:ekr.20190424083049.1: *4* vr.get_base_text_widget
     def get_base_text_widget(self) -> QWidget:
         """Create a QTextBrowser."""
         c = self.c
+
+        if self.w and self.w.__class__.__name__ != 'QTextBrowser':
+            self.w.hide()
 
         # Do nothing if widget is active.
         if isinstance(self.w, QtWidgets.QTextBrowser):

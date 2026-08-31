@@ -17846,7 +17846,9 @@ if 1:
 @nosearch
 # changed
 </t>
-<t tx="ekr.20251214045245.21"></t>
+<t tx="ekr.20251214045245.21">@language html
+@wrap
+@tabwidth -2</t>
 <t tx="ekr.20251214045245.22">@language html
 &lt;a href="http://127.0.0.1:8000/leo_toc.html"&gt;Link&lt;/a&gt;</t>
 <t tx="ekr.20251214045245.23">&lt;!DOCTYPE html&gt;
