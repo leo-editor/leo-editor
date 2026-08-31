@@ -1558,7 +1558,9 @@ class ViewRenderedController(QtWidgets.QWidget):
         """
         c = self.c
 
-        if self.w and self.w.__class__.__name__ != 'QTextBrowser':
+        # g.trace(f"{self.w.__class__.__name__=}")
+
+        if self.w is not None and self.w.__class__.__name__ != 'QTextBrowser':
             self.w.hide()
 
         # Allocate a new instance.QtWebEngineWidgets if possible.
@@ -1643,17 +1645,14 @@ class ViewRenderedController(QtWidgets.QWidget):
         """Create a QTextBrowser."""
         c = self.c
 
-        if self.w and self.w.__class__.__name__ != 'QTextBrowser':
-            self.w.hide()
+        g.trace(f"{self.w.__class__.__name__=}")
 
-        # Do nothing if widget is active.
-        if isinstance(self.w, QtWidgets.QTextBrowser):
-            self.embed_widget(self.w)  # Creates w.wrapper
-            return self.w
+        if self.w is not None and self.w.__class__.__name__ != 'QTextBrowser':
+            self.w.hide()
 
         if self.text_widget:
             self.w = self.text_widget
-            self.embed_widget(self.w)  # Creates w.wrapper
+            self.embed_widget(self.w)
             return self.w
 
         # Allocate the widget once.

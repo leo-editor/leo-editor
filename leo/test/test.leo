@@ -853,8 +853,6 @@
 <v t="ekr.20251214045245.27"></v>
 <v t="ekr.20251214045245.43"></v>
 <v t="ekr.20251214045245.16"></v>
-<v t="ekr.20251214045245.47"></v>
-<v t="ekr.20251214045245.17"></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180311131353.1" str_leo_pos="3,11"></t>
@@ -18584,7 +18582,11 @@ More info at [Leo's home page](&lt;http://leoeditor.com/).
 - Another item
 - Third item.
 </t>
-<t tx="ekr.20251214045245.47">Inline:
+<t tx="ekr.20251214045245.47">@language md
+
+&lt;html&gt;
+
+Inline:
     
 \int_{b^a} \, x^2 \, dx: :math:`\int_{b^a} \, x^2 \, dx`
 
@@ -18625,6 +18627,8 @@ Inline: :math:`(\sum_{t=0}^{N}\,f(t,k))/N`
 The final output will be a vector :math:`Y` with :math:`K` elements, :math:`y_k`, where
 :math:`y_k(\mathbf{x},\mathbf{w}) = p(C_1|\mathbf{x})` is the probability that node :math:`k` is in class :math:`C_1` and
 :math:`p(C_2|\mathbf{x}) = 1-p(C_1|\mathbf{x})`
+
+&lt;/html&gt;
 
 </t>
 <t tx="ekr.20251214045245.48">@language md
