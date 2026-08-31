@@ -1292,7 +1292,7 @@ class ViewRenderedController(QtWidgets.QWidget):
 
         # Create a new QWebEngineView.
         w = self.create_web_engineview_with_pdf()
-        if not w:
+        if isinstance(w, QtWidgets.QTextBrowser):
             g.print_unique_message('@pdf rendering requires PyQt6-WebEngine')
             w.setHtml(s)
             self.show()
@@ -1578,7 +1578,7 @@ class ViewRenderedController(QtWidgets.QWidget):
         """Display the typest text in `s` in the VR pane."""
         # Create a new QWebEngineView.
         w = self.create_web_engineview_with_pdf()
-        if not w:
+        if isinstance(w, QtWidgets.QTextBrowser):
             g.print_unique_message('typst rendering requires PyQt6-WebEngine')
             w.setHtml(s)
             self.show()
