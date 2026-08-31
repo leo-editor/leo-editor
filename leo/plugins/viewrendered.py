@@ -442,6 +442,8 @@ def show_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Show the rendering pane."""
     if vr := getVr(event):
         c = vr.c
+        if vr.w is not None and vr.w.__class__.__name__ != 'QTextBrowser':
+            vr.w.hide()
         vr.show()  # QWidget.show.
         vr.is_visible = True
         c.bodyWantsFocusNow()
@@ -1558,8 +1560,6 @@ class ViewRenderedController(QtWidgets.QWidget):
         """
         c = self.c
 
-        # g.trace(f"{self.w.__class__.__name__=}")
-
         if self.w is not None and self.w.__class__.__name__ != 'QTextBrowser':
             self.w.hide()
 
@@ -1644,8 +1644,6 @@ class ViewRenderedController(QtWidgets.QWidget):
     def get_base_text_widget(self) -> QWidget:
         """Create a QTextBrowser."""
         c = self.c
-
-        g.trace(f"{self.w.__class__.__name__=}")
 
         if self.w is not None and self.w.__class__.__name__ != 'QTextBrowser':
             self.w.hide()
