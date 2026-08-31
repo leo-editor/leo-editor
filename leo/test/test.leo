@@ -692,8 +692,7 @@
 <v t="ekr.20251214045245.24"><vh>@html Leo's home page</vh></v>
 </v>
 <v t="ekr.20251214045245.25"><vh>pdf tests</vh>
-<v t="ekr.20251214045245.26"><vh>@pdf temp</vh></v>
-<v t="ekr.20251214045245.27"><vh>@pdf test</vh></v>
+<v t="ekr.20251214045245.27"><vh>@pdf leo/test/LearningSymbolicPhysics.pdf</vh></v>
 </v>
 <v t="ekr.20251214045245.28"><vh>at-image tests</vh>
 <v t="ekr.20251214045245.29"><vh>@image LeoSplash (works, but very large)</vh></v>
@@ -850,6 +849,9 @@
 </v>
 </v>
 <v t="ekr.20251214045245.20"></v>
+<v t="ekr.20260831055324.1"><vh>--- Most important VR tests</vh></v>
+<v t="ekr.20251214045245.27"></v>
+<v t="ekr.20251214045245.43"></v>
 <v t="ekr.20251214045245.16"></v>
 </vnodes>
 <tnodes>
@@ -18147,9 +18149,7 @@ test
 &lt;!--@-leo--&gt;
 </t>
 <t tx="ekr.20251214045245.25"></t>
-<t tx="ekr.20251214045245.26">C:\Repos\EKR-Math\temp.pdf
-</t>
-<t tx="ekr.20251214045245.27">temp.pdf</t>
+<t tx="ekr.20251214045245.27">LearningSymbolicPhysics.pdf</t>
 <t tx="ekr.20251214045245.28"></t>
 <t tx="ekr.20251214045245.29">C:\Repos\leo-editor\leo\Icons\LeoLogo.svg
 
@@ -19187,5 +19187,6 @@ viewrendered.py
 # quicksearch.py      # Nav pane.
 # screen_capture.py   # screen-capture-* commands.
 </t>
+<t tx="ekr.20260831055324.1"></t>
 </tnodes>
 </leo_file>
