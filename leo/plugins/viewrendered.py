@@ -832,6 +832,8 @@ class ViewRenderedController(QtWidgets.QWidget):
         c = self.c
 
         if self.graphics_widget:
+            if self.w.__class__.__name__ == 'QSvgWidget':
+                self.w.hide()
             self.w = self.graphics_widget
             return self.w
 
@@ -868,8 +870,6 @@ class ViewRenderedController(QtWidgets.QWidget):
         """
         # Create the QWebEngineView if possible and embed the widget.
         w = self.create_web_engineview()
-        if not w:
-            return None
         assert w == self.w, g.callers()
         if isinstance(w, QtWidgets.QTextBrowser):
             # create_web_engineview has issued the warning.
@@ -1535,43 +1535,45 @@ class ViewRenderedController(QtWidgets.QWidget):
             w = self.create_web_engineview()
             w.setHtml(s)
             w.show()
-        else:  # Legacy:  Better scaling.
-            if hasattr(QtSvg, "QSvgWidget"):  # #2134
-                QSvgWidget = QtSvg.QSvgWidget
-            else:
-                try:
-                    from PyQt6 import QtSvgWidgets
+            return
 
-                    QSvgWidget = QtSvgWidgets.QSvgWidget
-                except Exception:
-                    QSvgWidget = None
-            if not QSvgWidget:
-                g.print_unique_message('svg rendering requires PyQt6-WebEngine')
-                w = self.get_base_text_widget()
-                w.setPlainText(s)
-                return
-            if isinstance(self.w, QSvgWidget):
-                w = self.w
-            else:
-                w = self.w = QSvgWidget()
-                self.embed_widget(w)
+        # Legacy:  Better scaling.
+        if hasattr(QtSvg, "QSvgWidget"):  # #2134
+            QSvgWidget = QtSvg.QSvgWidget
+        else:
+            try:
+                from PyQt6 import QtSvgWidgets
 
-            # Compute the contents.
-            if s.strip().startswith('<'):
-                # Assume it is the svg (xml) source.
-                # Sensitive to leading blank lines.
-                s = textwrap.dedent(s).strip()
-                s_bytes = g.toEncodedString(s)
+                QSvgWidget = QtSvgWidgets.QSvgWidget
+            except Exception:
+                QSvgWidget = None
+        if not QSvgWidget:
+            g.print_unique_message('svg rendering requires PyQt6-WebEngine')
+            w = self.get_base_text_widget()
+            w.setPlainText(s)
+            return
+        if isinstance(self.w, QSvgWidget):
+            w = self.w
+        else:
+            w = self.w = QSvgWidget()
+            self.embed_widget(w)
+
+        # Compute the contents.
+        if s.strip().startswith('<'):
+            # Assume it is the svg (xml) source.
+            # Sensitive to leading blank lines.
+            s = textwrap.dedent(s).strip()
+            s_bytes = g.toEncodedString(s)
+            self.show()
+            w.load(QtCore.QByteArray(s_bytes))
+            w.show()
+        else:
+            # Get a filename from the headline or body text.
+            ok, path = self.get_fn(s, '@svg')
+            if ok:
                 self.show()
-                w.load(QtCore.QByteArray(s_bytes))
+                w.load(path)
                 w.show()
-            else:
-                # Get a filename from the headline or body text.
-                ok, path = self.get_fn(s, '@svg')
-                if ok:
-                    self.show()
-                    w.load(path)
-                    w.show()
 
     # @+node:ekr.20241231121247.1: *4* vr.update_typst
     def update_typst(self, s: str, keywords: Any) -> None:
