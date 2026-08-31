@@ -1560,14 +1560,11 @@ class ViewRenderedController(QtWidgets.QWidget):
         """
         c = self.c
 
-        if self.w is not None:  ### and self.w.__class__.__name__ != 'QTextBrowser':
-            self.w.hide()
-
-        if 0:  ### Does't seem to work.
-            if self.graphics_widget.__class__.__name__ in ('QtWebEngineWidgets', 'QTextBrowser'):
-                self.w = w = self.text_widget
-                self.embed_widget(w)
-                return w
+        self.hide_all()
+        if self.graphics_widget:
+            self.w = w = self.graphics_widget
+            self.embed_widget(w)
+            return w
 
         # Allocate a new instance.QtWebEngineWidgets if possible.
         try:
@@ -1626,6 +1623,15 @@ class ViewRenderedController(QtWidgets.QWidget):
         self.layout().addWidget(w)
         w.show()
 
+    # @+node:ekr.20260831094834.1: *5* vr.hide_all
+    def hide_all(self):
+        """Hide all text and graphics widgets."""
+        g.app.gui.qtApp.processEvents()
+        for w in (self.w, self.graphics_widget, self.text_widget):
+            if w is not None:
+                w.hide()
+        g.app.gui.qtApp.processEvents()
+
     # @+node:ekr.20110320120020.14476: *5* vr.must_update
     def must_update(self, keywords: Any) -> bool:
         """Return True if we must update the rendering pane."""
@@ -1650,17 +1656,11 @@ class ViewRenderedController(QtWidgets.QWidget):
     def get_base_text_widget(self) -> QWidget:
         """Create a QTextBrowser."""
         c = self.c
-
-        g.trace(f"{self.w.__class__.__name__=}")
-
-        if self.w is not None:  ### and self.w.__class__.__name__ != 'QTextBrowser':
-            self.w.hide()
-
-        if 0:  ### Doesn't seem to work!!!
-            if self.text_widget:
-                self.w = self.text_widget
-                self.embed_widget(self.w)
-                return self.w
+        self.hide_all()
+        if self.text_widget:
+            self.w = w = self.text_widget
+            self.embed_widget(w)
+            return w
 
         # Allocate the widget once.
         self.w = self.text_widget = w = QtWidgets.QTextBrowser()
