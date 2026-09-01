@@ -7,604 +7,582 @@
 # @@killbeautify
 # @+all
 # @+node:ekr.20240617085704.1: ** Permanent attic
-# @+node:ekr.20121128031949.12605: *3* class g.SherlockTracer
-class SherlockTracer:
+# @+node:ekr.20260805111552.1: *3* 'insert-qt-icon' & helper
+@cmd('insert-qt-icon')
+def insertQtIcon(self, event: LeoKeyEvent | None = None) -> None:
     """
-    A stand-alone tracer class with many of Sherlock's features.
-
-    This class should work in any environment containing the re, os and sys modules.
-
-    The arguments in the pattern lists determine which functions get traced
-    or which stats get printed. Each pattern starts with "+", "-", "+:" or
-    "-:", followed by a regular expression::
-
-    "+x"  Enables tracing (or stats) for all functions/methods whose name
-          matches the regular expression x.
-    "-x"  Disables tracing for functions/methods.
-    "+:x" Enables tracing for all functions in the **file** whose name matches x.
-    "-:x" Disables tracing for an entire file.
-
-    Enabling and disabling depends on the order of arguments in the pattern
-    list. Consider the arguments for the Rope trace::
-
-    patterns=['+.*','+:.*',
-        '-:.*\\lib\\.*','+:.*rope.*','-:.*leoGlobals.py',
-        '-:.*worder.py','-:.*prefs.py','-:.*resources.py',])
-
-    This enables tracing for everything, then disables tracing for all
-    library modules, except for all rope modules. Finally, it disables the
-    tracing for Rope's worder, prefs and resources modules.
-
-    Being able to zero in on the code of interest can be a big help in
-    studying other people's code. This is a non-invasive method: no tracing
-    code needs to be inserted anywhere.
-
-    Usage:
-
-    g.SherlockTracer(patterns).run()
+    Show a window previewing all standard Qt icons.
+    Add each selected icon to c.p.h.
     """
-    @others
-# @+node:ekr.20121128031949.12602: *4* sherlock.__init__
-def __init__(
-    self,
-    patterns: list[Any],
-    indent: bool = True,
-    show_args: bool = True,
-    show_return: bool = True,
-    verbose: bool = True,
-) -> None:
-    """SherlockTracer ctor."""
-    self.bad_patterns: list[str] = []  # List of bad patterns.
-    self.indent = indent  # True: indent calls and returns.
-    self.contents_d: dict[str, list] = {}  # Keys are file names, values are file lines.
-    self.n = 0  # The frame level on entry to run.
-    self.stats: dict[str, dict] = {}  # Keys are full file names, values are dicts.
-    self.patterns: list[Any] = None  # A list of regex patterns to match.
-    self.pattern_stack: list[str] = []
-    self.show_args = show_args  # True: show args for each function call.
-    self.show_return = show_return  # True: show returns from each function.
-    self.trace_lines = True  # True: trace lines in enabled functions.
-    self.verbose = verbose  # True: print filename:func
-    self.set_patterns(patterns)
-    try:  # Don't assume g.app exists.
-        from leo.core.leoQt import QtCore
-        if QtCore:
-            # pylint: disable=no-member
-            QtCore.pyqtRemoveInputHook()
-    except Exception:
-        pass
-# @+node:ekr.20140326100337.16844: *4* sherlock.__call__
-def __call__(self, frame: Any, event: Any, arg: Any) -> Any:
-    """Exists so that self.dispatch can return self."""
-    return self.dispatch(frame, event, arg)
-# @+node:ekr.20140326100337.16846: *4* sherlock.bad_pattern
-def bad_pattern(self, pattern: Any) -> None:
-    """Report a bad Sherlock pattern."""
-    if pattern not in self.bad_patterns:
-        self.bad_patterns.append(pattern)
-        print(f"\nignoring bad pattern: {pattern}\n")
-# @+node:ekr.20140326100337.16847: *4* sherlock.check_pattern
-def check_pattern(self, pattern: str) -> bool:
-    """Give an error and return False for an invalid pattern."""
-    try:
-        for prefix in ('+:', '-:', '+', '-'):
-            if pattern.startswith(prefix):
-                re.match(pattern[len(prefix) :], 'xyzzy')
-                return True
-        self.bad_pattern(pattern)
-        return False
-    except Exception:
-        self.bad_pattern(pattern)
-        return False
-# @+node:ekr.20121128031949.12609: *4* sherlock.dispatch
-def dispatch(self, frame: Any, event: Any, arg: Any) -> Any:
-    """The dispatch method."""
-    if event == 'call':
-        self.do_call(frame, arg)
-    elif event == 'return' and self.show_return:
-        self.do_return(frame, arg)
-    elif event == 'line' and self.trace_lines:
-        self.do_line(frame, arg)
-    # Queue the SherlockTracer instance again.
-    return self
-# @+node:ekr.20121128031949.12603: *4* sherlock.do_call & helper
-def do_call(self, frame: Any, unused_arg: Any) -> None:
-    """Trace through a function call."""
-    frame1 = frame
-    code = frame.f_code
-    file_name = code.co_filename
-    locals_ = frame.f_locals
-    function_name = code.co_name
-    try:
-        full_name = self.get_full_name(locals_, function_name)
-    except Exception:
-        full_name = function_name
-    if not self.is_enabled(file_name, full_name, self.patterns):
-        # 2020/09/09: Don't touch, for example, __ methods.
-        return
-    n = 0  # The number of callers of this def.
-    while frame:
-        frame = frame.f_back
-        n += 1
-    indent = ' ' * max(0, n - self.n) if self.indent else ''
-    path = f"{os.path.basename(file_name):>20}" if self.verbose else ''
-    leadin = '+' if self.show_return else ''
-    args_list = self.get_args(frame1)
-    if self.show_args and args_list:
-        args_s = ','.join(args_list)
-        args_s2 = f"({args_s})"
-        if len(args_s2) > 100:
-            print(f"{path}:{indent}{leadin}{full_name}")
-            g.printObj(args_list, indent=len(indent) + 22)
-        else:
-            print(f"{path}:{indent}{leadin}{full_name}{args_s2}")
-    else:
-        print(f"{path}:{indent}{leadin}{full_name}")
-    # Always update stats.
-    d = self.stats.get(file_name, {})
-    d[full_name] = 1 + d.get(full_name, 0)
-    self.stats[file_name] = d
-# @+node:ekr.20130111185820.10194: *5* sherlock.get_args
-def get_args(self, frame: Any) -> list[str]:
-    """Return a list of string "name=val" for each arg in the function call."""
-    code = frame.f_code
-    locals_ = frame.f_locals
-    name = code.co_name
-    n = code.co_argcount
-    if code.co_flags & 4:
-        n = n + 1
-    if code.co_flags & 8:
-        n = n + 1
-    result = []
-    for i in range(n):
-        name = code.co_varnames[i]
-        if name != 'self':
-            arg = locals_.get(name, '*undefined*')
-            if arg:
-                if isinstance(arg, (list, tuple)):
-                    val_s = ','.join([self.show(z) for z in arg if self.show(z)])
-                    val = f"[{val_s}]"
-                elif isinstance(arg, str):
-                    val = arg
-                else:
-                    val = self.show(arg)
-                if val:
-                    result.append(f"{name}={val}")
-    return result
-# @+node:ekr.20140402060647.16845: *4* sherlock.do_line (not used)
-bad_fns: list[str] = []
+   
+    controller = self
+    d = g.app.scriptDict
+    key = 'insert_qt_icon_window'
+    insert_qt_icon_window = d.get(key)
+    if not insert_qt_icon_window:
+        << define class QtPreviewWindow >>
+        d[key] = insert_qt_icon_window = QtPreviewWindow()
+    insert_qt_icon_window.show()
 
-def do_line(self, frame: Any, arg: Any) -> None:
-    """print each line of enabled functions."""
-    if 1:
-        return
-    code = frame.f_code
-    file_name = code.co_filename
-    locals_ = frame.f_locals
-    name = code.co_name
-    full_name = self.get_full_name(locals_, name)
-    if not self.is_enabled(file_name, full_name, self.patterns):
-        return
-    n = frame.f_lineno - 1  # Apparently, the first line is line 1.
-    d = self.contents_d
-    lines = d.get(file_name)
-    if not lines:
-        print(file_name)
-        try:
-            with open(file_name) as f:
-                s = f.read()
-        except Exception:
-            if file_name not in self.bad_fns:
-                self.bad_fns.append(file_name)
-                print(f"open({file_name}) failed")
-            return
-        lines = g.splitLines(s)
-        d[file_name] = lines
-    line = lines[n].rstrip() if n < len(lines) else '<EOF>'
-    if 0:
-        print(f"{name:3} {line}")
-    else:
-        print(f"{g.shortFileName(file_name)} {n} {full_name} {line}")
-# @+node:ekr.20130109154743.10172: *4* sherlock.do_return & helper
-def do_return(self, frame: Any, arg: Any) -> None:  # Arg *is* used below.
-    """Trace a return statement."""
-    code = frame.f_code
-    fn = code.co_filename
-    locals_ = frame.f_locals
-    name = code.co_name
-    self.full_name = self.get_full_name(locals_, name)
-    if not self.is_enabled(fn, self.full_name, self.patterns):
-        return
-    n = 0
-    while frame:
-        frame = frame.f_back
-        n += 1
-    path = f"{os.path.basename(fn):>20}" if self.verbose else ''
-    if name and name == '__init__':
-        try:
-            ret1 = locals_ and locals_.get('self', None)
-            self.put_ret(ret1, n, path)
-        except NameError:
-            self.put_ret(f"<{ret1.__class__.__name__}>", n, path)
-    else:
-        self.put_ret(arg, n, path)
-# @+node:ekr.20220605141445.1: *5* sherlock.put_ret
-def put_ret(self, arg: Any, n: int, path: str) -> None:
-    """Print arg, the value returned by a "return" statement."""
-    indent = ' ' * max(0, n - self.n + 1) if self.indent else ''
-    try:
-        if isinstance(arg, types.GeneratorType):
-            ret = '<generator>'
-        elif isinstance(arg, (tuple, list)):
-            ret_s = ','.join([self.show(z) for z in arg])
-            if len(ret_s) > 40:
-                g.printObj(arg, indent=len(indent))
-                ret = ''
-            else:
-                ret = f"[{ret_s}]"
-        elif arg:
-            ret = self.show(arg)
-            if len(ret) > 100:
-                ret = f"\n    {ret}"
-        else:
-            ret = '' if arg is None else repr(arg)
-        print(f"{path}:{indent}-{self.full_name} -> {ret}")
-    except Exception:
-        exctype, value = sys.exc_info()[:2]
-        try:  # Be extra careful.
-            arg_s = f"arg: {arg!r}"
-        except Exception:
-            arg_s = ''  # arg.__class__.__name__
-        print(
-            f"{path}:{indent}-{self.full_name} -> "
-            f"{exctype.__name__}, {value} {arg_s}"
+# @+node:ekr.20260805111828.1: *4* << define class QtPreviewWindow >>
+from PyQt6.QtWidgets import (  # pylint: disable=no-name-in-module
+    QGridLayout,
+    QPushButton,
+    QStyle,
+    QWidget,
+)
+
+# Adapted from https://gist.github.com/ostr00000/30c9e732550baa0c13a73fd3320e7d55
+class QtPreviewWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        icon_names = sorted(
+            [z for z in dir(QStyle.StandardPixmap) if z.startswith("SP_")]
         )
-# @+node:ekr.20121128111829.12185: *4* sherlock.fn_is_enabled
-def fn_is_enabled(self, func: Any, patterns: list[str]) -> bool:
-    """Return True if tracing for the given function is enabled."""
-    if func in self.ignored_functions:
-        return False
+        layout = QGridLayout()
+        for i, icon_name in enumerate(icon_names):
+            button = QPushButton(icon_name)
+            pixmap = getattr(QStyle.StandardPixmap, icon_name)
+            if pixmap is None:
+                g.trace(f"No pixmap for {icon_name=}")
+                continue
 
-    def ignore_function() -> None:
-        if func not in self.ignored_functions:
-            self.ignored_functions.append(func)
-            print(f"Ignore function: {func}")
-    #
-    # New in Leo 6.3. Never trace dangerous functions.
-    table = (
-        '_deepcopy.*',
-        # Unicode primitives.
-        'encode\b', 'decode\b',
-        # System functions
-        '.*__next\b',
-        '<frozen>', '<genexpr>', '<listcomp>',
-        # '<decorator-gen-.*>',
-        'get\b',
-        # String primitives.
-        'append\b', 'split\b', 'join\b',
-        # File primitives...
-        'access_check\b', 'expanduser\b', 'exists\b', 'find_spec\b',
-        'abspath\b', 'normcase\b', 'normpath\b', 'splitdrive\b',
-    )
-    g.trace('=====', func)
-    for z in table:
-        if re.match(z, func):
-            ignore_function()
-            return False
-    #
-    # Legacy code.
-    try:
-        enabled, pattern = False, None
-        for pattern in patterns:
-            if pattern.startswith('+:'):
-                if re.match(pattern[2:], func):
-                    enabled = True
-            elif pattern.startswith('-:'):
-                if re.match(pattern[2:], func):
-                    enabled = False
-        return enabled
-    except Exception:
-        self.bad_pattern(pattern)
-        return False
-# @+node:ekr.20130112093655.10195: *4* sherlock.get_full_name
-def get_full_name(self, locals_: Any, name: str) -> str:
-    """Return class_name::name if possible."""
-    full_name = name
-    try:
-        user_self = locals_ and locals_.get('self', None)
-        if user_self:
-            full_name = user_self.__class__.__name__ + '::' + name
-    except Exception:
-        pass
-    return full_name
-# @+node:ekr.20121128111829.12183: *4* sherlock.is_enabled
-ignored_files: list[str] = []  # List of files.
-ignored_functions: list[str] = []  # List of files.
+            def callback(
+                icon_name: str = icon_name, pixmap: QStyle.StandardPixmap = pixmap
+            ) -> None:
+                controller._addPixmapToNode(icon_name, pixmap)
 
-def is_enabled(
-    self,
-    file_name: str,
-    function_name: str,
-    patterns: list[str] = None,
-) -> bool:
-    """Return True if tracing for function_name in the given file is enabled."""
-    #
-    # New in Leo 6.3. Never trace through some files.
-    if not os:
-        return False  # Shutting down.
-    base_name = os.path.basename(file_name)
-    if base_name in self.ignored_files:
-        return False
+            button.released.connect(callback)
+            styled_icon = self.style().standardIcon(pixmap)  # type:ignore
+            button.setIcon(styled_icon)
+            layout.addWidget(button, int(i / 4), int(i % 4))
+        self.setLayout(layout)
 
-    def ignore_file() -> None:
-        if base_name not in self.ignored_files:
-            self.ignored_files.append(base_name)
+# @+node:ekr.20260805114313.1: *4* ec._addPixmapToNode (to do)
+def _addPixmapToNode(self, icon_name: str, pixmap: QStyle.StandardPixmap) -> None:
+    """Convert the given pixmap to an icon and add it to c.p.h."""
+    c = self.c
+    assert isinstance(pixmap, QStyle.StandardPixmap)
+    g.trace(icon_name)
 
-    def ignore_function() -> None:
-        if function_name not in self.ignored_functions:
-            self.ignored_functions.append(function_name)
+    # Convert the pixmap to a QIcon?.
 
-    if f"{os.sep}lib{os.sep}" in file_name:
-        ignore_file()
-        return False
-    if base_name.startswith('<') and base_name.endswith('>'):
-        ignore_file()
-        return False
-    #
-    # New in Leo 6.3. Never trace dangerous functions.
-    table = (
-        '_deepcopy.*',
-        # Unicode primitives.
-        'encode\b', 'decode\b',
-        # System functions
-        '.*__next\b',
-        '<frozen>', '<genexpr>', '<listcomp>',
-        # '<decorator-gen-.*>',
-        'get\b',
-        # String primitives.
-        'append\b', 'split\b', 'join\b',
-        # File primitives...
-        'access_check\b', 'expanduser\b', 'exists\b', 'find_spec\b',
-        'abspath\b', 'normcase\b', 'normpath\b', 'splitdrive\b',
-    )
-    for z in table:
-        if re.match(z, function_name):
-            ignore_function()
-            return False
-    #
-    # Legacy code.
-    enabled = False
-    if patterns is None:
-        patterns = self.patterns
-    for pattern in patterns:
-        try:
-            if pattern.startswith('+:'):
-                if re.match(pattern[2:], file_name):
-                    enabled = True
-            elif pattern.startswith('-:'):
-                if re.match(pattern[2:], file_name):
-                    enabled = False
-            elif pattern.startswith('+'):
-                if re.match(pattern[1:], function_name):
-                    enabled = True
-            elif pattern.startswith('-'):
-                if re.match(pattern[1:], function_name):
-                    enabled = False
-            else:
-                self.bad_pattern(pattern)
-        except Exception:
-            self.bad_pattern(pattern)
-    return enabled
-# @+node:ekr.20121128111829.12182: *4* sherlock.print_stats
-def print_stats(self, patterns: list[str] = None) -> None:
-    """Print all accumulated statisitics."""
-    print('\nSherlock statistics...')
-    if not patterns:
-        patterns = ['+.*', '+:.*',]
-    for fn in sorted(self.stats.keys()):
-        d = self.stats.get(fn)
-        if self.fn_is_enabled(fn, patterns):
-            result = sorted(d.keys())  # type:ignore
-        else:
-            result = [key for key in sorted(d.keys())  # type:ignore
-                if self.is_enabled(fn, key, patterns)]
-        if result:
-            print('')
-            fn = fn.replace('\\', '/')
-            parts = fn.split('/')
-            print('/'.join(parts[-2:]))
-            for key in result:
-                print(f"{d.get(key):4} {key}")
-# @+node:ekr.20121128031949.12614: *4* sherlock.run
-# Modified from pdb.Pdb.set_trace.
+    # iconList = self.getIconList(p.v)
+    # iconList.extend(aList)
+    # self.setIconList(p, iconList)
 
-def run(self, frame: Any = None) -> None:
-    """Trace from the given frame or the caller's frame."""
-    print("SherlockTracer.run:patterns:\n%s" % '\n'.join(self.patterns))
-    if frame is None:
-        frame = sys._getframe().f_back
-    # Compute self.n, the number of frames to ignore.
-    self.n = 0
-    while frame:
-        frame = frame.f_back
-        self.n += 1
-    # Pass self to sys.settrace to give easy access to all methods.
-    sys.settrace(self)
-# @+node:ekr.20140322090829.16834: *4* sherlock.push & pop
-def push(self, patterns: list[str]) -> None:
-    """Push the old patterns and set the new."""
-    self.pattern_stack.append(self.patterns)  # type:ignore
-    self.set_patterns(patterns)
-    print(f"SherlockTracer.push: {self.patterns}")
+    c.p.setDirty()
+    c.setChanged()
+    c.redraw()
 
-def pop(self) -> None:
-    """Restore the pushed patterns."""
-    if self.pattern_stack:
-        self.patterns = self.pattern_stack.pop()  # type:ignore
-        print(f"SherlockTracer.pop: {self.patterns}")
-    else:
-        print('SherlockTracer.pop: pattern stack underflow')
-# @+node:ekr.20140326100337.16845: *4* sherlock.set_patterns
-def set_patterns(self, patterns: list[str]) -> None:
-    """Set the patterns in effect."""
-    self.patterns = [z for z in patterns if self.check_pattern(z)]
-# @+node:ekr.20140322090829.16831: *4* sherlock.show
-def show(self, item: Any) -> str:
-    """return the best representation of item."""
-    if not item:
-        return repr(item)
-    if isinstance(item, dict):
-        return 'dict'
-    if isinstance(item, str):
-        s = repr(item)
-        if len(s) <= 20:
-            return s
-        return s[:17] + '...'
-    s = repr(item)
-    # A Hack for mypy:
-    if s.startswith("<object object"):
-        s = "_dummy"
-    return s
-# @+node:ekr.20121128093229.12616: *4* sherlock.stop
-def stop(self) -> None:
-    """Stop all tracing."""
-    sys.settrace(None)
-# @+node:ekr.20181202062518.1: *3* leoFastRedraw.py
-"""
-Gui-independent fast-redraw code.
-
-For an explanation, see this thread:
-https://groups.google.com/forum/#!topic/leo-editor/hpHyHU2sWtM
-"""
-import difflib
-import re
-import time
-from leo.core import leoGlobals as g
-
-class FastRedraw:
-    @others
-
+# @+node:ekr.20120419093256.10048: *3* ../plugins/free_layout.py
+<< free_layout docstring >>
+# Written by Terry Brown.
+<< free_layout imports >>
+<< free_layout annotations >>
+@others
 @language python
 @tabwidth -4
 @pagewidth 70
-# @+node:ekr.20181202060924.4: *4* LeoGui.dump_diff_op_codes
-def dump_diff_op_codes(self, a, b, op_codes):
-    """Dump the opcodes returned by difflib.SequenceMatcher."""
+# @+node:ekr.20110319161401.14467: *4* << free_layout docstring >>
+"""
+Free layout
+===========
 
-    def summarize(aList):
-        pat = re.compile(r'.*:.*:(.*)')
-        return ', '.join([pat.match(z).group(1) for z in aList])
+Adds flexible panel layout through context menus on the handles between panels.
 
-    for tag, i1, i2, j1, j2 in op_codes:
-        if tag == 'equal':
-            print(f"{tag:7} at {i1}:{i2} (both) ==> {summarize(b[j1:j2])!r}")
-        elif tag == 'insert':
-            print(f"{tag:7} at {i1}:{i2} (b)    ==> {summarize(b[j1:j2])!r}")
-        elif tag == 'delete':
-            print(f"{tag:7} at {i1}:{i2} (a)    ==> {summarize(a[i1:i2])!r}")
-        elif tag == 'replace':
-            print(f"{tag:7} at {i1}:{i2} (a)    ==> {summarize(a[i1:i2])!r}")
-            print(f"{tag:7} at {i1}:{i2} (b)    ==> {summarize(b[j1:j2])!r}")
-        else:
-            print('unknown tag')
-# @+node:ekr.20181202060924.5: *4* LeoGui.dump_opcodes
-def dump_opcodes(self, opcodes):
-    """Dump the opcodes returned by app.peep_hole and app.make_redraw_list."""
-    for z in opcodes:
-        kind = z[0]
-        if kind == 'replace':
-            kind, i1, gnxs1, gnxs2 = z
-            print(kind, i1)
-            print("  a: [%s]" % ',\n    '.join(gnxs1))
-            print("  b: [%s]" % ',\n    '.join(gnxs2))
-        elif kind in ('delete', 'insert'):
-            kind, i1, gnxs = z
-            print(kind, i1)
-            print("  [%s]" % ',\n    '.join(gnxs))
-        else:
-            print(z)
-# @+node:ekr.20181202060924.2: *4* LeoGui.flatten_outline
-def flatten_outline(self, c):
-    """Return a flat list of strings "level:gnx" for all *visible* positions."""
-    trace = False and not g.unitTesting
-    t1 = time.process_time()
-    aList: list[str] = []
-    for p in c.rootPosition().self_and_siblings():
-        self.extend_flattened_outline(aList, p)
-    if trace:
-        t2 = time.process_time()
-        print(f"app.flatten_outline: {len(aList)} entries {t2 - t1:6.4f} sec.")
-    return aList
+Uses NestedSplitter, a more intelligent QSplitter, from leo.plugins.nested_splitter
 
-def extend_flattened_outline(self, aList, p):
-    """Add p and all p's visible descendants to aList."""
-    # Padding the fields causes problems later.
-    aList.append(f"{p.level()}:{p.gnx}:{p.h}\n")
-    if p.isExpanded():
-        for child in p.children():
-            self.extend_flattened_outline(aList, child)
-# @+node:ekr.20181202060924.3: *4* LeoGui.make_redraw_list
-def make_redraw_list(self, a, b):
+Requires Qt.
+
+Commands (bindable with @settings-->@keys-->@shortcuts):
+
+free-layout-load
+    Open context menu for loading a different layout,
+    convenient keyboard shortcut target.
+free-layout-restore
+    Use the layout this outline had when it was opened.
+free-layout-zoom
+    Zoom or unzoom the current pane
+
+"""
+
+# @+node:tbrown.20110203111907.5520: *4* << free_layout imports >>
+from __future__ import annotations
+import json
+from typing import Any, TYPE_CHECKING
+from leo.core import leoGlobals as g
+
+#
+# Qt imports. May fail from the bridge.
+try:  # #1973
+    from leo.core.leoQt import QtWidgets
+    from leo.core.leoQt import MouseButton
+    from leo.plugins.nested_splitter import NestedSplitter  # NestedSplitterChoice
+except Exception:
+    QtWidgets = None  # type:ignore
+    MouseButton = None  # type:ignore
+    NestedSplitter = None
+
+# Do not call g.assertUi('qt') here. It's too early in the load process.
+# @+node:ekr.20220828125201.1: *4* << free_layout annotations >>
+if TYPE_CHECKING:  # pragma: no cover
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent
+    from leo.core.leoNodes import Position
+    from leo.plugins.qt_text import QTextMixin
+
+    QSplitter = QtWidgets.QSplitter
+    QWidget = QtWidgets.QWidget
+
+
+# @+node:tbrown.20110203111907.5521: *4* free_layout:init
+def init() -> bool:
+    """Return True if the free_layout plugin can be loaded."""
+    # #3910: The free_layout and nested_splitter plugins are deprecated.
+    return bool(g.app.gui.guiName() == "qt" and NestedSplitter)
+
+
+# @+node:ekr.20110318080425.14389: *4* class FreeLayoutController
+class FreeLayoutController:
+    << FreeLayoutController docstring >>
+    << define default_layout >>
+
+    @others
+
+
+# @+node:ekr.20201013042712.1: *5* << FreeLayoutController docstring >>
+"""Glue between Leo and the NestedSplitter gui widget.  All Leo aware
+code should be in here, none in NestedSplitter.
+
+*ALSO* implements the provider interface for NestedSplitter, in
+ns_provides, ns_provide, ns_context, ns_do_context, which
+NestedSplitter uses as callbacks to populate splitter-handle context-menu
+and the empty pane Action button menu:
+
+see nested_splitter.py-->class%20NestedSplitter%20(QSplitter)-->register_provider
+
+ns_provides
+  tell NestedSplitter which Action button items we can provide
+ns_provide
+  provide the advertised service when an Action button item we
+  advertised is selected
+ns_context
+  tell NestedSplitter which splitter-handle context-menu items
+  we can provide
+ns_do_context
+  provide the advertised service when a splitter-handle context-menu
+  item we advertised is selected
+"""
+
+# @+node:ekr.20201013042741.1: *5* << define default_layout >>
+default_layout = {
+    'content': [
+        {
+            'content': [
+                '_leo_pane:outlineFrame',
+                '_leo_pane:logFrame',
+            ],
+            'orientation': 1,
+            'sizes': [509, 275],
+        },
+        '_leo_pane:bodyFrame',
+    ],
+    'orientation': 2,
+    'sizes': [216, 216],
+}
+# @+node:ekr.20110318080425.14390: *5*  flc.ctor
+def __init__(self, c: Cmdr) -> None:
+    """Ctor for FreeLayoutController class."""
+    self.c = c
+    g.registerHandler('after-create-leo-frame', self.init)
+    # Plugins must be loaded first to provide their widgets in panels etc.
+    g.registerHandler('after-create-leo-frame2', self.loadLayouts)
+
+# @+node:tbrown.20110203111907.5522: *5*  flc.init
+def init(self, tag: str, keys: dict) -> None:
+    """Attach to an outline and
+
+    - add tags to widgets to indicate that they're essential
+      (tree, body, log-window-tabs) and
+
+    - tag the log-window-tabs widget as the place to put widgets
+      from free-layout panes which are closed
+
+    - register this FreeLayoutController as a provider of menu items
+      for NestedSplitter
     """
-    Diff the a (old) and b (new) outline lists.
-    Then optimize the diffs to create a redraw instruction list.
-    """
-    trace = False and not g.unitTesting
-    if a == b:
-        return []
+    c = self.c
+    if not NestedSplitter:
+        return
+    if c != keys.get('c'):
+        return
+    # Careful: we could be unit testing.
+    splitter = self.get_top_splitter()  # A NestedSplitter.
+    if not splitter:
+        return
+    # by default NestedSplitter's context menus are disabled, needed
+    # once to globally enable them
+    NestedSplitter.enabled = True
+    # when NestedSplitter disposes of children, it will either close
+    # them, or move them to another designated widget.  Here we set
+    # up two designated widgets
+    logTabWidget = splitter.findChild(QtWidgets.QWidget, "logTabWidget")
+    splitter.root.holders['_is_from_tab'] = logTabWidget
+    splitter.root.holders['_is_permanent'] = 'TOP'
+    # allow body and tree widgets to be "removed" to tabs on the log tab panel
+    bodyWidget = splitter.findChild(QtWidgets.QFrame, "bodyFrame")
+    bodyWidget._is_from_tab = "Body"
+    treeWidget = splitter.findChild(QtWidgets.QFrame, "outlineFrame")
+    treeWidget._is_from_tab = "Tree"
+    # also the other tabs will have _is_from_tab set on them by the
+    # offer_tabs menu callback above
+    # if the log tab panel is removed, move it back to the top splitter
+    logWidget = splitter.findChild(QtWidgets.QFrame, "logFrame")
+    logWidget._is_permanent = True
+    # tag core Leo components (see ns_provides)
+    splitter.findChild(QtWidgets.QWidget, "outlineFrame")._ns_id = '_leo_pane:outlineFrame'
+    splitter.findChild(QtWidgets.QWidget, "logFrame")._ns_id = '_leo_pane:logFrame'
+    splitter.findChild(QtWidgets.QWidget, "bodyFrame")._ns_id = '_leo_pane:bodyFrame'
+    splitter.register_provider(self)
+    splitter.splitterClicked_connect(self.splitter_clicked)
 
-    def gnxs(aList):
-        """Return the gnx list. Do not try to remove this!"""
-        return [z.strip() for z in aList]
-    @others # Define local helpers
-    d = difflib.SequenceMatcher(None, a, b)
-    op_codes = list(d.get_opcodes())
-    # dump_diff_op_codes(a, b, op_codes)
-    #
-    # Generate the instruction list, and verify the result.
-    opcodes, result = [], []
-    for tag, i1, i2, j1, j2 in op_codes:
-        if tag == 'insert':
-            opcodes.append(['insert', i1, gnxs(b[j1:j2])])
-        elif tag == 'delete':
-            opcodes.append(['delete', i1, gnxs(a[i1:i2])])
-        elif tag == 'replace':
-            opcodes.append(['replace', i1, gnxs(a[i1:i2]), gnxs(b[j1:j2])])
-        result.extend(b[j1:j2])
-    assert b == result, (a, b)
-    #
-    # Run the peephole.
-    opcodes = self.peep_hole(opcodes)
+# @+node:tbrown.20120119080604.22982: *5* flc.embed
+def embed(self) -> None:
+    """called from ns_do_context - embed layout in outline's
+    @settings, an alternative to the Load/Save named layout system
+    """
+    # Careful: we could be unit testing.
+    top_splitter = self.get_top_splitter()
+    if not top_splitter:
+        return
+    c = self.c
+    layout = top_splitter.get_saveable_layout()
+    nd = g.findNodeAnywhere(c, "@data free-layout-layout")
+    if not nd:
+        settings: Position | None
+        settings = g.findNodeAnywhere(c, "@settings")
+        if not settings:
+            settings = c.rootPosition().insertAfter()
+            settings.h = "@settings"
+        nd = settings.insertAsNthChild(0)
+    nd.h = "@data free-layout-layout"
+    nd.b = json.dumps(layout, indent=4)
+    nd = nd.parent()
+    if not nd or nd.h != "@settings":
+        g.es("WARNING: @data free-layout-layout node is not under an active @settings node")
+    c.redraw()
+
+# @+node:ekr.20160424035257.1: *5* flc.get_main_splitter
+def get_main_splitter(self, w: QTextMixin | None = None) -> NestedSplitter | None:
+    """
+    Return the main splitter.
+
+    We tacitly assume that this splitter contains the body pane.
+    """
+    top = self.get_top_splitter()
+    return top if top.objectName() == 'main_splitter' else None
+
+# @+node:ekr.20160424035254.1: *5* flc.get_secondary_splitter
+def get_secondary_splitter(self) -> NestedSplitter | None:
+    """
+    Return the secondary splitter, that is, the splitter containing the outline pane.
+    """
+    top = self.get_top_splitter()
+    w = top and top.find_child(QtWidgets.QWidget, 'outlineFrame')
+    while w:
+        w = w.parent()
+        if NestedSplitter is not None and isinstance(w, NestedSplitter):
+            return w
+    return None
+
+# @+node:tbrown.20110621120042.22914: *5* flc.get_top_splitter
+def get_top_splitter(self) -> NestedSplitter | None:
+    """Return the top splitter of c.frame.top."""
+    f = self.c.frame
+    if hasattr(f, 'top') and f.top:
+        child = f.top.findChild(NestedSplitter)
+        return child and child.top()
+    return None
+
+# @+node:ekr.20120419095424.9927: *5* flc.loadLayouts (sets wrap=True)
+def loadLayouts(self, tag: str, keys: dict, reloading: bool = False) -> None:
+    """loadLayouts - Load the outline's layout
+
+    :Parameters:
+    - `tag`: from hook event
+    - `keys`: from hook event
+    - `reloading`: True if this is not the initial load, see below
+
+    When called from the `after-create-leo-frame2` hook this defaults
+    to False.  When called from the `restore-layout` command, this is set
+    True, and the layout the outline had *when first loaded* is restored.
+    Useful if you want to temporarily switch to a different layout and then
+    back, without having to remember the original layouts name.
+    """
+    trace = 'layouts' in g.app.debug
+    c = self.c
+    if not (g.app and g.app.db):
+        return  # Can happen when running from the Leo bridge.
+    if c != keys.get('c'):
+        return
+    d = g.app.db.get('ns_layouts') or {}
     if trace:
-        print('app.make_redraw_list: opcodes after peephole...')
-        self.dump_opcodes(opcodes)
-    return opcodes
-# @+node:ekr.20181202060924.6: *4* LeoGui.peep_hole
-def peep_hole(self, opcodes):
-    """Scan the list of opcodes, merging adjacent op-codes."""
-    i, result = 0, []
-    while i < len(opcodes):
-        op0 = opcodes[i]
-        if i == len(opcodes) - 1:
-            result.append(op0)
-            break
-        op1 = opcodes[i + 1]
-        kind0, kind1 = op0[0], op1[0]
-        # Merge adjacent insert/delete opcodes with the same gnx.
-        if (
-            kind0 == 'insert' and kind1 == 'delete' or
-            kind0 == 'delete' and kind1 == 'insert'
+        g.trace(tag)
+        g.printObj(keys, tag="keys")
+    if layout := c.config.getData("free-layout-layout"):
+        layout = json.loads('\n'.join(layout))
+    if name := c.db.get('_ns_layout'):
+        if reloading:
+            name = c.free_layout.original_layout
+            c.db['_ns_layout'] = name
+        else:
+            c.free_layout.original_layout = name
+        if layout:
+            g.es(
+                "NOTE: embedded layout in @settings/@data free-layout-layout overrides saved layout "
+                + name
+            )
+        else:
+            layout = d.get(name)
+    # EKR: Create commands that will load each layout.
+    if d:
+        for name in sorted(d.keys()):
+
+            def func(event: LeoKeyEvent) -> None:
+                if layout := d.get(name):  # noqa
+                    c.free_layout.get_top_splitter().load_layout(c, layout)
+                else:
+                    g.trace('no layout', name)  # noqa
+
+            name_s = name.strip().lower().replace(' ', '-')
+            commandName = f"free-layout-load-{name_s}"
+            c.k.registerCommand(commandName, func)
+    # Careful: we could be unit testing or in the Leo bridge.
+    if layout:
+        if splitter := c.free_layout.get_top_splitter():
+            splitter.load_layout(c, layout)
+
+# @+node:tbrown.20110628083641.11730: *5* flc.ns_context
+def ns_context(self) -> list[tuple[str, str]]:
+    ans: list[Any] = [
+        ('Embed layout', '_fl_embed_layout'),
+        ('Save layout', '_fl_save_layout'),
+    ]
+    if d := g.app.db.get('ns_layouts', {}):
+        ans.append({'Load layout': [(k, '_fl_load_layout:' + k) for k in d]})
+        ans.append({'Delete layout': [(k, '_fl_delete_layout:' + k) for k in d]})
+        ans.append(('Forget layout', '_fl_forget_layout:'))
+        ans.append(('Restore initial layout', '_fl_restore_layout:'))
+    ans.append(('Restore default layout', '_fl_restore_default:'))
+    ans.append(('Help for this menu', '_fl_help:'))
+    return ans
+
+# @+node:tbrown.20110628083641.11732: *5* flc.ns_do_context
+def ns_do_context(self, id_: QWidget, splitter: QSplitter, index: int) -> bool:
+    c = self.c
+    if id_.startswith('_fl_embed_layout'):
+        self.embed()
+        return True
+    if id_.startswith('_fl_restore_default'):
+        self.get_top_splitter().load_layout(c, layout=self.default_layout)
+    if id_.startswith('_fl_help'):
+        self.c.putHelpFor(__doc__)
+        # g.handleUrl("https://leo-editor.github.io/leo-editor/")
+        return True
+    if id_ == '_fl_save_layout':
+        if self.c.config.getData("free-layout-layout"):
+            g.es("WARNING: embedded layout in")
+            g.es("@settings/@data free-layout-layout")
+            g.es("will override saved layout")
+        layout = self.get_top_splitter().get_saveable_layout()
+        name = g.app.gui.runAskOkCancelStringDialog(
+            self.c,
+            title="Save layout",
+            message="Name for layout?",
+        )
+        if name:
+            self.c.db['_ns_layout'] = name
+            d = g.app.db.get('ns_layouts', {})
+            d[name] = layout
+            # make sure g.app.db's __set_item__ is hit so it knows to save
+            g.app.db['ns_layouts'] = d
+        return True
+    if id_.startswith('_fl_load_layout:'):
+        if self.c.config.getData("free-layout-layout"):
+            g.es("WARNING: embedded layout in")
+            g.es("@settings/@data free-layout-layout")
+            g.es("will override saved layout")
+        name = id_.split(':', 1)[1]
+        self.c.db['_ns_layout'] = name
+        layout = g.app.db['ns_layouts'][name]
+        self.get_top_splitter().load_layout(c, layout)
+        return True
+    if id_.startswith('_fl_delete_layout:'):
+        name = id_.split(':', 1)[1]
+        if 'yes' == g.app.gui.runAskYesNoCancelDialog(
+            c, "Really delete Layout?", f"Really permanently delete the layout '{name}'?"
         ):
-            kind0, index0, gnxs0 = op0
-            kind1, index1, gnxs1 = op1
-            if gnxs0[0] == gnxs1[0]:
-                result.append(['move', index0, index1, gnxs0, gnxs1])
-                i += 2  # Don't scan either op again!
-                break
-        # The default is to retain the opcode.
-        result.append(op0)
-        i += 1
-    return result
+            d = g.app.db.get('ns_layouts', {})
+            del d[name]
+            # make sure g.app.db's __set_item__ is hit so it knows to save
+            g.app.db['ns_layouts'] = d
+            if '_ns_layout' in self.c.db:
+                del self.c.db['_ns_layout']
+        return True
+    if id_.startswith('_fl_forget_layout:'):
+        if '_ns_layout' in self.c.db:
+            del self.c.db['_ns_layout']
+        return True
+    if id_.startswith('_fl_restore_layout:'):
+        self.loadLayouts("reload", {'c': self.c}, reloading=True)
+        return True
+    return False
+
+# @+node:tbrown.20110628083641.11724: *5* flc.ns_provide
+def ns_provide(self, id_: str) -> str | QTextMixin | None:
+    if id_.startswith('_leo_tab:'):
+        id_ = id_.split(':', 1)[1]
+        top = self.get_top_splitter()
+        logTabWidget = top.find_child(QtWidgets.QWidget, "logTabWidget")
+        for n in range(logTabWidget.count()):
+            if logTabWidget.tabText(n) == id_:
+                w = logTabWidget.widget(n)
+                w.setHidden(False)
+                w._is_from_tab = logTabWidget.tabText(n)
+                w.setMinimumSize(20, 20)
+                return w
+        # didn't find it, maybe it's already in a splitter
+        return 'USE_EXISTING'
+    if id_.startswith('_leo_pane:'):
+        id_ = id_.split(':', 1)[1]
+        if w := self.get_top_splitter().find_child(QtWidgets.QWidget, id_):
+            w.setHidden(False)  # may be from Tab holder
+            w.setMinimumSize(20, 20)
+        return w
+    return None
+
+# @+node:tbrown.20110627201141.11745: *5* flc.ns_provides
+def ns_provides(self) -> list[tuple[str, str]]:
+    ans: list[tuple[str, str]] = []
+    # list of things in tab widget
+    logTabWidget = self.get_top_splitter().find_child(QtWidgets.QWidget, "logTabWidget")
+    for n in range(logTabWidget.count()):
+        text = str(logTabWidget.tabText(n))
+        if text in ('Body', 'Tree'):
+            continue  # handled below
+        if text == 'Log':
+            # if Leo can't find Log in tab pane, it creates another
+            continue
+        ans.append((text, '_leo_tab:' + text))
+    ans.append(('Tree', '_leo_pane:outlineFrame'))
+    ans.append(('Body', '_leo_pane:bodyFrame'))
+    ans.append(('Tab pane', '_leo_pane:logFrame'))
+    return ans
+
+# @+node:tbnorth.20160510122413.1: *5* flc.splitter_clicked
+def splitter_clicked(
+    self,
+    splitter: QSplitter,
+    handle: QSplitter,
+    event: LeoKeyEvent | None,
+    release: str,
+    double: bool,
+) -> None:
+    """
+    splitter_clicked - middle click release will zoom adjacent
+    body / tree panes
+
+    :param NestedSplitter splitter: splitter containing clicked handle
+    :param NestedSplitterHandle handle: clicked handle
+    :param QMouseEvent event: mouse event for click
+    :param bool release: was it a Press or Release event
+    :param bool double: was it a double click event
+    """
+    if not event:
+        return
+    if not release or event.button() != MouseButton.MiddleButton:
+        return
+    if splitter.root.zoomed:  # unzoom if *any* handle clicked
+        splitter.zoom_toggle()
+        return
+    before = splitter.widget(splitter.indexOf(handle) - 1)
+    after = splitter.widget(splitter.indexOf(handle))
+    for pane in before, after:
+        if pane.objectName() == 'bodyFrame':
+            pane.setFocus()
+            splitter.zoom_toggle()
+            return
+        if pane.objectName() == 'outlineFrame':
+            pane.setFocus()
+            splitter.zoom_toggle(local=True)
+            return
+
+# @+node:ekr.20160416065221.1: *4* commands: free_layout.py
+# @+node:tbrown.20140524112944.32658: *5* @g.command free-layout-context-menu
+@g.command('free-layout-context-menu')
+def free_layout_context_menu(event: LeoKeyEvent | None = None) -> None:
+    """
+    Open free layout's context menu, using the first divider of the top
+    splitter for context.
+    """
+    c = event.get('c') if event else None
+    if not c:
+        return
+    splitter = c.free_layout.get_top_splitter()
+    handle = splitter.handle(1)
+    handle.splitter_menu(handle.rect().topLeft())
+
+
+# @+node:tbrown.20130403081644.25265: *5* @g.command free-layout-restore
+@g.command('free-layout-restore')
+def free_layout_restore(event: LeoKeyEvent | None = None) -> None:
+    """
+    Restore layout outline had when it was loaded.
+    """
+    if c := event.get('c') if event else None:
+        c.free_layout.loadLayouts('reload', {'c': c}, reloading=True)
+
+
+# @+node:tbrown.20131111194858.29876: *5* @g.command free-layout-load
+@g.command('free-layout-load')
+def free_layout_load(event: LeoKeyEvent | None = None) -> None:
+    """Load layout from menu."""
+    c = event.get('c') if event else None
+    if not c:
+        return
+    d = g.app.db.get('ns_layouts', {})
+    menu = QtWidgets.QMenu(c.frame.top)
+    for k in d:
+        menu.addAction(k)
+    pos = c.frame.top.window().frameGeometry().center()
+    action = menu.exec(pos)
+    if action is None:
+        return
+    name = str(action.text())
+    c.db['_ns_layout'] = name
+    # layout = g.app.db['ns_layouts'][name]
+    layouts = g.app.db.get('ns_layouts', {})
+    if layout := layouts.get(name):
+        c.free_layout.get_top_splitter().load_layout(c, layout)
+
+
+# @+node:tbrown.20140522153032.32658: *5* @g.command free-layout-zoom
+@g.command('free-layout-zoom')
+def free_layout_zoom(event: LeoKeyEvent | None = None) -> None:
+    """(un)zoom the current pane."""
+    if c := event.get('c') if event else None:
+        c.free_layout.get_top_splitter().zoom_toggle()
+
+
+# @+node:ekr.20160327060009.1: *5* free_layout:register_provider
+def register_provider(c: Cmdr, provider_instance: object) -> None:
+    """Register the provider instance with the top splitter."""
+    if getattr(c, 'free_layout', None):
+        if splitter := c.free_layout.get_top_splitter():
+            splitter.register_provider(provider_instance)
+
+
 # @+node:ekr.20181103094900.1: *3* ../plugins/leoflexx.py
 # Disable mypy checking.
 # type:ignore
@@ -3098,74 +3076,604 @@ class LeoFlexxTreeItem(flx.TreeItem):
         return 'head'  # Required, for proper pane bindings.
 
     @others
-# @+node:ekr.20260805111552.1: *3* 'insert-qt-icon' & helper
-@cmd('insert-qt-icon')
-def insertQtIcon(self, event: LeoKeyEvent | None = None) -> None:
+# @+node:ekr.20121128031949.12605: *3* class g.SherlockTracer
+class SherlockTracer:
     """
-    Show a window previewing all standard Qt icons.
-    Add each selected icon to c.p.h.
+    A stand-alone tracer class with many of Sherlock's features.
+
+    This class should work in any environment containing the re, os and sys modules.
+
+    The arguments in the pattern lists determine which functions get traced
+    or which stats get printed. Each pattern starts with "+", "-", "+:" or
+    "-:", followed by a regular expression::
+
+    "+x"  Enables tracing (or stats) for all functions/methods whose name
+          matches the regular expression x.
+    "-x"  Disables tracing for functions/methods.
+    "+:x" Enables tracing for all functions in the **file** whose name matches x.
+    "-:x" Disables tracing for an entire file.
+
+    Enabling and disabling depends on the order of arguments in the pattern
+    list. Consider the arguments for the Rope trace::
+
+    patterns=['+.*','+:.*',
+        '-:.*\\lib\\.*','+:.*rope.*','-:.*leoGlobals.py',
+        '-:.*worder.py','-:.*prefs.py','-:.*resources.py',])
+
+    This enables tracing for everything, then disables tracing for all
+    library modules, except for all rope modules. Finally, it disables the
+    tracing for Rope's worder, prefs and resources modules.
+
+    Being able to zero in on the code of interest can be a big help in
+    studying other people's code. This is a non-invasive method: no tracing
+    code needs to be inserted anywhere.
+
+    Usage:
+
+    g.SherlockTracer(patterns).run()
     """
-   
-    controller = self
-    d = g.app.scriptDict
-    key = 'insert_qt_icon_window'
-    insert_qt_icon_window = d.get(key)
-    if not insert_qt_icon_window:
-        << define class QtPreviewWindow >>
-        d[key] = insert_qt_icon_window = QtPreviewWindow()
-    insert_qt_icon_window.show()
+    @others
+# @+node:ekr.20121128031949.12602: *4* sherlock.__init__
+def __init__(
+    self,
+    patterns: list[Any],
+    indent: bool = True,
+    show_args: bool = True,
+    show_return: bool = True,
+    verbose: bool = True,
+) -> None:
+    """SherlockTracer ctor."""
+    self.bad_patterns: list[str] = []  # List of bad patterns.
+    self.indent = indent  # True: indent calls and returns.
+    self.contents_d: dict[str, list] = {}  # Keys are file names, values are file lines.
+    self.n = 0  # The frame level on entry to run.
+    self.stats: dict[str, dict] = {}  # Keys are full file names, values are dicts.
+    self.patterns: list[Any] = None  # A list of regex patterns to match.
+    self.pattern_stack: list[str] = []
+    self.show_args = show_args  # True: show args for each function call.
+    self.show_return = show_return  # True: show returns from each function.
+    self.trace_lines = True  # True: trace lines in enabled functions.
+    self.verbose = verbose  # True: print filename:func
+    self.set_patterns(patterns)
+    try:  # Don't assume g.app exists.
+        from leo.core.leoQt import QtCore
+        if QtCore:
+            # pylint: disable=no-member
+            QtCore.pyqtRemoveInputHook()
+    except Exception:
+        pass
+# @+node:ekr.20140326100337.16844: *4* sherlock.__call__
+def __call__(self, frame: Any, event: Any, arg: Any) -> Any:
+    """Exists so that self.dispatch can return self."""
+    return self.dispatch(frame, event, arg)
+# @+node:ekr.20140326100337.16846: *4* sherlock.bad_pattern
+def bad_pattern(self, pattern: Any) -> None:
+    """Report a bad Sherlock pattern."""
+    if pattern not in self.bad_patterns:
+        self.bad_patterns.append(pattern)
+        print(f"\nignoring bad pattern: {pattern}\n")
+# @+node:ekr.20140326100337.16847: *4* sherlock.check_pattern
+def check_pattern(self, pattern: str) -> bool:
+    """Give an error and return False for an invalid pattern."""
+    try:
+        for prefix in ('+:', '-:', '+', '-'):
+            if pattern.startswith(prefix):
+                re.match(pattern[len(prefix) :], 'xyzzy')
+                return True
+        self.bad_pattern(pattern)
+        return False
+    except Exception:
+        self.bad_pattern(pattern)
+        return False
+# @+node:ekr.20121128031949.12609: *4* sherlock.dispatch
+def dispatch(self, frame: Any, event: Any, arg: Any) -> Any:
+    """The dispatch method."""
+    if event == 'call':
+        self.do_call(frame, arg)
+    elif event == 'return' and self.show_return:
+        self.do_return(frame, arg)
+    elif event == 'line' and self.trace_lines:
+        self.do_line(frame, arg)
+    # Queue the SherlockTracer instance again.
+    return self
+# @+node:ekr.20121128031949.12603: *4* sherlock.do_call & helper
+def do_call(self, frame: Any, unused_arg: Any) -> None:
+    """Trace through a function call."""
+    frame1 = frame
+    code = frame.f_code
+    file_name = code.co_filename
+    locals_ = frame.f_locals
+    function_name = code.co_name
+    try:
+        full_name = self.get_full_name(locals_, function_name)
+    except Exception:
+        full_name = function_name
+    if not self.is_enabled(file_name, full_name, self.patterns):
+        # 2020/09/09: Don't touch, for example, __ methods.
+        return
+    n = 0  # The number of callers of this def.
+    while frame:
+        frame = frame.f_back
+        n += 1
+    indent = ' ' * max(0, n - self.n) if self.indent else ''
+    path = f"{os.path.basename(file_name):>20}" if self.verbose else ''
+    leadin = '+' if self.show_return else ''
+    args_list = self.get_args(frame1)
+    if self.show_args and args_list:
+        args_s = ','.join(args_list)
+        args_s2 = f"({args_s})"
+        if len(args_s2) > 100:
+            print(f"{path}:{indent}{leadin}{full_name}")
+            g.printObj(args_list, indent=len(indent) + 22)
+        else:
+            print(f"{path}:{indent}{leadin}{full_name}{args_s2}")
+    else:
+        print(f"{path}:{indent}{leadin}{full_name}")
+    # Always update stats.
+    d = self.stats.get(file_name, {})
+    d[full_name] = 1 + d.get(full_name, 0)
+    self.stats[file_name] = d
+# @+node:ekr.20130111185820.10194: *5* sherlock.get_args
+def get_args(self, frame: Any) -> list[str]:
+    """Return a list of string "name=val" for each arg in the function call."""
+    code = frame.f_code
+    locals_ = frame.f_locals
+    name = code.co_name
+    n = code.co_argcount
+    if code.co_flags & 4:
+        n = n + 1
+    if code.co_flags & 8:
+        n = n + 1
+    result = []
+    for i in range(n):
+        name = code.co_varnames[i]
+        if name != 'self':
+            arg = locals_.get(name, '*undefined*')
+            if arg:
+                if isinstance(arg, (list, tuple)):
+                    val_s = ','.join([self.show(z) for z in arg if self.show(z)])
+                    val = f"[{val_s}]"
+                elif isinstance(arg, str):
+                    val = arg
+                else:
+                    val = self.show(arg)
+                if val:
+                    result.append(f"{name}={val}")
+    return result
+# @+node:ekr.20140402060647.16845: *4* sherlock.do_line (not used)
+bad_fns: list[str] = []
 
-# @+node:ekr.20260805111828.1: *4* << define class QtPreviewWindow >>
-from PyQt6.QtWidgets import (  # pylint: disable=no-name-in-module
-    QGridLayout,
-    QPushButton,
-    QStyle,
-    QWidget,
-)
-
-# Adapted from https://gist.github.com/ostr00000/30c9e732550baa0c13a73fd3320e7d55
-class QtPreviewWindow(QWidget):
-    def __init__(self):
-        super().__init__()
-        icon_names = sorted(
-            [z for z in dir(QStyle.StandardPixmap) if z.startswith("SP_")]
+def do_line(self, frame: Any, arg: Any) -> None:
+    """print each line of enabled functions."""
+    if 1:
+        return
+    code = frame.f_code
+    file_name = code.co_filename
+    locals_ = frame.f_locals
+    name = code.co_name
+    full_name = self.get_full_name(locals_, name)
+    if not self.is_enabled(file_name, full_name, self.patterns):
+        return
+    n = frame.f_lineno - 1  # Apparently, the first line is line 1.
+    d = self.contents_d
+    lines = d.get(file_name)
+    if not lines:
+        print(file_name)
+        try:
+            with open(file_name) as f:
+                s = f.read()
+        except Exception:
+            if file_name not in self.bad_fns:
+                self.bad_fns.append(file_name)
+                print(f"open({file_name}) failed")
+            return
+        lines = g.splitLines(s)
+        d[file_name] = lines
+    line = lines[n].rstrip() if n < len(lines) else '<EOF>'
+    if 0:
+        print(f"{name:3} {line}")
+    else:
+        print(f"{g.shortFileName(file_name)} {n} {full_name} {line}")
+# @+node:ekr.20130109154743.10172: *4* sherlock.do_return & helper
+def do_return(self, frame: Any, arg: Any) -> None:  # Arg *is* used below.
+    """Trace a return statement."""
+    code = frame.f_code
+    fn = code.co_filename
+    locals_ = frame.f_locals
+    name = code.co_name
+    self.full_name = self.get_full_name(locals_, name)
+    if not self.is_enabled(fn, self.full_name, self.patterns):
+        return
+    n = 0
+    while frame:
+        frame = frame.f_back
+        n += 1
+    path = f"{os.path.basename(fn):>20}" if self.verbose else ''
+    if name and name == '__init__':
+        try:
+            ret1 = locals_ and locals_.get('self', None)
+            self.put_ret(ret1, n, path)
+        except NameError:
+            self.put_ret(f"<{ret1.__class__.__name__}>", n, path)
+    else:
+        self.put_ret(arg, n, path)
+# @+node:ekr.20220605141445.1: *5* sherlock.put_ret
+def put_ret(self, arg: Any, n: int, path: str) -> None:
+    """Print arg, the value returned by a "return" statement."""
+    indent = ' ' * max(0, n - self.n + 1) if self.indent else ''
+    try:
+        if isinstance(arg, types.GeneratorType):
+            ret = '<generator>'
+        elif isinstance(arg, (tuple, list)):
+            ret_s = ','.join([self.show(z) for z in arg])
+            if len(ret_s) > 40:
+                g.printObj(arg, indent=len(indent))
+                ret = ''
+            else:
+                ret = f"[{ret_s}]"
+        elif arg:
+            ret = self.show(arg)
+            if len(ret) > 100:
+                ret = f"\n    {ret}"
+        else:
+            ret = '' if arg is None else repr(arg)
+        print(f"{path}:{indent}-{self.full_name} -> {ret}")
+    except Exception:
+        exctype, value = sys.exc_info()[:2]
+        try:  # Be extra careful.
+            arg_s = f"arg: {arg!r}"
+        except Exception:
+            arg_s = ''  # arg.__class__.__name__
+        print(
+            f"{path}:{indent}-{self.full_name} -> "
+            f"{exctype.__name__}, {value} {arg_s}"
         )
-        layout = QGridLayout()
-        for i, icon_name in enumerate(icon_names):
-            button = QPushButton(icon_name)
-            pixmap = getattr(QStyle.StandardPixmap, icon_name)
-            if pixmap is None:
-                g.trace(f"No pixmap for {icon_name=}")
-                continue
+# @+node:ekr.20121128111829.12185: *4* sherlock.fn_is_enabled
+def fn_is_enabled(self, func: Any, patterns: list[str]) -> bool:
+    """Return True if tracing for the given function is enabled."""
+    if func in self.ignored_functions:
+        return False
 
-            def callback(
-                icon_name: str = icon_name, pixmap: QStyle.StandardPixmap = pixmap
-            ) -> None:
-                controller._addPixmapToNode(icon_name, pixmap)
+    def ignore_function() -> None:
+        if func not in self.ignored_functions:
+            self.ignored_functions.append(func)
+            print(f"Ignore function: {func}")
+    #
+    # New in Leo 6.3. Never trace dangerous functions.
+    table = (
+        '_deepcopy.*',
+        # Unicode primitives.
+        'encode\b', 'decode\b',
+        # System functions
+        '.*__next\b',
+        '<frozen>', '<genexpr>', '<listcomp>',
+        # '<decorator-gen-.*>',
+        'get\b',
+        # String primitives.
+        'append\b', 'split\b', 'join\b',
+        # File primitives...
+        'access_check\b', 'expanduser\b', 'exists\b', 'find_spec\b',
+        'abspath\b', 'normcase\b', 'normpath\b', 'splitdrive\b',
+    )
+    g.trace('=====', func)
+    for z in table:
+        if re.match(z, func):
+            ignore_function()
+            return False
+    #
+    # Legacy code.
+    try:
+        enabled, pattern = False, None
+        for pattern in patterns:
+            if pattern.startswith('+:'):
+                if re.match(pattern[2:], func):
+                    enabled = True
+            elif pattern.startswith('-:'):
+                if re.match(pattern[2:], func):
+                    enabled = False
+        return enabled
+    except Exception:
+        self.bad_pattern(pattern)
+        return False
+# @+node:ekr.20130112093655.10195: *4* sherlock.get_full_name
+def get_full_name(self, locals_: Any, name: str) -> str:
+    """Return class_name::name if possible."""
+    full_name = name
+    try:
+        user_self = locals_ and locals_.get('self', None)
+        if user_self:
+            full_name = user_self.__class__.__name__ + '::' + name
+    except Exception:
+        pass
+    return full_name
+# @+node:ekr.20121128111829.12183: *4* sherlock.is_enabled
+ignored_files: list[str] = []  # List of files.
+ignored_functions: list[str] = []  # List of files.
 
-            button.released.connect(callback)
-            styled_icon = self.style().standardIcon(pixmap)  # type:ignore
-            button.setIcon(styled_icon)
-            layout.addWidget(button, int(i / 4), int(i % 4))
-        self.setLayout(layout)
+def is_enabled(
+    self,
+    file_name: str,
+    function_name: str,
+    patterns: list[str] = None,
+) -> bool:
+    """Return True if tracing for function_name in the given file is enabled."""
+    #
+    # New in Leo 6.3. Never trace through some files.
+    if not os:
+        return False  # Shutting down.
+    base_name = os.path.basename(file_name)
+    if base_name in self.ignored_files:
+        return False
 
-# @+node:ekr.20260805114313.1: *4* ec._addPixmapToNode (to do)
-def _addPixmapToNode(self, icon_name: str, pixmap: QStyle.StandardPixmap) -> None:
-    """Convert the given pixmap to an icon and add it to c.p.h."""
-    c = self.c
-    assert isinstance(pixmap, QStyle.StandardPixmap)
-    g.trace(icon_name)
+    def ignore_file() -> None:
+        if base_name not in self.ignored_files:
+            self.ignored_files.append(base_name)
 
-    # Convert the pixmap to a QIcon?.
+    def ignore_function() -> None:
+        if function_name not in self.ignored_functions:
+            self.ignored_functions.append(function_name)
 
-    # iconList = self.getIconList(p.v)
-    # iconList.extend(aList)
-    # self.setIconList(p, iconList)
+    if f"{os.sep}lib{os.sep}" in file_name:
+        ignore_file()
+        return False
+    if base_name.startswith('<') and base_name.endswith('>'):
+        ignore_file()
+        return False
+    #
+    # New in Leo 6.3. Never trace dangerous functions.
+    table = (
+        '_deepcopy.*',
+        # Unicode primitives.
+        'encode\b', 'decode\b',
+        # System functions
+        '.*__next\b',
+        '<frozen>', '<genexpr>', '<listcomp>',
+        # '<decorator-gen-.*>',
+        'get\b',
+        # String primitives.
+        'append\b', 'split\b', 'join\b',
+        # File primitives...
+        'access_check\b', 'expanduser\b', 'exists\b', 'find_spec\b',
+        'abspath\b', 'normcase\b', 'normpath\b', 'splitdrive\b',
+    )
+    for z in table:
+        if re.match(z, function_name):
+            ignore_function()
+            return False
+    #
+    # Legacy code.
+    enabled = False
+    if patterns is None:
+        patterns = self.patterns
+    for pattern in patterns:
+        try:
+            if pattern.startswith('+:'):
+                if re.match(pattern[2:], file_name):
+                    enabled = True
+            elif pattern.startswith('-:'):
+                if re.match(pattern[2:], file_name):
+                    enabled = False
+            elif pattern.startswith('+'):
+                if re.match(pattern[1:], function_name):
+                    enabled = True
+            elif pattern.startswith('-'):
+                if re.match(pattern[1:], function_name):
+                    enabled = False
+            else:
+                self.bad_pattern(pattern)
+        except Exception:
+            self.bad_pattern(pattern)
+    return enabled
+# @+node:ekr.20121128111829.12182: *4* sherlock.print_stats
+def print_stats(self, patterns: list[str] = None) -> None:
+    """Print all accumulated statisitics."""
+    print('\nSherlock statistics...')
+    if not patterns:
+        patterns = ['+.*', '+:.*',]
+    for fn in sorted(self.stats.keys()):
+        d = self.stats.get(fn)
+        if self.fn_is_enabled(fn, patterns):
+            result = sorted(d.keys())  # type:ignore
+        else:
+            result = [key for key in sorted(d.keys())  # type:ignore
+                if self.is_enabled(fn, key, patterns)]
+        if result:
+            print('')
+            fn = fn.replace('\\', '/')
+            parts = fn.split('/')
+            print('/'.join(parts[-2:]))
+            for key in result:
+                print(f"{d.get(key):4} {key}")
+# @+node:ekr.20121128031949.12614: *4* sherlock.run
+# Modified from pdb.Pdb.set_trace.
 
-    c.p.setDirty()
-    c.setChanged()
-    c.redraw()
+def run(self, frame: Any = None) -> None:
+    """Trace from the given frame or the caller's frame."""
+    print("SherlockTracer.run:patterns:\n%s" % '\n'.join(self.patterns))
+    if frame is None:
+        frame = sys._getframe().f_back
+    # Compute self.n, the number of frames to ignore.
+    self.n = 0
+    while frame:
+        frame = frame.f_back
+        self.n += 1
+    # Pass self to sys.settrace to give easy access to all methods.
+    sys.settrace(self)
+# @+node:ekr.20140322090829.16834: *4* sherlock.push & pop
+def push(self, patterns: list[str]) -> None:
+    """Push the old patterns and set the new."""
+    self.pattern_stack.append(self.patterns)  # type:ignore
+    self.set_patterns(patterns)
+    print(f"SherlockTracer.push: {self.patterns}")
 
+def pop(self) -> None:
+    """Restore the pushed patterns."""
+    if self.pattern_stack:
+        self.patterns = self.pattern_stack.pop()  # type:ignore
+        print(f"SherlockTracer.pop: {self.patterns}")
+    else:
+        print('SherlockTracer.pop: pattern stack underflow')
+# @+node:ekr.20140326100337.16845: *4* sherlock.set_patterns
+def set_patterns(self, patterns: list[str]) -> None:
+    """Set the patterns in effect."""
+    self.patterns = [z for z in patterns if self.check_pattern(z)]
+# @+node:ekr.20140322090829.16831: *4* sherlock.show
+def show(self, item: Any) -> str:
+    """return the best representation of item."""
+    if not item:
+        return repr(item)
+    if isinstance(item, dict):
+        return 'dict'
+    if isinstance(item, str):
+        s = repr(item)
+        if len(s) <= 20:
+            return s
+        return s[:17] + '...'
+    s = repr(item)
+    # A Hack for mypy:
+    if s.startswith("<object object"):
+        s = "_dummy"
+    return s
+# @+node:ekr.20121128093229.12616: *4* sherlock.stop
+def stop(self) -> None:
+    """Stop all tracing."""
+    sys.settrace(None)
+# @+node:ekr.20181202062518.1: *3* leoFastRedraw.py
+"""
+Gui-independent fast-redraw code.
+
+For an explanation, see this thread:
+https://groups.google.com/forum/#!topic/leo-editor/hpHyHU2sWtM
+"""
+import difflib
+import re
+import time
+from leo.core import leoGlobals as g
+
+class FastRedraw:
+    @others
+
+@language python
+@tabwidth -4
+@pagewidth 70
+# @+node:ekr.20181202060924.4: *4* LeoGui.dump_diff_op_codes
+def dump_diff_op_codes(self, a, b, op_codes):
+    """Dump the opcodes returned by difflib.SequenceMatcher."""
+
+    def summarize(aList):
+        pat = re.compile(r'.*:.*:(.*)')
+        return ', '.join([pat.match(z).group(1) for z in aList])
+
+    for tag, i1, i2, j1, j2 in op_codes:
+        if tag == 'equal':
+            print(f"{tag:7} at {i1}:{i2} (both) ==> {summarize(b[j1:j2])!r}")
+        elif tag == 'insert':
+            print(f"{tag:7} at {i1}:{i2} (b)    ==> {summarize(b[j1:j2])!r}")
+        elif tag == 'delete':
+            print(f"{tag:7} at {i1}:{i2} (a)    ==> {summarize(a[i1:i2])!r}")
+        elif tag == 'replace':
+            print(f"{tag:7} at {i1}:{i2} (a)    ==> {summarize(a[i1:i2])!r}")
+            print(f"{tag:7} at {i1}:{i2} (b)    ==> {summarize(b[j1:j2])!r}")
+        else:
+            print('unknown tag')
+# @+node:ekr.20181202060924.5: *4* LeoGui.dump_opcodes
+def dump_opcodes(self, opcodes):
+    """Dump the opcodes returned by app.peep_hole and app.make_redraw_list."""
+    for z in opcodes:
+        kind = z[0]
+        if kind == 'replace':
+            kind, i1, gnxs1, gnxs2 = z
+            print(kind, i1)
+            print("  a: [%s]" % ',\n    '.join(gnxs1))
+            print("  b: [%s]" % ',\n    '.join(gnxs2))
+        elif kind in ('delete', 'insert'):
+            kind, i1, gnxs = z
+            print(kind, i1)
+            print("  [%s]" % ',\n    '.join(gnxs))
+        else:
+            print(z)
+# @+node:ekr.20181202060924.2: *4* LeoGui.flatten_outline
+def flatten_outline(self, c):
+    """Return a flat list of strings "level:gnx" for all *visible* positions."""
+    trace = False and not g.unitTesting
+    t1 = time.process_time()
+    aList: list[str] = []
+    for p in c.rootPosition().self_and_siblings():
+        self.extend_flattened_outline(aList, p)
+    if trace:
+        t2 = time.process_time()
+        print(f"app.flatten_outline: {len(aList)} entries {t2 - t1:6.4f} sec.")
+    return aList
+
+def extend_flattened_outline(self, aList, p):
+    """Add p and all p's visible descendants to aList."""
+    # Padding the fields causes problems later.
+    aList.append(f"{p.level()}:{p.gnx}:{p.h}\n")
+    if p.isExpanded():
+        for child in p.children():
+            self.extend_flattened_outline(aList, child)
+# @+node:ekr.20181202060924.3: *4* LeoGui.make_redraw_list
+def make_redraw_list(self, a, b):
+    """
+    Diff the a (old) and b (new) outline lists.
+    Then optimize the diffs to create a redraw instruction list.
+    """
+    trace = False and not g.unitTesting
+    if a == b:
+        return []
+
+    def gnxs(aList):
+        """Return the gnx list. Do not try to remove this!"""
+        return [z.strip() for z in aList]
+    @others # Define local helpers
+    d = difflib.SequenceMatcher(None, a, b)
+    op_codes = list(d.get_opcodes())
+    # dump_diff_op_codes(a, b, op_codes)
+    #
+    # Generate the instruction list, and verify the result.
+    opcodes, result = [], []
+    for tag, i1, i2, j1, j2 in op_codes:
+        if tag == 'insert':
+            opcodes.append(['insert', i1, gnxs(b[j1:j2])])
+        elif tag == 'delete':
+            opcodes.append(['delete', i1, gnxs(a[i1:i2])])
+        elif tag == 'replace':
+            opcodes.append(['replace', i1, gnxs(a[i1:i2]), gnxs(b[j1:j2])])
+        result.extend(b[j1:j2])
+    assert b == result, (a, b)
+    #
+    # Run the peephole.
+    opcodes = self.peep_hole(opcodes)
+    if trace:
+        print('app.make_redraw_list: opcodes after peephole...')
+        self.dump_opcodes(opcodes)
+    return opcodes
+# @+node:ekr.20181202060924.6: *4* LeoGui.peep_hole
+def peep_hole(self, opcodes):
+    """Scan the list of opcodes, merging adjacent op-codes."""
+    i, result = 0, []
+    while i < len(opcodes):
+        op0 = opcodes[i]
+        if i == len(opcodes) - 1:
+            result.append(op0)
+            break
+        op1 = opcodes[i + 1]
+        kind0, kind1 = op0[0], op1[0]
+        # Merge adjacent insert/delete opcodes with the same gnx.
+        if (
+            kind0 == 'insert' and kind1 == 'delete' or
+            kind0 == 'delete' and kind1 == 'insert'
+        ):
+            kind0, index0, gnxs0 = op0
+            kind1, index1, gnxs1 = op1
+            if gnxs0[0] == gnxs1[0]:
+                result.append(['move', index0, index1, gnxs0, gnxs1])
+                i += 2  # Don't scan either op again!
+                break
+        # The default is to retain the opcode.
+        result.append(op0)
+        i += 1
+    return result
 # @+node:ekr.20260820040558.1: ** Temporary attic
 # @+node:ekr.20230714143451.1: *3* TestEditFileCommands.test_diff_two_branches
 def test_diff_two_branches(self):
