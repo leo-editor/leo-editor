@@ -283,8 +283,6 @@ readme = "README.md"
 
 dependencies = [
 
-  # For build devs.
-
   # For testing.
   "beautifulsoup4",  # For link testing.
   "pytest",

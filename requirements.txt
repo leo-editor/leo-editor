@@ -8,8 +8,6 @@
 # @+node:ekr.20241022091142.1: ** << requirements.txt: dependencies >>
 # Warning: these dependencies should match those in pyproject.toml.
 
-# For build devs.
-
 # For testing.
 beautifulsoup4  # For link testing.
 pytest
