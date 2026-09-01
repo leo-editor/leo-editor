@@ -21,10 +21,11 @@ docutils        # For Sphinx and rST plugins.
 jedi            # For autocompletion.
 jupytext        # For paired .ipynb/.py files.
 lxml            # For leoImport.py importers.
-markdown        # VR3 plugin.
-numpy           # VR3 plugin.
+markdown
+# matplotlib
+numpy
 pyenchant       # The spell tab.
-# PyYAML          # auto_colorize2_0.py plugin.
+# PyYAML        # auto_colorize2_0.py plugin.
 sphinx          # For documentation.
 sphinx-book-theme
 urllib3
