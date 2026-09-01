@@ -212,69 +212,6 @@ from leo.core.leoQt import QtMultimedia, QtSvg, QUrl
 from leo.core.leoQt import ContextMenuPolicy, WrapMode
 from leo.plugins import qt_text
 
-qwv: Any = None
-try:
-    from leo.core.leoQt import WebEngineAttribute, QtWebEngineWidgets
-
-    qwv = QtWebEngineWidgets.QWebEngineView
-    has_webengineview = True
-except Exception:
-    has_webengineview = False
-    try:
-        qwv = QtWidgets.QTextBrowser
-    except Exception as e:
-        g.trace(e)
-        qwv = None
-
-# Optional third-party imports...
-
-# Docutils.
-try:
-    import docutils
-    import docutils.core
-except ImportError:
-    docutils = None  # type:ignore
-if docutils:
-    try:
-        from docutils.core import publish_string
-        from docutils.utils import SystemMessage
-
-        got_docutils = True
-    except ImportError:
-        got_docutils = False
-        g.es_exception()
-    except SyntaxError:
-        got_docutils = False
-        g.es_exception()
-else:
-    got_docutils = False
-
-# Jinja.
-try:
-    from jinja2 import Template
-except ImportError:
-    Template = None
-
-# Markdown.
-try:
-    from markdown import markdown
-
-    got_markdown = True
-except ImportError:
-    got_markdown = False
-
-# nbformat (@jupyter) support.
-try:
-    import nbformat
-    from nbconvert import HTMLExporter
-except ImportError:
-    nbformat = None  # type:ignore
-
-try:
-    import pyperclip
-except Exception:
-    pyperclip = None
-
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 # @-<< vr: imports >>
@@ -296,66 +233,81 @@ trace = False  # This global trace is convenient.
 asciidoctor_exec = shutil.which('asciidoctor')
 asciidoc3_exec = shutil.which('asciidoc3')
 pandoc_exec = shutil.which('pandoc')
+got_docutils: bool = False
 
 
 # @+others
 # @+node:ekr.20110320120020.14491: ** vr.Top-level functions
+# @+node:ekr.20260828053307.1: *3* vr function: getVR
+def getVr(event: LeoKeyEvent | None) -> ViewRenderedController | None:
+    """
+    Return the singleton instance for this commander.
+    """
+    # First, get c.
+    if not event:
+        return None
+    c = event.get('c')
+    if not c:
+        return None
+    vr = getattr(c, 'vr', None)
+    if not vr:
+        g.es_print_unique_message(f"{c.shortFileName()}: viewrendered commands disabled")
+    return vr
+
+
 # @+node:tbrown.20100318101414.5995: *3* vr function: init
 def init() -> bool:
     """Return True if the plugin has loaded successfully."""
-    # global got_docutils
-
     if not g.app.gui.guiName().startswith('qt'):
         return False
-    if not got_docutils:
-        g.es_print('Warning: viewrendered.py running without docutils.')
+
     # Always enable this plugin, even if imports fail.
     g.plugin_signon(__name__)
-    g.registerHandler('after-create-leo-frame', onCreate)
     g.registerHandler('close-frame', onClose)
     g.registerHandler('scrolledMessage', show_scrolled_message)
     return True
 
 
-# @+node:ekr.20240727091022.1: *3* vr function: getVR
-def getVr(
-    *, c: Any = None, event: Any = None, parent: QtWidgets.QWidget | None = None
-) -> ViewRenderedController | None:
-    """Return the ViewRenderedController instance or None."""
+# @+node:ekr.20240727091022.1: *3* vr function: initVr
+def initVr(c: Cmdr, *, parent: QtWidgets.QWidget | None = None) -> None:
+    """
+    Set c.vr, but *only* if this plugin is enabled.
+
+    Should be called only once, from DynamicWindow.create_layout.
+    """
+    global got_docutils
     if g.app.gui.guiName() != 'qt':
-        return None
-
-    # First, get c.
-    if c:
-        pass
-    elif event:
-        c = event.get('c')
-        if not c:
-            return None
-    else:
-        g.trace('"c" or "event" kwarg required', g.callers())
-        return None
-    vr = getattr(c, 'vr', None)
-    if not vr:
-        vr = ViewRenderedController(c)
-        c.vr = vr
-        if parent:
-            vr.setParent(parent)
-        else:
-            dw = c.frame.top
-            if dw:
-                dw.insert_vr_frame(vr)
-    return vr
-
-
-# @+node:ekr.20110317024548.14376: *3* vr function: onCreate
-def onCreate(tag: str, keys: dict) -> None:
-    c = keys.get('c')
+        return
     if not c:
+        g.trace('no c!')
         return
-    vr = getVr(c=c)
-    if not vr:
+    if 'viewrendered.py' not in c.config.getEnabledPlugins():
         return
+    vr = getattr(c, 'vr', None)
+    if vr:
+        g.trace('Already inited!')
+        return
+
+    # Issue docutils warning.
+    try:
+        import docutils  # noqa: F401 (silences only the unused import warning)
+        import docutils.core  # noqa: F401 (silences only the unused import warning)
+
+        got_docutils = True
+    except ImportError:
+        g.es_print('Warning: viewrendered.py running without docutils.')
+        got_docutils = False
+
+    # init c.vr.
+    c.vr = vr = ViewRenderedController(c)  # ty:ignore[invalid-assignment]
+    if parent:
+        vr.setParent(parent)
+    else:
+        dw = c.frame.top
+        if dw:
+            dw.insert_vr_frame(vr)
+
+    # Leo 6.8.11: Do this here instead of on_create.
     g.registerHandler('select2', vr.update_vr)
     g.registerHandler('idle', vr.update_vr)
     vr.active = True
@@ -388,10 +340,9 @@ def show_scrolled_message(tag: str, kw: Any) -> None:
     if not s.strip():
         g.trace('No message', g.callers())
         return
-    # Create the VR pane if necessary.
-    vr = getVr(c=c)
-    if not vr:
-        return
+    vr = getattr(c, 'vr', None)
+    if vr is None:
+        return  # Should never happen.
     # Make sure we will show the message.
     vr.active = True
     vr.is_visible = True
@@ -415,24 +366,19 @@ def preview(event: LeoKeyEvent | None = None) -> None:
 
 # @+node:tbrown.20100318101414.5998: *3* g.command('vr')
 @g.command('vr')
-def viewrendered(event: LeoKeyEvent | None = None) -> Any | None:
+def viewrendered(event: LeoKeyEvent | None = None) -> None:
     """Open render view for commander"""
-    vr = getVr(event=event)
-    if vr:
-        c = vr.c
+    if vr := getVr(event=event):
         vr.show()
         vr.is_visible = True
-        c.bodyWantsFocusNow()
-        return vr
-    return None
+        vr.c.bodyWantsFocusNow()
 
 
 # @+node:ekr.20130413061407.10362: *3* g.command('vr-contract')
 @g.command('vr-contract')
 def contract_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Contract the rendering pane."""
-    vr = getVr(event=event)
-    if vr:
+    if vr := getVr(event):
         vr.show()
         vr.contract()
 
@@ -441,8 +387,7 @@ def contract_rendering_pane(event: LeoKeyEvent | None = None) -> None:
 @g.command('vr-expand')
 def expand_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Expand the rendering pane."""
-    vr = getVr(event=event)
-    if vr:
+    if vr := getVr(event):
         vr.show()
         vr.expand()
 
@@ -451,8 +396,7 @@ def expand_rendering_pane(event: LeoKeyEvent | None = None) -> None:
 @g.command('vr-fully-expand')
 def fully_expand_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Expand the rendering pane."""
-    vr = getVr(event=event)
-    if vr:
+    if vr := getVr(event):
         vr.show()
         vr.fully_expand()
 
@@ -461,8 +405,7 @@ def fully_expand_rendering_pane(event: LeoKeyEvent | None = None) -> None:
 @g.command('vr-hide')
 def hide_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Close the rendering pane."""
-    vr = getVr(event=event)
-    if vr:
+    if vr := getVr(event):
         vr.hide()
         vr.is_visible = False
 
@@ -485,8 +428,7 @@ def lock_rendering_pane(event: LeoKeyEvent | None = None) -> None:
 @g.command('vr-pause-play-movie')
 def pause_play_movie(event: LeoKeyEvent | None = None) -> None:
     """Pause or play a movie in the rendering pane."""
-    vr = getVr(event=event)
-    if vr:
+    if vr := getVr(event):
         vp = vr.vp
         if not vp:
             return
@@ -498,9 +440,10 @@ def pause_play_movie(event: LeoKeyEvent | None = None) -> None:
 @g.command('vr-show')
 def show_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Show the rendering pane."""
-    vr = getVr(event=event)
-    if vr:
+    if vr := getVr(event):
         c = vr.c
+        if vr.w is not None and vr.w.__class__.__name__ != 'QTextBrowser':
+            vr.w.hide()
         vr.show()  # QWidget.show.
         vr.is_visible = True
         c.bodyWantsFocusNow()
@@ -511,26 +454,22 @@ def show_rendering_pane(event: LeoKeyEvent | None = None) -> None:
 @g.command('vr-toggle')  # Legacy
 def toggle_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Toggle the visibility of the VR pane."""
-    vr = getVr(event=event)
-    if not vr:
-        return
-    c = vr.c
-    vr.is_visible = not vr.is_visible
-    if vr.is_visible:
-        g.es('VR pane on', color='red')
-        vr.show()
-    else:
-        g.es('VR pane off', color='red')
-        vr.hide()
-    c.bodyWantsFocusNow()
+    if vr := getVr(event):
+        vr.is_visible = not vr.is_visible
+        if vr.is_visible:
+            g.es('VR pane on', color='red')
+            vr.show()
+        else:
+            g.es('VR pane off', color='red')
+            vr.hide()
+        vr.c.bodyWantsFocusNow()
 
 
 # @+node:ekr.20240508082844.1: *3* g.command('vr-toggle-keep-open')
 @g.command('vr-toggle-keep-open')
 def toggle_keep_open(event: LeoKeyEvent | None = None) -> None:
     """Toggle the visibility of the VR pane."""
-    vr = getVr(event=event)
-    if vr:
+    if vr := getVr(event):
         c = vr.c
         vr.hide()  # So the toggle below will work.
         vr.keep_open = not vr.keep_open
@@ -550,8 +489,7 @@ def unlock_rendering_pane(event: LeoKeyEvent | None = None) -> None:
 @g.command('vr-update')
 def update_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Update the rendering pane"""
-    vr = getVr(event=event)
-    if vr:
+    if vr := getVr(event):
         c = vr.c
         vr.update_vr(tag='view', keywords={'c': c, 'force': True})
 
@@ -648,7 +586,7 @@ class ViewRenderedController(QtWidgets.QWidget):
     # @-others
     # @-<< vr: default templates >>
     # @+others
-    # @+node:ekr.20110317080650.14380: *3*  vr.ctor & helpers
+    # @+node:ekr.20110317080650.14380: *3*  vr.__init__ & helpers
     def __init__(self, c: Cmdr, parent: QWidget | None = None) -> None:
         """Ctor for ViewRenderedController class."""
         self.c = c
@@ -664,12 +602,13 @@ class ViewRenderedController(QtWidgets.QWidget):
         self.mathjax_template: str = ''
         self.typst_template: str = ''
         self.pdf_zoom: int = 0
-        # Widgets managed by destroy_widgets.
-        self.browser: QWidget | None = None
+        # Widgets global to this outline.
+        self.graphics_widget: Any = None
         self.gs: QGraphicsScene | None = None
         self.gv: QGraphicsView | None = None
-        self.vp: QMediaPlayer = None
-        self.w: QWidget | None = None  # The present widget in the rendering pane.
+        self.text_widget: Any | None = None
+        self.vp: QMediaPlayer | None = None
+        self.w: Any = None  # The present widget in the rendering pane.
         # Set the ivars.
         self.active = True
         self.gnx: str | None = None
@@ -678,7 +617,6 @@ class ViewRenderedController(QtWidgets.QWidget):
         self.length = 0  # The length of previous p.b.
         self.locked = False
         self.pdf_qwv = None  # The singleton qwv instance, with support for pdf.
-        self.qwv = None  # The singleton qwv instance.
         self.scrollbar_pos_dict: dict[VNode, int] = {}
         self.reloadSettings()
         self.node_changed = True
@@ -762,8 +700,6 @@ class ViewRenderedController(QtWidgets.QWidget):
         self.active = False
         g.unregisterHandler('select2', self.update_vr)
         g.unregisterHandler('idle', self.update_vr)
-        g.unregisterHandler('scrolledMessage', show_scrolled_message)
-        self.destroy_widgets()
 
     # @+node:ekr.20130413061407.10363: *3* vr.contract & expand
     def contract(self) -> None:
@@ -845,7 +781,10 @@ class ViewRenderedController(QtWidgets.QWidget):
         vr.update_vr: Update the VR pane.
         Called at idle time and by the vr-update command.
         """
-        p = self.c.p
+        c = self.c
+        p = c.p
+        if not getattr(c, 'vr', None):
+            return
         if not self.active:
             try:
                 # Save the scroll position.
@@ -872,7 +811,6 @@ class ViewRenderedController(QtWidgets.QWidget):
         s = self.remove_directives(s)
         # Dispatch based on the computed kind.
         kind = keywords.get('flags') if 'flags' in keywords else self.get_kind(p)
-        # g.trace('kind', repr(kind))
         if kind or keywords.get('force'):
             f = self.dispatch_dict.get(kind)
         else:
@@ -886,95 +824,6 @@ class ViewRenderedController(QtWidgets.QWidget):
             self.show()
         else:
             self.hide()
-
-    # @+node:ekr.20241227053437.1: *4* vr.update_vr: helpers
-    # @+node:ekr.20241224074331.1: *5* vr.create_web_engineview
-    def create_web_engineview(self) -> QWidget:
-        """
-        Return a *new* QWebEngineView instance, deleting any previous instance.
-        """
-        c = self.c
-        # Kill the old QWebEngineView!
-        self.destroy_widgets()
-
-        # Always create a new QWebEngineView.
-        self.qwv = self.w = w = qwv()
-        self.embed_widget(w)
-        if isinstance(w, QtWidgets.QTextBrowser):
-            return w
-
-        # Allow remote access.
-        settings = w.settings()
-        wa = WebEngineAttribute.LocalContentCanAccessRemoteUrls
-        settings.setAttribute(wa, True)
-
-        # Set the font size, but this does very little.
-        n = c.config.getInt('qweb-view-font-size') or 16
-        n = abs(n)
-        settings.setFontSize(settings.FontSize.DefaultFontSize, n)
-        return w
-
-    # @+node:ekr.20241226173150.1: *5* vr.create_web_engineview_with_pdf
-    def create_web_engineview_with_pdf(self) -> QWidget:
-        """
-        Return a *new* QWebEngineView instance with support for pdf,
-        deleting any previous instance.
-        """
-        # Create the QWebEngineView if possible and embed the widget.
-        w = self.create_web_engineview()
-        assert w == self.w, g.callers()
-        if isinstance(w, QtWidgets.QTextBrowser):
-            # create_web_engineview has issued the warning.
-            return w
-
-        # Allow rendering of .pdf files.
-        settings = w.settings()
-        settings.setAttribute(settings.WebAttribute.PluginsEnabled, True)
-        return w
-
-    # @+node:ekr.20241227044803.1: *5* vr.destroy_widgets
-    def destroy_widgets(self) -> None:
-        """Destroy all widgets."""
-        # g.trace(g.shortFileName(self.c.fileName()))
-        for ivar in ('gs', 'gv', 'pdf_qwv', 'qwv', 'vp'):
-            var = getattr(self, ivar, None)
-            if var is not None:
-                del var
-            setattr(self, ivar, None)
-        self.w = None
-
-    # @+node:ekr.20110320120020.14486: *5* vr.embed_widget
-    def embed_widget(self, w: QWidget) -> None:
-        """Embed widget w in the layout."""
-        assert w == self.w, g.callers()  # Invariant.
-
-        # Delete all previous widgets.
-        layout = self.layout()
-        for i in range(layout.count()):
-            layout.removeItem(layout.itemAt(0))
-
-        # Add the new widget.
-        self.layout().addWidget(w)
-        w.show()
-
-    # @+node:ekr.20110320120020.14476: *5* vr.must_update
-    def must_update(self, keywords: Any) -> bool:
-        """Return True if we must update the rendering pane."""
-        c, p = self.c, self.c.p
-        if g.unitTesting:
-            return False
-        if c != keywords.get('c') or not self.active:
-            return False
-        if keywords.get('force'):
-            return True
-        if self.locked:
-            return False
-        if self.gnx != p.v.gnx:
-            return True
-        if self.length != len(p.b):
-            self.length = len(p.b)  # Suppress updates until next change.
-            return self.get_kind(p) != 'pyplot'
-        return False
 
     # @+node:ekr.20191004143229.1: *4* vr.update_asciidoc & helpers
     def update_asciidoc(self, s: str, keywords: Any) -> None:
@@ -1062,10 +911,8 @@ class ViewRenderedController(QtWidgets.QWidget):
         """Display the html text in `s` in the VR pane."""
         c = self.c
 
-        # Create a new QWebEngineView.
+        # Create a new QWebEngineView or QTextBrowser.
         w = self.create_web_engineview()
-
-        # Set the html.
         w.setHtml(s)
         w.show()
         c.bodyWantsFocusNow()
@@ -1095,6 +942,88 @@ class ViewRenderedController(QtWidgets.QWidget):
         self.show()
         w.setHtml(template)
 
+    # @+node:ekr.20260828081137.1: *4* vr.update_jinga
+    def update_jinja(self, s: str, keywords: Any) -> None:
+        h = self.c.p.h
+        p = self.c.p
+        c = self.c
+        oldp = None
+
+        if not h.startswith('@jinja'):
+            return
+
+        try:
+            from jinja2 import Template
+        except ImportError:
+            return
+
+        def find_root(p: Position) -> tuple[Position, Position] | tuple[None, None]:
+            for newp in p.parents():
+                if newp.h.strip() == '@jinja':
+                    oldp, p = p, newp
+                    return oldp, p
+            return None, None
+
+        def find_inputs(p: Position) -> tuple[Position, Position] | tuple[None, None]:
+            for newp in p.parents():
+                if newp.h.strip() == '@jinja inputs':
+                    oldp, p = p, newp
+                    _, root_p = find_root(p)
+                    if root_p is None:
+                        return None, None
+                    return oldp, root_p
+            return None, None
+
+        # if on jinja node's children, find the parent
+        if h.strip() == '@jinja template' or h.strip() == '@jinja inputs':
+            # not at @jinja, find from parents
+            oldp, p = find_root(p)
+
+        elif h.startswith('@jinja variable'):
+            # not at @jinja, first find @jinja inputs, then @jinja
+            oldp, p = find_inputs(p)
+
+        if p is None:
+            g.es("Could not find enclosing @jinja node.")
+            return
+
+        def untangle(c: Cmdr, p: Position) -> str:
+            return g.getScript(c, p, useSelectedText=False, useSentinels=False)
+
+        template_data = {}
+        for child in p.children():
+            if child.h == '@jinja template':
+                template_path = g.finalize_join(c.getPath(p), untangle(c, child).strip())
+            elif child.h == '@jinja inputs':
+                for template_var_node in child.children():
+                    # pylint: disable=line-too-long
+                    template_data[template_var_node.h.replace('@jinja variable', '').strip()] = (
+                        untangle(c, template_var_node).strip()
+                    )
+
+        if not template_path:
+            g.es(
+                "No template_path given. "
+                "Your @jinja node should contain a child node 'template' "
+                "with the path to the template (relative or absolute)"
+            )
+            return
+
+        if Template is None:
+            g.es("Jinja2 is not installed.")
+            return
+        tmpl = Template(Path(template_path).read_text())
+        out = tmpl.render(template_data)
+        w = self.get_base_text_widget()
+        self.show()
+        w.setPlainText(out)
+        p.b = out
+        c.redraw(p)
+
+        # focus back on entry node
+        if oldp:
+            c.redraw(oldp)
+
     # @+node:ekr.20170105124347.1: *4* vr.update_jupyter & helper
     update_jupyter_count = 0
 
@@ -1108,12 +1037,23 @@ class ViewRenderedController(QtWidgets.QWidget):
         w.show()
         c.bodyWantsFocusNow()
 
-        if pyperclip:
+        try:
+            import pyperclip
+
             pyperclip.copy(s)
+        except Exception:
+            pass
 
     # @+node:ekr.20180311090852.1: *5* vr.get_jupyter_source
     def get_jupyter_source(self, c: Cmdr) -> str:
         """Return the html for the @jupyter node."""
+        # # nbformat (@jupyter) support.
+        try:
+            import nbformat
+            from nbconvert import HTMLExporter
+        except ImportError:
+            nbformat = None  # ty:ignore[invalid-assignment]
+
         body = c.p.b.lstrip()
         if body.startswith('<'):
             # Assume the body is html.
@@ -1144,13 +1084,8 @@ class ViewRenderedController(QtWidgets.QWidget):
     def update_katex(self, s: str, keywords: Any) -> None:
         """Display the katex text `s` in the VR pane."""
 
-        # Create a new QWebEngineView.
+        # Create a new QWebEngineView or QTextBrowser.
         w = self.create_web_engineview()
-        if not has_webengineview:
-            g.print_unique_message('katex rendering requires PyQt6-WebEngine')
-            w.setHtml(s)
-            self.show()
-            return
 
         # Replace whole-line katex comments with html comments.
         s = ''.join([z for z in g.splitLines(s) if not z.strip().startswith('%')])
@@ -1162,13 +1097,8 @@ class ViewRenderedController(QtWidgets.QWidget):
     def update_latex(self, s: str, keywords: Any) -> None:
         """Display the LaTeX text `s` in the VR pane."""
 
-        # Create a new QWebEngineView.
+        # Create a new QWebEngineView or QTextBrowser.
         w = self.create_web_engineview()
-        if not has_webengineview:
-            g.print_unique_message('LaTeX rendering requires PyQt6-WebEngine')
-            w.setHtml(s)
-            self.show()
-            return
 
         # Replace whole-line latex comments with html comments.
         s = ''.join([z for z in g.splitLines(s) if not z.strip().startswith('%')])
@@ -1180,13 +1110,8 @@ class ViewRenderedController(QtWidgets.QWidget):
     def update_mathjax(self, s: str, keywords: Any) -> None:
         """Display the mathjax text `s` in the VR pane."""
 
-        # Create a new QWebEngineView.
+        # Create a new QWebEngineView or QTextBrowser.
         w = self.create_web_engineview()
-        if not has_webengineview:
-            g.print_unique_message('mathjax rendering requires PyQt6-WebEngine')
-            w.setHtml(s)
-            self.show()
-            return
 
         # Replace whole-line latex comments with html comments.
         s = ''.join([z for z in g.splitLines(s) if not z.strip().startswith('%')])
@@ -1197,6 +1122,11 @@ class ViewRenderedController(QtWidgets.QWidget):
     # @+node:peckj.20130207132858.3671: *4* vr.update_md & helper
     def update_md(self, s: str, keywords: Any) -> None:
         """Display the markdown text in `s` in the VR pane."""
+        try:
+            from markdown import markdown
+        except ImportError:
+            markdown = None
+
         c = self.c
         p = c.p
         for prefix in ('"""', "'''"):  # PR #4827
@@ -1209,7 +1139,7 @@ class ViewRenderedController(QtWidgets.QWidget):
         assert self.w
         if s:
             self.show()
-        if got_markdown:
+        if markdown:
             force = keywords.get('force')
             colorizer = c.frame.body.colorizer
             language = colorizer.scanLanguageDirectives(p)
@@ -1218,12 +1148,17 @@ class ViewRenderedController(QtWidgets.QWidget):
                     s = self.convert_to_markdown(s)
             self.set_html(s, w)
         else:
-            # g.trace('markdown not available: using rst')
             self.update_rst(s, keywords)
 
     # @+node:ekr.20160921134552.1: *5* vr.convert_to_markdown
     def convert_to_markdown(self, s: str) -> str:
         """Convert s to html using the markdown processor."""
+        try:
+            from markdown import markdown
+            from docutils.utils import SystemMessage
+        except ImportError:
+            return ''
+
         c, p = self.c, self.c.p
         path = c.getPath(p)
         if not os.path.isdir(path):
@@ -1346,12 +1281,17 @@ class ViewRenderedController(QtWidgets.QWidget):
         The first line of `s` should be a `@pdf <path>`.
         Resolve relative paths using the outline's directory.
         """
+
+        # Hide the svg widget.
+        if self.w.__class__.__name__ == 'QSvgWidget':
+            self.w.hide()
+
         if not s.strip():
             return
 
         # Create a new QWebEngineView.
         w = self.create_web_engineview_with_pdf()
-        if not has_webengineview:
+        if isinstance(w, QtWidgets.QTextBrowser):
             g.print_unique_message('@pdf rendering requires PyQt6-WebEngine')
             w.setHtml(s)
             self.show()
@@ -1371,6 +1311,26 @@ class ViewRenderedController(QtWidgets.QWidget):
         url.setFragment(f"zoom={self.pdf_zoom}")
         w.load(url)
         self.show()
+
+    # @+node:ekr.20260831063201.1: *4* vr.update_plantuml
+    def update_plantuml(self, s: str, keywords: Any) -> None:
+        w = self.get_base_text_widget()
+        path = self.c.p.h[9:].strip()
+        print("Plantuml output file name: ", path)
+        with open("temp.plantuml", "w") as f:
+            f.write(s)
+        pth_plantuml_jar = "~/.leo"
+        subprocess.run(
+            "cat temp.plantuml | java -jar %s/plantuml.jar -pipe > %s" % (pth_plantuml_jar, path),
+            shell=True,
+            check=False,
+        )
+        template = self.image_template % (path)
+        template = textwrap.dedent(template).strip()
+        self.show()
+        w.setReadOnly(False)
+        w.setHtml(template)
+        w.setReadOnly(True)
 
     # @+node:ekr.20160928023915.1: *4* vr.update_pyplot
     def update_pyplot(self, s: str, keywords: Any) -> None:
@@ -1452,6 +1412,13 @@ class ViewRenderedController(QtWidgets.QWidget):
     def convert_to_html(self, s: str) -> str:
         """Convert s to html using docutils."""
         c, p = self.c, self.c.p
+
+        try:
+            from docutils.core import publish_string
+            from docutils.utils import SystemMessage
+        except ImportError:
+            return ''
+
         # Update the current path.
         path = c.getPath(p)
         if not os.path.isdir(path):
@@ -1473,101 +1440,6 @@ class ViewRenderedController(QtWidgets.QWidget):
             sys.stderr = sys.__stderr__
         return s
 
-    def update_plantuml(self, s: str, keywords: Any) -> None:
-        w = self.get_base_text_widget()
-        path = self.c.p.h[9:].strip()
-        print("Plantuml output file name: ", path)
-        with open("temp.plantuml", "w") as f:
-            f.write(s)
-        pth_plantuml_jar = "~/.leo"
-        subprocess.run(
-            "cat temp.plantuml | java -jar %s/plantuml.jar -pipe > %s" % (pth_plantuml_jar, path),
-            shell=True,
-            check=False,
-        )
-        template = self.image_template % (path)
-        template = textwrap.dedent(template).strip()
-        self.show()
-        w.setReadOnly(False)
-        w.setHtml(template)
-        w.setReadOnly(True)
-
-    def update_jinja(self, s: str, keywords: Any) -> None:
-        h = self.c.p.h
-        p = self.c.p
-        c = self.c
-        oldp = None
-
-        if not h.startswith('@jinja'):
-            return
-
-        def find_root(p: Position) -> tuple[Position, Position] | tuple[None, None]:
-            for newp in p.parents():
-                if newp.h.strip() == '@jinja':
-                    oldp, p = p, newp
-                    return oldp, p
-            return None, None
-
-        def find_inputs(p: Position) -> tuple[Position, Position] | tuple[None, None]:
-            for newp in p.parents():
-                if newp.h.strip() == '@jinja inputs':
-                    oldp, p = p, newp
-                    _, root_p = find_root(p)
-                    if root_p is None:
-                        return None, None
-                    return oldp, root_p
-            return None, None
-
-        # if on jinja node's children, find the parent
-        if h.strip() == '@jinja template' or h.strip() == '@jinja inputs':
-            # not at @jinja, find from parents
-            oldp, p = find_root(p)
-
-        elif h.startswith('@jinja variable'):
-            # not at @jinja, first find @jinja inputs, then @jinja
-            oldp, p = find_inputs(p)
-
-        if p is None:
-            g.es("Could not find enclosing @jinja node.")
-            return
-
-        def untangle(c: Cmdr, p: Position) -> str:
-            return g.getScript(c, p, useSelectedText=False, useSentinels=False)
-
-        template_data = {}
-        for child in p.children():
-            if child.h == '@jinja template':
-                template_path = g.finalize_join(c.getNodePath(p), untangle(c, child).strip())
-            elif child.h == '@jinja inputs':
-                for template_var_node in child.children():
-                    # pylint: disable=line-too-long
-                    template_data[template_var_node.h.replace('@jinja variable', '').strip()] = (
-                        untangle(c, template_var_node).strip()
-                    )
-
-        if not template_path:
-            g.es(
-                "No template_path given. "
-                "Your @jinja node should contain a child node 'template' "
-                "with the path to the template (relative or absolute)"
-            )
-            return
-
-        if Template is None:
-            g.es("Jinja2 is not installed.")
-            return
-        tmpl = Template(Path(template_path).read_text())
-        out = tmpl.render(template_data)
-        w = self.get_base_text_widget()
-        self.show()
-        w.setPlainText(out)
-        p.b = out
-        c.redraw(p)
-
-        # focus back on entry node
-        if oldp:
-            c.redraw(oldp)
-
     # @+node:ekr.20110320120020.14479: *4* vr.update_svg
     # http://doc.trolltech.com/4.4/qtsvg.html
     # http://doc.trolltech.com/4.4/painting-svgviewer.html
@@ -1581,50 +1453,52 @@ class ViewRenderedController(QtWidgets.QWidget):
             w = self.create_web_engineview()
             w.setHtml(s)
             w.show()
-        else:  # Legacy:  Better scaling.
-            if hasattr(QtSvg, "QSvgWidget"):  # #2134
-                QSvgWidget = QtSvg.QSvgWidget
-            else:
-                try:
-                    from PyQt6 import QtSvgWidgets
+            return
 
-                    QSvgWidget = QtSvgWidgets.QSvgWidget
-                except Exception:
-                    QSvgWidget = None
-            if not QSvgWidget:
-                g.print_unique_message('svg rendering requires PyQt6-WebEngine')
-                w = self.get_base_text_widget()
-                w.setPlainText(s)
-                return
-            if isinstance(self.w, QSvgWidget):
-                w = self.w
-            else:
-                w = self.w = QSvgWidget()
-                self.embed_widget(w)
+        # Legacy:  Better scaling.
+        if hasattr(QtSvg, "QSvgWidget"):  # #2134
+            QSvgWidget = QtSvg.QSvgWidget
+        else:
+            try:
+                from PyQt6 import QtSvgWidgets
 
-            # Compute the contents.
-            if s.strip().startswith('<'):
-                # Assume it is the svg (xml) source.
-                # Sensitive to leading blank lines.
-                s = textwrap.dedent(s).strip()
-                s_bytes = g.toEncodedString(s)
+                QSvgWidget = QtSvgWidgets.QSvgWidget
+            except Exception:
+                QSvgWidget = None
+        if not QSvgWidget:
+            g.print_unique_message('svg rendering requires PyQt6-WebEngine')
+            w = self.get_base_text_widget()
+            w.setPlainText(s)
+            return
+        if isinstance(self.w, QSvgWidget):
+            w = self.w
+        else:
+            w = self.w = QSvgWidget()
+            self.embed_widget(w)
+
+        # Compute the contents.
+        if s.strip().startswith('<'):
+            # Assume it is the svg (xml) source.
+            # Sensitive to leading blank lines.
+            s = textwrap.dedent(s).strip()
+            s_bytes = g.toEncodedString(s)
+            self.show()
+            w.load(QtCore.QByteArray(s_bytes))
+            w.show()
+        else:
+            # Get a filename from the headline or body text.
+            ok, path = self.get_fn(s, '@svg')
+            if ok:
                 self.show()
-                w.load(QtCore.QByteArray(s_bytes))
+                w.load(path)
                 w.show()
-            else:
-                # Get a filename from the headline or body text.
-                ok, path = self.get_fn(s, '@svg')
-                if ok:
-                    self.show()
-                    w.load(path)
-                    w.show()
 
     # @+node:ekr.20241231121247.1: *4* vr.update_typst
     def update_typst(self, s: str, keywords: Any) -> None:
         """Display the typest text in `s` in the VR pane."""
         # Create a new QWebEngineView.
         w = self.create_web_engineview_with_pdf()
-        if not has_webengineview:
+        if isinstance(w, QtWidgets.QTextBrowser):
             g.print_unique_message('typst rendering requires PyQt6-WebEngine')
             w.setHtml(s)
             self.show()
@@ -1678,21 +1552,123 @@ class ViewRenderedController(QtWidgets.QWidget):
             self.show()
             w.setPlainText('')
 
+    # @+node:ekr.20241227053437.1: *4* vr.update_vr: helpers
+    # @+node:ekr.20241224074331.1: *5* vr.create_web_engineview
+    def create_web_engineview(self) -> Any:
+        """
+        Return a *new* QWebEngineView instance.
+        """
+        c = self.c
+
+        self.hide_all()
+        if self.graphics_widget:
+            self.w = w = self.graphics_widget
+            self.embed_widget(w)
+            return w
+
+        # Allocate a new instance.QtWebEngineWidgets if possible.
+        try:
+            from leo.core.leoQt import WebEngineAttribute, QtWebEngineWidgets
+
+            w = QtWebEngineWidgets.QWebEngineView()
+        except Exception:
+            w = QtWidgets.QTextBrowser()
+
+        # Set the ivars and embed the widget.
+        self.graphics_widget = self.w = w
+        self.embed_widget(w)
+        if isinstance(w, QtWidgets.QTextBrowser):
+            return w
+
+        # Allow remote access.
+        settings = w.settings()
+        wa = WebEngineAttribute.LocalContentCanAccessRemoteUrls
+        settings.setAttribute(wa, True)
+
+        # Set the font size, but this does very little.
+        n = c.config.getInt('qweb-view-font-size') or 16
+        n = abs(n)
+        settings.setFontSize(settings.FontSize.DefaultFontSize, n)
+        return w
+
+    # @+node:ekr.20241226173150.1: *5* vr.create_web_engineview_with_pdf
+    def create_web_engineview_with_pdf(self) -> QWidget | None:
+        """
+        Return a *new* QWebEngineView instance with support for pdf.
+        """
+
+        # Create the QWebEngineView if possible and embed the widget.
+        w = self.create_web_engineview()
+        assert w == self.w, g.callers()
+        if isinstance(w, QtWidgets.QTextBrowser):
+            # create_web_engineview has issued the warning.
+            return w
+
+        # Allow rendering of .pdf files.
+        settings = w.settings()
+        settings.setAttribute(settings.WebAttribute.PluginsEnabled, True)
+        return w
+
+    # @+node:ekr.20110320120020.14486: *5* vr.embed_widget
+    def embed_widget(self, w: Any) -> None:
+        """Embed widget w in the layout."""
+        assert w == self.w, g.callers()  # Invariant.
+
+        # Delete all previous widgets.
+        layout = self.layout()
+        for i in range(layout.count()):
+            layout.removeItem(layout.itemAt(0))
+
+        # Add the new widget.
+        self.layout().addWidget(w)
+        w.show()
+
+    # @+node:ekr.20260831094834.1: *5* vr.hide_all
+    def hide_all(self):
+        """Hide all text and graphics widgets."""
+        g.app.gui.qtApp.processEvents()
+        for w in (self.w, self.graphics_widget, self.text_widget):
+            if w is not None:
+                w.hide()
+        g.app.gui.qtApp.processEvents()
+
+    # @+node:ekr.20110320120020.14476: *5* vr.must_update
+    def must_update(self, keywords: Any) -> bool:
+        """Return True if we must update the rendering pane."""
+        c, p = self.c, self.c.p
+        if g.unitTesting:
+            return False
+        if c != keywords.get('c') or not self.active:
+            return False
+        if keywords.get('force'):
+            return True
+        if self.locked:
+            return False
+        if self.gnx != p.v.gnx:
+            return True
+        if self.length != len(p.b):
+            self.length = len(p.b)  # Suppress updates until next change.
+            return self.get_kind(p) != 'pyplot'
+        return False
+
     # @+node:ekr.20110322031455.5765: *3* vr: utils...
     # @+node:ekr.20190424083049.1: *4* vr.get_base_text_widget
     def get_base_text_widget(self) -> QWidget:
         """Create a QTextBrowser."""
         c = self.c
-        if isinstance(self.w, QtWidgets.QTextBrowser):
-            return self.w
+        self.hide_all()
+        if self.text_widget:
+            self.w = w = self.text_widget
+            self.embed_widget(w)
+            return w
 
-        self.destroy_widgets()
-        self.browser = self.w = w = QtWidgets.QTextBrowser()
+        # Allocate the widget once.
+        self.w = self.text_widget = w = QtWidgets.QTextBrowser()
         self.embed_widget(w)  # Creates w.wrapper
-
         text_name = 'body-text-renderer'
         w.setObjectName(text_name)
         w.setReadOnly(False)  # #4652.
+
         # Create the standard Leo bindings in a wrapper widget.
         wrapper = qt_text.QTextEditWrapper(widget=w, name='rendering-pane-wrapper', c=c)
         c.k.completeAllBindingsForWidget(wrapper)
@@ -1720,6 +1696,11 @@ class ViewRenderedController(QtWidgets.QWidget):
     # @+node:ekr.20110320120020.14483: *4* vr.get_kind
     def get_kind(self, p: Position) -> str:
         """Return the proper rendering kind for node p."""
+
+        try:
+            from markdown import markdown
+        except ImportError:
+            markdown = None
 
         p0 = p  # Special case selected position.
 
@@ -1757,7 +1738,7 @@ class ViewRenderedController(QtWidgets.QWidget):
             language = get_language(p1)
             if language:
                 if language in ('md', 'markdown'):
-                    return language if got_markdown else ''
+                    return language if markdown else ''
                 if language in ('rest', 'rst'):
                     return language if got_docutils else ''
                 if language in self.dispatch_dict:
@@ -1782,12 +1763,11 @@ class ViewRenderedController(QtWidgets.QWidget):
         else:
             # Handle ancestor @path directives.
             if c and c.fileName():
-                base = c.getNodePath(c.p)
+                base = c.getPath(c.p)
                 fn = g.finalize_join(g.os_path_dirname(c.fileName()), base, fn)
             else:
                 fn = g.finalize(fn)
         ok = g.os_path_exists(fn)
-        g.trace(fn)
         return ok, fn
 
     # @+node:ekr.20110321005148.14536: *4* vr.get_url
@@ -1826,7 +1806,7 @@ class ViewRenderedController(QtWidgets.QWidget):
         else:
             # Handle ancestor @path directives.
             if c and c.fileName():
-                base = c.getNodePath(c.p)
+                base = c.getPath(c.p)
                 path = g.finalize_join(g.os_path_dirname(c.fileName()), base, path)
             else:
                 path = g.finalize(path)

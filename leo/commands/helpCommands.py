@@ -141,8 +141,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         # @pagewidth 40
         # @@language rest
 
-        s = '''
-
+        s = '''\
         About Autocompletion and Calltips
         ---------------------------------
 
@@ -259,8 +258,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         # @pagewidth 40
         # @@language rest
 
-        s = '''
-
+        s = '''\
         About Key Bindings
         ------------------
 
@@ -401,7 +399,6 @@ class HelpCommandsClass(BaseEditCommandsClass):
                 # @+<< set s to about help-for-command >>
                 # @+node:ekr.20150514063305.384: *5* << set s to about help-for-command >>
                 s = '''\
-
                 ++++++++++++++++++++++++
                 About Leo's help command
                 ++++++++++++++++++++++++
@@ -465,8 +462,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         # @+node:ekr.20150514063305.387: *4* << define s >> (helpForCreatingExternalFiles)
         # @@language rest
 
-        s = r'''
-
+        s = r'''\
         Creating External Files
         -------------------------
 
@@ -603,8 +599,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         # @pagewidth 40
         # @@language rest
 
-        s = '''
-
+        s = '''\
         About Debugging Commands
         ------------------------
 
@@ -636,8 +631,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         # @pagewidth 40
         # @@language rest
 
-        s = '''
-
+        s = '''\
         About Drag and Drop
         ===================
 
@@ -675,8 +669,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         # @+node:ekr.20150514063305.393: *4* << define s >> (helpForDynamicAbbreviations)
         # @@language rest
 
-        s = '''
-
+        s = '''\
         About Dynamic Abbreviations
         ---------------------------
 
@@ -732,8 +725,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         # @+node:ekr.20150514063305.395: *4* << help-for-find-commands: define s >>
         # @@language rest
 
-        s = '''
-
+        s = '''\
         Finding & replacing text
         ------------------------
 
@@ -907,7 +899,6 @@ class HelpCommandsClass(BaseEditCommandsClass):
         # @@language rest
 
         s = '''\
-
         About the Minibuffer
         --------------------
 
@@ -944,8 +935,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
         # Using raw string is essential.
 
-        s = r'''
-
+        s = r'''\
         About regular expressions
         -------------------------
 
@@ -1014,8 +1004,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         # @+node:ekr.20150514063305.401: *4* << define s >> (helpForScripting)
         # @@language rest
 
-        s = '''
-
+        s = '''\
         Summary of Leo Scripting
         -------------------------
 
@@ -1233,8 +1222,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
         # Using raw string is essential.
 
-        s = r'''
-
+        s = r'''\
         About settings
         ---------------
 

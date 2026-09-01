@@ -399,9 +399,11 @@ class LeoQtGui(leoGui.LeoGui):
         self._contextmenu = menu
 
     # @+node:ekr.20170612065255.1: *3* LeoQtGui.put_help
-    def put_help(self, c: Cmdr, s: str, short_title: str = '') -> Any:
+    def put_help(self, c: Cmdr, s: str, short_title: str = '') -> None:
         """Put the help command."""
-        s = textwrap.dedent(s.rstrip())
+        if g.unitTesting:
+            return
+        s = textwrap.dedent(s)
         if s.startswith('<') and not s.startswith('<<'):
             pass  # how to do selective replace??
         pc = g.app.pluginsController
@@ -414,27 +416,23 @@ class LeoQtGui(leoGui.LeoGui):
                 vr = pc.loadOnePlugin(name)
                 break
         else:
-            vr = pc.loadOnePlugin('viewrendered.py')
-        if vr:
-            kw = {
-                'c': c,
-                'flags': 'rst',
-                'kind': 'rst',
-                'label': '',
-                'msg': s,
-                'name': 'Apropos',
-                'short_title': short_title,
-                'title': '',
-            }
-            vr.show_scrolled_message(tag='Apropos', kw=kw)
-            c.bodyWantsFocus()
-            if g.unitTesting:
-                vr.close_rendering_pane(event={'c': c})
-        elif g.unitTesting:
-            pass
-        else:
-            g.es(s)
-        return vr  # For unit tests
+            # Neither VR nor VR3 plugins are enabled.
+            message = f"===== {short_title}\n\n{s}" if short_title else s
+            g.es(message, tabName='Help')
+            return
+        # Use the VR or VR3 plugin.
+        kw = {
+            'c': c,
+            'flags': 'rst',
+            'kind': 'rst',
+            'label': '',
+            'msg': s,
+            'name': 'Apropos',
+            'short_title': short_title,
+            'title': '',
+        }
+        vr.show_scrolled_message(tag='Apropos', kw=kw)
+        c.bodyWantsFocus()
 
     # @+node:ekr.20110605121601.18521: *3* LeoQtGui.runAtIdle
     def runAtIdle(self, aFunc: Callable) -> None:
@@ -1218,79 +1216,6 @@ class LeoQtGui(leoGui.LeoGui):
         if c and s:
             c.last_dir = g.os_path_dirname(s)
         return s
-
-    # @+node:ekr.20110605121601.18503: *4* LeoQtGui.runScrolledMessageDialog
-    def runScrolledMessageDialog(
-        self,
-        short_title: str = '',
-        title: str = 'Message',
-        label: str = '',
-        msg: str = '',
-        c: Cmdr | None = None,
-        **keys: Any,
-    ) -> None:
-        if g.unitTesting:
-            return None
-
-        def send() -> Any:
-            return g.doHook(
-                'scrolledMessage',
-                short_title=short_title,
-                title=title,
-                label=label,
-                msg=msg,
-                c=c,
-                **keys,
-            )
-
-        if not c or not c.exists:
-            # @+<< no c error>>
-            # @+node:ekr.20110605121601.18504: *5* << no c error>>
-            g.es_print_error(
-                '%s\n%s\n\t%s'
-                % (
-                    "The qt plugin requires calls to g.app.gui.scrolledMessageDialog to include 'c'",
-                    "as a keyword argument",
-                    g.callers(),
-                )
-            )
-            # @-<< no c error>>
-        else:
-            if retval := send():
-                return retval
-            # @+<< load viewrendered plugin >>
-            # @+node:ekr.20110605121601.18505: *5* << load viewrendered plugin >>
-            pc = g.app.pluginsController
-            # Load viewrendered (and call vr.onCreate) *only* if not already loaded.
-            if not pc.isLoaded('viewrendered.py') and not pc.isLoaded('viewrendered3.py'):
-                if vr := pc.loadOnePlugin('viewrendered.py'):
-                    g.blue('viewrendered plugin loaded.')
-                    vr.onCreate('tag', {'c': c})
-            # @-<< load viewrendered plugin >>
-            if retval := send():
-                return retval
-            # @+<< no dialog error >>
-            # @+node:ekr.20110605121601.18506: *5* << no dialog error >>
-            g.es_print_error(f'No handler for the "scrolledMessage" hook.\n\t{g.callers()}')
-            # @-<< no dialog error >>
-        # @+<< emergency fallback >>
-        # @+node:ekr.20110605121601.18507: *5* << emergency fallback >>
-        dialog = QtWidgets.QMessageBox(None)
-        # That is, not a fixed size dialog.
-        dialog.setWindowFlags(WindowType.Dialog)
-        dialog.setWindowTitle(title)
-        if msg:
-            dialog.setText(msg)
-        dialog.setIcon(Icon.Information)
-        dialog.addButton('Ok', ButtonRole.YesRole)
-        try:
-            if c:
-                c.in_qt_dialog = True
-            dialog.exec()
-        finally:
-            if c:
-                c.in_qt_dialog = False
-        # @-<< emergency fallback >>
 
     # @+node:ekr.20110607182447.16456: *3* LeoQtGui: Event handlers
     # @+node:ekr.20190824094650.1: *4* LeoQtGui.close_event

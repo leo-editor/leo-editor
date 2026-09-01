@@ -138,7 +138,7 @@ def big_tree(event: LeoKeyEvent | None = None) -> None:
             vr3_mod.controllers[h] = vr3_mod.ViewRenderedController3(c)
     else:
         vr3 = None
-    vr = c.vr
+    vr = getattr(c, 'vr', None)
 
     # Clear out splitters so we can add widgets back in the right order
     for widget in (ss, of, lf, bf, vr, vr3):  # Don't remove ms!
@@ -149,7 +149,8 @@ def big_tree(event: LeoKeyEvent | None = None) -> None:
     ms.addWidget(of)
     ms.addWidget(ss)
     ms.addWidget(vs)
-    vs.addWidget(vr)
+    if vr is not None:
+        vs.addWidget(vr)
     if vr3 is not None:
         vs.addWidget(vr3)
     ss.addWidget(bf)
