@@ -200,9 +200,9 @@ except Exception:
 v1, v2, junk1, junk2, junk3 = sys.version_info
 if (v1, v2) < (3, 9):  # pragma: no cover
     raise ImportError('leoAst.py requires Python 3.9 or above')
-if (v1, v2) > (3, 14):  # pragma: no cover
-    print('Support for leoAst.py ends with Python 3.14')
-    print('Use at your own risk')
+# if (v1, v2) > (3, 14):  # pragma: no cover
+#     print('Support for leoAst.py ends with Python 3.14')
+#     print('Use at your own risk')
 
 # @+others
 # @+node:ekr.20200702114522.1: **  leoAst.py: top-level commands
