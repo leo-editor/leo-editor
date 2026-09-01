@@ -3208,6 +3208,74 @@ def test_diff_two_branches(self):
     finally:
         os.chdir(old_dir)
 
+# @+node:ekr.20110605121601.18503: *3* LeoQtGui.runScrolledMessageDialog (deleted)
+def runScrolledMessageDialog(
+    self,
+    short_title: str = '',
+    title: str = 'Message',
+    label: str = '',
+    msg: str = '',
+    c: Cmdr | None = None,
+    **keys: Any,
+) -> None:
+    if g.unitTesting:
+        return None
+
+    def send() -> Any:
+        return g.doHook(
+            'scrolledMessage',
+            short_title=short_title,
+            title=title,
+            label=label,
+            msg=msg,
+            c=c,
+            **keys,
+        )
+
+    if not c or not c.exists:
+        << no c error>>
+    else:
+        if retval := send():
+            return retval
+        << load viewrendered plugin >>
+        if retval := send():
+            return retval
+        << no dialog error >>
+    << emergency fallback >>
+
+# @+node:ekr.20110605121601.18504: *4* << no c error>>
+g.es_print_error(
+    '%s\n%s\n\t%s'
+    % (
+        "The qt plugin requires calls to g.app.gui.scrolledMessageDialog to include 'c'",
+        "as a keyword argument",
+        g.callers(),
+    )
+)
+# @+node:ekr.20110605121601.18505: *4* << load viewrendered plugin >>
+pc = g.app.pluginsController
+# Load viewrendered (and call vr.onCreate) *only* if not already loaded.
+if not pc.isLoaded('viewrendered.py') and not pc.isLoaded('viewrendered3.py'):
+    if pc.loadOnePlugin('viewrendered.py'):
+        g.blue('viewrendered plugin loaded.')
+# @+node:ekr.20110605121601.18506: *4* << no dialog error >>
+g.es_print_error(f'No handler for the "scrolledMessage" hook.\n\t{g.callers()}')
+# @+node:ekr.20110605121601.18507: *4* << emergency fallback >>
+dialog = QtWidgets.QMessageBox(None)
+# That is, not a fixed size dialog.
+dialog.setWindowFlags(WindowType.Dialog)
+dialog.setWindowTitle(title)
+if msg:
+    dialog.setText(msg)
+dialog.setIcon(Icon.Information)
+dialog.addButton('Ok', ButtonRole.YesRole)
+try:
+    if c:
+        c.in_qt_dialog = True
+    dialog.exec()
+finally:
+    if c:
+        c.in_qt_dialog = False
 # @-all
 # @@nosearch
 # @-leo
