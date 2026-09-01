@@ -10,7 +10,6 @@
 <v t="ekr.20080412053100.5"><vh>@settings</vh>
 <v t="ekr.20260526171943.1"><vh>@bool minibuffer-find-mode = True</vh></v>
 <v t="ekr.20220904210247.1"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20251214042454.1"><vh>@bool body-pane-wraps = False</vh></v>
 <v t="ekr.20140902155015.18674"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="ekr.20250715195948.1"><vh>@bool report-changed-at-clean-nodes = False</vh></v>
 <v t="ekr.20221129012213.1"><vh>@bool run-flake8-on-write = False</vh></v>
@@ -2551,9 +2550,6 @@ if new_b != proj_p.b:
     c.redraw()
     c.save()</t>
 <t tx="ekr.20250715195948.1"></t>
-<t tx="ekr.20251214042454.1">True: Wrap body text.
-
-</t>
 <t tx="ekr.20260111055821.1"># These settings control ruff format, which is compatible with black.</t>
 <t tx="ekr.20260111055821.2"># True: beautify all @&lt;file&gt; nodes in the outline using Leo's token-based beautifier.
 # True can result in much slower writes.</t>
