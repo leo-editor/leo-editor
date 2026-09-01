@@ -184,7 +184,7 @@ Acknowledgments
 
 Terry Brown created this initial version of this plugin.
 
-EKR generalized this plugin and added communication and coordination between the free_layout, NestedSplitter and viewrendered plugins.
+EKR generalized this plugin.
 
 Jacob Peck added markdown support.
 # @-all

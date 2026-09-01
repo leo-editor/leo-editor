@@ -3,7 +3,7 @@
 # @@language python
 # @@tabwidth -4
 # @+others
-# @+node:tbrown.20110428102237.20322: ** xml_edit declarations
+# @+node:tbrown.20110428102237.20322: ** xml_edit declarations (xml_edit.py)
 """Provides commands (Alt-x) for importing and exporting XML from a Leo
 outline. These commands are to XML what ``@auto-rst`` is to
 reStructuredText.
@@ -89,10 +89,7 @@ These commands attempt to deal with all of this.
    ``'_edit'`` is used by the ``attrib_edit`` plugin to identify
    attributes it should present to the user for editing. The
    ``attrib_edit`` plugin **should be enabled** and its ``v.u mode``
-   activated (through its submenu on the Plugins menu). The attribute
-   edit panel initially appears as a tab in the log pane, although it
-   can be moved around by right clicking on the pane dividers if the
-   ``viewrendered`` and ``free_layout`` plugins are enabled.
+   activated (through its submenu on the Plugins menu).
 
 """
 
