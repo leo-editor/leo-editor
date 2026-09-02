@@ -254,7 +254,6 @@
 <v t="mhw.20190808083008.1"><vh>@file ../scripts/add-desktop-links.leox</vh></v>
 <v t="ekr.20240321123226.1"><vh>@file ../scripts/install_leo_from_pypi.py</vh></v>
 <v t="ekr.20240321123214.1"><vh>@file ../scripts/install_leo_locally.py</vh></v>
-<v t="ekr.20240322173704.1"><vh>@file ../scripts/pip_install_r.py</vh></v>
 <v t="ekr.20240322173731.1"><vh>@file ../scripts/pip_uninstall_all.py</vh></v>
 <v t="ekr.20240321123224.1"><vh>@file ../scripts/run_installed_leo.py</vh></v>
 <v t="ekr.20240321123225.1"><vh>@file ../scripts/uninstall_leo.py</vh></v>
