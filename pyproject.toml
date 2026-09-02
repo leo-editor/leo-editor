@@ -249,45 +249,52 @@ version = "0.0.0.dev0"  # Placeholder: publish.yml stamps the real version from 
 name = "leo"
 authors =  [
     {"name" = "Edward K. Ream", "email" = "edreamleo@gmail.com"},
-]
-maintainers =  [
-    {name = "Edward K. Ream", email = "edreamleo@gmail.com"},
-    {name = "Félix Malboeuf", email = "felixgraphx@gmail.com"},
-    {name = "Thomas Passin", email = "pub1@tompassin.net"},
+    {"name" = "Félix Malboeuf", "email" = "felixgraphx@gmail.com"},
+    {"name" = "Thomas Passin", "email" = "pub1@tompassin.net"},
+    {"name" = "Виталије Милошевић, (Vitalije Milosevic) ", "email" = "vitalijem@gmail.com"},
 ]
 dependencies = [
-  # For essential testing.
-  "pygments",   # For unit tests.
-  "ruff",       # Works with ==0.16.5",
-  "ty",         # Works with ==0.0.77",
+    # Essential testing.
+    "pygments",   # For unit tests.
+    "ruff",       # Works with ==0.16.5",
+    "ty",         # Works with ==0.0.77",
 
-  # General packages for plugins, leoserver and commands...
-  "docutils",        # For several plugins.
-  "jedi",            # For autocompletion.
-  "jupytext",        # For paired .ipynb/.py files. Installs markdown, nbformat, pyyaml.
-  "lxml",            # For leoImport.py importers.
-  "markdown",        # For the VR and VR3 plugins.
-  "pyenchant",       # The spell tab.
-  "PyQt6>= 6.6",     # Installs lxml, PyYAML.
-  "urllib3",
-  "websockets",      # For leoserver.
-]
-
-[project.optional-dependencies]
-dev = [
+    # General packages for plugins, leoserver and commands...
+    "docutils",        # For several plugins.
+    "jedi",            # For autocompletion.
+    "jupytext",        # For paired .ipynb/.py files. Installs markdown, nbformat, pyyaml.
+    "lxml",            # For leoImport.py importers.
+    "markdown",        # For the VR and VR3 plugins.
+    "pyenchant",       # The spell tab.
+    "PyQt6>= 6.6",     # Installs lxml, PyYAML.
+    "urllib3",
+    "websockets",      # For leoserver.
+  
+    # Dev dependencies.
     "beautifulsoup4",  # For link testing.
     "pytest",          # For coverage testing.
     "pytest-cov",      # For coverage testing.
     "sphinx",
     "sphinx-book-theme",
 ]
-plugins = [
-    # "matplotlib",
-    "numpy",
-    "PyQt6-QScintilla",
-    "PyQt6-WebEngine", # VR and VR3 plugins.
-    "Send2Trash; platform_system == 'Windows'",  # picture_viewer plugin.
-]
+
+# Separate dependencies. Maybe later.
+
+# [project.optional-dependencies]
+# dev = [
+#     "beautifulsoup4",  # For link testing.
+#     "pytest",          # For coverage testing.
+#     "pytest-cov",      # For coverage testing.
+#     "sphinx",
+#     "sphinx-book-theme",
+# ]
+# plugins = [
+#     # "matplotlib",
+#     "numpy",
+#     "PyQt6-QScintilla",
+#     "PyQt6-WebEngine", # VR and VR3 plugins.
+#     "Send2Trash; platform_system == 'Windows'",  # picture_viewer plugin.
+# ]
 
 [project.scripts]
 leo = "leo.core.runLeo:run"
