@@ -295,7 +295,7 @@ dependencies = [
   # "matplotlib",
   # "numpy",
   # "PyQt6-QScintilla",
-  # "PyQt6-WebEngine",
+  # "PyQt6-WebEngine", # For VR and VR3 plugins.
   # "pytest",          # For coverage testing.
   # "pytest-cov",      # For coverage testing.
   # "sphinx",
