@@ -10,12 +10,12 @@
 #     pypi: https://pypi.org/project/leo/
 # testpypi: https://test.pypi.org/project/leo/
 
-[build-system]
-requires = [
-    "build>=1.0",
-    "setuptools>=80.4.0",
-]
-build-backend = "setuptools.build_meta"
+# [build-system]
+# requires = [
+#     "build>=1.0",
+#     "setuptools>=80.4.0",
+# ]
+# build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 packages = [
