@@ -4,6 +4,7 @@
 [src]
 include = ["leo"]
 exclude = [
+
     # Mirrors the [mypy] exclude list in .mypy.ini.
     "leo/doc",
     "leo/dist",
@@ -36,6 +37,7 @@ exclude = [
 strict-equality-semantics = true
 
 [rules]
+
 
 # Like `disable_error_code=attr-defined` in .mypy.ini.
 unresolved-attribute = "ignore"
