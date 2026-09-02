@@ -179,7 +179,6 @@
 </v>
 <v t="ekr.20180225010707.1"><vh>--- (do not delete) In leo-editor</vh>
 <v t="ekr.20260813051101.1"><vh>--- (do not delete) leo-editor: build files</vh>
-<v t="ekr.20220222130955.1"><vh>@clean ../../.mypy.ini</vh></v>
 <v t="ekr.20240317061516.1"><vh>@clean ../../MANIFEST.in</vh></v>
 <v t="ekr.20240206161713.1"><vh>@clean ../../setup.cfg </vh></v>
 <v t="ekr.20260821134304.1"><vh>@clean ../../ty.toml</vh>
@@ -1625,81 +1624,6 @@ def do_sec(i, m, s):
     child = parent.insertAsLastChild()
     child.h = h.strip()
     parents.append(('@ ', child))
-</t>
-<t tx="ekr.20220222130955.1"># Config file for mypy
-
-# Note: Do not put comments after settings.
-
-[mypy]
-python_version = 3.14
-cache_dir = mypy_cache
-incremental = True
-
-# Defaults for all files.
-check_untyped_defs = True
-follow_imports = normal
-ignore_missing_imports = True
-show_error_codes = True
-strict_optional = False
-
-# 2026/07/27: Suppress a serious mypy bug until mypy releases an official fix.
-disable_error_code=index
-
-# For v0.931, per https://github.com/python/mypy/issues/11936
-
-exclude =
-    
-    # The first line must *not* start with |.
-    # Thereafter, each line *must* start with |.
-    # No trailing '|' on last entry!
-
-    # Directories...
-    doc/|dist/|editpane/|examples/|extensions/|external/|modes/|obsolete/|scripts/|themes/|unittests/|www/|
-    
-    # Special plugins...
-    |freewin.py|scriptFile.py|beautify_node.py|viewrendered3|
-
-    # Experimental plugins...
-    |leo_pdf|leo_to_rtf|mnplugins|mod_speedups|settings_finder|stickynotes_plus|
-    
-    # qt_main.py is generated automatically, so it's pointless to add annotations.
-    |qt_main
-
-# More specific descriptions override less specific.
-
-# leo/core...
-
-[mypy-leo.core.*]
-disable_error_code=attr-defined
-strict_optional = True
-
-[mypy-core.leoPymacs,leo.core.runLeo,leo.core.leoRope]
-disable_error_code=attr-defined
-
-[mypy-leo.core.leoclient,leo.leo.core.leoserver]
-disable_error_code=attr-defined
-
-# leo/commands.
-
-[mypy-leo.commands.*]
-disable_error_code=attr-defined
-strict_optional = True
-
-# leo/external.
-[mypy-leo.external.*]
-disable_error_code=attr-defined
-
-# leo/modes.
-[mypy-leo.modes.*]
-disable_error_code=attr-defined
-
-# leo/plugins...
-
-[mypy-leo.plugins.*]
-disable_error_code=attr-defined
-
-[mypy-leo.plugins.importers.*,leo.plugins.writers.*,leo.unittests.plugins.test_importers]
-strict_optional = True
 </t>
 <t tx="ekr.20220306092217.1">"""Invoke EKR's private test-one.cmd script."""
 
