@@ -4,8 +4,6 @@
 
 # leo-editor/pyproject.toml
 
-# The dependencies here should match those in requirements.txt.
-
 [tool.setuptools]
 packages = [
     "leo",
@@ -225,43 +223,9 @@ packages = [
 requires-python = ">= 3.10"
 version = "0.0.0.dev0"  # Placeholder: publish.yml stamps the real version from the release tag at build time.
 name = "leo"
-
-[project.optional-dependencies]
-dev = [
-#@+<< pyproject.toml: dev dependencies >>
-#@+node:ekr.20260902055931.1: ** << pyproject.toml: dev dependencies >>
-"beautifulsoup4",  # For link testing.
-"pytest",          # For coverage testing.
-"pytest-cov",      # For coverage testing.
-"sphinx",
-"sphinx-book-theme",
-#@-<< pyproject.toml: dev dependencies >>
-]
-plugins = [
-#@+<< pyproject.toml: plugins dependencies >>
-#@+node:ekr.20260902060153.1: ** << pyproject.toml: plugins dependencies >>
-"matplotlib",
-"numpy",
-"PyQt6-QScintilla",
-"PyQt6-WebEngine", # VR and VR3 plugins.
-"Send2Trash; platform_system == 'Windows'",  # picture_viewer plugin.
-#@-<< pyproject.toml: plugins dependencies >>
-]
-
-#@+<< developer info >>
-#@+node:ekr.20240227084103.1: ** << developer info >>
 authors =  [
-    {name = "Edward K. Ream"},
-    {email = "edreamleo@gmail.com"},
+    {"name" = "Edward K. Ream", "email" = "edreamleo@gmail.com"},
 ]
-
-maintainers =  [
-    {name = "Edward K. Ream", email = "edreamleo@gmail.com"},
-    {name = "Félix Malboeuf", email = "felixgraphx@gmail.com"},
-    {name = "Thomas Passin", email = "pub1@tompassin.net"},
-    {name = "Виталије Милошевић, (Vitalije Milosevic) ", email = "vitalijem@gmail.com"},
-]
-#@-<< developer info >>
 #@+<< description >>
 #@+node:ekr.20240227162726.1: ** << description >>
 classifiers = [
@@ -286,8 +250,6 @@ keywords = ["PIM", "IDE", "Outliner"]
 license = "MIT"
 readme = "README.md"
 #@-<< description >>
-
-# Yes, we must duplicate requirements.txt.
 #@+<< pyproject.toml: dependencies >>
 #@+node:ekr.20240713074535.1: ** << pyproject.toml: dependencies >>
 # Warning: these dependencies should match those in requirements.txt.
@@ -313,6 +275,25 @@ dependencies = [
 ]
 
 #@-<< pyproject.toml: dependencies >>
+
+[project.optional-dependencies]
+# optional-dependencies-authors =  [
+#     {"name" = "Edward K. Ream", "email" = "edreamleo@gmail.com"},
+# ]
+dev = [
+    "beautifulsoup4",  # For link testing.
+    "pytest",          # For coverage testing.
+    "pytest-cov",      # For coverage testing.
+    "sphinx",
+    "sphinx-book-theme",
+]
+plugins = [
+    "matplotlib",
+    "numpy",
+    "PyQt6-QScintilla",
+    "PyQt6-WebEngine", # VR and VR3 plugins.
+    "Send2Trash; platform_system == 'Windows'",  # picture_viewer plugin.
+]
 
 [project.scripts]
 leo = "leo.core.runLeo:run"
