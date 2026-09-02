@@ -245,7 +245,8 @@ license = "MIT"
 readme = "README.md"
 #@-<< description >>
 requires-python = ">= 3.10"
-version = "0.0.0.dev0"  # Placeholder: publish.yml stamps the real version from the release tag at build time.
+# Placeholder: publish.yml set the version from the release tag.
+version = "0.0.0.dev0"
 name = "leo"
 authors =  [
     {"name" = "Edward K. Ream", "email" = "edreamleo@gmail.com"},
@@ -276,6 +277,13 @@ dependencies = [
     "pytest-cov",      # For coverage testing.
     "sphinx",
     "sphinx-book-theme",
+    
+    # Plugin dependencies.
+    "matplotlib",       # Fails for Python 3.15rc2.
+    "numpy",
+    "PyQt6-QScintilla",
+    "PyQt6-WebEngine", # VR and VR3 plugins.
+    "Send2Trash; platform_system == 'Windows'",  # picture_viewer plugin.
 ]
 
 # Separate dependencies. Maybe later.
@@ -302,20 +310,16 @@ leo-c = "leo.core.runLeo:run_console"
 leo-console = "leo.core.runLeo:run_console"
 
 [project.urls]
-#@+<< urls >>
-#@+node:ekr.20240227162816.1: ** << urls >>
-Documentation = "https://leo-editor.github.io/leo-editor/leo_toc.html"
+"Documentation" = "https://leo-editor.github.io/leo-editor/leo_toc.html"
 "Home Page" = "https://leo-editor.github.io/leo-editor/"
-Issues = "https://github.com/leo-editor/leo-editor/issues"
+"Issues" = "https://github.com/leo-editor/leo-editor/issues"
 "Pull Requests" = "https://github.com/leo-editor/leo-editor/pulls"
 "GitHub Repository" = "https://github.com/leo-editor/leo-editor"
 "What People Are Saying about Leo" = "http://leo-editor.github.io/leo-editor/testimonials.html"
-#@-<< urls >>
 
 [tool.ruff]
 # @int black-line-length  overrides this default value.
-# black's default value is 100.
-line-length = 100
+line-length = 100   # black's default value is 100.
 extend-exclude = ["*.md"]
 
 # @string black-toml gives the path to a pyproject.toml or ruff.toml file.
