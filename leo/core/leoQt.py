@@ -30,7 +30,7 @@ try:
 
     assert Qsci
 except Exception:
-    Qsci = None
+    Qsci = None  # type:ignore  # ty:ignore[invalid-assignment]
     _missing_modules.append('Qsci')
 
 try:
