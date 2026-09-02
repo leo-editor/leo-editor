@@ -40,7 +40,7 @@ sphinx-book-theme[dev]      # Website.
 numpy[plugins]                          # VR and VR3 plugins.
 PyQt6-QScintilla[plugins]
 PyQt6-WebEngine[plugins]                # VR and VR3 plugins.
-Send2Trash; platform_system=="Windows"  # picture_viewer.py
+Send2Trash; platform_system[plugins]=="Windows"  # picture_viewer.py
 # @-<< requirements.txt: dependencies >>
 
 # @@language python

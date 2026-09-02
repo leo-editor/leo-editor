@@ -237,7 +237,7 @@ dev = [
 "sphinx-book-theme",
 #@-<< pyproject.toml: dev dependencies >>
 ]
-graphics = [
+plugins = [
 #@+<< pyproject.toml: plugins dependencies >>
 #@+node:ekr.20260902060153.1: ** << pyproject.toml: plugins dependencies >>
 "matplotlib",
