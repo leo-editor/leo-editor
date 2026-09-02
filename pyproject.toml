@@ -257,8 +257,8 @@ authors =  [
 dependencies = [
     # Essential testing.
     "pygments",   # For unit tests.
-    "ruff",       # Works with ==0.16.5",
-    "ty",         # Works with ==0.0.77",
+    "ruff==0.16.5",
+    "ty==0.0.77",
 
     # General packages for plugins, leoserver and commands...
     "docutils",        # For several plugins.
