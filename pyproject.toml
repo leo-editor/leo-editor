@@ -220,18 +220,6 @@ packages = [
 ]
 
 [project]
-requires-python = ">= 3.10"
-version = "0.0.0.dev0"  # Placeholder: publish.yml stamps the real version from the release tag at build time.
-name = "leo"
-authors =  [
-    {"name" = "Edward K. Ream", "email" = "edreamleo@gmail.com"},
-]
-maintainers =  [
-    {name = "Edward K. Ream", email = "edreamleo@gmail.com"},
-    {name = "Félix Malboeuf", email = "felixgraphx@gmail.com"},
-    {name = "Thomas Passin", email = "pub1@tompassin.net"},
-]
-
 #@+<< description >>
 #@+node:ekr.20240227162726.1: ** << description >>
 classifiers = [
@@ -256,19 +244,24 @@ keywords = ["PIM", "IDE", "Outliner"]
 license = "MIT"
 readme = "README.md"
 #@-<< description >>
-#@+<< pyproject.toml: dependencies >>
-#@+node:ekr.20240713074535.1: ** << pyproject.toml: dependencies >>
-# Warning: these dependencies should match those in requirements.txt.
-
+requires-python = ">= 3.10"
+version = "0.0.0.dev0"  # Placeholder: publish.yml stamps the real version from the release tag at build time.
+name = "leo"
+authors =  [
+    {"name" = "Edward K. Ream", "email" = "edreamleo@gmail.com"},
+]
+maintainers =  [
+    {name = "Edward K. Ream", email = "edreamleo@gmail.com"},
+    {name = "Félix Malboeuf", email = "felixgraphx@gmail.com"},
+    {name = "Thomas Passin", email = "pub1@tompassin.net"},
+]
 dependencies = [
-
   # For essential testing.
   "pygments",   # For unit tests.
   "ruff",       # Works with ==0.16.5",
   "ty",         # Works with ==0.0.77",
 
   # General packages for plugins, leoserver and commands...
-
   "docutils",        # For several plugins.
   "jedi",            # For autocompletion.
   "jupytext",        # For paired .ipynb/.py files. Installs markdown, nbformat, pyyaml.
@@ -279,8 +272,6 @@ dependencies = [
   "urllib3",
   "websockets",      # For leoserver.
 ]
-
-#@-<< pyproject.toml: dependencies >>
 
 [project.optional-dependencies]
 dev = [
@@ -314,11 +305,10 @@ Issues = "https://github.com/leo-editor/leo-editor/issues"
 "What People Are Saying about Leo" = "http://leo-editor.github.io/leo-editor/testimonials.html"
 #@-<< urls >>
 
+[tool.ruff]
 # @int black-line-length  overrides this default value.
 # black's default value is 100.
-[tool.ruff]
 line-length = 100
-
 extend-exclude = ["*.md"]
 
 # @string black-toml gives the path to a pyproject.toml or ruff.toml file.
