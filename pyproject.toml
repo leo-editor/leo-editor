@@ -272,36 +272,35 @@ readme = "README.md"
 
 dependencies = [
 
-  # For testing.
-  "beautifulsoup4",  # For link testing.
-  "pytest",
-  "pytest-cov",      # For coverage testing.
-  "ruff==0.16.4",
-  "ty==0.0.73",
+  # For essential testing.
+  "pygments",   # For unit tests.
+  "ruff",       # Works with ==0.16.5",
+  "ty",         # Works with ==0.0.77",
 
   # General packages for plugins, leoserver and commands...
 
-  "docutils",        # For Sphinx and rST plugins.
+  "docutils",        # For several plugins.
   "jedi",            # For autocompletion.
-  "jupytext",        # For paired .ipynb/.py files.
+  "jupytext",        # For paired .ipynb/.py files. Installs markdown, nbformat, pyyaml.
   "lxml",            # For leoImport.py importers.
-  "markdown",
-  # "matplotlib",
-  "numpy",
+  "markdown",        # For the VR and VR3 plugins.
   "pyenchant",       # The spell tab.
-  # "PyYAML",        # auto_colorize2_0.py plugin.
-
-  "sphinx",
-  "sphinx-book-theme",
+  "PyQt6>= 6.6",     # Installs lxml, PyYAML.
   "urllib3",
   "websockets",      # For leoserver.
 
-  # Gui packages...
-
-  "PyQt6>= 6.6",
-  "PyQt6-QScintilla",
-  "PyQt6-WebEngine",
-  "Send2Trash; platform_system == 'Windows'",  # For picture_viewer plugin.
+  # Optional packages...
+  
+  # "beautifulsoup4",  # For link testing.
+  # "matplotlib",
+  # "numpy",
+  # "PyQt6-QScintilla",
+  # "PyQt6-WebEngine",
+  # "pytest",          # For coverage testing.
+  # "pytest-cov",      # For coverage testing.
+  # "sphinx",
+  # "sphinx-book-theme",
+  # "Send2Trash; platform_system == 'Windows'",  # For picture_viewer plugin.
 ]
 
 #@-<< pyproject.toml: dependencies >>
