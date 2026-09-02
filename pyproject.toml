@@ -291,7 +291,7 @@ dev = [
     "sphinx-book-theme",
 ]
 plugins = [
-    "matplotlib",
+    # "matplotlib",
     "numpy",
     "PyQt6-QScintilla",
     "PyQt6-WebEngine", # VR and VR3 plugins.
