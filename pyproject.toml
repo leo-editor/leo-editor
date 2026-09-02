@@ -6,17 +6,6 @@
 
 # The dependencies here should match those in requirements.txt.
 
-# https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
-#     pypi: https://pypi.org/project/leo/
-# testpypi: https://test.pypi.org/project/leo/
-
-# [build-system]
-# requires = [
-#     "build>=1.0",
-#     "setuptools>=80.4.0",
-# ]
-# build-backend = "setuptools.build_meta"
-
 [tool.setuptools]
 packages = [
     "leo",

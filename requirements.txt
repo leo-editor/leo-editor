@@ -34,9 +34,9 @@ websockets      # For leoserver.
 # Gui packages...
 
 PyQt6>= 6.6
-PyQt6-QScintilla
-PyQt6-WebEngine
-Send2Trash; platform_system=="Windows"  # For picture_viewer plugin.
+# PyQt6-QScintilla
+# PyQt6-WebEngine
+# Send2Trash; platform_system=="Windows"  # For picture_viewer plugin.
 # @-<< requirements.txt: dependencies >>
 
 # @@language python
