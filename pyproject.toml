@@ -226,6 +226,12 @@ name = "leo"
 authors =  [
     {"name" = "Edward K. Ream", "email" = "edreamleo@gmail.com"},
 ]
+maintainers =  [
+    {name = "Edward K. Ream", email = "edreamleo@gmail.com"},
+    {name = "Félix Malboeuf", email = "felixgraphx@gmail.com"},
+    {name = "Thomas Passin", email = "pub1@tompassin.net"},
+]
+
 #@+<< description >>
 #@+node:ekr.20240227162726.1: ** << description >>
 classifiers = [
