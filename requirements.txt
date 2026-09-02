@@ -26,18 +26,21 @@ PyQt6>= 6.6     # Installs lxml, PyYAML.
 urllib3
 websockets      # For leoserver.
 
-# Optional packages...
+# Optional dev packages...
 
-# beautifulsoup4  # For link testing.
-# matplotlib      # Does not install in Python 3.15rc2.
-# numpy
-# PyQt6-QScintilla
-# PyQt6-WebEngine # For VR and VR3 plugins.
-# pytest          # For coverage testing.
-# pytest-cov      # For coverage testing.
-# Send2Trash; platform_system=="Windows"  # For picture_viewer plugin.
-# sphinx          # For documentation.
-# sphinx-book-theme
+beautifulsoup4[dev]         # Link testing.
+pytest[dev]                 # Coverage testing.
+pytest-cov[dev]             # Coverage testing.
+sphinx[dev]                 # Website.
+sphinx-book-theme[dev]      # Website.
+
+# Optional plugins packages...
+
+# matplotlib # Does not install in Python 3.15rc2.
+numpy[plugins]                          # VR and VR3 plugins.
+PyQt6-QScintilla[plugins]
+PyQt6-WebEngine[plugins]                # VR and VR3 plugins.
+Send2Trash; platform_system=="Windows"  # picture_viewer.py
 # @-<< requirements.txt: dependencies >>
 
 # @@language python

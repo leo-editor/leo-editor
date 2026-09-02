@@ -226,6 +226,28 @@ requires-python = ">= 3.10"
 version = "0.0.0.dev0"  # Placeholder: publish.yml stamps the real version from the release tag at build time.
 name = "leo"
 
+[project.optional-dependencies]
+dev = [
+#@+<< pyproject.toml: dev dependencies >>
+#@+node:ekr.20260902055931.1: ** << pyproject.toml: dev dependencies >>
+"beautifulsoup4",  # For link testing.
+"pytest",          # For coverage testing.
+"pytest-cov",      # For coverage testing.
+"sphinx",
+"sphinx-book-theme",
+#@-<< pyproject.toml: dev dependencies >>
+]
+graphics = [
+#@+<< pyproject.toml: plugins dependencies >>
+#@+node:ekr.20260902060153.1: ** << pyproject.toml: plugins dependencies >>
+"matplotlib",
+"numpy",
+"PyQt6-QScintilla",
+"PyQt6-WebEngine", # VR and VR3 plugins.
+"Send2Trash; platform_system == 'Windows'",  # picture_viewer plugin.
+#@-<< pyproject.toml: plugins dependencies >>
+]
+
 #@+<< developer info >>
 #@+node:ekr.20240227084103.1: ** << developer info >>
 authors =  [
@@ -288,19 +310,6 @@ dependencies = [
   "PyQt6>= 6.6",     # Installs lxml, PyYAML.
   "urllib3",
   "websockets",      # For leoserver.
-
-  # Optional packages...
-  
-  # "beautifulsoup4",  # For link testing.
-  # "matplotlib",
-  # "numpy",
-  # "PyQt6-QScintilla",
-  # "PyQt6-WebEngine", # For VR and VR3 plugins.
-  # "pytest",          # For coverage testing.
-  # "pytest-cov",      # For coverage testing.
-  # "sphinx",
-  # "sphinx-book-theme",
-  # "Send2Trash; platform_system == 'Windows'",  # For picture_viewer plugin.
 ]
 
 #@-<< pyproject.toml: dependencies >>
