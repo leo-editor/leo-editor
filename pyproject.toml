@@ -277,9 +277,6 @@ dependencies = [
 #@-<< pyproject.toml: dependencies >>
 
 [project.optional-dependencies]
-# optional-dependencies-authors =  [
-#     {"name" = "Edward K. Ream", "email" = "edreamleo@gmail.com"},
-# ]
 dev = [
     "beautifulsoup4",  # For link testing.
     "pytest",          # For coverage testing.
