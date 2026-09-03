@@ -263,7 +263,6 @@
 <v t="ekr.20240323050520.1"><vh>@file ../scripts/beautify_all_leo.py</vh></v>
 <v t="ekr.20251129060454.1"><vh>@file ../scripts/check_leo.py</vh></v>
 <v t="ekr.20240323051724.1"><vh>@file ../scripts/full_test_leo.py</vh></v>
-<v t="ekr.20240321122413.8"><vh>@file ../scripts/mypy_leo.py</vh></v>
 <v t="ekr.20240406061929.1"><vh>@file ../scripts/ruff_leo.py</vh></v>
 <v t="ekr.20240322162616.1"><vh>@file ../scripts/run_test_leo.py</vh></v>
 <v t="ekr.20260809120840.1"><vh>@file ../scripts/ty_leo.py</vh></v>
