@@ -20,6 +20,15 @@
 </v>
 </v>
 </v>
+<v t="ekr.20260903074924.1"><vh>Declutter</vh>
+<v t="ekr.20260903074924.2"><vh>@bool tree-declutter = True</vh></v>
+<v t="ekr.20260903074924.3"><vh>@data tree-declutter-patterns</vh>
+<v t="ekr.20260903074924.4"><vh> About Decluttering</vh>
+<v t="ekr.20260903074924.5"><vh>Rule &amp; replacement lines</vh></v>
+<v t="ekr.20260903074924.6"><vh>Style lines</vh></v>
+</v>
+</v>
+</v>
 </v>
 <v t="ekr.20260829075120.1"></v>
 <v t="ekr.20231231164138.1"></v>
@@ -848,12 +857,15 @@
 <v t="ekr.20251214045245.150"><vh>test of two @doc parts</vh></v>
 </v>
 </v>
+<v t="ekr.20260831055324.1"><vh>--- Most important VR tests</vh>
 <v t="ekr.20251214045245.20"></v>
-<v t="ekr.20260831055324.1"><vh>--- Most important VR tests</vh></v>
 <v t="ekr.20251214045245.23"></v>
 <v t="ekr.20251214045245.27"></v>
 <v t="ekr.20251214045245.43"></v>
 <v t="ekr.20251214045245.16"></v>
+</v>
+<v t="ekr.20260903074924.3"></v>
+<v t="ekr.20260903075102.1"><vh>foo</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180311131353.1" str_leo_pos="3,11"></t>
@@ -19197,5 +19209,114 @@ viewrendered.py
 # screen_capture.py   # screen-capture-* commands.
 </t>
 <t tx="ekr.20260831055324.1"></t>
+<t tx="ekr.20260903074924.1"></t>
+<t tx="ekr.20260903074924.2">Set to True to enable node appearance modifications
+See tree-declutter-patterns
+</t>
+<t tx="ekr.20260903074924.3"># **Decluttering** replaces controls custom formatting of headlines, including:
+
+# - Hiding or changing headline text,
+# - Adding icons to headlines,
+# - Changing the styling of headlines.
+
+# @bool tree-declutter must be True to enable decluttering.
+
+# blank lines and lines starting with '#' are ignored.
+# See the children of this node for details.
+
+# #4973
+RULE ^foo.*?$
+BG red
+
+</t>
+<t tx="ekr.20260903074924.4"># **Decluttering** replaces controls custom formatting of headlines, including:
+
+# - Hiding or changing headline text,
+# - Adding icons to headlines,
+# - Changing the styling of headlines.
+
+# Decluttering is *inactive* when you are editing a headline.
+
+# Decluttering is *completely optional*. To enable decluttering, use::
+
+     # @bool tree-declutter = True
+     
+# Decluttering is controlled by **decluttering rulesets**.
+# You specify decluttering rulesets in the body text of::
+     
+    # @data tree-declutter-patterns
+    
+# As usual with @data nodes:
+
+# - Blank lines and lines starting with '#' are ignored.
+# - You may organize the text of the @data node using child nodes.
+
+# Each ruleset consists of a list of lines:
+
+# - The first line is a **rule line**, containing a **find pattern**.
+# - The second line is a **replacement line**.
+# - The ruleset ends with zero or more **style lines**.
+
+# Find patterns are `regular expressions &lt;https://docs.python.org/2/library/re.html&gt;`_.
+# Decluttering affects only those headlines that match a rule pattern. 
+
+# The following section shows some example rulesets. Later sections discuss decluttering commands, patterns and styles in more detail.
+</t>
+<t tx="ekr.20260903074924.5"># All rulesets start with a **rule line** of the form::
+
+    # RULE &lt;regular expression&gt;
+    
+# The ruleset matches a headline if and only if the regular expression matches. Matches can start anywhere in the headline. Leo first attempts to a match using re.match. If that doesn't work, Leo tries re.search.
+
+# A **replacement line** must follow the rule line. Here are the valid forms::
+
+    # REPLACE &lt;substitution expression&gt;
+    # REPLACE-HEAD
+    # REPLACE-TAIL
+    # REPLACE-REST
+    
+# - REPLACE replaces the headline by the value of the substitution expression.  For example::
+
+    # REPLACE \1
+    
+  # matches replaces the headline by the first matched regex group.
+
+# - REPLACE-HEAD replaces replace the headline by the text that precedes the matched text.
+
+# - REPLACE-TAIL replaces the headline by the text that follows the matched text.
+
+# - REPLACE-REST replaces the headline by everything except the matched text.
+</t>
+<t tx="ekr.20260903074924.6"># Leo applies style lines only if they appear in a ruleset that matches a headline.
+# Style lines do the following...
+
+# Add an icon to the headline::
+
+    # ICON path/to/icon
+    
+# Set the background or foreground color to a color number or names::
+
+    # BG #FF8800
+    # FG @solarized-magenta
+
+# Set the font to a given font name::
+
+    # Font Times
+    
+# Set the font size in pixels (PX) or points (PT)::
+
+    # PX 40
+    # PT 16
+    
+# Enable or disable italics::
+
+    # ITALIC 0
+    # ITALIC 1
+
+# Set the font weight to one of Light, Normal, DemiBold, Bold, Black::
+
+    # WEIGHT DemoBold
+</t>
+<t tx="ekr.20260903075102.1"></t>
 </tnodes>
 </leo_file>

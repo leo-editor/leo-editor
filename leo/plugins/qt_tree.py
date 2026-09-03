@@ -253,6 +253,8 @@ class LeoQtTree(leoFrame.LeoTree):
             elif cmd == 'REPLACE-REST':
                 s = (text[: m.start()] + text[m.end() :]).strip()
 
+            g.trace(cmd, repr(s))
+
             if not s:
                 return None, ''
 
@@ -273,6 +275,8 @@ class LeoQtTree(leoFrame.LeoTree):
             param - the saved argument of that operation.
             Returns (None, param) if 'cmd' is not a style option.
             """
+            g.trace(c.styleSheetManager)  ###
+
             if not c.styleSheetManager:
                 return None, ''
 
@@ -347,6 +351,8 @@ class LeoQtTree(leoFrame.LeoTree):
 
                 modifier = pt_modifier
 
+            g.trace(cmd, repr(modifier))
+
             # Apply the style update
             if modifier:
                 modifier(item, param)
@@ -376,6 +382,7 @@ class LeoQtTree(leoFrame.LeoTree):
                     loaded_images[f] = g.app.gui.getImageImage(f)
 
         # @-others
+
         if (v.h, iconVal) in dd:
             # Apply saved adjustments to the text and to the _style_ of the node.
             new_icons, modifiers_and_args = dd[(v.h, iconVal)]
