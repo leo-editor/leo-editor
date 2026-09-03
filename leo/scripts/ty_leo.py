@@ -17,7 +17,7 @@ os.chdir(leo_editor_dir)
 
 
 # @+others
-# @+node:ekr.20260823160000.1: ** check_optional_deps
+# @+node:ekr.20260823160000.1: ** check_optional_deps (ty_leo.py)
 def check_optional_deps() -> bool:
     """Return True if every package that a `# type:ignore` fallback assumes is present is resolvable. See #4952."""
     # ty resolves types from a package's on-disk source, it never actually runs the
@@ -32,7 +32,7 @@ def check_optional_deps() -> bool:
         ('nbformat', 'nbformat'),
         ('Pygments', 'pygments'),
         ('PyQt6', 'PyQt6.QtWidgets'),
-        ('PyQt6-QScintilla', 'PyQt6.Qsci'),
+        # ('PyQt6-QScintilla', 'PyQt6.Qsci'),
         ('pyenchant', 'enchant'),
         ('PyYAML', 'yaml'),
         ('websockets', 'websockets'),

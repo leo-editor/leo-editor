@@ -4,19 +4,6 @@
 
 # leo-editor/pyproject.toml
 
-# The dependencies here should match those in requirements.txt.
-
-# https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
-#     pypi: https://pypi.org/project/leo/
-# testpypi: https://test.pypi.org/project/leo/
-
-[build-system]
-requires = [
-    "build>=1.0",
-    "setuptools>=80.4.0",
-]
-build-backend = "setuptools.build_meta"
-
 [tool.setuptools]
 packages = [
     "leo",
@@ -233,24 +220,6 @@ packages = [
 ]
 
 [project]
-requires-python = ">= 3.10"
-version = "0.0.0.dev0"  # Placeholder: publish.yml stamps the real version from the release tag at build time.
-name = "leo"
-
-#@+<< developer info >>
-#@+node:ekr.20240227084103.1: ** << developer info >>
-authors =  [
-    {name = "Edward K. Ream"},
-    {email = "edreamleo@gmail.com"},
-]
-
-maintainers =  [
-    {name = "Edward K. Ream", email = "edreamleo@gmail.com"},
-    {name = "Félix Malboeuf", email = "felixgraphx@gmail.com"},
-    {name = "Thomas Passin", email = "pub1@tompassin.net"},
-    {name = "Виталије Милошевић, (Vitalije Milosevic) ", email = "vitalijem@gmail.com"},
-]
-#@-<< developer info >>
 #@+<< description >>
 #@+node:ekr.20240227162726.1: ** << description >>
 classifiers = [
@@ -275,66 +244,65 @@ keywords = ["PIM", "IDE", "Outliner"]
 license = "MIT"
 readme = "README.md"
 #@-<< description >>
-
-# Yes, we must duplicate requirements.txt.
-#@+<< pyproject.toml: dependencies >>
-#@+node:ekr.20240713074535.1: ** << pyproject.toml: dependencies >>
-# Warning: these dependencies should match those in requirements.txt.
-
+requires-python = ">= 3.10"
+# Placeholder: publish.yml set the version from the release tag.
+version = "0.0.0.dev0"
+name = "leo"
+authors =  [
+    {"name" = "Edward K. Ream", "email" = "edreamleo@gmail.com"},
+    {"name" = "Félix Malboeuf", "email" = "felixgraphx@gmail.com"},
+    {"name" = "Thomas Passin", "email" = "pub1@tompassin.net"},
+    {"name" = "Виталије Милошевић, (Vitalije Milosevic) ", "email" = "vitalijem@gmail.com"},
+]
 dependencies = [
+    # Essential testing.
+    "pygments",   # For unit tests.
+    "ruff==0.16.5",
+    "ty==0.0.77",
 
-  # For build devs.
-  "build>=1.2.1",
-  "twine>=5.1.0",
-
-  # For mypy.
-  # "mypy",
-  # "mypy-extensions",
-  # "typing_extensions",
-  # "types-docutils",
-  # "types-Markdown",
-  # "types-paramiko",
-  # "types-PyYAML",
-  # "types-requests",
-  # "types-six",
+    # General packages for plugins, leoserver and commands...
+    "docutils",        # For several plugins.
+    "jedi",            # For autocompletion.
+    "jupytext",        # For paired .ipynb/.py files. Installs markdown, nbformat, pyyaml.
+    "lxml",            # For leoImport.py importers.
+    "markdown",        # For the VR and VR3 plugins.
+    "pyenchant",       # The spell tab.
+    "PyQt6>= 6.6",     # Installs lxml, PyYAML.
+    "urllib3",
+    "websockets",      # For leoserver.
   
-  # For testing.
-  "asttokens",       # For unit tests.
-  "beautifulsoup4",  # For link testing.
-  "black",           # For unit tests.
-  "pytest",
-  "pytest-cov",      # For coverage testing.
-  "ruff==0.16.4",
-  "ty==0.0.73",
-
-  # General packages for plugins, leoserver and commands...
-
-  "docutils",        # For Sphinx and rST plugins.
-  # "flexx",         # For --gui=browser (leoflexx.py plugin).
-  "jedi",            # For autocompletion.
-  "jupytext",        # For paired .ipynb/.py files.
-  "lxml",            # For leoImport.py importers.
-  "markdown",        # VR3 plugin.
-  "matplotlib",      # VR3 plugin.
-  # "meta",          # livecode.py plugin.
-  "numpy",           # VR3 plugin.
-  "pyenchant",       # The spell tab.
-  "PyYAML",          # auto_colorize2_0.py plugin.
-
-  "sphinx",
-  "sphinx-book-theme",
-  "urllib3",
-  "websockets",      # For leoserver.
-
-  # Gui packages...
-
-  "PyQt6>= 6.6",
-  "PyQt6-QScintilla",
-  "PyQt6-WebEngine",
-  "Send2Trash; platform_system == 'Windows'",  # For picture_viewer plugin.
+    # Dev dependencies.
+    "beautifulsoup4",  # For link testing.
+    "pytest",          # For coverage testing.
+    "pytest-cov",      # For coverage testing.
+    "sphinx",
+    "sphinx-book-theme",
+    
+    # Plugin dependencies.
+    "matplotlib",       # Fails for Python 3.15rc2.
+    "numpy",
+    "PyQt6-QScintilla",
+    "PyQt6-WebEngine", # VR and VR3 plugins.
+    "Send2Trash; platform_system == 'Windows'",  # picture_viewer plugin.
 ]
 
-#@-<< pyproject.toml: dependencies >>
+# Separate dependencies. Maybe later.
+
+# [project.optional-dependencies]
+# dev = [
+#     "beautifulsoup4",  # For link testing.
+#     "pytest",          # For coverage testing.
+#     "pytest-cov",      # For coverage testing.
+#     "sphinx",
+#     "sphinx-book-theme",
+# ]
+# plugins = [
+#     # "matplotlib",
+#     "numpy",
+#     "PyQt6-QScintilla",
+#     "PyQt6-WebEngine", # VR and VR3 plugins.
+#     "Send2Trash; platform_system == 'Windows'",  # picture_viewer plugin.
+# ]
 
 [project.scripts]
 leo = "leo.core.runLeo:run"
@@ -342,21 +310,16 @@ leo-c = "leo.core.runLeo:run_console"
 leo-console = "leo.core.runLeo:run_console"
 
 [project.urls]
-#@+<< urls >>
-#@+node:ekr.20240227162816.1: ** << urls >>
-Documentation = "https://leo-editor.github.io/leo-editor/leo_toc.html"
+"Documentation" = "https://leo-editor.github.io/leo-editor/leo_toc.html"
 "Home Page" = "https://leo-editor.github.io/leo-editor/"
-Issues = "https://github.com/leo-editor/leo-editor/issues"
+"Issues" = "https://github.com/leo-editor/leo-editor/issues"
 "Pull Requests" = "https://github.com/leo-editor/leo-editor/pulls"
 "GitHub Repository" = "https://github.com/leo-editor/leo-editor"
 "What People Are Saying about Leo" = "http://leo-editor.github.io/leo-editor/testimonials.html"
-#@-<< urls >>
 
-# @int black-line-length  overrides this default value.
-# black's default value is 100.
 [tool.ruff]
-line-length = 100
-
+# @int black-line-length  overrides this default value.
+line-length = 100   # black's default value is 100.
 extend-exclude = ["*.md"]
 
 # @string black-toml gives the path to a pyproject.toml or ruff.toml file.

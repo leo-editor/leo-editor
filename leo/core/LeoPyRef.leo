@@ -9,8 +9,7 @@
 <v t="ekr.20051031040240"><vh>Startup</vh>
 <v t="ekr.20080412053100.5"><vh>@settings</vh>
 <v t="ekr.20260526171943.1"><vh>@bool minibuffer-find-mode = True</vh></v>
-<v t="ekr.20220904210247.1"><vh>@@@enabled-plugins</vh></v>
-<v t="ekr.20251214042454.1"><vh>@bool body-pane-wraps = False</vh></v>
+<v t="ekr.20220904210247.1"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20140902155015.18674"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="ekr.20250715195948.1"><vh>@bool report-changed-at-clean-nodes = False</vh></v>
 <v t="ekr.20221129012213.1"><vh>@bool run-flake8-on-write = False</vh></v>
@@ -55,9 +54,7 @@
 <v t="ekr.20220319151900.1"><vh>function: make_diff_outlines_ignoring_comments</vh></v>
 <v t="ekr.20220319152417.1"><vh>function: strip_comments</vh></v>
 </v>
-<v t="ekr.20260116001413.1"><vh>script: summary-diff (main, 6.8.10, leo/commands)</vh></v>
 <v t="ekr.20260112121427.1"><vh>script: summary-diff (main, 6.8.10, leo/core)</vh></v>
-<v t="ekr.20260806163514.1"><vh>script: summary-diff (main, 6.8.10: all files)</vh></v>
 </v>
 <v t="ekr.20260503063649.1"><vh>--- other scripts</vh>
 <v t="ekr.20240403111007.1"><vh>script: add toolbar buttons</vh></v>
@@ -100,6 +97,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20220904210247.1"></v>
 <v t="EKR.20040430162943"><vh>The attic</vh>
 <v t="ekr.20170302123956.1"><vh>@file ../doc/leoAttic.txt</vh></v>
 </v>
@@ -181,12 +179,13 @@
 </v>
 <v t="ekr.20180225010707.1"><vh>--- (do not delete) In leo-editor</vh>
 <v t="ekr.20260813051101.1"><vh>--- (do not delete) leo-editor: build files</vh>
-<v t="ekr.20220222130955.1"><vh>@clean ../../.mypy.ini</vh></v>
 <v t="ekr.20240317061516.1"><vh>@clean ../../MANIFEST.in</vh></v>
 <v t="ekr.20240206161713.1"><vh>@clean ../../setup.cfg </vh></v>
-<v t="ekr.20260821134304.1"><vh>@clean ../../ty.toml</vh></v>
+<v t="ekr.20260821134304.1"><vh>@clean ../../ty.toml</vh>
+<v t="ekr.20260902044618.1"><vh>&lt;&lt; ty.toml: exludes &gt;&gt;</vh></v>
+<v t="ekr.20260902044553.1"><vh>&lt;&lt; ty.toml: rules &gt;&gt;</vh></v>
+</v>
 <v t="ekr.20240227064614.1"><vh>@file ../../pyproject.toml</vh></v>
-<v t="ekr.20240201175949.1"><vh>@file ../../requirements.txt</vh></v>
 <v t="ekr.20240406013108.1"><vh>@file ../../ruff.toml</vh></v>
 </v>
 <v t="ekr.20260813051203.1"><vh>--- (do not delete) leo-editor: workflow scripts</vh>
@@ -254,7 +253,6 @@
 <v t="mhw.20190808083008.1"><vh>@file ../scripts/add-desktop-links.leox</vh></v>
 <v t="ekr.20240321123226.1"><vh>@file ../scripts/install_leo_from_pypi.py</vh></v>
 <v t="ekr.20240321123214.1"><vh>@file ../scripts/install_leo_locally.py</vh></v>
-<v t="ekr.20240322173704.1"><vh>@file ../scripts/pip_install_r.py</vh></v>
 <v t="ekr.20240322173731.1"><vh>@file ../scripts/pip_uninstall_all.py</vh></v>
 <v t="ekr.20240321123224.1"><vh>@file ../scripts/run_installed_leo.py</vh></v>
 <v t="ekr.20240321123225.1"><vh>@file ../scripts/uninstall_leo.py</vh></v>
@@ -265,7 +263,6 @@
 <v t="ekr.20240323050520.1"><vh>@file ../scripts/beautify_all_leo.py</vh></v>
 <v t="ekr.20251129060454.1"><vh>@file ../scripts/check_leo.py</vh></v>
 <v t="ekr.20240323051724.1"><vh>@file ../scripts/full_test_leo.py</vh></v>
-<v t="ekr.20240321122413.8"><vh>@file ../scripts/mypy_leo.py</vh></v>
 <v t="ekr.20240406061929.1"><vh>@file ../scripts/ruff_leo.py</vh></v>
 <v t="ekr.20240322162616.1"><vh>@file ../scripts/run_test_leo.py</vh></v>
 <v t="ekr.20260809120840.1"><vh>@file ../scripts/ty_leo.py</vh></v>
@@ -276,8 +273,6 @@
 <v t="ekr.20161223152017.1"><vh>@edit ../plugins/qt_quicksearch.py</vh></v>
 <v t="ekr.20161223152353.1"><vh>@edit ../plugins/qt_quicksearch_sub.py</vh></v>
 <v t="ekr.20140907085654.18699"><vh>@file ../plugins/qt_gui.py</vh></v>
-<v t="ekr.20120419093256.10048"><vh>@file ../plugins/free_layout.py</vh></v>
-<v t="ekr.20110605121601.17954"><vh>@file ../plugins/nested_splitter.py</vh></v>
 <v t="ekr.20221019064053.1"><vh>@file ../plugins/pane_commands.py</vh></v>
 <v t="ekr.20110605121601.17996"><vh>@file ../plugins/qt_commands.py</vh></v>
 <v t="ekr.20140907103315.18766"><vh>@file ../plugins/qt_events.py</vh></v>
@@ -369,7 +364,6 @@
 <v t="ekr.20040205071616"><vh>@file ../plugins/mnplugins.py</vh></v>
 <v t="ekr.20101110094759.5843"><vh>@file ../plugins/mod_speedups.py</vh></v>
 <v t="tbrown.20070117104409"><vh>@file ../plugins/quickMove.py</vh></v>
-<v t="tbrown.20130813134319.11942"><vh>@file ../plugins/richtext.py</vh></v>
 <v t="ekr.20040910070811.1"><vh>@file ../plugins/run_nodes.py</vh></v>
 <v t="ekr.20100103093121.5339"><vh>@file ../plugins/stickynotes_plus.py</vh></v>
 <v t="ekr.20040331071919"><vh>Leo to AsciiDoc</vh>
@@ -1630,81 +1624,6 @@ def do_sec(i, m, s):
     child.h = h.strip()
     parents.append(('@ ', child))
 </t>
-<t tx="ekr.20220222130955.1"># Config file for mypy
-
-# Note: Do not put comments after settings.
-
-[mypy]
-python_version = 3.14
-cache_dir = mypy_cache
-incremental = True
-
-# Defaults for all files.
-check_untyped_defs = True
-follow_imports = normal
-ignore_missing_imports = True
-show_error_codes = True
-strict_optional = False
-
-# 2026/07/27: Suppress a serious mypy bug until mypy releases an official fix.
-disable_error_code=index
-
-# For v0.931, per https://github.com/python/mypy/issues/11936
-
-exclude =
-    
-    # The first line must *not* start with |.
-    # Thereafter, each line *must* start with |.
-    # No trailing '|' on last entry!
-
-    # Directories...
-    doc/|dist/|editpane/|examples/|extensions/|external/|modes/|obsolete/|scripts/|themes/|unittests/|www/|
-    
-    # Special plugins...
-    |freewin.py|scriptFile.py|beautify_node.py|viewrendered3|
-
-    # Experimental plugins...
-    |leo_pdf|leo_to_rtf|mnplugins|mod_speedups|settings_finder|stickynotes_plus|
-    
-    # qt_main.py is generated automatically, so it's pointless to add annotations.
-    |qt_main
-
-# More specific descriptions override less specific.
-
-# leo/core...
-
-[mypy-leo.core.*]
-disable_error_code=attr-defined
-strict_optional = True
-
-[mypy-core.leoPymacs,leo.core.runLeo,leo.core.leoRope]
-disable_error_code=attr-defined
-
-[mypy-leo.core.leoclient,leo.leo.core.leoserver]
-disable_error_code=attr-defined
-
-# leo/commands.
-
-[mypy-leo.commands.*]
-disable_error_code=attr-defined
-strict_optional = True
-
-# leo/external.
-[mypy-leo.external.*]
-disable_error_code=attr-defined
-
-# leo/modes.
-[mypy-leo.modes.*]
-disable_error_code=attr-defined
-
-# leo/plugins...
-
-[mypy-leo.plugins.*]
-disable_error_code=attr-defined
-
-[mypy-leo.plugins.importers.*,leo.plugins.writers.*,leo.unittests.plugins.test_importers]
-strict_optional = True
-</t>
 <t tx="ekr.20220306092217.1">"""Invoke EKR's private test-one.cmd script."""
 
 import os
@@ -2057,16 +1976,18 @@ while todo:
 # Standard plugins...
 
 plugins_menu.py     # Adds 'Plugins' menu.
-mod_scripting.py
-contextmenu.py      # Required by the vim.py and xemacs.py plugins.
+mod_scripting.py    # Support for @button and @command.
 nav_qt.py           # Forward/back buttons &amp; goto-next/prev-history-node
-### quicksearch.py      # Nav pane.
-viewrendered.py     # (Or viewrendered3.py) Plugins menu support.
+qt_layout.py        # Creates qt_layout menu in the Plugins menu.
+
+# viewrendered.py     # (Or viewrendered3.py) Plugins menu support.
 
 # Disabled standard menus...
 
+# contextmenu.py      # Required by the vim.py and xemacs.py plugins.
 # mod_autosave.py   # Creates .bak files.
 # nodetags.py       # Supports tags via uA's.
+# quicksearch.py    # Nav pane.
 </t>
 <t tx="ekr.20221129012213.1"># See flake8 settings in setup.cfg.</t>
 <t tx="ekr.20221204070905.1"></t>
@@ -2554,9 +2475,6 @@ if new_b != proj_p.b:
     c.redraw()
     c.save()</t>
 <t tx="ekr.20250715195948.1"></t>
-<t tx="ekr.20251214042454.1">True: Wrap body text.
-
-</t>
 <t tx="ekr.20260111055821.1"># These settings control ruff format, which is compatible with black.</t>
 <t tx="ekr.20260111055821.2"># True: beautify all @&lt;file&gt; nodes in the outline using Leo's token-based beautifier.
 # True can result in much slower writes.</t>
@@ -3161,16 +3079,6 @@ test_s = textwrap.dedent('''
 @language python
 '''
 )</t>
-<t tx="ekr.20260116001413.1">g.cls()
-from leo.commands import editFileCommands as efc
-
-# Any branch or rev is valid.
-efc.GitDiffController(c).summary_diff_two_revs(
-    rev1='main',    # Old
-    rev2='6.8.10',     # New
-    path='leo/commands',  # Limit diffs to this directory, relative to the nearest git repo.
-)  # fmt: skip
-</t>
 <t tx="ekr.20260503052547.1">from leo.commands import editFileCommands as efc
 
 efc.GitDiffController(c).diff_two_revs(
@@ -3243,8 +3151,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
-      - run: pip install ruff
-      - run: ruff check leo
+      - run: pip install "ruff==0.16.4"
+      - run: ruff check leo --output-format=github
       - run: ruff format --check leo
 
   test:
@@ -3303,33 +3211,21 @@ jobs:
 
   ty:
     runs-on: ubuntu-latest
+    env:
+      TY_OUTPUT_FORMAT: github
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
         with:
-          python-version: "3.12"
+          python-version: "3.14"
           cache: pip
-      # Install optional packages that Leo's devs should have installed.
-      # - run: pip install "mypy&lt;2" mypy-extensions typing_extensions
-      #     types-docutils types-Markdown types-paramiko types-PyYAML
-      #     types-requests types-six
-      - run: pip install "ty==0.0.71"
-          "PyQt6&gt;=6.6" PyQt6-QScintilla PyQt6-WebEngine 
+      # Install optional packages that Leo's devs should have installed,
+      # so ty resolves their imports the same way it does on devs' machines.
+      - run: pip install "ty==0.0.73"
+          "PyQt6&gt;=6.6" PyQt6-QScintilla PyQt6-WebEngine
           black Jinja2 Pygments docutils pyenchant jedi nbformat nbconvert
-      # - run: python -m mypy leo
-      # Require ty: https://github.com/astral-sh/ty to pass.
-      # Run after mypy to reuse the checkout/Python/PyQt6 setup.
+          "mypy&lt;2" lxml PyYAML
       - run: ty check leo
-</t>
-<t tx="ekr.20260806163514.1">g.cls()
-from leo.commands import editFileCommands as efc
-
-# Any branch or rev is valid.
-efc.GitDiffController(c).summary_diff_two_revs(
-    rev1='main',    # Old
-    rev2='6.8.10',     # New
-    # path='leo/commands',  # Limit diffs to this directory, relative to the nearest git repo.
-)  # fmt: skip
 </t>
 <t tx="ekr.20260808003136.1"></t>
 <t tx="ekr.20260809041303.1">name: Publish
@@ -3570,15 +3466,37 @@ if __name__ == '__main__':
     sys.exit(main())
 </t>
 <t tx="ekr.20260820160722.1"></t>
-<t tx="ekr.20260821134304.1"># Config for `ty` (https://github.com/astral-sh/ty)
-# See the "ty" job in .github/workflows/ci.yml
-
-# ty is still in beta, and is noticeably stricter than mypy.
+<t tx="ekr.20260821134304.1"># Config for `ty`: https://github.com/astral-sh/ty
+# See the `ty` job in .github/workflows/ci.yml
 
 [src]
 include = ["leo"]
 exclude = [
-    # Mirrors the [mypy] exclude list in .mypy.ini.
+
+&lt;&lt; ty.toml: exludes &gt;&gt;
+
+[analysis]
+strict-equality-semantics = true
+
+[rules]
+
+&lt;&lt; ty.toml: rules &gt;&gt;
+</t>
+<t tx="ekr.20260902044553.1">
+# Like `disable_error_code=attr-defined` in .mypy.ini.
+unresolved-attribute = "ignore"
+
+# Like `ignore_missing_imports = True` in .mypy.ini.
+unresolved-import = "ignore"
+
+# Warn about unused suppressions.
+unused-ignore-comment = "ignore"  # Python 3.14 and 3.150rc2 differ.
+unused-type-ignore-comment = "ignore"  # Python 3.14 and 3.150rc2 differ.
+
+# Ignore warnings about overridden methods.
+invalid-method-override = "ignore"
+</t>
+<t tx="ekr.20260902044618.1">    # Mirrors the [mypy] exclude list in .mypy.ini.
     "leo/doc",
     "leo/dist",
     "leo/editpane",
@@ -3605,20 +3523,6 @@ exclude = [
     "leo/plugins/stickynotes_plus*",
     "leo/plugins/qt_main*",
 ]
-
-[rules]
-
-# Like `disable_error_code=attr-defined` in .mypy.ini.
-unresolved-attribute = "ignore"
-
-# Like `ignore_missing_imports = True` in .mypy.ini.
-unresolved-import = "ignore"
-
-# Warn about unused suppressions.
-unused-type-ignore-comment = "warn"
-
-# Ignore warnings about overridden methods.
-invalid-method-override = "ignore"
 </t>
 </tnodes>
 </leo_file>
