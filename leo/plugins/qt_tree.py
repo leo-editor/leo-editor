@@ -237,8 +237,7 @@ class LeoQtTree(leoFrame.LeoTree):
             to the executed replacement operation, 's' is the substituted string.
             If cmd is not a replacement command returns (None, None)
             """
-            # 's' is string when 'cmd' is recognized and is None otherwise
-            s: str
+            s = ''
             if cmd == 'REPLACE':
                 try:
                     s = pattern.sub(arg, text)
@@ -254,17 +253,17 @@ class LeoQtTree(leoFrame.LeoTree):
             elif cmd == 'REPLACE-REST':
                 s = (text[: m.start()] + text[m.end() :]).strip()
 
-            if isinstance(s, str):
-                # Save the operation
+            if not s:
+                return None, ''
 
-                def string_replacement(item: Any, s: str) -> None:
-                    item.setText(0, s)
+            # Save the operation
 
-                # ... and apply it
-                string_replacement(item, s)
-                return string_replacement, s
+            def string_replacement(item: Any, s: str) -> None:
+                item.setText(0, s)
 
-            return None, s
+            # ... and apply it
+            string_replacement(item, s)
+            return string_replacement, s
 
         # @+node:ekr.20171122055719.1: *6* declutter_style
         def declutter_style(arg: str, cmd: Callable) -> tuple[Callable | None, str]:
