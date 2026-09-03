@@ -47,7 +47,6 @@ class TestPlugins(LeoUnitTest):
             'leocursor.py',
             'leo_cloud_server.py',
             'leo_mypy_plugin.py',
-            'nested_splitter.py',
             'qtGui.py',
             'qt_gui.py',
             'qt_big_text.py',

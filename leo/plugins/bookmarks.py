@@ -159,13 +159,6 @@ all the time.
   Temporarily increase the value of the the ``@int bookmarks-levels``
   setting.
 
-Other notes
------------
-
-The free_layout Action button context menu will also allow you to add one of
-these bookmark panes, and they will be saved and loaded again if the layout is
-saved and loaded.
-
 Bookmarks for tabbed body editors
 +++++++++++++++++++++++++++++++++
 

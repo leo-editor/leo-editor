@@ -1,7 +1,7 @@
 # @+leo-ver=5-thin
 # @+node:tbrown.20091029123555.5319: * @file ../plugins/attrib_edit.py
-# @+<< docstring >>
-# @+node:tbrown.20091009210724.10972: ** << docstring >>
+# @+<< attrib_edit: docstring >>
+# @+node:tbrown.20091009210724.10972: ** << attrib_edit: docstring >>
 r"""Edits user attributes in a Qt frame.
 
 This plugin creates a frame for editing attributes similar to::
@@ -13,9 +13,7 @@ This plugin creates a frame for editing attributes similar to::
 ``attrib_edit`` is also intended to provide attribute editing for
 other plugins, see below.
 
-The editor panel appears in the Log pane in its own tab.  If the free_layout
-system is active you can move it into its own pane (e.g. below the body text)
-by right clicking the pane dividers.
+The editor panel appears in the Log pane in its own tab.
 
 The attributes can be stored in different ways, three modes are implemented
 currently:
@@ -101,7 +99,7 @@ plugins. Here are some points of interest:
 
 """
 
-# @-<< docstring >>
+# @-<< attrib_edit: docstring >>
 # Written by TNB.
 from typing import Any
 from leo.core import leoGlobals as g

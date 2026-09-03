@@ -7,604 +7,582 @@
 # @@killbeautify
 # @+all
 # @+node:ekr.20240617085704.1: ** Permanent attic
-# @+node:ekr.20121128031949.12605: *3* class g.SherlockTracer
-class SherlockTracer:
+# @+node:ekr.20260805111552.1: *3* 'insert-qt-icon' & helper
+@cmd('insert-qt-icon')
+def insertQtIcon(self, event: LeoKeyEvent | None = None) -> None:
     """
-    A stand-alone tracer class with many of Sherlock's features.
-
-    This class should work in any environment containing the re, os and sys modules.
-
-    The arguments in the pattern lists determine which functions get traced
-    or which stats get printed. Each pattern starts with "+", "-", "+:" or
-    "-:", followed by a regular expression::
-
-    "+x"  Enables tracing (or stats) for all functions/methods whose name
-          matches the regular expression x.
-    "-x"  Disables tracing for functions/methods.
-    "+:x" Enables tracing for all functions in the **file** whose name matches x.
-    "-:x" Disables tracing for an entire file.
-
-    Enabling and disabling depends on the order of arguments in the pattern
-    list. Consider the arguments for the Rope trace::
-
-    patterns=['+.*','+:.*',
-        '-:.*\\lib\\.*','+:.*rope.*','-:.*leoGlobals.py',
-        '-:.*worder.py','-:.*prefs.py','-:.*resources.py',])
-
-    This enables tracing for everything, then disables tracing for all
-    library modules, except for all rope modules. Finally, it disables the
-    tracing for Rope's worder, prefs and resources modules.
-
-    Being able to zero in on the code of interest can be a big help in
-    studying other people's code. This is a non-invasive method: no tracing
-    code needs to be inserted anywhere.
-
-    Usage:
-
-    g.SherlockTracer(patterns).run()
+    Show a window previewing all standard Qt icons.
+    Add each selected icon to c.p.h.
     """
-    @others
-# @+node:ekr.20121128031949.12602: *4* sherlock.__init__
-def __init__(
-    self,
-    patterns: list[Any],
-    indent: bool = True,
-    show_args: bool = True,
-    show_return: bool = True,
-    verbose: bool = True,
-) -> None:
-    """SherlockTracer ctor."""
-    self.bad_patterns: list[str] = []  # List of bad patterns.
-    self.indent = indent  # True: indent calls and returns.
-    self.contents_d: dict[str, list] = {}  # Keys are file names, values are file lines.
-    self.n = 0  # The frame level on entry to run.
-    self.stats: dict[str, dict] = {}  # Keys are full file names, values are dicts.
-    self.patterns: list[Any] = None  # A list of regex patterns to match.
-    self.pattern_stack: list[str] = []
-    self.show_args = show_args  # True: show args for each function call.
-    self.show_return = show_return  # True: show returns from each function.
-    self.trace_lines = True  # True: trace lines in enabled functions.
-    self.verbose = verbose  # True: print filename:func
-    self.set_patterns(patterns)
-    try:  # Don't assume g.app exists.
-        from leo.core.leoQt import QtCore
-        if QtCore:
-            # pylint: disable=no-member
-            QtCore.pyqtRemoveInputHook()
-    except Exception:
-        pass
-# @+node:ekr.20140326100337.16844: *4* sherlock.__call__
-def __call__(self, frame: Any, event: Any, arg: Any) -> Any:
-    """Exists so that self.dispatch can return self."""
-    return self.dispatch(frame, event, arg)
-# @+node:ekr.20140326100337.16846: *4* sherlock.bad_pattern
-def bad_pattern(self, pattern: Any) -> None:
-    """Report a bad Sherlock pattern."""
-    if pattern not in self.bad_patterns:
-        self.bad_patterns.append(pattern)
-        print(f"\nignoring bad pattern: {pattern}\n")
-# @+node:ekr.20140326100337.16847: *4* sherlock.check_pattern
-def check_pattern(self, pattern: str) -> bool:
-    """Give an error and return False for an invalid pattern."""
-    try:
-        for prefix in ('+:', '-:', '+', '-'):
-            if pattern.startswith(prefix):
-                re.match(pattern[len(prefix) :], 'xyzzy')
-                return True
-        self.bad_pattern(pattern)
-        return False
-    except Exception:
-        self.bad_pattern(pattern)
-        return False
-# @+node:ekr.20121128031949.12609: *4* sherlock.dispatch
-def dispatch(self, frame: Any, event: Any, arg: Any) -> Any:
-    """The dispatch method."""
-    if event == 'call':
-        self.do_call(frame, arg)
-    elif event == 'return' and self.show_return:
-        self.do_return(frame, arg)
-    elif event == 'line' and self.trace_lines:
-        self.do_line(frame, arg)
-    # Queue the SherlockTracer instance again.
-    return self
-# @+node:ekr.20121128031949.12603: *4* sherlock.do_call & helper
-def do_call(self, frame: Any, unused_arg: Any) -> None:
-    """Trace through a function call."""
-    frame1 = frame
-    code = frame.f_code
-    file_name = code.co_filename
-    locals_ = frame.f_locals
-    function_name = code.co_name
-    try:
-        full_name = self.get_full_name(locals_, function_name)
-    except Exception:
-        full_name = function_name
-    if not self.is_enabled(file_name, full_name, self.patterns):
-        # 2020/09/09: Don't touch, for example, __ methods.
-        return
-    n = 0  # The number of callers of this def.
-    while frame:
-        frame = frame.f_back
-        n += 1
-    indent = ' ' * max(0, n - self.n) if self.indent else ''
-    path = f"{os.path.basename(file_name):>20}" if self.verbose else ''
-    leadin = '+' if self.show_return else ''
-    args_list = self.get_args(frame1)
-    if self.show_args and args_list:
-        args_s = ','.join(args_list)
-        args_s2 = f"({args_s})"
-        if len(args_s2) > 100:
-            print(f"{path}:{indent}{leadin}{full_name}")
-            g.printObj(args_list, indent=len(indent) + 22)
-        else:
-            print(f"{path}:{indent}{leadin}{full_name}{args_s2}")
-    else:
-        print(f"{path}:{indent}{leadin}{full_name}")
-    # Always update stats.
-    d = self.stats.get(file_name, {})
-    d[full_name] = 1 + d.get(full_name, 0)
-    self.stats[file_name] = d
-# @+node:ekr.20130111185820.10194: *5* sherlock.get_args
-def get_args(self, frame: Any) -> list[str]:
-    """Return a list of string "name=val" for each arg in the function call."""
-    code = frame.f_code
-    locals_ = frame.f_locals
-    name = code.co_name
-    n = code.co_argcount
-    if code.co_flags & 4:
-        n = n + 1
-    if code.co_flags & 8:
-        n = n + 1
-    result = []
-    for i in range(n):
-        name = code.co_varnames[i]
-        if name != 'self':
-            arg = locals_.get(name, '*undefined*')
-            if arg:
-                if isinstance(arg, (list, tuple)):
-                    val_s = ','.join([self.show(z) for z in arg if self.show(z)])
-                    val = f"[{val_s}]"
-                elif isinstance(arg, str):
-                    val = arg
-                else:
-                    val = self.show(arg)
-                if val:
-                    result.append(f"{name}={val}")
-    return result
-# @+node:ekr.20140402060647.16845: *4* sherlock.do_line (not used)
-bad_fns: list[str] = []
+   
+    controller = self
+    d = g.app.scriptDict
+    key = 'insert_qt_icon_window'
+    insert_qt_icon_window = d.get(key)
+    if not insert_qt_icon_window:
+        << define class QtPreviewWindow >>
+        d[key] = insert_qt_icon_window = QtPreviewWindow()
+    insert_qt_icon_window.show()
 
-def do_line(self, frame: Any, arg: Any) -> None:
-    """print each line of enabled functions."""
-    if 1:
-        return
-    code = frame.f_code
-    file_name = code.co_filename
-    locals_ = frame.f_locals
-    name = code.co_name
-    full_name = self.get_full_name(locals_, name)
-    if not self.is_enabled(file_name, full_name, self.patterns):
-        return
-    n = frame.f_lineno - 1  # Apparently, the first line is line 1.
-    d = self.contents_d
-    lines = d.get(file_name)
-    if not lines:
-        print(file_name)
-        try:
-            with open(file_name) as f:
-                s = f.read()
-        except Exception:
-            if file_name not in self.bad_fns:
-                self.bad_fns.append(file_name)
-                print(f"open({file_name}) failed")
-            return
-        lines = g.splitLines(s)
-        d[file_name] = lines
-    line = lines[n].rstrip() if n < len(lines) else '<EOF>'
-    if 0:
-        print(f"{name:3} {line}")
-    else:
-        print(f"{g.shortFileName(file_name)} {n} {full_name} {line}")
-# @+node:ekr.20130109154743.10172: *4* sherlock.do_return & helper
-def do_return(self, frame: Any, arg: Any) -> None:  # Arg *is* used below.
-    """Trace a return statement."""
-    code = frame.f_code
-    fn = code.co_filename
-    locals_ = frame.f_locals
-    name = code.co_name
-    self.full_name = self.get_full_name(locals_, name)
-    if not self.is_enabled(fn, self.full_name, self.patterns):
-        return
-    n = 0
-    while frame:
-        frame = frame.f_back
-        n += 1
-    path = f"{os.path.basename(fn):>20}" if self.verbose else ''
-    if name and name == '__init__':
-        try:
-            ret1 = locals_ and locals_.get('self', None)
-            self.put_ret(ret1, n, path)
-        except NameError:
-            self.put_ret(f"<{ret1.__class__.__name__}>", n, path)
-    else:
-        self.put_ret(arg, n, path)
-# @+node:ekr.20220605141445.1: *5* sherlock.put_ret
-def put_ret(self, arg: Any, n: int, path: str) -> None:
-    """Print arg, the value returned by a "return" statement."""
-    indent = ' ' * max(0, n - self.n + 1) if self.indent else ''
-    try:
-        if isinstance(arg, types.GeneratorType):
-            ret = '<generator>'
-        elif isinstance(arg, (tuple, list)):
-            ret_s = ','.join([self.show(z) for z in arg])
-            if len(ret_s) > 40:
-                g.printObj(arg, indent=len(indent))
-                ret = ''
-            else:
-                ret = f"[{ret_s}]"
-        elif arg:
-            ret = self.show(arg)
-            if len(ret) > 100:
-                ret = f"\n    {ret}"
-        else:
-            ret = '' if arg is None else repr(arg)
-        print(f"{path}:{indent}-{self.full_name} -> {ret}")
-    except Exception:
-        exctype, value = sys.exc_info()[:2]
-        try:  # Be extra careful.
-            arg_s = f"arg: {arg!r}"
-        except Exception:
-            arg_s = ''  # arg.__class__.__name__
-        print(
-            f"{path}:{indent}-{self.full_name} -> "
-            f"{exctype.__name__}, {value} {arg_s}"
+# @+node:ekr.20260805111828.1: *4* << define class QtPreviewWindow >>
+from PyQt6.QtWidgets import (  # pylint: disable=no-name-in-module
+    QGridLayout,
+    QPushButton,
+    QStyle,
+    QWidget,
+)
+
+# Adapted from https://gist.github.com/ostr00000/30c9e732550baa0c13a73fd3320e7d55
+class QtPreviewWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        icon_names = sorted(
+            [z for z in dir(QStyle.StandardPixmap) if z.startswith("SP_")]
         )
-# @+node:ekr.20121128111829.12185: *4* sherlock.fn_is_enabled
-def fn_is_enabled(self, func: Any, patterns: list[str]) -> bool:
-    """Return True if tracing for the given function is enabled."""
-    if func in self.ignored_functions:
-        return False
+        layout = QGridLayout()
+        for i, icon_name in enumerate(icon_names):
+            button = QPushButton(icon_name)
+            pixmap = getattr(QStyle.StandardPixmap, icon_name)
+            if pixmap is None:
+                g.trace(f"No pixmap for {icon_name=}")
+                continue
 
-    def ignore_function() -> None:
-        if func not in self.ignored_functions:
-            self.ignored_functions.append(func)
-            print(f"Ignore function: {func}")
-    #
-    # New in Leo 6.3. Never trace dangerous functions.
-    table = (
-        '_deepcopy.*',
-        # Unicode primitives.
-        'encode\b', 'decode\b',
-        # System functions
-        '.*__next\b',
-        '<frozen>', '<genexpr>', '<listcomp>',
-        # '<decorator-gen-.*>',
-        'get\b',
-        # String primitives.
-        'append\b', 'split\b', 'join\b',
-        # File primitives...
-        'access_check\b', 'expanduser\b', 'exists\b', 'find_spec\b',
-        'abspath\b', 'normcase\b', 'normpath\b', 'splitdrive\b',
-    )
-    g.trace('=====', func)
-    for z in table:
-        if re.match(z, func):
-            ignore_function()
-            return False
-    #
-    # Legacy code.
-    try:
-        enabled, pattern = False, None
-        for pattern in patterns:
-            if pattern.startswith('+:'):
-                if re.match(pattern[2:], func):
-                    enabled = True
-            elif pattern.startswith('-:'):
-                if re.match(pattern[2:], func):
-                    enabled = False
-        return enabled
-    except Exception:
-        self.bad_pattern(pattern)
-        return False
-# @+node:ekr.20130112093655.10195: *4* sherlock.get_full_name
-def get_full_name(self, locals_: Any, name: str) -> str:
-    """Return class_name::name if possible."""
-    full_name = name
-    try:
-        user_self = locals_ and locals_.get('self', None)
-        if user_self:
-            full_name = user_self.__class__.__name__ + '::' + name
-    except Exception:
-        pass
-    return full_name
-# @+node:ekr.20121128111829.12183: *4* sherlock.is_enabled
-ignored_files: list[str] = []  # List of files.
-ignored_functions: list[str] = []  # List of files.
+            def callback(
+                icon_name: str = icon_name, pixmap: QStyle.StandardPixmap = pixmap
+            ) -> None:
+                controller._addPixmapToNode(icon_name, pixmap)
 
-def is_enabled(
-    self,
-    file_name: str,
-    function_name: str,
-    patterns: list[str] = None,
-) -> bool:
-    """Return True if tracing for function_name in the given file is enabled."""
-    #
-    # New in Leo 6.3. Never trace through some files.
-    if not os:
-        return False  # Shutting down.
-    base_name = os.path.basename(file_name)
-    if base_name in self.ignored_files:
-        return False
+            button.released.connect(callback)
+            styled_icon = self.style().standardIcon(pixmap)  # type:ignore
+            button.setIcon(styled_icon)
+            layout.addWidget(button, int(i / 4), int(i % 4))
+        self.setLayout(layout)
 
-    def ignore_file() -> None:
-        if base_name not in self.ignored_files:
-            self.ignored_files.append(base_name)
+# @+node:ekr.20260805114313.1: *4* ec._addPixmapToNode (to do)
+def _addPixmapToNode(self, icon_name: str, pixmap: QStyle.StandardPixmap) -> None:
+    """Convert the given pixmap to an icon and add it to c.p.h."""
+    c = self.c
+    assert isinstance(pixmap, QStyle.StandardPixmap)
+    g.trace(icon_name)
 
-    def ignore_function() -> None:
-        if function_name not in self.ignored_functions:
-            self.ignored_functions.append(function_name)
+    # Convert the pixmap to a QIcon?.
 
-    if f"{os.sep}lib{os.sep}" in file_name:
-        ignore_file()
-        return False
-    if base_name.startswith('<') and base_name.endswith('>'):
-        ignore_file()
-        return False
-    #
-    # New in Leo 6.3. Never trace dangerous functions.
-    table = (
-        '_deepcopy.*',
-        # Unicode primitives.
-        'encode\b', 'decode\b',
-        # System functions
-        '.*__next\b',
-        '<frozen>', '<genexpr>', '<listcomp>',
-        # '<decorator-gen-.*>',
-        'get\b',
-        # String primitives.
-        'append\b', 'split\b', 'join\b',
-        # File primitives...
-        'access_check\b', 'expanduser\b', 'exists\b', 'find_spec\b',
-        'abspath\b', 'normcase\b', 'normpath\b', 'splitdrive\b',
-    )
-    for z in table:
-        if re.match(z, function_name):
-            ignore_function()
-            return False
-    #
-    # Legacy code.
-    enabled = False
-    if patterns is None:
-        patterns = self.patterns
-    for pattern in patterns:
-        try:
-            if pattern.startswith('+:'):
-                if re.match(pattern[2:], file_name):
-                    enabled = True
-            elif pattern.startswith('-:'):
-                if re.match(pattern[2:], file_name):
-                    enabled = False
-            elif pattern.startswith('+'):
-                if re.match(pattern[1:], function_name):
-                    enabled = True
-            elif pattern.startswith('-'):
-                if re.match(pattern[1:], function_name):
-                    enabled = False
-            else:
-                self.bad_pattern(pattern)
-        except Exception:
-            self.bad_pattern(pattern)
-    return enabled
-# @+node:ekr.20121128111829.12182: *4* sherlock.print_stats
-def print_stats(self, patterns: list[str] = None) -> None:
-    """Print all accumulated statisitics."""
-    print('\nSherlock statistics...')
-    if not patterns:
-        patterns = ['+.*', '+:.*',]
-    for fn in sorted(self.stats.keys()):
-        d = self.stats.get(fn)
-        if self.fn_is_enabled(fn, patterns):
-            result = sorted(d.keys())  # type:ignore
-        else:
-            result = [key for key in sorted(d.keys())  # type:ignore
-                if self.is_enabled(fn, key, patterns)]
-        if result:
-            print('')
-            fn = fn.replace('\\', '/')
-            parts = fn.split('/')
-            print('/'.join(parts[-2:]))
-            for key in result:
-                print(f"{d.get(key):4} {key}")
-# @+node:ekr.20121128031949.12614: *4* sherlock.run
-# Modified from pdb.Pdb.set_trace.
+    # iconList = self.getIconList(p.v)
+    # iconList.extend(aList)
+    # self.setIconList(p, iconList)
 
-def run(self, frame: Any = None) -> None:
-    """Trace from the given frame or the caller's frame."""
-    print("SherlockTracer.run:patterns:\n%s" % '\n'.join(self.patterns))
-    if frame is None:
-        frame = sys._getframe().f_back
-    # Compute self.n, the number of frames to ignore.
-    self.n = 0
-    while frame:
-        frame = frame.f_back
-        self.n += 1
-    # Pass self to sys.settrace to give easy access to all methods.
-    sys.settrace(self)
-# @+node:ekr.20140322090829.16834: *4* sherlock.push & pop
-def push(self, patterns: list[str]) -> None:
-    """Push the old patterns and set the new."""
-    self.pattern_stack.append(self.patterns)  # type:ignore
-    self.set_patterns(patterns)
-    print(f"SherlockTracer.push: {self.patterns}")
+    c.p.setDirty()
+    c.setChanged()
+    c.redraw()
 
-def pop(self) -> None:
-    """Restore the pushed patterns."""
-    if self.pattern_stack:
-        self.patterns = self.pattern_stack.pop()  # type:ignore
-        print(f"SherlockTracer.pop: {self.patterns}")
-    else:
-        print('SherlockTracer.pop: pattern stack underflow')
-# @+node:ekr.20140326100337.16845: *4* sherlock.set_patterns
-def set_patterns(self, patterns: list[str]) -> None:
-    """Set the patterns in effect."""
-    self.patterns = [z for z in patterns if self.check_pattern(z)]
-# @+node:ekr.20140322090829.16831: *4* sherlock.show
-def show(self, item: Any) -> str:
-    """return the best representation of item."""
-    if not item:
-        return repr(item)
-    if isinstance(item, dict):
-        return 'dict'
-    if isinstance(item, str):
-        s = repr(item)
-        if len(s) <= 20:
-            return s
-        return s[:17] + '...'
-    s = repr(item)
-    # A Hack for mypy:
-    if s.startswith("<object object"):
-        s = "_dummy"
-    return s
-# @+node:ekr.20121128093229.12616: *4* sherlock.stop
-def stop(self) -> None:
-    """Stop all tracing."""
-    sys.settrace(None)
-# @+node:ekr.20181202062518.1: *3* leoFastRedraw.py
-"""
-Gui-independent fast-redraw code.
-
-For an explanation, see this thread:
-https://groups.google.com/forum/#!topic/leo-editor/hpHyHU2sWtM
-"""
-import difflib
-import re
-import time
-from leo.core import leoGlobals as g
-
-class FastRedraw:
-    @others
-
+# @+node:ekr.20120419093256.10048: *3* ../plugins/free_layout.py
+<< free_layout docstring >>
+# Written by Terry Brown.
+<< free_layout imports >>
+<< free_layout annotations >>
+@others
 @language python
 @tabwidth -4
 @pagewidth 70
-# @+node:ekr.20181202060924.4: *4* LeoGui.dump_diff_op_codes
-def dump_diff_op_codes(self, a, b, op_codes):
-    """Dump the opcodes returned by difflib.SequenceMatcher."""
+# @+node:ekr.20110319161401.14467: *4* << free_layout docstring >>
+"""
+Free layout
+===========
 
-    def summarize(aList):
-        pat = re.compile(r'.*:.*:(.*)')
-        return ', '.join([pat.match(z).group(1) for z in aList])
+Adds flexible panel layout through context menus on the handles between panels.
 
-    for tag, i1, i2, j1, j2 in op_codes:
-        if tag == 'equal':
-            print(f"{tag:7} at {i1}:{i2} (both) ==> {summarize(b[j1:j2])!r}")
-        elif tag == 'insert':
-            print(f"{tag:7} at {i1}:{i2} (b)    ==> {summarize(b[j1:j2])!r}")
-        elif tag == 'delete':
-            print(f"{tag:7} at {i1}:{i2} (a)    ==> {summarize(a[i1:i2])!r}")
-        elif tag == 'replace':
-            print(f"{tag:7} at {i1}:{i2} (a)    ==> {summarize(a[i1:i2])!r}")
-            print(f"{tag:7} at {i1}:{i2} (b)    ==> {summarize(b[j1:j2])!r}")
-        else:
-            print('unknown tag')
-# @+node:ekr.20181202060924.5: *4* LeoGui.dump_opcodes
-def dump_opcodes(self, opcodes):
-    """Dump the opcodes returned by app.peep_hole and app.make_redraw_list."""
-    for z in opcodes:
-        kind = z[0]
-        if kind == 'replace':
-            kind, i1, gnxs1, gnxs2 = z
-            print(kind, i1)
-            print("  a: [%s]" % ',\n    '.join(gnxs1))
-            print("  b: [%s]" % ',\n    '.join(gnxs2))
-        elif kind in ('delete', 'insert'):
-            kind, i1, gnxs = z
-            print(kind, i1)
-            print("  [%s]" % ',\n    '.join(gnxs))
-        else:
-            print(z)
-# @+node:ekr.20181202060924.2: *4* LeoGui.flatten_outline
-def flatten_outline(self, c):
-    """Return a flat list of strings "level:gnx" for all *visible* positions."""
-    trace = False and not g.unitTesting
-    t1 = time.process_time()
-    aList: list[str] = []
-    for p in c.rootPosition().self_and_siblings():
-        self.extend_flattened_outline(aList, p)
-    if trace:
-        t2 = time.process_time()
-        print(f"app.flatten_outline: {len(aList)} entries {t2 - t1:6.4f} sec.")
-    return aList
+Uses NestedSplitter, a more intelligent QSplitter, from leo.plugins.nested_splitter
 
-def extend_flattened_outline(self, aList, p):
-    """Add p and all p's visible descendants to aList."""
-    # Padding the fields causes problems later.
-    aList.append(f"{p.level()}:{p.gnx}:{p.h}\n")
-    if p.isExpanded():
-        for child in p.children():
-            self.extend_flattened_outline(aList, child)
-# @+node:ekr.20181202060924.3: *4* LeoGui.make_redraw_list
-def make_redraw_list(self, a, b):
+Requires Qt.
+
+Commands (bindable with @settings-->@keys-->@shortcuts):
+
+free-layout-load
+    Open context menu for loading a different layout,
+    convenient keyboard shortcut target.
+free-layout-restore
+    Use the layout this outline had when it was opened.
+free-layout-zoom
+    Zoom or unzoom the current pane
+
+"""
+
+# @+node:tbrown.20110203111907.5520: *4* << free_layout imports >>
+from __future__ import annotations
+import json
+from typing import Any, TYPE_CHECKING
+from leo.core import leoGlobals as g
+
+#
+# Qt imports. May fail from the bridge.
+try:  # #1973
+    from leo.core.leoQt import QtWidgets
+    from leo.core.leoQt import MouseButton
+    from leo.plugins.nested_splitter import NestedSplitter  # NestedSplitterChoice
+except Exception:
+    QtWidgets = None  # type:ignore
+    MouseButton = None  # type:ignore
+    NestedSplitter = None
+
+# Do not call g.assertUi('qt') here. It's too early in the load process.
+# @+node:ekr.20220828125201.1: *4* << free_layout annotations >>
+if TYPE_CHECKING:  # pragma: no cover
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent
+    from leo.core.leoNodes import Position
+    from leo.plugins.qt_text import QTextMixin
+
+    QSplitter = QtWidgets.QSplitter
+    QWidget = QtWidgets.QWidget
+
+
+# @+node:tbrown.20110203111907.5521: *4* free_layout:init
+def init() -> bool:
+    """Return True if the free_layout plugin can be loaded."""
+    # #3910: The free_layout and nested_splitter plugins are deprecated.
+    return bool(g.app.gui.guiName() == "qt" and NestedSplitter)
+
+
+# @+node:ekr.20110318080425.14389: *4* class FreeLayoutController
+class FreeLayoutController:
+    << FreeLayoutController docstring >>
+    << define default_layout >>
+
+    @others
+
+
+# @+node:ekr.20201013042712.1: *5* << FreeLayoutController docstring >>
+"""Glue between Leo and the NestedSplitter gui widget.  All Leo aware
+code should be in here, none in NestedSplitter.
+
+*ALSO* implements the provider interface for NestedSplitter, in
+ns_provides, ns_provide, ns_context, ns_do_context, which
+NestedSplitter uses as callbacks to populate splitter-handle context-menu
+and the empty pane Action button menu:
+
+see nested_splitter.py-->class%20NestedSplitter%20(QSplitter)-->register_provider
+
+ns_provides
+  tell NestedSplitter which Action button items we can provide
+ns_provide
+  provide the advertised service when an Action button item we
+  advertised is selected
+ns_context
+  tell NestedSplitter which splitter-handle context-menu items
+  we can provide
+ns_do_context
+  provide the advertised service when a splitter-handle context-menu
+  item we advertised is selected
+"""
+
+# @+node:ekr.20201013042741.1: *5* << define default_layout >>
+default_layout = {
+    'content': [
+        {
+            'content': [
+                '_leo_pane:outlineFrame',
+                '_leo_pane:logFrame',
+            ],
+            'orientation': 1,
+            'sizes': [509, 275],
+        },
+        '_leo_pane:bodyFrame',
+    ],
+    'orientation': 2,
+    'sizes': [216, 216],
+}
+# @+node:ekr.20110318080425.14390: *5*  flc.ctor
+def __init__(self, c: Cmdr) -> None:
+    """Ctor for FreeLayoutController class."""
+    self.c = c
+    g.registerHandler('after-create-leo-frame', self.init)
+    # Plugins must be loaded first to provide their widgets in panels etc.
+    g.registerHandler('after-create-leo-frame2', self.loadLayouts)
+
+# @+node:tbrown.20110203111907.5522: *5*  flc.init
+def init(self, tag: str, keys: dict) -> None:
+    """Attach to an outline and
+
+    - add tags to widgets to indicate that they're essential
+      (tree, body, log-window-tabs) and
+
+    - tag the log-window-tabs widget as the place to put widgets
+      from free-layout panes which are closed
+
+    - register this FreeLayoutController as a provider of menu items
+      for NestedSplitter
     """
-    Diff the a (old) and b (new) outline lists.
-    Then optimize the diffs to create a redraw instruction list.
-    """
-    trace = False and not g.unitTesting
-    if a == b:
-        return []
+    c = self.c
+    if not NestedSplitter:
+        return
+    if c != keys.get('c'):
+        return
+    # Careful: we could be unit testing.
+    splitter = self.get_top_splitter()  # A NestedSplitter.
+    if not splitter:
+        return
+    # by default NestedSplitter's context menus are disabled, needed
+    # once to globally enable them
+    NestedSplitter.enabled = True
+    # when NestedSplitter disposes of children, it will either close
+    # them, or move them to another designated widget.  Here we set
+    # up two designated widgets
+    logTabWidget = splitter.findChild(QtWidgets.QWidget, "logTabWidget")
+    splitter.root.holders['_is_from_tab'] = logTabWidget
+    splitter.root.holders['_is_permanent'] = 'TOP'
+    # allow body and tree widgets to be "removed" to tabs on the log tab panel
+    bodyWidget = splitter.findChild(QtWidgets.QFrame, "bodyFrame")
+    bodyWidget._is_from_tab = "Body"
+    treeWidget = splitter.findChild(QtWidgets.QFrame, "outlineFrame")
+    treeWidget._is_from_tab = "Tree"
+    # also the other tabs will have _is_from_tab set on them by the
+    # offer_tabs menu callback above
+    # if the log tab panel is removed, move it back to the top splitter
+    logWidget = splitter.findChild(QtWidgets.QFrame, "logFrame")
+    logWidget._is_permanent = True
+    # tag core Leo components (see ns_provides)
+    splitter.findChild(QtWidgets.QWidget, "outlineFrame")._ns_id = '_leo_pane:outlineFrame'
+    splitter.findChild(QtWidgets.QWidget, "logFrame")._ns_id = '_leo_pane:logFrame'
+    splitter.findChild(QtWidgets.QWidget, "bodyFrame")._ns_id = '_leo_pane:bodyFrame'
+    splitter.register_provider(self)
+    splitter.splitterClicked_connect(self.splitter_clicked)
 
-    def gnxs(aList):
-        """Return the gnx list. Do not try to remove this!"""
-        return [z.strip() for z in aList]
-    @others # Define local helpers
-    d = difflib.SequenceMatcher(None, a, b)
-    op_codes = list(d.get_opcodes())
-    # dump_diff_op_codes(a, b, op_codes)
-    #
-    # Generate the instruction list, and verify the result.
-    opcodes, result = [], []
-    for tag, i1, i2, j1, j2 in op_codes:
-        if tag == 'insert':
-            opcodes.append(['insert', i1, gnxs(b[j1:j2])])
-        elif tag == 'delete':
-            opcodes.append(['delete', i1, gnxs(a[i1:i2])])
-        elif tag == 'replace':
-            opcodes.append(['replace', i1, gnxs(a[i1:i2]), gnxs(b[j1:j2])])
-        result.extend(b[j1:j2])
-    assert b == result, (a, b)
-    #
-    # Run the peephole.
-    opcodes = self.peep_hole(opcodes)
+# @+node:tbrown.20120119080604.22982: *5* flc.embed
+def embed(self) -> None:
+    """called from ns_do_context - embed layout in outline's
+    @settings, an alternative to the Load/Save named layout system
+    """
+    # Careful: we could be unit testing.
+    top_splitter = self.get_top_splitter()
+    if not top_splitter:
+        return
+    c = self.c
+    layout = top_splitter.get_saveable_layout()
+    nd = g.findNodeAnywhere(c, "@data free-layout-layout")
+    if not nd:
+        settings: Position | None
+        settings = g.findNodeAnywhere(c, "@settings")
+        if not settings:
+            settings = c.rootPosition().insertAfter()
+            settings.h = "@settings"
+        nd = settings.insertAsNthChild(0)
+    nd.h = "@data free-layout-layout"
+    nd.b = json.dumps(layout, indent=4)
+    nd = nd.parent()
+    if not nd or nd.h != "@settings":
+        g.es("WARNING: @data free-layout-layout node is not under an active @settings node")
+    c.redraw()
+
+# @+node:ekr.20160424035257.1: *5* flc.get_main_splitter
+def get_main_splitter(self, w: QTextMixin | None = None) -> NestedSplitter | None:
+    """
+    Return the main splitter.
+
+    We tacitly assume that this splitter contains the body pane.
+    """
+    top = self.get_top_splitter()
+    return top if top.objectName() == 'main_splitter' else None
+
+# @+node:ekr.20160424035254.1: *5* flc.get_secondary_splitter
+def get_secondary_splitter(self) -> NestedSplitter | None:
+    """
+    Return the secondary splitter, that is, the splitter containing the outline pane.
+    """
+    top = self.get_top_splitter()
+    w = top and top.find_child(QtWidgets.QWidget, 'outlineFrame')
+    while w:
+        w = w.parent()
+        if NestedSplitter is not None and isinstance(w, NestedSplitter):
+            return w
+    return None
+
+# @+node:tbrown.20110621120042.22914: *5* flc.get_top_splitter
+def get_top_splitter(self) -> NestedSplitter | None:
+    """Return the top splitter of c.frame.top."""
+    f = self.c.frame
+    if hasattr(f, 'top') and f.top:
+        child = f.top.findChild(NestedSplitter)
+        return child and child.top()
+    return None
+
+# @+node:ekr.20120419095424.9927: *5* flc.loadLayouts (sets wrap=True)
+def loadLayouts(self, tag: str, keys: dict, reloading: bool = False) -> None:
+    """loadLayouts - Load the outline's layout
+
+    :Parameters:
+    - `tag`: from hook event
+    - `keys`: from hook event
+    - `reloading`: True if this is not the initial load, see below
+
+    When called from the `after-create-leo-frame2` hook this defaults
+    to False.  When called from the `restore-layout` command, this is set
+    True, and the layout the outline had *when first loaded* is restored.
+    Useful if you want to temporarily switch to a different layout and then
+    back, without having to remember the original layouts name.
+    """
+    trace = 'layouts' in g.app.debug
+    c = self.c
+    if not (g.app and g.app.db):
+        return  # Can happen when running from the Leo bridge.
+    if c != keys.get('c'):
+        return
+    d = g.app.db.get('ns_layouts') or {}
     if trace:
-        print('app.make_redraw_list: opcodes after peephole...')
-        self.dump_opcodes(opcodes)
-    return opcodes
-# @+node:ekr.20181202060924.6: *4* LeoGui.peep_hole
-def peep_hole(self, opcodes):
-    """Scan the list of opcodes, merging adjacent op-codes."""
-    i, result = 0, []
-    while i < len(opcodes):
-        op0 = opcodes[i]
-        if i == len(opcodes) - 1:
-            result.append(op0)
-            break
-        op1 = opcodes[i + 1]
-        kind0, kind1 = op0[0], op1[0]
-        # Merge adjacent insert/delete opcodes with the same gnx.
-        if (
-            kind0 == 'insert' and kind1 == 'delete' or
-            kind0 == 'delete' and kind1 == 'insert'
+        g.trace(tag)
+        g.printObj(keys, tag="keys")
+    if layout := c.config.getData("free-layout-layout"):
+        layout = json.loads('\n'.join(layout))
+    if name := c.db.get('_ns_layout'):
+        if reloading:
+            name = c.free_layout.original_layout
+            c.db['_ns_layout'] = name
+        else:
+            c.free_layout.original_layout = name
+        if layout:
+            g.es(
+                "NOTE: embedded layout in @settings/@data free-layout-layout overrides saved layout "
+                + name
+            )
+        else:
+            layout = d.get(name)
+    # EKR: Create commands that will load each layout.
+    if d:
+        for name in sorted(d.keys()):
+
+            def func(event: LeoKeyEvent) -> None:
+                if layout := d.get(name):  # noqa
+                    c.free_layout.get_top_splitter().load_layout(c, layout)
+                else:
+                    g.trace('no layout', name)  # noqa
+
+            name_s = name.strip().lower().replace(' ', '-')
+            commandName = f"free-layout-load-{name_s}"
+            c.k.registerCommand(commandName, func)
+    # Careful: we could be unit testing or in the Leo bridge.
+    if layout:
+        if splitter := c.free_layout.get_top_splitter():
+            splitter.load_layout(c, layout)
+
+# @+node:tbrown.20110628083641.11730: *5* flc.ns_context
+def ns_context(self) -> list[tuple[str, str]]:
+    ans: list[Any] = [
+        ('Embed layout', '_fl_embed_layout'),
+        ('Save layout', '_fl_save_layout'),
+    ]
+    if d := g.app.db.get('ns_layouts', {}):
+        ans.append({'Load layout': [(k, '_fl_load_layout:' + k) for k in d]})
+        ans.append({'Delete layout': [(k, '_fl_delete_layout:' + k) for k in d]})
+        ans.append(('Forget layout', '_fl_forget_layout:'))
+        ans.append(('Restore initial layout', '_fl_restore_layout:'))
+    ans.append(('Restore default layout', '_fl_restore_default:'))
+    ans.append(('Help for this menu', '_fl_help:'))
+    return ans
+
+# @+node:tbrown.20110628083641.11732: *5* flc.ns_do_context
+def ns_do_context(self, id_: QWidget, splitter: QSplitter, index: int) -> bool:
+    c = self.c
+    if id_.startswith('_fl_embed_layout'):
+        self.embed()
+        return True
+    if id_.startswith('_fl_restore_default'):
+        self.get_top_splitter().load_layout(c, layout=self.default_layout)
+    if id_.startswith('_fl_help'):
+        self.c.putHelpFor(__doc__)
+        # g.handleUrl("https://leo-editor.github.io/leo-editor/")
+        return True
+    if id_ == '_fl_save_layout':
+        if self.c.config.getData("free-layout-layout"):
+            g.es("WARNING: embedded layout in")
+            g.es("@settings/@data free-layout-layout")
+            g.es("will override saved layout")
+        layout = self.get_top_splitter().get_saveable_layout()
+        name = g.app.gui.runAskOkCancelStringDialog(
+            self.c,
+            title="Save layout",
+            message="Name for layout?",
+        )
+        if name:
+            self.c.db['_ns_layout'] = name
+            d = g.app.db.get('ns_layouts', {})
+            d[name] = layout
+            # make sure g.app.db's __set_item__ is hit so it knows to save
+            g.app.db['ns_layouts'] = d
+        return True
+    if id_.startswith('_fl_load_layout:'):
+        if self.c.config.getData("free-layout-layout"):
+            g.es("WARNING: embedded layout in")
+            g.es("@settings/@data free-layout-layout")
+            g.es("will override saved layout")
+        name = id_.split(':', 1)[1]
+        self.c.db['_ns_layout'] = name
+        layout = g.app.db['ns_layouts'][name]
+        self.get_top_splitter().load_layout(c, layout)
+        return True
+    if id_.startswith('_fl_delete_layout:'):
+        name = id_.split(':', 1)[1]
+        if 'yes' == g.app.gui.runAskYesNoCancelDialog(
+            c, "Really delete Layout?", f"Really permanently delete the layout '{name}'?"
         ):
-            kind0, index0, gnxs0 = op0
-            kind1, index1, gnxs1 = op1
-            if gnxs0[0] == gnxs1[0]:
-                result.append(['move', index0, index1, gnxs0, gnxs1])
-                i += 2  # Don't scan either op again!
-                break
-        # The default is to retain the opcode.
-        result.append(op0)
-        i += 1
-    return result
+            d = g.app.db.get('ns_layouts', {})
+            del d[name]
+            # make sure g.app.db's __set_item__ is hit so it knows to save
+            g.app.db['ns_layouts'] = d
+            if '_ns_layout' in self.c.db:
+                del self.c.db['_ns_layout']
+        return True
+    if id_.startswith('_fl_forget_layout:'):
+        if '_ns_layout' in self.c.db:
+            del self.c.db['_ns_layout']
+        return True
+    if id_.startswith('_fl_restore_layout:'):
+        self.loadLayouts("reload", {'c': self.c}, reloading=True)
+        return True
+    return False
+
+# @+node:tbrown.20110628083641.11724: *5* flc.ns_provide
+def ns_provide(self, id_: str) -> str | QTextMixin | None:
+    if id_.startswith('_leo_tab:'):
+        id_ = id_.split(':', 1)[1]
+        top = self.get_top_splitter()
+        logTabWidget = top.find_child(QtWidgets.QWidget, "logTabWidget")
+        for n in range(logTabWidget.count()):
+            if logTabWidget.tabText(n) == id_:
+                w = logTabWidget.widget(n)
+                w.setHidden(False)
+                w._is_from_tab = logTabWidget.tabText(n)
+                w.setMinimumSize(20, 20)
+                return w
+        # didn't find it, maybe it's already in a splitter
+        return 'USE_EXISTING'
+    if id_.startswith('_leo_pane:'):
+        id_ = id_.split(':', 1)[1]
+        if w := self.get_top_splitter().find_child(QtWidgets.QWidget, id_):
+            w.setHidden(False)  # may be from Tab holder
+            w.setMinimumSize(20, 20)
+        return w
+    return None
+
+# @+node:tbrown.20110627201141.11745: *5* flc.ns_provides
+def ns_provides(self) -> list[tuple[str, str]]:
+    ans: list[tuple[str, str]] = []
+    # list of things in tab widget
+    logTabWidget = self.get_top_splitter().find_child(QtWidgets.QWidget, "logTabWidget")
+    for n in range(logTabWidget.count()):
+        text = str(logTabWidget.tabText(n))
+        if text in ('Body', 'Tree'):
+            continue  # handled below
+        if text == 'Log':
+            # if Leo can't find Log in tab pane, it creates another
+            continue
+        ans.append((text, '_leo_tab:' + text))
+    ans.append(('Tree', '_leo_pane:outlineFrame'))
+    ans.append(('Body', '_leo_pane:bodyFrame'))
+    ans.append(('Tab pane', '_leo_pane:logFrame'))
+    return ans
+
+# @+node:tbnorth.20160510122413.1: *5* flc.splitter_clicked
+def splitter_clicked(
+    self,
+    splitter: QSplitter,
+    handle: QSplitter,
+    event: LeoKeyEvent | None,
+    release: str,
+    double: bool,
+) -> None:
+    """
+    splitter_clicked - middle click release will zoom adjacent
+    body / tree panes
+
+    :param NestedSplitter splitter: splitter containing clicked handle
+    :param NestedSplitterHandle handle: clicked handle
+    :param QMouseEvent event: mouse event for click
+    :param bool release: was it a Press or Release event
+    :param bool double: was it a double click event
+    """
+    if not event:
+        return
+    if not release or event.button() != MouseButton.MiddleButton:
+        return
+    if splitter.root.zoomed:  # unzoom if *any* handle clicked
+        splitter.zoom_toggle()
+        return
+    before = splitter.widget(splitter.indexOf(handle) - 1)
+    after = splitter.widget(splitter.indexOf(handle))
+    for pane in before, after:
+        if pane.objectName() == 'bodyFrame':
+            pane.setFocus()
+            splitter.zoom_toggle()
+            return
+        if pane.objectName() == 'outlineFrame':
+            pane.setFocus()
+            splitter.zoom_toggle(local=True)
+            return
+
+# @+node:ekr.20160416065221.1: *4* commands: free_layout.py
+# @+node:tbrown.20140524112944.32658: *5* @g.command free-layout-context-menu
+@g.command('free-layout-context-menu')
+def free_layout_context_menu(event: LeoKeyEvent | None = None) -> None:
+    """
+    Open free layout's context menu, using the first divider of the top
+    splitter for context.
+    """
+    c = event.get('c') if event else None
+    if not c:
+        return
+    splitter = c.free_layout.get_top_splitter()
+    handle = splitter.handle(1)
+    handle.splitter_menu(handle.rect().topLeft())
+
+
+# @+node:tbrown.20130403081644.25265: *5* @g.command free-layout-restore
+@g.command('free-layout-restore')
+def free_layout_restore(event: LeoKeyEvent | None = None) -> None:
+    """
+    Restore layout outline had when it was loaded.
+    """
+    if c := event.get('c') if event else None:
+        c.free_layout.loadLayouts('reload', {'c': c}, reloading=True)
+
+
+# @+node:tbrown.20131111194858.29876: *5* @g.command free-layout-load
+@g.command('free-layout-load')
+def free_layout_load(event: LeoKeyEvent | None = None) -> None:
+    """Load layout from menu."""
+    c = event.get('c') if event else None
+    if not c:
+        return
+    d = g.app.db.get('ns_layouts', {})
+    menu = QtWidgets.QMenu(c.frame.top)
+    for k in d:
+        menu.addAction(k)
+    pos = c.frame.top.window().frameGeometry().center()
+    action = menu.exec(pos)
+    if action is None:
+        return
+    name = str(action.text())
+    c.db['_ns_layout'] = name
+    # layout = g.app.db['ns_layouts'][name]
+    layouts = g.app.db.get('ns_layouts', {})
+    if layout := layouts.get(name):
+        c.free_layout.get_top_splitter().load_layout(c, layout)
+
+
+# @+node:tbrown.20140522153032.32658: *5* @g.command free-layout-zoom
+@g.command('free-layout-zoom')
+def free_layout_zoom(event: LeoKeyEvent | None = None) -> None:
+    """(un)zoom the current pane."""
+    if c := event.get('c') if event else None:
+        c.free_layout.get_top_splitter().zoom_toggle()
+
+
+# @+node:ekr.20160327060009.1: *5* free_layout:register_provider
+def register_provider(c: Cmdr, provider_instance: object) -> None:
+    """Register the provider instance with the top splitter."""
+    if getattr(c, 'free_layout', None):
+        if splitter := c.free_layout.get_top_splitter():
+            splitter.register_provider(provider_instance)
+
+
 # @+node:ekr.20181103094900.1: *3* ../plugins/leoflexx.py
 # Disable mypy checking.
 # type:ignore
@@ -3098,74 +3076,2209 @@ class LeoFlexxTreeItem(flx.TreeItem):
         return 'head'  # Required, for proper pane bindings.
 
     @others
-# @+node:ekr.20260805111552.1: *3* 'insert-qt-icon' & helper
-@cmd('insert-qt-icon')
-def insertQtIcon(self, event: LeoKeyEvent | None = None) -> None:
-    """
-    Show a window previewing all standard Qt icons.
-    Add each selected icon to c.p.h.
-    """
-   
-    controller = self
-    d = g.app.scriptDict
-    key = 'insert_qt_icon_window'
-    insert_qt_icon_window = d.get(key)
-    if not insert_qt_icon_window:
-        << define class QtPreviewWindow >>
-        d[key] = insert_qt_icon_window = QtPreviewWindow()
-    insert_qt_icon_window.show()
+# @+node:ekr.20110605121601.17954: *3* ../plugins/nested_splitter.py
+"""Nested splitter classes."""
 
-# @+node:ekr.20260805111828.1: *4* << define class QtPreviewWindow >>
-from PyQt6.QtWidgets import (  # pylint: disable=no-name-in-module
-    QGridLayout,
-    QPushButton,
-    QStyle,
-    QWidget,
-)
+from __future__ import annotations
+from typing import Any, cast
+from leo.core import leoGlobals as g
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
+from leo.core.leoQt import ContextMenuPolicy, Orientation, QAction
 
-# Adapted from https://gist.github.com/ostr00000/30c9e732550baa0c13a73fd3320e7d55
-class QtPreviewWindow(QWidget):
-    def __init__(self):
-        super().__init__()
-        icon_names = sorted(
-            [z for z in dir(QStyle.StandardPixmap) if z.startswith("SP_")]
+
+@others
+@language python
+@tabwidth -4
+@pagewidth 70
+# @+node:ekr.20110605121601.17956: *4* init
+def init():
+    # Allow this to be imported as a plugin,
+    # but it should never be necessary to do so.
+    return True
+
+
+# @+node:tbrown.20120418121002.25711: *4* class NestedSplitterTopLevel (QWidget)
+class NestedSplitterTopLevel(QtWidgets.QWidget):
+    """A QWidget to wrap a NestedSplitter to allow it to live in a top
+    level window and handle close events properly.
+
+    These windows are opened by the splitter handle context-menu item
+    'Open Window'.
+
+    The NestedSplitter itself can't be the top-level widget/window,
+    because it assumes it can wrap itself in another NestedSplitter
+    when the user wants to "Add Above/Below/Left/Right".  I.e. wrap
+    a vertical nested splitter in a horizontal nested splitter, or
+    visa versa.  Parent->SplitterOne becomes Parent->SplitterTwo->SplitterOne,
+    where parent is either Leo's main window's QWidget 'centralwidget',
+    or one of these NestedSplitterTopLevel "window frames".
+    """
+
+    @others
+
+
+# @+node:tbrown.20120418121002.25713: *5* __init__
+def __init__(self, *args, **kargs):
+    """Init. taking note of the FreeLayoutController which owns this"""
+    self.owner = kargs['owner']
+    del kargs['owner']
+    window_title = kargs.get('window_title')
+    del kargs['window_title']
+    super().__init__(*args, **kargs)
+    if window_title:
+        self.setWindowTitle(window_title)
+
+# @+node:tbrown.20120418121002.25714: *5* closeEvent (NestedSplitterTopLevel)
+def closeEvent(self, event: QtGui.QCloseEvent) -> None:
+    """A top-level NestedSplitter window has been closed, check all the
+    panes for widgets which must be preserved, and move any found
+    back into the main splitter."""
+    widget = self.findChild(NestedSplitter)
+    # top level NestedSplitter in window being closed
+    other_top = self.owner.top()
+    # top level NestedSplitter in main splitter
+    # adapted from NestedSplitter.remove()
+    count = widget.count()
+    all_ok = True
+    to_close = []
+    # get list of widgets to close so index based access isn't
+    # derailed by closing widgets in the same loop
+    for splitter in widget.self_and_descendants():
+        for i in range(splitter.count() - 1, -1, -1):
+            to_close.append(splitter.widget(i))
+    for w in to_close:
+        all_ok &= widget.close_or_keep(w, other_top=other_top) is not False
+    # it should always be ok to close the window, because it should always
+    # be possible to move widgets which must be preserved back to the
+    # main splitter, but if not, keep this window open
+    if all_ok or count <= 0:
+        self.owner.closing(self)
+    else:
+        event.ignore()
+
+# @+node:ekr.20110605121601.17959: *4* class NestedSplitterChoice (QWidget)
+class NestedSplitterChoice(QtWidgets.QWidget):
+    """When a new pane is opened in a nested splitter layout, this widget
+    presents a button, labeled 'Action', which provides a popup menu
+    for the user to select what to do in the new pane"""
+
+    @others
+
+
+# @+node:ekr.20110605121601.17960: *5* __init__ (NestedSplitterChoice)
+def __init__(self, parent=None):
+    """ctor for NestedSplitterChoice class."""
+    super().__init__(parent)
+    self.setLayout(QtWidgets.QVBoxLayout())
+    button = QtWidgets.QPushButton("Action", self)  # EKR: 2011/03/15
+    self.layout().addWidget(button)
+    button.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
+    button.customContextMenuRequested.connect(
+        lambda pnt: self.parent().choice_menu(self, button.mapToParent(pnt))
+    )
+    button.clicked.connect(lambda: self.parent().choice_menu(self, button.pos()))
+
+# @+node:ekr.20110605121601.17961: *4* class NestedSplitterHandle (QSplitterHandle)
+class NestedSplitterHandle(QtWidgets.QSplitterHandle):
+    """Show the context menu on a NestedSplitter splitter-handle to access
+    NestedSplitter's special features"""
+
+    @others
+
+
+# @+node:ekr.20110605121601.17962: *5* nsh.__init__
+def __init__(self, owner):
+    """Ctor for NestedSplitterHandle class."""
+    super().__init__(owner.orientation(), owner)
+    # Confusing!
+    # self.setStyleSheet("background-color: green;")
+    self.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
+    self.customContextMenuRequested.connect(self.splitter_menu)
+
+# @+node:ekr.20110605121601.17963: *5* nsh.__repr__
+def __repr__(self):
+    return f"(NestedSplitterHandle) at: {id(self)}"
+
+__str__ = __repr__
+
+# @+node:ekr.20110605121601.17964: *5* nsh.add_item
+def add_item(self, func, menu, name, tooltip=None):
+    """helper for splitter_menu menu building"""
+    act = QAction(name, self)
+    act.setObjectName(name.lower().replace(' ', '-'))
+    act.triggered.connect(lambda checked: func())
+    if tooltip:
+        act.setToolTip(tooltip)
+    menu.addAction(act)
+
+# @+node:tbrown.20131130134908.27340: *5* nsh.show_tip
+def show_tip(self, action):
+    """show_tip - show a tooltip, calculate the box in which
+    the pointer must stay for the tip to remain visible
+
+    :Parameters:
+    - `self`: this handle
+    - `action`: action triggering event to display
+    """
+    if action.toolTip() == action.text():
+        tip = ""
+    else:
+        tip = action.toolTip()
+    pos = QtGui.QCursor.pos()
+    x = pos.x()
+    y = pos.y()
+    rect = QtCore.QRect(x - 5, y - 5, x + 5, y + 5)
+    if hasattr(action, 'parentWidget'):  # 2021/07/17.
+        parent = action.parentWidget()
+    else:
+        return
+    if not parent:
+        g.trace('===== no parent =====')
+        return
+    QtWidgets.QToolTip.showText(pos, tip, parent, rect)
+
+# @+node:ekr.20110605121601.17965: *5* nsh.splitter_menu
+def splitter_menu(self, pos):
+    """build the context menu for NestedSplitter"""
+    splitter = self.splitter()
+    if not splitter.enabled:
+        g.trace('splitter not enabled')
+        return
+    index = splitter.indexOf(self)
+    # get three pairs
+    widget, neighbour, count = splitter.handle_context(index)
+    lr = 'Left', 'Right'
+    ab = 'Above', 'Below'
+    split_dir = 'Vertically'
+    if self.orientation() == Orientation.Vertical:
+        lr, ab = ab, lr
+        split_dir = 'Horizontally'
+    # blue/orange - color-blind friendly
+    color = '#729fcf', '#f57900'
+    sheet = []
+    for i in 0, 1:
+        sheet.append(widget[i].styleSheet())
+        widget[i].setStyleSheet(sheet[-1] + f"\nborder: 2px solid {color[i]};")
+    menu = QtWidgets.QMenu()
+    menu.hovered.connect(self.show_tip)
+
+    def pl(n):
+        return 's' if n > 1 else ''
+
+    def di(s):
+        return {
+            'Above': 'above',
+            'Below': 'below',
+            'Left': 'left of',
+            'Right': 'right of',
+        }[s]
+
+    # Insert.
+
+    def insert_callback(index=index):
+        splitter.insert(index)
+
+    self.add_item(insert_callback, menu, 'Insert', "Insert an empty pane here")
+    # Remove, +0/-1 reversed, we need to test the one that remains
+    # First see if a parent has more than two splits
+    # (we could be a sole surviving child).
+    max_parent_splits = 0
+    up = splitter.parent()
+    while isinstance(up, NestedSplitter):
+        max_parent_splits = max(max_parent_splits, up.count())
+        up = up.parent()
+        if max_parent_splits >= 2:
+            break  # two is enough
+    for i in 0, 1:
+        # keep = splitter.widget(index)
+        # cull = splitter.widget(index - 1)
+        if (
+            max_parent_splits >= 2  # more splits upstream
+            or splitter.count() > 2  # 3+ splits here, or 2+ downstream
+            or neighbour[not i]
+            and neighbour[not i].max_count() >= 2
+        ):
+
+            def remove_callback(i=i, index=index):
+                splitter.remove(index, i)
+
+            self.add_item(
+                remove_callback,
+                menu,
+                f"Remove {count[i]:d} {lr[i]}",
+                f"Remove the {count[i]} pane{pl(count[i])} {di(lr[i])} here",
+            )
+    # Swap.
+
+    def swap_callback(index=index):
+        splitter.swap(index)
+
+    self.add_item(
+        swap_callback,
+        menu,
+        f"Swap {count[0]:d} {lr[0]} {count[1]:d} {lr[1]}",
+        f"Swap the {count[0]:d} pane{pl(count[0])} {di(lr[0])} here "
+        f"with the {count[1]:d} pane{pl(count[1])} {di(lr[1])} here",
+    )
+    # Split: only if not already split.
+    for i in 0, 1:
+        if not neighbour[i] or neighbour[i].count() == 1:
+
+            def split_callback(i=i, index=index, splitter=splitter):
+                splitter.split(index, i)
+
+            self.add_item(split_callback, menu, f"Split {lr[i]} {split_dir}")
+    for i in 0, 1:
+
+        def mark_callback(i=i, index=index):
+            splitter.mark(index, i)
+
+        self.add_item(mark_callback, menu, f"Mark {count[i]:d} {lr[i]}")
+    # Swap With Marked.
+    if splitter.root.marked:
+        for i in 0, 1:
+            if not splitter.invalid_swap(widget[i], splitter.root.marked[2]):
+
+                def swap_mark_callback(i=i, index=index, splitter=splitter):
+                    splitter.swap_with_marked(index, i)
+
+                self.add_item(
+                    swap_mark_callback, menu, f"Swap {count[i]:d} {lr[i]} With Marked"
+                )
+    # Add.
+    for i in 0, 1:
+        if (
+            not isinstance(splitter.parent(), NestedSplitter)
+            or splitter.parent().indexOf(splitter) == [0, splitter.parent().count() - 1][i]
+        ):
+
+            def add_callback(i=i, splitter=splitter):
+                splitter.add(i)
+
+            self.add_item(add_callback, menu, f"Add {ab[i]}")
+    # Rotate All.
+    self.add_item(splitter.rotate, menu, 'Toggle split direction')
+
+    def rotate_only_this(index=index):
+        splitter.rotateOne(index)
+
+    self.add_item(rotate_only_this, menu, 'Toggle split/dir. just this')
+    # equalize panes
+
+    def eq(splitter=splitter.top()):
+        splitter.equalize_sizes(recurse=True)
+
+    self.add_item(eq, menu, 'Equalize all')
+    # (un)zoom pane
+
+    def zoom(splitter=splitter.top()):
+        splitter.zoom_toggle()
+
+    self.add_item(zoom, menu, ('Un' if splitter.root.zoomed else '') + 'Zoom pane')
+    # open window
+    if splitter.top().parent().__class__ != NestedSplitterTopLevel:
+        # don't open windows from windows, only from main splitter
+        # so owner is not a window which might close.  Could instead
+        # set owner to main splitter explicitly.  Not sure how right now.
+        submenu = menu.addMenu('Open window')
+        if 1:
+            self.add_item(lambda: splitter.open_window(), submenu, "Empty")
+        # adapted from choice_menu()
+        if splitter.root.marked and splitter.top().max_count() > 1:
+            self.add_item(
+                lambda: splitter.open_window(action="_move_marked_there"),
+                submenu,
+                "Move marked there",
+            )
+        for provider in splitter.root.providers:
+            if hasattr(provider, 'ns_provides'):
+                for title, id_ in provider.ns_provides():
+
+                    def cb(id_=id_):
+                        splitter.open_window(action=id_)
+
+                    self.add_item(cb, submenu, title)
+    submenu = menu.addMenu('Debug')
+    act = QAction("Print splitter layout", self)
+
+    def print_layout_c(checked, splitter=splitter):
+        layout = splitter.top().get_layout()
+        g.printObj(layout)
+
+    act.triggered.connect(print_layout_c)
+    submenu.addAction(act)
+
+    def load_items(menu, items):
+        for i in items:
+            if isinstance(i, dict):
+                for k in i:
+                    load_items(menu.addMenu(k), i[k])
+            else:
+                title, id_ = i
+
+                def cb(checked, id_=id_):
+                    splitter.context_cb(id_, index)
+
+                act = QAction(title, self)
+                act.triggered.connect(cb)
+                menu.addAction(act)
+
+    for provider in splitter.root.providers:
+        if hasattr(provider, 'ns_context'):
+            load_items(menu, provider.ns_context())
+
+    point = pos
+    global_point = self.mapToGlobal(point)
+    menu.exec(global_point)
+
+    for i in 0, 1:
+        widget[i].setStyleSheet(sheet[i])
+
+# @+node:tbnorth.20160510091151.1: *5* nsh.mouseEvents
+def mousePressEvent(self, event: QtGui.QMouseEvent) -> None:
+    """mouse event - mouse pressed on splitter handle,
+    pass info. up to splitter
+
+    :param QMouseEvent event: mouse event
+    """
+    super().mousePressEvent(event)
+    self.splitter()._splitter_clicked(self, event, release=False, double=False)
+
+def mouseReleaseEvent(self, event: QtGui.QMouseEvent) -> None:
+    """mouse event - mouse pressed on splitter handle,
+    pass info. up to splitter
+
+    :param QMouseEvent event: mouse event
+    """
+    super().mouseReleaseEvent(event)
+    self.splitter()._splitter_clicked(self, event, release=True, double=False)
+
+def mouseDoubleClickEvent(self, event: QtGui.QMouseEvent) -> None:
+    """mouse event - mouse pressed on splitter handle,
+    pass info. up to splitter
+
+    :param QMouseEvent event: mouse event
+    """
+    super().mouseDoubleClickEvent(event)
+    self.splitter()._splitter_clicked(self, event, release=True, double=True)
+
+# @+node:ekr.20110605121601.17966: *4* class NestedSplitter (QSplitter)
+class NestedSplitter(QtWidgets.QSplitter):
+    # Allow special behavior to be turned of at import stage.
+    # useful if other code must run to set up callbacks, that other code can re-enable.
+    enabled = True
+    other_orientation = {
+        Orientation.Vertical: Orientation.Horizontal,
+        Orientation.Horizontal: Orientation.Vertical,
+    }
+    # a regular signal, but you can't use its .connect() directly,
+    # use splitterClicked_connect()
+    _splitterClickedSignal = QtCore.pyqtSignal(
+        QtWidgets.QSplitter, QtWidgets.QSplitterHandle, QtGui.QMouseEvent, bool, bool
+    )
+
+    @others
+
+
+# @+node:ekr.20110605121601.17967: *5* ns.__init__
+def __init__(self, parent=None, orientation=None, root=None):
+    """Ctor for NestedSplitter class."""
+    if orientation is None:
+        orientation = Orientation.Horizontal
+    # This creates a NestedSplitterHandle.
+    super().__init__(orientation, parent)
+    if root is None:
+        root = self.top(local=True)
+        if root == self:
+            root.marked = None  # Tuple: self,index,side-1,widget
+            root.providers = []
+            root.holders = {}
+            root.windows = []
+            root._main = self.parent()  # holder of the main splitter
+            # list of top level NestedSplitter windows opened from 'Open Window'
+            # splitter handle context menu
+            root.zoomed = False
+
+        # NestedSplitter is a kind of meta-widget, in that it manages
+        # panes across multiple actual splitters, even windows.
+        # So to create a signal for a click on splitter handle, we
+        # need to propagate the .connect() call across all the
+        # actual splitters, current and future
+        root._splitterClickedArgs = []  # save for future added splitters
+    for args in root._splitterClickedArgs:
+        # apply any .connect() calls that occurred earlier
+        self._splitterClickedSignal.connect(*args)
+
+    self.root = root
+
+# @+node:ekr.20110605121601.17968: *5* ns.__repr__
+def __repr__(self):
+    # parent = self.parent()
+    # name = parent and parent.objectName() or '<no parent>'
+    name = self.objectName() or '<no name>'
+    return f"(NestedSplitter) {name} at {id(self)}"
+
+__str__ = __repr__
+
+# @+node:ekr.20110605121601.17969: *5* ns.overrides of QSplitter methods
+# @+node:ekr.20110605121601.17970: *6* ns.createHandle
+def createHandle(self, *args, **kargs):
+    return NestedSplitterHandle(self)
+
+# @+node:tbrown.20110729101912.30820: *6* ns.childEvent
+def childEvent(self, event: QtCore.QChildEvent) -> None:
+    """If a panel client is closed not by us, there may be zero
+    splitter handles left, so add an Action button
+
+    unless it was the last panel in a separate window, in which
+    case close the window"""
+    QtWidgets.QSplitter.childEvent(self, event)
+    if not event.removed():
+        return
+    local_top = self.top(local=True)
+    # if only non-placeholder pane in a top level window deletes
+    # itself, delete the window
+    if (
+        isinstance(local_top.parent(), NestedSplitterTopLevel)
+        and local_top.count() == 1  # one left, could be placeholder
+        and isinstance(local_top.widget(0), NestedSplitterChoice)  # is placeholder
+    ):
+        local_top.parent().deleteLater()
+        return
+    # don't leave a one widget splitter
+    if self.count() == 1 and local_top != self:
+        self.parent().addWidget(self.widget(0))
+        self.deleteLater()
+    if parent := self.parentWidget():
+        layout = parent.layout()  # QLayout, not a NestedSplitter
+    else:
+        layout = None
+    if self.count() == 1 and self.top(local=True) == self:
+        if self.max_count() <= 1 or not layout:
+            # maintain at least two items
+            self.insert(0)
+            # shrink the added button
+            self.setSizes([0] + self.sizes()[1:])
+        else:
+            # replace ourselves in out parent's layout with our child
+            pos = layout.indexOf(self)
+            child = self.widget(0)
+            layout.insertWidget(pos, child)
+            pos = layout.indexOf(self)
+            layout.takeAt(pos)
+            self.setParent(None)
+
+# @+node:ekr.20110605121601.17971: *5* ns.add
+def add(self, side, w=None):
+    """wrap a horizontal splitter in a vertical splitter, or
+    visa versa"""
+    orientation = self.other_orientation[self.orientation()]
+    layout = self.parent().layout()
+    if isinstance(self.parent(), NestedSplitter):
+        # don't add new splitter if not needed, i.e. we're the
+        # only child of a previously more populated splitter
+        if w is None:
+            w = NestedSplitterChoice(self.parent())
+        self.parent().insertWidget(self.parent().indexOf(self) + side, w)
+        # in this case, where the parent is a one child, no handle splitter,
+        # the (prior to this invisible) orientation may be wrong
+        # can't reproduce this now, but this guard is harmless
+        self.parent().setOrientation(orientation)
+    elif layout:
+        new = NestedSplitter(None, orientation=orientation, root=self.root)
+        # parent set by layout.insertWidget() below
+        old = self
+        pos = layout.indexOf(old)
+        new.addWidget(old)
+        if w is None:
+            w = NestedSplitterChoice(new)
+        new.insertWidget(side, w)
+        layout.insertWidget(pos, new)
+    else:
+        # fail - parent is not NestedSplitter and has no layout
+        pass
+
+# @+node:tbrown.20110621120042.22675: *5* ns.add_adjacent (finds layout)
+def add_adjacent(self, what, widget_id, side='right-of', name=None):
+    """add a widget relative to another already present widget"""
+    horizontal, vertical = Orientation.Horizontal, Orientation.Vertical
+    layout = self.top().get_layout()
+
+    def hunter(layout, id_):
+        """Recursively look for this widget"""
+        for n, i in enumerate(layout['content']):
+            if i == id_ or (
+                isinstance(i, QtWidgets.QWidget)
+                and (i.objectName() == id_ or i.__class__.__name__ == id_)
+            ):
+                return layout, n
+            if not isinstance(i, QtWidgets.QWidget):
+                # then it must be a layout dict
+                if x := hunter(i, id_):
+                    return x
+        return None
+
+    # find the layout containing widget_id
+
+    l = hunter(layout, widget_id)
+    if l is None:
+        return False
+    layout, pos = l
+    # self.dump_layout(layout)
+    orient = layout['orientation']
+    if (
+        orient == horizontal
+        and side in ('right-of', 'left-of')
+        or orient == vertical
+        and side in ('above', 'below')
+    ):
+        # easy case, just insert the new thing, what,
+        # either side of old, in existing splitter
+        if side in ('right-of', 'below'):
+            pos += 1
+        layout['splitter'].insert(pos, what)
+    else:
+        # hard case, need to replace old with a new splitter
+        if side in ('right-of', 'left-of'):
+            ns = NestedSplitter(orientation=horizontal, root=self.root)
+        else:
+            ns = NestedSplitter(orientation=vertical, root=self.root)
+        if name:
+            g.trace(name, ns)
+            ns.setObjectName(name)
+        old = layout['content'][pos]
+        if not isinstance(old, QtWidgets.QWidget):  # see get_layout()
+            old = layout['splitter']
+        # put new thing, what, in new splitter, no impact on anything else
+        ns.insert(0, what)
+        # then swap the new splitter with the old content
+        layout['splitter'].replace_widget_at_index(pos, ns)
+        # now put the old content in the new splitter,
+        # doing this sooner would mess up the index (pos)
+        ns.insert(0 if side in ('right-of', 'below') else 1, old)
+    return True
+
+# @+node:ekr.20110605121601.17972: *5* ns.choice_menu
+def choice_menu(self, button, pos):
+    """build menu on Action button"""
+    menu = QtWidgets.QMenu(self.top())  # #1995
+    index = self.indexOf(button)
+    if (
+        self.root.marked
+        and not self.invalid_swap(button, self.root.marked[3])
+        and self.top().max_count() > 2
+    ):
+        act = QAction("Move marked here", self)
+        act.triggered.connect(lambda checked: self.replace_widget(button, self.root.marked[3]))
+        menu.addAction(act)
+    for provider in self.root.providers:
+        if hasattr(provider, 'ns_provides'):
+            for title, id_ in provider.ns_provides():
+
+                def cb(checked, id_=id_):
+                    self.place_provided(id_, index)
+
+                act = QAction(title, self)
+                act.triggered.connect(cb)
+                menu.addAction(act)
+    if menu.isEmpty():
+        act = QAction("Nothing marked, and no options", self)
+        menu.addAction(act)
+
+    point = button.pos()
+    global_point = button.mapToGlobal(point)
+    menu.exec(global_point)
+
+# @+node:tbrown.20120418121002.25712: *5* ns.closing
+def closing(self, window):
+    """forget a top-level additional layout which was closed"""
+    self.windows.remove(window)
+
+# @+node:tbrown.20110628083641.11723: *5* ns.place_provided
+def place_provided(self, id_, index):
+    """replace Action button with provided widget"""
+    provided = self.get_provided(id_)
+    if provided is None:
+        return
+    self.replace_widget_at_index(index, provided)
+    self.top().prune_empty()
+    # user can set up one widget pane plus one Action pane, then move the
+    # widget into the action pane, level 1 pane and no handles
+    if self.top().max_count() < 2:
+        print('Adding Action widget to maintain at least one handle')
+        self.top().insert(0, NestedSplitterChoice(self.top()))
+
+# @+node:tbrown.20110628083641.11729: *5* ns.context_cb
+def context_cb(self, id_, index):
+    """find a provider to provide a context menu service, and do it"""
+    for provider in self.root.providers:
+        if hasattr(provider, 'ns_do_context'):
+            if provider.ns_do_context(id_, self, index):
+                break
+
+# @+node:ekr.20110605121601.17973: *5* ns.contains
+def contains(self, widget):
+    """check if widget is a descendant of self"""
+    for i in range(self.count()):
+        if widget == self.widget(i):
+            return True
+        if isinstance(self.widget(i), NestedSplitter):
+            if self.widget(i).contains(widget):
+                return True
+    return False
+
+# @+node:ekr.20240518111804.1: *5* ns.dump_layout (new)
+def dump_layout(self, layout: dict) -> None:
+    print('')
+    print(f"Dump of ns layout for {self.__class__.__name__}({self.objectName()})")
+    self.dump_inner_layout(layout, level=0)
+
+def dump_inner_layout(self, content: dict, level: int) -> None:
+    ws = level * 2 * ' '
+    widget_seen = False
+    print(
+        '\n'.join(
+            [  # Python 3.9 does not allow newlines within f-strings.
+                f"{ws}contents level {level}...",
+                f"  {ws}orientation: {content.get('orientation')}",
+                f"  {ws}sizes: {content.get('sizes')}",
+            ]
         )
-        layout = QGridLayout()
-        for i, icon_name in enumerate(icon_names):
-            button = QPushButton(icon_name)
-            pixmap = getattr(QStyle.StandardPixmap, icon_name)
-            if pixmap is None:
-                g.trace(f"No pixmap for {icon_name=}")
-                continue
+    )
+    inner_content = content.get('content')
+    assert isinstance(inner_content, list)
+    for i, inner in enumerate(inner_content):
+        if isinstance(inner, dict):
+            self.dump_inner_layout(inner, level + 1)
+            continue
+        if not widget_seen:
+            widget_seen = True
+            print(f"  {ws}widgets level {level}...")
+        print(f"    {ws}widget {i} {inner.__class__.__name__}({inner.objectName()})")
 
-            def callback(
-                icon_name: str = icon_name, pixmap: QStyle.StandardPixmap = pixmap
-            ) -> None:
-                controller._addPixmapToNode(icon_name, pixmap)
+# @+node:tbrown.20120418121002.25439: *5* ns.find_child
+def find_child(self, child_class, child_name=None):
+    """Like QObject.findChild, except search self.top()
+    *AND* each window in self.root.windows
+    """
+    child = self.top().findChild(child_class, child_name)
+    if not child:
+        for window in self.root.windows:
+            if child := window.findChild(child_class, child_name):
+                break
+    return child
 
-            button.released.connect(callback)
-            styled_icon = self.style().standardIcon(pixmap)  # type:ignore
-            button.setIcon(styled_icon)
-            layout.addWidget(button, int(i / 4), int(i % 4))
-        self.setLayout(layout)
+# @+node:ekr.20110605121601.17974: *5* ns.handle_context
+def handle_context(self, index):
+    """for a handle, return (widget, neighbour, count)
 
-# @+node:ekr.20260805114313.1: *4* ec._addPixmapToNode (to do)
-def _addPixmapToNode(self, icon_name: str, pixmap: QStyle.StandardPixmap) -> None:
-    """Convert the given pixmap to an icon and add it to c.p.h."""
+    This is the handle's context in the NestedSplitter, not the
+    handle's context menu.
+
+    widget
+      the pair of widgets either side of the handle
+    neighbour
+      the pair of NestedSplitters either side of the handle, or None
+      if the neighbours are not NestedSplitters, i.e.
+      [ns0, ns1] or [None, ns1] or [ns0, None] or [None, None]
+    count
+      the pair of nested counts of widgets / splitters around the handle
+    """
+    widget = [self.widget(index - 1), self.widget(index)]
+    neighbour = [(i if isinstance(i, NestedSplitter) else None) for i in widget]
+    count = []
+    for i in 0, 1:
+        if neighbour[i]:
+            l = [ii.count() for ii in neighbour[i].self_and_descendants()]
+            n = sum(l) - len(l) + 1  # count leaves, not splitters
+            count.append(n)
+        else:
+            count.append(1)
+    return widget, neighbour, count
+
+# @+node:tbrown.20110621120042.22920: *5* ns.equalize_sizes
+def equalize_sizes(self, recurse=False):
+    """make all pane sizes equal"""
+    if not self.count():
+        return
+    for i in range(self.count()):
+        self.widget(i).setHidden(False)
+    size = sum(self.sizes()) / self.count()
+    self.setSizes([int(size)] * self.count())  # #2281
+    if recurse:
+        for i in range(self.count()):
+            if isinstance(self.widget(i), NestedSplitter):
+                self.widget(i).equalize_sizes(recurse=True)
+
+# @+node:ekr.20110605121601.17975: *5* ns.insert
+def insert(self, index, w=None):
+    """insert a pane with a widget or, when w==None, Action button"""
+    if w is None:  # do NOT use 'not w', fails in PyQt 4.8
+        w = NestedSplitterChoice(self)
+        # A QWidget, with self as parent.
+        # This creates the menu.
+    self.insertWidget(index, w)
+    self.equalize_sizes()
+    return w
+
+# @+node:ekr.20110605121601.17976: *5* ns.invalid_swap
+def invalid_swap(self, w0, w1):
+    """check for swap violating hierarchy"""
+    return (
+        w0 == w1
+        or isinstance(w0, NestedSplitter)
+        and w0.contains(w1)
+        or isinstance(w1, NestedSplitter)
+        and w1.contains(w0)
+    )
+
+# @+node:ekr.20110605121601.17977: *5* ns.mark
+def mark(self, index, side):
+    """mark a widget for later swapping"""
+    self.root.marked = (self, index, side - 1, self.widget(index + side - 1))
+
+# @+node:ekr.20110605121601.17978: *5* ns.max_count
+def max_count(self):
+    """find max widgets in this and child splitters"""
+    counts = []
+    count = 0
+    for i in range(self.count()):
+        count += 1
+        if isinstance(self.widget(i), NestedSplitter):
+            counts.append(self.widget(i).max_count())
+    counts.append(count)
+    return max(counts)
+
+# @+node:tbrown.20120418121002.25438: *5* ns.open_window
+def open_window(self, action=None):
+    """open a top-level window, a TopLevelFreeLayout instance, to hold a
+    free-layout in addition to the one in the outline's main window"""
+    ns = NestedSplitter(root=self.root)
+    window = NestedSplitterTopLevel(owner=self.root, window_title=ns.get_title(action))
+    hbox = QtWidgets.QHBoxLayout()
+    window.setLayout(hbox)
+    hbox.setContentsMargins(0, 0, 0, 0)
+    window.resize(400, 300)
+    hbox.addWidget(ns)
+    # NestedSplitters must have two widgets so the handle carrying
+    # the all important context menu exists
+    ns.addWidget(NestedSplitterChoice(ns))
+    button = NestedSplitterChoice(ns)
+    ns.addWidget(button)
+    if action == '_move_marked_there':
+        ns.replace_widget(button, ns.root.marked[3])
+    elif action is not None:
+        ns.place_provided(action, 1)
+    ns.setSizes([0, 1])  # but hide one initially
+    self.root.windows.append(window)
+    # copy the main main window's stylesheet to new window
+    w: QtCore.QObject | None = self.root  # A Qt Widget, class NestedSplitter
+    sheets = []
+    while w:
+        if s := w.styleSheet():
+            sheets.append(str(s))
+        w = w.parent()
+    sheets.reverse()
+    ns.setStyleSheet('\n'.join(sheets))
+    window.show()
+
+# @+node:tbrown.20110627201141.11744: *5* ns.register_provider
+def register_provider(self, provider: object) -> None:
+    """Register something which provides some of the ns_* methods.
+
+    NestedSplitter tests for the presence of the following methods on
+    the registered things, and calls them when needed if they exist.
+
+    ns_provides()
+      should return a list of ('Item name', '__item_id') strings,
+      'Item name' is displayed in the Action button menu, and
+      '__item_id' is used in ns_provide().
+    ns_provide(id_)
+      should return the widget to replace the Action button based on
+      id_, or None if the called thing is not the provider for this id_
+    ns_context()
+      should return a list of ('Item name', '__item_id') strings,
+      'Item name' is displayed in the splitter handle context-menu, and
+      '__item_id' is used in ns_do_context().  May also return a dict,
+      in which case each key is used as a sub-menu title, whose menu
+      items are the corresponding dict value, a list of tuples as above.
+      dicts and tuples may be interspersed in lists.
+    ns_do_context()
+      should do something based on id_ and return True, or return False
+      if the called thing is not the provider for this id_
+    ns_provider_id()
+      return a string identifying the provider (at class or instance level),
+      any providers with the same id will be removed before a new one is
+      added
+    """
+    # drop any providers with the same id
+    if hasattr(provider, 'ns_provider_id'):
+        id_ = cast(Any, provider).ns_provider_id()
+        cull = []
+        for i in self.root.providers:
+            if hasattr(i, 'ns_provider_id') and i.ns_provider_id() == id_:
+                cull.append(i)
+        for i in cull:
+            self.root.providers.remove(i)
+    self.root.providers.append(provider)
+
+# @+node:ekr.20110605121601.17980: *5* ns.remove & helper
+def remove(self, index, side):
+    widget = self.widget(index + side - 1)
+    # clear marked if it's going to be deleted
+    if self.root.marked and (
+        self.root.marked[3] == widget
+        or isinstance(self.root.marked[3], NestedSplitter)
+        and self.root.marked[3].contains(widget)
+    ):
+        self.root.marked = None
+    # send close signal to all children
+    if isinstance(widget, NestedSplitter):
+        count = widget.count()
+        all_ok = True
+        for splitter in widget.self_and_descendants():
+            for i in range(splitter.count() - 1, -1, -1):
+                all_ok &= self.close_or_keep(splitter.widget(i)) is not False
+        if all_ok or count <= 0:
+            widget.setParent(None)
+    else:
+        self.close_or_keep(widget)
+
+# @+node:ekr.20110605121601.17981: *6* ns.close_or_keep
+def close_or_keep(self, widget, other_top=None):
+    """when called from a closing secondary window, self.top() would
+    be the top splitter in the closing window, and we need the client
+    to specify the top of the primary window for us, in other_top"""
+    if widget is None:
+        return True
+    for k in self.root.holders:
+        if hasattr(widget, k):
+            holder = self.root.holders[k]
+            if holder == 'TOP':
+                holder = other_top or self.top()
+            if hasattr(holder, "addTab"):
+                holder.addTab(widget, getattr(widget, k))
+            else:
+                holder.addWidget(widget)
+            return True
+    if widget.close():
+        widget.setParent(None)
+        return True
+    return False
+
+# @+node:ekr.20110605121601.17982: *5* ns.replace_widget & replace_widget_at_index
+def replace_widget(self, old, new):
+    "Swap the provided widgets in place"
+    sizes = self.sizes()
+    new.setParent(None)
+    self.insertWidget(self.indexOf(old), new)
+    self.close_or_keep(old)
+    new.show()
+    self.setSizes(sizes)
+
+def replace_widget_at_index(self, index, new):
+    """Replace the widget at index with w."""
+    sizes = self.sizes()
+    old = self.widget(index)
+    if old != new:
+        new.setParent(None)
+        self.insertWidget(index, new)
+        self.close_or_keep(old)
+        new.show()
+        self.setSizes(sizes)
+
+# @+node:ekr.20110605121601.17983: *5* ns.rotate
+def rotate(self, descending=False):
+    """Change orientation - current rotates entire hierarchy, doing less
+    is visually confusing because you end up with nested splitters with
+    the same orientation - avoiding that would mean doing rotation by
+    inserting out widgets into our ancestors, etc.
+    """
+    for i in self.top().self_and_descendants():
+        if i.orientation() == Orientation.Vertical:
+            i.setOrientation(Orientation.Horizontal)
+        else:
+            i.setOrientation(Orientation.Vertical)
+
+# @+node:vitalije.20170713085342.1: *5* ns.rotateOne
+def rotateOne(self, index):
+    """Change orientation - only of splitter handle at index."""
+    psp = self.parent()
+    if self.count() == 2 and isinstance(psp, NestedSplitter):
+        i = psp.indexOf(self)
+        sizes: list = psp.sizes()
+        [a, b] = self.sizes()
+        s = sizes[i]
+        s1 = int(a * s / (a + b))
+        s2 = int(b * s / (a + b))
+        sizes[i : i + 1] = [s1, s2]
+        prev = self.widget(0)
+        next = self.widget(1)
+        psp.insertWidget(i, prev)
+        psp.insertWidget(i + 1, next)
+        psp.setSizes(sizes)
+        assert psp.widget(i + 2) is self
+        psp.remove(i + 3, 0)
+        psp.setSizes(sizes)
+    elif self is self.root and self.count() == 2:
+        self.rotate()
+    elif self.count() == 2:
+        self.setOrientation(self.other_orientation[self.orientation()])
+    else:
+        orientation = self.other_orientation[self.orientation()]
+        prev = self.widget(index - 1)
+        next = self.widget(index)
+        if None in (prev, next):
+            return
+        sizes = self.sizes()
+        s1, s2 = sizes[index - 1 : index + 1]
+        sizes[index - 1 : index + 1] = [s1 + s2]
+        newsp = NestedSplitter(self, orientation=orientation, root=self.root)
+        newsp.addWidget(prev)
+        newsp.addWidget(next)
+        self.insertWidget(index - 1, newsp)
+        prev.setHidden(False)
+        next.setHidden(False)
+        newsp.setSizes([s1, s2])
+        self.setSizes(sizes)
+
+# @+node:ekr.20110605121601.17984: *5* ns.self_and_descendants
+def self_and_descendants(self):
+    """Yield self and all **NestedSplitter** descendants"""
+    for i in range(self.count()):
+        if isinstance(self.widget(i), NestedSplitter):
+            for w in self.widget(i).self_and_descendants():
+                yield w
+    yield self
+
+# @+node:ekr.20110605121601.17985: *5* ns.split
+def split(self, index, side, w=None, name=None):
+    """replace the adjacent widget with a NestedSplitter containing
+    the widget and an Action button"""
+    sizes = self.sizes()
+    old = self.widget(index + side - 1)
+    if w is None:
+        w = NestedSplitterChoice(self)
+    if isinstance(old, NestedSplitter):
+        old.addWidget(w)
+        old.equalize_sizes()
+    else:
+        orientation = self.other_orientation[self.orientation()]
+        new = NestedSplitter(self, orientation=orientation, root=self.root)
+        self.insertWidget(index + side - 1, new)
+        new.addWidget(old)
+        new.addWidget(w)
+        new.equalize_sizes()
+    self.setSizes(sizes)
+
+# @+node:ekr.20110605121601.17986: *5* ns.swap
+def swap(self, index):
+    """swap widgets either side of a handle"""
+    self.insertWidget(index - 1, self.widget(index))
+
+# @+node:ekr.20110605121601.17987: *5* ns.swap_with_marked
+def swap_with_marked(self, index, side):
+    osplitter, oidx, oside, ow = self.root.marked
+    idx = index + side - 1
+    # convert from handle index to widget index
+    # 1 already subtracted from oside in mark()
+    w = self.widget(idx)
+    if self.invalid_swap(w, ow):
+        return
+    self.insertWidget(idx, ow)
+    osplitter.insertWidget(oidx, w)
+    self.root.marked = self, self.indexOf(ow), 0, ow
+    self.equalize_sizes()
+    osplitter.equalize_sizes()
+
+# @+node:ekr.20110605121601.17988: *5* ns.top
+def top(self, local=False) -> Any:
+    """find top (outer) widget, which is not necessarily root"""
+    top: Any
+    if local:
+        top = self
+        while isinstance(top.parent(), NestedSplitter):
+            top = top.parent()
+    else:
+        top = self.root._main.findChild(NestedSplitter)
+    return top
+
+# @+node:ekr.20110605121601.17989: *5* ns.get_layout
+def get_layout(self):
+    """
+    Return a dict describing the layout.
+
+    Usually you would call ns.top().get_layout()
+    """
+    ans = {
+        'content': [],
+        'orientation': self.orientation(),
+        'sizes': self.sizes(),
+        'splitter': self,
+    }
+    for i in range(self.count()):
+        w = self.widget(i)
+        if isinstance(w, NestedSplitter):
+            ans['content'].append(w.get_layout())
+        else:
+            ans['content'].append(w)
+    return ans
+
+# @+node:tbrown.20110628083641.11733: *5* ns.get_saveable_layout
+def get_saveable_layout(self):
+    """
+    Return the dict for saveable layouts.
+
+    The content entry for non-NestedSplitter items is the provider ID
+    string for the item, or 'UNKNOWN', and the splitter entry is omitted.
+    """
+    ans: dict[str, Any] = {
+        'content': [],
+        'orientation': 1 if self.orientation() == Orientation.Horizontal else 2,
+        'sizes': self.sizes(),
+    }
+    for i in range(self.count()):
+        w = self.widget(i)
+        if isinstance(w, NestedSplitter):
+            ans['content'].append(w.get_saveable_layout())
+        else:
+            ans['content'].append(getattr(w, '_ns_id', 'UNKNOWN'))
+    return ans
+
+# @+node:ekr.20160416083415.1: *5* ns.get_splitter_by_name
+def get_splitter_by_name(self, name):
+    """Return the splitter with the given objectName()."""
+    if self.objectName() == name:
+        return self
+    for i in range(self.count()):
+        w = self.widget(i)
+        # Recursively test w and its descendants.
+        if isinstance(w, NestedSplitter):
+            if w2 := w.get_splitter_by_name(name):
+                return w2
+    return None
+
+# @+node:tbrown.20110628083641.21154: *5* ns.load_layout
+def load_layout(self, c, layout, level=0):
+    trace = 'layouts' in g.app.debug
+    if trace:
+        g.trace('level', level)
+        tag = f"layout: {c.shortFileName()}"
+        g.printObj(layout, tag=tag)
+    if layout['orientation'] == 1:
+        self.setOrientation(Orientation.Horizontal)
+    else:
+        self.setOrientation(Orientation.Vertical)
+
+    found = 0
+    if level == 0:
+        for i in self.self_and_descendants():
+            for n in range(i.count()):
+                i.widget(n)._in_layout = False
+    for content_layout in layout['content']:
+        if isinstance(content_layout, dict):
+            new = NestedSplitter(root=self.root, parent=self)
+            new._in_layout = True
+            self.insert(found, new)
+            found += 1
+            new.load_layout(c, content_layout, level + 1)
+        else:
+            if provided := self.get_provided(content_layout):
+                self.insert(found, provided)
+                provided._in_layout = True
+                found += 1
+            else:
+                print(f"No provider for {content_layout}")
+    self.prune_empty()
+    if self.count() != len(layout['sizes']):
+        not_in_layout = set()
+        for i in self.self_and_descendants():
+            for n in range(i.count()):
+                c = i.widget(n)
+                if not (hasattr(c, '_in_layout') and c._in_layout):
+                    not_in_layout.add(c)
+        for i in not_in_layout:
+            self.close_or_keep(i)
+        self.prune_empty()
+    if self.count() == len(layout['sizes']):
+        self.setSizes(layout['sizes'])
+    else:
+        print(
+            f"Wrong pane count at level {level:d}, count:{self.count():d}, sizes:{len(layout['sizes']):d}"
+        )
+        self.equalize_sizes()
+
+# @+node:tbrown.20110628083641.21156: *5* ns.prune_empty
+def prune_empty(self):
+    for i in range(self.count() - 1, -1, -1):
+        w = self.widget(i)
+        if isinstance(w, NestedSplitter):
+            if w.max_count() == 0:
+                w.setParent(None)
+                # w.deleteLater()
+
+# @+node:tbrown.20110628083641.21155: *5* ns.get_provided
+def find_by_id(self, id_):
+    for s in self.self_and_descendants():
+        for i in range(s.count()):
+            if getattr(s.widget(i), '_ns_id', None) == id_:
+                return s.widget(i)
+    return None
+
+def get_provided(self, id_):
+    """IMPORTANT: nested_splitter should set the _ns_id attribute *only*
+    if the provider doesn't do it itself.  That allows the provider to
+    encode state information in the id.
+
+    Also IMPORTANT: nested_splitter should call all providers for each id_, not
+    just providers which previously advertised the id_.  E.g. a provider which
+    advertises leo_bookmarks_show may also be the correct provider for
+    leo_bookmarks_show:4532.234 - let the providers decide in ns_provide().
+    """
+    for provider in self.root.providers:
+        if hasattr(provider, 'ns_provide'):
+            if provided := provider.ns_provide(id_):
+                if provided == 'USE_EXISTING':
+                    # provider claiming responsibility, and saying
+                    # we already have it, i.e. it's a singleton
+                    if w := self.top().find_by_id(id_):
+                        if not hasattr(w, '_ns_id'):
+                            # IMPORTANT: see docstring
+                            w._ns_id = id_
+                        return w
+                else:
+                    if not hasattr(provided, '_ns_id'):
+                        # IMPORTANT: see docstring
+                        provided._ns_id = id_
+                    return provided
+    return None
+
+# @+node:ekr.20200917063155.1: *5* ns.get_title
+def get_title(self, id_):
+    """Like get_provided(), but just gets a title for a window"""
+    if id_ is None:
+        return "Leo widget window"
+    for provider in self.root.providers:
+        if hasattr(provider, 'ns_title'):
+            if provided := provider.ns_title(id_):
+                return provided
+    return "Leo unnamed window"
+
+# @+node:tbrown.20140522153032.32656: *5* ns.zoom_toggle
+def zoom_toggle(self, local=False):
+    """zoom_toggle - (Un)zoom current pane to be only expanded pane
+
+    :param bool local: just zoom pane within its own splitter
+    """
+    if self.root.zoomed:
+        for ns in self.top().self_and_descendants():
+            if hasattr(ns, '_unzoom'):
+                # this splitter could have been added since
+                ns.setSizes(ns._unzoom)
+    else:
+        focused = g.app.gui.qtApp.focusWidget()
+        parents = []
+        parent = focused
+        while parent:
+            parents.append(parent)
+            parent = parent.parent()
+        if not focused:
+            g.es("Not zoomed, and no focus")
+        for ns in (self if local else self.top()).self_and_descendants():
+            # FIXME - shouldn't be doing this across windows
+            ns._unzoom = ns.sizes()
+            for i in range(ns.count()):
+                w = ns.widget(i)
+                if w in parents:
+                    sizes = [0] * len(ns._unzoom)
+                    sizes[i] = sum(ns._unzoom)
+                    ns.setSizes(sizes)
+                    break
+    self.root.zoomed = not self.root.zoomed
+
+# @+node:tbnorth.20160510092439.1: *5* ns._splitter_clicked
+def _splitter_clicked(self, handle, event, release, double):
+    """_splitter_clicked - coordinate propagation of signals
+    for clicks on handles.  Turned out not to need any particular
+    coordination, handles could call self._splitterClickedSignal.emit
+    directly, but design wise this is a useful control point.
+
+    :param QSplitterHandle handle: handle that was clicked
+    :param QMouseEvent event: click event
+    :param bool release: was it a release event
+    :param bool double: was it a double click event
+    """
+    self._splitterClickedSignal.emit(self, handle, event, release, double)
+
+# @+node:tbnorth.20160510123445.1: *5* splitterClicked_connect
+def splitterClicked_connect(self, *args):
+    """Apply .connect() args to all actual splitters,
+    and store for application to future splitters.
+    """
+    self.root._splitterClickedArgs.append(args)
+    for splitter in self.top().self_and_descendants():
+        splitter._splitterClickedSignal.connect(*args)
+
+# @+node:tbrown.20130813134319.11942: *3* ../plugins/richtext.py
+# This plugin is obsolete. There are no plans to make it work with Qt6.
+<< docstring >>
+# This complaint is probably valid.
+# pylint: disable=no-name-in-module
+<< imports >>
+@others
+@language python
+@tabwidth -4
+# @+node:tbrown.20130813134319.14333: *4* << docstring >> (richtext.py)
+"""
+richtext.py - Rich text editing
+===============================
+
+This plugin allows you to use CKEditor__ to edit rich text
+in Leo.  Text is stored as HTML in Leo nodes.
+
+__ http://ckeditor.com/
+
+``richtext.py`` provides these ``Alt-X`` commands (also available from
+Plugins -> richtext menu):
+
+  cke-text-close
+    Close the rich text editor, unhide the regular editor.
+  cke-text-open
+    Open the rich text editor, hide the regular editor.
+  cke-text-switch
+    Switch between regular and rich text editor.
+  cke-text-toggle-autosave
+    Toggle autosaving of changes when you leave a node.
+    Be careful not to convert plain text (e.g. source code) to rich
+    text unintentionally.  As long as you make no edits, the original
+    text will not be changed.
+
+Unless autosaving is enabled, you must confirm saving of edits
+each time you edit a node with the rich text editor.
+
+``@rich`` in the headline or first few lines (1000 characters) of a node or its
+ancestors will automatically open the rich text editor. ``@norich`` cancels this
+action.  Manually opened editors are not affected.
+
+``richtext.py`` uses these ``@settings``:
+
+  @bool richtext_cke_autosave = False
+    Set this to True for rich text edits to be saved automatically.
+
+    *BE CAREFUL* - plain-text nodes will be converted to rich text
+    without confirmation if you edit them in rich text mode when
+    this is True.
+
+  @data richtext_cke_config Configuration info. for CKEditor, see
+    http://docs.ckeditor.com/#!/guide/dev_configuration the content of this node
+    is the javascript object passed to ``CKEDITOR.replace()`` as it's second
+    argument. The version supplied in LeoSettings.leo sets up a sensible
+    toolbar. To enable *all* CKEditor toolbar features copy this setting to
+    myLeoSettings.leo and remove the default content, i.e. make this node blank,
+    then CKEditor will generate a toolbar with all available features.
+
+To make a button to toggle the editor on and off, use::
+
+    @button rich
+      c.doCommandByName('cke-text-switch')
+
+"""
+
+# @+node:tbrown.20130813134319.14335: *4* << imports >> (richtext.py)
+import time
+from typing import Any, cast
+from urllib.parse import unquote
+from leo.core import leoGlobals as g
+from leo.core.leoQt import QtCore, QtWidgets, QtWebKit, QtWebKitWidgets
+
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+#
+# Alias.
+real_webkit = QtWebKit and 'engine' not in g.os_path_basename(QtWebKit.__file__).lower()
+
+
+# @+node:tbrown.20130813134319.14337: *4* init (richtext.py)
+def init():
+    """Return True if the plugin has loaded successfully."""
+    if not QtWebKit:
+        return False
+    name = g.app.gui.guiName()
+    ok = name == 'qt'
+    if ok:
+        g.registerHandler('after-create-leo-frame', onCreate)
+        g.registerHandler('select3', at_rich_check)
+        g.plugin_signon(__name__)
+    elif name != 'nullGui':
+        print('richtext.py plugin not loading because gui is not Qt')
+    return ok
+
+
+# @+node:tbrown.20130813134319.5691: *4* class CKEEditor
+class CKEEditor(QtWidgets.QWidget):
+    @others
+
+
+# @+node:tbrown.20130813134319.7225: *5* __init__ & reloadSettings (CKEEditor)
+def __init__(self, *args, **kwargs):
+    self.c = kwargs['c']
+    del kwargs['c']
+    super().__init__(*args, **kwargs)
+    # were we opened by an @ rich node? Calling code will set
+    self.at_rich = False
+    # are we being closed by leaving an @ rich node? Calling code will set
+    self.at_rich_close = False
+    # read settings.
+    self.reloadSettings()
+    # load HTML template
+    template_path = g.os_path_join(g.computeLeoDir(), 'plugins', 'cke_template.html')
+    self.template = open(template_path).read()
+    path = g.os_path_join(g.computeLeoDir(), 'external', 'ckeditor')
+    self.template = self.template.replace(
+        '[CKEDITOR]', QtCore.QUrl.fromLocalFile(path).toString()
+    )
+    # make widget containing QWebView
+    self.setLayout(QtWidgets.QVBoxLayout())
+    self.layout().setSpacing(0)
+    self.layout().setContentsMargins(0, 0, 0, 0)
+    # enable inspector, if this really is QtWebKit
+    if real_webkit:
+        QtWebKit.QWebSettings.globalSettings().setAttribute(
+            QtWebKit.QWebSettings.DeveloperExtrasEnabled, True
+        )
+    self.webview = QtWebKitWidgets.QWebView()
+    self.layout().addWidget(self.webview)
+    g.registerHandler('select3', self.select_node)
+    g.registerHandler('unselect1', self.unselect_node)
+    # load current node
+    self.select_node('', {'c': self.c, 'new_p': self.c.p})
+
+def reloadSettings(self):
     c = self.c
-    assert isinstance(pixmap, QStyle.StandardPixmap)
-    g.trace(icon_name)
+    c.registerReloadSettings(self)
+    # read autosave preference
+    if not hasattr(self.c, '_ckeeditor_autosave'):
+        auto = self.c.config.getBool("richtext-cke-autosave") or False
+        cast(Any, self.c)._ckeeditor_autosave = auto
+        if auto:
+            g.es("NOTE: automatic saving of rich text edits")
+    # load config
+    self.config = self.c.config.getData("richtext_cke_config")
+    if self.config:
+        self.config = '\n'.join(self.config).strip()
 
-    # Convert the pixmap to a QIcon?.
+# @+node:tbrown.20130813134319.7226: *5* select_node
+def select_node(self, tag, kwargs):
+    c = kwargs['c']
+    if c != self.c:
+        return
 
-    # iconList = self.getIconList(p.v)
-    # iconList.extend(aList)
-    # self.setIconList(p, iconList)
+    p = kwargs['new_p']
 
-    c.p.setDirty()
-    c.setChanged()
-    c.redraw()
+    self.v = p.v  # to ensure unselect_node is working on the right node
+    # currently (20130814) insert doesn't trigger unselect/select, but
+    # even if it did, this would be safest
 
+    data = self.template
+    if p.b.startswith('<'):  # already rich text, probably
+        content = p.b
+        self.was_rich = True
+    else:
+        self.was_rich = p.b.strip() == ''
+        # put anything except whitespace in a <pre/>
+        content = "<pre>%s</pre>" % p.b if not self.was_rich else ''
+
+    data = data.replace('[CONTENT]', content)
+
+    # replace textarea with CKEditor, with or without config.
+    if self.config:
+        data = data.replace('[CONFIG]', ', ' + self.config)
+    else:
+        data = data.replace('[CONFIG]', '')
+
+    # try and make the path for URL evaluation relative to the node's path
+    path = c.getPath(p)
+    if p.h.startswith('@'):  # see if it's a @<file> node of some sort
+        nodepath = p.h.split(None, 1)[-1]
+        nodepath = g.os_path_join(path, nodepath)
+        if not g.os_path_isdir(nodepath):  # remove filename
+            nodepath = g.os_path_dirname(nodepath)
+        if g.os_path_isdir(nodepath):  # append if it's a directory
+            path = nodepath
+
+    self.webview.setHtml(data, QtCore.QUrl.fromLocalFile(path + "/"))
+
+# @+node:tbrown.20130813134319.7228: *5* unselect_node
+def unselect_node(self, tag, kwargs):
+    c = kwargs['c']
+    if c != self.c:
+        return None
+    # read initial content and request and wait for final content
+    frame = self.webview.page().mainFrame()
+    ele = frame.findFirstElement("#initial")
+    text = str(ele.toPlainText()).strip()
+    if text == '[empty]':
+        return None  # no edit
+    frame.evaluateJavaScript('save_final();')
+    ele = frame.findFirstElement("#final")
+    for attempt in range(10):  # wait for up to 1 second
+        new_text = str(ele.toPlainText()).strip()
+        if new_text == '[empty]':
+            time.sleep(0.1)
+            continue
+        break
+    if new_text == '[empty]':
+        print("Didn't get new text")
+        return None
+    text = unquote(str(text))
+    new_text = unquote(str(new_text))
+    if new_text != text:
+        if self.c._ckeeditor_autosave:
+            ans = 'yes'
+        else:
+            text = "Save edits?"
+            if not self.was_rich:
+                text += " *converting plain text to rich*"
+            ans = g.app.gui.runAskYesNoCancelDialog(self.c, "Save edits?", text)
+        if ans == 'yes':
+            c.vnode2position(self.v).b = new_text
+            c.redraw()  # but node has content marker still doesn't appear?
+        elif ans == 'cancel':
+            return 'STOP'
+        else:
+            pass  # discard edits
+    return None
+
+# @+node:tbrown.20130813134319.7229: *5* close
+def close(self):
+    if self.c and not self.at_rich_close:
+        # save changes?
+        self.unselect_node('', {'c': self.c, 'old_p': self.c.p})
+    self.c = None
+    g.unregisterHandler('select3', self.select_node)
+    g.unregisterHandler('unselect1', self.unselect_node)
+    return QtWidgets.QWidget.close(self)
+
+# @+node:tbrown.20130813134319.5694: *4* class CKEPaneProvider
+class CKEPaneProvider:
+    ns_id = '_add_cke_pane'
+
+    def __init__(self, c):
+        self.c = c
+        # Careful: we may be unit testing.
+        if hasattr(c, 'free_layout'):
+            splitter = c.free_layout.get_top_splitter()
+            if splitter:
+                splitter.register_provider(self)
+
+    def ns_provides(self):
+        return [('Rich text CKE editor', self.ns_id)]
+
+    def ns_provide(self, id_):
+        if id_ == self.ns_id:
+            w = CKEEditor(c=self.c)
+            return w
+        return None
+
+    def ns_provider_id(self):
+        # used by register_provider() to unregister previously registered
+        # providers of the same service
+        return self.ns_id
+
+
+# @+node:tbrown.20130813134319.14339: *4* onCreate
+def onCreate(tag, key):
+    c = key.get('c')
+
+    CKEPaneProvider(c)
+
+
+# @+node:tbrown.20130814090427.22458: *4* at_rich_check
+def at_rich_check(tag, key):
+    p = key.get('new_p')
+
+    do = 'close'
+    for nd in p.self_and_parents():
+        if '@norich' in nd.h or '@norich' in nd.b[:1000]:
+            do = 'close'
+            break
+        if '@rich' in nd.h or '@rich' in nd.b[:1000]:
+            do = 'open'
+            break
+
+    if do == 'close':
+        cmd_CloseEditor(key, at_rich=True)
+    elif do == 'open':
+        cmd_OpenEditor(key, at_rich=True)
+
+
+# @+node:tbrown.20130813134319.5692: *4* @g.command('cke-text-open')
+@g.command('cke-text-open')
+def cmd_OpenEditor(event=None, at_rich=False):
+    """Open the rich text editor, hide the regular editor."""
+    c = event.get('c')
+    splitter = c.free_layout.get_top_splitter()
+    rte = splitter.find_child(CKEEditor, '')
+    if rte:
+        if not at_rich:
+            g.es("CKE Editor appears to be open already")
+        return
+    body = splitter.find_child(QtWidgets.QWidget, 'bodyFrame')
+    w = CKEEditor(c=c)
+    w.at_rich = at_rich
+    splitter = body.parent()
+    splitter.replace_widget(body, w)
+
+
+# @+node:tbrown.20130813134319.5693: *4* @g.command('cke-text-close')
+@g.command('cke-text-close')
+def cmd_CloseEditor(event=None, at_rich=False):
+    """Close the rich text editor, unhide the regular editor."""
+    c = event.get('c')
+    splitter = c.free_layout.get_top_splitter()
+    if not splitter:
+        return
+    rte = splitter.find_child(CKEEditor, '')
+    if not rte:
+        if not at_rich:
+            g.es("No editor open")
+        return
+    if at_rich and not rte.at_rich:
+        # don't close manually opened editor
+        return
+    body = splitter.get_provided('_leo_pane:bodyFrame')
+    splitter = rte.parent()
+    rte.at_rich_close = True
+    splitter.replace_widget(rte, body)
+
+
+# @+node:tbrown.20130813134319.7233: *4* @g.command('cke-text-switch')
+@g.command('cke-text-switch')
+def cmd_SwitchEditor(event):
+    """Switch between regular and rich text editor."""
+    c = event.get('c')
+    splitter = c.free_layout.get_top_splitter()
+    rte = splitter.find_child(CKEEditor, '')
+    if not rte:
+        cmd_OpenEditor(event)
+    else:
+        cmd_CloseEditor(event)
+
+
+# @+node:tbrown.20130813134319.7231: *4* @g.command('cke-text-toggle-autosave')
+@g.command('cke-text-toggle-autosave')
+def cmd_ToggleAutosave(event):
+    """
+    Toggle autosaving of changes when you leave a node.
+
+    Be careful not to convert plain text (e.g. source code) to rich
+    text unintentionally.  As long as you make no edits, the original
+    text will not be changed.
+    """
+    c = event.get('c')
+    c._ckeeditor_autosave = not c._ckeeditor_autosave
+    g.es("Rich text autosave " + ("ENABLED" if c._ckeeditor_autosave else "disabled"))
+
+
+# @+node:ekr.20121128031949.12605: *3* class g.SherlockTracer
+class SherlockTracer:
+    """
+    A stand-alone tracer class with many of Sherlock's features.
+
+    This class should work in any environment containing the re, os and sys modules.
+
+    The arguments in the pattern lists determine which functions get traced
+    or which stats get printed. Each pattern starts with "+", "-", "+:" or
+    "-:", followed by a regular expression::
+
+    "+x"  Enables tracing (or stats) for all functions/methods whose name
+          matches the regular expression x.
+    "-x"  Disables tracing for functions/methods.
+    "+:x" Enables tracing for all functions in the **file** whose name matches x.
+    "-:x" Disables tracing for an entire file.
+
+    Enabling and disabling depends on the order of arguments in the pattern
+    list. Consider the arguments for the Rope trace::
+
+    patterns=['+.*','+:.*',
+        '-:.*\\lib\\.*','+:.*rope.*','-:.*leoGlobals.py',
+        '-:.*worder.py','-:.*prefs.py','-:.*resources.py',])
+
+    This enables tracing for everything, then disables tracing for all
+    library modules, except for all rope modules. Finally, it disables the
+    tracing for Rope's worder, prefs and resources modules.
+
+    Being able to zero in on the code of interest can be a big help in
+    studying other people's code. This is a non-invasive method: no tracing
+    code needs to be inserted anywhere.
+
+    Usage:
+
+    g.SherlockTracer(patterns).run()
+    """
+    @others
+# @+node:ekr.20121128031949.12602: *4* sherlock.__init__
+def __init__(
+    self,
+    patterns: list[Any],
+    indent: bool = True,
+    show_args: bool = True,
+    show_return: bool = True,
+    verbose: bool = True,
+) -> None:
+    """SherlockTracer ctor."""
+    self.bad_patterns: list[str] = []  # List of bad patterns.
+    self.indent = indent  # True: indent calls and returns.
+    self.contents_d: dict[str, list] = {}  # Keys are file names, values are file lines.
+    self.n = 0  # The frame level on entry to run.
+    self.stats: dict[str, dict] = {}  # Keys are full file names, values are dicts.
+    self.patterns: list[Any] = None  # A list of regex patterns to match.
+    self.pattern_stack: list[str] = []
+    self.show_args = show_args  # True: show args for each function call.
+    self.show_return = show_return  # True: show returns from each function.
+    self.trace_lines = True  # True: trace lines in enabled functions.
+    self.verbose = verbose  # True: print filename:func
+    self.set_patterns(patterns)
+    try:  # Don't assume g.app exists.
+        from leo.core.leoQt import QtCore
+        if QtCore:
+            # pylint: disable=no-member
+            QtCore.pyqtRemoveInputHook()
+    except Exception:
+        pass
+# @+node:ekr.20140326100337.16844: *4* sherlock.__call__
+def __call__(self, frame: Any, event: Any, arg: Any) -> Any:
+    """Exists so that self.dispatch can return self."""
+    return self.dispatch(frame, event, arg)
+# @+node:ekr.20140326100337.16846: *4* sherlock.bad_pattern
+def bad_pattern(self, pattern: Any) -> None:
+    """Report a bad Sherlock pattern."""
+    if pattern not in self.bad_patterns:
+        self.bad_patterns.append(pattern)
+        print(f"\nignoring bad pattern: {pattern}\n")
+# @+node:ekr.20140326100337.16847: *4* sherlock.check_pattern
+def check_pattern(self, pattern: str) -> bool:
+    """Give an error and return False for an invalid pattern."""
+    try:
+        for prefix in ('+:', '-:', '+', '-'):
+            if pattern.startswith(prefix):
+                re.match(pattern[len(prefix) :], 'xyzzy')
+                return True
+        self.bad_pattern(pattern)
+        return False
+    except Exception:
+        self.bad_pattern(pattern)
+        return False
+# @+node:ekr.20121128031949.12609: *4* sherlock.dispatch
+def dispatch(self, frame: Any, event: Any, arg: Any) -> Any:
+    """The dispatch method."""
+    if event == 'call':
+        self.do_call(frame, arg)
+    elif event == 'return' and self.show_return:
+        self.do_return(frame, arg)
+    elif event == 'line' and self.trace_lines:
+        self.do_line(frame, arg)
+    # Queue the SherlockTracer instance again.
+    return self
+# @+node:ekr.20121128031949.12603: *4* sherlock.do_call & helper
+def do_call(self, frame: Any, unused_arg: Any) -> None:
+    """Trace through a function call."""
+    frame1 = frame
+    code = frame.f_code
+    file_name = code.co_filename
+    locals_ = frame.f_locals
+    function_name = code.co_name
+    try:
+        full_name = self.get_full_name(locals_, function_name)
+    except Exception:
+        full_name = function_name
+    if not self.is_enabled(file_name, full_name, self.patterns):
+        # 2020/09/09: Don't touch, for example, __ methods.
+        return
+    n = 0  # The number of callers of this def.
+    while frame:
+        frame = frame.f_back
+        n += 1
+    indent = ' ' * max(0, n - self.n) if self.indent else ''
+    path = f"{os.path.basename(file_name):>20}" if self.verbose else ''
+    leadin = '+' if self.show_return else ''
+    args_list = self.get_args(frame1)
+    if self.show_args and args_list:
+        args_s = ','.join(args_list)
+        args_s2 = f"({args_s})"
+        if len(args_s2) > 100:
+            print(f"{path}:{indent}{leadin}{full_name}")
+            g.printObj(args_list, indent=len(indent) + 22)
+        else:
+            print(f"{path}:{indent}{leadin}{full_name}{args_s2}")
+    else:
+        print(f"{path}:{indent}{leadin}{full_name}")
+    # Always update stats.
+    d = self.stats.get(file_name, {})
+    d[full_name] = 1 + d.get(full_name, 0)
+    self.stats[file_name] = d
+# @+node:ekr.20130111185820.10194: *5* sherlock.get_args
+def get_args(self, frame: Any) -> list[str]:
+    """Return a list of string "name=val" for each arg in the function call."""
+    code = frame.f_code
+    locals_ = frame.f_locals
+    name = code.co_name
+    n = code.co_argcount
+    if code.co_flags & 4:
+        n = n + 1
+    if code.co_flags & 8:
+        n = n + 1
+    result = []
+    for i in range(n):
+        name = code.co_varnames[i]
+        if name != 'self':
+            arg = locals_.get(name, '*undefined*')
+            if arg:
+                if isinstance(arg, (list, tuple)):
+                    val_s = ','.join([self.show(z) for z in arg if self.show(z)])
+                    val = f"[{val_s}]"
+                elif isinstance(arg, str):
+                    val = arg
+                else:
+                    val = self.show(arg)
+                if val:
+                    result.append(f"{name}={val}")
+    return result
+# @+node:ekr.20140402060647.16845: *4* sherlock.do_line (not used)
+bad_fns: list[str] = []
+
+def do_line(self, frame: Any, arg: Any) -> None:
+    """print each line of enabled functions."""
+    if 1:
+        return
+    code = frame.f_code
+    file_name = code.co_filename
+    locals_ = frame.f_locals
+    name = code.co_name
+    full_name = self.get_full_name(locals_, name)
+    if not self.is_enabled(file_name, full_name, self.patterns):
+        return
+    n = frame.f_lineno - 1  # Apparently, the first line is line 1.
+    d = self.contents_d
+    lines = d.get(file_name)
+    if not lines:
+        print(file_name)
+        try:
+            with open(file_name) as f:
+                s = f.read()
+        except Exception:
+            if file_name not in self.bad_fns:
+                self.bad_fns.append(file_name)
+                print(f"open({file_name}) failed")
+            return
+        lines = g.splitLines(s)
+        d[file_name] = lines
+    line = lines[n].rstrip() if n < len(lines) else '<EOF>'
+    if 0:
+        print(f"{name:3} {line}")
+    else:
+        print(f"{g.shortFileName(file_name)} {n} {full_name} {line}")
+# @+node:ekr.20130109154743.10172: *4* sherlock.do_return & helper
+def do_return(self, frame: Any, arg: Any) -> None:  # Arg *is* used below.
+    """Trace a return statement."""
+    code = frame.f_code
+    fn = code.co_filename
+    locals_ = frame.f_locals
+    name = code.co_name
+    self.full_name = self.get_full_name(locals_, name)
+    if not self.is_enabled(fn, self.full_name, self.patterns):
+        return
+    n = 0
+    while frame:
+        frame = frame.f_back
+        n += 1
+    path = f"{os.path.basename(fn):>20}" if self.verbose else ''
+    if name and name == '__init__':
+        try:
+            ret1 = locals_ and locals_.get('self', None)
+            self.put_ret(ret1, n, path)
+        except NameError:
+            self.put_ret(f"<{ret1.__class__.__name__}>", n, path)
+    else:
+        self.put_ret(arg, n, path)
+# @+node:ekr.20220605141445.1: *5* sherlock.put_ret
+def put_ret(self, arg: Any, n: int, path: str) -> None:
+    """Print arg, the value returned by a "return" statement."""
+    indent = ' ' * max(0, n - self.n + 1) if self.indent else ''
+    try:
+        if isinstance(arg, types.GeneratorType):
+            ret = '<generator>'
+        elif isinstance(arg, (tuple, list)):
+            ret_s = ','.join([self.show(z) for z in arg])
+            if len(ret_s) > 40:
+                g.printObj(arg, indent=len(indent))
+                ret = ''
+            else:
+                ret = f"[{ret_s}]"
+        elif arg:
+            ret = self.show(arg)
+            if len(ret) > 100:
+                ret = f"\n    {ret}"
+        else:
+            ret = '' if arg is None else repr(arg)
+        print(f"{path}:{indent}-{self.full_name} -> {ret}")
+    except Exception:
+        exctype, value = sys.exc_info()[:2]
+        try:  # Be extra careful.
+            arg_s = f"arg: {arg!r}"
+        except Exception:
+            arg_s = ''  # arg.__class__.__name__
+        print(
+            f"{path}:{indent}-{self.full_name} -> "
+            f"{exctype.__name__}, {value} {arg_s}"
+        )
+# @+node:ekr.20121128111829.12185: *4* sherlock.fn_is_enabled
+def fn_is_enabled(self, func: Any, patterns: list[str]) -> bool:
+    """Return True if tracing for the given function is enabled."""
+    if func in self.ignored_functions:
+        return False
+
+    def ignore_function() -> None:
+        if func not in self.ignored_functions:
+            self.ignored_functions.append(func)
+            print(f"Ignore function: {func}")
+    #
+    # New in Leo 6.3. Never trace dangerous functions.
+    table = (
+        '_deepcopy.*',
+        # Unicode primitives.
+        'encode\b', 'decode\b',
+        # System functions
+        '.*__next\b',
+        '<frozen>', '<genexpr>', '<listcomp>',
+        # '<decorator-gen-.*>',
+        'get\b',
+        # String primitives.
+        'append\b', 'split\b', 'join\b',
+        # File primitives...
+        'access_check\b', 'expanduser\b', 'exists\b', 'find_spec\b',
+        'abspath\b', 'normcase\b', 'normpath\b', 'splitdrive\b',
+    )
+    g.trace('=====', func)
+    for z in table:
+        if re.match(z, func):
+            ignore_function()
+            return False
+    #
+    # Legacy code.
+    try:
+        enabled, pattern = False, None
+        for pattern in patterns:
+            if pattern.startswith('+:'):
+                if re.match(pattern[2:], func):
+                    enabled = True
+            elif pattern.startswith('-:'):
+                if re.match(pattern[2:], func):
+                    enabled = False
+        return enabled
+    except Exception:
+        self.bad_pattern(pattern)
+        return False
+# @+node:ekr.20130112093655.10195: *4* sherlock.get_full_name
+def get_full_name(self, locals_: Any, name: str) -> str:
+    """Return class_name::name if possible."""
+    full_name = name
+    try:
+        user_self = locals_ and locals_.get('self', None)
+        if user_self:
+            full_name = user_self.__class__.__name__ + '::' + name
+    except Exception:
+        pass
+    return full_name
+# @+node:ekr.20121128111829.12183: *4* sherlock.is_enabled
+ignored_files: list[str] = []  # List of files.
+ignored_functions: list[str] = []  # List of files.
+
+def is_enabled(
+    self,
+    file_name: str,
+    function_name: str,
+    patterns: list[str] = None,
+) -> bool:
+    """Return True if tracing for function_name in the given file is enabled."""
+    #
+    # New in Leo 6.3. Never trace through some files.
+    if not os:
+        return False  # Shutting down.
+    base_name = os.path.basename(file_name)
+    if base_name in self.ignored_files:
+        return False
+
+    def ignore_file() -> None:
+        if base_name not in self.ignored_files:
+            self.ignored_files.append(base_name)
+
+    def ignore_function() -> None:
+        if function_name not in self.ignored_functions:
+            self.ignored_functions.append(function_name)
+
+    if f"{os.sep}lib{os.sep}" in file_name:
+        ignore_file()
+        return False
+    if base_name.startswith('<') and base_name.endswith('>'):
+        ignore_file()
+        return False
+    #
+    # New in Leo 6.3. Never trace dangerous functions.
+    table = (
+        '_deepcopy.*',
+        # Unicode primitives.
+        'encode\b', 'decode\b',
+        # System functions
+        '.*__next\b',
+        '<frozen>', '<genexpr>', '<listcomp>',
+        # '<decorator-gen-.*>',
+        'get\b',
+        # String primitives.
+        'append\b', 'split\b', 'join\b',
+        # File primitives...
+        'access_check\b', 'expanduser\b', 'exists\b', 'find_spec\b',
+        'abspath\b', 'normcase\b', 'normpath\b', 'splitdrive\b',
+    )
+    for z in table:
+        if re.match(z, function_name):
+            ignore_function()
+            return False
+    #
+    # Legacy code.
+    enabled = False
+    if patterns is None:
+        patterns = self.patterns
+    for pattern in patterns:
+        try:
+            if pattern.startswith('+:'):
+                if re.match(pattern[2:], file_name):
+                    enabled = True
+            elif pattern.startswith('-:'):
+                if re.match(pattern[2:], file_name):
+                    enabled = False
+            elif pattern.startswith('+'):
+                if re.match(pattern[1:], function_name):
+                    enabled = True
+            elif pattern.startswith('-'):
+                if re.match(pattern[1:], function_name):
+                    enabled = False
+            else:
+                self.bad_pattern(pattern)
+        except Exception:
+            self.bad_pattern(pattern)
+    return enabled
+# @+node:ekr.20121128111829.12182: *4* sherlock.print_stats
+def print_stats(self, patterns: list[str] = None) -> None:
+    """Print all accumulated statisitics."""
+    print('\nSherlock statistics...')
+    if not patterns:
+        patterns = ['+.*', '+:.*',]
+    for fn in sorted(self.stats.keys()):
+        d = self.stats.get(fn)
+        if self.fn_is_enabled(fn, patterns):
+            result = sorted(d.keys())  # type:ignore
+        else:
+            result = [key for key in sorted(d.keys())  # type:ignore
+                if self.is_enabled(fn, key, patterns)]
+        if result:
+            print('')
+            fn = fn.replace('\\', '/')
+            parts = fn.split('/')
+            print('/'.join(parts[-2:]))
+            for key in result:
+                print(f"{d.get(key):4} {key}")
+# @+node:ekr.20121128031949.12614: *4* sherlock.run
+# Modified from pdb.Pdb.set_trace.
+
+def run(self, frame: Any = None) -> None:
+    """Trace from the given frame or the caller's frame."""
+    print("SherlockTracer.run:patterns:\n%s" % '\n'.join(self.patterns))
+    if frame is None:
+        frame = sys._getframe().f_back
+    # Compute self.n, the number of frames to ignore.
+    self.n = 0
+    while frame:
+        frame = frame.f_back
+        self.n += 1
+    # Pass self to sys.settrace to give easy access to all methods.
+    sys.settrace(self)
+# @+node:ekr.20140322090829.16834: *4* sherlock.push & pop
+def push(self, patterns: list[str]) -> None:
+    """Push the old patterns and set the new."""
+    self.pattern_stack.append(self.patterns)  # type:ignore
+    self.set_patterns(patterns)
+    print(f"SherlockTracer.push: {self.patterns}")
+
+def pop(self) -> None:
+    """Restore the pushed patterns."""
+    if self.pattern_stack:
+        self.patterns = self.pattern_stack.pop()  # type:ignore
+        print(f"SherlockTracer.pop: {self.patterns}")
+    else:
+        print('SherlockTracer.pop: pattern stack underflow')
+# @+node:ekr.20140326100337.16845: *4* sherlock.set_patterns
+def set_patterns(self, patterns: list[str]) -> None:
+    """Set the patterns in effect."""
+    self.patterns = [z for z in patterns if self.check_pattern(z)]
+# @+node:ekr.20140322090829.16831: *4* sherlock.show
+def show(self, item: Any) -> str:
+    """return the best representation of item."""
+    if not item:
+        return repr(item)
+    if isinstance(item, dict):
+        return 'dict'
+    if isinstance(item, str):
+        s = repr(item)
+        if len(s) <= 20:
+            return s
+        return s[:17] + '...'
+    s = repr(item)
+    # A Hack for mypy:
+    if s.startswith("<object object"):
+        s = "_dummy"
+    return s
+# @+node:ekr.20121128093229.12616: *4* sherlock.stop
+def stop(self) -> None:
+    """Stop all tracing."""
+    sys.settrace(None)
+# @+node:ekr.20181202062518.1: *3* leoFastRedraw.py
+"""
+Gui-independent fast-redraw code.
+
+For an explanation, see this thread:
+https://groups.google.com/forum/#!topic/leo-editor/hpHyHU2sWtM
+"""
+import difflib
+import re
+import time
+from leo.core import leoGlobals as g
+
+class FastRedraw:
+    @others
+
+@language python
+@tabwidth -4
+@pagewidth 70
+# @+node:ekr.20181202060924.4: *4* LeoGui.dump_diff_op_codes
+def dump_diff_op_codes(self, a, b, op_codes):
+    """Dump the opcodes returned by difflib.SequenceMatcher."""
+
+    def summarize(aList):
+        pat = re.compile(r'.*:.*:(.*)')
+        return ', '.join([pat.match(z).group(1) for z in aList])
+
+    for tag, i1, i2, j1, j2 in op_codes:
+        if tag == 'equal':
+            print(f"{tag:7} at {i1}:{i2} (both) ==> {summarize(b[j1:j2])!r}")
+        elif tag == 'insert':
+            print(f"{tag:7} at {i1}:{i2} (b)    ==> {summarize(b[j1:j2])!r}")
+        elif tag == 'delete':
+            print(f"{tag:7} at {i1}:{i2} (a)    ==> {summarize(a[i1:i2])!r}")
+        elif tag == 'replace':
+            print(f"{tag:7} at {i1}:{i2} (a)    ==> {summarize(a[i1:i2])!r}")
+            print(f"{tag:7} at {i1}:{i2} (b)    ==> {summarize(b[j1:j2])!r}")
+        else:
+            print('unknown tag')
+# @+node:ekr.20181202060924.5: *4* LeoGui.dump_opcodes
+def dump_opcodes(self, opcodes):
+    """Dump the opcodes returned by app.peep_hole and app.make_redraw_list."""
+    for z in opcodes:
+        kind = z[0]
+        if kind == 'replace':
+            kind, i1, gnxs1, gnxs2 = z
+            print(kind, i1)
+            print("  a: [%s]" % ',\n    '.join(gnxs1))
+            print("  b: [%s]" % ',\n    '.join(gnxs2))
+        elif kind in ('delete', 'insert'):
+            kind, i1, gnxs = z
+            print(kind, i1)
+            print("  [%s]" % ',\n    '.join(gnxs))
+        else:
+            print(z)
+# @+node:ekr.20181202060924.2: *4* LeoGui.flatten_outline
+def flatten_outline(self, c):
+    """Return a flat list of strings "level:gnx" for all *visible* positions."""
+    trace = False and not g.unitTesting
+    t1 = time.process_time()
+    aList: list[str] = []
+    for p in c.rootPosition().self_and_siblings():
+        self.extend_flattened_outline(aList, p)
+    if trace:
+        t2 = time.process_time()
+        print(f"app.flatten_outline: {len(aList)} entries {t2 - t1:6.4f} sec.")
+    return aList
+
+def extend_flattened_outline(self, aList, p):
+    """Add p and all p's visible descendants to aList."""
+    # Padding the fields causes problems later.
+    aList.append(f"{p.level()}:{p.gnx}:{p.h}\n")
+    if p.isExpanded():
+        for child in p.children():
+            self.extend_flattened_outline(aList, child)
+# @+node:ekr.20181202060924.3: *4* LeoGui.make_redraw_list
+def make_redraw_list(self, a, b):
+    """
+    Diff the a (old) and b (new) outline lists.
+    Then optimize the diffs to create a redraw instruction list.
+    """
+    trace = False and not g.unitTesting
+    if a == b:
+        return []
+
+    def gnxs(aList):
+        """Return the gnx list. Do not try to remove this!"""
+        return [z.strip() for z in aList]
+    @others # Define local helpers
+    d = difflib.SequenceMatcher(None, a, b)
+    op_codes = list(d.get_opcodes())
+    # dump_diff_op_codes(a, b, op_codes)
+    #
+    # Generate the instruction list, and verify the result.
+    opcodes, result = [], []
+    for tag, i1, i2, j1, j2 in op_codes:
+        if tag == 'insert':
+            opcodes.append(['insert', i1, gnxs(b[j1:j2])])
+        elif tag == 'delete':
+            opcodes.append(['delete', i1, gnxs(a[i1:i2])])
+        elif tag == 'replace':
+            opcodes.append(['replace', i1, gnxs(a[i1:i2]), gnxs(b[j1:j2])])
+        result.extend(b[j1:j2])
+    assert b == result, (a, b)
+    #
+    # Run the peephole.
+    opcodes = self.peep_hole(opcodes)
+    if trace:
+        print('app.make_redraw_list: opcodes after peephole...')
+        self.dump_opcodes(opcodes)
+    return opcodes
+# @+node:ekr.20181202060924.6: *4* LeoGui.peep_hole
+def peep_hole(self, opcodes):
+    """Scan the list of opcodes, merging adjacent op-codes."""
+    i, result = 0, []
+    while i < len(opcodes):
+        op0 = opcodes[i]
+        if i == len(opcodes) - 1:
+            result.append(op0)
+            break
+        op1 = opcodes[i + 1]
+        kind0, kind1 = op0[0], op1[0]
+        # Merge adjacent insert/delete opcodes with the same gnx.
+        if (
+            kind0 == 'insert' and kind1 == 'delete' or
+            kind0 == 'delete' and kind1 == 'insert'
+        ):
+            kind0, index0, gnxs0 = op0
+            kind1, index1, gnxs1 = op1
+            if gnxs0[0] == gnxs1[0]:
+                result.append(['move', index0, index1, gnxs0, gnxs1])
+                i += 2  # Don't scan either op again!
+                break
+        # The default is to retain the opcode.
+        result.append(op0)
+        i += 1
+    return result
 # @+node:ekr.20260820040558.1: ** Temporary attic
 # @+node:ekr.20230714143451.1: *3* TestEditFileCommands.test_diff_two_branches
 def test_diff_two_branches(self):
