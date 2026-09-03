@@ -21,14 +21,6 @@ try:
 except Exception:  # pragma: no cover
     asttokens = None
 
-# import warnings
-# try:
-#     # Suppress a warning about imp being deprecated.
-#     with warnings.catch_warnings():
-#     import black
-# except Exception:  # pragma: no cover
-#     black = None
-
 from leo.core import leoGlobals as g
 
 from leo.core.leoAst import AstNotEqual

@@ -5,16 +5,9 @@
 # @+<< leoBeautify imports & annotations >>
 # @+node:ekr.20220822114944.1: ** << leoBeautify imports & annotations >>
 from __future__ import annotations
-import sys
 import os
 import time
 from typing import overload, Literal, TYPE_CHECKING
-
-# Third-party tools.
-try:
-    import black
-except Exception:
-    black = None
 
 # Leo imports.
 from leo.core import leoGlobals as g
@@ -37,55 +30,6 @@ def beautifyCCode(event: LeoKeyEvent | None = None) -> None:
     """Beautify all C code in the selected tree."""
     if c := event.get('c') if event else None:
         CPrettyPrinter(c).pretty_print_tree(c.p)
-
-
-# @+node:ekr.20200103055814.1: *4* blacken-files
-@g.command('blacken-files')
-def blacken_files(event: LeoKeyEvent | None = None) -> None:
-    """Run black on one or more files at c.p."""
-    tag = 'blacken-files'
-    if not black:
-        g.es_print(f"{tag} can not import black")
-        return
-    c = event.get('c') if event else None
-    if not c or not c.p:
-        return
-    python = sys.executable
-    for root in g.findRootsWithPredicate(c, c.p):
-        path = c.fullPath(root)
-        if path and os.path.exists(path):
-            g.es_print(f"{tag}: {path}")
-            g.execute_shell_commands(f'&"{python}" -m black --skip-string-normalization "{path}"')
-        else:
-            print(f"{tag}: file not found:{path}")
-            g.es(f"{tag}: file not found:\n{path}")
-
-
-# @+node:ekr.20200103060057.1: *4* blacken-files-diff
-@g.command('blacken-files-diff')
-def blacken_files_diff(event: LeoKeyEvent | None = None) -> None:
-    """
-    Show the diffs that would result from blacking the external files at
-    c.p.
-    """
-    tag = 'blacken-files-diff'
-    if not black:
-        g.es_print(f"{tag} can not import black")
-        return
-    c = event.get('c') if event else None
-    if not c or not c.p:
-        return
-    python = sys.executable
-    for root in g.findRootsWithPredicate(c, c.p):
-        path = c.fullPath(root)
-        if path and os.path.exists(path):
-            g.es_print(f"{tag}: {path}")
-            g.execute_shell_commands(
-                f'&"{python}" -m black --skip-string-normalization --diff "{path}"'
-            )
-        else:
-            print(f"{tag}: file not found:{path}")
-            g.es(f"{tag}: file not found:\n{path}")
 
 
 # @+node:ekr.20191025072511.1: *4* fstringify-files
