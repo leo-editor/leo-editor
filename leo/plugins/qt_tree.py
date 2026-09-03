@@ -253,8 +253,6 @@ class LeoQtTree(leoFrame.LeoTree):
             elif cmd == 'REPLACE-REST':
                 s = (text[: m.start()] + text[m.end() :]).strip()
 
-            g.trace(cmd, repr(s))
-
             if not s:
                 return None, ''
 
@@ -275,11 +273,8 @@ class LeoQtTree(leoFrame.LeoTree):
             param - the saved argument of that operation.
             Returns (None, param) if 'cmd' is not a style option.
             """
-            g.trace(c.styleSheetManager)  ###
-
             if not c.styleSheetManager:
                 return None, ''
-
             param = c.styleSheetManager.expand_css_constants(arg).split()[0]
             modifier: Callable | None = None
 
@@ -351,8 +346,6 @@ class LeoQtTree(leoFrame.LeoTree):
 
                 modifier = pt_modifier
 
-            g.trace(cmd, repr(modifier))
-
             # Apply the style update
             if modifier:
                 modifier(item, param)
@@ -369,9 +362,9 @@ class LeoQtTree(leoFrame.LeoTree):
             modifiers = []
             for cmd, arg in cmds:
                 modifier, param = declutter_replace(arg, cmd, pattern)
-                if modifier is not None:
+                if not modifier:
                     modifier, param = declutter_style(arg, cmd)
-                if modifier is not None:
+                if modifier:
                     modifiers.append((modifier, param))
             return modifiers
 
