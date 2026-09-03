@@ -125,7 +125,8 @@
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
 </v>
-<v t="ekr.20260811100339.1" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a73735803000000302e3171067d7107580b0000005f5f626f6f6b6d61726b7371087d7109580700000069735f64757065710a4930300a73735803000000302e34710b7d710c580b0000005f5f626f6f6b6d61726b73710d7d710e580700000069735f64757065710f4930300a73735804000000302e313071107d7111580b0000005f5f626f6f6b6d61726b7371127d7113580700000069735f6475706571144930300a7373752e"><vh>Distribution checklist</vh>
+<v t="ekr.20260811100339.1" descendentVnodeUnknownAttributes="7d7100285803000000302e3171017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a73735803000000302e3271067d7107580b0000005f5f626f6f6b6d61726b7371087d7109580700000069735f64757065710a4930300a73735803000000302e35710b7d710c580b0000005f5f626f6f6b6d61726b73710d7d710e580700000069735f64757065710f4930300a73735804000000302e313171107d7111580b0000005f5f626f6f6b6d61726b7371127d7113580700000069735f6475706571144930300a7373752e"><vh>Distribution checklist</vh>
+<v t="ekr.20260903120226.1"><vh>Update tools, especially ty and ruff</vh></v>
 <v t="ekr.20260811100339.2" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Pre-testing</vh></v>
 <v t="ekr.20260811100339.3" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Update version data</vh></v>
 <v t="ekr.20260811100339.4"><vh>LeoSettings.leo</vh></v>
@@ -1460,19 +1461,14 @@ Public announcements, after creating a package.
 - My blog: http://edreamleo.blogspot.com/
   **Paste GitHub announcement**.
 </t>
-<t tx="ekr.20260811100339.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Run The update_leo_tools.py script *first*.
-
-- leoGlobals.py: &lt;&lt; leoGlobals: global constants &gt;&gt;
+<t tx="ekr.20260811100339.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- leoGlobals.py: &lt;&lt; leoGlobals: global constants &gt;&gt;
   Check minimum_python_version and minimum_python_version_tuple.
 
 - Make sure Leo looks good without myLeoSettings.leo.
 
-- Make sure Leo runs with Python 3.10.
-
 - Run the leo/scripts/full_test_leo.py script. See #2867:
   https://github.com/leo-editor/leo-editor/issues/2867
-
-- (Not needed: done via the ci.yml action) Test on Linux.</t>
+</t>
 <t tx="ekr.20260811100339.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
 - Update version constant.
 - Update static date.
@@ -1512,8 +1508,7 @@ Update versions in script files:
 - Make sure no distributed .leo file contains xml-stylesheet elements.
   Run @button check .leo files in leoDist.leo.
 </t>
-<t tx="ekr.20260811100339.8">
-.. All GitHub actions
+<t tx="ekr.20260811100339.8">.. All GitHub actions
 https://github.com/leo-editor/leo-editor/blob/devel/.github/workflows
 
 .. Step one:  Create the release tag in "devel"
@@ -1543,6 +1538,9 @@ https://github.com/leo-editor/leo-editor/blob/devel/.github/workflows
 - Update static date.
 - Update date of the release, in &lt;&lt; version dates &gt;&gt; section.
 </t>
+<t tx="ekr.20260903120226.1">- Run the update_leo_tools.py script.
+- Fix any ty or ruff complaints.
+- If necessary, update the pinned versions in pyproject.toml.</t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 
