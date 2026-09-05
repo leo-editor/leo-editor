@@ -864,9 +864,6 @@
 <v t="ekr.20251214045245.43"></v>
 <v t="ekr.20251214045245.16"></v>
 </v>
-<v t="ekr.20260903074924.3"></v>
-<v t="ekr.20260903083918.1"><vh>foox</vh></v>
-<v t="ekr.20260903075102.1"><vh>foo</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180311131353.1" str_leo_pos="3,11"></t>
@@ -19318,7 +19315,5 @@ BG red
 
     # WEIGHT DemoBold
 </t>
-<t tx="ekr.20260903075102.1"></t>
-<t tx="ekr.20260903083918.1"></t>
 </tnodes>
 </leo_file>
