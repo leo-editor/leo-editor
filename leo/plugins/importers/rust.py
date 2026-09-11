@@ -454,7 +454,7 @@ class Rust_Importer(Importer):
             real_preamble_lines = lines[:i]
             preamble_s = ''.join(real_preamble_lines)
 
-            # First, adjust the bodies.
+            # First, adjust the parent's body.
             parent.b = preamble_s + parent.b
             child1.b = child1.b.replace(preamble_s, '')
 
@@ -466,7 +466,7 @@ class Rust_Importer(Importer):
                 else:
                     parent.b += '\n'
 
-            # #4977: Add all unnamed child `unnamed use` nodes *before* @others
+            # #4977: Add the body text all unnamed child `unnamed use` nodes *before* @others
             child = child1
             n = 0
             while child and child.h == 'unnamed use':
