@@ -27,6 +27,8 @@ class Rust_Importer(Importer):
         # Patterns that *do* require '{' on the same line...
         ('enum', re.compile(r'\s*enum\s+(\w+)\s*\{')),
         ('enum', re.compile(r'\s*pub\s+enum\s+(\w+)\s*\{')),
+        ('enum', re.compile(r'\s*pub\s*\(\s*crate\s*\)\s*enum\s+(\w+)\s*\{')),  ###
+        ('enum', re.compile(r'\s*pub\s+enum\s+(\w+)\s*\{')),
         ('macro', re.compile(r'\s*(\w+)\!\s*\{')),
         ('use', re.compile(r'\s*use.*?\{')),  # No m.group(1).
         # https://doc.rust-lang.org/stable/reference/visibility-and-privacy.html
@@ -45,6 +47,7 @@ class Rust_Importer(Importer):
         ('mod', re.compile(r'\s*mod\s+(\w+)')),
         ('struct', re.compile(r'\s*struct\b(.*?)$')),
         ('struct', re.compile(r'\s*pub\s+struct\b(.*?)$')),
+        ('struct', re.compile(r'\s*pub\s*\(\s*crate\)\s*struct\b(.*?)$')),  ###
         ('trait', re.compile(r'\s*trait\b(.*?)$')),
         ('trait', re.compile(r'\s*pub\s+trait\b(.*?)$')),
     )
@@ -448,13 +451,8 @@ class Rust_Importer(Importer):
                         break
                 elif stripped_line:
                     break
-            if not found_use:
-                # Assume all the comments belong to the first node.
-                return
             real_preamble_lines = lines[:i]
             preamble_s = ''.join(real_preamble_lines)
-            if not preamble_s.strip():
-                return
 
             # First, adjust the bodies.
             parent.b = preamble_s + parent.b
@@ -467,7 +465,20 @@ class Rust_Importer(Importer):
                     parent.b = parent.b.replace('@others', '\n@others')
                 else:
                     parent.b += '\n'
-                child1.b = child1.b[1:]
+
+            # #4977: Add all unnamed child `unnamed use` nodes *before* @others
+            child = child1
+            n = 0
+            while child and child.h == 'unnamed use':
+                n += 1
+                i = parent.b.find('@others') if '@others' in parent.b else 0
+                parent.b = parent.b[:i] + child.b + parent.b[i:]
+                child = child.next()
+
+            # #4977: Delete the `unnamed use` nodes.
+            for i in range(n):
+                child = parent.firstChild()
+                child.doDelete()
 
         # @-others
 
