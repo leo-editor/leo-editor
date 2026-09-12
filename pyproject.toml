@@ -269,6 +269,29 @@ dependencies = [
     #@-<< pyproject.toml: dependencies >>
 ]
 
+[project.optional-dependencies]
+all = [
+    #@+<< pyproject.toml: all dependencies >>
+    #@+node:ekr.20260912101807.1: ** << pyproject.toml: all dependencies >>
+    "beautifulsoup4",  # For link testing.
+    "docutils",
+    "jedi",
+    "jupytext",
+    "markdown",
+    "matplotlib",
+    "numpy",
+    "pygments",
+    "PyQt6-QScintilla",
+    "PyQt6-WebEngine", # VR and VR3 plugins.
+    "Send2Trash; platform_system == 'Windows'",  # picture_viewer plugin.
+    "pytest",          # For coverage testing.
+    "pytest-cov",      # For coverage testing.
+    "sphinx",
+    "sphinx-book-theme",
+    "websockets",
+    #@-<< pyproject.toml: all dependencies >>
+]
+
 [project.scripts]
 leo = "leo.core.runLeo:run"
 leo-c = "leo.core.runLeo:run_console"
