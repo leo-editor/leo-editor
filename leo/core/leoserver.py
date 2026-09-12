@@ -66,7 +66,6 @@ except Exception:
     from leo.core import leoGlobals as g
 
     if not g.unitTesting:
-        g.trace(g.callers())
         g.print_unique_message('pip install websockets')
 
 # Make sure the parent of the leo directory is on sys.path.
