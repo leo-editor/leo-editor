@@ -49,7 +49,7 @@ def check_optional_deps() -> bool:
         )
         for name in missing:
             print(f'  {name}')
-        print('Install them with: pip install -r requirements.txt')
+        print('Install them with: pip install .')
         print('Without them, ty reports spurious unused-type-ignore-comment diagnostics.')
         return False
     return True
