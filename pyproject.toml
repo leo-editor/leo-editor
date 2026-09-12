@@ -263,47 +263,31 @@ dependencies = [
     "ty==0.0.77",
 
     # General packages for plugins, leoserver and commands...
-    "docutils",        # For several plugins.
-    "jedi",            # For autocompletion.
-    "jupytext",        # For paired .ipynb/.py files. Installs markdown, nbformat, pyyaml.
+    ### "docutils",        # For several plugins.
+    ### "jedi",            # For autocompletion.
+    ### "jupytext",        # For paired .ipynb/.py files. Installs markdown, nbformat, pyyaml.
     "lxml",            # For leoImport.py importers.
-    "markdown",        # For the VR and VR3 plugins.
+    ### "markdown",        # For the VR and VR3 plugins.
     "pyenchant",       # The spell tab.
     "PyQt6>= 6.6",     # Installs lxml, PyYAML.
     "urllib3",
-    "websockets",      # For leoserver.
+    ### "websockets",      # For leoserver.
 
     # Dev dependencies.
-    "beautifulsoup4",  # For link testing.
-    "pytest",          # For coverage testing.
-    "pytest-cov",      # For coverage testing.
-    "sphinx",
-    "sphinx-book-theme",
+    # # # "beautifulsoup4",  # For link testing.
+    # # # "pytest",          # For coverage testing.
+    # # # "pytest-cov",      # For coverage testing.
+    # # # "sphinx",
+    # # # "sphinx-book-theme",
 
     # Plugin dependencies.
-    "matplotlib",       # Fails for Python 3.15rc2.
-    "numpy",
-    "PyQt6-QScintilla",
-    "PyQt6-WebEngine", # VR and VR3 plugins.
-    "Send2Trash; platform_system == 'Windows'",  # picture_viewer plugin.
+    # # # "matplotlib",       # Fails for Python 3.15rc2.
+    # # # "numpy",
+    # # # "PyQt6-QScintilla",
+    # # # "PyQt6-WebEngine", # VR and VR3 plugins.
+    # # # "Send2Trash; platform_system == 'Windows'",  # picture_viewer plugin.
 
     # Separate dependencies. Maybe later.
-
-    # [project.optional-dependencies]
-    # dev = [
-    #     "beautifulsoup4",  # For link testing.
-    #     "pytest",          # For coverage testing.
-    #     "pytest-cov",      # For coverage testing.
-    #     "sphinx",
-    #     "sphinx-book-theme",
-    # ]
-    # plugins = [
-    #     # "matplotlib",
-    #     "numpy",
-    #     "PyQt6-QScintilla",
-    #     "PyQt6-WebEngine", # VR and VR3 plugins.
-    #     "Send2Trash; platform_system == 'Windows'",  # picture_viewer plugin.
-    # ]
     #@-<< pyproject.toml: dependencies >>
 ]
 
