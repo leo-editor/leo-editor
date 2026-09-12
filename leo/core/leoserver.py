@@ -61,9 +61,13 @@ try:
     # Import frames and exceptions: same for both new or old websockets versions.
     from websockets.exceptions import ConnectionClosed, ConnectionClosedError
 
-except Exception as e:
+except Exception:
     websockets = None  # type:ignore
-    print("Websockets setup failed:", e)
+    from leo.core import leoGlobals as g
+
+    if not g.unitTesting:
+        g.trace(g.callers())
+        g.print_unique_message('pip install websockets')
 
 # Make sure the parent of the leo directory is on sys.path.
 core_dir = os.path.dirname(__file__)
