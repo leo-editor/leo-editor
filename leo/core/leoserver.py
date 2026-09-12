@@ -65,7 +65,8 @@ except Exception:
     websockets = None  # type:ignore
     from leo.core import leoGlobals as g
 
-    g.print_unique_message('websockts not found\npip install websockets')
+    if not g.unitTesting:
+        g.print_unique_message('websockts not found\npip install websockets')
 
 # Make sure the parent of the leo directory is on sys.path.
 core_dir = os.path.dirname(__file__)
