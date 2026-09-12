@@ -451,6 +451,7 @@ class Rust_Importer(Importer):
                         break
                 elif stripped_line:
                     break
+            i = max(0, i - 1)  ###
             real_preamble_lines = lines[:i]
             preamble_s = ''.join(real_preamble_lines)
 
@@ -459,7 +460,8 @@ class Rust_Importer(Importer):
             child1.b = child1.b.replace(preamble_s, '')
 
             # Next, move leading lines to the parent, before the @others line.
-            while child1.b.startswith('\n'):
+            ### while child1.b.startswith('\n'):
+            if 1:  ###
                 if '@others' in parent.b:
                     # Assume the importer created the @others.
                     parent.b = parent.b.replace('@others', '\n@others')
