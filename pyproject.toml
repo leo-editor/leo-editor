@@ -258,7 +258,6 @@ dependencies = [
     #@+<< pyproject.toml: dependencies >>
     #@+node:ekr.20260912080650.1: ** << pyproject.toml: dependencies >>
     # Essential testing.
-    "pygments",     # For unit tests.
     "ruff==0.16.5",
     "ty==0.0.77",
 
