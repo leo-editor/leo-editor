@@ -65,8 +65,7 @@ except Exception:
     websockets = None  # type:ignore
     from leo.core import leoGlobals as g
 
-    if not g.unitTesting:
-        g.print_unique_message('pip install websockets')
+    g.print_unique_message('websockts not found\npip install websockets')
 
 # Make sure the parent of the leo directory is on sys.path.
 core_dir = os.path.dirname(__file__)
@@ -5538,9 +5537,7 @@ def main() -> None:  # pragma: no cover (tested in client)
     """python script for leo integration via leoBridge"""
     global gLoop
     if not websockets:
-        print('websockets not found')
-        print('pip install websockets')
-        return
+        return  # An error message has already been given.
 
     # @+others
     # @+node:felix.20210807214524.1: *3* function: cancel_tasks
