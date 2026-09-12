@@ -263,9 +263,9 @@ dependencies = [
     "ty==0.0.77",
 
     # General packages for plugins, leoserver and commands...
-    "lxml",            # For leoImport.py importers.
-    "pyenchant",       # The spell tab.
-    "PyQt6>= 6.6",     # Installs lxml, PyYAML.
+    "lxml",         # For leoImport.py importers.
+    "pyenchant",    # The spell tab.
+    "PyQt6>= 6.6",  # Installs lxml, PyYAML.
     "urllib3",
     #@-<< pyproject.toml: dependencies >>
 ]
