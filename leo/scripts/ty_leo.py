@@ -19,23 +19,21 @@ os.chdir(leo_editor_dir)
 # @+others
 # @+node:ekr.20260823160000.1: ** check_optional_deps (ty_leo.py)
 def check_optional_deps() -> bool:
-    """Return True if every package that a `# type:ignore` fallback assumes is present is resolvable. See #4952."""
-    # ty resolves types from a package's on-disk source, it never actually runs the
-    # package's import machinery. So check resolvability with find_spec instead of
-    # actually importing: a package like pyenchant can be pip-installed and fully
-    # resolvable for typing purposes while still failing a real import because the
-    # unrelated native libenchant C library isn't present on the system. See #4961.
-    # (pip package name, importable module name)
+    """
+    Return True if every package that a `# type:ignore` fallback assumes is present is resolvable.
+    See #4952 and #4961.
+    """
     packages = [
-        ('docutils', 'docutils'),
         ('lxml', 'lxml'),
-        ('nbformat', 'nbformat'),
         ('Pygments', 'pygments'),
         ('PyQt6', 'PyQt6.QtWidgets'),
-        # ('PyQt6-QScintilla', 'PyQt6.Qsci'),
         ('pyenchant', 'enchant'),
-        ('PyYAML', 'yaml'),
-        ('websockets', 'websockets'),
+        # Don't check optional modules.
+        # ('docutils', 'docutils'),
+        # ('nbformat', 'nbformat'),
+        # ('PyQt6-QScintilla', 'PyQt6.Qsci'),
+        # ('PyYAML', 'yaml'),
+        # ('websockets', 'websockets'),
     ]
     missing = []
     for pip_name, module_name in packages:

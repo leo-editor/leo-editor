@@ -258,36 +258,15 @@ dependencies = [
     #@+<< pyproject.toml: dependencies >>
     #@+node:ekr.20260912080650.1: ** << pyproject.toml: dependencies >>
     # Essential testing.
-    "pygments",   # For unit tests.
+    "pygments",     # For unit tests.
     "ruff==0.16.5",
     "ty==0.0.77",
 
     # General packages for plugins, leoserver and commands...
-    ### "docutils",        # For several plugins.
-    ### "jedi",            # For autocompletion.
-    ### "jupytext",        # For paired .ipynb/.py files. Installs markdown, nbformat, pyyaml.
     "lxml",            # For leoImport.py importers.
-    ### "markdown",        # For the VR and VR3 plugins.
     "pyenchant",       # The spell tab.
     "PyQt6>= 6.6",     # Installs lxml, PyYAML.
     "urllib3",
-    ### "websockets",      # For leoserver.
-
-    # Dev dependencies.
-    # # # "beautifulsoup4",  # For link testing.
-    # # # "pytest",          # For coverage testing.
-    # # # "pytest-cov",      # For coverage testing.
-    # # # "sphinx",
-    # # # "sphinx-book-theme",
-
-    # Plugin dependencies.
-    # # # "matplotlib",       # Fails for Python 3.15rc2.
-    # # # "numpy",
-    # # # "PyQt6-QScintilla",
-    # # # "PyQt6-WebEngine", # VR and VR3 plugins.
-    # # # "Send2Trash; platform_system == 'Windows'",  # picture_viewer plugin.
-
-    # Separate dependencies. Maybe later.
     #@-<< pyproject.toml: dependencies >>
 ]
 
