@@ -25,12 +25,12 @@ def check_optional_deps() -> bool:
     """
     packages = [
         ('lxml', 'lxml'),
-        ('Pygments', 'pygments'),
         ('PyQt6', 'PyQt6.QtWidgets'),
         ('pyenchant', 'enchant'),
         # Don't check optional modules.
         # ('docutils', 'docutils'),
         # ('nbformat', 'nbformat'),
+        # ('Pygments', 'pygments'),
         # ('PyQt6-QScintilla', 'PyQt6.Qsci'),
         # ('PyYAML', 'yaml'),
         # ('websockets', 'websockets'),
