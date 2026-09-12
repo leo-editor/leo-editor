@@ -255,6 +255,8 @@ authors =  [
     {"name" = "Виталије Милошевић, (Vitalije Milosevic) ", "email" = "vitalijem@gmail.com"},
 ]
 dependencies = [
+    #@+<< pyproject.toml: dependencies >>
+    #@+node:ekr.20260912080650.1: ** << pyproject.toml: dependencies >>
     # Essential testing.
     "pygments",   # For unit tests.
     "ruff==0.16.5",
@@ -270,39 +272,40 @@ dependencies = [
     "PyQt6>= 6.6",     # Installs lxml, PyYAML.
     "urllib3",
     "websockets",      # For leoserver.
-  
+
     # Dev dependencies.
     "beautifulsoup4",  # For link testing.
     "pytest",          # For coverage testing.
     "pytest-cov",      # For coverage testing.
     "sphinx",
     "sphinx-book-theme",
-    
+
     # Plugin dependencies.
     "matplotlib",       # Fails for Python 3.15rc2.
     "numpy",
     "PyQt6-QScintilla",
     "PyQt6-WebEngine", # VR and VR3 plugins.
     "Send2Trash; platform_system == 'Windows'",  # picture_viewer plugin.
+
+    # Separate dependencies. Maybe later.
+
+    # [project.optional-dependencies]
+    # dev = [
+    #     "beautifulsoup4",  # For link testing.
+    #     "pytest",          # For coverage testing.
+    #     "pytest-cov",      # For coverage testing.
+    #     "sphinx",
+    #     "sphinx-book-theme",
+    # ]
+    # plugins = [
+    #     # "matplotlib",
+    #     "numpy",
+    #     "PyQt6-QScintilla",
+    #     "PyQt6-WebEngine", # VR and VR3 plugins.
+    #     "Send2Trash; platform_system == 'Windows'",  # picture_viewer plugin.
+    # ]
+    #@-<< pyproject.toml: dependencies >>
 ]
-
-# Separate dependencies. Maybe later.
-
-# [project.optional-dependencies]
-# dev = [
-#     "beautifulsoup4",  # For link testing.
-#     "pytest",          # For coverage testing.
-#     "pytest-cov",      # For coverage testing.
-#     "sphinx",
-#     "sphinx-book-theme",
-# ]
-# plugins = [
-#     # "matplotlib",
-#     "numpy",
-#     "PyQt6-QScintilla",
-#     "PyQt6-WebEngine", # VR and VR3 plugins.
-#     "Send2Trash; platform_system == 'Windows'",  # picture_viewer plugin.
-# ]
 
 [project.scripts]
 leo = "leo.core.runLeo:run"
