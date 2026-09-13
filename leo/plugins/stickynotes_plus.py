@@ -23,7 +23,7 @@ from leo.core.leoQt import QAction, KeyboardModifier, Weight
 try:
     import markdown
 except ImportError:
-    print('stickynotes_plus.py: can not import markdown')
+    g.missing('markdown', tag='sticknotes_plus.py')
     markdown = None
 except SyntaxError:
     print('stickynotes_plus.py: syntax error in markdown')

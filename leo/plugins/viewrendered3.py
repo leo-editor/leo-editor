@@ -1114,14 +1114,14 @@ if docutils:
         g.es_exception()
 else:
     got_docutils = False
-    print('VR3: *** no docutils')
+    g.missing('docutils', tag='viewrendered3.py')
 try:
     import markdown
 
     got_markdown = True
 except ImportError:
     got_markdown = False
-    print('VR3: *** No Markdown ***')
+    g.missing('markdown', tag='viewrendered3.py')
 try:
     import matplotlib  # Make *sure* this is imported.
     import matplotlib.pyplot as plt
