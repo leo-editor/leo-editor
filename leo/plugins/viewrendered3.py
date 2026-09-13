@@ -1128,18 +1128,18 @@ try:
     from matplotlib import animation
 except ImportError:
     matplotlib = None
-    print('VR3: *** No matplotlib')
+    g.missing('matplotlib', tag='viewrendered3.py')
 try:
     import numpy as np
 except ImportError:
-    print('VR3: *** No numpy')
+    g.missing('numpy', tag='viewrendered3.py')
     np = None
 
 try:
     from pygments import cmdline
 except ImportError:
     pygments = None
-    print('VR3: *** no pygments')
+    g.missing('pygments', tag='viewrendered3.py')
 # @-<< Optional imports >>
 # @-<< imports >>
 # @+<< declarations >>

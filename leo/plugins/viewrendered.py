@@ -295,7 +295,7 @@ def initVr(c: Cmdr, *, parent: QtWidgets.QWidget | None = None) -> None:
 
         got_docutils = True
     except ImportError:
-        g.es_print('Warning: viewrendered.py running without docutils.')
+        g.es_print_unique_message('viewrendered.py running without docutils.')
         got_docutils = False
 
     # init c.vr.
