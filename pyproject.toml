@@ -261,18 +261,13 @@ dependencies = [
     "ruff==0.16.5",
     "ty==0.0.77",
 
-    # General packages for plugins, leoserver and commands...
+    # Essential packages for plugins, leoserver and commands...
     "lxml",         # For leoImport.py importers.
     "pyenchant",    # The spell tab.
     "PyQt6>= 6.6",  # Installs lxml, PyYAML.
     "urllib3",
-    #@-<< pyproject.toml: dependencies >>
-]
 
-[project.optional-dependencies]
-all = [
-    #@+<< pyproject.toml: all dependencies >>
-    #@+node:ekr.20260912101807.1: ** << pyproject.toml: all dependencies >>
+    # Optional packages, always installed.
     "beautifulsoup4",  # For link testing.
     "docutils",
     "jedi",
@@ -289,7 +284,85 @@ all = [
     "sphinx",
     "sphinx-book-theme",
     "websockets",
-    #@-<< pyproject.toml: all dependencies >>
+
+    # To support `pip install .[all]`, add the following, removing the optional packages above.
+
+    # [project.optional-dependencies]
+    # all = [
+        # "beautifulsoup4",
+        # "docutils",
+        # "jedi",
+        # "jupytext",
+        # "markdown",
+        # "matplotlib",
+        # "numpy",
+        # "pygments",
+        # "PyQt6-QScintilla",
+        # "PyQt6-WebEngine",                            # VR and VR3 plugins.
+        # "Send2Trash; platform_system == 'Windows'",   # picture_viewer plugin.
+        # "pytest",                                     # Coverage testing.
+        # "pytest-cov",                                 # Coverage testing.
+        # "sphinx",
+        # "sphinx-book-theme",
+        # "websockets",
+    # ]
+    #@-<< pyproject.toml: dependencies >>
+]
+
+[project.optional-dependencies]
+all = [
+    #@+<< pyproject.toml: dependencies >>
+    #@+node:ekr.20260912080650.1: ** << pyproject.toml: dependencies >>
+    # Essential testing.
+    "ruff==0.16.5",
+    "ty==0.0.77",
+
+    # Essential packages for plugins, leoserver and commands...
+    "lxml",         # For leoImport.py importers.
+    "pyenchant",    # The spell tab.
+    "PyQt6>= 6.6",  # Installs lxml, PyYAML.
+    "urllib3",
+
+    # Optional packages, always installed.
+    "beautifulsoup4",  # For link testing.
+    "docutils",
+    "jedi",
+    "jupytext",
+    "markdown",
+    "matplotlib",
+    "numpy",
+    "pygments",
+    "PyQt6-QScintilla",
+    "PyQt6-WebEngine", # VR and VR3 plugins.
+    "Send2Trash; platform_system == 'Windows'",  # picture_viewer plugin.
+    "pytest",          # For coverage testing.
+    "pytest-cov",      # For coverage testing.
+    "sphinx",
+    "sphinx-book-theme",
+    "websockets",
+
+    # To support `pip install .[all]`, add the following, removing the optional packages above.
+
+    # [project.optional-dependencies]
+    # all = [
+        # "beautifulsoup4",
+        # "docutils",
+        # "jedi",
+        # "jupytext",
+        # "markdown",
+        # "matplotlib",
+        # "numpy",
+        # "pygments",
+        # "PyQt6-QScintilla",
+        # "PyQt6-WebEngine",                            # VR and VR3 plugins.
+        # "Send2Trash; platform_system == 'Windows'",   # picture_viewer plugin.
+        # "pytest",                                     # Coverage testing.
+        # "pytest-cov",                                 # Coverage testing.
+        # "sphinx",
+        # "sphinx-book-theme",
+        # "websockets",
+    # ]
+    #@-<< pyproject.toml: dependencies >>
 ]
 
 [project.scripts]
