@@ -6729,11 +6729,13 @@ def log_to_file(s: str, fn: str = '') -> None:
 
 
 # @+node:ekr.20260913045811.1: *3* g.missing
-def missing(s: str) -> None:
+def missing(s: str, tag: str = '') -> None:
     """Report a missing module name."""
     if not g.unitTesting:
         g.es_print('')
-        g.es_print_unique_message(f"package `{s}` not found\n`pip install {s}`\n")
+        tail = f"package `{s}` not found\n`pip install {s}`\n"
+        message = f"{tag}: {tail}" if tag else tail
+        g.es_print_unique_message(message)
 
 
 # @+node:ekr.20080710101653.1: *3* g.pr
