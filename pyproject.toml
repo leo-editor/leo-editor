@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20240227064614.1: * @file ../../pyproject.toml
 #@@language toml
+#@@nosearch
 
 # leo-editor/pyproject.toml
 
