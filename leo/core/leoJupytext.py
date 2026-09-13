@@ -15,10 +15,8 @@ import textwrap
 from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
-# Defer importing jupytext until first use: jupytext imports pandoc at module
-# level (calling subprocess to check the pandoc version), which costs ~0.7s
-# on every Leo startup even when jupytext is never used.
-jupytext = None  # Loaded lazily by _load_jupytext().
+# Defer importing jupytext until first use.
+jupytext = None
 has_jupytext: bool = False  # Set to True once jupytext loads successfully.
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -29,6 +27,8 @@ if TYPE_CHECKING:  # pragma: no cover
 # @-<< leoJupytext: imports and annotations >>
 
 
+# @+others
+# @+node:ekr.20260913061233.1: ** function: _ensure_jupytext
 def _ensure_jupytext() -> bool:
     """Import jupytext on first call. Return True if available."""
     global jupytext, has_jupytext
@@ -43,11 +43,11 @@ def _ensure_jupytext() -> bool:
         has_jupytext = True
         return True
     except Exception:
-        jupytext = False  # sentinel: tried and failed
+        jupytext = False
+        g.missing('jupytext', tag='leoJupytext.py')
         return False
 
 
-# @+others
 # @+node:ekr.20241022093215.1: ** class JupytextManager
 class JupytextManager:
     # @+others
@@ -199,7 +199,6 @@ class JupytextManager:
         On errors, print an error message and return ''.
         """
         if not _ensure_jupytext():
-            self.warn_no_jupytext()
             return ''
         if not p.h.startswith('@jupytext'):
             g.trace(f"Can not happen: not an @jupytext node: {p.h!r}")
@@ -267,18 +266,6 @@ class JupytextManager:
         at = c.atFileCommands
         at.readOneAtJupytextNode(p)
         c.redraw()
-
-    # @+node:ekr.20241023161034.1: *3* jtm.warn_no_jupytext
-    warning_given = False
-
-    def warn_no_jupytext(self) -> None:
-        """Warn (once) that jupytext is not available"""
-        if not self.warning_given:
-            self.warning_given = True
-            print('')
-            g.es_print('can not import `jupytext`', color='red')
-            g.es_print('`pip install jupytext`', color='blue')
-            print('')
 
     # @+node:ekr.20241023155519.1: *3* jtm.write
     def write(self, c: Cmdr, p: Position, contents: str) -> None:
