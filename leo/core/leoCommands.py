@@ -1225,7 +1225,7 @@ class Commands:
             for p in it(c.p):
                 self.execute_single_pytest(p)
         except ImportError:
-            g.es('pytest needs to be installed')
+            g.missing('pytest')
 
     def execute_single_pytest(self, p: Position) -> None:
         c = self
