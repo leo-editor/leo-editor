@@ -1342,9 +1342,13 @@ class ViewRenderedController(QtWidgets.QWidget):
             import matplotlib
             import matplotlib.pyplot as plt
             from matplotlib import animation
-            import numpy as np
         except Exception:
             g.missing('matplotlib', tag='viewrendered.py')
+            return
+        try:
+            import numpy as np
+        except Exception:
+            g.missing('numpy', tag='viewrendered.py')
             return
         backend = plt.get_backend()  # Returns 'qtagg' initially.
         if backend != 'module://leo.plugins.pyplot_backend':
