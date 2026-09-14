@@ -16,10 +16,15 @@ import time
 import hashlib
 import hmac
 
-# Third party.
-import websockets
 from leo.core import leoGlobals as g
 from leo.core import leoserver
+
+# Third party.
+try:
+    import websockets
+except Exception:
+    websockets = None  # type:ignore
+    g.missing('websockets')
 
 wsHost = "localhost"
 wsPort = 32125

@@ -313,7 +313,7 @@ except Exception as e:
     print('Freewin:', e)
 
 if not got_docutils:
-    print('Freewin: no docutils - rendered view is not available')
+    g.missing('docutils', tag='freewin.py')
 
 # @-<<import docutils>>
 

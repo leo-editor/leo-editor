@@ -11,6 +11,12 @@ from leo.core.leoColorizer import JEditColorizer
 from leo.core.leoQt import Qt, QtGui, UnderlineStyle
 from leo.core.leoTest2 import create_app, LeoUnitTest
 
+# Run pygments tests only if pygments has been installed.
+try:
+    import pygments
+except ImportError:
+    pygments = None  # type:ignore
+
 assert g
 
 
@@ -43,6 +49,8 @@ class TestColorizer(LeoUnitTest):
             x.mainLoop(n, s, 0, len(s))
 
         # Test 2: test the pygments colorizer.
+        if not pygments:
+            return
         x = leoColorizer.PygmentsColorizer(c, None)
         x.language = language_name
         x.enabled = True

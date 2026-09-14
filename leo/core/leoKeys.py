@@ -583,8 +583,8 @@ class AutoCompleterClass:
                 jedi = None
                 if not self.jedi_warning:
                     self.jedi_warning = True
-                    g.es_print('can not import jedi')
-                    g.es_print('ignoring @bool use_jedi = True')
+                    g.missing('jedi', tag='leoKeys.py')
+                    g.es_print_unique_message('ignoring @bool use_jedi = True')
             if jedi:
                 aList = (
                     # Prefer the jedi completions.

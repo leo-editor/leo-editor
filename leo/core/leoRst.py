@@ -22,6 +22,9 @@ import re
 import time
 from typing import TYPE_CHECKING
 
+# Leo imports.
+from leo.core import leoGlobals as g
+
 # Third-part imports...
 try:
     import docutils
@@ -30,8 +33,7 @@ try:
     from docutils.parsers import rst
 except Exception:
     docutils = None  # type:ignore
-# Leo imports.
-from leo.core import leoGlobals as g
+    g.missing('docutils', tag='leoRst.py')
 
 # Aliases & traces.
 StringIO = io.StringIO

@@ -13,7 +13,9 @@ import time
 from typing import Any, TYPE_CHECKING
 import urllib.parse
 
-#
+# Leo imports...
+from leo.core import leoGlobals as g
+
 # Third-party imports.
 try:
     import docutils
@@ -22,16 +24,13 @@ try:
     assert docutils
     assert docutils.core
 except ImportError:
-    # print('leoImport.py: can not import docutils')
     docutils = None  # type:ignore
+    g.missing('docutils', tag='leoImport.py')
 try:
     import lxml
     import lxml.html
 except ImportError:
     lxml = None  # type:ignore
-
-# Leo imports...
-from leo.core import leoGlobals as g
 
 # Abbreviation.
 StringIO = io.StringIO

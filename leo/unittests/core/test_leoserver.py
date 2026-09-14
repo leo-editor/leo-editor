@@ -4,9 +4,13 @@
 
 import json
 import os
-from leo.core import leoserver
+
 from leo.core.leoTest2 import LeoUnitTest
 from leo.core import leoGlobals as global_g
+
+# Import leoserver last, so we can suppress import warnings
+global_g.unitTesting = True
+from leo.core import leoserver
 
 # Globals.
 g = None
