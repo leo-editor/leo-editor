@@ -27,7 +27,7 @@ class Rust_Importer(Importer):
         # Patterns that *do* require '{' on the same line...
         ('enum', re.compile(r'\s*enum\s+(\w+)\s*\{')),
         ('enum', re.compile(r'\s*pub\s+enum\s+(\w+)\s*\{')),
-        ('enum', re.compile(r'\s*pub\s*\(\s*crate\s*\)\s*enum\s+(\w+)\s*\{')),  ###
+        ('enum', re.compile(r'\s*pub\s*\(\s*crate\s*\)\s*enum\s+(\w+)\s*\{')),
         ('enum', re.compile(r'\s*pub\s+enum\s+(\w+)\s*\{')),
         ('macro', re.compile(r'\s*(\w+)\!\s*\{')),
         ('use', re.compile(r'\s*use.*?\{')),  # No m.group(1).
@@ -47,7 +47,7 @@ class Rust_Importer(Importer):
         ('mod', re.compile(r'\s*mod\s+(\w+)')),
         ('struct', re.compile(r'\s*struct\b(.*?)$')),
         ('struct', re.compile(r'\s*pub\s+struct\b(.*?)$')),
-        ('struct', re.compile(r'\s*pub\s*\(\s*crate\)\s*struct\b(.*?)$')),  ###
+        ('struct', re.compile(r'\s*pub\s*\(\s*crate\)\s*struct\b(.*?)$')),
         ('trait', re.compile(r'\s*trait\b(.*?)$')),
         ('trait', re.compile(r'\s*pub\s+trait\b(.*?)$')),
     )
@@ -437,45 +437,45 @@ class Rust_Importer(Importer):
                 return
 
             # Scan across blank lines, /// comment lines, and use lines.
-            head_lines = g.splitLines(child1.b)
-            i = 1
+            lines = g.splitLines(child1.b)
+            i = 0
             for line in g.splitLines(child1.b):
                 s = line.strip()
                 if not s or s.startswith(('///', 'use')):
-                    head_lines.append(line)
+                    lines.append(line)
                     i += 1
                 else:
                     break
-            head_lines = head_lines[:1]
+            lines = lines[:i]
 
             # Unscan trailing /// comment lines.
-            while head_lines and head_lines[-1].strip().startswith('///'):
-                head_lines = head_lines[:-1]
+            while lines and lines[-1].strip().startswith('///'):
+                lines = lines[:-1]
 
-            g.printObj(head_lines, tag='head_lines')
+            # Move lines into the parent.
 
-            if head_lines:
-                ###### Move headlines *before* @others
-                ##### parent.b = parent.b + ''.join(head_lines)
-                child_lines = g.splitLines(child1.b)[len(head_lines) :]
-                child1.b = ''.join(child_lines)
+            def move_lines(child: Position, lines: list[str]) -> None:
+                """
+                Move the lines from the start of the child to
+                before the @others directive in the parent.
+                """
+                if lines:
+                    i = parent.b.find('@others') if '@others' in parent.b else 0
+                    parent.b = parent.b[:i] + ''.join(lines) + parent.b[i:]
+                    new_child_lines = g.splitLines(child.b)[len(lines) :]
+                    child.b = ''.join(new_child_lines)
 
-            # Next, move leading lines to the parent, before the @others line.
-            if 0:  ###
-                if '@others' in parent.b:
-                    # Assume the importer created the @others.
-                    parent.b = parent.b.replace('@others', '\n@others')
+            move_lines(child1, lines)
 
-            # #4977: Add the body text all unnamed child `unnamed use` nodes *before* @others
+            # Move the body text all unnamed child `unnamed use` nodes.
             child = child1
             n = 0
             while child and child.h == 'unnamed use':
                 n += 1
-                i = parent.b.find('@others') if '@others' in parent.b else 0
-                parent.b = parent.b[:i] + child.b + parent.b[i:]
+                move_lines(child, g.splitLines(child.b))
                 child = child.next()
 
-            # #4977: Delete the `unnamed use` nodes.
+            # Delete the `unnamed use` nodes.
             for i in range(n):
                 child = parent.firstChild()
                 child.doDelete()
