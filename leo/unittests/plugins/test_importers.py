@@ -4923,13 +4923,6 @@ class TestRust(BaseTestImporter):
             ),
             (
                 1, "struct Argument",
-                # '@\n'
-                # 'Mono-morphed type to format an object.\n'
-                # 'Used by the [`crate::format`!].\n'
-                # '\n'
-                # 'This struct is similar to a dynamic dispatch (using `dyn Format`)\n'
-                # 'because it stores a pointer to the value.\n'
-                # '@c\n'
                 '/// Mono-morphed type to format an object.\n'
                 '/// Used by the [`crate::format`!].\n'
                 '///\n'
