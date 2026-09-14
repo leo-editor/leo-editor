@@ -497,7 +497,7 @@ class MarkupCommands:
         """Write p.b"""
         # We no longer add newlines to the start of nodes because
         # we write a blank line after all sections.
-        script = g.getScript(self.c, p, useSentinels=False)
+        script = g.getScript(self.c, p, useSentinels=False, useExtraction=False)
         s = self.remove_directives(script)
         self.output_file.write(g.ensureTrailingNewlines(s, 2))
 
