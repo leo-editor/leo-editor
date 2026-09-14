@@ -436,37 +436,35 @@ class Rust_Importer(Importer):
             if not child1:
                 return
 
-            # Compute the potential preamble are all the leading lines.
-            preamble_start = max(0, len(g.splitLines(child1.b)) - 1)
-            preamble_lines = lines[:preamble_start]
-
-            # Include only comment, blank and 'use' lines.
-            found_use = False
-            for i, line in enumerate(preamble_lines):
-                stripped_line = line.strip()
-                if stripped_line.startswith('use'):
-                    found_use = True
-                elif stripped_line.startswith('///'):
-                    if found_use:
-                        break
-                elif stripped_line:
+            # Scan across blank lines, /// comment lines, and use lines.
+            head_lines = g.splitLines(child1.b)
+            i = 1
+            for line in g.splitLines(child1.b):
+                s = line.strip()
+                if not s or s.startswith(('///', 'use')):
+                    head_lines.append(line)
+                    i += 1
+                else:
                     break
-            i = max(0, i - 1)  ###
-            real_preamble_lines = lines[:i]
-            preamble_s = ''.join(real_preamble_lines)
+            head_lines = head_lines[:1]
 
-            # First, adjust the parent's body.
-            parent.b = preamble_s + parent.b
-            child1.b = child1.b.replace(preamble_s, '')
+            # Unscan trailing /// comment lines.
+            while head_lines and head_lines[-1].strip().startswith('///'):
+                head_lines = head_lines[:-1]
+
+            g.printObj(head_lines, tag='head_lines')
+
+            if head_lines:
+                ###### Move headlines *before* @others
+                ##### parent.b = parent.b + ''.join(head_lines)
+                child_lines = g.splitLines(child1.b)[len(head_lines) :]
+                child1.b = ''.join(child_lines)
 
             # Next, move leading lines to the parent, before the @others line.
-            ### while child1.b.startswith('\n'):
-            if 1:  ###
+            if 0:  ###
                 if '@others' in parent.b:
                     # Assume the importer created the @others.
                     parent.b = parent.b.replace('@others', '\n@others')
-                else:
-                    parent.b += '\n'
 
             # #4977: Add the body text all unnamed child `unnamed use` nodes *before* @others
             child = child1
