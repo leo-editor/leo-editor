@@ -553,7 +553,7 @@ class MarkupCommands:
             current = current.parent()
         return effective_level
 
-    # @+node:ekr.20191006155051.1: *3* markup.commands
+    # @+node:ekr.20191006155051.1: *3* markup.adoc_command
     def adoc_command(
         self,
         event: LeoKeyEvent | None = None,
@@ -566,6 +566,7 @@ class MarkupCommands:
         g.es_print(f"{name} requires either asciidoctor or asciidoc3")
         return []
 
+    # @+node:ekr.20260914152304.1: *3* markup.pandoc_command
     def pandoc_command(
         self,
         event: LeoKeyEvent | None = None,
@@ -578,6 +579,7 @@ class MarkupCommands:
         g.es_print(f"{name} requires pandoc")
         return []
 
+    # @+node:ekr.20260914152331.1: *3* markup.sphinx_command
     def sphinx_command(
         self,
         event: LeoKeyEvent | None = None,
