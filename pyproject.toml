@@ -278,7 +278,7 @@ dependencies = [
     "numpy",
     "pygments",
     "PyQt6-QScintilla",
-    "PyQt6-WebEngine", # VR and VR3 plugins.
+    "PyQt6-WebEngine", # VR, VR3, and freewin plugins.
     "Send2Trash; platform_system == 'Windows'",  # picture_viewer plugin.
     "pytest",          # For coverage testing.
     "pytest-cov",      # For coverage testing.
@@ -334,7 +334,7 @@ all = [
     "numpy",
     "pygments",
     "PyQt6-QScintilla",
-    "PyQt6-WebEngine", # VR and VR3 plugins.
+    "PyQt6-WebEngine", # VR, VR3, and freewin plugins.
     "Send2Trash; platform_system == 'Windows'",  # picture_viewer plugin.
     "pytest",          # For coverage testing.
     "pytest-cov",      # For coverage testing.
