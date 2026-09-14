@@ -127,7 +127,7 @@ Rewritten by Edward K. Ream for the Leo rst3 plugin.
 __docformat__ = 'reStructuredText'
 
 # @+<< imports >>
-# @+node:ekr.20090704103932.5162: ** << imports >>
+# @+node:ekr.20090704103932.5162: ** << imports >> (leo_pdf.py)
 import io
 import operator
 
@@ -137,8 +137,8 @@ from leo.core import leoGlobals as g
 try:
     import docutils
 except ImportError:
-    print('leo_pdf.py: can not import docutils')
     docutils = None
+    g.missing('docutils', tag='leo_pdf.py')
     raise
 try:
     import reportlab.platypus

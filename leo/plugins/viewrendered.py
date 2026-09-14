@@ -295,7 +295,7 @@ def initVr(c: Cmdr, *, parent: QtWidgets.QWidget | None = None) -> None:
 
         got_docutils = True
     except ImportError:
-        g.es_print('Warning: viewrendered.py running without docutils.')
+        g.es_print_unique_message('viewrendered.py running without docutils.')
         got_docutils = False
 
     # init c.vr.
@@ -1342,9 +1342,13 @@ class ViewRenderedController(QtWidgets.QWidget):
             import matplotlib
             import matplotlib.pyplot as plt
             from matplotlib import animation
+        except Exception:
+            g.missing('matplotlib', tag='viewrendered.py')
+            return
+        try:
             import numpy as np
         except Exception:
-            g.print_unique_message('VR: missing imports: cannot process @pyplot node')
+            g.missing('numpy', tag='viewrendered.py')
             return
         backend = plt.get_backend()  # Returns 'qtagg' initially.
         if backend != 'module://leo.plugins.pyplot_backend':

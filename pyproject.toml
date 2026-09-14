@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20240227064614.1: * @file ../../pyproject.toml
 #@@language toml
+#@@nosearch
 
 # leo-editor/pyproject.toml
 
@@ -255,54 +256,115 @@ authors =  [
     {"name" = "Виталије Милошевић, (Vitalije Milosevic) ", "email" = "vitalijem@gmail.com"},
 ]
 dependencies = [
+    #@+<< pyproject.toml: dependencies >>
+    #@+node:ekr.20260912080650.1: ** << pyproject.toml: dependencies >>
     # Essential testing.
-    "pygments",   # For unit tests.
     "ruff==0.16.5",
     "ty==0.0.77",
 
-    # General packages for plugins, leoserver and commands...
-    "docutils",        # For several plugins.
-    "jedi",            # For autocompletion.
-    "jupytext",        # For paired .ipynb/.py files. Installs markdown, nbformat, pyyaml.
-    "lxml",            # For leoImport.py importers.
-    "markdown",        # For the VR and VR3 plugins.
-    "pyenchant",       # The spell tab.
-    "PyQt6>= 6.6",     # Installs lxml, PyYAML.
+    # Essential packages for plugins, leoserver and commands...
+    "lxml",         # For leoImport.py importers.
+    "pyenchant",    # The spell tab.
+    "PyQt6>= 6.6",  # Installs lxml, PyYAML.
     "urllib3",
-    "websockets",      # For leoserver.
-  
-    # Dev dependencies.
+
+    # Optional packages, always installed.
     "beautifulsoup4",  # For link testing.
+    "docutils",
+    "jedi",
+    "jupytext",
+    "markdown",
+    "matplotlib",
+    "numpy",
+    "pygments",
+    "PyQt6-QScintilla",
+    "PyQt6-WebEngine", # VR, VR3, and freewin plugins.
+    "Send2Trash; platform_system == 'Windows'",  # picture_viewer plugin.
     "pytest",          # For coverage testing.
     "pytest-cov",      # For coverage testing.
     "sphinx",
     "sphinx-book-theme",
-    
-    # Plugin dependencies.
-    "matplotlib",       # Fails for Python 3.15rc2.
-    "numpy",
-    "PyQt6-QScintilla",
-    "PyQt6-WebEngine", # VR and VR3 plugins.
-    "Send2Trash; platform_system == 'Windows'",  # picture_viewer plugin.
+    "websockets",
+
+    # To support `pip install .[all]`, add the following, removing the optional packages above.
+
+    # [project.optional-dependencies]
+    # all = [
+        # "beautifulsoup4",
+        # "docutils",
+        # "jedi",
+        # "jupytext",
+        # "markdown",
+        # "matplotlib",
+        # "numpy",
+        # "pygments",
+        # "PyQt6-QScintilla",
+        # "PyQt6-WebEngine",                            # VR and VR3 plugins.
+        # "Send2Trash; platform_system == 'Windows'",   # picture_viewer plugin.
+        # "pytest",                                     # Coverage testing.
+        # "pytest-cov",                                 # Coverage testing.
+        # "sphinx",
+        # "sphinx-book-theme",
+        # "websockets",
+    # ]
+    #@-<< pyproject.toml: dependencies >>
 ]
 
-# Separate dependencies. Maybe later.
+[project.optional-dependencies]
+all = [
+    #@+<< pyproject.toml: dependencies >>
+    #@+node:ekr.20260912080650.1: ** << pyproject.toml: dependencies >>
+    # Essential testing.
+    "ruff==0.16.5",
+    "ty==0.0.77",
 
-# [project.optional-dependencies]
-# dev = [
-#     "beautifulsoup4",  # For link testing.
-#     "pytest",          # For coverage testing.
-#     "pytest-cov",      # For coverage testing.
-#     "sphinx",
-#     "sphinx-book-theme",
-# ]
-# plugins = [
-#     # "matplotlib",
-#     "numpy",
-#     "PyQt6-QScintilla",
-#     "PyQt6-WebEngine", # VR and VR3 plugins.
-#     "Send2Trash; platform_system == 'Windows'",  # picture_viewer plugin.
-# ]
+    # Essential packages for plugins, leoserver and commands...
+    "lxml",         # For leoImport.py importers.
+    "pyenchant",    # The spell tab.
+    "PyQt6>= 6.6",  # Installs lxml, PyYAML.
+    "urllib3",
+
+    # Optional packages, always installed.
+    "beautifulsoup4",  # For link testing.
+    "docutils",
+    "jedi",
+    "jupytext",
+    "markdown",
+    "matplotlib",
+    "numpy",
+    "pygments",
+    "PyQt6-QScintilla",
+    "PyQt6-WebEngine", # VR, VR3, and freewin plugins.
+    "Send2Trash; platform_system == 'Windows'",  # picture_viewer plugin.
+    "pytest",          # For coverage testing.
+    "pytest-cov",      # For coverage testing.
+    "sphinx",
+    "sphinx-book-theme",
+    "websockets",
+
+    # To support `pip install .[all]`, add the following, removing the optional packages above.
+
+    # [project.optional-dependencies]
+    # all = [
+        # "beautifulsoup4",
+        # "docutils",
+        # "jedi",
+        # "jupytext",
+        # "markdown",
+        # "matplotlib",
+        # "numpy",
+        # "pygments",
+        # "PyQt6-QScintilla",
+        # "PyQt6-WebEngine",                            # VR and VR3 plugins.
+        # "Send2Trash; platform_system == 'Windows'",   # picture_viewer plugin.
+        # "pytest",                                     # Coverage testing.
+        # "pytest-cov",                                 # Coverage testing.
+        # "sphinx",
+        # "sphinx-book-theme",
+        # "websockets",
+    # ]
+    #@-<< pyproject.toml: dependencies >>
+]
 
 [project.scripts]
 leo = "leo.core.runLeo:run"

@@ -20,7 +20,6 @@ except ImportError:
     g.es_exception()
 
 
-# import matplotlib
 # @-<< pyplot_backend imports >>
 # @+others
 # @+node:ekr.20240717071211.1: ** pyplot_backend: top-level functions
