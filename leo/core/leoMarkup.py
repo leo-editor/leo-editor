@@ -499,7 +499,6 @@ class MarkupCommands:
         # we write a blank line after all sections.
         script = g.getScript(self.c, p, useSentinels=False)
         s = self.remove_directives(script)
-        g.printObj(s, tag=p.h)  ###
         self.output_file.write(g.ensureTrailingNewlines(s, 2))
 
     # @+node:ekr.20190515070742.47: *4* markup.write_headline
