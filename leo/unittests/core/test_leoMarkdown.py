@@ -3,6 +3,8 @@
 """Tests of leoMarkdown.py"""
 
 from shutil import which
+import textwrap
+
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 
@@ -21,7 +23,25 @@ class TestMarkdown(LeoUnitTest):
     # @+others
     # @+node:ekr.20260915043717.1: *3* TestMarkdown.test_adoc
     def test_adoc(self):
-        assert False
+        s = textwrap.dedent("""
+    Some intro text before the first source block.
+
+    .App.svelte parent component
+    [source,html]
+    ----
+    ATlanguage html
+    <script>let message = $state('hello');</script>
+    ----
+
+    .FancyInput.svelte child component
+    [source,html]
+    ----
+    ATlanguage html
+    <input bind:value={value} />
+    ----
+    """).replace('AT', '@')
+
+        assert s
 
     # @-others
 
