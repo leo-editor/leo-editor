@@ -493,13 +493,14 @@ class MarkupCommands:
         return 0
 
     # @+node:ekr.20190515070742.38: *4* markup.write_body
-    def write_body(self, p: Position) -> None:
+    def write_body(self, p: Position) -> str:
         """Write p.b"""
         # We no longer add newlines to the start of nodes because
         # we write a blank line after all sections.
         script = g.getScript(self.c, p, useSentinels=False)
         s = self.remove_directives(script)
         self.output_file.write(g.ensureTrailingNewlines(s, 2))
+        return s  # For unit tests.
 
     # @+node:ekr.20190515070742.47: *4* markup.write_headline
     def write_headline(self, p: Position) -> None:
@@ -553,7 +554,7 @@ class MarkupCommands:
             current = current.parent()
         return effective_level
 
-    # @+node:ekr.20191006155051.1: *3* markup.commands
+    # @+node:ekr.20191006155051.1: *3* markup.adoc_command
     def adoc_command(
         self,
         event: LeoKeyEvent | None = None,
@@ -566,6 +567,7 @@ class MarkupCommands:
         g.es_print(f"{name} requires either asciidoctor or asciidoc3")
         return []
 
+    # @+node:ekr.20260914152304.1: *3* markup.pandoc_command
     def pandoc_command(
         self,
         event: LeoKeyEvent | None = None,
@@ -578,6 +580,7 @@ class MarkupCommands:
         g.es_print(f"{name} requires pandoc")
         return []
 
+    # @+node:ekr.20260914152331.1: *3* markup.sphinx_command
     def sphinx_command(
         self,
         event: LeoKeyEvent | None = None,
