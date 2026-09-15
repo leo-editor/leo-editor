@@ -493,13 +493,14 @@ class MarkupCommands:
         return 0
 
     # @+node:ekr.20190515070742.38: *4* markup.write_body
-    def write_body(self, p: Position) -> None:
+    def write_body(self, p: Position) -> str:
         """Write p.b"""
         # We no longer add newlines to the start of nodes because
         # we write a blank line after all sections.
         script = g.getScript(self.c, p, useSentinels=False)
         s = self.remove_directives(script)
         self.output_file.write(g.ensureTrailingNewlines(s, 2))
+        return s  # For unit tests.
 
     # @+node:ekr.20190515070742.47: *4* markup.write_headline
     def write_headline(self, p: Position) -> None:
