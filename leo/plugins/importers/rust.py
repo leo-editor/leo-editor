@@ -429,7 +429,10 @@ class Rust_Importer(Importer):
             """
             Move the preamble lines from the parent's children to the start of parent.b.
 
-            For Rust, the preamble consists of leading 'use' statements and any comments that precede them.
+            For Rust, the preamble consists of all leading blank lines, "use"
+            statements, and /// comments.
+
+            However, *trailing* /// comments belong to following enum, struct, function, etc.
             """
 
             child1 = parent.firstChild()
