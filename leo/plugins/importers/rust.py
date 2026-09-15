@@ -427,9 +427,9 @@ class Rust_Importer(Importer):
         # @+node:ekr.20231031162142.1: *4* rust_i.function: move_module_preamble
         def move_module_preamble(lines: list[str], parent: Position) -> None:
             """
-            Move the preamble lines from the parent's first child to the start of parent.b.
+            Move the preamble lines from the parent's children to the start of parent.b.
 
-            For Rust, this consists of leading 'use' statements and any comments that precede them.
+            For Rust, the preamble consists of leading 'use' statements and any comments that precede them.
             """
 
             child1 = parent.firstChild()
