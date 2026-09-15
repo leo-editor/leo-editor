@@ -27,6 +27,8 @@ class Rust_Importer(Importer):
         # Patterns that *do* require '{' on the same line...
         ('enum', re.compile(r'\s*enum\s+(\w+)\s*\{')),
         ('enum', re.compile(r'\s*pub\s+enum\s+(\w+)\s*\{')),
+        ('enum', re.compile(r'\s*pub\s*\(\s*crate\s*\)\s*enum\s+(\w+)\s*\{')),
+        ('enum', re.compile(r'\s*pub\s+enum\s+(\w+)\s*\{')),
         ('macro', re.compile(r'\s*(\w+)\!\s*\{')),
         ('use', re.compile(r'\s*use.*?\{')),  # No m.group(1).
         # https://doc.rust-lang.org/stable/reference/visibility-and-privacy.html
@@ -45,6 +47,7 @@ class Rust_Importer(Importer):
         ('mod', re.compile(r'\s*mod\s+(\w+)')),
         ('struct', re.compile(r'\s*struct\b(.*?)$')),
         ('struct', re.compile(r'\s*pub\s+struct\b(.*?)$')),
+        ('struct', re.compile(r'\s*pub\s*\(\s*crate\)\s*struct\b(.*?)$')),
         ('trait', re.compile(r'\s*trait\b(.*?)$')),
         ('trait', re.compile(r'\s*pub\s+trait\b(.*?)$')),
     )
@@ -424,50 +427,61 @@ class Rust_Importer(Importer):
         # @+node:ekr.20231031162142.1: *4* rust_i.function: move_module_preamble
         def move_module_preamble(lines: list[str], parent: Position) -> None:
             """
-            Move the preamble lines from the parent's first child to the start of parent.b.
+            Move the preamble lines from the parent's children to the start of parent.b.
 
-            For Rust, this consists of leading 'use' statements and any comments that precede them.
+            For Rust, the preamble consists of all leading blank lines, "use"
+            statements, and /// comments.
+
+            However, *trailing* /// comments belong to following enum, struct, function, etc.
             """
 
             child1 = parent.firstChild()
             if not child1:
                 return
 
-            # Compute the potential preamble are all the leading lines.
-            preamble_start = max(0, len(g.splitLines(child1.b)) - 1)
-            preamble_lines = lines[:preamble_start]
-
-            # Include only comment, blank and 'use' lines.
-            found_use = False
-            for i, line in enumerate(preamble_lines):
-                stripped_line = line.strip()
-                if stripped_line.startswith('use'):
-                    found_use = True
-                elif stripped_line.startswith('///'):
-                    if found_use:
-                        break
-                elif stripped_line:
-                    break
-            if not found_use:
-                # Assume all the comments belong to the first node.
-                return
-            real_preamble_lines = lines[:i]
-            preamble_s = ''.join(real_preamble_lines)
-            if not preamble_s.strip():
-                return
-
-            # First, adjust the bodies.
-            parent.b = preamble_s + parent.b
-            child1.b = child1.b.replace(preamble_s, '')
-
-            # Next, move leading lines to the parent, before the @others line.
-            while child1.b.startswith('\n'):
-                if '@others' in parent.b:
-                    # Assume the importer created the @others.
-                    parent.b = parent.b.replace('@others', '\n@others')
+            # Scan across blank lines, /// comment lines, and use lines.
+            lines = g.splitLines(child1.b)
+            i = 0
+            for line in g.splitLines(child1.b):
+                s = line.strip()
+                if not s or s.startswith(('///', 'use')):
+                    lines.append(line)
+                    i += 1
                 else:
-                    parent.b += '\n'
-                child1.b = child1.b[1:]
+                    break
+            lines = lines[:i]
+
+            # Unscan trailing /// comment lines.
+            while lines and lines[-1].strip().startswith('///'):
+                lines = lines[:-1]
+
+            # Move lines into the parent.
+
+            def move_lines(child: Position, lines: list[str]) -> None:
+                """
+                Move the lines from the start of the child to
+                before the @others directive in the parent.
+                """
+                if lines:
+                    i = parent.b.find('@others') if '@others' in parent.b else 0
+                    parent.b = parent.b[:i] + ''.join(lines) + parent.b[i:]
+                    new_child_lines = g.splitLines(child.b)[len(lines) :]
+                    child.b = ''.join(new_child_lines)
+
+            move_lines(child1, lines)
+
+            # Move the body text all unnamed child `unnamed use` nodes.
+            child = child1
+            n = 0
+            while child and child.h == 'unnamed use':
+                n += 1
+                move_lines(child, g.splitLines(child.b))
+                child = child.next()
+
+            # Delete the `unnamed use` nodes.
+            for i in range(n):
+                child = parent.firstChild()
+                child.doDelete()
 
         # @-others
 
