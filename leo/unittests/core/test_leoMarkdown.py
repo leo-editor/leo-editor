@@ -18,9 +18,13 @@ class TestMarkdown(LeoUnitTest):
     """Test cases for leoMarkdown.py"""
 
     # @+others
-    # @+node:ekr.20260915043717.1: *3* TestMarkdown.test_adoc
-    def test_adoc(self):
-        body = textwrap.dedent("""
+    # @+node:ekr.20260916125105.1: *3* TestMarkdown.test_write_body
+    def test_write_body(self):
+        c = self.c
+        p = c.p
+        # @+<< define body >>
+        # @+node:ekr.20260916133329.1: *4* << define body >>
+        body = textwrap.dedent("""\
             Some intro text before the first source block.
 
             .App.svelte parent component
@@ -35,30 +39,31 @@ class TestMarkdown(LeoUnitTest):
             ----
             ATlanguage html
             <input bind:value={value} />
-    ----
-    """).replace('AT', '@')
+            ----
+        """).replace('AT', '@')
+        # @-<< define body >>
+        # @+<< define expected >>
+        # @+node:ekr.20260916133712.1: *4* << define expected >>
+        expected = textwrap.dedent("""\
 
-        expected = textwrap.dedent("""
 
-            = child\n
+            = child
+            Some intro text before the first source block.
 
-                Some intro text before the first source block.
+            .App.svelte parent component
+            [source,html]
+            ----
+            <script>let message = $state('hello');</script>
+            ----
 
-                .App.svelte parent component
-                [source,html]
-                ----
-                "<script>let message = $state('hello');</script>"
-                ----
+            .FancyInput.svelte child component
+            [source,html]
+            ----
+            <input bind:value={value} />
+            ----
 
-                .FancyInput.svelte child component
-                [source,html]
-                ----
-                <input bind:value={value} />
-                ----
-    """)
-
-        c = self.c
-        p = c.p
+        """)
+        # @-<< define expected >>
         p.h = '@adoc dummy'
         p.b = '@language asciidoc\n'
         child = p.insertAsLastChild()
@@ -67,13 +72,12 @@ class TestMarkdown(LeoUnitTest):
         x = MarkupCommands(c)
         s = x.remove_directives(body)
         x.kind = 'adoc'
-        ### assert s == body.replace('@language html\n', ''), g.printObj(s)
         x.output_file = io.StringIO(s)
         x.write_root(p)
         result = x.output_file.getvalue()
-        g.printObj(expected, tag='expected')
-        g.printObj(result, tag='result')
-        # assert result == expected
+        # g.printObj(expected, tag='expected')
+        # g.printObj(result, tag='result')
+        self.assertEqual(result, expected)
 
     # @-others
 
