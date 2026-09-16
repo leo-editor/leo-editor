@@ -7865,8 +7865,10 @@ def findTopLevelNode(c: Cmdr, headline: str, exact: bool = True) -> Position | N
 def getScript(
     c: Cmdr,
     p: Position | None,
+    *,
     useSelectedText: bool = True,
     forcePythonSentinels: bool = True,
+    useExtraction: bool = True,  # PR #4983.
     useSentinels: bool = True,
 ) -> str:
     """
@@ -7886,7 +7888,8 @@ def getScript(
             s = p.b
         # Remove extra leading whitespace so the user may execute indented code.
         s = textwrap.dedent(s)
-        s = g.extractExecutableString(c, p, s)
+        if True:  ### useExtraction:
+            s = g.extractExecutableString(c, p, s)
         script = g.composeScript(
             c,
             p,
