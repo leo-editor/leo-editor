@@ -497,7 +497,7 @@ class MarkupCommands:
         """Write p.b"""
         # We no longer add newlines to the start of nodes because
         # we write a blank line after all sections.
-        script = g.getScript(self.c, p, useSentinels=False)
+        script = g.getScript(self.c, p, useSentinels=False, useExtraction=False)
         s = self.remove_directives(script)
         self.output_file.write(g.ensureTrailingNewlines(s, 2))
         return s  # For unit tests.
@@ -531,15 +531,12 @@ class MarkupCommands:
 
     # @+node:ekr.20191007054942.1: *4* markup.remove_directives
     def remove_directives(self, s: str) -> str:
+        pattern = re.compile(r'^\s*@(\w+)\b')
         lines = g.splitLines(s)
         result = []
         for s in lines:
-            if s.startswith('@'):
-                i = g.skip_id(s, 1)
-                word = s[1:i]
-                if word in g.globalDirectiveList:
-                    continue
-            result.append(s)
+            if not pattern.match(s):
+                result.append(s)
         return ''.join(result)
 
     # @+node:swot.20260218221512.1: *4* compute_effective_level
