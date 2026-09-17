@@ -5526,7 +5526,7 @@ def doHook(tag: str, *args: Args, **kwargs: KWargs) -> Any:
         g.pr(f"***ignoring args param.  tag = {tag}")
     if not g.app.enablePlugins:
         if tag in ('open0', 'start1'):
-            g.warning("Plugins disabled: use_plugins is 0 in a leoSettings.leo file.")
+            g.es_print_unique_message('Plugins disabled')
         return None
     # Get the hook handler function.  Usually this is doPlugins.
     c = kwargs.get("c")
