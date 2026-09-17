@@ -2950,9 +2950,9 @@ listToString = objToString
 tupleToString = objToString
 
 
-# @+node:ekr.20120912153732.10597: *4* g.wait
+# @+node:ekr.20120912153732.10597: *4* g.sleep
 def sleep(n: float) -> None:
-    """Wait about n milliseconds."""
+    """Wait about n seconds."""
     from time import sleep
 
     sleep(n)
