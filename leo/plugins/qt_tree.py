@@ -172,6 +172,8 @@ class LeoQtTree(leoFrame.LeoTree):
         Return a Position (which may change) unless drawing is disabled.
         """
         c = self.c
+        if not g.app.initComplete:
+            return None
         if g.app.disable_redraw:
             return None
         if self.busy:

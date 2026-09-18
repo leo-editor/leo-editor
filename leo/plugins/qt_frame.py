@@ -248,7 +248,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
             g.trace('dw.vr_parent_frame must be a QSplitter!')
             return
         # Add the vr frame.
-        vr_frame.show()
         parent.addWidget(vr_frame)
         # Resize splitters if they exist.
         main_splitter = gui.find_widget_by_name(c, 'main_splitter')
@@ -4375,9 +4374,6 @@ class TabbedFrameFactory:
         assert tabBar
         tabBar.setVisible(self.alwaysShowTabs or tabw.count() > 1)
         tabw.setTabsClosable(c.config.getBool('outline-tabs-show-close', True))
-        if not g.unitTesting:
-            dw.show()
-            tabw.show()
         return dw
 
     # @+node:ekr.20110605121601.18468: *3* TabbedFrameFactory.createMaster
