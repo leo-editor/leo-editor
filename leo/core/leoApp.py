@@ -3331,19 +3331,12 @@ class LoadManager:
             previousSettings=previousSettings,
         )
 
-        g.trace('1')  ###
-        ### g.sleep(2)
-
         # Read the outline.
         g.doHook('open0')
         v = c.fileCommands.getAnyLeoFileByName(
             fn,
             readAtFileNodesFlag=bool(previousSettings),
         )
-
-        g.trace('2')  ###
-        ### g.sleep(1)
-
         if not v:
             # #3656: Recover gracefully.
             lm.openBadLeoFile(c, fn)

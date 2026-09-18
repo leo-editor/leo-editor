@@ -953,18 +953,10 @@ class FileCommands:
         c = self.c
         fc = c.fileCommands
         self.gnxDict = {}  # #1437
-
-        ### g.trace('1', path)
-        ### g.sleep(1)
-
         if path.endswith('.db'):
             v = fc._getLeoDBFileByName(path, readAtFileNodesFlag)
         else:
             v = fc._getLeoFileByName(path, readAtFileNodesFlag)
-
-        ### g.trace('2', path)
-        ### g.sleep(1)
-
         if v:
             c.frame.resizePanesToRatio(c.frame.compute_ratio(), c.frame.compute_secondary_ratio())
             if checkOpenFiles:
@@ -1060,9 +1052,7 @@ class FileCommands:
             # lastTopLevel is a better fallback, imo.
             p = recoveryNode or c.p or c.lastTopLevel()
             c.selectPosition(p)
-            # Delay the second redraw until idle time.
-            # This causes a slight flash, but corrects a hangnail.
-            ### c.redraw_later()  ###
+            # PR #4985: Don't call c.redraw_later here.
             c.checkOutline()  # Must be called *after* ni.end_holding.
             if c.changed:
                 fc.propagateDirtyNodes()
