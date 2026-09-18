@@ -975,7 +975,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             """In case user has hidden minibuffer with gui-minibuffer-hide"""
 
             def focusInEvent(self, event: QFocusEvent) -> None:
-                ### self.parent().show()
+                self.parent().show()
                 # Call the base class method.
                 super().focusInEvent(event)
 
