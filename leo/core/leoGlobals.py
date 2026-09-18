@@ -7868,6 +7868,7 @@ def getScript(
     useSelectedText: bool = True,
     forcePythonSentinels: bool = True,
     useSentinels: bool = True,
+    useExtraction: bool = True,
 ) -> str:
     """
     Return the expansion of the selected text of node p.
@@ -7886,7 +7887,8 @@ def getScript(
             s = p.b
         # Remove extra leading whitespace so the user may execute indented code.
         s = textwrap.dedent(s)
-        s = g.extractExecutableString(c, p, s)
+        if useExtraction:
+            s = g.extractExecutableString(c, p, s)
         script = g.composeScript(
             c,
             p,
