@@ -3,6 +3,7 @@
 """Tests of leoMarkdown.py"""
 
 import io
+from shutil import which
 import textwrap
 
 from leo.core import leoGlobals as g
@@ -16,6 +17,11 @@ assert g
 # @+node:ekr.20260915043622.1: ** class TestMarkdown(LeoUnitTest)
 class TestMarkdown(LeoUnitTest):
     """Test cases for leoMarkdown.py"""
+
+    def setUp(self):
+        super().setUp()
+        if not which('asciidoc3'):
+            self.skipTest('Requires asciidoc3')
 
     # @+others
     # @+node:ekr.20260916125105.1: *3* TestMarkdown.test_write_body

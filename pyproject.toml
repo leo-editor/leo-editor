@@ -269,7 +269,6 @@ dependencies = [
     "urllib3",
 
     # Optional packages, always installed.
-    "asciidoc3",       # For @adoc.
     "beautifulsoup4",  # For link testing.
     "docutils",
     "jedi",
