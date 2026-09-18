@@ -7888,7 +7888,7 @@ def getScript(
             s = p.b
         # Remove extra leading whitespace so the user may execute indented code.
         s = textwrap.dedent(s)
-        if True:  ### useExtraction:
+        if useExtraction:
             s = g.extractExecutableString(c, p, s)
         script = g.composeScript(
             c,
