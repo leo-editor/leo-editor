@@ -183,12 +183,11 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.useScintilla = c.config.getBool('qt-use-scintilla')
         self.use_gutter = c.config.getBool('use-gutter', default=False)
         self.recreateMainWindow()
-        ###
-        # if getattr(self, 'iconBar', None):
-        #     if self.show_iconbar:
-        #         self.iconBar.show()
-        #     else:
-        #         self.iconBar.hide()
+        if getattr(self, 'iconBar', None):
+            if self.show_iconbar:
+                self.iconBar.show()
+            else:
+                self.iconBar.hide()
 
     # @+node:ekr.20110605121601.18139: *3* dw.construct & helpers
     def construct(self, master: LeoTabbedTopLevel | None = None) -> None:
