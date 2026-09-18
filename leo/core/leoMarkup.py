@@ -532,12 +532,7 @@ class MarkupCommands:
     # @+node:ekr.20191007054942.1: *4* markup.remove_directives
     def remove_directives(self, s: str) -> str:
         pattern = re.compile(r'^\s*@(\w+)\b')
-        lines = g.splitLines(s)
-        result = []
-        for s in lines:
-            if not pattern.match(s):
-                result.append(s)
-        return ''.join(result)
+        return ''.join(z for z in g.splitLines(s) if not pattern.match(z))
 
     # @+node:swot.20260218221512.1: *4* compute_effective_level
     def compute_effective_level(self, p: Position) -> int:
