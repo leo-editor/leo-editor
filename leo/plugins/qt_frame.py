@@ -183,11 +183,12 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.useScintilla = c.config.getBool('qt-use-scintilla')
         self.use_gutter = c.config.getBool('use-gutter', default=False)
         self.recreateMainWindow()
-        if getattr(self, 'iconBar', None):
-            if self.show_iconbar:
-                self.iconBar.show()
-            else:
-                self.iconBar.hide()
+        ###
+        # if getattr(self, 'iconBar', None):
+        #     if self.show_iconbar:
+        #         self.iconBar.show()
+        #     else:
+        #         self.iconBar.hide()
 
     # @+node:ekr.20110605121601.18139: *3* dw.construct & helpers
     def construct(self, master: LeoTabbedTopLevel | None = None) -> None:
@@ -248,7 +249,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             g.trace('dw.vr_parent_frame must be a QSplitter!')
             return
         # Add the vr frame.
-        vr_frame.show()
+        ### vr_frame.show()
         parent.addWidget(vr_frame)
         # Resize splitters if they exist.
         main_splitter = gui.find_widget_by_name(c, 'main_splitter')
@@ -976,7 +977,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             """In case user has hidden minibuffer with gui-minibuffer-hide"""
 
             def focusInEvent(self, event: QFocusEvent) -> None:
-                self.parent().show()
+                ### self.parent().show()
                 # Call the base class method.
                 super().focusInEvent(event)
 
@@ -1849,6 +1850,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def finishCreate(self) -> None:
         """Finish creating the outline's frame."""
         # Called from app.newCommander, Commands.__init__
+        g.trace(self.__class__.__name__, g.callers())
         t1 = time.process_time()
         c = self.c
         assert c
@@ -1856,6 +1858,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         if not frameFactory.masterFrame:
             frameFactory.createMaster()
         self.top = frameFactory.createFrame(leoFrame=self)
+        ### breakpoint()  ###
         self.iconBar = QtIconBarClass(c, None)
         self.createSplitterComponents()
         self.statusLine = QtStatusLineClass(c, None)
@@ -4355,6 +4358,7 @@ class TabbedFrameFactory:
     # @+node:ekr.20110605121601.18466: *3* TabbedFrameFactory.createFrame
     def createFrame(self, leoFrame: QWidget) -> QWidget:
         c = leoFrame.c
+        g.trace(self.__class__.__name__, g.callers())  ###
         tabw = self.masterFrame
         assert tabw is not None  # Strange: assert tabw fails
         dw = DynamicWindow(c, tabw)
@@ -4375,9 +4379,15 @@ class TabbedFrameFactory:
         assert tabBar
         tabBar.setVisible(self.alwaysShowTabs or tabw.count() > 1)
         tabw.setTabsClosable(c.config.getBool('outline-tabs-show-close', True))
-        if not g.unitTesting:
+        g.trace('about to show')  ###
+        ### g.sleep(1)
+        tabw.hide()  ###
+        if 0:  ### not g.unitTesting:
+            g.sleep(1.0)
             dw.show()
+            g.sleep(1.0)
             tabw.show()
+            g.sleep(1.0)
         return dw
 
     # @+node:ekr.20110605121601.18468: *3* TabbedFrameFactory.createMaster
