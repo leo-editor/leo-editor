@@ -493,13 +493,14 @@ class MarkupCommands:
         return 0
 
     # @+node:ekr.20190515070742.38: *4* markup.write_body
-    def write_body(self, p: Position) -> None:
+    def write_body(self, p: Position) -> str:
         """Write p.b"""
         # We no longer add newlines to the start of nodes because
         # we write a blank line after all sections.
-        script = g.getScript(self.c, p, useSentinels=False)
+        script = g.getScript(self.c, p, useSentinels=False, useExtraction=False)
         s = self.remove_directives(script)
         self.output_file.write(g.ensureTrailingNewlines(s, 2))
+        return s  # For unit tests.
 
     # @+node:ekr.20190515070742.47: *4* markup.write_headline
     def write_headline(self, p: Position) -> None:
@@ -530,16 +531,8 @@ class MarkupCommands:
 
     # @+node:ekr.20191007054942.1: *4* markup.remove_directives
     def remove_directives(self, s: str) -> str:
-        lines = g.splitLines(s)
-        result = []
-        for s in lines:
-            if s.startswith('@'):
-                i = g.skip_id(s, 1)
-                word = s[1:i]
-                if word in g.globalDirectiveList:
-                    continue
-            result.append(s)
-        return ''.join(result)
+        pattern = re.compile(r'^\s*@(\w+)\b')
+        return ''.join(z for z in g.splitLines(s) if not pattern.match(z))
 
     # @+node:swot.20260218221512.1: *4* compute_effective_level
     def compute_effective_level(self, p: Position) -> int:
@@ -553,7 +546,7 @@ class MarkupCommands:
             current = current.parent()
         return effective_level
 
-    # @+node:ekr.20191006155051.1: *3* markup.commands
+    # @+node:ekr.20191006155051.1: *3* markup.adoc_command
     def adoc_command(
         self,
         event: LeoKeyEvent | None = None,
@@ -566,6 +559,7 @@ class MarkupCommands:
         g.es_print(f"{name} requires either asciidoctor or asciidoc3")
         return []
 
+    # @+node:ekr.20260914152304.1: *3* markup.pandoc_command
     def pandoc_command(
         self,
         event: LeoKeyEvent | None = None,
@@ -578,6 +572,7 @@ class MarkupCommands:
         g.es_print(f"{name} requires pandoc")
         return []
 
+    # @+node:ekr.20260914152331.1: *3* markup.sphinx_command
     def sphinx_command(
         self,
         event: LeoKeyEvent | None = None,
