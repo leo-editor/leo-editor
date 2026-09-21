@@ -2362,7 +2362,8 @@ class LoadManager:
                 print('Can not create a commander')
             g.app.forceShutdown()
             return
-        g.es('')  # Clears horizontal scrolling in the log pane.
+        # Clear horizontal scrolling in the log pane.
+        g.app.log.newlines = 0
         if g.app.listen_to_log_flag:
             g.app.listenToLog()
         if 'startup' in g.app.debug:
