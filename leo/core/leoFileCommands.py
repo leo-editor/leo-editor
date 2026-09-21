@@ -1052,9 +1052,7 @@ class FileCommands:
             # lastTopLevel is a better fallback, imo.
             p = recoveryNode or c.p or c.lastTopLevel()
             c.selectPosition(p)
-            # Delay the second redraw until idle time.
-            # This causes a slight flash, but corrects a hangnail.
-            c.redraw_later()
+            # PR #4985: Don't call c.redraw_later here.
             c.checkOutline()  # Must be called *after* ni.end_holding.
             if c.changed:
                 fc.propagateDirtyNodes()
