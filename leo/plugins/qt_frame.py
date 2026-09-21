@@ -2496,7 +2496,6 @@ class LeoQtLog(leoFrame.LeoLog):
         w.moveCursor(MoveOperation.End)
         w.insertHtml(s)
         sb.setSliderPosition(0)  # Force the slider to the initial position.
-        w.repaint()  # Slow, but essential.
 
     # @+node:ekr.20220411085334.1: *5* LeoQtLog.to_html
     def to_html(self, color: str, s: str) -> str:

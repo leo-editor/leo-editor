@@ -1311,8 +1311,6 @@ class LeoApp:
                 kwargs = {} if len(msg) < 4 else msg[3]
                 kwargs = {k: v for k, v in kwargs.items() if k not in ('color', 'newline')}
                 g.es('', s, color=color, newline=newline, **kwargs)
-            if hasattr(c.frame.log, 'scrollToEnd'):
-                g.app.gui.runAtIdle(c.frame.log.scrollToEnd)
         app.logWaiting = []
         # Essential when opening multiple files...
         g.app.setLog(None)
@@ -2362,6 +2360,7 @@ class LoadManager:
                 print('Can not create a commander')
             g.app.forceShutdown()
             return
+
         # Clear horizontal scrolling in the log pane.
         g.app.log.newlines = 0
         if g.app.listen_to_log_flag:
@@ -2393,6 +2392,15 @@ class LoadManager:
                 g.app.log.c.abbrevCommands.listAbbrevs()
             except Exception:
                 pass
+
+        # PR #4986. Write all logs here to avoid flash in the selected window.
+        for frame in g.app.windowList:
+            c = frame.c
+            g.app.writeWaitingLog(c)
+            c.setLog()
+            c.frame.log.enable(True)
+        g.app.unlockLog()
+
         # For scripts, the gui is a nullGui.
         # and the gui.setScript has already been called.
         g.app.gui.runMainLoop()
@@ -2471,7 +2479,6 @@ class LoadManager:
             g.findAnyUnl(unl, c)
 
         g.app.initing = False  # "idle" hooks may now call g.app.forceShutdown.
-        g.app.logInited = True
         g.app.initComplete = True
         c.setLog()
         g.app.disable_redraw = False
@@ -3245,12 +3252,6 @@ class LoadManager:
         # Remove this outline's "doMenuat" settings so later outlines won't use them.
         lm.globalSettingsDict['menus'] = None
         c.config.settingsDict['menus'] = None
-
-        # Common finishing code.
-        g.app.unlockLog()
-        g.app.writeWaitingLog(c)
-        c.setLog()
-        c.frame.log.enable(True)
 
         # chapterController.finishCreate must be called after the first real redraw
         # because it requires a valid value for c.rootPosition().
