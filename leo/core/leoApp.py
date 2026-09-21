@@ -2361,8 +2361,6 @@ class LoadManager:
             g.app.forceShutdown()
             return
 
-        # Clear horizontal scrolling in the log pane.
-        g.app.log.newlines = 0
         if g.app.listen_to_log_flag:
             g.app.listenToLog()
         if 'startup' in g.app.debug:
