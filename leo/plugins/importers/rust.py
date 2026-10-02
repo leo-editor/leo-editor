@@ -28,7 +28,6 @@ class Rust_Importer(Importer):
         ('enum', re.compile(r'\s*enum\s+(\w+)\s*\{')),
         ('enum', re.compile(r'\s*pub\s+enum\s+(\w+)\s*\{')),
         ('enum', re.compile(r'\s*pub\s*\(\s*crate\s*\)\s*enum\s+(\w+)\s*\{')),
-        ('enum', re.compile(r'\s*pub\s+enum\s+(\w+)\s*\{')),
         ('macro', re.compile(r'\s*(\w+)\!\s*\{')),
         ('use', re.compile(r'\s*use.*?\{')),  # No m.group(1).
         # https://doc.rust-lang.org/stable/reference/visibility-and-privacy.html
@@ -440,7 +439,6 @@ class Rust_Importer(Importer):
                 return
 
             # Scan across blank lines, /// comment lines, and use lines.
-            lines = g.splitLines(child1.b)
             i = 0
             for line in g.splitLines(child1.b):
                 s = line.strip()
