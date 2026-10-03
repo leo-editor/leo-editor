@@ -795,20 +795,25 @@ def preferences(self: Self, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('promote-to-at-others')
 def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
     """
-    c.p must contain an @others directive.
+    c.p must contain exactly one @others directive.
 
     Replace the @others with the properly indented contents of all nodes
     included by the @others.
     """
-    # c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
     p = self.p
-    if not event:
+    # Ignore the possibility that strings or comments might contain the match.
+    at_others_pat = re.compile(r'(\s*)@others\n')
+    matches = []
+    for i, z in enumerate(g.splitLines(p.b)):
+        if m := at_others_pat.match(z):
+            matches.append((i, m))
+    if len(matches) != 1:
+        g.error('c.p.b must contain exactly one @others directive')
         return
-    at_others_pat = re.compile(r'\s*@others\n')
-    n = sum(int(bool(at_others_pat.match(z))) for z in g.splitLines(p.b))
-    if n != 1:
-        g.error('c.p must contain exactly one @others directive')
-        return
+    i, m = matches[0]
+    indent = m.group(1)
+    g.trace(f"{i=} {indent=}")
+    # Promotes all descendants that aren't section definitions.
 
 
 # @+node:ekr.20261003045316.1: ** c_ec.promoteSectionDefinition (promote-section-definition)
@@ -820,15 +825,27 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
     Promote c.p.b into the nearest ancestor node containing the section
     ref.
     """
-    # c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
     p = self.p
-    if not event:
-        return
-    section_pat = re.compile(r'\s*\<\<.*?(.*?)\>\>')
-    m = section_pat.match(p.h)
+    section_def_pat = re.compile(r'\s*\<\<.*?(.*?)\>\>')
+    m = section_def_pat.match(p.h)
     if not m:
         g.error('c.p must be a section definition node')
         return
+    section_name = m.group(1).strip()
+    matches, rb, lb = [], '>>', '<<'
+    section_ref_pat = re.compile(rf"(\s*){lb}\s*({section_name})\s*{rb}")
+    for parent in p.parents():
+        for i, z in enumerate(g.splitLines(parent.b)):
+            if m := section_ref_pat.match(z):
+                matches.append((i, m, parent.copy()))
+        if matches:
+            break
+    if len(matches) != 1:
+        g.error(f"No unique ref to {lb} {section_name} {rb}")
+        return
+    i, m, parent = matches[0]
+    indent, section_name = m.group(1), m.group(2)
+    g.trace(f"{i=} {indent=}")
 
 
 # @+node:ekr.20171123135625.40: ** c_ec.reformatBody
