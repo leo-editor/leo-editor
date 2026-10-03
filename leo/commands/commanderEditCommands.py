@@ -828,20 +828,20 @@ def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
 
     ins = p.b.find('@others') - len(indent)
 
-    # Compute the new p.b.
+    # Undoably upate p.b.
     u.beforeChangeGroup(p, command)
     lines = g.splitLines(p.b)
     result = lines[:i]
     for child in to_promote:
         result.extend([f"{indent}{z}" for z in g.splitLines(child.b)])
+        result.append('\n' if child.b.endswith('\n') else '\n\n')
     result.extend(lines[i + 1 :])
-    result.append('\n' if lines[-1].endswith('\n') else '\n\n')
     bunch = u.beforeChangeBody(p)
     p.b = ''.join(result)
     u.afterChangeBody(p, command, bunch)
 
-    # Delete all the promoted nodes.
-    for child in to_promote:
+    # Undoably delete all the promoted nodes.
+    for child in reversed(to_promote):
         bunch2 = u.beforeDeleteNode(child)
         child.doDelete()
         u.afterDeleteNode(p, command, bunch2)
