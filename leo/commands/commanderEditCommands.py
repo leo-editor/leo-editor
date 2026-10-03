@@ -847,7 +847,7 @@ def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
         u.afterDeleteNode(p, command, bunch2)
     u.afterChangeGroup(p, command)
 
-    # Redraw
+    # Redraw.
     c.redraw(p)
     w.setInsertPoint(ins)
 
@@ -910,7 +910,7 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
     u.afterDeleteNode(parent, command, bunch2)
     u.afterChangeGroup(parent, command)
 
-    # Redraw
+    # Redraw.
     c.redraw(parent)
     w.setInsertPoint(ins)
 
