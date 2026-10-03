@@ -791,6 +791,46 @@ def preferences(self: Self, event: LeoKeyEvent | None = None) -> None:
     c.openLeoSettings()
 
 
+# @+node:ekr.20261003045123.1: ** c_ec.promoteToAtOthers (promote-to-at-others)
+@g.commander_command('promote-to-at-others')
+def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
+    """
+    c.p must contain an @others directive.
+
+    Replace the @others with the properly indented contents of all nodes
+    included by the @others.
+    """
+    # c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
+    p = self.p
+    if not event:
+        return
+    at_others_pat = re.compile(r'\s*@others\n')
+    n = sum(int(bool(at_others_pat.match(z))) for z in g.splitLines(p.b))
+    if n != 1:
+        g.error('c.p must contain exactly one @others directive')
+        return
+
+
+# @+node:ekr.20261003045316.1: ** c_ec.promoteSectionDefinition (promote-section-definition)
+@g.commander_command('promote-section-definition')
+def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> None:
+    """
+    c.p must be a section definition node.
+
+    Promote c.p.b into the nearest ancestor node containing the section
+    ref.
+    """
+    # c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
+    p = self.p
+    if not event:
+        return
+    section_pat = re.compile(r'\s*\<\<.*?(.*?)\>\>')
+    m = section_pat.match(p.h)
+    if not m:
+        g.error('c.p must be a section definition node')
+        return
+
+
 # @+node:ekr.20171123135625.40: ** c_ec.reformatBody
 @g.commander_command('reformat-body')
 def reformatBody(self: Self, event: LeoKeyEvent | None = None) -> None:
