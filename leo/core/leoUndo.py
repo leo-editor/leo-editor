@@ -407,12 +407,6 @@ class Undoer:
         """
         c, u = self.c, self
         w = c.frame.body.wrapper
-        if p != c.p:  # Prepare to ignore p argument.
-            if not u.changeGroupWarning:
-                u.changeGroupWarning = True
-                g.trace("Position mismatch", g.callers())
-                print('p:', p)
-                print('c.p', c.p)
         if u.redoing or u.undoing:
             return  # pragma: no cover
         if not u.beads:  # pragma: no cover
@@ -426,10 +420,9 @@ class Undoer:
         # Set the types & helpers.
         bunch.kind = 'afterGroup'
         bunch.undoType = undoType
-        # Set helper only for undo:
-        # The bead pointer will point to an 'beforeGroup' bead for redo.
         bunch.undoHelper = u.undoGroup
         bunch.redoHelper = u.redoGroup
+        bunch.p = p.copy()  # PR #4991.
         bunch.newP = p.copy()
         bunch.newSel = w.getSelectionRange()
         # Tells whether to report the number of separate changes undone/redone.
@@ -754,13 +747,7 @@ class Undoer:
 
     def beforeChangeGroup(self, p: Position, command: str, verboseUndoGroup: bool = False) -> None:
         """Prepare to undo a group of undoable operations."""
-        c, u = self.c, self
-        if p != c.p:  # Prepare to ignore p argument.
-            if not u.changeGroupWarning:
-                u.changeGroupWarning = True
-                g.trace("Position mismatch", g.callers())
-                print('p:', p)
-                print('c.p', c.p)
+        u = self
         bunch = u.createCommonBunch(p)
         # Set types.
         bunch.kind = 'beforeGroup'
@@ -1557,9 +1544,11 @@ class Undoer:
     # @+node:EKR.20040526072519.2: *4* u.redoDeleteNode
     def redoDeleteNode(self) -> None:
         c, u = self.c, self
+        newP = u.newP.copy() if u.newP else c.p
         c.selectPosition(u.p)
         c.deleteOutline()
-        c.selectPosition(u.newP)
+        if c.positionExists(newP):  # PR #4991.
+            c.p = newP
 
     # @+node:ekr.20080425060424.9: *4* u.redoDemote
     def redoDemote(self) -> None:
@@ -1581,12 +1570,7 @@ class Undoer:
     def redoGroup(self) -> None:
         """Process beads until the matching 'afterGroup' bead is seen."""
         c, u = self.c, self
-        # Remember these values.
         newSel = u.newSel
-        p = u.p.copy()  # u.p must exist now.
-        newP = u.newP.copy() if u.newP else c.p.copy()  # #4373: u.newP might not exist now.
-        if g.unitTesting:
-            assert c.positionExists(p), repr(p)
         u.groupCount += 1
         bunch = u.beads[u.bead + 1]
         count = 0
@@ -1600,16 +1584,14 @@ class Undoer:
                     z.redoHelper()
                     count += 1
                 else:
-                    g.trace(f"oops: no redo helper for {u.undoType} {p.h}")
+                    g.trace(f"oops: no redo helper for {u.undoType} {u.p.h}")
         u.groupCount -= 1
         u.updateMarks('new')  # Bug fix: Leo 4.4.6.
         if not g.unitTesting and u.verboseUndoGroup:
             g.es("redo", count, "instances")
-        # Helpers set dirty bits.
-        # Set c.p, independently of helpers.
-        if g.unitTesting:
-            assert c.positionExists(newP), repr(newP)
-        c.selectPosition(newP)
+
+        # PR #4991: Helpers set dirty bits and c.p. Do not set c.p here!
+
         # Set the selection, independently of helpers.
         if newSel:
             i, j = newSel
@@ -1833,9 +1815,7 @@ class Undoer:
         including headline and body text, and marked bits.
         """
         c, u, w = self.c, self, self.c.frame.body.wrapper
-        # selectPosition causes recoloring, so don't do this unless needed.
-        if c.p != u.p:
-            c.selectPosition(u.p)
+        # PR #4991: do not change c.p here!
         u.p.setDirty()
         u.p.b = u.oldBody
         u.p.h = u.oldHead
@@ -1952,7 +1932,7 @@ class Undoer:
         else:
             u.p._linkAsRoot()
         u.p.setDirty()
-        c.selectPosition(u.p)
+        c.selectPosition(u.p)  # Required.
 
     # @+node:ekr.20080425060424.10: *4* u.undoDemote
     def undoDemote(self) -> None:
@@ -1976,9 +1956,7 @@ class Undoer:
     def undoGroup(self) -> None:
         """Process beads until the matching 'beforeGroup' bead is seen."""
         c, u = self.c, self
-        # Remember these values.
         oldSel = u.oldSel
-        p = u.p.copy() if u.p else c.p.copy()  # #4373: u.p might not exist now.
         u.groupCount += 1
         bunch = u.beads[u.bead]
         count = 0
@@ -1995,16 +1973,16 @@ class Undoer:
                     z.undoHelper()
                     count += 1
                 else:
-                    g.trace(f"oops: no undo helper for {u.undoType} {p.v}")
+                    g.trace(f"oops: no undo helper for {u.undoType} {u.p.v}")
         u.groupCount -= 1
         u.updateMarks('old')  # Bug fix: Leo 4.4.6.
         if not g.unitTesting and u.verboseUndoGroup:
             g.es("undo", count, "instances")
-        # Helpers set dirty bits.
-        # Set c.p, independently of helpers.
-        c.selectPosition(p)
-        # Restore the selection, independently of helpers.
+
+        # PR #4991: Helpers set dirty bits and c.p. Do not set c.p here!
+
         if oldSel:
+            # Restore the selection, independently of helpers.
             i, j = oldSel
             c.frame.body.wrapper.setSelectionRange(i, j)
 
