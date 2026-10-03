@@ -796,9 +796,10 @@ def preferences(self: Self, event: LeoKeyEvent | None = None) -> None:
 def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
     """
     c.p must contain exactly one @others directive.
+    Otherwise this command does nothing.
 
-    Replace the @others with the properly indented contents of all nodes
-    included by the @others.
+    Undoably replace the @others with the properly indented contents of all
+    nodes included by the @others.
     """
     c = self
     p = c.p
@@ -856,7 +857,9 @@ def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('promote-section-def')
 def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> None:
     """
-    c.p must be a section definition node.
+    c.p must be a section definition node and an ancestor node must contain
+    exactly one section reference.
+    Otherwise, this command does nothing.
 
     Undoably promote c.p.b into the nearest ancestor node containing the section
     ref.
