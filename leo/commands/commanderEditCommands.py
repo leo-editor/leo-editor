@@ -800,8 +800,13 @@ def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
     Replace the @others with the properly indented contents of all nodes
     included by the @others.
     """
-    p = self.p
-    # Ignore the possibility that strings or comments might contain the match.
+    c = self
+    p = c.p
+    ### u, command = c.undoer, 'promote-to-at-others'
+    c.endEditing()
+
+    # Find the @others directive, ignoring the possibility that
+    # strings or comments might contain the match.
     at_others_pat = re.compile(r'(\s*)@others\n')
     matches = []
     for i, z in enumerate(g.splitLines(p.b)):
@@ -817,21 +822,26 @@ def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
 
 
 # @+node:ekr.20261003045316.1: ** c_ec.promoteSectionDefinition (promote-section-definition)
-@g.commander_command('promote-section-definition')
+@g.commander_command('promote-section-def')
 def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> None:
     """
     c.p must be a section definition node.
 
-    Promote c.p.b into the nearest ancestor node containing the section
+    Undoably promote c.p.b into the nearest ancestor node containing the section
     ref.
     """
-    c, p = self, self.p
+    c = self
+    p = c.p
+    u, command = c.undoer, 'promote-section-def'
+    c.endEditing()
+
+    # Find the section ref, ignoring the possibility that
+    # strings or comments might contain the match.
     section_def_pat = re.compile(r'\s*\<\<.*?(.*?)\>\>')
     m = section_def_pat.match(p.h)
     if not m:
         g.error('c.p must be a section definition node')
         return
-    # Find the section ref.
     section_name = m.group(1).strip()
     matches, rb, lb = [], '>>', '<<'
     section_ref_pat = re.compile(rf"(\s*){lb}\s*({section_name})\s*{rb}")
@@ -844,16 +854,25 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
     if len(matches) != 1:
         g.error(f"No unique ref to {lb} {section_name} {rb}")
         return
+
     # Replace the @others in parent.b with p.b, properly indented.
+    c.selectPosition(parent)
+    u.beforeChangeGroup(parent, command)
     i, m, parent = matches[0]
     indent = m.group(1)
     lines = g.splitLines(parent.b)
     result = lines[:i]
     result.extend([f"{indent}{z}" for z in g.splitLines(p.b)])
     result.extend(lines[i + 1 :])
+    bunch = u.beforeChangeBody(parent)
     parent.b = ''.join(result)
+    u.afterChangeBody(parent, command, bunch)
+
     # Delete the definition node.
+    bunch2 = u.beforeDeleteNode(p)
     p.doDelete()
+    u.afterDeleteNode(parent, command, bunch2)
+    u.afterChangeGroup(parent, command)
     c.redraw(parent)
 
 
