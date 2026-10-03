@@ -802,7 +802,8 @@ def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
     """
     c = self
     p = c.p
-    ### u, command = c.undoer, 'promote-to-at-others'
+    u, command = c.undoer, 'promote-to-at-others'
+    w = self.frame.body.wrapper
     c.endEditing()
 
     # Find the @others directive, ignoring the possibility that
@@ -817,8 +818,38 @@ def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
         return
     i, m = matches[0]
     indent = m.group(1)
-    g.trace(f"{i=} {indent=}")
-    # Promotes all descendants that aren't section definitions.
+
+    # Find all children that aren't section definitions.
+    section_def_pat = re.compile(r'\s*\<\<(.*?)\>\>')
+    to_promote = [z.copy() for z in p.children() if not section_def_pat.match(z.h)]
+    if not to_promote:
+        g.error('No promotable children')
+        return
+
+    ins = p.b.find('@others') - len(indent)
+
+    # Compute the new p.b.
+    u.beforeChangeGroup(p, command)
+    lines = g.splitLines(p.b)
+    result = lines[:i]
+    for child in to_promote:
+        result.extend([f"{indent}{z}" for z in g.splitLines(child.b)])
+    result.extend(lines[i + 1 :])
+    result.append('\n' if lines[-1].endswith('\n') else '\n\n')
+    bunch = u.beforeChangeBody(p)
+    p.b = ''.join(result)
+    u.afterChangeBody(p, command, bunch)
+
+    # Delete all the promoted nodes.
+    for child in to_promote:
+        bunch2 = u.beforeDeleteNode(child)
+        child.doDelete()
+        u.afterDeleteNode(p, command, bunch2)
+    u.afterChangeGroup(p, command)
+
+    # Redraw
+    c.redraw(p)
+    w.setInsertPoint(ins)
 
 
 # @+node:ekr.20261003045316.1: ** c_ec.promoteSectionDefinition (promote-section-definition)
@@ -833,16 +864,17 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
     c = self
     p = c.p
     u, command = c.undoer, 'promote-section-def'
+    w = self.frame.body.wrapper
     c.endEditing()
 
     # Find the section ref, ignoring the possibility that
     # strings or comments might contain the match.
-    section_def_pat = re.compile(r'\s*\<\<.*?(.*?)\>\>')
+    section_def_pat = re.compile(r'(\s)*\<\<(.*?)\>\>')
     m = section_def_pat.match(p.h)
     if not m:
         g.error('c.p must be a section definition node')
         return
-    section_name = m.group(1).strip()
+    section_name = m.group(2).strip()
     matches, rb, lb = [], '>>', '<<'
     section_ref_pat = re.compile(rf"(\s*){lb}\s*({section_name})\s*{rb}")
     for parent in p.parents():
@@ -855,15 +887,19 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
         g.error(f"No unique ref to {lb} {section_name} {rb}")
         return
 
+    # Compute the old insert point in the parent.
+    i, m, parent = matches[0]
+    indent = m.group(1)
+    ins = parent.b.find(m.group(0))
+
     # Replace the @others in parent.b with p.b, properly indented.
     c.selectPosition(parent)
     u.beforeChangeGroup(parent, command)
-    i, m, parent = matches[0]
-    indent = m.group(1)
     lines = g.splitLines(parent.b)
     result = lines[:i]
     result.extend([f"{indent}{z}" for z in g.splitLines(p.b)])
     result.extend(lines[i + 1 :])
+    result.append('\n' if lines[-1].endswith('\n') else '\n\n')
     bunch = u.beforeChangeBody(parent)
     parent.b = ''.join(result)
     u.afterChangeBody(parent, command, bunch)
@@ -873,7 +909,10 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
     p.doDelete()
     u.afterDeleteNode(parent, command, bunch2)
     u.afterChangeGroup(parent, command)
+
+    # Redraw
     c.redraw(parent)
+    w.setInsertPoint(ins)
 
 
 # @+node:ekr.20171123135625.40: ** c_ec.reformatBody
