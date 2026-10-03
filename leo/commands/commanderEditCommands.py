@@ -896,7 +896,6 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
     ins = parent.b.find(m.group(0))
 
     # Replace the @others in parent.b with p.b, properly indented.
-    c.selectPosition(parent)
     u.beforeChangeGroup(parent, command)
     lines = g.splitLines(parent.b)
     result = lines[:i]
@@ -910,7 +909,7 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
     # Delete the definition node.
     bunch2 = u.beforeDeleteNode(p)
     p.doDelete()
-    u.afterDeleteNode(parent, command, bunch2)
+    u.afterDeleteNode(p, command, bunch2)
     u.afterChangeGroup(parent, command)
 
     # Redraw.
