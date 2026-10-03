@@ -825,12 +825,13 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
     Promote c.p.b into the nearest ancestor node containing the section
     ref.
     """
-    p = self.p
+    c, p = self, self.p
     section_def_pat = re.compile(r'\s*\<\<.*?(.*?)\>\>')
     m = section_def_pat.match(p.h)
     if not m:
         g.error('c.p must be a section definition node')
         return
+    # Find the section ref.
     section_name = m.group(1).strip()
     matches, rb, lb = [], '>>', '<<'
     section_ref_pat = re.compile(rf"(\s*){lb}\s*({section_name})\s*{rb}")
@@ -843,9 +844,17 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
     if len(matches) != 1:
         g.error(f"No unique ref to {lb} {section_name} {rb}")
         return
+    # Replace the @others in parent.b with p.b, properly indented.
     i, m, parent = matches[0]
-    indent, section_name = m.group(1), m.group(2)
-    g.trace(f"{i=} {indent=}")
+    indent = m.group(1)
+    lines = g.splitLines(parent.b)
+    result = lines[:i]
+    result.extend([f"{indent}{z}" for z in g.splitLines(p.b)])
+    result.extend(lines[i + 1 :])
+    parent.b = ''.join(result)
+    # Delete the definition node.
+    p.doDelete()
+    c.redraw(parent)
 
 
 # @+node:ekr.20171123135625.40: ** c_ec.reformatBody
