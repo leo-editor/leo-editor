@@ -1468,7 +1468,7 @@ class Undoer:
         if c.p != u.p:  # #1333.
             c.selectPosition(u.p)
 
-    # @+node:ekr.20230721131611.1: *4* u.redoChangeTree (to do)
+    # @+node:ekr.20230721131611.1: *4* u.redoChangeTree
     def redoChangeTree(self) -> None:
         c, u, w = self.c, self, self.c.frame.body.wrapper
         # selectPosition causes recoloring, so don't do this unless needed.
