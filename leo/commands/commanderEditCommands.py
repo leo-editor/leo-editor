@@ -895,7 +895,7 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
     indent = m.group(1)
     ins = parent.b.find(m.group(0))
 
-    # Replace the @others in parent.b with p.b, properly indented.
+    # Replace the section ref in parent.b with p.b, properly indented.
     u.beforeChangeGroup(parent, command)
     lines = g.splitLines(parent.b)
     result = lines[:i]
