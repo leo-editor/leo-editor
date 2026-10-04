@@ -829,7 +829,7 @@ def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
 
     ins = p.b.find('@others') - len(indent)
 
-    # Undoably upate p.b.
+    # Undoably update p.b.
     u.beforeChangeGroup(p, command)
     lines = g.splitLines(p.b)
     result = lines[:i]
