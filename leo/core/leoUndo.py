@@ -48,7 +48,7 @@
 # @+node:ekr.20220821074023.1: ** << leoUndo imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
-from typing import TYPE_CHECKING
+from typing import Self, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoFileCommands import FastRead
 from leo.core.leoNodes import Position, VNode
@@ -68,13 +68,34 @@ def cmd(name: str) -> Callable:
 
 
 # @+others
+# @+node:ekr.20261005092455.1: ** class UndoBead
+all_beads: list[UndoBead] = []
+
+
+class UndoBead:
+    def __init__(self, command_name: str, undoer: Undoer) -> None:
+        self.command_name = command_name
+        self.must_redraw = False
+        self.redo_functions: list[Callable] = []
+        self.undo_functions: list[Callable] = []
+        self.undoer = undoer
+        all_beads.append(self)
+
+    def __repr__(self):
+        return f"UndoBead: {self.command_name}"
+
+    def set_helpers(self, redo_function: Callable, undo_function: Callable) -> None:
+        """Append the helpers (in correct order!) to the undo/redo lists."""
+        self.redo_functions.append(redo_function)
+        self.undo_functions.insert(0, undo_function)
+
+
 # @+node:ekr.20031218072017.3605: ** class Undoer
 class Undoer:
     """A class that implements unlimited undo and redo."""
 
     # @+others
-    # @+node:ekr.20150509193307.1: *3* u.Birth
-    # @+node:ekr.20031218072017.3606: *4* u.__init__
+    # @+node:ekr.20031218072017.3606: *3* u.__init__
     def __init__(self, c: Cmdr) -> None:
         self.c = c
         self.p: Position | None = None  # The position/node being operated upon for undo and redo.
@@ -83,6 +104,8 @@ class Undoer:
         # State ivars...
         self.beads = []  # List of undo nodes.
         self.bead = -1  # Index of the present bead: -1:len(beads)
+        self.inHead = False
+        self.undoBead = None
         self.undoType = "Can't Undo"
         # These must be set here, _not_ in clearUndoState.
         self.last_undoable_command_name = None  # Name of last undoable command.
@@ -95,55 +118,81 @@ class Undoer:
         self.per_node_undo = False  # True: v may contain undo_info ivar.
         # New in 4.2...
         self.optionalIvars = []
+
         # Set the following ivars to keep pylint happy.
         # mypy doesn't care about these.
-        self.afterTree = None
-        self.beforeTree = None
-        self.children = None
-        self.deleteMarkedNodesData: list[Position] | None = None
-        self.followingSibs: list[VNode] = None
-        self.headlines: dict[str, tuple[str, str]]
-        self.inHead: bool | None = None
-        self.kind: str | None = None
-        self.newBack = None
-        self.newBody = None
-        self.newChildren = None
-        self.newHead = None
-        self.newIns = None
-        self.newMarked = None
-        self.newN = None
-        self.newP = None
-        self.newParent = None
-        self.newPastedTree = None
-        self.newParent_v = None
-        self.newRecentFiles = None
-        self.newSel = None
-        self.newTree = None
-        self.newUA = None
-        self.newYScroll = None
-        self.oldBack = None
-        self.oldBody = None
-        self.oldChildren = None
-        self.oldHead = None
-        self.oldIns = None
-        self.oldMarked = None
-        self.oldN = None
-        self.oldParent = None
-        self.oldParent_v = None
-        self.oldPastedTree = None
-        self.oldRecentFiles = None
-        self.oldSel = None
-        self.oldSiblings = None
-        self.oldTree = None
-        self.oldUA = None
-        self.oldYScroll = None
-        self.pasteAsClone = None
-        self.prevSel = None
-        self.sortChildren = None
-        self.verboseUndoGroup = None
+        if 0:
+            self.afterTree = None
+            self.beforeTree = None
+            self.children = None
+            self.deleteMarkedNodesData: list[Position] | None = None
+            self.followingSibs: list[VNode] = None
+            self.headlines: dict[str, tuple[str, str]]
+            # self.inHead: bool | None = None
+            self.kind: str | None = None
+            self.newBack = None
+            self.newBody = None
+            self.newChildren = None
+            self.newHead = None
+            self.newIns = None
+            self.newMarked = None
+            self.newN = None
+            self.newP = None
+            self.newParent = None
+            self.newPastedTree = None
+            self.newParent_v = None
+            self.newRecentFiles = None
+            self.newSel = None
+            self.newTree = None
+            self.newUA = None
+            self.newYScroll = None
+            self.oldBack = None
+            self.oldBody = None
+            self.oldChildren = None
+            self.oldHead = None
+            self.oldIns = None
+            self.oldMarked = None
+            self.oldN = None
+            self.oldParent = None
+            self.oldParent_v = None
+            self.oldPastedTree = None
+            self.oldRecentFiles = None
+            self.oldSel = None
+            self.oldSiblings = None
+            self.oldTree = None
+            self.oldUA = None
+            self.oldYScroll = None
+            self.pasteAsClone = None
+            self.prevSel = None
+            self.sortChildren = None
+            self.verboseUndoGroup = None
+
         self.reloadSettings()
 
-    # @+node:ekr.20191213085126.1: *4* u.reloadSettings
+    # @+node:ekr.20261005085940.1: *3* u.__call__
+    def __call__(self, command_name: str) -> Self:
+        """
+        Undoer.__call__: client code must use the following pattern:
+
+        with c.undoer(command_name) as u:
+            ...  # Statements, using new undoer methods.
+
+        """
+        bead = UndoBead(command_name=command_name, undoer=self)
+        assert bead  ### To do: append to self.beads.
+        return self
+
+    # @+node:ekr.20261005094529.1: *3* u.__enter__ & __exit
+    def __enter__(self) -> None:
+        """Called when entering a "with" statement."""
+        g.trace()
+
+    def __exit__(self, *args):
+        """Called when leaving a "with" statement."""
+        g.trace(f"{args=} {all_beads}")
+
+    # @+node:ekr.20261005094529.2: *3* newHeadline
+    # @+node:ekr.20191213085126.1: *3* u.reloadSettings
     def reloadSettings(self) -> None:
         """Undoer.reloadSettings."""
         c = self.c
