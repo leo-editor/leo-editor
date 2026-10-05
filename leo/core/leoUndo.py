@@ -69,17 +69,13 @@ def cmd(name: str) -> Callable:
 
 # @+others
 # @+node:ekr.20261005092455.1: ** class UndoBead
-all_beads: list[UndoBead] = []
-
-
 class UndoBead:
-    def __init__(self, command_name: str, undoer: Undoer) -> None:
-        self.command_name = command_name
+    def __init__(self, undoer: Undoer) -> None:
+        self.command_name = None
         self.must_redraw = False
         self.redo_functions: list[Callable] = []
         self.undo_functions: list[Callable] = []
         self.undoer = undoer
-        all_beads.append(self)
 
     def __repr__(self):
         return f"UndoBead: {self.command_name}"
@@ -105,7 +101,7 @@ class Undoer:
         self.beads = []  # List of undo nodes.
         self.bead = -1  # Index of the present bead: -1:len(beads)
         self.inHead = False
-        self.undoBead = None
+        self.undoBead = None  # PR #4994
         self.undoType = "Can't Undo"
         # These must be set here, _not_ in clearUndoState.
         self.last_undoable_command_name = None  # Name of last undoable command.
@@ -169,29 +165,27 @@ class Undoer:
 
         self.reloadSettings()
 
-    # @+node:ekr.20261005085940.1: *3* u.__call__
-    def __call__(self, command_name: str) -> Self:
-        """
-        Undoer.__call__: client code must use the following pattern:
-
-        with c.undoer(command_name) as u:
-            ...  # Statements, using new undoer methods.
-
-        """
-        bead = UndoBead(command_name=command_name, undoer=self)
-        assert bead  ### To do: append to self.beads.
+    # @+node:ekr.20261005094529.1: *3* u.__enter__ and __exit__
+    def __enter__(self) -> Self:
+        """Support context manager."""
+        self.undoBead = UndoBead(undoer=self)
+        ### Not yet.
+        # self.beads.append(self.undoBead)
         return self
 
-    # @+node:ekr.20261005094529.1: *3* u.__enter__ & __exit
-    def __enter__(self) -> None:
-        """Called when entering a "with" statement."""
-        g.trace()
-
-    def __exit__(self, *args):
+    def __exit__(self, *args) -> None:
         """Called when leaving a "with" statement."""
-        g.trace(f"{args=} {all_beads}")
+        ### g.trace(f"{self.undoBead=}")
+        assert self.undoBead
+        if 0:  ### Not yet.
+            bead = self.beads.pop()
+            assert self.undoBead == bead, f"{bead=} {self.undoBead=}"
+        self.undoBead = None
 
-    # @+node:ekr.20261005094529.2: *3* newHeadline
+    # @+node:ekr.20261005094529.2: *3* u.set_command_name
+    def set_command_name(self, command_name: str) -> None:
+        self.undoBead.command_name = command_name
+
     # @+node:ekr.20191213085126.1: *3* u.reloadSettings
     def reloadSettings(self) -> None:
         """Undoer.reloadSettings."""
