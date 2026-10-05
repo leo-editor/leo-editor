@@ -436,14 +436,21 @@ class Undoer:
     ) -> None:
 
         u = self
+        w = u.c.frame.body.wrapper
+        if not w:
+            return
+        if old_sel is None:
+            old_sel = w.getSelectionRange()
+        if new_sel == old_sel:
+            return  # Not an error.
 
         def set_selection_range_redoer(new_sel: tuple[int, int]) -> None:
             g.trace(new_sel)
-            ### To do.
+            w.setSelectionRange(new_sel)
 
         def set_selection_range_undoer(old_sel: tuple[int, int]) -> None:
             g.trace(old_sel)
-            ### To do.
+            w.setSelectionRange(old_sel)
 
         u.undoBead.set_helpers(set_selection_range_redoer, set_selection_range_undoer)
 
