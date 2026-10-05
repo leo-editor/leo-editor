@@ -417,35 +417,31 @@ class Undoer:
     # @+node:ekr.20261005143707.1: *4* u.delete_node (**Test)
     def delete_node(self, p: Position) -> None:
 
+        g.trace(p.h)  ###
         c, u = self.c, self
-        g.trace(p.h)
-
         old_back = p.back()
         old_parent = p.parent()
 
         def delete_node_redoer(p: Position) -> None:
             g.trace(p.h)
-            ### To do.
-            p.doDelete()  ### Experimental.
+            # Simpler than u.redoDeleteNode.
+            p.doDelete()
 
         def delete_node_undoer(p: Position = p, old_back: Position = old_back) -> None:
             g.trace(p.h)
-            ### To do.
-            # if u.oldBack:
+            # Similar to u.undoDeleteNode.
             if old_back:
-                ### p._linkAfter(u.oldBack)
                 p._linkAfter(old_back)
-            # elif u.oldParent:
             elif old_parent:
-                # u.p._linkAsNthChild(u.oldParent, 0)
                 p._linkAsNthChild(old_parent, 0)
             else:
-                # u.p._linkAsRoot()
                 p._linkAsRoot()
-            u.p.setDirty()
+            p.setDirty()
             c.selectPosition(p)  # Required.
 
         u.undoBead.set_helpers(delete_node_redoer, delete_node_undoer)
+
+        # Do the delete!
         p.doDelete()
 
     # @+node:ekr.20261005143752.1: *4* u.set_selection_range
