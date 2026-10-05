@@ -169,14 +169,17 @@ class Undoer:
     def __enter__(self) -> Self:
         """Support context manager."""
         self.undoBead = UndoBead(undoer=self)
-        ### Not yet.
-        # self.beads.append(self.undoBead)
+        if 0:  ### Not yet.
+            self.beads.append(self.undoBead)
         return self
 
     def __exit__(self, *args) -> None:
         """Called when leaving a "with" statement."""
-        ### g.trace(f"{self.undoBead=}")
+        g.trace(repr(self.undoBead))
         assert self.undoBead
+        c = self.c
+        if self.undoBead.must_redraw:
+            c.redraw()
         if 0:  ### Not yet.
             bead = self.beads.pop()
             assert self.undoBead == bead, f"{bead=} {self.undoBead=}"
@@ -411,7 +414,7 @@ class Undoer:
 
         u.undoBead.set_helpers(set_body_redoer, set_body_undoer)
 
-    # @+node:ekr.20261005143707.1: *4* u.delete_node
+    # @+node:ekr.20261005143707.1: *4* u.delete_node (To do)
     def delete_node(self, child: Position) -> None:
 
         u = self
