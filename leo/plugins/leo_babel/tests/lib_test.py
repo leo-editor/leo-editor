@@ -172,7 +172,7 @@ class TestCmdr:
         self.testCnt = 0
         self.babelExecCnt = 0
 
-        tz = dt.timezone.utc
+        tz = dt.UTC
         now = dt.datetime.now(tz=tz)  # PR #4829
         fdR.write('||* Tests *|| {0}\n'.format(now).strftime('%Y-%m-%d %H:%M:%s', tz=tz))
 
