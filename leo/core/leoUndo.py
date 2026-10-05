@@ -165,7 +165,7 @@ class Undoer:
 
         self.reloadSettings()
 
-    # @+node:ekr.20261005094529.1: *3* u.__enter__ and __exit__
+    # @+node:ekr.20261005094529.1: *3* u.__enter__ and __exit__ (To do)
     def __enter__(self) -> Self:
         """Support context manager."""
         self.undoBead = UndoBead(undoer=self)
@@ -414,21 +414,39 @@ class Undoer:
 
         u.undoBead.set_helpers(set_body_redoer, set_body_undoer)
 
-    # @+node:ekr.20261005143707.1: *4* u.delete_node (To do)
-    def delete_node(self, child: Position) -> None:
+    # @+node:ekr.20261005143707.1: *4* u.delete_node (**Test)
+    def delete_node(self, p: Position) -> None:
 
-        u = self
-        g.trace(child.h)
+        c, u = self.c, self
+        g.trace(p.h)
+
+        old_back = p.back()
+        old_parent = p.parent()
 
         def delete_node_redoer(p: Position) -> None:
             g.trace(p.h)
             ### To do.
+            p.doDelete()  ### Experimental.
 
-        def delete_node_undoer(p: Position) -> None:
+        def delete_node_undoer(p: Position = p, old_back: Position = old_back) -> None:
             g.trace(p.h)
             ### To do.
+            # if u.oldBack:
+            if old_back:
+                ### p._linkAfter(u.oldBack)
+                p._linkAfter(old_back)
+            # elif u.oldParent:
+            elif old_parent:
+                # u.p._linkAsNthChild(u.oldParent, 0)
+                p._linkAsNthChild(old_parent, 0)
+            else:
+                # u.p._linkAsRoot()
+                p._linkAsRoot()
+            u.p.setDirty()
+            c.selectPosition(p)  # Required.
 
         u.undoBead.set_helpers(delete_node_redoer, delete_node_undoer)
+        p.doDelete()
 
     # @+node:ekr.20261005143752.1: *4* u.set_selection_range
     def set_selection_range(
