@@ -71,6 +71,7 @@ def cmd(name: str) -> Callable:
 # @+node:ekr.20261005092455.1: ** class UndoBead
 class UndoBead:
     def __init__(self, undoer: Undoer) -> None:
+        self.c = undoer.c
         self.command_name = None
         self.must_redraw = False
         self.redo_functions: list[Callable] = []
@@ -86,14 +87,22 @@ class UndoBead:
         self.undo_functions.insert(0, undo_function)
 
     def redo(self) -> None:
+        c = self.c
+        self.must_redraw = False
         for f in self.redo_functions:
             g.trace(f"{f=}")
             f()
+        if self.must_redraw:
+            c.redraw()
 
     def undo(self) -> None:
+        c = self.c
+        self.must_redraw = False
         for f in self.undo_functions:
             g.trace(f"{f=}")
             f()
+        if self.must_redraw:
+            c.redraw()
 
 
 # @+node:ekr.20031218072017.3605: ** class Undoer
@@ -188,12 +197,12 @@ class Undoer:
         u = self
         g.trace(repr(u.undoBead))
         assert self.undoBead
-        c = self.c
-        if u.undoBead.must_redraw:
-            c.redraw()
-        bead = u.beads.pop()
-        assert u.undoBead == bead, f"{bead=} {self.undoBead=}"
-        u.undoBead = None
+        # c = self.c
+        # if u.undoBead.must_redraw:
+        #     c.redraw()
+        # bead = u.beads.pop()
+        # assert u.undoBead == bead, f"{bead=} {self.undoBead=}"
+        # u.undoBead = None
 
     # @+node:ekr.20191213085126.1: *3* u.reloadSettings
     def reloadSettings(self) -> None:
