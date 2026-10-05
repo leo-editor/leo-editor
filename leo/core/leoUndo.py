@@ -85,6 +85,16 @@ class UndoBead:
         self.redo_functions.append(redo_function)
         self.undo_functions.insert(0, undo_function)
 
+    def redo(self) -> None:
+        for f in self.redo_functions:
+            g.trace(f"{f=}")
+            f()
+
+    def undo(self) -> None:
+        for f in self.undo_functions:
+            g.trace(f"{f=}")
+            f()
+
 
 # @+node:ekr.20031218072017.3605: ** class Undoer
 class Undoer:
@@ -168,22 +178,22 @@ class Undoer:
     # @+node:ekr.20261005094529.1: *3* u.__enter__ and __exit__ (To do)
     def __enter__(self) -> Self:
         """Support context manager."""
-        self.undoBead = UndoBead(undoer=self)
-        if 0:  ### Not yet.
-            self.beads.append(self.undoBead)
+        u = self
+        u.undoBead = UndoBead(undoer=self)
+        u.beads.append(u.undoBead)
         return self
 
     def __exit__(self, *args) -> None:
         """Called when leaving a "with" statement."""
-        g.trace(repr(self.undoBead))
+        u = self
+        g.trace(repr(u.undoBead))
         assert self.undoBead
         c = self.c
-        if self.undoBead.must_redraw:
+        if u.undoBead.must_redraw:
             c.redraw()
-        if 0:  ### Not yet.
-            bead = self.beads.pop()
-            assert self.undoBead == bead, f"{bead=} {self.undoBead=}"
-        self.undoBead = None
+        bead = u.beads.pop()
+        assert u.undoBead == bead, f"{bead=} {self.undoBead=}"
+        u.undoBead = None
 
     # @+node:ekr.20191213085126.1: *3* u.reloadSettings
     def reloadSettings(self) -> None:
@@ -242,15 +252,16 @@ class Undoer:
         return '<no top bead>'
 
     # @+node:EKR.20040526150818: *4* u.getBead
-    def getBead(self, n: int) -> g.Bunch | None:
+    def getBead(self, n: int) -> g.Bunch | UndoBead | None:
         """Set Undoer ivars from the bunch at the top of the undo stack."""
         u = self
         if n < 0 or n >= len(u.beads):
             return None  # pragma: no cover
         bunch = u.beads[n]
-        self.setIvarsFromBunch(bunch)
         if 'undo' in g.app.debug:  # pragma: no cover
             print(f" u.getBead: {n:3} of {len(u.beads)}")
+        if isinstance(bunch, g.Bunch):  # Legacy undo code:
+            self.setIvarsFromBunch(bunch)
         return bunch
 
     # @+node:EKR.20040526150818.1: *4* u.peekBead
@@ -397,7 +408,13 @@ class Undoer:
     # @+node:ekr.20261005135125.1: *3* u.New helpers
     # @+node:ekr.20261005094529.2: *4* u.set_command_name
     def set_command_name(self, command_name: str) -> None:
-        self.undoBead.command_name = command_name
+        u = self
+        assert command_name, g.callers()  ###
+        assert u, g.callers()  ###
+        u.undoBead.command_name = command_name
+        u.setRedoType(command_name)
+        # u.redoMenuLabel = "Can't Redo"
+        # u.undoMenuLabel = f"Undo {command_name}"
 
     # @+node:ekr.20261005140833.1: *4* u.set_body
     def set_body(self, p: Position, new_body: str) -> None:
@@ -414,7 +431,7 @@ class Undoer:
 
         u.undoBead.set_helpers(set_body_redoer, set_body_undoer)
 
-    # @+node:ekr.20261005143707.1: *4* u.delete_node (**Test)
+    # @+node:ekr.20261005143707.1: *4* u.delete_node
     def delete_node(self, p: Position) -> None:
 
         g.trace(p.h)  ###
@@ -1902,7 +1919,9 @@ class Undoer:
             u.setIvarsFromVnode(c.p)
         if not u.canUndo():
             return
-        if not u.getBead(u.bead):
+        ### if not u.getBead(u.bead):
+        obj = u.getBead(u.bead)
+        if not obj:
             return
 
         # Init status.
@@ -1910,7 +1929,9 @@ class Undoer:
         u.groupCount = 0
 
         # Dispatch.
-        if u.undoHelper:
+        if isinstance(obj, UndoBead):
+            obj.undo()  ### Experimental.
+        elif u.undoHelper:
             u.undoHelper()
         else:
             g.trace(f"no undo helper for {u.kind} {u.undoType}")
