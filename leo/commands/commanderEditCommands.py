@@ -791,9 +791,11 @@ def preferences(self: Self, event: LeoKeyEvent | None = None) -> None:
     c.openLeoSettings()
 
 
-# @+node:ekr.20261003045123.1: ** c_ec.promoteToAtOthers (promote-to-at-others)
+# @+node:ekr.20261003045123.1: ** ec.promoteToAtOthers (promote-to-at-others)
 @g.commander_command('promote-to-at-others')
 def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
+    # @+<< promote-to-at-others: docstring >>
+    # @+node:ekr.20261005135836.1: *3* << promote-to-at-others: docstring >>
     """
     c.p must contain exactly one @others directive.
     Otherwise this command does nothing.
@@ -801,56 +803,69 @@ def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
     Undoably replace the @others with the properly indented contents of all
     nodes included by the @others.
     """
+    # @-<< promote-to-at-others: docstring >>
     c = self
     p = c.p
-    u, command = c.undoer, 'promote-to-at-others'
     w = self.frame.body.wrapper
     c.endEditing()
 
-    # Find the @others directive, ignoring the possibility that
-    # strings or comments might contain the match.
+    # @+others
+    # @+node:ekr.20261004172902.1: *3* function: find_at_others
     at_others_pat = re.compile(r'(\s*)@others\n')
-    matches = []
-    for i, z in enumerate(g.splitLines(p.b)):
-        if m := at_others_pat.match(z):
-            matches.append((i, m))
-    if len(matches) != 1:
-        g.error('c.p.b must contain exactly one @others directive')
-        return
-    i, m = matches[0]
-    indent = m.group(1)
 
-    # Find all children that aren't section definitions.
+    def find_at_others(p: Position) -> tuple[int, str]:
+        """
+        Find the @others directive, ignoring the possibility that
+        strings or comments might contain the match.
+
+        Return the indentation (leading ws) of the directive or -1 if not found.
+        """
+        results = []
+        for i, z in enumerate(g.splitLines(p.b)):
+            if m := at_others_pat.match(z):
+                results.append((i, m.group(1)))
+        if len(results) == 1:
+            return results[0]
+        g.error('c.p.b must contain exactly one @others directive')
+        return -1, ''
+
+    # @+node:ekr.20261004172905.1: *3* function: find_promotable_children
     section_def_pat = re.compile(r'\s*\<\<(.*?)\>\>')
-    to_promote = [z.copy() for z in p.children() if not section_def_pat.match(z.h)]
-    if not to_promote:
+
+    def find_promotable_children(p: Position) -> list[Position]:
+        """Find all children that aren't section definitions"""
+        return [z.copy() for z in p.children() if not section_def_pat.match(z.h)]
+
+    # @+node:ekr.20261004172906.1: *3* function: compute_new_body
+    def compute_new_body(i: int, p: Position, children: list[Position]) -> str:
+        """Compute the new body."""
+        lines = g.splitLines(p.b)
+        result = lines[:i]
+        for child in children:
+            result.extend([f"{indent}{z}" for z in g.splitLines(child.b)])
+            result.append('\n' if child.b.endswith('\n') else '\n\n')
+        result.extend(lines[i + 1 :])
+        return ''.join(result)
+
+    # @-others
+
+    i, indent = find_at_others(p)
+    if indent == -1:
+        return
+    children = find_promotable_children(p)
+    if not children:
         g.error('No promotable children')
         return
-
-    ins = p.b.find('@others') - len(indent)
-
-    # Undoably update p.b.
-    u.beforeChangeGroup(p, command)
-    lines = g.splitLines(p.b)
-    result = lines[:i]
-    for child in to_promote:
-        result.extend([f"{indent}{z}" for z in g.splitLines(child.b)])
-        result.append('\n' if child.b.endswith('\n') else '\n\n')
-    result.extend(lines[i + 1 :])
-    bunch = u.beforeChangeBody(p)
-    p.b = ''.join(result)
-    u.afterChangeBody(p, command, bunch)
-
-    # Undoably delete all the promoted nodes.
-    for child in reversed(to_promote):
-        bunch2 = u.beforeDeleteNode(child)
-        child.doDelete()
-        u.afterDeleteNode(p, command, bunch2)
-    u.afterChangeGroup(p, command)
-
-    # Redraw.
-    c.redraw(p)
-    w.setInsertPoint(ins)
+    new_body = compute_new_body(i, p, children)
+    old_sel = w.getSelectionRange()
+    j = p.b.find('@others') - len(indent)
+    new_sel = (j, j)
+    with c.undoer as u:
+        u.set_command_name('promote-to-at-others')
+        u.set_body(p, new_body)
+        for child in reversed(children):
+            u.delete_node(child)
+        u.set_selection_range(new_sel, old_sel=old_sel)
 
 
 # @+node:ekr.20261003045316.1: ** c_ec.promoteSectionDefinition (promote-section-definition)

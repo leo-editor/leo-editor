@@ -182,10 +182,6 @@ class Undoer:
             assert self.undoBead == bead, f"{bead=} {self.undoBead=}"
         self.undoBead = None
 
-    # @+node:ekr.20261005094529.2: *3* u.set_command_name
-    def set_command_name(self, command_name: str) -> None:
-        self.undoBead.command_name = command_name
-
     # @+node:ekr.20191213085126.1: *3* u.reloadSettings
     def reloadSettings(self) -> None:
         """Undoer.reloadSettings."""
@@ -394,6 +390,62 @@ class Undoer:
         # Undo/redo always set changed/dirty bits because the file may have been saved.
         u.p.setDirty()
         u.c.setChanged()
+
+    # @+node:ekr.20261005135125.1: *3* u.New helpers
+    # @+node:ekr.20261005094529.2: *4* u.set_command_name
+    def set_command_name(self, command_name: str) -> None:
+        self.undoBead.command_name = command_name
+
+    # @+node:ekr.20261005140833.1: *4* u.set_body
+    def set_body(self, p: Position, new_body: str) -> None:
+
+        u = self
+
+        def set_body_redoer(old_body=p.b) -> None:
+            # g.printObj(old_body, tag=g.my_name())
+            p.b = old_body
+
+        def set_body_undoer(new_body=new_body) -> None:
+            # g.printObj(new_body, tag=g.my_name())
+            p.b = new_body
+
+        u.undoBead.set_helpers(set_body_redoer, set_body_undoer)
+
+    # @+node:ekr.20261005143707.1: *4* u.delete_node
+    def delete_node(self, child: Position) -> None:
+
+        u = self
+        g.trace(child.h)
+
+        def delete_node_redoer(p: Position) -> None:
+            g.trace(p.h)
+            ### To do.
+
+        def delete_node_undoer(p: Position) -> None:
+            g.trace(p.h)
+            ### To do.
+
+        u.undoBead.set_helpers(delete_node_redoer, delete_node_undoer)
+
+    # @+node:ekr.20261005143752.1: *4* u.set_selection_range
+    def set_selection_range(
+        self,
+        new_sel: tuple[int, int],
+        *,
+        old_sel: tuple[int, int] | None = None,
+    ) -> None:
+
+        u = self
+
+        def set_selection_range_redoer(new_sel: tuple[int, int]) -> None:
+            g.trace(new_sel)
+            ### To do.
+
+        def set_selection_range_undoer(old_sel: tuple[int, int]) -> None:
+            g.trace(old_sel)
+            ### To do.
+
+        u.undoBead.set_helpers(set_selection_range_redoer, set_selection_range_undoer)
 
     # @+node:ekr.20031218072017.3608: *3* u.Externally visible entries
     # @+node:ekr.20050318085432.4: *4* u.afterX...
