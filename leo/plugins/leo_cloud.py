@@ -509,12 +509,12 @@ class LeoCloud:
                 try:
                     last_read = dt.datetime.strptime(  # PR #4829
                         lc_v.u['_leo_cloud']['last_read'], "%Y-%m-%dT%H:%M:%S.%f"
-                    ).replace(tzinfo=dt.timezone.utc)
+                    ).replace(tzinfo=dt.UTC)
                 except KeyError:
                     last_read = None
                 message = "Read cloud data '%s', overwriting local nodes?" % kwargs['ID']
                 if last_read:
-                    delta = dt.datetime.now(tz=dt.timezone.utc) - last_read
+                    delta = dt.datetime.now(tz=dt.UTC) - last_read
                     message = "%s\n%s, %sh:%sm:%ss ago" % (
                         message,
                         last_read.strftime("%a %b %d %H:%M"),
@@ -583,7 +583,7 @@ class LeoCloud:
         # because we want the user to understand why the outline's changed,
         # so just ignore top node dirtiness in self.subtree_changed()
         self.c.setChanged()
-        tz = dt.timezone.utc
+        tz = dt.UTC
         p.v.u.setdefault('_leo_cloud', {})['last_read'] = dt.datetime.now(tz=tz).isoformat()
 
     # @+node:ekr.20201012111338.34: *3* LeoCloud.recursive_hash
@@ -772,7 +772,7 @@ class LeoCloud:
         lc_io.put_subtree(lc_io.lc_id, p.v)
         g.es("Stored %s" % lc_io.lc_id)
         # writing counts as reading, last read time msg. confusing otherwise
-        tz = dt.timezone.utc
+        tz = dt.UTC
         p.v.u.setdefault('_leo_cloud', {})['last_read'] = dt.datetime.now(tz=tz).isoformat()
 
     # @-others

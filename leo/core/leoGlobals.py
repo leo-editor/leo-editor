@@ -80,7 +80,7 @@ if TYPE_CHECKING:  # pragma: no cover
 in_bridge: bool = False  # True: leoApp object loads a null Gui by default.
 in_leo_server: bool = False
 in_vs_code: bool = False  # #2098.
-minimum_python_version = '3.10'
+minimum_python_version = '3.11'
 minimum_python_version_tuple = (3, 10, 0)
 python_version_tuple = sys.version_info[:3]
 isPython3 = python_version_tuple >= (3, 0, 0)

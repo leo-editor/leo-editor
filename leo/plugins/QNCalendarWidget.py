@@ -43,7 +43,7 @@ class QNCalendarWidget(QtWidgets.QCalendarWidget):
     def build(self, n=3, columns=3, year=None, month=None):
         self.calendars = []
 
-        now = dt.datetime.now(tz=dt.timezone.utc)  # PR #4829
+        now = dt.datetime.now(tz=dt.UTC)  # PR #4829
         if year is None:
             year = now.year
         if month is None:
