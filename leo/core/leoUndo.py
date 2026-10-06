@@ -74,6 +74,7 @@ class UndoBead:
         'c',
         'command_name',
         'must_redraw',
+        'old_p',
         'redo_finishers',
         'redo_functions',
         'undoType',
@@ -83,12 +84,13 @@ class UndoBead:
     )
 
     def __init__(self, undoer: Undoer) -> None:
-        self.c = undoer.c
+        self.c = c = undoer.c
         self.command_name = None
         self.must_redraw = False  # Sticky: never cleared once set.
+        self.old_p = c.p
         self.redo_finishers: list[Callable] = []
         self.redo_functions: list[Callable] = []
-        self.undoType = ''  # Required for compatibility with legacy beads.
+        self.undoType = ''  # Required. Set by u.set_command_name
         self.undo_finishers: list[Callable] = []
         self.undo_functions: list[Callable] = []
         self.undoer = undoer
@@ -124,7 +126,8 @@ class UndoBead:
         for f in self.undo_functions:
             f()
         if self.must_redraw:
-            c.redraw()
+            # g.trace('Redrawing')
+            c.redraw(self.old_p)
         for f in self.undo_finishers:
             f()
 
@@ -440,9 +443,10 @@ class Undoer:
     # @+node:ekr.20261005094529.2: *4* u.set_command_name
     def set_command_name(self, command_name: str) -> None:
         u = self
-        top_bead = u.beads[-1]
-        assert isinstance(top_bead, UndoBead), repr(top_bead)
-        top_bead.command_name = command_name
+        b = u.undoBead
+        assert isinstance(b, UndoBead), repr(b)
+        b.command_name = command_name
+        b.undoType = command_name
         u.setUndoType(command_name)
 
     # @+node:ekr.20261005140833.1: *4* u.set_body
@@ -471,14 +475,22 @@ class Undoer:
 
         g.trace(p.h)  ###
         u = self
+        b = u.undoBead
+        c = self.c
         p = p.copy()
         old_back = p.back()
         old_parent = p.parent()
+        # Similar to code for delete-node command:
+        new_node = p.visBack(c) if p.hasVisBack(c) else p.next()
+        if not new_node:
+            g.error(f"Can not delete {p.h}")
+            return
 
-        def delete_node_redoer() -> None:  ###p: Position) -> None:
+        def delete_node_redoer() -> None:
             g.trace(p.h)
-            # Simpler than u.redoDeleteNode.
-            p.doDelete()
+            p.doDelete(new_node)
+            new_node.setDirty()
+            c.p = new_node  # Required.
 
         def delete_node_undoer() -> None:
             g.trace(p.h)
@@ -487,16 +499,17 @@ class Undoer:
                 p._linkAfter(old_back)
             elif old_parent:
                 p._linkAsNthChild(old_parent, 0)
+                old_parent.contract()
             else:
                 p._linkAsRoot()
-            ### p.setDirty()
-            ### c.p = p  # Required.
+            # UndoBead.undo sets c.p to UndoBead.old_p.
 
-        u.undoBead.set_helpers(delete_node_redoer, delete_node_undoer)
-        u.undoBead.must_redraw = True
+        b.set_helpers(delete_node_redoer, delete_node_undoer)
+        b.must_redraw = True
 
         # Do the action!
-        p.doDelete()
+        p.doDelete(new_node)
+        new_node.contract()
 
     # @+node:ekr.20261005182243.1: *4* u.select_position
     def select_position(self, p: Position) -> None:
@@ -1593,9 +1606,10 @@ class Undoer:
             ### g.trace("Can't redo")  ###
             return
         ### if not u.getBead(u.bead + 1):
-        obj = u.getBead(u.bead + 1)  ###
-        if not g.unitTesting:
-            g.trace(obj.__class__.__name__)  ###
+        obj = u.getBead(u.bead + 1)
+        if not g.unitTesting:  ###
+            print()
+            g.trace(obj.__class__.__name__)
         if not obj:
             g.trace('No bead!')
             return
@@ -1986,13 +2000,8 @@ class Undoer:
             return
         # End editing *before* getting state.
         c.endEditing()
-        ###
-        # if u.per_node_undo:  # 2011/05/19
-        #     u.setIvarsFromVnode(c.p)
         if not u.canUndo():
-            ### g.trace("Can't undo")  ###
             return
-        ### if not u.getBead(u.bead):
         obj = u.getBead(u.bead)
         if not obj:
             g.trace('No bead!')
@@ -2004,11 +2013,12 @@ class Undoer:
 
         # Dispatch.
         if not g.unitTesting:  ###
+            print()
             g.trace(obj.__class__.__name__)
         if isinstance(obj, UndoBead):
-            obj.undo()  ### Experimental.
+            obj.undo()
         elif u.undoHelper:
-            if u.per_node_undo:  # 2011/05/19
+            if u.per_node_undo:
                 u.setIvarsFromVnode(c.p)
             u.undoHelper()
         else:
