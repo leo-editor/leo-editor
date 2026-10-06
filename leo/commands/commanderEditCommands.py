@@ -791,6 +791,149 @@ def preferences(self: Self, event: LeoKeyEvent | None = None) -> None:
     c.openLeoSettings()
 
 
+# @+node:ekr.20261003045123.1: ** c_ec.promoteToAtOthers (promote-to-at-others)
+@g.commander_command('promote-to-at-others')
+def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
+    # @+<< promote-to-at-others: docstring >>
+    # @+node:ekr.20261005135836.1: *3* << promote-to-at-others: docstring >>
+    """
+    c.p must contain exactly one @others directive.
+    Otherwise this command does nothing.
+
+    Undoably replace the @others with the properly indented contents of all
+    nodes included by the @others.
+    """
+    # @-<< promote-to-at-others: docstring >>
+    c = self
+    p = c.p
+    w = self.frame.body.wrapper
+    c.endEditing()
+
+    # @+others
+    # @+node:ekr.20261004172902.1: *3* function: find_at_others
+    at_others_pat = re.compile(r'(\s*)@others\n')
+
+    def find_at_others(p: Position) -> tuple[int, str]:
+        """
+        Find the @others directive, ignoring the possibility that
+        strings or comments might contain the match.
+
+        Return the indentation (leading ws) of the directive or -1 if not found.
+        """
+        results = []
+        for i, z in enumerate(g.splitLines(p.b)):
+            if m := at_others_pat.match(z):
+                results.append((i, m.group(1)))
+        if len(results) == 1:
+            return results[0]
+        g.error('c.p.b must contain exactly one @others directive')
+        return -1, ''
+
+    # @+node:ekr.20261004172905.1: *3* function: find_promotable_children
+    section_def_pat = re.compile(r'\s*\<\<(.*?)\>\>')
+
+    def find_promotable_children(p: Position) -> list[Position]:
+        """Find all children that aren't section definitions"""
+        return [z.copy() for z in p.children() if not section_def_pat.match(z.h)]
+
+    # @+node:ekr.20261004172906.1: *3* function: compute_new_body
+    def compute_new_body(i: int, p: Position, children: list[Position]) -> str:
+        """Compute the new body."""
+        lines = g.splitLines(p.b)
+        result = lines[:i]
+        for child in children:
+            result.extend([f"{indent}{z}" for z in g.splitLines(child.b)])
+            result.append('\n' if child.b.endswith('\n') else '\n\n')
+        result.extend(lines[i + 1 :])
+        return ''.join(result)
+
+    # @-others
+
+    i, indent = find_at_others(p)
+    if indent == -1:
+        return
+    children = find_promotable_children(p)
+    if not children:
+        g.error('No promotable children')
+        return
+    new_body = compute_new_body(i, p, children)
+    old_sel = w.getSelectionRange()
+    j = p.b.find('@others') - len(indent)
+    new_sel = (j, j)  # Not accurate, but better.
+    with c.undoer as u:
+        u.set_command_name('promote-to-at-others')
+        u.set_body(p, new_body)
+        for child in reversed(children):
+            u.delete_node(child)
+        c.redraw(p)
+        u.set_selection_range(new_sel, old_sel=old_sel)
+        c.bodyWantsFocusNow()
+
+
+# @+node:ekr.20261003045316.1: ** c_ec.promoteSectionDefinition (promote-section-definition)
+@g.commander_command('promote-section-def')
+def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> None:
+    """
+    c.p must be a section definition node and an ancestor node must contain
+    exactly one section reference.
+    Otherwise, this command does nothing.
+
+    Undoably promote c.p.b into the nearest ancestor node containing the section
+    ref.
+    """
+    c = self
+    p = c.p
+    u, command = c.undoer, 'promote-section-def'
+    w = self.frame.body.wrapper
+    c.endEditing()
+
+    # Find the section ref, ignoring the possibility that
+    # strings or comments might contain the match.
+    section_def_pat = re.compile(r'(\s)*\<\<(.*?)\>\>')
+    m = section_def_pat.match(p.h)
+    if not m:
+        g.error('c.p must be a section definition node')
+        return
+    section_name = m.group(2).strip()
+    matches, rb, lb = [], '>>', '<<'
+    section_ref_pat = re.compile(rf"(\s*){lb}\s*({section_name})\s*{rb}")
+    for parent in p.parents():
+        for i, z in enumerate(g.splitLines(parent.b)):
+            if m := section_ref_pat.match(z):
+                matches.append((i, m, parent.copy()))
+        if matches:
+            break
+    if len(matches) != 1:
+        g.error(f"No unique ref to {lb} {section_name} {rb}")
+        return
+
+    # Compute the old insert point in the parent.
+    i, m, parent = matches[0]
+    indent = m.group(1)
+    ins = parent.b.find(m.group(0))
+
+    # Replace the section ref in parent.b with p.b, properly indented.
+    u.beforeChangeGroup(parent, command)
+    lines = g.splitLines(parent.b)
+    result = lines[:i]
+    result.extend([f"{indent}{z}" for z in g.splitLines(p.b)])
+    result.extend(lines[i + 1 :])
+    result.append('\n' if lines[-1].endswith('\n') else '\n\n')
+    bunch = u.beforeChangeBody(parent)
+    parent.b = ''.join(result)
+    u.afterChangeBody(parent, command, bunch)
+
+    # Delete the definition node.
+    bunch2 = u.beforeDeleteNode(p)
+    p.doDelete()
+    u.afterDeleteNode(p, command, bunch2)
+    u.afterChangeGroup(parent, command)
+
+    # Redraw.
+    c.redraw(parent)
+    w.setInsertPoint(ins)
+
+
 # @+node:ekr.20171123135625.40: ** c_ec.reformatBody
 @g.commander_command('reformat-body')
 def reformatBody(self: Self, event: LeoKeyEvent | None = None) -> None:

@@ -2328,6 +2328,7 @@ class Commands:
             message = f"Invalid position: {p!r} in {c.shortFileName()}\n{g.callers(10)=}"
             if g.unitTesting:
                 raise ValueError(message)
+            print()
             g.trace(message)
             c._currentPosition = c.rootPosition()
 
@@ -5209,8 +5210,7 @@ class Commands:
                         print(f"{i:>2} {command}")
                 c.hoistStack.pop()
         c.frame.tree.select(p)
-        # Do *not* test whether the position exists!
-        # We may be in the midst of an undo.
+        # Calls c.setCurrentPosition, which *does* test whether the position exists.
         c.p = p
 
     # Compatibility, but confusing.

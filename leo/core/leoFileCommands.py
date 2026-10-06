@@ -699,7 +699,7 @@ class FileCommands:
             return
 
         # Compute the timestamp.
-        today = dt.datetime.now(tz=dt.timezone.utc)  # PR #4829
+        today = dt.datetime.now(tz=dt.UTC)  # PR #4829
         time_s = today.strftime('%Y-%m-%d-%H-%M-%S')
 
         # Compute archive_name.

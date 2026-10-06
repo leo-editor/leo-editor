@@ -85,7 +85,70 @@ def reloadSettings(self: Self, event: LeoKeyEvent | None = None) -> None:
         c.reloadConfigurableSettings()
 
 
-# @+node:ekr.20200422075655.1: ** c_file.restartLeo
+# @+node:ekr.20200422075655.1: ** c_file.forceRestartLeo
+@g.commander_command('restart-leo-force')
+def forceRestartLeo(self: Self, event: LeoKeyEvent | None = None) -> None:
+    """Restart Leo, reloading all presently open outlines."""
+    verbose = False
+    c = self
+    # Write .leoRecentFiles.txt.
+    g.app.recentFilesManager.writeRecentFilesFile(c)
+    # Officially begin the restart process. A flag for efc.ask and efc.on_idle.
+    g.app.restarting = True
+    # Save session data.
+    g.app.saveSession()
+    g.app.setLog(None)  # Kill the log.
+    # Close all unsaved outlines.
+    for c in g.app.commanders():
+        frame = c.frame
+        # This is similar to g.app.closeLeoWindow.
+        g.doHook("close-frame", c=c)
+        # Save the window state
+        # This may remove frame from the window list.
+        if frame in g.app.windowList:
+            g.app.destroyWindow(frame)
+            g.app.windowList.remove(frame)
+        else:
+            # #69.
+            g.app.forgetOpenFile(fn=c.fileName())
+    g.app.windowList = []
+    # Complete the shutdown.
+    g.app.finishQuit()
+    sys.stdout.flush()
+    sys.stderr.flush()
+    # Restart Leo with subprocess.run.
+    if verbose:
+        print('')
+    else:
+        g.cls()
+    print('Restarting Leo...')
+    if verbose:
+        print(f"os.chdir({g.app.initial_cwd})")
+
+    os.chdir(g.app.initial_cwd)
+    if 1:  # #3916.
+        if g.isWindows:
+            sys_args = [z.replace('/', os.sep) for z in sys.argv]
+        else:
+            sys_args = sys.argv[:]
+        args = [sys.executable] + sys_args
+    else:
+        # #3141: Remember all open outlines.
+        restart_paths: list[str] = [c.fileName() for c in g.app.commanders() if c.fileName()]
+        if g.isWindows:
+            restart_paths = [z.replace('/', os.sep) for z in restart_paths]
+        # Warning: Python 3.9 does not allow newlines within f-strings.
+        leo_editor_dir = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
+        launchLeo_s = rf'{leo_editor_dir}{os.sep}launchLeo.py'
+        args = [sys.executable, launchLeo_s] + restart_paths + ['--no-splash']
+    args_s = 'subprocess.run([\n  ' + ',\n  '.join(args) + '\n])'
+    if verbose:
+        print(args_s)
+    print('')
+    subprocess.run(args)  # pylint: disable=subprocess-run-check
+
+
+# @+node:ekr.20261003164719.1: ** c_file.restartLeo
 @g.commander_command('restart-leo')
 def restartLeo(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Restart Leo, reloading all presently open outlines."""
