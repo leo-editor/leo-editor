@@ -407,15 +407,18 @@ class Undoer:
     # @+node:ekr.20261005140833.1: *4* u.set_body
     def set_body(self, p: Position, new_body: str) -> None:
 
+        c = self.c
         u = self
         p = p.copy()
         old_body = p.b
 
         def set_body_redoer() -> None:
             p.b = new_body
+            c.recolor()
 
         def set_body_undoer() -> None:
             p.b = old_body
+            c.recolor()
 
         u.undoBead.set_helpers(set_body_redoer, set_body_undoer)
 
