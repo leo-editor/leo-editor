@@ -70,42 +70,65 @@ def cmd(name: str) -> Callable:
 # @+others
 # @+node:ekr.20261005092455.1: ** class UndoBead
 class UndoBead:
+    __slots__ = (
+        'c',
+        'command_name',
+        'must_redraw',
+        'redo_finishers',
+        'redo_functions',
+        'undo_finishers',
+        'undo_functions',
+        'undoer',
+    )
+
     def __init__(self, undoer: Undoer) -> None:
         self.c = undoer.c
         self.command_name = None
         self.must_redraw = False
+        self.redo_finishers: list[Callable] = []
         self.redo_functions: list[Callable] = []
+        self.undo_finishers: list[Callable] = []
         self.undo_functions: list[Callable] = []
         self.undoer = undoer
-        self.undoType = None
 
     def __repr__(self):
         return f"UndoBead: {self.command_name}"
 
-    def set_helpers(self, redo_function: Callable, undo_function: Callable) -> None:
-        """Append the helpers (in correct order!) to the undo/redo lists."""
-        self.redo_functions.append(redo_function)
-        self.undo_functions.insert(0, undo_function)
-
+    # @+others
+    # @+node:ekr.20261006040132.1: *3* UndoBead.redo
     def redo(self) -> None:
         g.trace(f"{len(self.redo_functions)=}")
         c = self.c
-        self.must_redraw = False
         for f in self.redo_functions:
             # g.trace(f.__name__)
             f()
         if self.must_redraw:
             c.redraw()
+            self.must_redraw = False
 
+    # @+node:ekr.20261006040137.2: *3* UndoBead.set_helpers & set_finishers
+    def set_helpers(self, redo_function: Callable, undo_function: Callable) -> None:
+        """Append the helpers (in correct order!) to the undo/redo lists."""
+        self.redo_functions.append(redo_function)
+        self.undo_functions.insert(0, undo_function)  # Execute in reverse order.
+
+    def set_finishers(self, redo_finisher: Callable, undo_finisher: Callable) -> None:
+        """Append the helpers (in correct order!) to the undo/redo lists."""
+        self.redo_finishers.append(redo_finisher)
+        self.undo_finisher.insert(undo_finisher)  # Execute in given order.
+
+    # @+node:ekr.20261006040137.1: *3* UndoBead.undo
     def undo(self) -> None:
         g.trace(f"{len(self.undo_functions)=}")
         c = self.c
-        self.must_redraw = False
         for f in self.undo_functions:
             # g.trace(f.__name__)
             f()
         if self.must_redraw:
             c.redraw()
+            self.must_redraw = False
+
+    # @-others
 
 
 # @+node:ekr.20031218072017.3605: ** class Undoer
@@ -191,6 +214,7 @@ class Undoer:
     def __enter__(self) -> Self:
         """Support context manager."""
         u = self
+        # The u.undoBead ivar exists *only* during the lifetime of the "with" statement!
         u.undoBead = UndoBead(undoer=self)
         u.beads.append(u.undoBead)
         u.bead += 1
@@ -200,6 +224,7 @@ class Undoer:
         """Called when leaving a "with" statement."""
         u = self
         assert isinstance(u.undoBead, UndoBead), repr(u.undoBead)
+        u.undoBead = None
 
     # @+node:ekr.20191213085126.1: *3* u.reloadSettings
     def reloadSettings(self) -> None:
@@ -451,7 +476,7 @@ class Undoer:
 
         g.trace(p.h)  ###
         u = self
-        ### old_p = p
+        p = p.copy()
         old_back = p.back()
         old_parent = p.parent()
 
@@ -1569,11 +1594,12 @@ class Undoer:
         # End editing *before* getting state.
         c.endEditing()
         if not u.canRedo():
-            g.trace("Can't redo")  ###
+            ### g.trace("Can't redo")  ###
             return
         ### if not u.getBead(u.bead + 1):
         obj = u.getBead(u.bead + 1)  ###
-        g.trace(obj.__class__.__name__)  ###
+        if not g.unitTesting:
+            g.trace(obj.__class__.__name__)  ###
         if not obj:
             g.trace('No bead!')
             return
@@ -1968,7 +1994,7 @@ class Undoer:
         # if u.per_node_undo:  # 2011/05/19
         #     u.setIvarsFromVnode(c.p)
         if not u.canUndo():
-            g.trace("Can't undo")  ###
+            ### g.trace("Can't undo")  ###
             return
         ### if not u.getBead(u.bead):
         obj = u.getBead(u.bead)
@@ -1981,7 +2007,8 @@ class Undoer:
         u.groupCount = 0
 
         # Dispatch.
-        g.trace(obj.__class__.__name__)
+        if not g.unitTesting:  ###
+            g.trace(obj.__class__.__name__)
         if isinstance(obj, UndoBead):
             obj.undo()  ### Experimental.
         elif u.undoHelper:
