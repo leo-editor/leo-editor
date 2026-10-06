@@ -410,7 +410,7 @@ class Undoer:
         u.setUndoType(command_name)
 
     # @+node:ekr.20261005140833.1: *4* u.set_body
-    def set_body(self, p: Position, new_body: str) -> None:
+    def set_body(self, p: Position, new_body: str, *, new_y_scroll: int | None = None) -> None:
 
         u = self
         b = u.bead
@@ -431,7 +431,8 @@ class Undoer:
             old_y_scroll = w.getYScrollPosition()
 
             def set_scroll_redoer() -> None:
-                pass
+                if new_y_scroll is not None:
+                    w.setYScrollPosition(new_y_scroll)
 
             def set_scroll_undoer() -> None:
                 w.setYScrollPosition(old_y_scroll)
