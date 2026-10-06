@@ -70,6 +70,8 @@ def cmd(name: str) -> Callable:
 # @+others
 # @+node:ekr.20261005092455.1: ** class UndoBead
 class UndoBead:
+    # @+<< UndoBead: slots >>
+    # @+node:ekr.20261006122714.1: *3* << UndoBead: slots >>
     __slots__ = (
         'c',
         'command_name',
@@ -82,6 +84,8 @@ class UndoBead:
         'undo_functions',
         'undoer',
     )
+
+    # @-<< UndoBead: slots >>
 
     def __init__(self, undoer: Undoer) -> None:
         self.c = c = undoer.c
@@ -162,55 +166,7 @@ class Undoer:
         self.per_node_undo = False  # True: v may contain undo_info ivar.
         # New in 4.2...
         self.optionalIvars = []
-
-        # Set the following ivars to keep pylint happy.
-        # mypy doesn't care about these.
-        if 0:
-            self.afterTree = None
-            self.beforeTree = None
-            self.children = None
-            self.deleteMarkedNodesData: list[Position] | None = None
-            self.followingSibs: list[VNode] = None
-            self.headlines: dict[str, tuple[str, str]]
-            # self.inHead: bool | None = None
-            self.kind: str | None = None
-            self.newBack = None
-            self.newBody = None
-            self.newChildren = None
-            self.newHead = None
-            self.newIns = None
-            self.newMarked = None
-            self.newN = None
-            self.newP = None
-            self.newParent = None
-            self.newPastedTree = None
-            self.newParent_v = None
-            self.newRecentFiles = None
-            self.newSel = None
-            self.newTree = None
-            self.newUA = None
-            self.newYScroll = None
-            self.oldBack = None
-            self.oldBody = None
-            self.oldChildren = None
-            self.oldHead = None
-            self.oldIns = None
-            self.oldMarked = None
-            self.oldN = None
-            self.oldParent = None
-            self.oldParent_v = None
-            self.oldPastedTree = None
-            self.oldRecentFiles = None
-            self.oldSel = None
-            self.oldSiblings = None
-            self.oldTree = None
-            self.oldUA = None
-            self.oldYScroll = None
-            self.pasteAsClone = None
-            self.prevSel = None
-            self.sortChildren = None
-            self.verboseUndoGroup = None
-
+        # Update settings.
         self.reloadSettings()
 
     # @+node:ekr.20261005094529.1: *3* u.__enter__ and __exit__
