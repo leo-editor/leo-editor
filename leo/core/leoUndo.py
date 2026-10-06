@@ -130,7 +130,6 @@ class UndoBead:
         for f in self.undo_functions:
             f()
         if self.must_redraw:
-            # g.trace('Redrawing')
             c.redraw(self.old_p)
         for f in self.undo_finishers:
             f()
@@ -411,14 +410,11 @@ class Undoer:
         u = self
         p = p.copy()
         old_body = p.b
-        g.trace(f"{p.h=} {len(old_body)=} {len(new_body)=}")
 
         def set_body_redoer() -> None:
-            g.trace(len(new_body))
             p.b = new_body
 
         def set_body_undoer() -> None:
-            g.trace(len(old_body))
             p.b = old_body
 
         u.undoBead.set_helpers(set_body_redoer, set_body_undoer)
@@ -429,7 +425,6 @@ class Undoer:
     # @+node:ekr.20261005143707.1: *4* u.delete_node
     def delete_node(self, p: Position) -> None:
 
-        g.trace(p.h)  ###
         u = self
         b = u.undoBead
         c = self.c
@@ -443,13 +438,11 @@ class Undoer:
             return
 
         def delete_node_redoer() -> None:
-            g.trace(p.h)
             p.doDelete(new_node)
             new_node.setDirty()
             c.p = new_node  # Required.
 
         def delete_node_undoer() -> None:
-            g.trace(p.h)
             # Similar to u.undoDeleteNode.
             if old_back:
                 p._linkAfter(old_back)
@@ -470,17 +463,13 @@ class Undoer:
     # @+node:ekr.20261005182243.1: *4* u.select_position
     def select_position(self, p: Position) -> None:
 
-        g.trace(p.h)  ###
         c, u = self.c, self
-
         old_p = c.p.copy()
 
         def select_position_redoer() -> None:
-            g.trace(p.h)
             c.p = p
 
         def select_position_undoer() -> None:
-            g.trace(old_p)
             c.p = old_p
 
         u.undoBead.set_helpers(select_position_redoer, select_position_undoer)
@@ -502,15 +491,12 @@ class Undoer:
             return
         if old_sel is None:
             old_sel = w.getSelectionRange()
-        g.trace(f"{new_sel=}")
 
         def set_selection_range_redoer() -> None:
-            g.trace(new_sel)
             i, j = new_sel
             w.setSelectionRange(i, j)
 
         def set_selection_range_undoer() -> None:
-            g.trace(old_sel)
             i, j = old_sel
             w.setSelectionRange(i, j)
 
@@ -1559,13 +1545,8 @@ class Undoer:
         # End editing *before* getting state.
         c.endEditing()
         if not u.canRedo():
-            ### g.trace("Can't redo")  ###
             return
-        ### if not u.getBead(u.bead + 1):
         obj = u.getBead(u.bead + 1)
-        if not g.unitTesting:  ###
-            print()
-            g.trace(obj.__class__.__name__)
         if not obj:
             g.trace('No bead!')
             return
@@ -1574,8 +1555,8 @@ class Undoer:
         u.redoing = True
         u.groupCount = 0
         if isinstance(obj, UndoBead):
-            obj.redo()  ### Experimental.
-        if u.redoHelper:
+            obj.redo()
+        elif u.redoHelper:
             u.redoHelper()
         else:
             g.trace(f"no redo helper for {u.kind} {u.undoType}")
@@ -1968,9 +1949,6 @@ class Undoer:
         u.groupCount = 0
 
         # Dispatch.
-        if not g.unitTesting:  ###
-            print()
-            g.trace(obj.__class__.__name__)
         if isinstance(obj, UndoBead):
             obj.undo()
         elif u.undoHelper:
