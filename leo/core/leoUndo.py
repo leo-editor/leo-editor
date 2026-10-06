@@ -85,7 +85,7 @@ class UndoBead:
     def __init__(self, undoer: Undoer) -> None:
         self.c = undoer.c
         self.command_name = None
-        self.must_redraw = False
+        self.must_redraw = False  # Sticky: never cleared once set.
         self.redo_finishers: list[Callable] = []
         self.redo_functions: list[Callable] = []
         self.undoType = ''  # Required for compatibility with legacy beads.
@@ -99,13 +99,11 @@ class UndoBead:
     # @+others
     # @+node:ekr.20261006040132.1: *3* UndoBead.redo
     def redo(self) -> None:
-        g.trace(f"{len(self.redo_functions)=}")
         c = self.c
         for f in self.redo_functions:
             f()
         if self.must_redraw:
             c.redraw()
-            self.must_redraw = False
         for f in self.redo_finishers:
             f()
 
@@ -122,13 +120,11 @@ class UndoBead:
 
     # @+node:ekr.20261006040137.1: *3* UndoBead.undo
     def undo(self) -> None:
-        g.trace(f"{len(self.undo_functions)=}")
         c = self.c
         for f in self.undo_functions:
             f()
         if self.must_redraw:
             c.redraw()
-            self.must_redraw = False
         for f in self.undo_finishers:
             f()
 
@@ -444,15 +440,10 @@ class Undoer:
     # @+node:ekr.20261005094529.2: *4* u.set_command_name
     def set_command_name(self, command_name: str) -> None:
         u = self
-        assert command_name, g.callers()
-        assert u, g.callers()
         top_bead = u.beads[-1]
         assert isinstance(top_bead, UndoBead), repr(top_bead)
         top_bead.command_name = command_name
-        ### top_bead.undoType = command_name
         u.setUndoType(command_name)
-        # u.redoMenuLabel = "Can't Redo"
-        # u.undoMenuLabel = f"Undo {command_name}"
 
     # @+node:ekr.20261005140833.1: *4* u.set_body
     def set_body(self, p: Position, new_body: str) -> None:
@@ -502,6 +493,7 @@ class Undoer:
             ### c.p = p  # Required.
 
         u.undoBead.set_helpers(delete_node_redoer, delete_node_undoer)
+        u.undoBead.must_redraw = True
 
         # Do the action!
         p.doDelete()
