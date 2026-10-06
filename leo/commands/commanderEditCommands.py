@@ -862,7 +862,6 @@ def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
     new_sel = (j, j)  # Not accurate, but better.
     with c.undoer as u:
         u.set_command_name('promote-to-at-others')
-        u.set_selection_range(new_sel, old_sel=old_sel)
         u.set_body(p, new_body)
         for child in reversed(children):
             u.delete_node(child)

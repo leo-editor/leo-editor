@@ -76,6 +76,7 @@ class UndoBead:
         'must_redraw',
         'redo_finishers',
         'redo_functions',
+        'undoType',
         'undo_finishers',
         'undo_functions',
         'undoer',
@@ -87,6 +88,7 @@ class UndoBead:
         self.must_redraw = False
         self.redo_finishers: list[Callable] = []
         self.redo_functions: list[Callable] = []
+        self.undoType = ''  # Required for compatibility with legacy beads.
         self.undo_finishers: list[Callable] = []
         self.undo_functions: list[Callable] = []
         self.undoer = undoer
@@ -100,11 +102,12 @@ class UndoBead:
         g.trace(f"{len(self.redo_functions)=}")
         c = self.c
         for f in self.redo_functions:
-            # g.trace(f.__name__)
             f()
         if self.must_redraw:
             c.redraw()
             self.must_redraw = False
+        for f in self.redo_finishers:
+            f()
 
     # @+node:ekr.20261006040137.2: *3* UndoBead.set_helpers & set_finishers
     def set_helpers(self, redo_function: Callable, undo_function: Callable) -> None:
@@ -115,18 +118,19 @@ class UndoBead:
     def set_finishers(self, redo_finisher: Callable, undo_finisher: Callable) -> None:
         """Append the helpers (in correct order!) to the undo/redo lists."""
         self.redo_finishers.append(redo_finisher)
-        self.undo_finisher.insert(undo_finisher)  # Execute in given order.
+        self.undo_finishers.append(undo_finisher)  # Execute in given order.
 
     # @+node:ekr.20261006040137.1: *3* UndoBead.undo
     def undo(self) -> None:
         g.trace(f"{len(self.undo_functions)=}")
         c = self.c
         for f in self.undo_functions:
-            # g.trace(f.__name__)
             f()
         if self.must_redraw:
             c.redraw()
             self.must_redraw = False
+        for f in self.undo_finishers:
+            f()
 
     # @-others
 
@@ -445,7 +449,7 @@ class Undoer:
         top_bead = u.beads[-1]
         assert isinstance(top_bead, UndoBead), repr(top_bead)
         top_bead.command_name = command_name
-        top_bead.undoType = command_name
+        ### top_bead.undoType = command_name
         u.setUndoType(command_name)
         # u.redoMenuLabel = "Can't Redo"
         # u.undoMenuLabel = f"Undo {command_name}"
@@ -549,7 +553,7 @@ class Undoer:
             i, j = old_sel
             w.setSelectionRange(i, j)
 
-        u.undoBead.set_helpers(set_selection_range_redoer, set_selection_range_undoer)
+        u.undoBead.set_finishers(set_selection_range_redoer, set_selection_range_undoer)
 
         # Do the action!
         i, j = new_sel
