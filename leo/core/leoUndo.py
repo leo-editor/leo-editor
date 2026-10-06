@@ -415,6 +415,7 @@ class Undoer:
         u = self
         b = u.bead
         p = p.copy()
+        w = u.c.frame.body.wrapper
         old_body = p.b
 
         def set_body_redoer() -> None:
@@ -425,6 +426,17 @@ class Undoer:
 
         b.set_helpers(set_body_redoer, set_body_undoer)
         b.must_recolor = True
+
+        if w:
+            old_y_scroll = w.getYScrollPosition()
+
+            def set_scroll_redoer() -> None:
+                pass
+
+            def set_scroll_undoer() -> None:
+                w.setYScrollPosition(old_y_scroll)
+
+            b.set_finishers(set_scroll_redoer, set_scroll_undoer)
 
         # Do the action!
         p.b = new_body
@@ -470,7 +482,9 @@ class Undoer:
     # @+node:ekr.20261005182243.1: *4* u.select_position
     def select_position(self, p: Position) -> None:
 
-        c, u = self.c, self
+        u = self
+        b = u.bead
+        c = u.c
         old_p = c.p.copy()
 
         def select_position_redoer() -> None:
@@ -479,7 +493,7 @@ class Undoer:
         def select_position_undoer() -> None:
             c.p = old_p
 
-        u.undoBead.set_helpers(select_position_redoer, select_position_undoer)
+        b.set_helpers(select_position_redoer, select_position_undoer)
 
         # Do the action!
         c.p = p
@@ -493,7 +507,9 @@ class Undoer:
     ) -> None:
 
         u = self
-        w = u.c.frame.body.wrapper
+        b = u.bead
+        c = u.c
+        w = c.frame.body.wrapper
         if not w:
             return
         if old_sel is None:
@@ -507,7 +523,7 @@ class Undoer:
             i, j = old_sel
             w.setSelectionRange(i, j)
 
-        u.undoBead.set_finishers(set_selection_range_redoer, set_selection_range_undoer)
+        b.set_finishers(set_selection_range_redoer, set_selection_range_undoer)
 
         # Do the action!
         i, j = new_sel
