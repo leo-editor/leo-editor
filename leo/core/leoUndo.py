@@ -1548,7 +1548,6 @@ class Undoer:
             return
         obj = u.getBead(u.bead + 1)
         if not obj:
-            g.trace('No bead!')
             return
 
         # Init status.
@@ -1941,7 +1940,6 @@ class Undoer:
             return
         obj = u.getBead(u.bead)
         if not obj:
-            g.trace('No bead!')
             return
 
         # Init status.
