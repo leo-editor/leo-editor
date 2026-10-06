@@ -859,13 +859,15 @@ def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
     new_body = compute_new_body(i, p, children)
     old_sel = w.getSelectionRange()
     j = p.b.find('@others') - len(indent)
-    new_sel = (j, j)
+    new_sel = (j, j)  # Not accurate, but better.
     with c.undoer as u:
         u.set_command_name('promote-to-at-others')
         u.set_body(p, new_body)
         for child in reversed(children):
             u.delete_node(child)
+        c.redraw(p)
         u.set_selection_range(new_sel, old_sel=old_sel)
+        c.bodyWantsFocusNow()
 
 
 # @+node:ekr.20261003045316.1: ** c_ec.promoteSectionDefinition (promote-section-definition)

@@ -77,6 +77,7 @@ class UndoBead:
         self.redo_functions: list[Callable] = []
         self.undo_functions: list[Callable] = []
         self.undoer = undoer
+        self.undoType = None
 
     def __repr__(self):
         return f"UndoBead: {self.command_name}"
@@ -87,19 +88,21 @@ class UndoBead:
         self.undo_functions.insert(0, undo_function)
 
     def redo(self) -> None:
+        g.trace(f"{len(self.redo_functions)=}")
         c = self.c
         self.must_redraw = False
         for f in self.redo_functions:
-            g.trace(f"{f=}")
+            # g.trace(f.__name__)
             f()
         if self.must_redraw:
             c.redraw()
 
     def undo(self) -> None:
+        g.trace(f"{len(self.undo_functions)=}")
         c = self.c
         self.must_redraw = False
         for f in self.undo_functions:
-            g.trace(f"{f=}")
+            # g.trace(f.__name__)
             f()
         if self.must_redraw:
             c.redraw()
@@ -184,25 +187,19 @@ class Undoer:
 
         self.reloadSettings()
 
-    # @+node:ekr.20261005094529.1: *3* u.__enter__ and __exit__ (To do)
+    # @+node:ekr.20261005094529.1: *3* u.__enter__ and __exit__
     def __enter__(self) -> Self:
         """Support context manager."""
         u = self
         u.undoBead = UndoBead(undoer=self)
         u.beads.append(u.undoBead)
+        u.bead += 1
         return self
 
     def __exit__(self, *args) -> None:
         """Called when leaving a "with" statement."""
         u = self
-        g.trace(repr(u.undoBead))
-        assert self.undoBead
-        # c = self.c
-        # if u.undoBead.must_redraw:
-        #     c.redraw()
-        # bead = u.beads.pop()
-        # assert u.undoBead == bead, f"{bead=} {self.undoBead=}"
-        # u.undoBead = None
+        assert isinstance(u.undoBead, UndoBead), repr(u.undoBead)
 
     # @+node:ekr.20191213085126.1: *3* u.reloadSettings
     def reloadSettings(self) -> None:
@@ -418,42 +415,52 @@ class Undoer:
     # @+node:ekr.20261005094529.2: *4* u.set_command_name
     def set_command_name(self, command_name: str) -> None:
         u = self
-        assert command_name, g.callers()  ###
-        assert u, g.callers()  ###
-        u.undoBead.command_name = command_name
-        u.setRedoType(command_name)
+        assert command_name, g.callers()
+        assert u, g.callers()
+        top_bead = u.beads[-1]
+        assert isinstance(top_bead, UndoBead), repr(top_bead)
+        top_bead.command_name = command_name
+        top_bead.undoType = command_name
+        u.setUndoType(command_name)
         # u.redoMenuLabel = "Can't Redo"
         # u.undoMenuLabel = f"Undo {command_name}"
 
     # @+node:ekr.20261005140833.1: *4* u.set_body
     def set_body(self, p: Position, new_body: str) -> None:
 
-        u = self
+        c, u = self.c, self
+        p = p.copy()
+        old_body = p.b
+        g.trace(f"{p.h=} {len(old_body)=} {len(new_body)=}")
 
-        def set_body_redoer(old_body=p.b) -> None:
-            # g.printObj(old_body, tag=g.my_name())
-            p.b = old_body
-
-        def set_body_undoer(new_body=new_body) -> None:
-            # g.printObj(new_body, tag=g.my_name())
+        def set_body_redoer() -> None:
+            g.trace(len(new_body))
             p.b = new_body
 
+        def set_body_undoer() -> None:
+            g.trace(len(old_body))
+            p.b = old_body
+
         u.undoBead.set_helpers(set_body_redoer, set_body_undoer)
+
+        # Do the action!
+        p.b = new_body
 
     # @+node:ekr.20261005143707.1: *4* u.delete_node
     def delete_node(self, p: Position) -> None:
 
         g.trace(p.h)  ###
-        c, u = self.c, self
+        u = self
+        ### old_p = p
         old_back = p.back()
         old_parent = p.parent()
 
-        def delete_node_redoer(p: Position) -> None:
+        def delete_node_redoer() -> None:  ###p: Position) -> None:
             g.trace(p.h)
             # Simpler than u.redoDeleteNode.
             p.doDelete()
 
-        def delete_node_undoer(p: Position = p, old_back: Position = old_back) -> None:
+        def delete_node_undoer() -> None:
             g.trace(p.h)
             # Similar to u.undoDeleteNode.
             if old_back:
@@ -462,13 +469,34 @@ class Undoer:
                 p._linkAsNthChild(old_parent, 0)
             else:
                 p._linkAsRoot()
-            p.setDirty()
-            c.selectPosition(p)  # Required.
+            ### p.setDirty()
+            ### c.p = p  # Required.
 
         u.undoBead.set_helpers(delete_node_redoer, delete_node_undoer)
 
-        # Do the delete!
+        # Do the action!
         p.doDelete()
+
+    # @+node:ekr.20261005182243.1: *4* u.select_position
+    def select_position(self, p: Position) -> None:
+
+        g.trace(p.h)  ###
+        c, u = self.c, self
+
+        old_p = c.p.copy()
+
+        def select_position_redoer() -> None:
+            g.trace(p.h)
+            c.p = p
+
+        def select_position_undoer() -> None:
+            g.trace(old_p)
+            c.p = old_p
+
+        u.undoBead.set_helpers(select_position_redoer, select_position_undoer)
+
+        # Do the action!
+        c.p = p
 
     # @+node:ekr.20261005143752.1: *4* u.set_selection_range
     def set_selection_range(
@@ -484,18 +512,23 @@ class Undoer:
             return
         if old_sel is None:
             old_sel = w.getSelectionRange()
-        if new_sel == old_sel:
-            return  # Not an error.
+        g.trace(f"{new_sel=}")
 
-        def set_selection_range_redoer(new_sel: tuple[int, int]) -> None:
+        def set_selection_range_redoer() -> None:
             g.trace(new_sel)
-            w.setSelectionRange(new_sel)
+            i, j = new_sel
+            w.setSelectionRange(i, j)
 
-        def set_selection_range_undoer(old_sel: tuple[int, int]) -> None:
+        def set_selection_range_undoer() -> None:
             g.trace(old_sel)
-            w.setSelectionRange(old_sel)
+            i, j = old_sel
+            w.setSelectionRange(i, j)
 
         u.undoBead.set_helpers(set_selection_range_redoer, set_selection_range_undoer)
+
+        # Do the action!
+        i, j = new_sel
+        w.setSelectionRange(i, j)
 
     # @+node:ekr.20031218072017.3608: *3* u.Externally visible entries
     # @+node:ekr.20050318085432.4: *4* u.afterX...
@@ -1536,13 +1569,20 @@ class Undoer:
         # End editing *before* getting state.
         c.endEditing()
         if not u.canRedo():
+            g.trace("Can't redo")  ###
             return
-        if not u.getBead(u.bead + 1):
+        ### if not u.getBead(u.bead + 1):
+        obj = u.getBead(u.bead + 1)  ###
+        g.trace(obj.__class__.__name__)  ###
+        if not obj:
+            g.trace('No bead!')
             return
 
         # Init status.
         u.redoing = True
         u.groupCount = 0
+        if isinstance(obj, UndoBead):
+            obj.redo()  ### Experimental.
         if u.redoHelper:
             u.redoHelper()
         else:
@@ -1924,13 +1964,16 @@ class Undoer:
             return
         # End editing *before* getting state.
         c.endEditing()
-        if u.per_node_undo:  # 2011/05/19
-            u.setIvarsFromVnode(c.p)
+        ###
+        # if u.per_node_undo:  # 2011/05/19
+        #     u.setIvarsFromVnode(c.p)
         if not u.canUndo():
+            g.trace("Can't undo")  ###
             return
         ### if not u.getBead(u.bead):
         obj = u.getBead(u.bead)
         if not obj:
+            g.trace('No bead!')
             return
 
         # Init status.
@@ -1938,9 +1981,12 @@ class Undoer:
         u.groupCount = 0
 
         # Dispatch.
+        g.trace(obj.__class__.__name__)
         if isinstance(obj, UndoBead):
             obj.undo()  ### Experimental.
         elif u.undoHelper:
+            if u.per_node_undo:  # 2011/05/19
+                u.setIvarsFromVnode(c.p)
             u.undoHelper()
         else:
             g.trace(f"no undo helper for {u.kind} {u.undoType}")
