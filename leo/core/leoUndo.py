@@ -428,7 +428,7 @@ class Undoer:
     # @+node:ekr.20261005140833.1: *4* u.set_body
     def set_body(self, p: Position, new_body: str) -> None:
 
-        c, u = self.c, self
+        u = self
         p = p.copy()
         old_body = p.b
         g.trace(f"{p.h=} {len(old_body)=} {len(new_body)=}")
