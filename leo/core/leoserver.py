@@ -6005,7 +6005,7 @@ def main() -> None:  # pragma: no cover (tested in client)
                 else:
                     print(f"{tag}: no authentication required for {peer}", flush=True)
 
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 print(f"{tag}: authentication timeout {peer}", flush=True)
                 await asyncio.sleep(1)
                 await websocket.close(code=1008, reason="Authentication timeout")
