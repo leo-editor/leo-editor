@@ -560,7 +560,6 @@ class LeoFrame:
         if not g.isTextWrapper(w):
             return
         wname = c.widget_name(w)
-        bunch = u.beforeChangeBody(p)
         i, j = w.getSelectionRange()  # Returns insert point if no selection.
         s = g.app.gui.getTextFromClipboard()
         s = g.checkUnicode(s)
@@ -578,11 +577,11 @@ class LeoFrame:
         w.insert(i, s)
         w.see(i + len(s) + 2)
         if wname.startswith('body'):
-            p.v.b = w.getAllText()
-            u.afterChangeBody(p, 'Paste', bunch)
+            with c.undoer as u:
+                u.set_command_name('paste-text')
+                u.set_body(p, w.getAllText())
         if hasattr(w, 'getXScrollPosition'):
             w.setXScrollPosition(x_pos)
-        c.recolor()  # 4398.
 
     OnPasteFromMenu = pasteText
 
