@@ -520,31 +520,28 @@ class LeoFrame:
     @frame_cmd('cut-text')
     def cutText(self, event: LeoKeyEvent | None = None) -> None:
         """Invoked from the mini-buffer and from shortcuts."""
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c, p = self.c, self.c.p
         if not event:
-            return  # PR #4812
-        assert event
+            return
         w = event.w
         if not g.isTextWrapper(w):
             return
-        bunch = u.beforeChangeBody(p)
-        name = c.widget_name(w)
-        oldText = w.getAllText()
-        i, j = w.getSelectionRange()
         # Update the widget and set the clipboard text.
+        i, j = w.getSelectionRange()
         if i == j:
+            oldText = w.getAllText()
             ins = w.getInsertPoint()
             i, j = g.getLine(oldText, ins)
         s = w.get(i, j)
         w.delete(i, j)
-        w.see(i)  # Required.
+        w.see(i)
         s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
         g.app.gui.replaceClipboardWith(s)
-        if name.startswith('body'):
-            p.v.b = w.getAllText()
-            u.afterChangeBody(p, 'Cut', bunch)
-        # If it's the headline, the headline has not officially changed yet.
-        c.recolor()  # 4398.
+        if c.widget_name(w).startswith('body'):
+            with c.undoer as u:
+                u.set_command_name('cut-text')
+                u.set_body(p, w.getAllText())
+        # Otherwise, the headline has not yet offcially changed.
 
     OnCutFromMenu = cutText
 

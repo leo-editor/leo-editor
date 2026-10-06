@@ -91,6 +91,7 @@ class UndoBead:
         self.c = c = undoer.c
         self.command_name = None
         self.must_redraw = False  # Sticky: never cleared once set.
+        self.must_redraw = False  # Sticky: never cleared once set.
         self.old_p = c.p
         self.redo_finishers: list[Callable] = []
         self.redo_functions: list[Callable] = []
@@ -110,6 +111,8 @@ class UndoBead:
             f()
         if self.must_redraw:
             c.redraw()
+        elif self.must_recolor:
+            c.recolor()
         for f in self.redo_finishers:
             f()
 
@@ -131,6 +134,8 @@ class UndoBead:
             f()
         if self.must_redraw:
             c.redraw(self.old_p)
+        elif self.must_recolor:
+            c.recolor()
         for f in self.undo_finishers:
             f()
 
@@ -407,20 +412,19 @@ class Undoer:
     # @+node:ekr.20261005140833.1: *4* u.set_body
     def set_body(self, p: Position, new_body: str) -> None:
 
-        c = self.c
         u = self
+        b = u.bead
         p = p.copy()
         old_body = p.b
 
         def set_body_redoer() -> None:
             p.b = new_body
-            c.recolor()
 
         def set_body_undoer() -> None:
             p.b = old_body
-            c.recolor()
 
-        u.undoBead.set_helpers(set_body_redoer, set_body_undoer)
+        b.set_helpers(set_body_redoer, set_body_undoer)
+        b.must_recolor = True
 
         # Do the action!
         p.b = new_body
@@ -430,7 +434,7 @@ class Undoer:
 
         u = self
         b = u.undoBead
-        c = self.c
+        c = u.c
         p = p.copy()
         old_back = p.back()
         old_parent = p.parent()
