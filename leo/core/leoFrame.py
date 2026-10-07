@@ -540,11 +540,10 @@ class LeoFrame:
         w.see(i)
         s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
         g.app.gui.replaceClipboardWith(s)
-        newText = w.getAllText()
         if c.widget_name(w).startswith('body'):
             with c.undoer as u:
                 u.set_command_name('cut-text')
-                u.set_body(p, newText, old_sel=old_sel)
+                u.set_body(p, new_body=w.getAllText(), old_sel=old_sel)
             ###
             # p.v.b = newText
             # u.afterChangeBody(p, 'Cut', bunch)
@@ -561,17 +560,17 @@ class LeoFrame:
         If middleButton is True, support x-windows middle-mouse-button easter-egg.
         """
         c, p = self.c, self.c.p
-        u = c.undoer
+        ### u = c.undoer
         if not event:
             return  # PR #4812
         assert event
         w = event.w
         if not g.isTextWrapper(w):
             return
-        ### g.trace()  ###
         wname = c.widget_name(w)
-        bunch = u.beforeChangeBody(p)  ### Restored.
+        ### bunch = u.beforeChangeBody(p)
         i, j = w.getSelectionRange()  # Returns insert point if no selection.
+        old_sel = (i, j)
         s = g.app.gui.getTextFromClipboard()
         s = g.checkUnicode(s)
         s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
@@ -588,14 +587,12 @@ class LeoFrame:
         w.insert(i, s)
         w.see(i + len(s) + 2)
         if wname.startswith('body'):
-            if 0:  ###
-                with c.undoer as u:
-                    u.set_command_name('paste-text')
-                    u.set_body(p, w.getAllText(), new_sel=w.getSelectionRange())
-            else:
-                p.v.b = w.getAllText()
-                u.afterChangeBody(p, 'Paste', bunch)
-
+            with c.undoer as u:
+                u.set_command_name('paste-text')
+                u.set_body(p, new_body=w.getAllText(), old_sel=old_sel)
+            ###
+            # p.v.b = w.getAllText()
+            # u.afterChangeBody(p, 'Paste', bunch)
         if hasattr(w, 'getXScrollPosition'):
             w.setXScrollPosition(x_pos)
 
