@@ -92,11 +92,18 @@ class UndoBead:
 
     # @-<< UndoBead: slots >>
 
+    def __repr__(self) -> str:
+        return f"UndoBead: {self.command_name}"
+
+    # @+others
+    # @+node:ekr.20261007113407.1: *3* UndoBead.__init__
     def __init__(self, undoer: Undoer) -> None:
-        self.c = c = undoer.c
+        # Let.
+        c = undoer.c
         w = c.frame.body.wrapper
         is_body = c.widget_name(w).startswith('body')
-        # Set all ivars.
+        # Set ivars.
+        self.c = c
         self.command_name = None
         self.must_redraw = False  # Sticky: never cleared once set.
         self.must_redraw = False  # Sticky: never cleared once set.
@@ -112,25 +119,20 @@ class UndoBead:
         self.undo_functions: list[Callable] = []
         self.undoer = undoer
 
-    def __repr__(self):
-        return f"UndoBead: {self.command_name}"
-
-    # @+others
     # @+node:ekr.20261007104333.1: *3* UndoBead.get (compatility)
     def get(self, key) -> Any:
         """A wrapper for u.undoTyping"""
+        # Called infequently, but u.undoTyping *does* sometimes call it.
         g.trace(key, g.callers())
-        if key == 'kind':
-            return self.undoType.lower()
-        if key == 'undoType':
-            return self.undoType
-        if key in ('leading', 'trailing'):
-            return 0
-        if key == 'p':
-            return self.old_p
-        if key == 'v':
-            return self.old_p.v
-        return None
+        d = {
+            'kind':     self.undoType.lower(),
+            'leading':  0,
+            'p':        self.old_p,
+            'trailing': 0,
+            'undoType': self.undoType,
+            'v':        self.old_p.v,
+        }  # fmt: skip
+        return d.get(key, None)
 
     # @+node:ekr.20261006040132.1: *3* UndoBead.redo
     def redo(self) -> None:
@@ -222,6 +224,7 @@ class Undoer:
         u = self
         assert isinstance(u.undoBead, UndoBead), repr(u.undoBead)
         u.undoBead = None
+        # *Never* pop u.beads!
 
     # @+node:ekr.20191213085126.1: *3* u.reloadSettings
     def reloadSettings(self) -> None:
