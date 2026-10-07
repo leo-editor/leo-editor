@@ -520,10 +520,9 @@ class LeoFrame:
     @frame_cmd('cut-text')
     def cutText(self, event: LeoKeyEvent | None = None) -> None:
         """Invoked from the mini-buffer and from shortcuts."""
-        c, p = self.c, self.c.p
-        ### u = c.undoer
         if not event:
             return
+        c, p = self.c, self.c.p
         w = event.w
         if not g.isTextWrapper(w):
             return
@@ -544,10 +543,6 @@ class LeoFrame:
             with c.undoer as u:
                 u.set_command_name('cut-text')
                 u.set_body(p, new_body=w.getAllText(), old_sel=old_sel)
-            ###
-            # p.v.b = newText
-            # u.afterChangeBody(p, 'Cut', bunch)
-
         # Otherwise, the headline has not yet offcially changed.
 
     OnCutFromMenu = cutText
@@ -559,16 +554,13 @@ class LeoFrame:
         Paste the clipboard into a widget.
         If middleButton is True, support x-windows middle-mouse-button easter-egg.
         """
-        c, p = self.c, self.c.p
-        ### u = c.undoer
         if not event:
-            return  # PR #4812
-        assert event
+            return
+        c, p = self.c, self.c.p
         w = event.w
         if not g.isTextWrapper(w):
             return
         wname = c.widget_name(w)
-        ### bunch = u.beforeChangeBody(p)
         i, j = w.getSelectionRange()  # Returns insert point if no selection.
         old_sel = (i, j)
         s = g.app.gui.getTextFromClipboard()
@@ -590,9 +582,6 @@ class LeoFrame:
             with c.undoer as u:
                 u.set_command_name('paste-text')
                 u.set_body(p, new_body=w.getAllText(), old_sel=old_sel)
-            ###
-            # p.v.b = w.getAllText()
-            # u.afterChangeBody(p, 'Paste', bunch)
         if hasattr(w, 'getXScrollPosition'):
             w.setXScrollPosition(x_pos)
 

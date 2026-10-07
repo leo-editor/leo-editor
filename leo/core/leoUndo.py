@@ -48,7 +48,7 @@
 # @+node:ekr.20220821074023.1: ** << leoUndo imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
-from typing import Self, TYPE_CHECKING
+from typing import Any, Self, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoFileCommands import FastRead
 from leo.core.leoNodes import Position, VNode
@@ -75,10 +75,13 @@ class UndoBead:
     __slots__ = (
         'c',
         'command_name',
+        'is_body',
         'must_recolor',
         'must_redraw',
         'must_set_c_changed',
+        'old_ins',
         'old_p',
+        'old_sel',
         'redo_finishers',
         'redo_functions',
         'undoType',
@@ -91,11 +94,17 @@ class UndoBead:
 
     def __init__(self, undoer: Undoer) -> None:
         self.c = c = undoer.c
+        w = c.frame.body.wrapper
+        is_body = c.widget_name(w).startswith('body')
+        # Set all ivars.
         self.command_name = None
         self.must_redraw = False  # Sticky: never cleared once set.
         self.must_redraw = False  # Sticky: never cleared once set.
         self.must_set_c_changed = False  # Sticky: never cleared once set.
         self.old_p = c.p
+        self.is_body = is_body
+        self.old_ins = w.getInsertPoint() if is_body else None
+        self.old_sel = w.getSelectionRange() if is_body else None
         self.redo_finishers: list[Callable] = []
         self.redo_functions: list[Callable] = []
         self.undoType = ''  # Required. Set by u.set_command_name
@@ -107,6 +116,22 @@ class UndoBead:
         return f"UndoBead: {self.command_name}"
 
     # @+others
+    # @+node:ekr.20261007104333.1: *3* UndoBead.get (compatility)
+    def get(self, key) -> Any:
+        """A wrapper for u.undoTyping"""
+        g.trace(key, g.callers())
+        if key == 'kind':
+            return self.undoType.lower()
+        if key == 'undoType':
+            return self.undoType
+        if key in ('leading', 'trailing'):
+            return 0
+        if key == 'p':
+            return self.old_p
+        if key == 'v':
+            return self.old_p.v
+        return None
+
     # @+node:ekr.20261006040132.1: *3* UndoBead.redo
     def redo(self) -> None:
         c = self.c
@@ -183,11 +208,14 @@ class Undoer:
     # @+node:ekr.20261005094529.1: *3* u.__enter__ and __exit__
     def __enter__(self) -> Self:
         """Support context manager."""
+        ### c, u = self.c, self
         u = self
+
         # The u.undoBead ivar exists *only* during the lifetime of the "with" statement!
         u.undoBead = UndoBead(undoer=self)
         u.beads.append(u.undoBead)
         u.bead += 1
+
         return self
 
     def __exit__(self, *args) -> None:
@@ -1474,6 +1502,8 @@ class Undoer:
                     g.es_exception()
                     newBead = True
         # @-<< set newBead if we can't share the previous bead >>
+        if not g.unitTesting:  ###
+            g.trace(f"{newBead=} {g.callers(2)}")
         # Save end selection as new "previous" selection
         u.prevSel = u.newSel
         if newBead:
