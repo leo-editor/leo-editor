@@ -223,10 +223,13 @@ class Undoer:
         u = self
         # Use the same
         if u.undoBeadLevel == 0:
-            u.undoBead = UndoBead(undoer=self)
-            u.beads.append(u.undoBead)
+            if 0:
+                u.beads.append(UndoBead(undoer=self))
+            else:
+                u.undoBead = UndoBead(undoer=self)
+                u.beads.append(u.undoBead)
             u.bead += 1
-        elif not g.unitTesting:
+        else:  ### if not g.unitTesting:
             g.trace(f"Nested 'with' statement {u.undoBeadLevel} for {u.undoBead.command_name}")
         u.undoBeadLevel += 1
         return self
@@ -237,10 +240,8 @@ class Undoer:
         u = self
         assert isinstance(u.undoBead, UndoBead), repr(u.undoBead)
         u.undoBeadLevel -= 1
-        if u.undoBeadLevel == 0:
-            if not g.unitTesting:
-                g.trace(f"End {u.undoBead.command_name}")
-            u.undoBead = None
+        assert u.undoBeadLevel >= 0
+        u.undoBead = None
 
     # @+node:ekr.20191213085126.1: *3* u.reloadSettings
     def reloadSettings(self) -> None:
@@ -457,7 +458,7 @@ class Undoer:
     def clone_node(self, p: Position) -> None:
         g.trace(p.h)
 
-    # @+node:ekr.20261005143707.1: *4* u.delete_node (works)
+    # @+node:ekr.20261005143707.1: *4* u.delete_node (fails)
     def delete_node(self, p: Position) -> None:
 
         u = self
@@ -472,6 +473,9 @@ class Undoer:
             g.error(f"Can not delete {p.h}")
             return
 
+        assert isinstance(b, UndoBead), repr(b)
+        g.trace(p.h)
+
         def update(p: Position) -> None:
             p.contract()
             p.setDirty()
@@ -480,7 +484,7 @@ class Undoer:
 
         # Do the action *first*.
         old_p.doDelete()
-        update(new_p)
+        c.redraw(new_p)
         c.checkOutline()
 
         def delete_node_redoer() -> None:
@@ -510,6 +514,7 @@ class Undoer:
         p = p.copy()
         new_back = p.back()
         new_parent = p.parent()
+        assert isinstance(b, UndoBead), repr(b)
 
         def insert_node_redoer() -> None:
             # p.setAllAncestorAtFileNodesDirty()
@@ -625,6 +630,7 @@ class Undoer:
         new_ins = w.getInsertPoint()
         new_sel = w.getSelectionRange()
         new_y_scroll = w.getYScrollPosition()
+        assert isinstance(b, UndoBead), repr(b)
 
         def update_p(p: Position, body: str, ins: int, sel: tuple[int, int]) -> None:
             """Update p's data."""

@@ -1224,7 +1224,7 @@ def deleteOutline(
         newNode = p.next()  # _not_ p.visNext(): we are at the top level.
     if not newNode:
         return
-    if 0:  ### Fails
+    if 0:  ### Fails.
         with c.undoer as u:
             u.set_command_name('delete-node')
             u.delete_node(p)
