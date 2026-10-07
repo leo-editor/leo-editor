@@ -77,6 +77,7 @@ class UndoBead:
         'command_name',
         'must_recolor',
         'must_redraw',
+        'must_set_c_changed',
         'old_p',
         'redo_finishers',
         'redo_functions',
@@ -93,6 +94,7 @@ class UndoBead:
         self.command_name = None
         self.must_redraw = False  # Sticky: never cleared once set.
         self.must_redraw = False  # Sticky: never cleared once set.
+        self.must_set_c_changed = False  # Sticky: never cleared once set.
         self.old_p = c.p
         self.redo_finishers: list[Callable] = []
         self.redo_functions: list[Callable] = []
@@ -116,6 +118,8 @@ class UndoBead:
             c.recolor()
         for f in self.redo_finishers:
             f()
+        if self.must_set_c_changed:
+            c.setChanged()
 
     # @+node:ekr.20261006040137.2: *3* UndoBead.set_helpers & set_finishers
     def set_helpers(self, redo_function: Callable, undo_function: Callable) -> None:
@@ -139,6 +143,8 @@ class UndoBead:
             c.recolor()
         for f in self.undo_finishers:
             f()
+        if self.must_set_c_changed:
+            c.setChanged()
 
     # @-others
 
@@ -549,8 +555,8 @@ class Undoer:
         p: Position,
         new_body: str,
         *,
-        new_sel: tuple[int, int] | None = None,
-        new_y_scroll: int | None = None,
+        old_sel: tuple[int, int] | None = None,
+        old_y_scroll: int | None = None,
     ) -> None:
         """Change p.b, retaining the selection range by default"""
         u = self
@@ -558,20 +564,33 @@ class Undoer:
         p = p.copy()
         old_body = p.b
         w = u.c.frame.body.wrapper
-        old_sel = w.getSelectionRange()
-        old_y_scroll = w.getYScrollPosition()
-        g.trace(f"{old_sel=} {new_sel=}")
+        assert g.isTextWrapper(w), repr(w)
+        new_sel = w.getSelectionRange()
+        new_y_scroll = w.getYScrollPosition()
+
+        def update(p: Position, body: str, sel: tuple[int, int]) -> None:
+            """Do common update tasks."""
+            # Based on u.updateAfterTyping.
+            p.v.b = body  # Must set p.v.b, not p.b!
+            i, j = sel
+            p.v.insertSpot = i  ### To do?
+            p.v.selectionStart, p.v.selectionLength = (i, j - i)
+            if not p.isDirty():
+                p.setDirty()
+            val = p.computeIcon()
+            if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
+                p.v.iconVal = val
 
         # Do the action!
-        p.b = new_body
-        if new_sel is not None:
-            w.setSelectionRange(*new_sel)
+        update(p, new_body, new_sel)
+        self.must_recolor = True
+        self.must_set_c_changed = True
 
         def set_body_redoer() -> None:
-            p.b = new_body
+            update(p, new_body, new_sel)
 
         def set_body_undoer() -> None:
-            p.b = old_body
+            update(p, old_body, old_sel)
 
         b.set_helpers(set_body_redoer, set_body_undoer)
         b.must_recolor = True
@@ -586,7 +605,7 @@ class Undoer:
 
             b.set_finishers(set_scroll_redoer, set_scroll_undoer)
 
-        if new_sel is not None:
+        if old_sel is not None:
 
             def set_sel_redoer() -> None:
                 w.setSelectionRange(*new_sel)

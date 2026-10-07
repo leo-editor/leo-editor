@@ -527,10 +527,10 @@ class LeoFrame:
         w = event.w
         if not g.isTextWrapper(w):
             return
-        ### g.trace()  ###
         bunch = u.beforeChangeBody(p)  ### Restored.
         # Update the widget and set the clipboard text.
         i, j = w.getSelectionRange()
+        old_sel = (i, j)
         if i == j:
             oldText = w.getAllText()
             ins = w.getInsertPoint()
@@ -540,13 +540,15 @@ class LeoFrame:
         w.see(i)
         s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
         g.app.gui.replaceClipboardWith(s)
+        newText = w.getAllText()
         if c.widget_name(w).startswith('body'):
-            if 0:  ###
+            ### g.trace(f"{w.getSelectionRange()=}")
+            if 1:  ###
                 with c.undoer as u:
                     u.set_command_name('cut-text')
-                    u.set_body(p, w.getAllText(), new_sel=w.getSelectionRange())
+                    u.set_body(p, newText, old_sel=old_sel)
             else:
-                p.v.b = w.getAllText()
+                p.v.b = newText
                 u.afterChangeBody(p, 'Cut', bunch)
 
         # Otherwise, the headline has not yet offcially changed.
