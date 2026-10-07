@@ -607,9 +607,9 @@ class Undoer:
         new_sel = w.getSelectionRange()
         new_y_scroll = w.getYScrollPosition()
 
-        def update(p: Position, body: str, ins: int, sel: tuple[int, int]) -> None:
-            """Do common update tasks."""  # Based on u.updateAfterTyping.
-            p.v.b = body  # Must set p.v.b, not p.b!
+        def update_p(p: Position, body: str, ins: int, sel: tuple[int, int]) -> None:
+            """Update p's data."""
+            p.v.b = body  # Must set p.v.b, not p.b! (p.b setter clears the selection).
             i, j = sel
             p.v.insertSpot = ins
             p.v.selectionStart, p.v.selectionLength = (i, j - i)
@@ -620,15 +620,15 @@ class Undoer:
                 p.v.iconVal = val
 
         # Do the action!
-        update(p, new_body, new_ins, new_sel)
+        update_p(p, new_body, new_ins, new_sel)
         self.must_recolor = True
         self.must_set_c_changed = True
 
         def set_body_redoer() -> None:
-            update(p, new_body, new_ins, new_sel)
+            update_p(p, new_body, new_ins, new_sel)
 
         def set_body_undoer() -> None:
-            update(p, old_body, old_ins, old_sel)
+            update_p(p, old_body, old_ins, old_sel)
 
         b.set_helpers(set_body_redoer, set_body_undoer)
         b.must_recolor = True
