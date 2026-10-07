@@ -521,13 +521,13 @@ class LeoFrame:
     def cutText(self, event: LeoKeyEvent | None = None) -> None:
         """Invoked from the mini-buffer and from shortcuts."""
         c, p = self.c, self.c.p
-        u = c.undoer  ### Restored.
+        ### u = c.undoer
         if not event:
             return
         w = event.w
         if not g.isTextWrapper(w):
             return
-        bunch = u.beforeChangeBody(p)  ### Restored.
+        ###bunch = u.beforeChangeBody(p)
         # Update the widget and set the clipboard text.
         i, j = w.getSelectionRange()
         old_sel = (i, j)
@@ -542,14 +542,12 @@ class LeoFrame:
         g.app.gui.replaceClipboardWith(s)
         newText = w.getAllText()
         if c.widget_name(w).startswith('body'):
-            ### g.trace(f"{w.getSelectionRange()=}")
-            if 1:  ###
-                with c.undoer as u:
-                    u.set_command_name('cut-text')
-                    u.set_body(p, newText, old_sel=old_sel)
-            else:
-                p.v.b = newText
-                u.afterChangeBody(p, 'Cut', bunch)
+            with c.undoer as u:
+                u.set_command_name('cut-text')
+                u.set_body(p, newText, old_sel=old_sel)
+            ###
+            # p.v.b = newText
+            # u.afterChangeBody(p, 'Cut', bunch)
 
         # Otherwise, the headline has not yet offcially changed.
 
