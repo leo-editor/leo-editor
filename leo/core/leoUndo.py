@@ -125,7 +125,6 @@ class UndoBead:
     def get(self, key) -> Any:
         """A wrapper for u.undoTyping"""
         # Called infequently, but u.undoTyping *does* sometimes call it.
-        g.trace(key, g.callers())
         d = {
             'kind':     self.undoType.lower(),
             'leading':  0,
@@ -134,7 +133,8 @@ class UndoBead:
             'undoType': self.undoType,
             'v':        self.old_p.v,
         }  # fmt: skip
-        return d.get(key, None)
+        g.trace(f"key: {key:8} val: {d.get(key)} {g.callers()}")
+        return d.get(key)
 
     # @+node:ekr.20261006040132.1: *3* UndoBead.redo
     def redo(self) -> None:
@@ -587,25 +587,28 @@ class Undoer:
         p: Position,
         new_body: str,
         *,
-        ### old_sel: tuple[int, int] | None = None,
-        old_y_scroll: int | None = None,
+        old_sel: tuple[int, int] | None = None,
     ) -> None:
         """Change p.b, retaining the selection range by default"""
         u = self
+        w = u.c.frame.body.wrapper
+        if not g.isTextWrapper(w):
+            g.error(f"Not a text wrapper: {w=} {g.callers()}")
+            return
+
+        # Capture the data.
         b = u.undoBead
         p = p.copy()
         old_body = p.b
-        old_sel = b.old_sel  ###
-        old_ins = b.old_ins  ###
-        w = u.c.frame.body.wrapper
-        assert g.isTextWrapper(w), repr(w)
+        old_sel = b.old_sel if old_sel is None else old_sel
+        old_ins = b.old_ins
+        old_y_scroll = b.old_y_scroll
         new_ins = w.getInsertPoint()
         new_sel = w.getSelectionRange()
         new_y_scroll = w.getYScrollPosition()
 
         def update(p: Position, body: str, ins: int, sel: tuple[int, int]) -> None:
-            """Do common update tasks."""
-            # Based on u.updateAfterTyping.
+            """Do common update tasks."""  # Based on u.updateAfterTyping.
             p.v.b = body  # Must set p.v.b, not p.b!
             i, j = sel
             p.v.insertSpot = ins
