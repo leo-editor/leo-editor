@@ -82,6 +82,7 @@ class UndoBead:
         'old_ins',
         'old_p',
         'old_sel',
+        'old_y_scroll',
         'redo_finishers',
         'redo_functions',
         'undoType',
@@ -112,6 +113,7 @@ class UndoBead:
         self.is_body = is_body
         self.old_ins = w.getInsertPoint() if is_body else None
         self.old_sel = w.getSelectionRange() if is_body else None
+        self.old_y_scroll = w.getYScrollPosition() if is_body else None
         self.redo_finishers: list[Callable] = []
         self.redo_functions: list[Callable] = []
         self.undoType = ''  # Required. Set by u.set_command_name
@@ -585,7 +587,7 @@ class Undoer:
         p: Position,
         new_body: str,
         *,
-        old_sel: tuple[int, int] | None = None,
+        ### old_sel: tuple[int, int] | None = None,
         old_y_scroll: int | None = None,
     ) -> None:
         """Change p.b, retaining the selection range by default"""
@@ -593,17 +595,20 @@ class Undoer:
         b = u.undoBead
         p = p.copy()
         old_body = p.b
+        old_sel = b.old_sel  ###
+        old_ins = b.old_ins  ###
         w = u.c.frame.body.wrapper
         assert g.isTextWrapper(w), repr(w)
+        new_ins = w.getInsertPoint()
         new_sel = w.getSelectionRange()
         new_y_scroll = w.getYScrollPosition()
 
-        def update(p: Position, body: str, sel: tuple[int, int]) -> None:
+        def update(p: Position, body: str, ins: int, sel: tuple[int, int]) -> None:
             """Do common update tasks."""
             # Based on u.updateAfterTyping.
             p.v.b = body  # Must set p.v.b, not p.b!
             i, j = sel
-            p.v.insertSpot = i  ### To do?
+            p.v.insertSpot = ins
             p.v.selectionStart, p.v.selectionLength = (i, j - i)
             if not p.isDirty():
                 p.setDirty()
@@ -612,15 +617,15 @@ class Undoer:
                 p.v.iconVal = val
 
         # Do the action!
-        update(p, new_body, new_sel)
+        update(p, new_body, new_ins, new_sel)
         self.must_recolor = True
         self.must_set_c_changed = True
 
         def set_body_redoer() -> None:
-            update(p, new_body, new_sel)
+            update(p, new_body, new_ins, new_sel)
 
         def set_body_undoer() -> None:
-            update(p, old_body, old_sel)
+            update(p, old_body, old_ins, old_sel)
 
         b.set_helpers(set_body_redoer, set_body_undoer)
         b.must_recolor = True
@@ -653,6 +658,8 @@ class Undoer:
         b.command_name = command_name
         b.undoType = command_name
         u.setUndoType(command_name)
+
+        g.trace(f"{b.command_name:10} old_ins: {b.old_ins:2} {b.old_sel=}")  ###
 
     # @+node:ekr.20261005143752.1: *4* u.set_selection_range
     def set_selection_range(
@@ -1504,7 +1511,7 @@ class Undoer:
                     g.es_exception()
                     newBead = True
         # @-<< set newBead if we can't share the previous bead >>
-        if not g.unitTesting and 'leoPy' not in c.shortFileName():  ###
+        if False:  ### not g.unitTesting and 'leoPy' not in c.shortFileName():  ###
             g.trace(f"{newBead=} {g.callers(2)}")
         # Save end selection as new "previous" selection
         u.prevSel = u.newSel

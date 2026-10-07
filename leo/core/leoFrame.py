@@ -528,7 +528,8 @@ class LeoFrame:
             return
         # Update the widget and set the clipboard text.
         i, j = w.getSelectionRange()
-        old_sel = (i, j)
+        old_sel = (i, j)  ###
+        assert old_sel is not None  ###
         if i == j:
             oldText = w.getAllText()
             ins = w.getInsertPoint()
@@ -541,7 +542,7 @@ class LeoFrame:
         if c.widget_name(w).startswith('body'):
             with c.undoer as u:
                 u.set_command_name('cut-text')
-                u.set_body(p, new_body=w.getAllText(), old_sel=old_sel)
+                u.set_body(p, new_body=w.getAllText())  ### , old_sel=old_sel)
         # Otherwise, the headline has not yet offcially changed.
 
     OnCutFromMenu = cutText
@@ -559,9 +560,11 @@ class LeoFrame:
         w = event.w
         if not g.isTextWrapper(w):
             return
+
         wname = c.widget_name(w)
         i, j = w.getSelectionRange()  # Returns insert point if no selection.
-        old_sel = (i, j)
+        old_sel = (i, j)  ###
+        assert old_sel is not None  ###
         s = g.app.gui.getTextFromClipboard()
         s = g.checkUnicode(s)
         s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
@@ -580,7 +583,7 @@ class LeoFrame:
         if wname.startswith('body'):
             with c.undoer as u:
                 u.set_command_name('paste-text')
-                u.set_body(p, new_body=w.getAllText(), old_sel=old_sel)
+                u.set_body(p, new_body=w.getAllText())  ###, old_sel=old_sel)
         if hasattr(w, 'getXScrollPosition'):
             w.setXScrollPosition(x_pos)
 
