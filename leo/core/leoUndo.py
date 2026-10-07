@@ -75,6 +75,7 @@ class UndoBead:
     __slots__ = (
         'c',
         'command_name',
+        'must_recolor',
         'must_redraw',
         'old_p',
         'redo_finishers',
@@ -543,13 +544,28 @@ class Undoer:
         c.p = p
 
     # @+node:ekr.20261005140833.1: *4* u.set_body
-    def set_body(self, p: Position, new_body: str, *, new_y_scroll: int | None = None) -> None:
-
+    def set_body(
+        self,
+        p: Position,
+        new_body: str,
+        *,
+        new_sel: tuple[int, int] | None = None,
+        new_y_scroll: int | None = None,
+    ) -> None:
+        """Change p.b, retaining the selection range by default"""
         u = self
         b = u.undoBead
         p = p.copy()
-        w = u.c.frame.body.wrapper
         old_body = p.b
+        w = u.c.frame.body.wrapper
+        old_sel = w.getSelectionRange()
+        old_y_scroll = w.getYScrollPosition()
+        g.trace(f"{old_sel=} {new_sel=}")
+
+        # Do the action!
+        p.b = new_body
+        if new_sel is not None:
+            w.setSelectionRange(*new_sel)
 
         def set_body_redoer() -> None:
             p.b = new_body
@@ -560,20 +576,25 @@ class Undoer:
         b.set_helpers(set_body_redoer, set_body_undoer)
         b.must_recolor = True
 
-        if w:
-            old_y_scroll = w.getYScrollPosition()
+        if new_y_scroll is not None:
 
             def set_scroll_redoer() -> None:
-                if new_y_scroll is not None:
-                    w.setYScrollPosition(new_y_scroll)
+                w.setYScrollPosition(new_y_scroll)
 
             def set_scroll_undoer() -> None:
                 w.setYScrollPosition(old_y_scroll)
 
             b.set_finishers(set_scroll_redoer, set_scroll_undoer)
 
-        # Do the action!
-        p.b = new_body
+        if new_sel is not None:
+
+            def set_sel_redoer() -> None:
+                w.setSelectionRange(*new_sel)
+
+            def set_sel_undoer() -> None:
+                w.setSelectionRange(*old_sel)
+
+            b.set_finishers(set_sel_redoer, set_sel_undoer)
 
     # @+node:ekr.20261005094529.2: *4* u.set_command_name
     def set_command_name(self, command_name: str) -> None:

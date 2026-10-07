@@ -527,7 +527,7 @@ class LeoFrame:
         w = event.w
         if not g.isTextWrapper(w):
             return
-        g.trace()  ###
+        ### g.trace()  ###
         bunch = u.beforeChangeBody(p)  ### Restored.
         # Update the widget and set the clipboard text.
         i, j = w.getSelectionRange()
@@ -541,12 +541,13 @@ class LeoFrame:
         s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
         g.app.gui.replaceClipboardWith(s)
         if c.widget_name(w).startswith('body'):
-            ###
-            # with c.undoer as u:
-            #     u.set_command_name('cut-text')
-            #     u.set_body(p, w.getAllText())
-            p.v.b = w.getAllText()
-            u.afterChangeBody(p, 'Cut', bunch)
+            if 0:  ###
+                with c.undoer as u:
+                    u.set_command_name('cut-text')
+                    u.set_body(p, w.getAllText(), new_sel=w.getSelectionRange())
+            else:
+                p.v.b = w.getAllText()
+                u.afterChangeBody(p, 'Cut', bunch)
 
         # Otherwise, the headline has not yet offcially changed.
 
@@ -567,7 +568,7 @@ class LeoFrame:
         w = event.w
         if not g.isTextWrapper(w):
             return
-        g.trace()  ###
+        ### g.trace()  ###
         wname = c.widget_name(w)
         bunch = u.beforeChangeBody(p)  ### Restored.
         i, j = w.getSelectionRange()  # Returns insert point if no selection.
@@ -587,12 +588,13 @@ class LeoFrame:
         w.insert(i, s)
         w.see(i + len(s) + 2)
         if wname.startswith('body'):
-            ###
-            # with c.undoer as u:
-            #     u.set_command_name('paste-text')
-            #     u.set_body(p, w.getAllText())
-            p.v.b = w.getAllText()
-            u.afterChangeBody(p, 'Paste', bunch)
+            if 0:  ###
+                with c.undoer as u:
+                    u.set_command_name('paste-text')
+                    u.set_body(p, w.getAllText(), new_sel=w.getSelectionRange())
+            else:
+                p.v.b = w.getAllText()
+                u.afterChangeBody(p, 'Paste', bunch)
 
         if hasattr(w, 'getXScrollPosition'):
             w.setXScrollPosition(x_pos)
