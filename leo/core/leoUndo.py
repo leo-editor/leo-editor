@@ -196,6 +196,7 @@ class Undoer:
         self.beads = []  # List of undo nodes.
         self.bead = -1  # Index of the present bead: -1:len(beads)
         self.inHead = False
+        self.undoBeadLevel = 0  # PR #4996
         self.undoBead = None  # PR #4994
         self.undoType = "Can't Undo"
         # These must be set here, _not_ in clearUndoState.
@@ -216,20 +217,29 @@ class Undoer:
     def __enter__(self) -> Self:
         """
         Support context manager.
-        The u.undoBead ivar exists *only* during the lifetime of the "with" statement!
+        The u.undoBead ivar exists *only* during the lifetime of the "with" statement,
+        including nested "with" statements.
         """
         u = self
-        u.undoBead = UndoBead(undoer=self)
-        u.beads.append(u.undoBead)
-        u.bead += 1
+        # Use the same
+        if u.undoBeadLevel == 0:
+            u.undoBead = UndoBead(undoer=self)
+            u.beads.append(u.undoBead)
+            u.bead += 1
+        else:
+            g.trace(f"Nested 'with' statement {u.undoBeadLevel} for {u.undoBead.command_name}")
+        u.undoBeadLevel += 1
         return self
 
     def __exit__(self, *args) -> None:
         """Called when leaving a "with" statement."""
+        # *Never* pop u.beads!
         u = self
         assert isinstance(u.undoBead, UndoBead), repr(u.undoBead)
-        u.undoBead = None
-        # *Never* pop u.beads!
+        u.undoBeadLevel -= 1
+        if u.undoBeadLevel == 0:
+            g.trace(f"End {u.undoBead.command_name}")
+            u.undoBead = None
 
     # @+node:ekr.20191213085126.1: *3* u.reloadSettings
     def reloadSettings(self) -> None:
@@ -669,7 +679,7 @@ class Undoer:
         b.undoType = command_name
         u.setUndoType(command_name)
 
-        g.trace(f"{b.command_name:10} old_ins: {b.old_ins:2} {b.old_sel=}")  ###
+        # g.trace(f"{b.command_name:10} old_ins: {b.old_ins:2} {b.old_sel=}")
 
     # @+node:ekr.20261005143752.1: *4* u.set_selection_range
     def set_selection_range(
