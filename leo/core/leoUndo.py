@@ -1521,8 +1521,6 @@ class Undoer:
                     g.es_exception()
                     newBead = True
         # @-<< set newBead if we can't share the previous bead >>
-        if False:  ### not g.unitTesting and 'leoPy' not in c.shortFileName():  ###
-            g.trace(f"{newBead=} {g.callers(2)}")
         # Save end selection as new "previous" selection
         u.prevSel = u.newSel
         if newBead:
