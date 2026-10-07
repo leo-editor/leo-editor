@@ -527,8 +527,7 @@ class LeoFrame:
         if not g.isTextWrapper(w):
             return
         # Update the widget and set the clipboard text.
-        i, j = w.getSelectionRange()
-        old_sel = (i, j)
+        i, j = old_sel = w.getSelectionRange()
         if i == j:
             oldText = w.getAllText()
             ins = w.getInsertPoint()
@@ -561,8 +560,7 @@ class LeoFrame:
             return
 
         wname = c.widget_name(w)
-        i, j = w.getSelectionRange()  # Returns insert point if no selection.
-        old_sel = (i, j)
+        i, j = old_sel = w.getSelectionRange()
         s = g.app.gui.getTextFromClipboard()
         s = g.checkUnicode(s)
         s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
