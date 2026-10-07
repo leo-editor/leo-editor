@@ -226,7 +226,7 @@ class Undoer:
             u.undoBead = UndoBead(undoer=self)
             u.beads.append(u.undoBead)
             u.bead += 1
-        else:
+        elif not g.unitTesting:
             g.trace(f"Nested 'with' statement {u.undoBeadLevel} for {u.undoBead.command_name}")
         u.undoBeadLevel += 1
         return self
@@ -238,7 +238,8 @@ class Undoer:
         assert isinstance(u.undoBead, UndoBead), repr(u.undoBead)
         u.undoBeadLevel -= 1
         if u.undoBeadLevel == 0:
-            g.trace(f"End {u.undoBead.command_name}")
+            if not g.unitTesting:
+                g.trace(f"End {u.undoBead.command_name}")
             u.undoBead = None
 
     # @+node:ekr.20191213085126.1: *3* u.reloadSettings
@@ -483,7 +484,7 @@ class Undoer:
         c.checkOutline()
 
         def delete_node_redoer() -> None:
-            old_p.doDelete(new_p)
+            old_p.doDelete()
             update(new_p)
 
         def delete_node_undoer() -> None:
