@@ -207,15 +207,14 @@ class Undoer:
 
     # @+node:ekr.20261005094529.1: *3* u.__enter__ and __exit__
     def __enter__(self) -> Self:
-        """Support context manager."""
-        ### c, u = self.c, self
+        """
+        Support context manager.
+        The u.undoBead ivar exists *only* during the lifetime of the "with" statement!
+        """
         u = self
-
-        # The u.undoBead ivar exists *only* during the lifetime of the "with" statement!
         u.undoBead = UndoBead(undoer=self)
         u.beads.append(u.undoBead)
         u.bead += 1
-
         return self
 
     def __exit__(self, *args) -> None:
@@ -1502,7 +1501,7 @@ class Undoer:
                     g.es_exception()
                     newBead = True
         # @-<< set newBead if we can't share the previous bead >>
-        if not g.unitTesting:  ###
+        if not g.unitTesting and 'leoPy' not in c.shortFileName():  ###
             g.trace(f"{newBead=} {g.callers(2)}")
         # Save end selection as new "previous" selection
         u.prevSel = u.newSel

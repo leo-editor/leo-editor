@@ -526,7 +526,6 @@ class LeoFrame:
         w = event.w
         if not g.isTextWrapper(w):
             return
-        ###bunch = u.beforeChangeBody(p)
         # Update the widget and set the clipboard text.
         i, j = w.getSelectionRange()
         old_sel = (i, j)
