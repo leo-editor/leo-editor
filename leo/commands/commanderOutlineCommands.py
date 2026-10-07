@@ -1211,7 +1211,7 @@ def deleteOutline(
     op_name: str = "Delete Node",
 ) -> None:
     """Deletes the selected outline."""
-    c, u = self, self.undoer
+    c = self
     p = c.p
     if not p:
         return
@@ -1229,6 +1229,7 @@ def deleteOutline(
             u.set_command_name('delete-node')
             u.delete_node(p)
     else:
+        u = c.undoer
         undoData = u.beforeDeleteNode(p)
         p.setDirty()
         p.doDelete(newNode)
