@@ -1216,29 +1216,26 @@ def deleteOutline(
     if not p:
         return
     c.endEditing()  # Make sure we capture the headline for Undo.
-    if False:  # c.config.getBool('select-next-after-delete'):
-        # #721: Optionally select next node after delete.
-        if p.hasVisNext(c):
-            newNode = p.visNext(c)
-        elif p.hasParent():
-            newNode = p.parent()
-        else:
-            newNode = p.back()  # _not_ p.visBack(): we are at the top level.
+
+    # Legacy: select previous node if possible.
+    if p.hasVisBack(c):
+        newNode = p.visBack(c)
     else:
-        # Legacy: select previous node if possible.
-        if p.hasVisBack(c):
-            newNode = p.visBack(c)
-        else:
-            newNode = p.next()  # _not_ p.visNext(): we are at the top level.
+        newNode = p.next()  # _not_ p.visNext(): we are at the top level.
     if not newNode:
         return
-    undoData = u.beforeDeleteNode(p)
-    p.setDirty()
-    p.doDelete(newNode)
-    c.setChanged()
-    u.afterDeleteNode(newNode, op_name, undoData)
-    c.redraw(newNode)
-    c.checkOutline()
+    if 0:  ### Fails
+        with c.undoer as u:
+            u.set_command_name('delete-node')
+            u.delete_node(p)
+    else:
+        undoData = u.beforeDeleteNode(p)
+        p.setDirty()
+        p.doDelete(newNode)
+        c.setChanged()
+        u.afterDeleteNode(newNode, op_name, undoData)
+        c.redraw(newNode)
+        c.checkOutline()
 
 
 # @+node:ekr.20071005173203.1: *3* c_oc.insertChild

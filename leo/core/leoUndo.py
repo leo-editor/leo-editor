@@ -462,37 +462,42 @@ class Undoer:
         u = self
         b = u.undoBead
         c = u.c
-        p = p.copy()
+        old_p = p.copy()
         old_back = p.back()
         old_parent = p.parent()
         # Similar to code for delete-node command:
-        new_node = p.visBack(c) if p.hasVisBack(c) else p.next()
-        if not new_node:
+        new_p = p.visBack(c) if p.hasVisBack(c) else p.next()
+        if not new_p:
             g.error(f"Can not delete {p.h}")
             return
 
+        def update(p: Position) -> None:
+            p.contract()
+            p.setDirty()
+            c.p = p
+            b.must_redraw = True
+
+        # Do the action *first*.
+        old_p.doDelete()
+        update(new_p)
+        c.checkOutline()
+
         def delete_node_redoer() -> None:
-            p.doDelete(new_node)
-            new_node.setDirty()
-            c.p = new_node  # Required.
+            old_p.doDelete(new_p)
+            update(new_p)
 
         def delete_node_undoer() -> None:
             # Similar to u.undoDeleteNode.
             if old_back:
-                p._linkAfter(old_back)
+                old_p._linkAfter(old_back)
             elif old_parent:
-                p._linkAsNthChild(old_parent, 0)
+                old_p._linkAsNthChild(old_parent, 0)
                 old_parent.contract()
             else:
-                p._linkAsRoot()
-            # UndoBead.undo sets c.p to UndoBead.old_p.
+                old_p._linkAsRoot()
+            update(old_p)
 
         b.set_helpers(delete_node_redoer, delete_node_undoer)
-        b.must_redraw = True
-
-        # Do the action!
-        p.doDelete(new_node)
-        new_node.contract()
 
     # @+node:ekr.20261006155622.1: *4* u.insert_node (to do)
     def insert_node(self, p: Position) -> None:
@@ -525,9 +530,9 @@ class Undoer:
 
             # p.setAllAncestorAtFileNodesDirty()
 
-            new_node = p.visBack(c) if p.hasVisBack(c) else p.next()
+            new_p = p.visBack(c) if p.hasVisBack(c) else p.next()
             p.setDirty()
-            p.doDelete(new_node)
+            p.doDelete(new_p)
 
         b.set_helpers(insert_node_redoer, insert_node_undoer)
         b.must_redraw = True
