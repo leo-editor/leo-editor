@@ -521,11 +521,14 @@ class LeoFrame:
     def cutText(self, event: LeoKeyEvent | None = None) -> None:
         """Invoked from the mini-buffer and from shortcuts."""
         c, p = self.c, self.c.p
+        u = c.undoer  ### Restored.
         if not event:
             return
         w = event.w
         if not g.isTextWrapper(w):
             return
+        g.trace()  ###
+        bunch = u.beforeChangeBody(p)  ### Restored.
         # Update the widget and set the clipboard text.
         i, j = w.getSelectionRange()
         if i == j:
@@ -538,9 +541,13 @@ class LeoFrame:
         s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
         g.app.gui.replaceClipboardWith(s)
         if c.widget_name(w).startswith('body'):
-            with c.undoer as u:
-                u.set_command_name('cut-text')
-                u.set_body(p, w.getAllText())
+            ###
+            # with c.undoer as u:
+            #     u.set_command_name('cut-text')
+            #     u.set_body(p, w.getAllText())
+            p.v.b = w.getAllText()
+            u.afterChangeBody(p, 'Cut', bunch)
+
         # Otherwise, the headline has not yet offcially changed.
 
     OnCutFromMenu = cutText
@@ -552,14 +559,17 @@ class LeoFrame:
         Paste the clipboard into a widget.
         If middleButton is True, support x-windows middle-mouse-button easter-egg.
         """
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c, p = self.c, self.c.p
+        u = c.undoer
         if not event:
             return  # PR #4812
         assert event
         w = event.w
         if not g.isTextWrapper(w):
             return
+        g.trace()  ###
         wname = c.widget_name(w)
+        bunch = u.beforeChangeBody(p)  ### Restored.
         i, j = w.getSelectionRange()  # Returns insert point if no selection.
         s = g.app.gui.getTextFromClipboard()
         s = g.checkUnicode(s)
@@ -577,9 +587,13 @@ class LeoFrame:
         w.insert(i, s)
         w.see(i + len(s) + 2)
         if wname.startswith('body'):
-            with c.undoer as u:
-                u.set_command_name('paste-text')
-                u.set_body(p, w.getAllText())
+            ###
+            # with c.undoer as u:
+            #     u.set_command_name('paste-text')
+            #     u.set_body(p, w.getAllText())
+            p.v.b = w.getAllText()
+            u.afterChangeBody(p, 'Paste', bunch)
+
         if hasattr(w, 'getXScrollPosition'):
             w.setXScrollPosition(x_pos)
 
