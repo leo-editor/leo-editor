@@ -106,7 +106,7 @@ class UndoBead:
         # Set ivars.
         self.c = c
         self.command_name = None
-        self.must_redraw = False  # Sticky: never cleared once set.
+        self.must_recolor = False  # Sticky: never cleared once set.
         self.must_redraw = False  # Sticky: never cleared once set.
         self.must_set_c_changed = False  # Sticky: never cleared once set.
         self.old_p = c.p
@@ -133,7 +133,10 @@ class UndoBead:
             'undoType': self.undoType,
             'v':        self.old_p.v,
         }  # fmt: skip
-        g.trace(f"key: {key:8} val: {d.get(key)} {g.callers()}")
+        if 1:  ###
+            val = d.get(key)
+            val_s = val.h if isinstance(val, (Position, VNode)) else val
+            g.trace(f"key: {key:>8} {val_s}")
         return d.get(key)
 
     # @+node:ekr.20261006040132.1: *3* UndoBead.redo
@@ -615,14 +618,19 @@ class Undoer:
             p.v.selectionStart, p.v.selectionLength = (i, j - i)
             if not p.isDirty():
                 p.setDirty()
+                self.must_redraw = True
             val = p.computeIcon()
             if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
                 p.v.iconVal = val
+                self.must_redraw = True
+            if b.is_body:
+                self.must_recolor = True
+            if p != b.old_p:
+                self.must_redraw = True
+                self.must_set_c_changed = True
 
         # Do the action!
         update_p(p, new_body, new_ins, new_sel)
-        self.must_recolor = True
-        self.must_set_c_changed = True
 
         def set_body_redoer() -> None:
             update_p(p, new_body, new_ins, new_sel)
@@ -631,7 +639,6 @@ class Undoer:
             update_p(p, old_body, old_ins, old_sel)
 
         b.set_helpers(set_body_redoer, set_body_undoer)
-        b.must_recolor = True
 
         if new_y_scroll is not None:
 
