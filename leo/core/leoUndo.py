@@ -400,49 +400,11 @@ class Undoer:
         u.c.setChanged()
 
     # @+node:ekr.20261005135125.1: *3* u.New helpers
-    # @+node:ekr.20261005094529.2: *4* u.set_command_name
-    def set_command_name(self, command_name: str) -> None:
-        u = self
-        b = u.undoBead
-        assert isinstance(b, UndoBead), repr(b)
-        b.command_name = command_name
-        b.undoType = command_name
-        u.setUndoType(command_name)
+    # @+node:ekr.20261006155509.1: *4* u.clone_node (to do)
+    def clone_node(self, p: Position) -> None:
+        g.trace(p.h)
 
-    # @+node:ekr.20261005140833.1: *4* u.set_body
-    def set_body(self, p: Position, new_body: str, *, new_y_scroll: int | None = None) -> None:
-
-        u = self
-        b = u.bead
-        p = p.copy()
-        w = u.c.frame.body.wrapper
-        old_body = p.b
-
-        def set_body_redoer() -> None:
-            p.b = new_body
-
-        def set_body_undoer() -> None:
-            p.b = old_body
-
-        b.set_helpers(set_body_redoer, set_body_undoer)
-        b.must_recolor = True
-
-        if w:
-            old_y_scroll = w.getYScrollPosition()
-
-            def set_scroll_redoer() -> None:
-                if new_y_scroll is not None:
-                    w.setYScrollPosition(new_y_scroll)
-
-            def set_scroll_undoer() -> None:
-                w.setYScrollPosition(old_y_scroll)
-
-            b.set_finishers(set_scroll_redoer, set_scroll_undoer)
-
-        # Do the action!
-        p.b = new_body
-
-    # @+node:ekr.20261005143707.1: *4* u.delete_node
+    # @+node:ekr.20261005143707.1: *4* u.delete_node (works)
     def delete_node(self, p: Position) -> None:
 
         u = self
@@ -480,6 +442,87 @@ class Undoer:
         p.doDelete(new_node)
         new_node.contract()
 
+    # @+node:ekr.20261006155622.1: *4* u.insert_node (to do)
+    def insert_node(self, p: Position) -> None:
+        g.trace(p.h)
+
+        u = self
+        b = u.undoBead
+        c = u.c
+        p = p.copy()
+        new_back = p.back()
+        new_parent = p.parent()
+
+        def insert_node_redoer() -> None:
+            # p.setAllAncestorAtFileNodesDirty()
+            if new_back:
+                p._linkAfter(new_back)
+            elif new_parent:
+                p._linkAsNthChild(new_parent, 0)
+            else:
+                p._linkAsRoot()
+
+        def insert_node_undoer() -> None:
+            ### Like c.deleteOutline()
+            # u.newP.setAllAncestorAtFileNodesDirty()
+            # c.selectPosition(u.newP)
+            # # Bug fix: 2016/03/30.
+            # # This always selects the proper new position.
+            # # c.selectPosition(u.p)
+            # c.deleteOutline()
+
+            # p.setAllAncestorAtFileNodesDirty()
+
+            new_node = p.visBack(c) if p.hasVisBack(c) else p.next()
+            p.setDirty()
+            p.doDelete(new_node)
+
+        b.set_helpers(insert_node_redoer, insert_node_undoer)
+        b.must_redraw = True
+
+        ### def undoInsertNode(self) -> None:
+        if 0:
+            if cc := c.chapterController:
+                cc.selectChapterByName('main')
+            u.newP.setAllAncestorAtFileNodesDirty()
+            c.selectPosition(u.newP)
+            # Bug fix: 2016/03/30.
+            # This always selects the proper new position.
+            # c.selectPosition(u.p)
+            c.deleteOutline()
+            if u.pasteAsClone:
+                for bunch in u.beforeTree:
+                    v = bunch.v
+                    if u.p.v == v:
+                        u.p.b = bunch.body
+                        u.p.h = bunch.head
+                    else:
+                        v.setBodyString(bunch.body)
+                        v.setHeadString(bunch.head)
+
+        ### def redoInsertNode(self) -> None:
+        if 0:
+            c, u = self.c, self
+            if cc := c.chapterController:
+                cc.selectChapterByName('main')
+            if u.newBack:
+                u.newP._linkAfter(u.newBack)
+            elif u.newParent:
+                u.newP._linkAsNthChild(u.newParent, 0)
+            else:
+                u.newP._linkAsRoot()
+            if u.pasteAsClone:
+                for bunch in u.afterTree:
+                    v = bunch.v
+                    if u.newP.v == v:
+                        u.newP.b = bunch.body
+                        u.newP.h = bunch.head
+                    else:
+                        v.setBodyString(bunch.body)
+                        v.setHeadString(bunch.head)
+            u.newP.setDirty()
+            c.selectPosition(u.newP)
+
     # @+node:ekr.20261005182243.1: *4* u.select_position
     def select_position(self, p: Position) -> None:
 
@@ -498,6 +541,48 @@ class Undoer:
 
         # Do the action!
         c.p = p
+
+    # @+node:ekr.20261005140833.1: *4* u.set_body
+    def set_body(self, p: Position, new_body: str, *, new_y_scroll: int | None = None) -> None:
+
+        u = self
+        b = u.undoBead
+        p = p.copy()
+        w = u.c.frame.body.wrapper
+        old_body = p.b
+
+        def set_body_redoer() -> None:
+            p.b = new_body
+
+        def set_body_undoer() -> None:
+            p.b = old_body
+
+        b.set_helpers(set_body_redoer, set_body_undoer)
+        b.must_recolor = True
+
+        if w:
+            old_y_scroll = w.getYScrollPosition()
+
+            def set_scroll_redoer() -> None:
+                if new_y_scroll is not None:
+                    w.setYScrollPosition(new_y_scroll)
+
+            def set_scroll_undoer() -> None:
+                w.setYScrollPosition(old_y_scroll)
+
+            b.set_finishers(set_scroll_redoer, set_scroll_undoer)
+
+        # Do the action!
+        p.b = new_body
+
+    # @+node:ekr.20261005094529.2: *4* u.set_command_name
+    def set_command_name(self, command_name: str) -> None:
+        u = self
+        b = u.undoBead
+        assert isinstance(b, UndoBead), repr(b)
+        b.command_name = command_name
+        b.undoType = command_name
+        u.setUndoType(command_name)
 
     # @+node:ekr.20261005143752.1: *4* u.set_selection_range
     def set_selection_range(
