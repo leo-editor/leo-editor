@@ -3173,11 +3173,11 @@ class LeoServer:
         p = self._get_p(param)
 
         if p == c.p:
-            c.insertHeadline(op_name='Insert Child', as_child=True)  # Handles undo, sets c.p
+            c.insertChild()  # Handles undo, sets c.p
         else:
             oldPosition = c.p
             c.selectPosition(p)
-            c.insertHeadline(op_name='Insert Child', as_child=True)  # Handles undo, sets c.p
+            c.insertChild()  # Handles undo, sets c.p
             if c.positionExists(oldPosition):
                 c.selectPosition(oldPosition)
         # return selected node either ways

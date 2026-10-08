@@ -1280,7 +1280,6 @@ def insertHeadlineHelper(
     return p
 
 
-# @+node:ekr.20031218072017.1761: *3* c_oc.insertHeadline (insert-*)
 # @+node:ekr.20071005173203.1: *3* c_oc:insert-child (converted)
 @g.commander_command('insert-child')
 def insertChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
@@ -1310,10 +1309,7 @@ def insertChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None
 # @+node:ekr.20261008042653.1: *3* c_oc:insert-node
 @g.commander_command('insert-node')
 def insertHeadline(
-    self: Cmdr,
-    event: LeoKeyEvent | None = None,
-    op_name: str = "Insert Node",
-    as_child: bool = False,
+    self: Cmdr, event: LeoKeyEvent | None = None, op_name: str = "Insert Node"
 ) -> Position | None:
     """
     If c.p is expanded, insert a new node as the first or last child of c.p,
@@ -1322,8 +1318,29 @@ def insertHeadline(
     If c.p is not expanded, insert a new node after c.p.
     """
     c = self
-    # Fix #600.
-    return insertHeadlineHelper(c, event=event, as_child=as_child, op_name=op_name)
+    current = c.p
+    if not current:
+        return None
+    c.endEditing()
+    u = c.undoer
+    undoData = c.undoer.beforeInsertNode(current)
+    if (
+        current.hasChildren() and current.isExpanded() or
+        c.hoistStack and current == c.hoistStack[-1].p
+    ):  # fmt: skip
+        # Make sure the new node is visible when hoisting.
+        if c.config.getBool('insert-new-nodes-at-end'):
+            p = current.insertAsLastChild()
+        else:
+            p = current.insertAsNthChild(0)
+    else:
+        p = current.insertAfter()
+    g.doHook('create-node', c=c, p=p)
+    p.setDirty()
+    c.setChanged()
+    u.afterInsertNode(p, op_name, undoData)
+    c.redrawAndEdit(p, selectAll=True)
+    return p
 
 
 # @+node:ekr.20261008042700.1: *3* c_oc:insert-headline-as-first-child
