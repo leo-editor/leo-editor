@@ -1304,7 +1304,7 @@ def insertNodeAsLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Posit
     return p
 
 
-# @+node:ekr.20261008042653.1: *3* c_oc:insert-node
+# @+node:ekr.20261008042653.1: *3* c_oc:insert-node (to be converted)
 @g.commander_command('insert-node')
 def insertHeadline(
     self: Cmdr, event: LeoKeyEvent | None = None, op_name: str = "Insert Node"
