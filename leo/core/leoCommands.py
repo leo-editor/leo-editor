@@ -2325,8 +2325,8 @@ class Commands:
             else:  # Make a copy _now_
                 c._currentPosition = p.copy()
         else:
-            message = f"Invalid position: {p!r} in {c.shortFileName()}\n{g.callers(10)=}"
             print()
+            message = f"Invalid position in {c.shortFileName()}\n{p!r}\n{g.callers(10)=}"
             g.trace(message)
             print()
             if g.unitTesting:
