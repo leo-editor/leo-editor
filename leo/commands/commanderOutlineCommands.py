@@ -1203,7 +1203,7 @@ def cloneToLastNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     # return clone # For mod_labels and chapters plugins.
 
 
-# @+node:ekr.20031218072017.1193: *3* c_oc:delete-node (doh: u.delete_node is incomplete!)
+# @+node:ekr.20031218072017.1193: *3* c_oc:delete-node (progress, but not perfect)
 @g.commander_command('delete-node')
 def deleteOutline(
     self: Cmdr,
@@ -1234,7 +1234,6 @@ def deleteOutline(
         undoData = u.beforeDeleteNode(p)
         p.setDirty()
         p.doDelete(newNode)
-        ### g.trace(p.h, newNode.h, c.positionExists(p), c.positionExists(newNode))  ###
         c.setChanged()
         u.afterDeleteNode(newNode, op_name, undoData)
         c.redraw(newNode)

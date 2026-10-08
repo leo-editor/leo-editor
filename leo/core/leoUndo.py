@@ -254,14 +254,11 @@ class Undoer:
         including nested "with" statements.
         """
         u = self
-        g.trace(f"{u.undoBeadLevel=}")
+        ### g.trace(f"{u.undoBeadLevel=}")
         # Use the same bead for nested with statements.
         if u.undoBeadLevel == 0:
             u.undoBead = UndoBead(undoer=self)
-            # u.dump_stack('before')
-            # u.bead += 1
-            # u.beads[u.bead :] = [u.undoBead]
-            u.pushBead(u.undoBead)  ###
+            u.pushBead(u.undoBead)
         else:
             g.trace(f"Nested 'with' statement {u.undoBeadLevel} for {u.undoBead.command_name}")
         u.undoBeadLevel += 1
@@ -271,7 +268,7 @@ class Undoer:
         """Called when leaving a "with" statement."""
         # *Never* pop u.beads!
         u = self
-        g.trace(u.undoBeadLevel)
+        ### g.trace(u.undoBeadLevel)
         assert isinstance(u.undoBead, UndoBead), repr(u.undoBead)
         u.undoBeadLevel -= 1
         assert u.undoBeadLevel >= 0
@@ -492,7 +489,7 @@ class Undoer:
     def clone_node(self, p: Position) -> None:
         g.trace(p.h)
 
-    # @+node:ekr.20261005143707.1: *4* u.delete_node (fails)
+    # @+node:ekr.20261005143707.1: *4* u.delete_node
     def delete_node(self, p: Position) -> None:
 
         u = self
@@ -509,15 +506,14 @@ class Undoer:
             g.error(f"Can not delete {p.h}")
             return
 
-        if trace:  ###
+        if 0:  ###
             g.trace(f"{old_p=}")
             g.trace(f"{new_p=}")
 
         assert isinstance(b, UndoBead), repr(b)
 
         def update(p: Position) -> None:
-            if trace:
-                g.trace(f"{p=} {g.callers()=}")
+            ### g.trace(f"{p=} {g.callers()=}")
             p.contract()
             p.setDirty()
             c.p = p
@@ -529,7 +525,6 @@ class Undoer:
         c.checkOutline()
 
         def delete_node_redoer() -> None:
-            g.trace('==========', g.callers())
             old_p.doDelete()
             update(new_p)
 
@@ -735,11 +730,7 @@ class Undoer:
             b.command_name = command_name
             b.undoType = command_name
             u.setUndoType(command_name)
-        if g.unitTesting:  ###
-            u.dump_stack()  ###
-            # print()
-            # g.trace(u.undoBeadLevel, command_name, g.callers())  ###
-            # g.trace(f"{b.command_name:10} old_ins: {b.old_ins:2} {b.old_sel=}")
+        ### u.dump_stack()  ###
 
     # @+node:ekr.20261005143752.1: *4* u.set_selection_range
     def set_selection_range(
