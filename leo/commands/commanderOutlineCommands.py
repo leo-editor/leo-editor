@@ -1240,48 +1240,7 @@ def deleteOutline(
         c.checkOutline()
 
 
-# @+node:ekr.20071005173203.1: *3* c_oc.insertChild
-@g.commander_command('insert-child')
-def insertChild(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
-    """Insert a node after the presently selected node."""
-    c = self
-    return c.insertHeadline(event=event, op_name='Insert Child', as_child=True)
-
-
-# @+node:ekr.20031218072017.1761: *3* c_oc.insertHeadline (insert-*)
-@g.commander_command('insert-node')
-def insertHeadline(
-    self: Cmdr,
-    event: LeoKeyEvent | None = None,
-    op_name: str = "Insert Node",
-    as_child: bool = False,
-) -> Position | None:
-    """
-    If c.p is expanded, insert a new node as the first or last child of c.p,
-    depending on @bool insert-new-nodes-at-end.
-
-    If c.p is not expanded, insert a new node after c.p.
-    """
-    c = self
-    # Fix #600.
-    return insertHeadlineHelper(c, event=event, as_child=as_child, op_name=op_name)
-
-
-@g.commander_command('insert-as-first-child')
-def insertNodeAsFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
-    """Insert a node as the first child of the previous node."""
-    c = self
-    return insertHeadlineHelper(c, event=event, as_first_child=True)
-
-
-@g.commander_command('insert-as-last-child')
-def insertNodeAsLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
-    """Insert a node as the last child of the previous node."""
-    c = self
-    return insertHeadlineHelper(c, event=event, as_last_child=True)
-
-
-# @+node:ekr.20171124091846.1: *4* function: insertHeadlineHelper
+# @+node:ekr.20171124091846.1: *3* function: insertHeadlineHelper
 def insertHeadlineHelper(
     c: Cmdr,
     event: LeoKeyEvent | None = None,
@@ -1344,7 +1303,69 @@ def insertHeadlineHelper(
     return p
 
 
-# @+node:ekr.20130922133218.11540: *3* c_oc.insertHeadlineBefore
+# @+node:ekr.20031218072017.1761: *3* c_oc.insertHeadline (insert-*)
+# @+node:ekr.20071005173203.1: *3* c_oc:insert-child (converted)
+@g.commander_command('insert-child')
+def insertChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
+    """Insert a node as a child of presently selected node."""
+    c = self
+    # Fix #600.
+    ###b return insertHeadlineHelper(c, event=event, as_child=as_child, op_name=op_name)
+    current = c.p
+    if not current:
+        return None
+    c.endEditing()
+    u = c.undoer
+    undoData = c.undoer.beforeInsertNode(current)
+    # Make sure the new node is visible when hoisting.
+    if c.config.getBool('insert-new-nodes-at-end'):
+        p = current.insertAsLastChild()
+    else:
+        p = current.insertAsNthChild(0)
+    g.doHook('create-node', c=c, p=p)
+    p.setDirty()
+    c.setChanged()
+    u.afterInsertNode(p, 'Insert child', undoData)
+    c.redrawAndEdit(p, selectAll=True)
+    return p
+
+
+# @+node:ekr.20261008042653.1: *3* c_oc:insert-node
+@g.commander_command('insert-node')
+def insertHeadline(
+    self: Cmdr,
+    event: LeoKeyEvent | None = None,
+    op_name: str = "Insert Node",
+    as_child: bool = False,
+) -> Position | None:
+    """
+    If c.p is expanded, insert a new node as the first or last child of c.p,
+    depending on @bool insert-new-nodes-at-end.
+
+    If c.p is not expanded, insert a new node after c.p.
+    """
+    c = self
+    # Fix #600.
+    return insertHeadlineHelper(c, event=event, as_child=as_child, op_name=op_name)
+
+
+# @+node:ekr.20261008042700.1: *3* c_oc:insert-headline-as-first-child
+@g.commander_command('insert-as-first-child')
+def insertNodeAsFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
+    """Insert a node as the first child of the previous node."""
+    c = self
+    return insertHeadlineHelper(c, event=event, as_first_child=True)
+
+
+# @+node:ekr.20261008042932.1: *3* c_oc:insert-headline-as-last-child
+@g.commander_command('insert-as-last-child')
+def insertNodeAsLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
+    """Insert a node as the last child of the previous node."""
+    c = self
+    return insertHeadlineHelper(c, event=event, as_last_child=True)
+
+
+# @+node:ekr.20130922133218.11540: *3* c_oc:insert-node-before
 @g.commander_command('insert-node-before')
 def insertHeadlineBefore(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Insert a node before the presently selected node."""
