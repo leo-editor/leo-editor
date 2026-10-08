@@ -2445,10 +2445,18 @@ class Undoer:
             cc.selectChapterByName('main')
         u.newP.setAllAncestorAtFileNodesDirty()
         c.selectPosition(u.newP)
-        # Bug fix: 2016/03/30.
-        # This always selects the proper new position.
-        # c.selectPosition(u.p)
-        c.deleteOutline()  ########## set op_name.
+        if 1:  ### Experimental:
+            p = c.p
+            if p.hasVisBack(c):
+                newNode = p.visBack(c)
+            else:
+                newNode = p.next()  # _not_ p.visNext(): we are at the top level.
+            c.p.doDelete()
+            c.redraw(newNode)
+            c.checkOutline()
+        else:
+            c.deleteOutline()  ########## set op_name.
+
         if u.pasteAsClone:
             for bunch in u.beforeTree:
                 v = bunch.v
