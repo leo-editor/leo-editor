@@ -1224,7 +1224,7 @@ def deleteOutline(
         newNode = p.next()  # _not_ p.visNext(): we are at the top level.
     if not newNode:
         return
-    if 0:  ### Fails in multiple ways.
+    if g.new:  ### Fails in multiple ways.
         g.trace(op_name)
         with c.undoer as u:
             u.set_command_name(op_name)
@@ -1354,7 +1354,7 @@ def insertHeadlineBefore(self: Cmdr, event: LeoKeyEvent | None = None) -> Positi
         g.warning('can not insert a node before the base of a hoist')
         return None
     c.endEditing()
-    if 0:  ###
+    if g.new:  ###
         g.trace(op_name)
         with c.undoer as u:
             u.set_command_name(op_name)

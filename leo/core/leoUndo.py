@@ -254,13 +254,10 @@ class Undoer:
         including nested "with" statements.
         """
         u = self
-        # Use the same
+        # Use the same bead for nested with statements.
         if u.undoBeadLevel == 0:
-            if 0:
-                u.beads.append(UndoBead(undoer=self))
-            else:
-                u.undoBead = UndoBead(undoer=self)
-                u.beads.append(u.undoBead)
+            u.undoBead = UndoBead(undoer=self)
+            u.beads.append(u.undoBead)
             u.bead += 1
         else:  ### if not g.unitTesting:
             g.trace(f"Nested 'with' statement {u.undoBeadLevel} for {u.undoBead.command_name}")
