@@ -1224,9 +1224,10 @@ def deleteOutline(
         newNode = p.next()  # _not_ p.visNext(): we are at the top level.
     if not newNode:
         return
-    if 0:  ### Fails.
+    if 0:  ### Fails in multiple ways.
+        g.trace(op_name)
         with c.undoer as u:
-            u.set_command_name('delete-node')
+            u.set_command_name(op_name)
             u.delete_node(p)
     else:
         u = c.undoer
@@ -1324,7 +1325,7 @@ def insertHeadlineHelper(
 @g.commander_command('insert-node-before')
 def insertHeadlineBefore(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Insert a node before the presently selected node."""
-    c, current, u = self, self.p, self.undoer
+    c, current = self, self.p
     op_name = 'Insert Node Before'
     if not current:
         return None
@@ -1333,13 +1334,26 @@ def insertHeadlineBefore(self: Cmdr, event: LeoKeyEvent | None = None) -> Positi
         g.warning('can not insert a node before the base of a hoist')
         return None
     c.endEditing()
-    undoData = u.beforeInsertNode(current)
-    p = current.insertBefore()
-    g.doHook('create-node', c=c, p=p)
-    p.setDirty()
-    c.setChanged()
-    u.afterInsertNode(p, op_name, undoData)
-    c.redrawAndEdit(p, selectAll=True)
+    if 1:  ###
+        g.trace(op_name)
+        with c.undoer as u:
+            u.set_command_name(op_name)
+            undoData = u.beforeInsertNode(current)
+            p = current.insertBefore()
+            g.doHook('create-node', c=c, p=p)
+            p.setDirty()
+            c.setChanged()
+            u.afterInsertNode(p, op_name, undoData)
+            c.redrawAndEdit(p, selectAll=True)
+    else:
+        u = self.undoer
+        undoData = u.beforeInsertNode(current)
+        p = current.insertBefore()
+        g.doHook('create-node', c=c, p=p)
+        p.setDirty()
+        c.setChanged()
+        u.afterInsertNode(p, op_name, undoData)
+        c.redrawAndEdit(p, selectAll=True)
     return p
 
 

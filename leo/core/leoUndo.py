@@ -507,7 +507,7 @@ class Undoer:
             return
 
         assert isinstance(b, UndoBead), repr(b)
-        g.trace(p.h)
+        g.trace(p.h, g.callers())
 
         def update(p: Position) -> None:
             p.contract()
@@ -720,9 +720,13 @@ class Undoer:
         u = self
         b = u.undoBead
         assert isinstance(b, UndoBead), repr(b)
-        b.command_name = command_name
-        b.undoType = command_name
-        u.setUndoType(command_name)
+        if g.unitTesting:
+            print()
+            g.trace(u.undoBeadLevel, command_name, g.callers())  ###
+        if u.undoBeadLevel == 1:
+            b.command_name = command_name
+            b.undoType = command_name
+            u.setUndoType(command_name)
 
         # g.trace(f"{b.command_name:10} old_ins: {b.old_ins:2} {b.old_sel=}")
 
@@ -2420,7 +2424,7 @@ class Undoer:
         # Bug fix: 2016/03/30.
         # This always selects the proper new position.
         # c.selectPosition(u.p)
-        c.deleteOutline()
+        c.deleteOutline()  ########## set op_name.
         if u.pasteAsClone:
             for bunch in u.beforeTree:
                 v = bunch.v
