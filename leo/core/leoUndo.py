@@ -85,6 +85,7 @@ class UndoBead:
         'old_y_scroll',
         'redo_finishers',
         'redo_functions',
+        'trace',
         'undoType',
         'undo_finishers',
         'undo_functions',
@@ -116,6 +117,7 @@ class UndoBead:
         self.old_y_scroll = w.getYScrollPosition() if is_body else None
         self.redo_finishers: list[Callable] = []
         self.redo_functions: list[Callable] = []
+        self.trace = 'leoPy' not in c.shortFileName()
         self.undoType = ''  # Required. Set by u.set_command_name
         self.undo_finishers: list[Callable] = []
         self.undo_functions: list[Callable] = []
@@ -142,15 +144,31 @@ class UndoBead:
     # @+node:ekr.20261006040132.1: *3* UndoBead.redo
     def redo(self) -> None:
         c = self.c
+
+        def trace(message: str | None = '') -> None:
+            if self.trace:
+                g.trace(message)
+
+        if self.trace:
+            print()
+        trace('redoers!')
         for f in self.redo_functions:
+            trace(f.__name__)
             f()
         if self.must_redraw:
+            trace('redraw!')
             c.redraw()
         elif self.must_recolor:
+            trace('recolor!')
             c.recolor()
+        trace('finishers')
         for f in self.redo_finishers:
+            trace(f.__name__)
             f()
+        if self.undo_finishers:
+            trace('finishers!')
         if self.must_set_c_changed:
+            trace('c.setChanged!')
             c.setChanged()
 
     # @+node:ekr.20261006040137.2: *3* UndoBead.set_helpers & set_finishers
@@ -167,15 +185,30 @@ class UndoBead:
     # @+node:ekr.20261006040137.1: *3* UndoBead.undo
     def undo(self) -> None:
         c = self.c
+
+        def trace(message: str | None = '') -> None:
+            if self.trace:
+                g.trace(message)
+
+        if self.trace:
+            print()
+        trace('undoers!')
         for f in self.undo_functions:
+            trace(f.__name__)
             f()
         if self.must_redraw:
+            trace(f"redraw! {self.old_p.h}")
             c.redraw(self.old_p)
         elif self.must_recolor:
+            trace('recolor!')
             c.recolor()
+        if self.undo_finishers:
+            trace('finishers!')
         for f in self.undo_finishers:
+            trace(f.__name__)
             f()
         if self.must_set_c_changed:
+            trace('c.setChanged!')
             c.setChanged()
 
     # @-others
