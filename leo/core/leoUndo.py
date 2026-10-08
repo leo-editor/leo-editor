@@ -254,15 +254,15 @@ class Undoer:
         including nested "with" statements.
         """
         u = self
-        g.trace(u.undoBeadLevel)
+        g.trace(f"{u.undoBeadLevel=}")
         # Use the same bead for nested with statements.
         if u.undoBeadLevel == 0:
             u.undoBead = UndoBead(undoer=self)
-            g.trace(f"Push {u.bead} {u.undoBead}")  ###
-            u.bead += 1
-            u.beads[u.bead :] = [u.undoBead]
-            u.trace_beads()
-        else:  ### if not g.unitTesting:
+            # u.dump_stack('before')
+            # u.bead += 1
+            # u.beads[u.bead :] = [u.undoBead]
+            u.pushBead(u.undoBead)  ###
+        else:
             g.trace(f"Nested 'with' statement {u.undoBeadLevel} for {u.undoBead.command_name}")
         u.undoBeadLevel += 1
         return self
@@ -529,7 +529,7 @@ class Undoer:
         c.checkOutline()
 
         def delete_node_redoer() -> None:
-            g.trace('==========')
+            g.trace('==========', g.callers())
             old_p.doDelete()
             update(new_p)
 
@@ -731,15 +731,15 @@ class Undoer:
         u = self
         b = u.undoBead
         assert isinstance(b, UndoBead), repr(b)
-        if g.unitTesting:  ###
-            print()
-            g.trace(u.undoBeadLevel, command_name, g.callers())  ###
         if u.undoBeadLevel == 1:
             b.command_name = command_name
             b.undoType = command_name
             u.setUndoType(command_name)
-
-        # g.trace(f"{b.command_name:10} old_ins: {b.old_ins:2} {b.old_sel=}")
+        if g.unitTesting:  ###
+            u.dump_stack()  ###
+            # print()
+            # g.trace(u.undoBeadLevel, command_name, g.callers())  ###
+            # g.trace(f"{b.command_name:10} old_ins: {b.old_ins:2} {b.old_sel=}")
 
     # @+node:ekr.20261005143752.1: *4* u.set_selection_range
     def set_selection_range(
@@ -2194,14 +2194,15 @@ class Undoer:
             c.bodyWantsFocus()
             w.setYScrollPosition(u.yview)
 
-    # @+node:ekr.20261008093043.1: *3* u.trace_beads
-    def trace_beads(self) -> None:
+    # @+node:ekr.20261008093043.1: *3* u.dump_stack
+    def dump_stack(self, message: str = '') -> None:
         u = self
         print()
-        g.trace(g.callers(2))
+        print(f"Dump of undo stack: {g.caller()} {message}")
         for i, obj in enumerate(u.beads):
             s = obj.kind if isinstance(obj, g.Bunch) else repr(obj)
-            print(f"{i:} {obj.__class__.__name__} {s}")
+            prefix = '**' if i == u.bead else '  '
+            print(f"{prefix} {i:} {obj.__class__.__name__} {s}")
 
     # @+node:ekr.20031218072017.2039: *3* u.undo
     @cmd('undo')

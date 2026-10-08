@@ -497,7 +497,7 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.46: *4* TestNodes.test_insert_node
     def test_insert_node(self):
-        c, p = self.c, self.c.p
+        c, p, u = self.c, self.c.p, self.c.undoer
         self.assertEqual(p.h, 'root')
         p2 = p.insertAsNthChild(0)
         p2.setHeadString('A')
@@ -505,32 +505,40 @@ class TestNodes(LeoUnitTest):
         p3.setHeadString('B')
         p.expand()
         c.p = p2
+        ### u.dump_stack('1')
         p4 = c.insertHeadline()
+        ### u.dump_stack('2')
         self.assertEqual(p4, c.p)
         p = c.p
+        ### u.dump_stack('3')
         self.assertTrue(p)
         p.setHeadString('inserted')
+        ### u.dump_stack('4')
         self.assertTrue(p.back())
         self.assertEqual(p.back().h, 'A')
         self.assertEqual(p.next().h, 'B')
         # The new undo logic requires 2 undoes.
         # The first undo undoes the headline changes,
         # the second undo undoes the insert node.
-        c.undoer.undo()
-        c.undoer.undo()
+        ### u.dump_stack('5')
+        u.undo()
+        ### u.dump_stack('after undo 1')
+        u.undo()
+        ### u.dump_stack('after undo 2')
         p = c.p
         self.assertEqual(p, p2)
         self.assertEqual(p.next(), p3)
-        c.undoer.redo()  ### Fails here in redo_change_headline.
+        u.redo()  ### Fails here in redo_change_headline.
+        ### u.dump_stack('after redo')
         p = c.p
         self.assertTrue(p.back())
         self.assertEqual(p.back().h, 'A')
         self.assertEqual(p.next().h, 'B')
-        c.undoer.undo()
+        u.undo()
         p = c.p
         self.assertEqual(p, p2)
         self.assertEqual(p.next(), p3)
-        c.undoer.redo()
+        u.redo()
         p = c.p
         self.assertEqual(p.back().h, 'A')
         self.assertEqual(p.next().h, 'B')
