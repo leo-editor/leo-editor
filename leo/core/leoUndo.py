@@ -2438,7 +2438,7 @@ class Undoer:
         c.selectPosition(u.p)
         c.hoist()
 
-    # @+node:ekr.20050412085112: *4* u.undoInsertNode
+    # @+node:ekr.20050412085112: *4* u.undoInsertNode *** calls c.deleteOutline ***
     def undoInsertNode(self) -> None:
         c, u = self.c, self
         if cc := c.chapterController:
