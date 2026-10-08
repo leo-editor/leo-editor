@@ -1224,7 +1224,7 @@ def deleteOutline(
         newNode = p.next()  # _not_ p.visNext(): we are at the top level.
     if not newNode:
         return
-    if g.new:  ### Fails in multiple ways.
+    if 0:  # g.new:  ### Fails in multiple ways.
         g.trace(op_name)
         with c.undoer as u:
             u.set_command_name(op_name)
@@ -1234,6 +1234,7 @@ def deleteOutline(
         undoData = u.beforeDeleteNode(p)
         p.setDirty()
         p.doDelete(newNode)
+        ### g.trace(p.h, newNode.h, c.positionExists(p), c.positionExists(newNode))  ###
         c.setChanged()
         u.afterDeleteNode(newNode, op_name, undoData)
         c.redraw(newNode)

@@ -95,7 +95,7 @@ class UndoBead:
     # @-<< UndoBead: slots >>
 
     def __repr__(self) -> str:
-        return f"UndoBead: {self.command_name}"
+        return f"UndoBead: {self.command_name or '<no command_name>'}"
 
     # @+others
     # @+node:ekr.20261007113407.1: *3* UndoBead.__init__
@@ -254,11 +254,14 @@ class Undoer:
         including nested "with" statements.
         """
         u = self
+        g.trace(u.undoBeadLevel)
         # Use the same bead for nested with statements.
         if u.undoBeadLevel == 0:
             u.undoBead = UndoBead(undoer=self)
-            u.beads.append(u.undoBead)
+            g.trace(f"Push {u.bead} {u.undoBead}")  ###
             u.bead += 1
+            u.beads[u.bead :] = [u.undoBead]
+            u.trace_beads()
         else:  ### if not g.unitTesting:
             g.trace(f"Nested 'with' statement {u.undoBeadLevel} for {u.undoBead.command_name}")
         u.undoBeadLevel += 1
@@ -268,6 +271,7 @@ class Undoer:
         """Called when leaving a "with" statement."""
         # *Never* pop u.beads!
         u = self
+        g.trace(u.undoBeadLevel)
         assert isinstance(u.undoBead, UndoBead), repr(u.undoBead)
         u.undoBeadLevel -= 1
         assert u.undoBeadLevel >= 0
@@ -497,16 +501,23 @@ class Undoer:
         old_p = p.copy()
         old_back = p.back()
         old_parent = p.parent()
+        trace = b.trace
+
         # Similar to code for delete-node command:
         new_p = p.visBack(c) if p.hasVisBack(c) else p.next()
         if not new_p:
             g.error(f"Can not delete {p.h}")
             return
 
+        if trace:  ###
+            g.trace(f"{old_p=}")
+            g.trace(f"{new_p=}")
+
         assert isinstance(b, UndoBead), repr(b)
-        g.trace(p.h, g.callers())
 
         def update(p: Position) -> None:
+            if trace:
+                g.trace(f"{p=} {g.callers()=}")
             p.contract()
             p.setDirty()
             c.p = p
@@ -518,6 +529,7 @@ class Undoer:
         c.checkOutline()
 
         def delete_node_redoer() -> None:
+            g.trace('==========')
             old_p.doDelete()
             update(new_p)
 
@@ -622,7 +634,7 @@ class Undoer:
     def select_position(self, p: Position) -> None:
 
         u = self
-        b = u.bead
+        b = u.undoBead  ###
         c = u.c
         old_p = c.p.copy()
 
@@ -719,7 +731,7 @@ class Undoer:
         u = self
         b = u.undoBead
         assert isinstance(b, UndoBead), repr(b)
-        if False:  ### g.unitTesting:
+        if g.unitTesting:  ###
             print()
             g.trace(u.undoBeadLevel, command_name, g.callers())  ###
         if u.undoBeadLevel == 1:
@@ -738,7 +750,7 @@ class Undoer:
     ) -> None:
 
         u = self
-        b = u.bead
+        b = u.undoBead
         c = u.c
         w = c.frame.body.wrapper
         if not w:
@@ -1800,6 +1812,7 @@ class Undoer:
         c.endEditing()
         if not u.canRedo():
             return
+        ### u.trace_beads()  ###
         obj = u.getBead(u.bead + 1)
         if not obj:
             return
@@ -1854,6 +1867,7 @@ class Undoer:
     def redoChangeHeadline(self) -> None:
         c, u = self.c, self
         # selectPosition causes recoloring, so don't do this unless needed.
+        g.trace('***********', u.p.h, repr(u.undoBead))
         if c.p != u.p:  # #1333.
             c.selectPosition(u.p)
         u.p.setDirty()
@@ -2180,6 +2194,15 @@ class Undoer:
             c.bodyWantsFocus()
             w.setYScrollPosition(u.yview)
 
+    # @+node:ekr.20261008093043.1: *3* u.trace_beads
+    def trace_beads(self) -> None:
+        u = self
+        print()
+        g.trace(g.callers(2))
+        for i, obj in enumerate(u.beads):
+            s = obj.kind if isinstance(obj, g.Bunch) else repr(obj)
+            print(f"{i:} {obj.__class__.__name__} {s}")
+
     # @+node:ekr.20031218072017.2039: *3* u.undo
     @cmd('undo')
     def undo(self, event: LeoKeyEvent | None = None) -> None:
@@ -2192,6 +2215,7 @@ class Undoer:
         c.endEditing()
         if not u.canUndo():
             return
+        ### u.trace_beads()  ###
         obj = u.getBead(u.bead)
         if not obj:
             return

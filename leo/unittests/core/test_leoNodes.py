@@ -513,7 +513,7 @@ class TestNodes(LeoUnitTest):
         self.assertTrue(p.back())
         self.assertEqual(p.back().h, 'A')
         self.assertEqual(p.next().h, 'B')
-        # With the new undo logic, it takes 2 undoes.
+        # The new undo logic requires 2 undoes.
         # The first undo undoes the headline changes,
         # the second undo undoes the insert node.
         c.undoer.undo()
@@ -521,7 +521,7 @@ class TestNodes(LeoUnitTest):
         p = c.p
         self.assertEqual(p, p2)
         self.assertEqual(p.next(), p3)
-        c.undoer.redo()
+        c.undoer.redo()  ### Fails here in redo_change_headline.
         p = c.p
         self.assertTrue(p.back())
         self.assertEqual(p.back().h, 'A')
