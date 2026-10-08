@@ -1203,7 +1203,7 @@ def cloneToLastNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     # return clone # For mod_labels and chapters plugins.
 
 
-# @+node:ekr.20031218072017.1193: *3* c_oc.deleteOutline
+# @+node:ekr.20031218072017.1193: *3* c_oc.deleteOutline (fails with new code)
 @g.commander_command('delete-node')
 def deleteOutline(
     self: Cmdr,
@@ -1291,33 +1291,56 @@ def insertHeadlineHelper(
     as_last_child: bool = False,
 ) -> Position | None:
     """Insert a node after the presently selected node."""
-    u = c.undoer
     current = c.p
     if not current:
         return None
     c.endEditing()
-    undoData = c.undoer.beforeInsertNode(current)
-    if as_first_child:
-        p = current.insertAsNthChild(0)
-    elif as_last_child:
-        p = current.insertAsLastChild()
-    elif (
-        as_child
-        or (current.hasChildren() and current.isExpanded())
-        or (c.hoistStack and current == c.hoistStack[-1].p)
-    ):
-        # Make sure the new node is visible when hoisting.
-        if c.config.getBool('insert-new-nodes-at-end'):
-            p = current.insertAsLastChild()
-        else:
+    if 0:  ### Experimental: fails
+        with c.undoer as u:
+            if as_first_child:
+                p = current.insertAsNthChild(0)
+            elif as_last_child:
+                p = current.insertAsLastChild()
+            elif (
+                as_child
+                or (current.hasChildren() and current.isExpanded())
+                or (c.hoistStack and current == c.hoistStack[-1].p)
+            ):
+                # Make sure the new node is visible when hoisting.
+                if c.config.getBool('insert-new-nodes-at-end'):
+                    p = current.insertAsLastChild()
+                else:
+                    p = current.insertAsNthChild(0)
+            else:
+                p = current.insertAfter()
+            g.doHook('create-node', c=c, p=p)
+            p.setDirty()
+            c.setChanged()
+            c.redrawAndEdit(p, selectAll=True)
+    else:  ### Legacy
+        u = c.undoer
+        undoData = c.undoer.beforeInsertNode(current)
+        if as_first_child:
             p = current.insertAsNthChild(0)
-    else:
-        p = current.insertAfter()
-    g.doHook('create-node', c=c, p=p)
-    p.setDirty()
-    c.setChanged()
-    u.afterInsertNode(p, op_name, undoData)
-    c.redrawAndEdit(p, selectAll=True)
+        elif as_last_child:
+            p = current.insertAsLastChild()
+        elif (
+            as_child
+            or (current.hasChildren() and current.isExpanded())
+            or (c.hoistStack and current == c.hoistStack[-1].p)
+        ):
+            # Make sure the new node is visible when hoisting.
+            if c.config.getBool('insert-new-nodes-at-end'):
+                p = current.insertAsLastChild()
+            else:
+                p = current.insertAsNthChild(0)
+        else:
+            p = current.insertAfter()
+        g.doHook('create-node', c=c, p=p)
+        p.setDirty()
+        c.setChanged()
+        u.afterInsertNode(p, op_name, undoData)
+        c.redrawAndEdit(p, selectAll=True)
     return p
 
 
@@ -1334,7 +1357,7 @@ def insertHeadlineBefore(self: Cmdr, event: LeoKeyEvent | None = None) -> Positi
         g.warning('can not insert a node before the base of a hoist')
         return None
     c.endEditing()
-    if 1:  ###
+    if 0:  ###
         g.trace(op_name)
         with c.undoer as u:
             u.set_command_name(op_name)

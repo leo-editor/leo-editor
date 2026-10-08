@@ -549,6 +549,8 @@ class Undoer:
         new_parent = p.parent()
         assert isinstance(b, UndoBead), repr(b)
 
+        assert False, '****Not ready!'
+
         def insert_node_redoer() -> None:
             # p.setAllAncestorAtFileNodesDirty()
             if new_back:
@@ -720,7 +722,7 @@ class Undoer:
         u = self
         b = u.undoBead
         assert isinstance(b, UndoBead), repr(b)
-        if g.unitTesting:
+        if False:  ### g.unitTesting:
             print()
             g.trace(u.undoBeadLevel, command_name, g.callers())  ###
         if u.undoBeadLevel == 1:
