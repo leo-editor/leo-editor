@@ -1254,52 +1254,29 @@ def insertHeadlineHelper(
     if not current:
         return None
     c.endEditing()
-    if 0:  ### Experimental: fails
-        with c.undoer as u:
-            if as_first_child:
-                p = current.insertAsNthChild(0)
-            elif as_last_child:
-                p = current.insertAsLastChild()
-            elif (
-                as_child
-                or (current.hasChildren() and current.isExpanded())
-                or (c.hoistStack and current == c.hoistStack[-1].p)
-            ):
-                # Make sure the new node is visible when hoisting.
-                if c.config.getBool('insert-new-nodes-at-end'):
-                    p = current.insertAsLastChild()
-                else:
-                    p = current.insertAsNthChild(0)
-            else:
-                p = current.insertAfter()
-            g.doHook('create-node', c=c, p=p)
-            p.setDirty()
-            c.setChanged()
-            c.redrawAndEdit(p, selectAll=True)
-    else:  ### Legacy
-        u = c.undoer
-        undoData = c.undoer.beforeInsertNode(current)
-        if as_first_child:
-            p = current.insertAsNthChild(0)
-        elif as_last_child:
+    u = c.undoer
+    undoData = c.undoer.beforeInsertNode(current)
+    if as_first_child:
+        p = current.insertAsNthChild(0)
+    elif as_last_child:
+        p = current.insertAsLastChild()
+    elif (
+        as_child
+        or (current.hasChildren() and current.isExpanded())
+        or (c.hoistStack and current == c.hoistStack[-1].p)
+    ):
+        # Make sure the new node is visible when hoisting.
+        if c.config.getBool('insert-new-nodes-at-end'):
             p = current.insertAsLastChild()
-        elif (
-            as_child
-            or (current.hasChildren() and current.isExpanded())
-            or (c.hoistStack and current == c.hoistStack[-1].p)
-        ):
-            # Make sure the new node is visible when hoisting.
-            if c.config.getBool('insert-new-nodes-at-end'):
-                p = current.insertAsLastChild()
-            else:
-                p = current.insertAsNthChild(0)
         else:
-            p = current.insertAfter()
-        g.doHook('create-node', c=c, p=p)
-        p.setDirty()
-        c.setChanged()
-        u.afterInsertNode(p, op_name, undoData)
-        c.redrawAndEdit(p, selectAll=True)
+            p = current.insertAsNthChild(0)
+    else:
+        p = current.insertAfter()
+    g.doHook('create-node', c=c, p=p)
+    p.setDirty()
+    c.setChanged()
+    u.afterInsertNode(p, op_name, undoData)
+    c.redrawAndEdit(p, selectAll=True)
     return p
 
 
