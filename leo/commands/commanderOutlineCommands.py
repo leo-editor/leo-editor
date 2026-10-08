@@ -1306,7 +1306,7 @@ def insertChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None
     return p
 
 
-# @+node:ekr.20261008042653.1: *3* c_oc:insert-node
+# @+node:ekr.20261008042653.1: *3* c_oc:insert-node (converted)
 @g.commander_command('insert-node')
 def insertHeadline(
     self: Cmdr, event: LeoKeyEvent | None = None, op_name: str = "Insert Node"
@@ -1343,12 +1343,24 @@ def insertHeadline(
     return p
 
 
-# @+node:ekr.20261008042700.1: *3* c_oc:insert-headline-as-first-child
+# @+node:ekr.20261008042700.1: *3* c_oc:insert-headline-as-first-child (converted)
 @g.commander_command('insert-as-first-child')
 def insertNodeAsFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Insert a node as the first child of the previous node."""
     c = self
-    return insertHeadlineHelper(c, event=event, as_first_child=True)
+    current = c.p
+    if not current:
+        return None
+    c.endEditing()
+    u = c.undoer
+    undoData = c.undoer.beforeInsertNode(current)
+    p = current.insertAsNthChild(0)
+    g.doHook('create-node', c=c, p=p)
+    p.setDirty()
+    c.setChanged()
+    u.afterInsertNode(p, 'Insert As First Child', undoData)
+    c.redrawAndEdit(p, selectAll=True)
+    return p
 
 
 # @+node:ekr.20261008042932.1: *3* c_oc:insert-headline-as-last-child
