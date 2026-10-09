@@ -120,7 +120,7 @@ class UndoBead:
         self.old_y_scroll = w.getYScrollPosition() if is_body else None
         self.redo_finishers: list[Callable] = []
         self.redo_functions: list[Callable] = []
-        self.trace = 'leoPy' not in c.shortFileName()
+        self.trace = False  #'leoPy' not in c.shortFileName()
         self.undoType = ''  # Required. Set by u.set_command_name
         self.undo_finishers: list[Callable] = []
         self.undo_functions: list[Callable] = []
@@ -2546,10 +2546,8 @@ class Undoer:
         b = u.undoBead
         c = u.c
         old_p = p.copy()
-        new_p = None
 
         def make() -> None:
-            nonlocal new_p
             if (
                 old_p.hasChildren() and old_p.isExpanded() or
                 c.hoistStack and old_p == c.hoistStack[-1].p
@@ -2564,11 +2562,12 @@ class Undoer:
             new_p.setDirty()
             c.setChanged()
             c.p = new_p
+            return new_p
 
         # Do the action!
         assert isinstance(b, UndoBead), repr(b)
         b.must_redraw_and_edit = True
-        make()
+        new_p = make()
         g.doHook('create-node', c=c, p=c.p)
         c.redrawAndEdit(c.p, selectAll=True)
 

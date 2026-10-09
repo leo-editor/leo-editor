@@ -1037,7 +1037,7 @@ class LeoTree:
     def redraw_after_head_changed(self) -> None:
         self.c.redraw()
 
-    # @+node:ekr.20040803072955.91: *4* LeoTree.onHeadChanged
+    # @+node:ekr.20040803072955.91: *4* LeoTree.onHeadChanged (*** convert)
     # Tricky code: do not change without careful thought and testing.
     # Important: This code *is* used by the leoBridge module.
     def onHeadChanged(self, p: Position, undoType: str = 'Typing') -> None:
@@ -1045,7 +1045,7 @@ class LeoTree:
         Officially change a headline.
         Set the old undo text to the previous revert point.
         """
-        c, u, w = self.c, self.c.undoer, self.headline_wrapper(p)
+        c, w = self.c, self.headline_wrapper(p)
         if not w:
             g.trace('no w')
             return
@@ -1069,19 +1069,25 @@ class LeoTree:
         if g.doHook("headkey1", c=c, p=p, ch=ch, changed=changed):
             return  # The hook claims to have handled the event.
         # Handle undo.
-        undoData = u.beforeChangeHeadline(p)
-        p.initHeadString(s)  # change p.h *after* calling undoer's before method.
-        if not c.changed:
-            c.setChanged()
-        # New in Leo 4.4.5: we must recolor the body because
-        # the headline may contain directives.
-        c.frame.scanForTabWidth(p)
-        c.recolor(p)
-        p.setDirty()
-        u.afterChangeHeadline(p, undoType, undoData)
-        # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
-        c.redraw_after_head_changed()
-        g.doHook("headkey2", c=c, p=p, ch=ch, changed=changed)
+        if False:  ### g.new_undoers:
+            with c.undoer as u:
+                u.set_command_name(undoType)
+                assert False, 'u.change_head not ready!'
+        else:
+            u = c.undoer
+            undoData = u.beforeChangeHeadline(p)
+            p.initHeadString(s)  # change p.h *after* calling undoer's before method.
+            if not c.changed:
+                c.setChanged()
+            # New in Leo 4.4.5: we must recolor the body because
+            # the headline may contain directives.
+            c.frame.scanForTabWidth(p)
+            c.recolor(p)
+            p.setDirty()
+            u.afterChangeHeadline(p, undoType, undoData)
+            # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
+            c.redraw_after_head_changed()
+            g.doHook("headkey2", c=c, p=p, ch=ch, changed=changed)
 
     # @+node:ekr.20061109165848: *3* LeoTree: Must be defined in base class
     # @+node:ekr.20040803072955.126: *4* LeoTree.endEditLabel
