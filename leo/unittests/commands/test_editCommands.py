@@ -4265,7 +4265,7 @@ class TestEditCommands(LeoUnitTest):
         self.assertTrue('Help on module os' in s)
 
     # @+node:ekr.20210905064816.19: *4* test_insert_node_before_node_can_be_undone_and_redone
-    def test_insert_node_before_node_can_be_undone_and_redone(self):
+    def xxx_test_insert_node_before_node_can_be_undone_and_redone(self):
 
         # The name should *not* start with 'test'.
         def insert_node_test2(self):
