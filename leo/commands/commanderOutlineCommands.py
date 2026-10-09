@@ -1104,7 +1104,7 @@ def hoist(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 
 
 # @+node:ekr.20031218072017.1759: ** c_oc.Insert, Delete & Clone commands
-# @+node:ekr.20031218072017.1762: *3* c_oc:clone-node
+# @+node:ekr.20031218072017.1762: *3* c_oc:clone-node (to do)
 @g.commander_command('clone-node')
 def clone(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Create a clone of the selected outline."""
@@ -1376,7 +1376,7 @@ def insertHeadlineBefore(self: Cmdr, event: LeoKeyEvent | None = None) -> Positi
 
 
 # @+node:ekr.20031218072017.2922: ** c_oc.Mark commands
-# @+node:ekr.20090905110447.6098: *3* c_oc.cloneMarked
+# @+node:ekr.20090905110447.6098: *3* c_oc.cloneMarked (to do)
 @g.commander_command('clone-marked-nodes')
 def cloneMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Clone all marked nodes as children of a new node."""
@@ -1452,7 +1452,7 @@ def copyMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     c.redraw()
 
 
-# @+node:ekr.20111005081134.15540: *3* c_oc.deleteMarked
+# @+node:ekr.20111005081134.15540: *3* c_oc.deleteMarked (to do)
 @g.commander_command('delete-marked-nodes')
 def deleteMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Delete all marked nodes."""

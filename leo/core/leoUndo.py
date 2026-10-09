@@ -494,7 +494,7 @@ class Undoer:
     def clone_node(self, p: Position) -> None:
         g.trace(p.h)
 
-    # @+node:ekr.20261005143707.1: *4* u.delete_node
+    # @+node:ekr.20261005143707.1: *4* u.delete_node (passes)
     def delete_node(self, p: Position) -> None:
 
         u = self
@@ -546,7 +546,7 @@ class Undoer:
 
         b.set_helpers(delete_node_redoer, delete_node_undoer)
 
-    # @+node:ekr.20261006155622.1: *4* u.insert_node (to do, assert False)
+    # @+node:ekr.20261006155622.1: *4* u.insert_node (to do)
     def insert_node(self, p: Position) -> None:
         g.trace(p.h)
 
