@@ -270,6 +270,11 @@ class Undoer:
         u = self
         ### g.trace(u.undoBeadLevel)
         assert isinstance(u.undoBead, UndoBead), repr(u.undoBead)
+        if not u.undoBead.command_name:
+            message = "Missing call to u.set_command_name: {g.callers()}"
+            g.trace(message)
+            if g.unitTesting:
+                raise AssertionError(message)
         u.undoBeadLevel -= 1
         assert u.undoBeadLevel >= 0
         u.undoBead = None
@@ -506,7 +511,7 @@ class Undoer:
             g.error(f"Can not delete {p.h}")
             return
 
-        if 0:  ###
+        if trace:  ###
             g.trace(f"{old_p=}")
             g.trace(f"{new_p=}")
 
@@ -2429,7 +2434,7 @@ class Undoer:
         c.selectPosition(u.p)
         c.hoist()
 
-    # @+node:ekr.20050412085112: *4* u.undoInsertNode *** calls c.deleteOutline ***
+    # @+node:ekr.20050412085112: *4* u.undoInsertNode *** called c.deleteOutline ***
     def undoInsertNode(self) -> None:
         c, u = self.c, self
         if cc := c.chapterController:
