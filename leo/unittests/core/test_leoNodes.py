@@ -550,7 +550,7 @@ class TestNodes(LeoUnitTest):
                 p = c.p
                 self.assertEqual(p.back().h, 'A')
                 self.assertEqual(p.next().h, 'B')
-            except Exception as e:
+            except Exception:
                 if not g.new_undoers:
                     g.trace(f"{g.new_undoers=}")
                 raise
