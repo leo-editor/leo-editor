@@ -153,6 +153,9 @@ class LeoUnitTest(unittest.TestCase):
                 # g.trace('Run', self.undo_test.__name__, self.g_new_undoers)
                 self.undo_test(self)
 
+            def __repr__(self) -> str:
+                return f"UndoTester: {self.undo_test.__name__} {self.g_new_undoers=}"
+
         suite = unittest.TestSuite(
             [
                 UndoTester('test_wrapper', undo_test, True),
@@ -164,7 +167,7 @@ class LeoUnitTest(unittest.TestCase):
         if not result.wasSuccessful():
             errs = result.failures + result.errors
             n = len(errs)
-            errors = [f"{test}: {err}" for test, err in errs]
+            errors = [f"Error {test!r}: {err}" for test, err in errs]
             self.fail(f"{n} Error{g.plural(n)}:\n\n{''.join(errors)}")
 
     # @+node:ekr.20230703103458.1: *3* LeoUnitTest._set_setting

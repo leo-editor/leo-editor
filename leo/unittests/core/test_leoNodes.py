@@ -372,39 +372,40 @@ class TestNodes(LeoUnitTest):
     # @+node:ekr.20220306072631.1: *3* TestNodes: Outline operations
     # @+node:ekr.20210830095545.42: *4* TestNodes.test_clone_and_move_the_clone_to_the_root
     def test_clone_and_move_the_clone_to_the_root(self):
-        c, p = self.c, self.c.p
-        child = p.insertAsNthChild(0)
-        c.setHeadString(child, 'child')  # Force the headline to update.
-        self.assertTrue(child)
-        c.selectPosition(child)
-        clone = c.clone()
-        self.assertEqual(clone, c.p)
-        self.assertEqual(clone.h, 'child')
-        assert child.isCloned(), 'fail 1'
-        assert clone.isCloned(), 'fail 2'
-        assert child.isCloned(), 'fail 3'
-        assert clone.isCloned(), 'fail 4'
-        for g.new_undoers in (False,):  ### True): To do.
-            try:
-                c.undoer.undo()
-                assert not child.isCloned(), 'fail 1-a'
-                c.undoer.redo()
-                assert child.isCloned(), 'fail 1-b'
-                c.undoer.undo()
-                assert not child.isCloned(), 'fail 1-c'
-                c.undoer.redo()
-                assert child.isCloned(), 'fail 1-d'
-                clone.moveToRoot()  # Does not change child position.
-                assert child.isCloned(), 'fail 3-2'
-                assert clone.isCloned(), 'fail 4-2'
-                assert not clone.parent(), 'fail 5'
-                assert not clone.back(), 'fail 6'
-                clone.doDelete()
-                assert not child.isCloned(), 'fail 7'
-            except Exception:
-                print()
-                g.trace(f"{g.new_undoers=}")
-                raise
+
+        # The name should *not* start with 'test'.
+        def clone_and_move_test(self):
+            c, p = self.c, self.c.p
+            child = p.insertAsNthChild(0)
+            c.setHeadString(child, 'child')  # Force the headline to update.
+            self.assertTrue(child)
+            c.selectPosition(child)
+            clone = c.clone()
+            self.assertEqual(clone, c.p)
+            self.assertEqual(clone.h, 'child')
+            assert child.isCloned(), 'fail 1'
+            assert clone.isCloned(), 'fail 2'
+            assert child.isCloned(), 'fail 3'
+            assert clone.isCloned(), 'fail 4'
+            # undoers_s = f"{g.new_undoers=}"
+            c.undoer.undo()
+            assert not child.isCloned(), 'fail 1-a'
+            c.undoer.redo()
+            assert child.isCloned(), 'fail 1-b'
+            c.undoer.undo()
+            assert not child.isCloned(), 'fail 1-c'
+            c.undoer.redo()
+            assert child.isCloned(), 'fail 1-d'
+            clone.moveToRoot()  # Does not change child position.
+            assert child.isCloned(), 'fail 3-2'
+            assert clone.isCloned(), 'fail 4-2'
+            assert not clone.parent(), 'fail 5'
+            assert not clone.back(), 'fail 6'
+            clone.doDelete()
+            assert not child.isCloned(), 'fail 7'
+
+        # The name should *not* start with 'test'.
+        self.run_undo_test(clone_and_move_test)
 
     # @+node:ekr.20210830095545.43: *4* TestNodes.test_delete_node
     def test_delete_node(self):
@@ -513,47 +514,36 @@ class TestNodes(LeoUnitTest):
             p3.setHeadString('B')
             p.expand()
             c.p = p2
-            try:
-                g.new_undoers = self.g_new_undoers
-                undoers_s = f"{g.new_undoers=}"
-                # self.dump_headlines(c, tag='at start')
-                p4 = c.insertHeadline()
-                self.assertEqual(p4, c.p)
-                p = c.p
-                self.assertTrue(p)
-                p.setHeadString('inserted')
-                self.assertTrue(p.back())
-                self.assertEqual(p.back().h, 'A')
-                self.assertEqual(p.next().h, 'B')
-                # The new undo logic requires 2 undoes.
-                # The first undo undoes the headline changes,
-                # the second undo undoes the insert node.
-                u.undo()
-                u.undo()
-                p = c.p
-                self.assertEqual(p, p2)
-                self.assertEqual(p.next(), p3)
-                u.redo()
-                p = c.p
-                self.assertTrue(p.back())
-                self.assertEqual(p.back().h, 'A')
-                self.assertEqual(p.next().h, 'B')
-                u.undo()
-                p = c.p
-                self.assertEqual(p, p2)
-                self.assertEqual(p.next(), p3)
-                u.redo()
-                p = c.p
-                self.assertEqual(p.back().h, 'A')
-                self.assertEqual(p.next().h, 'B')
-                if 0:
-                    print()
-                    g.trace(f"Pass {undoers_s}")
-                    print()
-            except Exception:
-                print()
-                g.trace(f"{g.new_undoers=}")
-                raise
+            # self.dump_headlines(c, tag='at start')
+            p4 = c.insertHeadline()
+            self.assertEqual(p4, c.p)
+            p = c.p
+            self.assertTrue(p)
+            p.setHeadString('inserted')
+            self.assertTrue(p.back())
+            self.assertEqual(p.back().h, 'A')
+            self.assertEqual(p.next().h, 'B')
+            # The new undo logic requires 2 undoes.
+            # The first undo undoes the headline changes,
+            # the second undo undoes the insert node.
+            u.undo()
+            u.undo()
+            p = c.p
+            self.assertEqual(p, p2)
+            self.assertEqual(p.next(), p3)
+            u.redo()
+            p = c.p
+            self.assertTrue(p.back())
+            self.assertEqual(p.back().h, 'A')
+            self.assertEqual(p.next().h, 'B')
+            u.undo()
+            p = c.p
+            self.assertEqual(p, p2)
+            self.assertEqual(p.next(), p3)
+            u.redo()
+            p = c.p
+            self.assertEqual(p.back().h, 'A')
+            self.assertEqual(p.next().h, 'B')
 
         # The name should *not* start with 'test'.
         self.run_undo_test(insert_node_test)
