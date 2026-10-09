@@ -373,7 +373,7 @@ class TestNodes(LeoUnitTest):
     # @+node:ekr.20210830095545.42: *4* TestNodes.test_clone_and_move_the_clone_to_the_root
     def test_clone_and_move_the_clone_to_the_root(self):
 
-        # The name should *not* start with 'test'.
+        # This method's name should *not* start with 'test'.
         def clone_and_move_test(self):
             c, p = self.c, self.c.p
             child = p.insertAsNthChild(0)
@@ -404,12 +404,12 @@ class TestNodes(LeoUnitTest):
             clone.doDelete()
             assert not child.isCloned(), 'fail 7'
 
-        # The name should *not* start with 'test'.
         self.run_undo_test(clone_and_move_test)
 
     # @+node:ekr.20210830095545.43: *4* TestNodes.test_delete_node
     def test_delete_node(self):
 
+        # This method's name should *not* start with 'test'.
         def delete_node_test(self):
             # This test requires @bool select-next-after-delete = False
             c, p = self.c, self.c.p
@@ -447,7 +447,6 @@ class TestNodes(LeoUnitTest):
             self.assertEqual(p.h, 'A')
             self.assertEqual(p.next().h, 'C')
 
-        # The name should *not* start with 'test'.
         self.run_undo_test(delete_node_test)
 
     # @+node:ekr.20210830095545.44: *4* TestNodes.test_deleting_the_root_should_select_another_node
@@ -509,7 +508,7 @@ class TestNodes(LeoUnitTest):
     # @+node:ekr.20210830095545.46: *4* TestNodes.test_insert_node
     def test_insert_node(self):
 
-        # The name should *not* start with 'test'.
+        # This method's name should *not* start with 'test'.
         def insert_node_test(self):
             c, p, u = self.c, self.c.p, self.c.undoer
             self.assertEqual(p.h, 'root')
@@ -550,7 +549,6 @@ class TestNodes(LeoUnitTest):
             self.assertEqual(p.back().h, 'A')
             self.assertEqual(p.next().h, 'B')
 
-        # The name should *not* start with 'test'.
         self.run_undo_test(insert_node_test)
 
     # @+node:ekr.20210830095545.47: *4* TestNodes.test_move_outline_down__undo_redo

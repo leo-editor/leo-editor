@@ -4267,7 +4267,7 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20210905064816.19: *4* test_insert_node_before_node_can_be_undone_and_redone
     def xxx_test_insert_node_before_node_can_be_undone_and_redone(self):
 
-        # The name should *not* start with 'test'.
+        # This method's name should *not* start with 'test'.
         def insert_node_test2(self):
             c = self.c
             u = c.undoer
@@ -4278,7 +4278,6 @@ class TestEditCommands(LeoUnitTest):
             u.undo()  ### A real bug.
             self.assertEqual(u.redoMenuLabel, 'Redo Insert Node Before')
 
-        # The name should *not* start with 'test'.
         self.run_undo_test(insert_node_test2)
 
     # @+node:ekr.20210905064816.18: *4* test_insert_node_can_be_undone_and_redone

@@ -148,6 +148,10 @@ class LeoUnitTest(unittest.TestCase):
                 super().__init__(method_name)
                 self.g_new_undoers = new_undoers
                 self.undo_test = undo_test
+                test_name = self.undo_test.__name__
+                if test_name.startswith('test'):
+                    message = f"{test_name} should *not* start with 'test'. {g.caller()}"
+                    g.print_unique_message(message)
 
             def test_wrapper(self) -> None:
                 # g.trace('Run', self.undo_test.__name__, self.g_new_undoers)
