@@ -1303,7 +1303,7 @@ def insertNodeAsLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Posit
     return p
 
 
-# @+node:ekr.20261008042653.1: *3* c_oc:insert-node (to be converted)
+# @+node:ekr.20261008042653.1: *3* c_oc:insert-node (test)
 @g.commander_command('insert-node')
 def insertHeadline(
     self: Cmdr, event: LeoKeyEvent | None = None, op_name: str = "Insert Node"
@@ -1319,25 +1319,32 @@ def insertHeadline(
     if not current:
         return None
     c.endEditing()
-    u = c.undoer
-    undoData = c.undoer.beforeInsertNode(current)
-    if (
-        current.hasChildren() and current.isExpanded() or
-        c.hoistStack and current == c.hoistStack[-1].p
-    ):  # fmt: skip
-        # Make sure the new node is visible when hoisting.
-        if c.config.getBool('insert-new-nodes-at-end'):
-            p = current.insertAsLastChild()
-        else:
-            p = current.insertAsNthChild(0)
+    if g.new_undoers:
+        with c.undoer as u:
+            u.set_command_name('insert-node')
+            u.insert_node(current)
+        return c.p
     else:
-        p = current.insertAfter()
-    g.doHook('create-node', c=c, p=p)
-    p.setDirty()
-    c.setChanged()
-    u.afterInsertNode(p, op_name, undoData)
-    c.redrawAndEdit(p, selectAll=True)
-    return p
+        u = c.undoer
+        # Create the new node.
+        if (
+            current.hasChildren() and current.isExpanded() or
+            c.hoistStack and current == c.hoistStack[-1].p
+        ):  # fmt: skip
+            # Make sure the new node is visible when hoisting.
+            if c.config.getBool('insert-new-nodes-at-end'):
+                p = current.insertAsLastChild()
+            else:
+                p = current.insertAsNthChild(0)
+        else:
+            p = current.insertAfter()
+        undoData = c.undoer.beforeInsertNode(current)
+        g.doHook('create-node', c=c, p=p)
+        p.setDirty()
+        c.setChanged()
+        u.afterInsertNode(p, op_name, undoData)
+        c.redrawAndEdit(p, selectAll=True)
+        return p
 
 
 # @+node:ekr.20130922133218.11540: *3* c_oc:insert-node-before

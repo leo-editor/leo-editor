@@ -78,6 +78,7 @@ class UndoBead:
         'is_body',
         'must_recolor',
         'must_redraw',
+        'must_redraw_and_edit',
         'must_set_c_changed',
         'old_ins',
         'old_p',
@@ -104,12 +105,14 @@ class UndoBead:
         c = undoer.c
         w = c.frame.body.wrapper
         is_body = c.widget_name(w).startswith('body')
-        # Set ivars.
+        # Ivars.
+        # All 'must' ivars are sticky. They are never cleared once set.
         self.c = c
         self.command_name = None
-        self.must_recolor = False  # Sticky: never cleared once set.
-        self.must_redraw = False  # Sticky: never cleared once set.
-        self.must_set_c_changed = False  # Sticky: never cleared once set.
+        self.must_recolor = False
+        self.must_redraw = False
+        self.must_redraw_and_edit = False
+        self.must_set_c_changed = False
         self.old_p = c.p
         self.is_body = is_body
         self.old_ins = w.getInsertPoint() if is_body else None
@@ -155,7 +158,10 @@ class UndoBead:
         for f in self.redo_functions:
             trace(f.__name__)
             f()
-        if self.must_redraw:
+        if self.must_redraw_and_edit:
+            trace('redraw and edit!')
+            c.redrawAndEdit(c.p, selectAll=True)
+        elif self.must_redraw:
             trace('redraw!')
             c.redraw()
         elif self.must_recolor:
@@ -196,7 +202,10 @@ class UndoBead:
         for f in self.undo_functions:
             trace(f.__name__)
             f()
-        if self.must_redraw:
+        if self.must_redraw_and_edit:
+            trace('redraw and edit!')
+            c.redrawAndEdit(c.p, selectAll=True)
+        elif self.must_redraw:
             trace(f"redraw! {self.old_p.h}")
             c.redraw(self.old_p)
         elif self.must_recolor:
@@ -2525,89 +2534,57 @@ class Undoer:
 
         b.set_helpers(delete_node_redoer, delete_node_undoer)
 
-    # @+node:ekr.20261006155622.1: *4* u.insert_node (to do)
+    # @+node:ekr.20261006155622.1: *4* u.insert_node (Fails)
     def insert_node(self, p: Position) -> None:
-        g.trace(p.h)
+        """
+        If c.p is expanded, insert a new node as the first or last child of c.p,
+        depending on @bool insert-new-nodes-at-end.
 
+        If c.p is not expanded, insert a new node after c.p.
+        """
         u = self
         b = u.undoBead
         c = u.c
-        p = p.copy()
-        new_back = p.back()
-        new_parent = p.parent()
-        assert isinstance(b, UndoBead), repr(b)
+        old_p = p.copy()
+        new_p = None
 
-        assert False, '****Not ready!'
+        # new_back = p.back()
+        # new_parent = p.parent()
+
+        def make() -> None:
+            nonlocal new_p
+            if (
+                old_p.hasChildren() and old_p.isExpanded() or
+                c.hoistStack and old_p == c.hoistStack[-1].p
+            ):  # fmt: skip
+                # Make sure the new node is visible when hoisting.
+                if c.config.getBool('insert-new-nodes-at-end'):
+                    new_p = old_p.insertAsLastChild()
+                else:
+                    new_p = old_p.insertAsNthChild(0)
+            else:
+                new_p = old_p.insertAfter()
+            new_p.setDirty()
+            c.setChanged()
+            c.p = new_p
+
+        # Do the action!
+        assert isinstance(b, UndoBead), repr(b)
+        b.must_redraw_and_edit = True
+        make()
+        g.doHook('create-node', c=c, p=new_p)
+        c.redrawAndEdit(c.p, selectAll=True)
 
         def insert_node_redoer() -> None:
-            # p.setAllAncestorAtFileNodesDirty()
-            if new_back:
-                p._linkAfter(new_back)
-            elif new_parent:
-                p._linkAsNthChild(new_parent, 0)
-            else:
-                p._linkAsRoot()
+            make()
 
         def insert_node_undoer() -> None:
-            ### Like c.deleteOutline()
-            # u.newP.setAllAncestorAtFileNodesDirty()
-            # c.selectPosition(u.newP)
-            # # Bug fix: 2016/03/30.
-            # # This always selects the proper new position.
-            # # c.selectPosition(u.p)
-            # c.deleteOutline()
-
-            # p.setAllAncestorAtFileNodesDirty()
-
-            new_p = p.visBack(c) if p.hasVisBack(c) else p.next()
-            p.setDirty()
-            p.doDelete(new_p)
+            new_p.doDelete(old_p)
+            ### c.p = old_p
+            c.setChanged()
+            old_p.setAllAncestorAtFileNodesDirty()
 
         b.set_helpers(insert_node_redoer, insert_node_undoer)
-        b.must_redraw = True
-
-        ### def undoInsertNode(self) -> None:
-        if 0:
-            if cc := c.chapterController:
-                cc.selectChapterByName('main')
-            u.newP.setAllAncestorAtFileNodesDirty()
-            c.selectPosition(u.newP)
-            # Bug fix: 2016/03/30.
-            # This always selects the proper new position.
-            # c.selectPosition(u.p)
-            c.deleteOutline()
-            if u.pasteAsClone:
-                for bunch in u.beforeTree:
-                    v = bunch.v
-                    if u.p.v == v:
-                        u.p.b = bunch.body
-                        u.p.h = bunch.head
-                    else:
-                        v.setBodyString(bunch.body)
-                        v.setHeadString(bunch.head)
-
-        ### def redoInsertNode(self) -> None:
-        if 0:
-            c, u = self.c, self
-            if cc := c.chapterController:
-                cc.selectChapterByName('main')
-            if u.newBack:
-                u.newP._linkAfter(u.newBack)
-            elif u.newParent:
-                u.newP._linkAsNthChild(u.newParent, 0)
-            else:
-                u.newP._linkAsRoot()
-            if u.pasteAsClone:
-                for bunch in u.afterTree:
-                    v = bunch.v
-                    if u.newP.v == v:
-                        u.newP.b = bunch.body
-                        u.newP.h = bunch.head
-                    else:
-                        v.setBodyString(bunch.body)
-                        v.setHeadString(bunch.head)
-            u.newP.setDirty()
-            c.selectPosition(u.newP)
 
     # @+node:ekr.20261005182243.1: *4* u.select_position
     def select_position(self, p: Position) -> None:
