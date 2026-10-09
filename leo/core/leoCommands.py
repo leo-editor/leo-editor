@@ -4498,7 +4498,10 @@ class Commands:
         if not p:
             return
         if not c.positionExists(p):
-            g.trace(f"Invalid position: {p!r} in {c.shortFileName()}\n{g.callers(10)=}")
+            message = f"Invalid position: {p!r} in {c.shortFileName()}\n{g.callers(10)=}"
+            if g.unitTesting:
+                assert c.positionExists(p), message
+            g.trace(message)
             c.p = c.rootPosition()
             return
         c.requestLaterRedraw = False
