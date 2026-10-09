@@ -1,8 +1,8 @@
 # @+leo-ver=5-thin
 # @+node:ekr.20201203042030.1: * @file ../unittests/core/test_leoNodes.py
 """Tests of leoNodes.py"""
-# pylint: disable=no-member
 
+import unittest
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 
@@ -503,7 +503,6 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.46: *4* TestNodes.test_insert_node
     def test_insert_node(self):
-        import unittest
 
         class TestInsertNode(LeoUnitTest):
             def __init__(self, method_name: str, new_undoers: bool) -> None:
