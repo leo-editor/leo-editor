@@ -4276,8 +4276,8 @@ class TestEditCommands(LeoUnitTest):
                 c.undoer.undo()
                 self.assertEqual(u.redoMenuLabel, 'Redo Insert Node Before')
             except Exception:
-                if not g.new_undoers:
-                    g.trace(f"{g.new_undoers=}")
+                print()
+                g.trace(f"{g.new_undoers=}")
                 raise
 
     # @+node:ekr.20210905064816.18: *4* test_insert_node_can_be_undone_and_redone

@@ -135,7 +135,7 @@ class UndoBead:
             'undoType': self.undoType,
             'v':        self.old_p.v,
         }  # fmt: skip
-        if 1:  ###
+        if 0:  ###
             val = d.get(key)
             val_s = val.h if isinstance(val, (Position, VNode)) else val
             g.trace(f"key: {key:>8} {val_s}")
@@ -546,7 +546,7 @@ class Undoer:
 
         b.set_helpers(delete_node_redoer, delete_node_undoer)
 
-    # @+node:ekr.20261006155622.1: *4* u.insert_node (to do)
+    # @+node:ekr.20261006155622.1: *4* u.insert_node (to do, assert False)
     def insert_node(self, p: Position) -> None:
         g.trace(p.h)
 
