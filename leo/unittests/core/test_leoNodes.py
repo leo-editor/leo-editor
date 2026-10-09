@@ -503,6 +503,7 @@ class TestNodes(LeoUnitTest):
     # @+node:ekr.20210830095545.46: *4* TestNodes.test_insert_node
     def test_insert_node(self):
 
+        # The name should *not* start with 'test'.
         def insert_node_test(self):
             c, p, u = self.c, self.c.p, self.c.undoer
             self.assertEqual(p.h, 'root')
@@ -554,7 +555,8 @@ class TestNodes(LeoUnitTest):
                 g.trace(f"{g.new_undoers=}")
                 raise
 
-        self.run_undo_test(insert_node_test)  # The name should *not* start with 'test'
+        # The name should *not* start with 'test'.
+        self.run_undo_test(insert_node_test)
 
     # @+node:ekr.20210830095545.47: *4* TestNodes.test_move_outline_down__undo_redo
     def test_move_outline_down__undo_redo(self):
