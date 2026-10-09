@@ -1203,7 +1203,7 @@ def cloneToLastNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     # return clone # For mod_labels and chapters plugins.
 
 
-# @+node:ekr.20031218072017.1193: *3* c_oc:delete-node (progress, but not perfect)
+# @+node:ekr.20031218072017.1193: *3* c_oc:delete-node (passes)
 @g.commander_command('delete-node')
 def deleteOutline(
     self: Cmdr,
@@ -1224,8 +1224,7 @@ def deleteOutline(
         newNode = p.next()  # _not_ p.visNext(): we are at the top level.
     if not newNode:
         return
-    if 0:  # g.new_undoers:  ### Fails in multiple ways.
-        ### Mystery solved: undo insert node calls this code!!!
+    if g.new_undoers:
         with c.undoer as u:
             u.set_command_name(op_name)
             u.delete_node(p)
