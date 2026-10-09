@@ -409,41 +409,46 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.43: *4* TestNodes.test_delete_node
     def test_delete_node(self):
-        # This test requires @bool select-next-after-delete = False
-        c, p = self.c, self.c.p
-        p2 = p.insertAsNthChild(0)
-        p2.setHeadString('A')
-        p3 = p.insertAsNthChild(1)
-        p3.setHeadString('B')
-        p4 = p.insertAsNthChild(2)
-        p4.setHeadString('C')
-        p.expand()
-        c.selectPosition(p3)
-        c.deleteOutline()
-        c.redraw_now()
-        p = c.p
-        self.assertEqual(p.h, 'A')
-        self.assertEqual(p.next().h, 'C')
-        c.undoer.undo()
-        c.outerUpdate()
-        p = c.p
-        self.assertEqual(p.back(), p2)
-        self.assertEqual(p.next(), p4)
-        c.undoer.redo()
-        c.outerUpdate()
-        p = c.p
-        self.assertEqual(p.h, 'A')
-        self.assertEqual(p.next().h, 'C')
-        c.undoer.undo()
-        c.outerUpdate()
-        p = c.p
-        self.assertEqual(p.back(), p2)
-        self.assertEqual(p.next(), p4)
-        c.undoer.redo()
-        c.outerUpdate()
-        p = c.p
-        self.assertEqual(p.h, 'A')
-        self.assertEqual(p.next().h, 'C')
+
+        def delete_node_test(self):
+            # This test requires @bool select-next-after-delete = False
+            c, p = self.c, self.c.p
+            p2 = p.insertAsNthChild(0)
+            p2.setHeadString('A')
+            p3 = p.insertAsNthChild(1)
+            p3.setHeadString('B')
+            p4 = p.insertAsNthChild(2)
+            p4.setHeadString('C')
+            p.expand()
+            c.selectPosition(p3)
+            c.deleteOutline()
+            c.redraw_now()
+            p = c.p
+            self.assertEqual(p.h, 'A')
+            self.assertEqual(p.next().h, 'C')
+            c.undoer.undo()
+            c.outerUpdate()
+            p = c.p
+            self.assertEqual(p.back(), p2)
+            self.assertEqual(p.next(), p4)
+            c.undoer.redo()
+            c.outerUpdate()
+            p = c.p
+            self.assertEqual(p.h, 'A')
+            self.assertEqual(p.next().h, 'C')
+            c.undoer.undo()
+            c.outerUpdate()
+            p = c.p
+            self.assertEqual(p.back(), p2)
+            self.assertEqual(p.next(), p4)
+            c.undoer.redo()
+            c.outerUpdate()
+            p = c.p
+            self.assertEqual(p.h, 'A')
+            self.assertEqual(p.next().h, 'C')
+
+        # The name should *not* start with 'test'.
+        self.run_undo_test(delete_node_test)
 
     # @+node:ekr.20210830095545.44: *4* TestNodes.test_deleting_the_root_should_select_another_node
     def test_deleting_the_root_should_select_another_node(self):
