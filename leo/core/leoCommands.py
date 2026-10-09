@@ -2325,12 +2325,12 @@ class Commands:
             else:  # Make a copy _now_
                 c._currentPosition = p.copy()
         else:
-            print()
             message = f"Invalid position in {c.shortFileName()}\n{p!r}\n{g.callers(10)=}"
-            g.trace(message)
-            print()
             if g.unitTesting:
                 raise AssertionError(message)
+            print()
+            g.trace(message)
+            print()
             c._currentPosition = c.rootPosition()
 
     # For compatibility with old scripts.
