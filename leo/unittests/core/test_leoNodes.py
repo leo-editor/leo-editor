@@ -2,7 +2,6 @@
 # @+node:ekr.20201203042030.1: * @file ../unittests/core/test_leoNodes.py
 """Tests of leoNodes.py"""
 
-import unittest
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 
@@ -504,79 +503,58 @@ class TestNodes(LeoUnitTest):
     # @+node:ekr.20210830095545.46: *4* TestNodes.test_insert_node
     def test_insert_node(self):
 
-        class TestInsertNode(LeoUnitTest):
-            def __init__(self, method_name: str, new_undoers: bool) -> None:
-                super().__init__(method_name)
-                self.g_new_undoers = new_undoers
-
-            # @+others  # Define insert_node_test
-            # @+node:ekr.20261009083938.1: *5* insert_node_test
-            def insert_node_test(self):
-                # Actually run the test.
-                c, p, u = self.c, self.c.p, self.c.undoer
-                self.assertEqual(p.h, 'root')
-                p2 = p.insertAsNthChild(0)
-                p2.setHeadString('A')
-                p3 = p.insertAsNthChild(1)
-                p3.setHeadString('B')
-                p.expand()
-                c.p = p2
-                try:
-                    g.new_undoers = self.g_new_undoers
-                    undoers_s = f"{g.new_undoers=}"
-                    # self.dump_headlines(c, tag='at start')
-                    p4 = c.insertHeadline()
-                    self.assertEqual(p4, c.p)
-                    p = c.p
-                    self.assertTrue(p)
-                    p.setHeadString('inserted')
-                    self.assertTrue(p.back())
-                    self.assertEqual(p.back().h, 'A')
-                    self.assertEqual(p.next().h, 'B')
-                    # The new undo logic requires 2 undoes.
-                    # The first undo undoes the headline changes,
-                    # the second undo undoes the insert node.
-                    u.undo()
-                    u.undo()
-                    p = c.p
-                    self.assertEqual(p, p2)
-                    self.assertEqual(p.next(), p3)
-                    u.redo()
-                    p = c.p
-                    self.assertTrue(p.back())
-                    self.assertEqual(p.back().h, 'A')
-                    self.assertEqual(p.next().h, 'B')
-                    u.undo()
-                    p = c.p
-                    self.assertEqual(p, p2)
-                    self.assertEqual(p.next(), p3)
-                    u.redo()
-                    p = c.p
-                    self.assertEqual(p.back().h, 'A')
-                    self.assertEqual(p.next().h, 'B')
-                    if 0:
-                        print()
-                        g.trace(f"Pass {undoers_s}")
-                        print()
-                except Exception:
+        def insert_node_test(self):
+            c, p, u = self.c, self.c.p, self.c.undoer
+            self.assertEqual(p.h, 'root')
+            p2 = p.insertAsNthChild(0)
+            p2.setHeadString('A')
+            p3 = p.insertAsNthChild(1)
+            p3.setHeadString('B')
+            p.expand()
+            c.p = p2
+            try:
+                g.new_undoers = self.g_new_undoers
+                undoers_s = f"{g.new_undoers=}"
+                # self.dump_headlines(c, tag='at start')
+                p4 = c.insertHeadline()
+                self.assertEqual(p4, c.p)
+                p = c.p
+                self.assertTrue(p)
+                p.setHeadString('inserted')
+                self.assertTrue(p.back())
+                self.assertEqual(p.back().h, 'A')
+                self.assertEqual(p.next().h, 'B')
+                # The new undo logic requires 2 undoes.
+                # The first undo undoes the headline changes,
+                # the second undo undoes the insert node.
+                u.undo()
+                u.undo()
+                p = c.p
+                self.assertEqual(p, p2)
+                self.assertEqual(p.next(), p3)
+                u.redo()
+                p = c.p
+                self.assertTrue(p.back())
+                self.assertEqual(p.back().h, 'A')
+                self.assertEqual(p.next().h, 'B')
+                u.undo()
+                p = c.p
+                self.assertEqual(p, p2)
+                self.assertEqual(p.next(), p3)
+                u.redo()
+                p = c.p
+                self.assertEqual(p.back().h, 'A')
+                self.assertEqual(p.next().h, 'B')
+                if 0:
                     print()
-                    g.trace(f"{g.new_undoers=}")
-                    raise
+                    g.trace(f"Pass {undoers_s}")
+                    print()
+            except Exception:
+                print()
+                g.trace(f"{g.new_undoers=}")
+                raise
 
-            # @-others
-
-        suite = unittest.TestSuite(
-            [
-                TestInsertNode('insert_node_test', True),
-                TestInsertNode('insert_node_test', False),
-            ]
-        )
-        result = unittest.TestResult()
-        suite.run(result)
-        if not result.wasSuccessful():
-            errs = result.failures + result.errors
-            errors = [f"{test}: {err}" for test, err in errs]
-            self.fail(f"Fail: {''.join(errors)}")
+        self.run_undo_test(insert_node_test)  # The name should *not* start with 'test'
 
     # @+node:ekr.20210830095545.47: *4* TestNodes.test_move_outline_down__undo_redo
     def test_move_outline_down__undo_redo(self):

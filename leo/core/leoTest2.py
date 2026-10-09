@@ -140,29 +140,32 @@ class LeoUnitTest(unittest.TestCase):
     def tearDown(self) -> None:
         self.c = None
 
-    # @+node:ekr.20261009094252.1: *3*  LeoUnitTest.run_test_suite
-    def run_undo_test(self, test_name: str, test: Callable) -> None:
+    # @+node:ekr.20261009094252.1: *3*  LeoUnitTest.run_undo_test
+    def run_undo_test(self, undo_test: Callable) -> None:
 
         class UndoTester(LeoUnitTest):
-            def __init__(self, method_name: str, new_undoers: bool) -> None:
+            def __init__(self, method_name: str, undo_test: Callable, new_undoers: bool) -> None:
                 super().__init__(method_name)
                 self.g_new_undoers = new_undoers
+                self.undo_test = undo_test
 
-            def test_wrapper(self, test: Callable) -> None:
-                test(self)
+            def test_wrapper(self) -> None:
+                # g.trace('Run', self.undo_test.__name__, self.g_new_undoers)
+                self.undo_test(self)
 
         suite = unittest.TestSuite(
             [
-                UndoTester('test_wrapper', True),
-                UndoTester('test_wrapper', False),
+                UndoTester('test_wrapper', undo_test, True),
+                UndoTester('test_wrapper', undo_test, False),
             ]
         )
         result = unittest.TestResult()
         suite.run(result)
         if not result.wasSuccessful():
             errs = result.failures + result.errors
+            n = len(errs)
             errors = [f"{test}: {err}" for test, err in errs]
-            self.fail(f"Fail: {''.join(errors)}")
+            self.fail(f"{n} Error{g.plural(n)}:\n\n{''.join(errors)}")
 
     # @+node:ekr.20230703103458.1: *3* LeoUnitTest._set_setting
     def _set_setting(self, c: Cmdr, kind: str, name: str, val: Any) -> None:
