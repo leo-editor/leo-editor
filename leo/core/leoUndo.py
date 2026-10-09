@@ -2548,9 +2548,6 @@ class Undoer:
         old_p = p.copy()
         new_p = None
 
-        # new_back = p.back()
-        # new_parent = p.parent()
-
         def make() -> None:
             nonlocal new_p
             if (
@@ -2572,7 +2569,7 @@ class Undoer:
         assert isinstance(b, UndoBead), repr(b)
         b.must_redraw_and_edit = True
         make()
-        g.doHook('create-node', c=c, p=new_p)
+        g.doHook('create-node', c=c, p=c.p)
         c.redrawAndEdit(c.p, selectAll=True)
 
         def insert_node_redoer() -> None:
@@ -2580,7 +2577,7 @@ class Undoer:
 
         def insert_node_undoer() -> None:
             new_p.doDelete(old_p)
-            ### c.p = old_p
+            c.p = old_p
             c.setChanged()
             old_p.setAllAncestorAtFileNodesDirty()
 
