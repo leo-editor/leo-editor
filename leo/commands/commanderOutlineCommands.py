@@ -1224,7 +1224,7 @@ def deleteOutline(
         newNode = p.next()  # _not_ p.visNext(): we are at the top level.
     if not newNode:
         return
-    if 0:  # g.new:  ### Fails in multiple ways.
+    if 0:  # g.new_undoers:  ### Fails in multiple ways.
         ### Mystery solved: undo insert node calls this code!!!
         with c.undoer as u:
             u.set_command_name(op_name)
@@ -1354,8 +1354,7 @@ def insertHeadlineBefore(self: Cmdr, event: LeoKeyEvent | None = None) -> Positi
         g.warning('can not insert a node before the base of a hoist')
         return None
     c.endEditing()
-    if g.new:  ###
-        g.trace(op_name)
+    if g.new_undoers:  ###
         with c.undoer as u:
             u.set_command_name(op_name)
             undoData = u.beforeInsertNode(current)

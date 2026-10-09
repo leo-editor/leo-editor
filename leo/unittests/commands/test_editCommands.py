@@ -4269,10 +4269,16 @@ class TestEditCommands(LeoUnitTest):
         c = self.c
         u = c.undoer
         assert u
-        c.insertHeadlineBefore()
-        self.assertEqual(u.undoMenuLabel, 'Undo Insert Node Before')
-        c.undoer.undo()
-        self.assertEqual(u.redoMenuLabel, 'Redo Insert Node Before')
+        for g.new_undoers in (True, False):
+            try:
+                c.insertHeadlineBefore()
+                self.assertEqual(u.undoMenuLabel, 'Undo Insert Node Before')
+                c.undoer.undo()
+                self.assertEqual(u.redoMenuLabel, 'Redo Insert Node Before')
+            except Exception:
+                if not g.new_undoers:
+                    g.trace(f"{g.new_undoers=}")
+                raise
 
     # @+node:ekr.20210905064816.18: *4* test_insert_node_can_be_undone_and_redone
     def test_insert_node_can_be_undone_and_redone(self):

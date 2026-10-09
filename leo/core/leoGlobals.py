@@ -88,7 +88,7 @@ isValidPython = python_version_tuple >= minimum_python_version_tuple
 isMac = sys.platform.startswith('darwin')
 isWindows = sys.platform.startswith('win')
 
-new = False  # True: use new undo code.
+new_undoers = False  # True: use new undo code.
 # @-<< leoGlobals: global constants >>
 # @+<< define g.binary_file_extensions >>
 # @+node:ekr.20260709184046.1: ** << define g.binary_file_extensions >>

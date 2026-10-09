@@ -385,21 +385,27 @@ class TestNodes(LeoUnitTest):
         assert clone.isCloned(), 'fail 2'
         assert child.isCloned(), 'fail 3'
         assert clone.isCloned(), 'fail 4'
-        c.undoer.undo()
-        assert not child.isCloned(), 'fail 1-a'
-        c.undoer.redo()
-        assert child.isCloned(), 'fail 1-b'
-        c.undoer.undo()
-        assert not child.isCloned(), 'fail 1-c'
-        c.undoer.redo()
-        assert child.isCloned(), 'fail 1-d'
-        clone.moveToRoot()  # Does not change child position.
-        assert child.isCloned(), 'fail 3-2'
-        assert clone.isCloned(), 'fail 4-2'
-        assert not clone.parent(), 'fail 5'
-        assert not clone.back(), 'fail 6'
-        clone.doDelete()
-        assert not child.isCloned(), 'fail 7'
+        for g.new_undoers in (False, True):
+            try:
+                c.undoer.undo()
+                assert not child.isCloned(), 'fail 1-a'
+                c.undoer.redo()
+                assert child.isCloned(), 'fail 1-b'
+                c.undoer.undo()
+                assert not child.isCloned(), 'fail 1-c'
+                c.undoer.redo()
+                assert child.isCloned(), 'fail 1-d'
+                clone.moveToRoot()  # Does not change child position.
+                assert child.isCloned(), 'fail 3-2'
+                assert clone.isCloned(), 'fail 4-2'
+                assert not clone.parent(), 'fail 5'
+                assert not clone.back(), 'fail 6'
+                clone.doDelete()
+                assert not child.isCloned(), 'fail 7'
+            except Exception:
+                if not g.new_undoers:
+                    g.trace(f"{g.new_undoers=}")
+                raise
 
     # @+node:ekr.20210830095545.43: *4* TestNodes.test_delete_node
     def test_delete_node(self):
@@ -505,43 +511,49 @@ class TestNodes(LeoUnitTest):
         p3.setHeadString('B')
         p.expand()
         c.p = p2
-        ### u.dump_stack('1')
-        p4 = c.insertHeadline()
-        ### u.dump_stack('2')
-        self.assertEqual(p4, c.p)
-        p = c.p
-        ### u.dump_stack('3')
-        self.assertTrue(p)
-        p.setHeadString('inserted')
-        ### u.dump_stack('4')
-        self.assertTrue(p.back())
-        self.assertEqual(p.back().h, 'A')
-        self.assertEqual(p.next().h, 'B')
-        # The new undo logic requires 2 undoes.
-        # The first undo undoes the headline changes,
-        # the second undo undoes the insert node.
-        ### u.dump_stack('5')
-        u.undo()
-        ### u.dump_stack('after undo 1')
-        u.undo()
-        ### u.dump_stack('after undo 2')
-        p = c.p
-        self.assertEqual(p, p2)
-        self.assertEqual(p.next(), p3)
-        u.redo()  ### Fails here in redo_change_headline.
-        ### u.dump_stack('after redo')
-        p = c.p
-        self.assertTrue(p.back())
-        self.assertEqual(p.back().h, 'A')
-        self.assertEqual(p.next().h, 'B')
-        u.undo()
-        p = c.p
-        self.assertEqual(p, p2)
-        self.assertEqual(p.next(), p3)
-        u.redo()
-        p = c.p
-        self.assertEqual(p.back().h, 'A')
-        self.assertEqual(p.next().h, 'B')
+        for g.new_undoers in (False, True):
+            try:
+                ### u.dump_stack('1')
+                p4 = c.insertHeadline()
+                ### u.dump_stack('2')
+                self.assertEqual(p4, c.p)
+                p = c.p
+                ### u.dump_stack('3')
+                self.assertTrue(p)
+                p.setHeadString('inserted')
+                ### u.dump_stack('4')
+                self.assertTrue(p.back())
+                self.assertEqual(p.back().h, 'A')
+                self.assertEqual(p.next().h, 'B')
+                # The new undo logic requires 2 undoes.
+                # The first undo undoes the headline changes,
+                # the second undo undoes the insert node.
+                ### u.dump_stack('5')
+                u.undo()
+                ### u.dump_stack('after undo 1')
+                u.undo()
+                ### u.dump_stack('after undo 2')
+                p = c.p
+                self.assertEqual(p, p2)
+                self.assertEqual(p.next(), p3)
+                u.redo()  ### Fails here in redo_change_headline.
+                ### u.dump_stack('after redo')
+                p = c.p
+                self.assertTrue(p.back())
+                self.assertEqual(p.back().h, 'A')
+                self.assertEqual(p.next().h, 'B')
+                u.undo()
+                p = c.p
+                self.assertEqual(p, p2)
+                self.assertEqual(p.next(), p3)
+                u.redo()
+                p = c.p
+                self.assertEqual(p.back().h, 'A')
+                self.assertEqual(p.next().h, 'B')
+            except Exception as e:
+                if not g.new_undoers:
+                    g.trace(f"{g.new_undoers=}")
+                raise
 
     # @+node:ekr.20210830095545.47: *4* TestNodes.test_move_outline_down__undo_redo
     def test_move_outline_down__undo_redo(self):
