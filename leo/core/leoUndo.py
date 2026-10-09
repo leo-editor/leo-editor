@@ -1889,7 +1889,7 @@ class Undoer:
         if c.p != u.p:  # #1333.
             c.selectPosition(u.p)
 
-    # @+node:ekr.20230721131611.1: *4* u.redoChangeTree
+    # @+node:ekr.20230721131611.1: *4* u.redoChangeTree (no calls!)
     def redoChangeTree(self) -> None:
         c, u, w = self.c, self, self.c.frame.body.wrapper
         # selectPosition causes recoloring, so don't do this unless needed.
@@ -1927,7 +1927,7 @@ class Undoer:
         rf.setRecentFiles(u.newRecentFiles[:])
         rf.createRecentFilesMenuItems(c)
 
-    # @+node:ekr.20111005152227.15558: *4* u.redoCloneMarkedNodes
+    # @+node:ekr.20111005152227.15558: *4* u.redoCloneMarkedNodes (calls c.cloneMarked)
     def redoCloneMarkedNodes(self) -> None:
         c, u = self.c, self
         c.selectPosition(u.p)
@@ -1941,7 +1941,7 @@ class Undoer:
         c.copyMarked()
         u.newP = c.p
 
-    # @+node:ekr.20050412083057: *4* u.redoCloneNode
+    # @+node:ekr.20050412083057: *4* u.redoCloneNode (calls p methods only)
     def redoCloneNode(self) -> None:
         c, u = self.c, self
         if cc := c.chapterController:
@@ -1955,14 +1955,14 @@ class Undoer:
         c.selectPosition(u.newP)
         u.newP.setDirty()
 
-    # @+node:ekr.20111005152227.15559: *4* u.redoDeleteMarkedNodes
+    # @+node:ekr.20111005152227.15559: *4* u.redoDeleteMarkedNodes (calls c.deleteMarked)
     def redoDeleteMarkedNodes(self) -> None:
         c, u = self.c, self
         c.selectPosition(u.p)
         c.deleteMarked()
         c.selectPosition(u.newP)
 
-    # @+node:EKR.20040526072519.2: *4* u.redoDeleteNode
+    # @+node:EKR.20040526072519.2: *4* u.redoDeleteNode (calls c.deleteOutline)
     def redoDeleteNode(self) -> None:
         c, u = self.c, self
         newP = u.newP.copy() if u.newP else c.p
@@ -2018,7 +2018,7 @@ class Undoer:
             i, j = newSel
             c.frame.body.wrapper.setSelectionRange(i, j)
 
-    # @+node:ekr.20050412085138.1: *4* u.redoHoistNode & redoDehoistNode
+    # @+node:ekr.20050412085138.1: *4* u.redoHoistNode & redoDehoistNode (call c.hoist/dehoist)
     def redoHoistNode(self) -> None:
         c, u = self.c, self
         u.p.setDirty()
@@ -2031,7 +2031,7 @@ class Undoer:
         c.selectPosition(u.p)
         c.dehoist()
 
-    # @+node:ekr.20050412084532: *4* u.redoInsertNode
+    # @+node:ekr.20050412084532: *4* u.redoInsertNode (calls only p/v methods)
     def redoInsertNode(self) -> None:
         c, u = self.c, self
         if cc := c.chapterController:
@@ -2110,7 +2110,7 @@ class Undoer:
         u.updateMarks('new')
         u.p.setDirty()
 
-    # @+node:ekr.20230713150847.1: *4* u.redoParseBody
+    # @+node:ekr.20230713150847.1: *4* u.redoParseBody (calls ic.parse_body)
     def redoParseBody(self) -> None:
         """Redo the parse-body command."""
         u = self
@@ -2313,7 +2313,7 @@ class Undoer:
         rf.setRecentFiles(u.oldRecentFiles[:])
         rf.createRecentFilesMenuItems(c)
 
-    # @+node:ekr.20111005152227.15560: *4* u.undoCloneMarkedNodes
+    # @+node:ekr.20111005152227.15560: *4* u.undoCloneMarkedNodes (calls p.next)
     def undoCloneMarkedNodes(self) -> None:
         u = self
         next = u.p.next()
@@ -2322,7 +2322,7 @@ class Undoer:
         u.p.setAllAncestorAtFileNodesDirty()
         u.c.selectPosition(u.p)
 
-    # @+node:ekr.20050412083057.1: *4* u.undoCloneNode
+    # @+node:ekr.20050412083057.1: *4* u.undoCloneNode (calls c.deleteOutline)
     def undoCloneNode(self) -> None:
         c, u = self.c, self
         if cc := c.chapterController:
@@ -2341,7 +2341,7 @@ class Undoer:
         u.p.setAllAncestorAtFileNodesDirty()
         u.c.selectPosition(u.p)
 
-    # @+node:ekr.20111005152227.15557: *4* u.undoDeleteMarkedNodes
+    # @+node:ekr.20111005152227.15557: *4* u.undoDeleteMarkedNodes (calls p methods)
     def undoDeleteMarkedNodes(self) -> None:
         c, u = self.c, self
         # Undo the deletes in reverse order
@@ -2357,7 +2357,7 @@ class Undoer:
         u.p.setAllAncestorAtFileNodesDirty()
         c.selectPosition(u.p)
 
-    # @+node:ekr.20050412084055: *4* u.undoDeleteNode
+    # @+node:ekr.20050412084055: *4* u.undoDeleteNode (calls p methods)
     def undoDeleteNode(self) -> None:
         c, u = self.c, self
         if u.oldBack:
@@ -2421,7 +2421,7 @@ class Undoer:
             i, j = oldSel
             c.frame.body.wrapper.setSelectionRange(i, j)
 
-    # @+node:ekr.20050412083244: *4* u.undoHoistNode & undoDehoistNode
+    # @+node:ekr.20050412083244: *4* u.undoHoistNode & undoDehoistNode (call c.hoist/deHoist)
     def undoHoistNode(self) -> None:
         c, u = self.c, self
         u.p.setDirty()
@@ -2434,7 +2434,7 @@ class Undoer:
         c.selectPosition(u.p)
         c.hoist()
 
-    # @+node:ekr.20050412085112: *4* u.undoInsertNode *** called c.deleteOutline ***
+    # @+node:ekr.20050412085112: *4* u.undoInsertNode (converted, calls only p methods)
     def undoInsertNode(self) -> None:
         c, u = self.c, self
         if cc := c.chapterController:
@@ -2516,7 +2516,7 @@ class Undoer:
             w.setYScrollPosition(u.oldYScroll)
         u.updateMarks('old')
 
-    # @+node:ekr.20230721131446.1: *4* u.undoChangeTree
+    # @+node:ekr.20230721131446.1: *4* u.undoChangeTree (calls c.p.back().doDelete)
     def undoChangeTree(self) -> None:
         """
         Undo all changes to the node and its subtree.
@@ -2550,7 +2550,7 @@ class Undoer:
         w.setYScrollPosition(u.oldYScroll)
         u.updateMarks('old')
 
-    # @+node:ekr.20230713150109.1: *4* u.undoParseBody
+    # @+node:ekr.20230713150109.1: *4* u.undoParseBody (calls p.deleteAllChildren)
     def undoParseBody(self) -> None:
         """Restore p.b and delete all children."""
         u = self
