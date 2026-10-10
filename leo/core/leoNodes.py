@@ -1377,6 +1377,7 @@ class Position:
 
     # @+node:ekr.20090706171333.6226: *5* p.badUnlink
     def badUnlink(self, parent_v: VNode, n: int, child: VNode) -> None:  # pragma: no cover
+        print()
         if 0 <= n < len(parent_v.children):
             g.trace(f"**can not happen: children[{n}] != p.v")
             g.trace('parent_v.children...\n', g.listToString(parent_v.children))
@@ -1384,6 +1385,7 @@ class Position:
             g.trace('parent_v.children[n]', parent_v.children[n])
             g.trace('child', child)
             g.trace('** callers:', g.callers())
+            print()
             if g.unitTesting:
                 assert False, f"children[{n}] != p.v"
         else:
@@ -1393,6 +1395,7 @@ class Position:
             g.trace('parent_v.children...\n', g.listToString(parent_v.children))
             g.trace('parent_v', parent_v, 'child', child)
             g.trace('** callers:', g.callers())
+            print()
             if g.unitTesting:
                 assert False, f"bad child index: {n}"
 

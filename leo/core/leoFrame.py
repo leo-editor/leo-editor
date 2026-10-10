@@ -520,31 +520,31 @@ class LeoFrame:
     @frame_cmd('cut-text')
     def cutText(self, event: LeoKeyEvent | None = None) -> None:
         """Invoked from the mini-buffer and from shortcuts."""
-        c, p, u = self.c, self.c.p, self.c.undoer
         if not event:
-            return  # PR #4812
-        assert event
+            return
+        c, p = self.c, self.c.p
         w = event.w
         if not g.isTextWrapper(w):
             return
-        bunch = u.beforeChangeBody(p)
-        name = c.widget_name(w)
-        oldText = w.getAllText()
-        i, j = w.getSelectionRange()
         # Update the widget and set the clipboard text.
+        i, j = old_sel = w.getSelectionRange()
+        old_ins = w.getInsertPoint()
         if i == j:
-            ins = w.getInsertPoint()
-            i, j = g.getLine(oldText, ins)
+            oldText = w.getAllText()
+            i, j = g.getLine(oldText, old_ins)
         s = w.get(i, j)
         w.delete(i, j)
-        w.see(i)  # Required.
+        w.see(i)
+        ### new_sel = (i, i)  ###
         s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
         g.app.gui.replaceClipboardWith(s)
-        if name.startswith('body'):
-            p.v.b = w.getAllText()
-            u.afterChangeBody(p, 'Cut', bunch)
-        # If it's the headline, the headline has not officially changed yet.
-        c.recolor()  # 4398.
+        if c.widget_name(w).startswith('body'):
+            with c.undoer as u:
+                u.set_command_name('cut-text')
+                u.set_body(p, new_body=w.getAllText())
+                u.set_selection_range(old_ins, old_sel)
+
+        # Otherwise, the headline has not yet offcially changed.
 
     OnCutFromMenu = cutText
 
@@ -555,16 +555,16 @@ class LeoFrame:
         Paste the clipboard into a widget.
         If middleButton is True, support x-windows middle-mouse-button easter-egg.
         """
-        c, p, u = self.c, self.c.p, self.c.undoer
         if not event:
-            return  # PR #4812
-        assert event
+            return
+        c, p = self.c, self.c.p
         w = event.w
         if not g.isTextWrapper(w):
             return
+
         wname = c.widget_name(w)
-        bunch = u.beforeChangeBody(p)
-        i, j = w.getSelectionRange()  # Returns insert point if no selection.
+        i, j = old_sel = w.getSelectionRange()
+        old_ins = w.getInsertPoint()
         s = g.app.gui.getTextFromClipboard()
         s = g.checkUnicode(s)
         s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
@@ -579,13 +579,17 @@ class LeoFrame:
             if c.frame.log.put_html_links(s):
                 return  # create_html_links has done all the work.
         w.insert(i, s)
-        w.see(i + len(s) + 2)
+        new_ins = i + len(s)
+        w.see(new_ins + 2)
+        w.setSelectionRange(new_ins, new_ins, insert=new_ins)
         if wname.startswith('body'):
-            p.v.b = w.getAllText()
-            u.afterChangeBody(p, 'Paste', bunch)
+            with c.undoer as u:
+                u.set_command_name('paste-text')
+                u.set_body(p, new_body=w.getAllText())
+                u.set_selection_range(old_ins, old_sel)
+
         if hasattr(w, 'getXScrollPosition'):
             w.setXScrollPosition(x_pos)
-        c.recolor()  # 4398.
 
     OnPasteFromMenu = pasteText
 
@@ -1049,7 +1053,7 @@ class LeoTree:
         Officially change a headline.
         Set the old undo text to the previous revert point.
         """
-        c, u, w = self.c, self.c.undoer, self.headline_wrapper(p)
+        c, w = self.c, self.headline_wrapper(p)
         if not w:
             g.trace('no w')
             return
@@ -1073,19 +1077,25 @@ class LeoTree:
         if g.doHook("headkey1", c=c, p=p, ch=ch, changed=changed):
             return  # The hook claims to have handled the event.
         # Handle undo.
-        undoData = u.beforeChangeHeadline(p)
-        p.initHeadString(s)  # change p.h *after* calling undoer's before method.
-        if not c.changed:
-            c.setChanged()
-        # New in Leo 4.4.5: we must recolor the body because
-        # the headline may contain directives.
-        c.frame.scanForTabWidth(p)
-        c.recolor(p)
-        p.setDirty()
-        u.afterChangeHeadline(p, undoType, undoData)
-        # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
-        c.redraw_after_head_changed()
-        g.doHook("headkey2", c=c, p=p, ch=ch, changed=changed)
+        if g.new_undoers:
+            with c.undoer as u:
+                u.set_command_name(undoType)
+                u.change_headline(p, ch, s)
+        else:
+            u = c.undoer
+            undoData = u.beforeChangeHeadline(p)
+            p.initHeadString(s)  # change p.h *after* calling undoer's before method.
+            if not c.changed:
+                c.setChanged()
+            # New in Leo 4.4.5: we must recolor the body because
+            # the headline may contain directives.
+            c.frame.scanForTabWidth(p)
+            c.recolor(p)
+            p.setDirty()
+            u.afterChangeHeadline(p, undoType, undoData)
+            # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
+            c.redraw_after_head_changed()
+            g.doHook("headkey2", c=c, p=p, ch=ch, changed=True)
 
     # @+node:ekr.20061109165848: *3* LeoTree: Must be defined in base class
     # @+node:ekr.20040803072955.126: *4* LeoTree.endEditLabel

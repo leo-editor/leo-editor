@@ -1104,7 +1104,7 @@ def hoist(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 
 
 # @+node:ekr.20031218072017.1759: ** c_oc.Insert, Delete & Clone commands
-# @+node:ekr.20031218072017.1762: *3* c_oc.clone
+# @+node:ekr.20031218072017.1762: *3* c_oc:clone-node (to do)
 @g.commander_command('clone-node')
 def clone(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Create a clone of the selected outline."""
@@ -1126,7 +1126,7 @@ def clone(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     return None
 
 
-# @+node:ekr.20150630152607.1: *3* c_oc.cloneToAtSpot
+# @+node:ekr.20150630152607.1: *3* c_oc.clone-to-at-spot
 @g.commander_command('clone-to-at-spot')
 def cloneToAtSpot(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """
@@ -1178,7 +1178,7 @@ def cloneToAtSpot(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         c.p = p
 
 
-# @+node:ekr.20141023154408.5: *3* c_oc.cloneToLastNode
+# @+node:ekr.20141023154408.5: *3* c_oc:clone-node-to-last-node
 @g.commander_command('clone-node-to-last-node')
 def cloneToLastNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """
@@ -1203,7 +1203,7 @@ def cloneToLastNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     # return clone # For mod_labels and chapters plugins.
 
 
-# @+node:ekr.20031218072017.1193: *3* c_oc.deleteOutline
+# @+node:ekr.20031218072017.1193: *3* c_oc:delete-node (passes)
 @g.commander_command('delete-node')
 def deleteOutline(
     self: Cmdr,
@@ -1211,51 +1211,102 @@ def deleteOutline(
     op_name: str = "Delete Node",
 ) -> None:
     """Deletes the selected outline."""
-    c, u = self, self.undoer
+    c = self
     p = c.p
     if not p:
         return
     c.endEditing()  # Make sure we capture the headline for Undo.
-    if False:  # c.config.getBool('select-next-after-delete'):
-        # #721: Optionally select next node after delete.
-        if p.hasVisNext(c):
-            newNode = p.visNext(c)
-        elif p.hasParent():
-            newNode = p.parent()
-        else:
-            newNode = p.back()  # _not_ p.visBack(): we are at the top level.
+
+    # Legacy: select previous node if possible.
+    if p.hasVisBack(c):
+        newNode = p.visBack(c)
     else:
-        # Legacy: select previous node if possible.
-        if p.hasVisBack(c):
-            newNode = p.visBack(c)
-        else:
-            newNode = p.next()  # _not_ p.visNext(): we are at the top level.
+        newNode = p.next()  # _not_ p.visNext(): we are at the top level.
     if not newNode:
         return
-    undoData = u.beforeDeleteNode(p)
-    p.setDirty()
-    p.doDelete(newNode)
-    c.setChanged()
-    u.afterDeleteNode(newNode, op_name, undoData)
-    c.redraw(newNode)
-    c.checkOutline()
+    if g.new_undoers:
+        with c.undoer as u:
+            u.set_command_name(op_name)
+            u.delete_node(p)
+    else:
+        u = c.undoer
+        undoData = u.beforeDeleteNode(p)
+        p.setDirty()
+        p.doDelete(newNode)
+        c.setChanged()
+        u.afterDeleteNode(newNode, op_name, undoData)
+        c.redraw(newNode)
+        c.checkOutline()
 
 
-# @+node:ekr.20071005173203.1: *3* c_oc.insertChild
+# @+node:ekr.20071005173203.1: *3* c_oc:insert-child
 @g.commander_command('insert-child')
-def insertChild(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
-    """Insert a node after the presently selected node."""
+def insertChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
+    """Insert a node as a child of presently selected node."""
     c = self
-    return c.insertHeadline(event=event, op_name='Insert Child', as_child=True)
+    current = c.p
+    if not current:
+        return None
+    c.endEditing()
+    u = c.undoer
+    undoData = c.undoer.beforeInsertNode(current)
+    # Make sure the new node is visible when hoisting.
+    if c.config.getBool('insert-new-nodes-at-end'):
+        p = current.insertAsLastChild()
+    else:
+        p = current.insertAsNthChild(0)
+    g.doHook('create-node', c=c, p=p)
+    p.setDirty()
+    c.setChanged()
+    u.afterInsertNode(p, 'Insert child', undoData)
+    c.redrawAndEdit(p, selectAll=True)
+    return p
 
 
-# @+node:ekr.20031218072017.1761: *3* c_oc.insertHeadline (insert-*)
+# @+node:ekr.20261008042700.1: *3* c_oc:insert-headline-as-first-child
+@g.commander_command('insert-as-first-child')
+def insertNodeAsFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
+    """Insert a node as the first child of the previous node."""
+    c = self
+    current = c.p
+    if not current:
+        return None
+    c.endEditing()
+    u = c.undoer
+    undoData = c.undoer.beforeInsertNode(current)
+    p = current.insertAsNthChild(0)
+    g.doHook('create-node', c=c, p=p)
+    p.setDirty()
+    c.setChanged()
+    u.afterInsertNode(p, 'Insert As First Child', undoData)
+    c.redrawAndEdit(p, selectAll=True)
+    return p
+
+
+# @+node:ekr.20261008042932.1: *3* c_oc:insert-headline-as-last-child
+@g.commander_command('insert-as-last-child')
+def insertNodeAsLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
+    """Insert a node as the last child of the previous node."""
+    c = self
+    current = c.p
+    if not current:
+        return None
+    c.endEditing()
+    u = c.undoer
+    undoData = c.undoer.beforeInsertNode(current)
+    p = current.insertAsLastChild()
+    g.doHook('create-node', c=c, p=p)
+    p.setDirty()
+    c.setChanged()
+    u.afterInsertNode(p, 'Insert As Last Child', undoData)
+    c.redrawAndEdit(p, selectAll=True)
+    return p
+
+
+# @+node:ekr.20261008042653.1: *3* c_oc:insert-node
 @g.commander_command('insert-node')
 def insertHeadline(
-    self: Cmdr,
-    event: LeoKeyEvent | None = None,
-    op_name: str = "Insert Node",
-    as_child: bool = False,
+    self: Cmdr, event: LeoKeyEvent | None = None, op_name: str = "Insert Node"
 ) -> Position | None:
     """
     If c.p is expanded, insert a new node as the first or last child of c.p,
@@ -1264,69 +1315,43 @@ def insertHeadline(
     If c.p is not expanded, insert a new node after c.p.
     """
     c = self
-    # Fix #600.
-    return insertHeadlineHelper(c, event=event, as_child=as_child, op_name=op_name)
-
-
-@g.commander_command('insert-as-first-child')
-def insertNodeAsFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
-    """Insert a node as the first child of the previous node."""
-    c = self
-    return insertHeadlineHelper(c, event=event, as_first_child=True)
-
-
-@g.commander_command('insert-as-last-child')
-def insertNodeAsLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
-    """Insert a node as the last child of the previous node."""
-    c = self
-    return insertHeadlineHelper(c, event=event, as_last_child=True)
-
-
-# @+node:ekr.20171124091846.1: *4* function: insertHeadlineHelper
-def insertHeadlineHelper(
-    c: Cmdr,
-    event: LeoKeyEvent | None = None,
-    op_name: str = "Insert Node",
-    as_child: bool = False,
-    as_first_child: bool = False,
-    as_last_child: bool = False,
-) -> Position | None:
-    """Insert a node after the presently selected node."""
-    u = c.undoer
     current = c.p
     if not current:
         return None
     c.endEditing()
-    undoData = c.undoer.beforeInsertNode(current)
-    if as_first_child:
-        p = current.insertAsNthChild(0)
-    elif as_last_child:
-        p = current.insertAsLastChild()
-    elif (
-        as_child
-        or (current.hasChildren() and current.isExpanded())
-        or (c.hoistStack and current == c.hoistStack[-1].p)
-    ):
-        # Make sure the new node is visible when hoisting.
-        if c.config.getBool('insert-new-nodes-at-end'):
-            p = current.insertAsLastChild()
-        else:
-            p = current.insertAsNthChild(0)
+    if g.new_undoers:
+        with c.undoer as u:
+            u.set_command_name(op_name)
+            u.insert_node(current)
+        return c.p
     else:
-        p = current.insertAfter()
-    g.doHook('create-node', c=c, p=p)
-    p.setDirty()
-    c.setChanged()
-    u.afterInsertNode(p, op_name, undoData)
-    c.redrawAndEdit(p, selectAll=True)
-    return p
+        u = c.undoer
+        # Create the new node.
+        if (
+            current.hasChildren() and current.isExpanded() or
+            c.hoistStack and current == c.hoistStack[-1].p
+        ):  # fmt: skip
+            # Make sure the new node is visible when hoisting.
+            if c.config.getBool('insert-new-nodes-at-end'):
+                p = current.insertAsLastChild()
+            else:
+                p = current.insertAsNthChild(0)
+        else:
+            p = current.insertAfter()
+        undoData = c.undoer.beforeInsertNode(current)
+        g.doHook('create-node', c=c, p=p)
+        p.setDirty()
+        c.setChanged()
+        u.afterInsertNode(p, op_name, undoData)
+        c.redrawAndEdit(p, selectAll=True)
+        return p
 
 
-# @+node:ekr.20130922133218.11540: *3* c_oc.insertHeadlineBefore
+# @+node:ekr.20130922133218.11540: *3* c_oc:insert-node-before (not ready yet)
 @g.commander_command('insert-node-before')
 def insertHeadlineBefore(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Insert a node before the presently selected node."""
-    c, current, u = self, self.p, self.undoer
+    c, current = self, self.p
     op_name = 'Insert Node Before'
     if not current:
         return None
@@ -1335,18 +1360,30 @@ def insertHeadlineBefore(self: Cmdr, event: LeoKeyEvent | None = None) -> Positi
         g.warning('can not insert a node before the base of a hoist')
         return None
     c.endEditing()
-    undoData = u.beforeInsertNode(current)
-    p = current.insertBefore()
-    g.doHook('create-node', c=c, p=p)
-    p.setDirty()
-    c.setChanged()
-    u.afterInsertNode(p, op_name, undoData)
-    c.redrawAndEdit(p, selectAll=True)
+    if False:  ### g.new_undoers: Not ready yet.
+        with c.undoer as u:
+            u.set_command_name(op_name)
+            undoData = u.beforeInsertNode(current)
+            p = current.insertBefore()
+            g.doHook('create-node', c=c, p=p)
+            p.setDirty()
+            c.setChanged()
+            u.afterInsertNode(p, op_name, undoData)
+            c.redrawAndEdit(p, selectAll=True)
+    else:
+        u = self.undoer
+        undoData = u.beforeInsertNode(current)
+        p = current.insertBefore()
+        g.doHook('create-node', c=c, p=p)
+        p.setDirty()
+        c.setChanged()
+        u.afterInsertNode(p, op_name, undoData)
+        c.redrawAndEdit(p, selectAll=True)
     return p
 
 
 # @+node:ekr.20031218072017.2922: ** c_oc.Mark commands
-# @+node:ekr.20090905110447.6098: *3* c_oc.cloneMarked
+# @+node:ekr.20090905110447.6098: *3* c_oc.cloneMarked (to do)
 @g.commander_command('clone-marked-nodes')
 def cloneMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Clone all marked nodes as children of a new node."""
@@ -1422,7 +1459,7 @@ def copyMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     c.redraw()
 
 
-# @+node:ekr.20111005081134.15540: *3* c_oc.deleteMarked
+# @+node:ekr.20111005081134.15540: *3* c_oc.deleteMarked (to do)
 @g.commander_command('delete-marked-nodes')
 def deleteMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Delete all marked nodes."""
