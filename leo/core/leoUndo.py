@@ -170,11 +170,13 @@ class UndoBead:
     def redo(self) -> None:
         c = self.c
 
+        trace_flag = self.trace_flag and not g.unitTesting
+
         def trace(message: str | None = '') -> None:
-            if self.trace:
+            if trace_flag:
                 g.trace(message)
 
-        if self.trace:
+        if trace_flag:
             print()
         trace('redoers!')
         for f in self.redo_functions:
@@ -218,11 +220,13 @@ class UndoBead:
     def undo(self) -> None:
         c = self.c
 
+        trace_flag = self.trace_flag and not g.unitTesting
+
         def trace(message: str | None = '') -> None:
-            if self.trace:
+            if trace_flag:
                 g.trace(message)
 
-        if self.trace:
+        if trace_flag:
             print()
         trace('undoers!')
         for f in self.undo_functions:
