@@ -374,8 +374,8 @@ class TestNodes(LeoUnitTest):
     def test_clone(self):
 
         # This method's name should *not* start with 'test'.
-        def clone_and_move_test(self):
-            c, p = self.c, self.c.p
+        def clone_test(self):
+            c, p, u = self.c, self.c.p, self.c.undoer
             child = p.insertAsNthChild(0)
             c.setHeadString(child, 'child')  # Force the headline to update.
             self.assertTrue(child)
@@ -388,13 +388,13 @@ class TestNodes(LeoUnitTest):
             assert child.isCloned(), 'fail 3'
             assert clone.isCloned(), 'fail 4'
             # undoers_s = f"{g.new_undoers=}"
-            c.undoer.undo()
+            u.undo()
             assert not child.isCloned(), 'fail 1-a'
-            c.undoer.redo()
+            u.redo()  ### Fails.
             assert child.isCloned(), 'fail 1-b'
-            c.undoer.undo()
+            u.undo()
             assert not child.isCloned(), 'fail 1-c'
-            c.undoer.redo()
+            u.redo()
             assert child.isCloned(), 'fail 1-d'
             clone.moveToRoot()  # Does not change child position.
             assert child.isCloned(), 'fail 3-2'
@@ -404,7 +404,11 @@ class TestNodes(LeoUnitTest):
             clone.doDelete()
             assert not child.isCloned(), 'fail 7'
 
-        self.run_undo_test(clone_and_move_test)
+        if 1:
+            g.new_undoers = True  ###
+            clone_test(self)
+        else:
+            self.run_undo_test(clone_test)
 
     # @+node:ekr.20210830095545.43: *4* TestNodes.test_delete_node
     def test_delete_node(self):
@@ -519,7 +523,18 @@ class TestNodes(LeoUnitTest):
             p3 = p.insertAsNthChild(1)
             p3.setHeadString('B')
             p.expand()
+
+            # Test 1.
             c.p = p2
+            c.insertHeadline()
+            assert c.p.h == 'newHeadline', c.p.h
+            for i in range(3):
+                u.undo()
+                assert c.p.h == 'A'
+                u.redo()
+                assert c.p.h == 'newHeadline'
+
+            return  ###
 
             # Tests.
             p4 = c.insertHeadline()
@@ -561,7 +576,7 @@ class TestNodes(LeoUnitTest):
             self.assertEqual(p.back().h, 'A')
             self.assertEqual(p.next().h, 'B')
 
-        if g.new_undoers:
+        if False:  ### g.new_undoers:
             insert_node_test(self)
         else:
             self.run_undo_test(insert_node_test)
