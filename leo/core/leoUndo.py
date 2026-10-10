@@ -2666,32 +2666,11 @@ class Undoer:
         c = u.c
         old_p = c.p.copy()
 
-        g.trace(g.callers())
-
-        if 1:
-            # Do the action!
-            c.redraw(new_p)
-
-            # Add the redraw finishers.
-            b.add_redraw(new_p, old_p, contract=contract)
-            return  ###
-
         # Do the action!
-        b.must_redraw = False
-        p = new_p
-        c.redraw(p)
+        c.redraw(new_p)
 
-        def redraw_redoer() -> None:
-            b.must_redraw = False
-            c.redraw(p)
-
-        def redraw_undoer() -> None:
-            b.must_redraw = False
-            if contract:
-                old_p.contract()
-            c.redraw(old_p)
-
-        b.set_finishers(redraw_redoer, redraw_undoer)
+        # Add the redraw finishers.
+        b.add_redraw(new_p, old_p, contract=contract)
 
     # @+node:ekr.20261005140833.1: *4* u.set_body
     def set_body(self, new_p: Position, new_body: str) -> None:
