@@ -75,15 +75,11 @@ class UndoBead:
     __slots__ = (
         'c',
         'command_name',
-        # 'is_body',
         'must_recolor',
         'must_redraw',
         'must_redraw_and_edit',
         'old_changed',
-        # 'old_ins',
         'old_p',
-        # 'old_sel',
-        # 'old_y_scroll',
         'redo_finishers',
         'redo_functions',
         'trace',
@@ -103,10 +99,7 @@ class UndoBead:
     def __init__(self, undoer: Undoer) -> None:
         # Let.
         c = undoer.c
-        # w = c.frame.body.wrapper
-        # is_body = c.widget_name(w).startswith('body')
 
-        # Ivars.
         # All 'must' ivars are sticky. They are never cleared once set.
         self.c = c
         self.command_name = None
@@ -115,10 +108,6 @@ class UndoBead:
         self.must_redraw_and_edit = False
         self.old_changed = c.changed
         self.old_p = c.p
-        # self.is_body = is_body
-        # self.old_ins = w.getInsertPoint() if is_body else None
-        # self.old_sel = w.getSelectionRange() if is_body else None
-        # self.old_y_scroll = w.getYScrollPosition() if is_body else None
         self.redo_finishers: list[Callable] = []
         self.redo_functions: list[Callable] = []
         self.trace = False  #'leoPy' not in c.shortFileName()
@@ -2645,80 +2634,42 @@ class Undoer:
         c.p = p
 
     # @+node:ekr.20261005140833.1: *4* u.set_body
-    def set_body(
-        self,
-        p: Position,
-        new_body: str,
-        *,
-        old_sel: tuple[int, int] | None = None,
-    ) -> None:
-        """Change p.b, retaining the selection range by default"""
+    def set_body(self, p: Position, new_body: str) -> None:
+        """Change p.b"""
         u = self
+        b = u.undoBead
+        assert isinstance(b, UndoBead), repr(b)
+        p = p.copy()
         w = u.c.frame.body.wrapper
         if not g.isTextWrapper(w):
             g.error(f"Not a text wrapper: {w=} {g.callers()}")
             return
 
-        # Capture the data.
-        b = u.undoBead
-        p = p.copy()
         old_body = p.b
-        old_sel = b.old_sel if old_sel is None else old_sel
-        old_ins = b.old_ins
-        old_y_scroll = b.old_y_scroll
-        new_ins = w.getInsertPoint()
-        new_sel = w.getSelectionRange()
-        new_y_scroll = w.getYScrollPosition()
-        assert isinstance(b, UndoBead), repr(b)
+        if old_body == new_body:
+            return
 
-        def update_p(p: Position, body: str, ins: int, sel: tuple[int, int]) -> None:
+        def update_p(p: Position, body: str) -> None:
             """Update p's data."""
-            p.v.b = body  # Must set p.v.b, not p.b! (p.b setter clears the selection).
-            i, j = sel
-            p.v.insertSpot = ins
-            p.v.selectionStart, p.v.selectionLength = (i, j - i)
+            # Set p.v.b, not p.b! The p.b setter clears the selection!
+            p.v.b = body
             if not p.isDirty():
                 p.setDirty()
-                self.must_redraw = True
             val = p.computeIcon()
             if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
                 p.v.iconVal = val
-                self.must_redraw = True
-            if b.is_body:
-                self.must_recolor = True
-            if p != b.old_p:
-                self.must_redraw = True
 
         # Do the action!
-        update_p(p, new_body, new_ins, new_sel)
+        update_p(p, new_body)
+        self.must_redraw = True
 
         def set_body_redoer() -> None:
-            update_p(p, new_body, new_ins, new_sel)
+            update_p(p, new_body)
 
         def set_body_undoer() -> None:
-            update_p(p, old_body, old_ins, old_sel)
+            update_p(p, old_body)
 
         b.set_helpers(set_body_redoer, set_body_undoer)
-
-        if new_y_scroll is not None:
-
-            def set_scroll_redoer() -> None:
-                w.setYScrollPosition(new_y_scroll)
-
-            def set_scroll_undoer() -> None:
-                w.setYScrollPosition(old_y_scroll)
-
-            b.set_finishers(set_scroll_redoer, set_scroll_undoer)
-
-        if old_sel is not None:
-
-            def set_sel_redoer() -> None:
-                w.setSelectionRange(*new_sel)
-
-            def set_sel_undoer() -> None:
-                w.setSelectionRange(*old_sel)
-
-            b.set_finishers(set_sel_redoer, set_sel_undoer)
 
     # @+node:ekr.20261005094529.2: *4* u.set_command_name
     def set_command_name(self, command_name: str) -> None:
@@ -2737,7 +2688,13 @@ class Undoer:
         new_sel: tuple[int, int],
         *,
         old_sel: tuple[int, int] | None = None,
+        old_y_scroll: int | None = None,
+        new_y_scroll: int | None = None,
     ) -> None:
+
+        ###
+        # old_y_scroll = b.old_y_scroll
+        # new_y_scroll = w.getYScrollPosition()
 
         u = self
         b = u.undoBead

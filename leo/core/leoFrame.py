@@ -535,12 +535,15 @@ class LeoFrame:
         s = w.get(i, j)
         w.delete(i, j)
         w.see(i)
+        new_sel = (i, i)  ###
         s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
         g.app.gui.replaceClipboardWith(s)
         if c.widget_name(w).startswith('body'):
             with c.undoer as u:
                 u.set_command_name('cut-text')
-                u.set_body(p, new_body=w.getAllText(), old_sel=old_sel)
+                u.set_body(p, new_body=w.getAllText())
+                u.set_selection_range(new_sel, old_sel=old_sel)
+
         # Otherwise, the headline has not yet offcially changed.
 
     OnCutFromMenu = cutText
@@ -576,10 +579,13 @@ class LeoFrame:
                 return  # create_html_links has done all the work.
         w.insert(i, s)
         w.see(i + len(s) + 2)
+        new_sel = (i + len(s), i + len(s))
         if wname.startswith('body'):
             with c.undoer as u:
                 u.set_command_name('paste-text')
-                u.set_body(p, new_body=w.getAllText(), old_sel=old_sel)
+                u.set_body(p, new_body=w.getAllText())
+                u.set_selection_range(new_sel, old_sel=old_sel)
+
         if hasattr(w, 'getXScrollPosition'):
             w.setXScrollPosition(x_pos)
 
