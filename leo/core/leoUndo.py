@@ -82,7 +82,7 @@ class UndoBead:
         'old_p',
         'redo_finishers',
         'redo_functions',
-        'trace',
+        'trace_flag',
         'undoType',
         'undo_finishers',
         'undo_functions',
@@ -110,11 +110,43 @@ class UndoBead:
         self.old_p = c.p
         self.redo_finishers: list[Callable] = []
         self.redo_functions: list[Callable] = []
-        self.trace = 'leoPy' not in c.shortFileName() and not g.unitTesting
+        self.trace_flag = 'leoPy' not in c.shortFileName()
         self.undoType = ''  # Required. Set by u.set_command_name
         self.undo_finishers: list[Callable] = []
         self.undo_functions: list[Callable] = []
         self.undoer = undoer
+
+    # @+node:ekr.20261010150247.9: *3* undoBead.add_redraw
+    def add_redraw(self, new_p: Position, old_p: Position, contract: bool = False) -> None:
+
+        c = self.c
+        new_p = new_p.copy()
+        old_p = old_p.copy()
+
+        def redraw_redoer() -> None:
+            c.redraw(new_p)
+
+        def redraw_undoer() -> None:
+            if contract:
+                old_p.contract()
+            c.redraw(old_p)
+
+        self.set_finishers(redraw_redoer, redraw_undoer)
+
+    # @+node:ekr.20261010150247.10: *3* undoBead.add_redraw_and_edit
+    def add_redraw_and_edit(self, new_p: Position, old_p: Position) -> None:
+
+        c = self.c
+        new_p = new_p.copy()
+        old_p = old_p.copy()
+
+        def redraw_and_edit_redoer() -> None:
+            c.redraw_and_edit(new_p)
+
+        def redraw_and_edit_undoer() -> None:
+            c.redraw_and_edit(old_p)
+
+        self.set_finishers(redraw_and_edit_redoer, redraw_and_edit_undoer)
 
     # @+node:ekr.20261007104333.1: *3* UndoBead.get (compatility)
     def get(self, key) -> Any:
@@ -176,6 +208,11 @@ class UndoBead:
         """Append the helpers (in correct order!) to the undo/redo lists."""
         self.redo_finishers.append(redo_finisher)
         self.undo_finishers.append(undo_finisher)  # Execute in given order.
+
+    # @+node:ekr.20261010150247.11: *3* UndoBead.trace
+    def trace(self, message: str) -> None:
+        if self.trace_flag and not g.unitTesting:
+            print(message)
 
     # @+node:ekr.20261006040137.1: *3* UndoBead.undo (sanity check)
     def undo(self) -> None:
@@ -2517,7 +2554,7 @@ class Undoer:
     def clone_node(self, p: Position) -> None:
         g.trace(p.h)
 
-    # @+node:ekr.20261005143707.1: *4* u.delete_node (passes)
+    # @+node:ekr.20261005143707.1: *4* u.delete_node (fails?)
     def delete_node(self, p: Position) -> None:
 
         u = self

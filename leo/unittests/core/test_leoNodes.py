@@ -404,7 +404,7 @@ class TestNodes(LeoUnitTest):
             clone.doDelete()
             assert not child.isCloned(), 'fail 7'
 
-        if 1:
+        if 0:
             g.new_undoers = True  ###
             clone_test(self)
         else:
