@@ -141,10 +141,10 @@ class UndoBead:
         old_p = old_p.copy()
 
         def redraw_and_edit_redoer() -> None:
-            c.redraw_and_edit(new_p)
+            c.redrawAndEdit(new_p)
 
         def redraw_and_edit_undoer() -> None:
-            c.redraw_and_edit(old_p)
+            c.redrawAndEdit(old_p)
 
         self.set_finishers(redraw_and_edit_redoer, redraw_and_edit_undoer)
 
@@ -2654,15 +2654,26 @@ class Undoer:
         b.set_helpers(insert_node_redoer, insert_node_undoer)
 
     # @+node:ekr.20261005182243.1: *4* u.redraw
-    def redraw(self, p: Position, contract: bool = True) -> None:
+    def redraw(self, new_p: Position, contract: bool = True) -> None:
 
         u = self
         b = u.undoBead
         c = u.c
         old_p = c.p.copy()
 
+        g.trace(g.callers())
+
+        if 1:
+            # Do the action!
+            c.redraw(new_p)
+
+            # Add the redraw finishers.
+            b.add_redraw(new_p, old_p, contract=contract)
+            return  ###
+
         # Do the action!
         b.must_redraw = False
+        p = new_p
         c.redraw(p)
 
         def redraw_redoer() -> None:
