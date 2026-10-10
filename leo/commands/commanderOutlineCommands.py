@@ -1203,7 +1203,7 @@ def cloneToLastNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     # return clone # For mod_labels and chapters plugins.
 
 
-# @+node:ekr.20031218072017.1193: *3* c_oc:delete-node (passes)
+# @+node:ekr.20031218072017.1193: *3* c_oc:delete-node (sometimes fails)
 @g.commander_command('delete-node')
 def deleteOutline(
     self: Cmdr,
@@ -1224,7 +1224,7 @@ def deleteOutline(
         newNode = p.next()  # _not_ p.visNext(): we are at the top level.
     if not newNode:
         return
-    if g.new_undoers:
+    if False:  ### g.new_undoers:
         with c.undoer as u:
             u.set_command_name(op_name)
             u.delete_node(p)
@@ -1319,7 +1319,7 @@ def insertHeadline(
     if not current:
         return None
     c.endEditing()
-    if g.new_undoers:
+    if False:  ### g.new_undoers:
         with c.undoer as u:
             u.set_command_name(op_name)
             u.insert_node(current)

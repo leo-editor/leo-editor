@@ -234,7 +234,8 @@ class Undoer:
         including nested "with" statements.
         """
         u = self
-        ### g.trace(f"{u.undoBeadLevel=}")
+        # g.trace(g.callers())
+
         # Use the same bead for nested with statements.
         if u.undoBeadLevel == 0:
             u.undoBead = UndoBead(undoer=self)
