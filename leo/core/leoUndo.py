@@ -2691,11 +2691,6 @@ class Undoer:
         old_y_scroll: int | None = None,
         new_y_scroll: int | None = None,
     ) -> None:
-
-        ###
-        # old_y_scroll = b.old_y_scroll
-        # new_y_scroll = w.getYScrollPosition()
-
         u = self
         b = u.undoBead
         c = u.c
@@ -2708,10 +2703,14 @@ class Undoer:
         def set_selection_range_redoer() -> None:
             i, j = new_sel
             w.setSelectionRange(i, j)
+            if new_y_scroll is not None:
+                w.setYScrollPosition(new_y_scroll)
 
         def set_selection_range_undoer() -> None:
             i, j = old_sel
             w.setSelectionRange(i, j)
+            if old_y_scroll is not None:
+                w.setYScrollPosition(old_y_scroll)
 
         b.set_finishers(set_selection_range_redoer, set_selection_range_undoer)
 
