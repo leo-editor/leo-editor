@@ -370,8 +370,8 @@ class TestNodes(LeoUnitTest):
             p.moveToThreadNext()
 
     # @+node:ekr.20220306072631.1: *3* TestNodes: Outline operations
-    # @+node:ekr.20210830095545.42: *4* TestNodes.test_clone_and_move_the_clone_to_the_root
-    def test_clone_and_move_the_clone_to_the_root(self):
+    # @+node:ekr.20210830095545.42: *4* TestNodes.test_clone
+    def test_clone(self):
 
         # This method's name should *not* start with 'test'.
         def clone_and_move_test(self):
@@ -449,8 +449,8 @@ class TestNodes(LeoUnitTest):
 
         self.run_undo_test(delete_node_test)
 
-    # @+node:ekr.20210830095545.44: *4* TestNodes.test_deleting_the_root_should_select_another_node
-    def test_deleting_the_root_should_select_another_node(self):
+    # @+node:ekr.20210830095545.44: *4* TestNodes.test_delete_root
+    def test_delete_root(self):
         c, p = self.c, self.c.p
         root_h = p.h
         child = p.next()
@@ -551,8 +551,8 @@ class TestNodes(LeoUnitTest):
 
         self.run_undo_test(insert_node_test)
 
-    # @+node:ekr.20210830095545.47: *4* TestNodes.test_move_outline_down__undo_redo
-    def test_move_outline_down__undo_redo(self):
+    # @+node:ekr.20210830095545.47: *4* TestNodes.test_move_outline_down
+    def test_move_outline_down(self):
         c, p = self.c, self.c.p
         p2 = p.insertAsNthChild(0)
         p2.setHeadString('A')

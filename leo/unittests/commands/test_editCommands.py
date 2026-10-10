@@ -4264,8 +4264,8 @@ class TestEditCommands(LeoUnitTest):
         s = c.helpCommands.pythonHelp1(event=None)
         self.assertTrue('Help on module os' in s)
 
-    # @+node:ekr.20210905064816.19: *4* test_insert_node_before_node_can_be_undone_and_redone
-    def xxx_test_insert_node_before_node_can_be_undone_and_redone(self):
+    # @+node:ekr.20210905064816.19: *4* TestEditCommands.xxx_test_undo_insert_node_before
+    def xxx_test_undo_insert_node_before(self):
 
         # This method's name should *not* start with 'test'.
         def insert_node_test2(self):
@@ -4280,8 +4280,8 @@ class TestEditCommands(LeoUnitTest):
 
         self.run_undo_test(insert_node_test2)
 
-    # @+node:ekr.20210905064816.18: *4* test_insert_node_can_be_undone_and_redone
-    def test_insert_node_can_be_undone_and_redone(self):
+    # @+node:ekr.20210905064816.18: *4* TestEditCommands.test_undo_insert_node
+    def test_undo_insert_node(self):
         c = self.c
         u = c.undoer
         assert u
