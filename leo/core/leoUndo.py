@@ -100,7 +100,7 @@ class UndoBead:
         # Let.
         c = undoer.c
 
-        # All 'must' ivars are sticky. They are never cleared once set.
+        # 'must' ivars are usually sticky: they are never cleared once set.
         self.c = c
         self.command_name = None
         self.must_recolor = False
@@ -151,7 +151,7 @@ class UndoBead:
         if self.must_redraw_and_edit:
             trace('redraw and edit!')
             c.redrawAndEdit(c.p, selectAll=True)
-        if self.must_redraw:
+        elif self.must_redraw:
             trace('redraw!')
             c.redraw()
         if self.must_recolor:
@@ -194,7 +194,7 @@ class UndoBead:
         if self.must_redraw_and_edit:
             trace(f"redraw and edit! {c.p.h}")
             c.redrawAndEdit(c.p, selectAll=True)
-        if self.must_redraw:
+        elif self.must_redraw:
             trace(f"redraw! {c.p.h}")
             c.redraw(c.p)
         if self.must_recolor:
@@ -2615,8 +2615,8 @@ class Undoer:
 
         b.set_helpers(insert_node_redoer, insert_node_undoer)
 
-    # @+node:ekr.20261005182243.1: *4* u.select_position
-    def select_position(self, p: Position, contract: bool = True) -> None:
+    # @+node:ekr.20261005182243.1: *4* u.redraw
+    def redraw(self, p: Position, contract: bool = True) -> None:
 
         u = self
         b = u.undoBead
@@ -2627,17 +2627,17 @@ class Undoer:
         b.must_redraw = False
         c.redraw(p)
 
-        def select_position_redoer() -> None:
+        def redraw_redoer() -> None:
             b.must_redraw = False
             c.redraw(p)
 
-        def select_position_undoer() -> None:
+        def redraw_undoer() -> None:
             b.must_redraw = False
             if contract:
                 old_p.contract()
             c.redraw(old_p)
 
-        b.set_finishers(select_position_redoer, select_position_undoer)
+        b.set_finishers(redraw_redoer, redraw_undoer)
 
     # @+node:ekr.20261005140833.1: *4* u.set_body
     def set_body(self, p: Position, new_body: str) -> None:

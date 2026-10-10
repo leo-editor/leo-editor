@@ -866,7 +866,7 @@ def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
         u.set_body(old_p, new_body)
         for child in reversed(children):
             u.delete_node(child)
-        u.select_position(old_p)
+        u.redraw(old_p)
         u.set_selection_range(old_ins, old_sel)
         c.bodyWantsFocusNow()
 
