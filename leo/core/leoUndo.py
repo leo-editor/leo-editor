@@ -2515,36 +2515,37 @@ class Undoer:
 
     # @+node:ekr.20261005135125.1: *3* u:New helpers
     # @+node:ekr.20261009185938.1: *4* u.change_headline
-    def change_headline(self, p: Position, ch: str, new_s: str) -> None:
+    def change_headline(self, new_p: Position, ch: str, new_h: str) -> None:
 
         u = self
         b = u.undoBead
         c = u.c
-        old_p = p.copy()
-        old_s = p.h
+        old_p = c.p
+        old_h = c.p.h
 
         def update(s):
             old_p.initHeadString(s)
             old_p.setDirty()
 
         # Do the action!
-        update(new_s)
-        g.doHook("headkey2", c=c, p=p, ch=ch, changed=True)
-        c.redraw_after_head_changed()
-        u.must_recolor = True  # The headline may contain directives.
+        update(new_h)
+        g.doHook("headkey2", c=c, p=new_p, ch=ch, changed=True)
+        c.redraw_after_head_changed()  # Redraw doesn't work???
+        g.must_recolor = True
+
+        # Add helpers and finishers.
 
         def change_headline_redoer() -> None:
             c.p = old_p
-            update(new_s)
+            update(new_h)
 
         def change_headline_undoer() -> None:
             c.p = old_p
-            update(old_s)
+            update(old_h)
 
         b.set_helpers(change_headline_redoer, change_headline_undoer)
 
         def change_headline_finisher() -> None:
-            # Redraw *last*
             c.redraw_after_head_changed()
 
         # Use the same finisher for undo/redo.
@@ -2689,18 +2690,18 @@ class Undoer:
         b.set_finishers(redraw_redoer, redraw_undoer)
 
     # @+node:ekr.20261005140833.1: *4* u.set_body
-    def set_body(self, p: Position, new_body: str) -> None:
+    def set_body(self, new_p: Position, new_body: str) -> None:
         """Change p.b"""
         u = self
         b = u.undoBead
-        assert isinstance(b, UndoBead), repr(b)
-        p = p.copy()
+        c = u.c
         w = u.c.frame.body.wrapper
         if not g.isTextWrapper(w):
             g.error(f"Not a text wrapper: {w=} {g.callers()}")
             return
 
-        old_body = p.b
+        g.trace(new_p.h, g.callers())
+        old_body = c.p.b
         if old_body == new_body:
             return
 
@@ -2715,16 +2716,20 @@ class Undoer:
                 p.v.iconVal = val
 
         # Do the action!
-        update_p(p, new_body)
-        self.must_redraw = True
+        update_p(new_p, new_body)
+
+        # Add helpers.
 
         def set_body_redoer() -> None:
-            update_p(p, new_body)
+            update_p(new_p, new_body)
 
         def set_body_undoer() -> None:
-            update_p(p, old_body)
+            update_p(new_p, old_body)
 
         b.set_helpers(set_body_redoer, set_body_undoer)
+
+        # Add finishers.
+        b.add_redraw(new_p, new_p)  # Never change c.p.
 
     # @+node:ekr.20261005094529.2: *4* u.set_command_name
     def set_command_name(self, command_name: str) -> None:
