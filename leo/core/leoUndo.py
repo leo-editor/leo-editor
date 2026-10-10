@@ -75,15 +75,15 @@ class UndoBead:
     __slots__ = (
         'c',
         'command_name',
-        'is_body',
+        # 'is_body',
         'must_recolor',
         'must_redraw',
         'must_redraw_and_edit',
-        'must_set_c_changed',
-        'old_ins',
+        'old_changed',
+        # 'old_ins',
         'old_p',
-        'old_sel',
-        'old_y_scroll',
+        # 'old_sel',
+        # 'old_y_scroll',
         'redo_finishers',
         'redo_functions',
         'trace',
@@ -103,8 +103,9 @@ class UndoBead:
     def __init__(self, undoer: Undoer) -> None:
         # Let.
         c = undoer.c
-        w = c.frame.body.wrapper
-        is_body = c.widget_name(w).startswith('body')
+        # w = c.frame.body.wrapper
+        # is_body = c.widget_name(w).startswith('body')
+
         # Ivars.
         # All 'must' ivars are sticky. They are never cleared once set.
         self.c = c
@@ -112,12 +113,12 @@ class UndoBead:
         self.must_recolor = False
         self.must_redraw = False
         self.must_redraw_and_edit = False
-        self.must_set_c_changed = False
+        self.old_changed = c.changed
         self.old_p = c.p
-        self.is_body = is_body
-        self.old_ins = w.getInsertPoint() if is_body else None
-        self.old_sel = w.getSelectionRange() if is_body else None
-        self.old_y_scroll = w.getYScrollPosition() if is_body else None
+        # self.is_body = is_body
+        # self.old_ins = w.getInsertPoint() if is_body else None
+        # self.old_sel = w.getSelectionRange() if is_body else None
+        # self.old_y_scroll = w.getYScrollPosition() if is_body else None
         self.redo_finishers: list[Callable] = []
         self.redo_functions: list[Callable] = []
         self.trace = False  #'leoPy' not in c.shortFileName()
@@ -161,11 +162,12 @@ class UndoBead:
         if self.must_redraw_and_edit:
             trace('redraw and edit!')
             c.redrawAndEdit(c.p, selectAll=True)
-        elif self.must_redraw:
+        if self.must_redraw:
             trace('redraw!')
             c.redraw()
-        elif self.must_recolor:
+        if self.must_recolor:
             trace('recolor!')
+            c.frame.scanForTabWidth(c.p)
             c.recolor()
         trace('finishers')
         for f in self.redo_finishers:
@@ -173,9 +175,7 @@ class UndoBead:
             f()
         if self.undo_finishers:
             trace('finishers!')
-        if self.must_set_c_changed:
-            trace('c.setChanged!')
-            c.setChanged()
+        c.setChanged()  # Elegant!
 
     # @+node:ekr.20261006040137.2: *3* UndoBead.set_helpers & set_finishers
     def set_helpers(self, redo_function: Callable, undo_function: Callable) -> None:
@@ -205,10 +205,11 @@ class UndoBead:
         if self.must_redraw_and_edit:
             trace('redraw and edit!')
             c.redrawAndEdit(c.p, selectAll=True)
-        elif self.must_redraw:
-            trace(f"redraw! {self.old_p.h}")
-            c.redraw(self.old_p)
-        elif self.must_recolor:
+        if self.must_redraw:
+            trace(f"redraw! {c.p.h}")
+            c.redraw(c.p)
+        if self.must_recolor:
+            c.frame.scanForTabWidth(c.p)
             trace('recolor!')
             c.recolor()
         if self.undo_finishers:
@@ -216,9 +217,17 @@ class UndoBead:
         for f in self.undo_finishers:
             trace(f.__name__)
             f()
-        if self.must_set_c_changed:
-            trace('c.setChanged!')
-            c.setChanged()
+        if not self.old_changed:
+            c.clearChanged()  # Elegant!
+        # An important sanity check.
+        if self.old_p != c.p:
+            old_p = self.old_p
+            message = f"\nInternal error!\n  {c.p=}\n{old_p=}\n{g.callers()=}\n"
+            if g.unitTesting:
+                assert False, message
+            print()
+            g.trace(message)
+            print()
 
     # @-others
 
@@ -361,7 +370,7 @@ class Undoer:
         u.updateMarks('new')
         u.p.setDirty()
 
-    # @+node:ekr.20201107150619.1: *5* u.redoChangeHeadline
+    # @+node:ekr.20201107150619.1: *5* u.redoChangeHeadline (causes crash)
     def redoChangeHeadline(self) -> None:
         c, u = self.c, self
         # selectPosition causes recoloring, so don't do this unless needed.
@@ -2478,6 +2487,42 @@ class Undoer:
         u.c.setChanged()
 
     # @+node:ekr.20261005135125.1: *3* u:New helpers
+    # @+node:ekr.20261009185938.1: *4* u.change_headline
+    def change_headline(self, p: Position, ch: str, new_s: str) -> None:
+
+        u = self
+        b = u.undoBead
+        c = u.c
+        old_p = p.copy()
+        old_s = p.h
+
+        def update(s):
+            old_p.initHeadString(s)
+            old_p.setDirty()
+
+        # Do the action!
+        update(new_s)
+        g.doHook("headkey2", c=c, p=p, ch=ch, changed=True)
+        c.redraw_after_head_changed()
+        u.must_recolor = True  # The headline may contain directives.
+
+        def change_headline_redoer() -> None:
+            c.p = old_p
+            update(new_s)
+
+        def change_headline_undoer() -> None:
+            c.p = old_p
+            update(old_s)
+
+        b.set_helpers(change_headline_redoer, change_headline_undoer)
+
+        def change_headline_finisher() -> None:
+            # Redraw *last*
+            c.redraw_after_head_changed()
+
+        # Use the same finisher for undo/redo.
+        b.set_finishers(change_headline_finisher, change_headline_finisher)
+
     # @+node:ekr.20261006155509.1: *4* u.clone_node (to do)
     def clone_node(self, p: Position) -> None:
         g.trace(p.h)
@@ -2534,7 +2579,7 @@ class Undoer:
 
         b.set_helpers(delete_node_redoer, delete_node_undoer)
 
-    # @+node:ekr.20261006155622.1: *4* u.insert_node (Fails)
+    # @+node:ekr.20261006155622.1: *4* u.insert_node (fails)
     def insert_node(self, p: Position) -> None:
         """
         If c.p is expanded, insert a new node as the first or last child of c.p,
@@ -2560,7 +2605,6 @@ class Undoer:
             else:
                 new_p = old_p.insertAfter()
             new_p.setDirty()
-            c.setChanged()
             c.p = new_p
             return new_p
 
@@ -2577,7 +2621,6 @@ class Undoer:
         def insert_node_undoer() -> None:
             new_p.doDelete(old_p)
             c.p = old_p
-            c.setChanged()
             old_p.setAllAncestorAtFileNodesDirty()
 
         b.set_helpers(insert_node_redoer, insert_node_undoer)
@@ -2645,7 +2688,6 @@ class Undoer:
                 self.must_recolor = True
             if p != b.old_p:
                 self.must_redraw = True
-                self.must_set_c_changed = True
 
         # Do the action!
         update_p(p, new_body, new_ins, new_sel)

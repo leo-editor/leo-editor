@@ -370,7 +370,7 @@ class TestNodes(LeoUnitTest):
             p.moveToThreadNext()
 
     # @+node:ekr.20220306072631.1: *3* TestNodes: Outline operations
-    # @+node:ekr.20210830095545.42: *4* TestNodes.test_clone
+    # @+node:ekr.20210830095545.42: *4* TestNodes.test_clone (fails)
     def test_clone(self):
 
         # This method's name should *not* start with 'test'.
@@ -505,12 +505,14 @@ class TestNodes(LeoUnitTest):
         self.assertEqual(p.firstChild().h, 'C')
         self.assertEqual(p.firstChild().next().h, 'D')
 
-    # @+node:ekr.20210830095545.46: *4* TestNodes.test_insert_node
+    # @+node:ekr.20210830095545.46: *4* TestNodes.test_insert_node (fails)
     def test_insert_node(self):
 
         # This method's name should *not* start with 'test'.
         def insert_node_test(self):
             c, p, u = self.c, self.c.p, self.c.undoer
+
+            # Init.
             self.assertEqual(p.h, 'root')
             p2 = p.insertAsNthChild(0)
             p2.setHeadString('A')
@@ -518,23 +520,32 @@ class TestNodes(LeoUnitTest):
             p3.setHeadString('B')
             p.expand()
             c.p = p2
-            # self.dump_headlines(c, tag='at start')
+
+            # Tests.
             p4 = c.insertHeadline()
             self.assertEqual(p4, c.p)
             p = c.p
-            self.assertTrue(p)
-            p.setHeadString('inserted')
+            assert p.h == 'newHeadline', p.h  # 1
+            p.setHeadString('inserted')  # Not undable.
+            assert p.h == 'inserted', p.h  # 1
+
             self.assertTrue(p.back())
             self.assertEqual(p.back().h, 'A')
             self.assertEqual(p.next().h, 'B')
+
+            ####### Huh???
             # The new undo logic requires 2 undoes.
             # The first undo undoes the headline changes,
             # the second undo undoes the insert node.
+
             u.undo()
+            assert p.h == 'inserted', p.h  # 2
             u.undo()
             p = c.p
-            self.assertEqual(p, p2)
+            # self.assertEqual(p, p2)  # 2
+            assert p == p2, (p.h, p2.h)  # 2
             self.assertEqual(p.next(), p3)
+
             u.redo()
             p = c.p
             self.assertTrue(p.back())
@@ -542,7 +553,8 @@ class TestNodes(LeoUnitTest):
             self.assertEqual(p.next().h, 'B')
             u.undo()
             p = c.p
-            self.assertEqual(p, p2)
+            # self.assertEqual(p, p2)  # 2
+            assert p == p2, (p.h, p2.h)
             self.assertEqual(p.next(), p3)
             u.redo()
             p = c.p

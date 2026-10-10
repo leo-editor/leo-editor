@@ -1037,7 +1037,7 @@ class LeoTree:
     def redraw_after_head_changed(self) -> None:
         self.c.redraw()
 
-    # @+node:ekr.20040803072955.91: *4* LeoTree.onHeadChanged (*** convert)
+    # @+node:ekr.20040803072955.91: *4* LeoTree.onHeadChanged
     # Tricky code: do not change without careful thought and testing.
     # Important: This code *is* used by the leoBridge module.
     def onHeadChanged(self, p: Position, undoType: str = 'Typing') -> None:
@@ -1069,10 +1069,10 @@ class LeoTree:
         if g.doHook("headkey1", c=c, p=p, ch=ch, changed=changed):
             return  # The hook claims to have handled the event.
         # Handle undo.
-        if False:  ### g.new_undoers:
+        if g.new_undoers:
             with c.undoer as u:
                 u.set_command_name(undoType)
-                assert False, 'u.change_head not ready!'
+                u.change_headline(p, ch, s)
         else:
             u = c.undoer
             undoData = u.beforeChangeHeadline(p)
@@ -1087,7 +1087,7 @@ class LeoTree:
             u.afterChangeHeadline(p, undoType, undoData)
             # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
             c.redraw_after_head_changed()
-            g.doHook("headkey2", c=c, p=p, ch=ch, changed=changed)
+            g.doHook("headkey2", c=c, p=p, ch=ch, changed=True)
 
     # @+node:ekr.20061109165848: *3* LeoTree: Must be defined in base class
     # @+node:ekr.20040803072955.126: *4* LeoTree.endEditLabel
