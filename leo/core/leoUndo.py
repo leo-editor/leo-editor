@@ -75,8 +75,6 @@ class UndoBead:
     __slots__ = (
         'c',
         'command_name',
-        'must_recolor',
-        'must_redraw_and_edit',
         'old_changed',
         'old_p',
         'redo_finishers',
@@ -97,20 +95,33 @@ class UndoBead:
     def __init__(self, undoer: Undoer) -> None:
         # Let.
         c = undoer.c
-        # 'must' ivars will be removed.
         self.c = c
         self.command_name = None
-        self.must_recolor = False
-        self.must_redraw_and_edit = False
         self.old_changed = c.changed
         self.old_p = c.p
         self.redo_finishers: list[Callable] = []
         self.redo_functions: list[Callable] = []
-        # self.trace_flag = 'leoPy' not in c.shortFileName()
         self.undoType = ''  # Required. Set by u.set_command_name
         self.undo_finishers: list[Callable] = []
         self.undo_functions: list[Callable] = []
         self.undoer = undoer
+
+    # @+node:ekr.20261010164513.1: *3* undoBead.add_recolor
+    def add_recolor(self, new_p: Position, old_p: Position) -> None:
+
+        c = self.c
+        new_p = new_p.copy()
+        old_p = old_p.copy()
+
+        def recolor_redoer() -> None:
+            c.frame.scanForTabWidth(new_p)
+            c.recolor(new_p)
+
+        def recolor_undoer() -> None:
+            c.frame.scanForTabWidth(old_p)
+            c.redraw(old_p)
+
+        self.set_finishers(recolor_redoer, recolor_undoer)
 
     # @+node:ekr.20261010150247.9: *3* undoBead.add_redraw
     def add_redraw(self, new_p: Position, old_p: Position, contract: bool = False) -> None:
@@ -165,20 +176,11 @@ class UndoBead:
     # @+node:ekr.20261006040132.1: *3* UndoBead.redo
     def redo(self) -> None:
         c = self.c
-        # g.trace('redoers!')
         for f in self.redo_functions:
-            # g.trace(f.__name__)
+            # g.trace('redoer:', f.__name__)
             f()
-        if self.must_redraw_and_edit:
-            # g.trace('redraw and edit!')
-            c.redrawAndEdit(c.p, selectAll=True)
-        if self.must_recolor:
-            # g.trace('recolor!')
-            c.frame.scanForTabWidth(c.p)
-            c.recolor()
-        # g.trace('finishers')
         for f in self.redo_finishers:
-            # g.trace(f.__name__)
+            # g.trace('redo finisher:', f.__name__)
             f()
         c.setChanged()  # Elegant!
 
@@ -196,24 +198,15 @@ class UndoBead:
     # @+node:ekr.20261006040137.1: *3* UndoBead.undo (sanity check)
     def undo(self) -> None:
         c = self.c
-        # g.trace('undoers!')
         for f in self.undo_functions:
-            g.trace(f.__name__)
+            # g.trace('undoer:', f.__name__)
             f()
-        if self.must_redraw_and_edit:
-            # g.trace(f"redraw and edit! {c.p.h}")
-            c.redrawAndEdit(c.p, selectAll=True)
-        if self.must_recolor:
-            c.frame.scanForTabWidth(c.p)
-            # g.trace('recolor!')
-            c.recolor()
-        if self.undo_finishers:
-            g.trace('finishers!')
         for f in self.undo_finishers:
-            # g.trace(f.__name__)
+            # g.trace('undo finisher:', f.__name__)
             f()
         if not self.old_changed:
             c.clearChanged()  # Elegant!
+
         # An important sanity check.
         if self.old_p != c.p:
             old_p = self.old_p
@@ -2500,9 +2493,8 @@ class Undoer:
         update(new_h)
         g.doHook("headkey2", c=c, p=new_p, ch=ch, changed=True)
         c.redraw_after_head_changed()  # Redraw doesn't work???
-        g.must_recolor = True
 
-        # Add helpers and finishers.
+        # Add helpers.
 
         def change_headline_redoer() -> None:
             c.p = old_p
@@ -2512,13 +2504,16 @@ class Undoer:
             c.p = old_p
             update(old_h)
 
+        # Add finishers.
+
         b.set_helpers(change_headline_redoer, change_headline_undoer)
 
+        # Use the same finisher for undo/redo.
         def change_headline_finisher() -> None:
             c.redraw_after_head_changed()
 
-        # Use the same finisher for undo/redo.
         b.set_finishers(change_headline_finisher, change_headline_finisher)
+        b.add_recolor(new_p, old_p)
 
     # @+node:ekr.20261006155509.1: *4* u.clone_node (to do)
     def clone_node(self, p: Position) -> None:
@@ -2602,10 +2597,12 @@ class Undoer:
 
         # Do the action!
         assert isinstance(b, UndoBead), repr(b)
-        b.must_redraw_and_edit = True
+        ### b.must_redraw_and_edit = True
         new_p = make()
         g.doHook('create-node', c=c, p=c.p)
         c.redrawAndEdit(c.p, selectAll=True)
+
+        # Add helpers.
 
         def insert_node_redoer() -> None:
             make()
@@ -2616,6 +2613,9 @@ class Undoer:
             old_p.setAllAncestorAtFileNodesDirty()
 
         b.set_helpers(insert_node_redoer, insert_node_undoer)
+
+        # Add finishers.
+        b.add_redraw_and_edit(new_p, old_p)
 
     # @+node:ekr.20261005182243.1: *4* u.redraw
     def redraw(self, new_p: Position, contract: bool = True) -> None:
