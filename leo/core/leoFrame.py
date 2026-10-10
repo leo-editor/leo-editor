@@ -528,21 +528,21 @@ class LeoFrame:
             return
         # Update the widget and set the clipboard text.
         i, j = old_sel = w.getSelectionRange()
+        old_ins = w.getInsertPoint()
         if i == j:
             oldText = w.getAllText()
-            ins = w.getInsertPoint()
-            i, j = g.getLine(oldText, ins)
+            i, j = g.getLine(oldText, old_ins)
         s = w.get(i, j)
         w.delete(i, j)
         w.see(i)
-        new_sel = (i, i)  ###
+        ### new_sel = (i, i)  ###
         s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
         g.app.gui.replaceClipboardWith(s)
         if c.widget_name(w).startswith('body'):
             with c.undoer as u:
                 u.set_command_name('cut-text')
                 u.set_body(p, new_body=w.getAllText())
-                u.set_selection_range(new_sel, old_sel=old_sel)
+                u.set_selection_range(old_ins, old_sel)
 
         # Otherwise, the headline has not yet offcially changed.
 
@@ -564,6 +564,7 @@ class LeoFrame:
 
         wname = c.widget_name(w)
         i, j = old_sel = w.getSelectionRange()
+        old_ins = w.getInsertPoint()
         s = g.app.gui.getTextFromClipboard()
         s = g.checkUnicode(s)
         s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
@@ -578,13 +579,14 @@ class LeoFrame:
             if c.frame.log.put_html_links(s):
                 return  # create_html_links has done all the work.
         w.insert(i, s)
-        w.see(i + len(s) + 2)
-        new_sel = (i + len(s), i + len(s))
+        new_ins = i + len(s)
+        w.see(new_ins + 2)
+        w.setSelectionRange(new_ins, new_ins, insert=new_ins)
         if wname.startswith('body'):
             with c.undoer as u:
                 u.set_command_name('paste-text')
                 u.set_body(p, new_body=w.getAllText())
-                u.set_selection_range(new_sel, old_sel=old_sel)
+                u.set_selection_range(old_ins, old_sel)
 
         if hasattr(w, 'getXScrollPosition'):
             w.setXScrollPosition(x_pos)

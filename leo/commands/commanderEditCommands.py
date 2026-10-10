@@ -791,7 +791,7 @@ def preferences(self: Self, event: LeoKeyEvent | None = None) -> None:
     c.openLeoSettings()
 
 
-# @+node:ekr.20261003045123.1: ** c_ec:promote-to-at-others
+# @+node:ekr.20261003045123.1: ** c_ec:promote-to-at-others (always uses new undo code)
 @g.commander_command('promote-to-at-others')
 def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
     # @+<< promote-to-at-others: docstring >>
@@ -805,7 +805,7 @@ def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
     """
     # @-<< promote-to-at-others: docstring >>
     c = self
-    p = c.p
+    old_p = c.p
     w = self.frame.body.wrapper
     c.endEditing()
 
@@ -849,24 +849,25 @@ def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
 
     # @-others
 
-    i, indent = find_at_others(p)
+    i, indent = find_at_others(old_p)
     if indent == -1:
         return
-    children = find_promotable_children(p)
+    children = find_promotable_children(old_p)
     if not children:
         g.error('No promotable children')
         return
-    new_body = compute_new_body(i, p, children)
+    new_body = compute_new_body(i, old_p, children)
     old_sel = w.getSelectionRange()
-    j = p.b.find('@others') - len(indent)
-    new_sel = (j, j)  # Not accurate, but better.
+    old_ins = w.getInsertPoint()
+    j = old_p.b.find('@others') - len(indent)
+    w.setSelectionRange(j, j, insert=j)
     with c.undoer as u:
         u.set_command_name('promote-to-at-others')
-        u.set_body(p, new_body)
+        u.set_body(old_p, new_body)
         for child in reversed(children):
             u.delete_node(child)
-        c.redraw(p)
-        u.set_selection_range(new_sel, old_sel=old_sel)
+        u.select_position(old_p)
+        u.set_selection_range(old_ins, old_sel)
         c.bodyWantsFocusNow()
 
 

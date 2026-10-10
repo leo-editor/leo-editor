@@ -110,7 +110,7 @@ class UndoBead:
         self.old_p = c.p
         self.redo_finishers: list[Callable] = []
         self.redo_functions: list[Callable] = []
-        self.trace = False  #'leoPy' not in c.shortFileName()
+        self.trace = 'leoPy' not in c.shortFileName() and not g.unitTesting
         self.undoType = ''  # Required. Set by u.set_command_name
         self.undo_finishers: list[Callable] = []
         self.undo_functions: list[Callable] = []
@@ -177,7 +177,7 @@ class UndoBead:
         self.redo_finishers.append(redo_finisher)
         self.undo_finishers.append(undo_finisher)  # Execute in given order.
 
-    # @+node:ekr.20261006040137.1: *3* UndoBead.undo
+    # @+node:ekr.20261006040137.1: *3* UndoBead.undo (sanity check)
     def undo(self) -> None:
         c = self.c
 
@@ -192,7 +192,7 @@ class UndoBead:
             trace(f.__name__)
             f()
         if self.must_redraw_and_edit:
-            trace('redraw and edit!')
+            trace(f"redraw and edit! {c.p.h}")
             c.redrawAndEdit(c.p, selectAll=True)
         if self.must_redraw:
             trace(f"redraw! {c.p.h}")
@@ -211,7 +211,7 @@ class UndoBead:
         # An important sanity check.
         if self.old_p != c.p:
             old_p = self.old_p
-            message = f"\nInternal error!\n  {c.p=}\n{old_p=}\n{g.callers()=}\n"
+            message = f"\nInternal error! Bad c.p\n  {c.p=}\n{old_p=}\n{g.callers()=}\n"
             if g.unitTesting:
                 assert False, message
             print()
@@ -2534,13 +2534,14 @@ class Undoer:
             return
 
         if trace:  ###
-            g.trace(f"{old_p=}")
-            g.trace(f"{new_p=}")
+            g.trace(f"{old_p.h=}")
+            g.trace(f"{new_p.h=}")
 
         assert isinstance(b, UndoBead), repr(b)
 
         def update(p: Position) -> None:
-            ### g.trace(f"{p=} {g.callers()=}")
+            if trace:
+                g.trace(f"{p.h=} {g.callers()=}")
             p.contract()
             p.setDirty()
             c.p = p
@@ -2615,23 +2616,28 @@ class Undoer:
         b.set_helpers(insert_node_redoer, insert_node_undoer)
 
     # @+node:ekr.20261005182243.1: *4* u.select_position
-    def select_position(self, p: Position) -> None:
+    def select_position(self, p: Position, contract: bool = True) -> None:
 
         u = self
-        b = u.undoBead  ###
+        b = u.undoBead
         c = u.c
         old_p = c.p.copy()
 
+        # Do the action!
+        b.must_redraw = False
+        c.redraw(p)
+
         def select_position_redoer() -> None:
-            c.p = p
+            b.must_redraw = False
+            c.redraw(p)
 
         def select_position_undoer() -> None:
-            c.p = old_p
+            b.must_redraw = False
+            if contract:
+                old_p.contract()
+            c.redraw(old_p)
 
-        b.set_helpers(select_position_redoer, select_position_undoer)
-
-        # Do the action!
-        c.p = p
+        b.set_finishers(select_position_redoer, select_position_undoer)
 
     # @+node:ekr.20261005140833.1: *4* u.set_body
     def set_body(self, p: Position, new_body: str) -> None:
@@ -2685,9 +2691,9 @@ class Undoer:
     # @+node:ekr.20261005143752.1: *4* u.set_selection_range
     def set_selection_range(
         self,
-        new_sel: tuple[int, int],
+        old_ins: int,
+        old_sel: tuple[int, int],
         *,
-        old_sel: tuple[int, int] | None = None,
         old_y_scroll: int | None = None,
         new_y_scroll: int | None = None,
     ) -> None:
@@ -2697,18 +2703,18 @@ class Undoer:
         w = c.frame.body.wrapper
         if not w:
             return
-        if old_sel is None:
-            old_sel = w.getSelectionRange()
+        new_ins = w.getInsertPoint()
+        new_sel = w.getSelectionRange()
 
         def set_selection_range_redoer() -> None:
             i, j = new_sel
-            w.setSelectionRange(i, j)
+            w.setSelectionRange(i, j, insert=new_ins)
             if new_y_scroll is not None:
                 w.setYScrollPosition(new_y_scroll)
 
         def set_selection_range_undoer() -> None:
             i, j = old_sel
-            w.setSelectionRange(i, j)
+            w.setSelectionRange(i, j, insert=old_ins)
             if old_y_scroll is not None:
                 w.setYScrollPosition(old_y_scroll)
 
