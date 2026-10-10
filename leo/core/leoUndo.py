@@ -76,13 +76,11 @@ class UndoBead:
         'c',
         'command_name',
         'must_recolor',
-        'must_redraw',
         'must_redraw_and_edit',
         'old_changed',
         'old_p',
         'redo_finishers',
         'redo_functions',
-        'trace_flag',
         'undoType',
         'undo_finishers',
         'undo_functions',
@@ -99,18 +97,16 @@ class UndoBead:
     def __init__(self, undoer: Undoer) -> None:
         # Let.
         c = undoer.c
-
-        # 'must' ivars are usually sticky: they are never cleared once set.
+        # 'must' ivars will be removed.
         self.c = c
         self.command_name = None
         self.must_recolor = False
-        self.must_redraw = False
         self.must_redraw_and_edit = False
         self.old_changed = c.changed
         self.old_p = c.p
         self.redo_finishers: list[Callable] = []
         self.redo_functions: list[Callable] = []
-        self.trace_flag = 'leoPy' not in c.shortFileName()
+        # self.trace_flag = 'leoPy' not in c.shortFileName()
         self.undoType = ''  # Required. Set by u.set_command_name
         self.undo_finishers: list[Callable] = []
         self.undo_functions: list[Callable] = []
@@ -169,35 +165,21 @@ class UndoBead:
     # @+node:ekr.20261006040132.1: *3* UndoBead.redo
     def redo(self) -> None:
         c = self.c
-
-        trace_flag = self.trace_flag and not g.unitTesting
-
-        def trace(message: str | None = '') -> None:
-            if trace_flag:
-                g.trace(message)
-
-        if trace_flag:
-            print()
-        trace('redoers!')
+        # g.trace('redoers!')
         for f in self.redo_functions:
-            trace(f.__name__)
+            # g.trace(f.__name__)
             f()
         if self.must_redraw_and_edit:
-            trace('redraw and edit!')
+            # g.trace('redraw and edit!')
             c.redrawAndEdit(c.p, selectAll=True)
-        elif self.must_redraw:
-            trace('redraw!')
-            c.redraw()
         if self.must_recolor:
-            trace('recolor!')
+            # g.trace('recolor!')
             c.frame.scanForTabWidth(c.p)
             c.recolor()
-        trace('finishers')
+        # g.trace('finishers')
         for f in self.redo_finishers:
-            trace(f.__name__)
+            # g.trace(f.__name__)
             f()
-        if self.undo_finishers:
-            trace('finishers!')
         c.setChanged()  # Elegant!
 
     # @+node:ekr.20261006040137.2: *3* UndoBead.set_helpers & set_finishers
@@ -211,41 +193,24 @@ class UndoBead:
         self.redo_finishers.append(redo_finisher)
         self.undo_finishers.append(undo_finisher)  # Execute in given order.
 
-    # @+node:ekr.20261010150247.11: *3* UndoBead.trace
-    def trace(self, message: str) -> None:
-        if self.trace_flag and not g.unitTesting:
-            print(message)
-
     # @+node:ekr.20261006040137.1: *3* UndoBead.undo (sanity check)
     def undo(self) -> None:
         c = self.c
-
-        trace_flag = self.trace_flag and not g.unitTesting
-
-        def trace(message: str | None = '') -> None:
-            if trace_flag:
-                g.trace(message)
-
-        if trace_flag:
-            print()
-        trace('undoers!')
+        # g.trace('undoers!')
         for f in self.undo_functions:
-            trace(f.__name__)
+            g.trace(f.__name__)
             f()
         if self.must_redraw_and_edit:
-            trace(f"redraw and edit! {c.p.h}")
+            # g.trace(f"redraw and edit! {c.p.h}")
             c.redrawAndEdit(c.p, selectAll=True)
-        elif self.must_redraw:
-            trace(f"redraw! {c.p.h}")
-            c.redraw(c.p)
         if self.must_recolor:
             c.frame.scanForTabWidth(c.p)
-            trace('recolor!')
+            # g.trace('recolor!')
             c.recolor()
         if self.undo_finishers:
-            trace('finishers!')
+            g.trace('finishers!')
         for f in self.undo_finishers:
-            trace(f.__name__)
+            # g.trace(f.__name__)
             f()
         if not self.old_changed:
             c.clearChanged()  # Elegant!
@@ -2559,36 +2524,29 @@ class Undoer:
     def clone_node(self, p: Position) -> None:
         g.trace(p.h)
 
-    # @+node:ekr.20261005143707.1: *4* u.delete_node (fails?)
+    # @+node:ekr.20261005143707.1: *4* u.delete_node (fails?
     def delete_node(self, p: Position) -> None:
 
         u = self
         b = u.undoBead
         c = u.c
-        old_p = p.copy()
+        old_p = c.p.copy()
         old_back = p.back()
         old_parent = p.parent()
-        trace = b.trace
+        new_p = p.visBack(c) if p.hasVisBack(c) else p.next()
 
         # Similar to code for delete-node command:
-        new_p = p.visBack(c) if p.hasVisBack(c) else p.next()
         if not new_p:
             g.error(f"Can not delete {p.h}")
             return
 
-        if trace:  ###
-            g.trace(f"{old_p.h=}")
-            g.trace(f"{new_p.h=}")
-
-        assert isinstance(b, UndoBead), repr(b)
+        if 1:
+            g.trace(f"**** {old_p.h=} {new_p.h=}")
 
         def update(p: Position) -> None:
-            if trace:
-                g.trace(f"{p.h=} {g.callers()=}")
             p.contract()
             p.setDirty()
             c.p = p
-            b.must_redraw = True
 
         # Do the action *first*.
         old_p.doDelete()
@@ -2611,6 +2569,7 @@ class Undoer:
             update(old_p)
 
         b.set_helpers(delete_node_redoer, delete_node_undoer)
+        b.set_redraw(old_p, new_p)
 
     # @+node:ekr.20261006155622.1: *4* u.insert_node (fails)
     def insert_node(self, p: Position) -> None:
