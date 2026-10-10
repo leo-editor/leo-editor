@@ -1303,7 +1303,7 @@ def insertNodeAsLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Posit
     return p
 
 
-# @+node:ekr.20261008042653.1: *3* c_oc:insert-node (test)
+# @+node:ekr.20261008042653.1: *3* c_oc:insert-node
 @g.commander_command('insert-node')
 def insertHeadline(
     self: Cmdr, event: LeoKeyEvent | None = None, op_name: str = "Insert Node"
@@ -1321,7 +1321,7 @@ def insertHeadline(
     c.endEditing()
     if g.new_undoers:
         with c.undoer as u:
-            u.set_command_name('insert-node')
+            u.set_command_name(op_name)
             u.insert_node(current)
         return c.p
     else:
