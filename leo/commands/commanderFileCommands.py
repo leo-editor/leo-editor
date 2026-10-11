@@ -348,14 +348,13 @@ def import_txt_file(self: Self, fn: str) -> None:
     c = self
     u = c.undoer
     g.setGlobalOpenDir(fn)
-    undoData = u.beforeInsertNode(c.p)
-    p = c.p.insertAfter()
-    p.h = f"@edit {c.relativeDirectory(fn)}"
-    s, e = g.readFileIntoString(fn, kind='@edit')
-    p.b = s or ''
-    u.afterInsertNode(p, 'Import', undoData)
-    c.setChanged()
-    c.redraw(p)
+    with u.change_outline('Import'):
+        p = c.p.insertAfter()
+        p.h = f"@edit {c.relativeDirectory(fn)}"
+        s, e = g.readFileIntoString(fn, kind='@edit')
+        p.b = s or ''
+        c.setChanged()
+        c.redraw(p)
 
 
 # @+node:ekr.20031218072017.1623: *3* c_file.new
@@ -855,24 +854,20 @@ def flattenOutlineToNode(self: Self, event: LeoKeyEvent | None = None) -> None:
     body text of a new (last) top-level node.
     """
     c, root, u = self, self.p, self.undoer
-    current = c.p
     undoType = 'flatten-outline-to-node'
     if not root.hasChildren():
         return
-    u.beforeChangeGroup(current, undoType)
-    bunch = u.beforeInsertNode(current)
-    aList = []
-    for p in root.self_and_subtree():
-        if p.b.strip():
-            aList.append(f"===== {p.h}\n\n")
-            aList.append(f"{p.b.strip()}'\n\n")
-    p = c.lastTopLevel().insertAfter()
-    p.h = f"Flattened {root.h}"
-    p.b = ''.join(aList).strip() + '\n'
-    u.afterInsertNode(p, undoType, bunch)
-    u.afterChangeGroup(current, undoType)
-    c.selectPosition(p)
-    c.redraw(p)
+    with u.change_outline(undoType):
+        aList = []
+        for p in root.self_and_subtree():
+            if p.b.strip():
+                aList.append(f"===== {p.h}\n\n")
+                aList.append(f"{p.b.strip()}'\n\n")
+        p = c.lastTopLevel().insertAfter()
+        p.h = f"Flattened {root.h}"
+        p.b = ''.join(aList).strip() + '\n'
+        c.selectPosition(p)
+        c.redraw(p)
 
 
 # @+node:ekr.20031218072017.2857: *3* c_file.outlineToCWEB
@@ -1038,13 +1033,12 @@ def readFileIntoNode(self: Self, event: LeoKeyEvent | None = None) -> None:
     g.chdir(fileName)
     s = '@nocolor\n' + s
     w = c.frame.body.wrapper
-    undoData = u.beforeInsertNode(c.p)
-    p = c.p.insertAfter()
-    p.setHeadString('@read-file-into-node ' + fileName)
-    p.setBodyString(s)
-    u.afterInsertNode(p, undoType, undoData)
-    w.setAllText(s)
-    c.redraw(p)
+    with u.change_outline(undoType):
+        p = c.p.insertAfter()
+        p.setHeadString('@read-file-into-node ' + fileName)
+        p.setBodyString(s)
+        w.setAllText(s)
+        c.redraw(p)
 
 
 # @+node:ekr.20070915142635: *3* c_file.writeFileFromNode

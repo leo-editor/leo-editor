@@ -2238,6 +2238,7 @@ class VNode:
         'scrollBarSpot',      # Not written to any file.
         'selectionLength',    # Not written to any file.
         'selectionStart',     # Not written to any file.
+        'undo_info',          # Optional per-node undo history; not written to files.
         'statusBits',
         'tempAttributes',     # Injected by read code.
         'unknownAttributes',
@@ -2533,7 +2534,7 @@ class VNode:
         v = self
         # Allocate a new vnode and gnx with empty children & parents.
         v2 = VNode(context=v.context, gnx=None)
-        assert v2.parents, v2
+        assert not v2.parents, v2
         assert v2.gnx, v2
         assert v.gnx != v2.gnx, v2
         # Copy vnode fields. Do **not** set v2.parents.

@@ -3194,27 +3194,26 @@ class LeoServer:
         oldPosition: Position | None = None if p == c.p else c.p
 
         newHeadline = param.get('name') or ''
-        bunch = c.undoer.beforeInsertNode(p)
-        newNode = p.insertAfter()
-        # Set this node's new headline
-        newNode.h = newHeadline
-        newNode.setDirty()
-        c.setChanged()
-        c.undoer.afterInsertNode(newNode, 'Insert Node', bunch)
+        with c.undoer.change_outline('Insert Node'):
+            newNode = p.insertAfter()
+            # Set this node's new headline
+            newNode.h = newHeadline
+            newNode.setDirty()
+            c.setChanged()
 
-        c.selectPosition(newNode)
-        if oldPosition:
-            if c.positionExists(oldPosition):
-                c.selectPosition(oldPosition)
-            else:
-                oldPosition._childIndex = oldPosition._childIndex + 1
-                # Try again with childIndex incremented
+            c.selectPosition(newNode)
+            if oldPosition:
                 if c.positionExists(oldPosition):
-                    # additional try with lowered childIndex
                     c.selectPosition(oldPosition)
+                else:
+                    oldPosition._childIndex = oldPosition._childIndex + 1
+                    # Try again with childIndex incremented
+                    if c.positionExists(oldPosition):
+                        # additional try with lowered childIndex
+                        c.selectPosition(oldPosition)
 
-        c.setChanged()
-        return self._make_response()
+            c.setChanged()
+            return self._make_response()
 
     # @+node:felix.20210703021441.1: *5* server.insert_child_named_node
     def insert_child_named_node(self, param: Param) -> Response:
@@ -3224,18 +3223,17 @@ class LeoServer:
         c = self._check_c(param)
         p = self._get_p(param)
         newHeadline = param.get('name') or ''
-        bunch = c.undoer.beforeInsertNode(p)
-        if c.config.getBool('insert-new-nodes-at-end'):
-            newNode = p.insertAsLastChild()
-        else:
-            newNode = p.insertAsNthChild(0)
-        # Set this node's new headline
-        newNode.h = newHeadline
-        newNode.setDirty()
-        c.setChanged()
-        c.undoer.afterInsertNode(newNode, 'Insert Node', bunch)
-        c.selectPosition(newNode)
-        return self._make_response()
+        with c.undoer.change_outline('Insert Node'):
+            if c.config.getBool('insert-new-nodes-at-end'):
+                newNode = p.insertAsLastChild()
+            else:
+                newNode = p.insertAsNthChild(0)
+            # Set this node's new headline
+            newNode.h = newHeadline
+            newNode.setDirty()
+            c.setChanged()
+            c.selectPosition(newNode)
+            return self._make_response()
 
     # @+node:felix.20250606213729.1: *5* server.insert_file_node
     def insert_file_node(self, param: Param) -> Response:
@@ -3273,25 +3271,24 @@ class LeoServer:
                 commonPath += '/'  # not empty so add a slash
             filePath = commonPath + g.os_path_basename(filePath)
 
-        bunch = u.beforeInsertNode(p)
+        with u.change_outline('Insert Node'):
 
-        newNode = None
-        if (p.hasChildren() and p.isExpanded()) or (c.hoistStack and p == c.hoistStack[-1].p):
-            # Make sure the new node is visible when hoisting.
-            if c.config.getBool('insert-new-nodes-at-end'):
-                newNode = p.insertAsLastChild()
+            newNode = None
+            if (p.hasChildren() and p.isExpanded()) or (c.hoistStack and p == c.hoistStack[-1].p):
+                # Make sure the new node is visible when hoisting.
+                if c.config.getBool('insert-new-nodes-at-end'):
+                    newNode = p.insertAsLastChild()
+                else:
+                    newNode = p.insertAsNthChild(0)
             else:
-                newNode = p.insertAsNthChild(0)
-        else:
-            newNode = p.insertAfter()
+                newNode = p.insertAfter()
 
-        if newNode:
-            newNode.h = f"{importType} {filePath}"
+            if newNode:
+                newNode.h = f"{importType} {filePath}"
 
-        u.afterInsertNode(newNode, 'Insert Node', bunch)
-        c.selectPosition(newNode)
+            c.selectPosition(newNode)
 
-        return self._make_response()
+            return self._make_response()
 
     # @+node:felix.20220616010755.1: *5* server.scroll_top
     def scroll_top(self, param: Param) -> Response:
@@ -3486,27 +3483,26 @@ class LeoServer:
         u, wrapper = c.undoer, c.frame.body.wrapper
         if body is None:  # pragma: no cover
             raise ServerError(f"{tag}: no body given")
-        for p in c.all_positions():
-            if p.v.gnx == gnx:
-                if body == p.v.b:
-                    return self._make_response()
-                    # Just exit if there is no need to change at all.
-                bunch = u.beforeChangeNodeContents(p)
-                p.v.setBodyString(body)
-                u.afterChangeNodeContents(p, "Body Text", bunch)
-                if c.p == p:
-                    wrapper.setAllText(body)
-                if not c.isChanged():  # pragma: no cover
-                    c.setChanged()
-                if not p.v.isDirty():  # pragma: no cover
-                    p.setDirty()
-                break
-        # additional forced string setting
-        if gnx:
-            v = c.fileCommands.gnxDict.get(gnx)  # vitalije
-            if v:
-                v.b = body
-        return self._make_response()
+        with u.change_outline('Body Text'):
+            for p in c.all_positions():
+                if p.v.gnx == gnx:
+                    if body == p.v.b:
+                        return self._make_response()
+                        # Just exit if there is no need to change at all.
+                    p.v.setBodyString(body)
+                    if c.p == p:
+                        wrapper.setAllText(body)
+                    if not c.isChanged():  # pragma: no cover
+                        c.setChanged()
+                    if not p.v.isDirty():  # pragma: no cover
+                        p.setDirty()
+                    break
+            # additional forced string setting
+            if gnx:
+                v = c.fileCommands.gnxDict.get(gnx)  # vitalije
+                if v:
+                    v.b = body
+            return self._make_response()
 
     # @+node:felix.20210621233316.61: *5* server.set_current_position
     def set_current_position(self, param: Param) -> Response:
@@ -3541,14 +3537,13 @@ class LeoServer:
         oldH: str = p.h
         if h == oldH:
             return self._make_response()
-        bunch = u.beforeChangeHeadline(p)
-        c.setHeadString(
-            p, h
-        )  # c.setHeadString fixes the headline revert bug of p.initHeadString(h)
-        c.setChanged()
-        p.setDirty()
-        u.afterChangeHeadline(p, 'Change Headline', bunch)
-        return self._make_response()
+        with u.change_node(p, 'Change Headline'):
+            c.setHeadString(
+                p, h
+            )  # c.setHeadString fixes the headline revert bug of p.initHeadString(h)
+            c.setChanged()
+            p.setDirty()
+            return self._make_response()
 
     # @+node:felix.20210621233316.63: *5* server.set_selection
     def set_selection(self, param: Param) -> Response:

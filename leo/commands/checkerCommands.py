@@ -338,19 +338,18 @@ class CheckNodes:
         c = self.c
         u = c.undoer
         # Create the top-level node.
-        undoData = u.beforeInsertNode(c.p)
-        dubious = c.lastTopLevel().insertAfter()
-        dubious.h = f"{self.count} dubious nodes{g.plural(self.count)}"
-        # Clone nodes as children of the top-level node.
-        for p in self.clones:
-            # Create the clone directly as a child of found.
-            p2 = p.copy()
-            n = dubious.numberOfChildren()
-            p2._linkCopiedAsNthChild(dubious, n)
-        # Sort the clones in place, without undo.
-        dubious.v.children.sort(key=lambda v: v.h.lower())
-        u.afterInsertNode(dubious, 'check-nodes', undoData)
-        return dubious
+        with u.change_outline('check-nodes'):
+            dubious = c.lastTopLevel().insertAfter()
+            dubious.h = f"{self.count} dubious nodes{g.plural(self.count)}"
+            # Clone nodes as children of the top-level node.
+            for p in self.clones:
+                # Create the clone directly as a child of found.
+                p2 = p.copy()
+                n = dubious.numberOfChildren()
+                p2._linkCopiedAsNthChild(dubious, n)
+            # Sort the clones in place, without undo.
+            dubious.v.children.sort(key=lambda v: v.h.lower())
+            return dubious
 
     # @+node:ekr.20230104142418.1: *3* CheckNodes.get_data
     def get_data(self) -> None:

@@ -45,35 +45,32 @@ class To_Python:  # pragma: no cover
         c = self.c
         u, undoType = c.undoer, 'typescript-to-python'
         pp = leoBeautify.CPrettyPrinter(c)
-        u.beforeChangeGroup(c.p, undoType)
-        changed = False
-        n_files, n_nodes = 0, 0
-        special = ('class ', 'module ', '@file ', '@@file ')
-        files = ('@file ', '@@file ')
-        for p in self.p.self_and_subtree(copy=False):
-            if p.b:
-                n_nodes += 1
-                if any(p.h.startswith(z) for z in special):
-                    g.es_print(p.h)
-                    if any(p.h.startswith(z) for z in files):
-                        n_files += 1
-                bunch = u.beforeChangeNodeContents(p)
-                s = pp.indent(p, giveWarnings=False)
-                aList = list(s)
-                self.convertCodeList(aList)
-                s = ''.join(aList)
-                if s != p.b:
-                    p.b = s
-                    p.setDirty()
-                    u.afterChangeNodeContents(p, undoType, bunch)
-                    changed = True
-        # Call this only once, at end.
-        u.afterChangeGroup(c.p, undoType)
-        # Warn if no changes were made at all
-        if not changed:
-            g.es("Command did not find content to convert")
-        t2 = time.time()
-        g.es_print(f"done! {n_files} files, {n_nodes} nodes, {t2 - t1:2.2f} sec")
+        with u.change_outline(undoType):
+            changed = False
+            n_files, n_nodes = 0, 0
+            special = ('class ', 'module ', '@file ', '@@file ')
+            files = ('@file ', '@@file ')
+            for p in self.p.self_and_subtree(copy=False):
+                if p.b:
+                    n_nodes += 1
+                    if any(p.h.startswith(z) for z in special):
+                        g.es_print(p.h)
+                        if any(p.h.startswith(z) for z in files):
+                            n_files += 1
+                    s = pp.indent(p, giveWarnings=False)
+                    aList = list(s)
+                    self.convertCodeList(aList)
+                    s = ''.join(aList)
+                    if s != p.b:
+                        p.b = s
+                        p.setDirty()
+                        changed = True
+            # Call this only once, at end.
+            # Warn if no changes were made at all
+            if not changed:
+                g.es("Command did not find content to convert")
+            t2 = time.time()
+            g.es_print(f"done! {n_files} files, {n_nodes} nodes, {t2 - t1:2.2f} sec")
 
     # @+node:ekr.20150514063305.127: *3* To_Python.convertCodeList
     def convertCodeList(self, lines: list[str]) -> None:
@@ -1302,43 +1299,39 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         p1 = c.p.copy()
         u = c.undoer
         n_changed, n_changed_nodes = 0, 0
-        for p in c.all_unique_positions():
-            changed, node_changed, result = False, False, []
-            for line in g.splitLines(p.b):
-                m = self.old_unl_pat1.match(line) or self.old_unl_pat2.match(line)
-                if not m:
-                    result.append(line)
-                    continue
-                prefix = m.group(1)
-                unl = m.group(2).replace('%20', ' ')
-                p2 = g.findUnl(unl.split('-->'), c)
-                if not p2:
-                    result.append(line)
-                    continue
-                if not n_changed:
-                    u.beforeChangeGroup(p1, undo_type)
-                bunch = u.beforeChangeBody(p)
-                new_unl = f"{'unl'}:gnx:{p2.gnx}\n"
-                result.append(f"{prefix}{new_unl}")
-                if not node_changed:
-                    node_changed = True
-                    n_changed_nodes += 1
-                    print(f"Node: {p.h}...")  # not p2.h.
-                print(f"  old: {unl}")
-                print(f"  new: {new_unl.rstrip()}\n")
-                changed = True
-                n_changed += 1
-            if changed:
-                c.setBodyString(p, ''.join(result))  # Required.
-                u.afterChangeBody(p, undo_type, bunch)
-        if n_changed:
-            g.es_print(
-                f"Changed {n_changed} unl{g.plural(n_changed)} in {n_changed_nodes} node{g.plural(n_changed_nodes)}"
-            )
-            u.afterChangeGroup(p1, undo_type)
-        c.contractAllHeadlines()
-        c.redraw(p1)
-        g.es('convert-gnxs: done')
+        with u.change_outline(undo_type):
+            for p in c.all_unique_positions():
+                changed, node_changed, result = False, False, []
+                for line in g.splitLines(p.b):
+                    m = self.old_unl_pat1.match(line) or self.old_unl_pat2.match(line)
+                    if not m:
+                        result.append(line)
+                        continue
+                    prefix = m.group(1)
+                    unl = m.group(2).replace('%20', ' ')
+                    p2 = g.findUnl(unl.split('-->'), c)
+                    if not p2:
+                        result.append(line)
+                        continue
+                    new_unl = f"{'unl'}:gnx:{p2.gnx}\n"
+                    result.append(f"{prefix}{new_unl}")
+                    if not node_changed:
+                        node_changed = True
+                        n_changed_nodes += 1
+                        print(f"Node: {p.h}...")  # not p2.h.
+                    print(f"  old: {unl}")
+                    print(f"  new: {new_unl.rstrip()}\n")
+                    changed = True
+                    n_changed += 1
+                if changed:
+                    c.setBodyString(p, ''.join(result))  # Required.
+            if n_changed:
+                g.es_print(
+                    f"Changed {n_changed} unl{g.plural(n_changed)} in {n_changed_nodes} node{g.plural(n_changed_nodes)}"
+                )
+            c.contractAllHeadlines()
+            c.redraw(p1)
+            g.es('convert-gnxs: done')
 
     # @+node:ekr.20160111190632.1: *3* ccc.make-stub_files
     @cmd('make-stub-files')

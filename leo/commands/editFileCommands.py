@@ -204,23 +204,20 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         """Adjust whitespace in all @clean files."""
         c = self.c
         undoType = 'clean-at-clean-files'
-        c.undoer.beforeChangeGroup(c.p, undoType, verboseUndoGroup=True)
-        total = 0
-        for p in c.all_unique_positions():
-            if p.isAtCleanNode():
-                n = 0
-                for p2 in p.subtree():
-                    bunch2 = c.undoer.beforeChangeNodeContents(p2)
-                    if self.cleanAtCleanNode(p2):
-                        n += 1
-                        total += 1
-                        c.undoer.afterChangeNodeContents(p2, undoType, bunch2)
-                g.es_print(f"{n} node{g.plural(n)} {p.h}")
-        # Call this only once, at end.
-        c.undoer.afterChangeGroup(c.p, undoType)
-        if total == 0:
-            g.es("Command did not find any whitespace to adjust")
-        g.es_print(f"{total} total node{g.plural(total)}")
+        with c.undoer.change_outline(undoType):
+            total = 0
+            for p in c.all_unique_positions():
+                if p.isAtCleanNode():
+                    n = 0
+                    for p2 in p.subtree():
+                        if self.cleanAtCleanNode(p2):
+                            n += 1
+                            total += 1
+                    g.es_print(f"{n} node{g.plural(n)} {p.h}")
+            # Call this only once, at end.
+            if total == 0:
+                g.es("Command did not find any whitespace to adjust")
+            g.es_print(f"{total} total node{g.plural(total)}")
 
     # @+node:ekr.20170806094319.8: *4* efc.cleanAtCleanNode
     def cleanAtCleanNode(self, p: Position) -> bool:
@@ -346,22 +343,19 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         assert c == c1
         # Create parent node at the start of the outline.
         u, undoType = c.undoer, 'Compare Two Files'
-        u.beforeChangeGroup(c.p, undoType)
-        undoData = u.beforeInsertNode(c.p)
-        parent = c.p.insertAfter()
-        parent.setHeadString(undoType)
-        u.afterInsertNode(parent, undoType, undoData)
-        fn1 = c1.shortFileName()
-        fn2 = c2.shortFileName()
-        for d, kind in (
-            (deleted, f"not in {fn2}"),
-            (inserted, f"not in {fn1}"),
-            (changed, f"changed: as in {fn2}"),
-        ):
-            self.createCompareClones(d, kind, parent)
-        c.selectPosition(parent)
-        u.afterChangeGroup(parent, undoType)
-        c.redraw()
+        with u.change_outline(undoType):
+            parent = c.p.insertAfter()
+            parent.setHeadString(undoType)
+            fn1 = c1.shortFileName()
+            fn2 = c2.shortFileName()
+            for d, kind in (
+                (deleted, f"not in {fn2}"),
+                (inserted, f"not in {fn1}"),
+                (changed, f"changed: as in {fn2}"),
+            ):
+                self.createCompareClones(d, kind, parent)
+            c.selectPosition(parent)
+            c.redraw()
 
     # @+node:ekr.20170806094317.12: *5* efc.createCompareClones
     def createCompareClones(self, d: dict[str, Position], kind: str, parent: Position) -> None:
@@ -522,12 +516,11 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         aList = difflib.ndiff(lines1, lines2)
         # add as last top level like other 'diff' result nodes
         c.selectPosition(c.lastTopLevel())  # pre-select to help undo-insert
-        undoData = u.beforeInsertNode(c.p)  # c.p is subject of 'insertAfter'
-        p = c.p.insertAfter()
-        p.h = 'diff'
-        p.b = ''.join(aList)
-        u.afterInsertNode(p, 'file-diff-files', undoData)
-        c.redraw()
+        with u.change_outline('file-diff-files'):
+            p = c.p.insertAfter()
+            p.h = 'diff'
+            p.b = ''.join(aList)
+            c.redraw()
 
     # @+node:ekr.20170806094318.6: *3* efc.getReadableTextFile
     def getReadableTextFile(self) -> str:
@@ -850,39 +843,38 @@ class GitDiffController:
         if not self.get_parent_of_git_directory():
             return
         c.selectPosition(c.lastTopLevel())
-        undoData = u.beforeInsertNode(c.p)
-        self.root = p = c.lastTopLevel().insertAfter()
-        p.h = f"git-diff-branches {branch1} {branch2}"
-        s1 = self.get_file_from_branch(branch1, fn)
-        s2 = self.get_file_from_branch(branch2, fn)
-        lines1 = g.splitLines(s1)
-        lines2 = g.splitLines(s2)
-        diff_list = list(
-            difflib.unified_diff(
-                lines1,
-                lines2,
-                branch1,
-                branch2,
+        with u.change_outline(undoType):
+            self.root = p = c.lastTopLevel().insertAfter()
+            p.h = f"git-diff-branches {branch1} {branch2}"
+            s1 = self.get_file_from_branch(branch1, fn)
+            s2 = self.get_file_from_branch(branch2, fn)
+            lines1 = g.splitLines(s1)
+            lines2 = g.splitLines(s2)
+            diff_list = list(
+                difflib.unified_diff(
+                    lines1,
+                    lines2,
+                    branch1,
+                    branch2,
+                )
             )
-        )
-        diff_list.insert(0, '@ignore\n@nosearch\n@language patch\n')
-        self.file_node = self.create_file_node(diff_list, fn)
-        c1: Cmdr | None
-        c2: Cmdr | None
-        if c.looksLikeDerivedFile(fn):
-            c1 = self.make_at_file_outline(fn, s1, branch1)
-            c2 = self.make_at_file_outline(fn, s2, branch2)
-        else:
-            if root := self.find_file(fn):
-                c1 = self.make_at_clean_outline(fn, root, s1, branch1)
-                c2 = self.make_at_clean_outline(fn, root, s2, branch2)
+            diff_list.insert(0, '@ignore\n@nosearch\n@language patch\n')
+            self.file_node = self.create_file_node(diff_list, fn)
+            c1: Cmdr | None
+            c2: Cmdr | None
+            if c.looksLikeDerivedFile(fn):
+                c1 = self.make_at_file_outline(fn, s1, branch1)
+                c2 = self.make_at_file_outline(fn, s2, branch2)
             else:
-                c1 = c2 = None
-        if c1 and c2:
-            self.make_diff_outlines(c1, c2, fn, rev1=branch1, rev2=branch2)
-            self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
-        u.afterInsertNode(self.root, undoType, undoData)
-        self.finish()
+                if root := self.find_file(fn):
+                    c1 = self.make_at_clean_outline(fn, root, s1, branch1)
+                    c2 = self.make_at_clean_outline(fn, root, s2, branch2)
+                else:
+                    c1 = c2 = None
+            if c1 and c2:
+                self.make_diff_outlines(c1, c2, fn, rev1=branch1, rev2=branch2)
+                self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
+            self.finish()
 
     # @+node:ekr.20180507212821.1: *4* gdc.diff_two_revs
     def diff_two_revs(self, rev1: str = 'HEAD', rev2: str = '', path: str | None = None) -> None:
@@ -907,23 +899,22 @@ class GitDiffController:
         c.selectPosition(c.lastTopLevel())  # pre-select to help undo-insert
 
         # Create the root node.
-        undoData = u.beforeInsertNode(c.p)  # c.p is subject of 'insertAfter'
-        self.root = c.lastTopLevel().insertAfter()
-        root_h = f"git diff revs: {rev1} {rev2}"
-        if path and path.strip():
-            root_h += f" ({path})"
-        self.root.h = root_h
-        self.root.b = '@ignore\n@nosearch\n'
+        with u.change_outline('diff-two-revs'):
+            self.root = c.lastTopLevel().insertAfter()
+            root_h = f"git diff revs: {rev1} {rev2}"
+            if path and path.strip():
+                root_h += f" ({path})"
+            self.root.h = root_h
+            self.root.b = '@ignore\n@nosearch\n'
 
-        # Create diffs of all files.
-        for i, fn in enumerate(files):
-            self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
-            if (i % 10) == 0:
-                g.es_print(f"diff: {i} files", color='blue')
+            # Create diffs of all files.
+            for i, fn in enumerate(files):
+                self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
+                if (i % 10) == 0:
+                    g.es_print(f"diff: {i} files", color='blue')
 
-        u.afterInsertNode(self.root, 'diff-two-revs', undoData)
-        self.finish()
-        g.es_print(f"done! diffed: {n} files")
+            self.finish()
+            g.es_print(f"done! diffed: {n} files")
 
     # @+node:ekr.20170806094320.12: *4* gdc.git_diff & helper
     def git_diff(self, rev1: str = 'HEAD', rev2: str = '') -> None:
@@ -960,13 +951,12 @@ class GitDiffController:
         if not files:
             return False
         c.selectPosition(c.lastTopLevel())
-        undoData = u.beforeInsertNode(c.p)
-        self.root = self.create_root(rev1, rev2)
-        for fn in files:
-            self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
-        u.afterInsertNode(self.root, undoType, undoData)
-        self.finish()
-        return True
+        with u.change_outline(undoType):
+            self.root = self.create_root(rev1, rev2)
+            for fn in files:
+                self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
+            self.finish()
+            return True
 
     # @+node:ekr.20230705082614.1: *4* gdc.node_history & helpers
     def node_history(self, path: str, gnxs: list[str], limit: int | None = None) -> None:
@@ -1297,23 +1287,22 @@ class GitDiffController:
         c.selectPosition(c.lastTopLevel())  # pre-select to help undo-insert
 
         # Undoably create the root node.
-        undoData = u.beforeInsertNode(c.p)  # c.p is subject of 'insertAfter'
-        self.root = c.lastTopLevel().insertAfter()
-        root_h = f"git summary diff revs: {rev1} {rev2}"
-        if path and path.strip():
-            root_h += f" ({path})"
-        self.root.h = root_h
-        self.root.b = '@nosearch\n'
-        for i, fn in enumerate(files):
-            if fn.endswith('.py'):
-                self.summary_diff_python_file(fn=fn, rev1=rev1, rev2=rev2)
-            if (i % 10) == 0:
-                g.es_print(f"diff: {i} files", color='blue')
-        u.afterInsertNode(self.root, 'summary-diff-two-revs', undoData)
-        c.selectPosition(self.root)
-        self.root.expand()
-        c.redraw(self.root)
-        print(f"done! diffed: {n} files")
+        with u.change_outline('summary-diff-two-revs'):
+            self.root = c.lastTopLevel().insertAfter()
+            root_h = f"git summary diff revs: {rev1} {rev2}"
+            if path and path.strip():
+                root_h += f" ({path})"
+            self.root.h = root_h
+            self.root.b = '@nosearch\n'
+            for i, fn in enumerate(files):
+                if fn.endswith('.py'):
+                    self.summary_diff_python_file(fn=fn, rev1=rev1, rev2=rev2)
+                if (i % 10) == 0:
+                    g.es_print(f"diff: {i} files", color='blue')
+            c.selectPosition(self.root)
+            self.root.expand()
+            c.redraw(self.root)
+            print(f"done! diffed: {n} files")
 
     # @+node:ekr.20260112115520.1: *4* gdc.summary_diff_python_file & helper
     def summary_diff_python_file(self, fn: str, rev1: str = 'HEAD', rev2: str = '') -> None:
@@ -1884,23 +1873,22 @@ class GitDiffController:
         c.selectPosition(c.lastTopLevel())  # pre-select to help undo-insert
 
         # Create the root node.
-        undoData = u.beforeInsertNode(c.p)  # c.p is subject of 'insertAfter'
-        self.root = c.lastTopLevel().insertAfter()
-        root_h = f"clone-diff-pr revs: {rev1} {rev2}"
-        if path and path.strip():
-            root_h += f" ({path})"
-        self.root.h = root_h
-        self.root.b = '@ignore\n@nosearch\n'
+        with u.change_outline('clone-diff-pr'):
+            self.root = c.lastTopLevel().insertAfter()
+            root_h = f"clone-diff-pr revs: {rev1} {rev2}"
+            if path and path.strip():
+                root_h += f" ({path})"
+            self.root.h = root_h
+            self.root.b = '@ignore\n@nosearch\n'
 
-        # Create diffs of all files.
-        for i, fn in enumerate(files):
-            self.clone_diff_file(fn=fn, rev1=rev1, rev2=rev2)
-            if (i % 10) == 0:
-                g.es_print(f"diff: {i} files", color='blue')
+            # Create diffs of all files.
+            for i, fn in enumerate(files):
+                self.clone_diff_file(fn=fn, rev1=rev1, rev2=rev2)
+                if (i % 10) == 0:
+                    g.es_print(f"diff: {i} files", color='blue')
 
-        u.afterInsertNode(self.root, 'clone-diff-pr', undoData)
-        self.finish()
-        g.es_print(f"done! diffed: {n} files")
+            self.finish()
+            g.es_print(f"done! diffed: {n} files")
 
     # @-others
 

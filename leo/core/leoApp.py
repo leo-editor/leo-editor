@@ -3635,13 +3635,12 @@ class RecentFilesManager:
         """Clear the recent files list, then add the present file."""
         rf = self
         menu, u = c.frame.menu, c.undoer
-        bunch = u.beforeClearRecentFiles()
-        recentFilesMenu = menu.getMenu(self.recentFilesMenuName)
-        menu.deleteRecentFilesMenuItems(recentFilesMenu)
-        rf.recentFiles = [c.fileName()]
-        for frame in g.app.windowList:
-            rf.createRecentFilesMenuItems(frame.c)
-        u.afterClearRecentFiles(bunch)
+        with u.change_recent_files():
+            recentFilesMenu = menu.getMenu(self.recentFilesMenuName)
+            menu.deleteRecentFilesMenuItems(recentFilesMenu)
+            rf.recentFiles = [c.fileName()]
+            for frame in g.app.windowList:
+                rf.createRecentFilesMenuItems(frame.c)
         # Write the file immediately.
         rf.writeRecentFilesFile(c)
 

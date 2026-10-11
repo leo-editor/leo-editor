@@ -154,8 +154,12 @@ class LeoUnitTest(unittest.TestCase):
                     g.print_unique_message(message)
 
             def test_wrapper(self) -> None:
-                # g.trace('Run', self.undo_test.__name__, self.g_new_undoers)
-                self.undo_test(self)
+                old = g.new_undoers
+                try:
+                    g.new_undoers = self.g_new_undoers
+                    self.undo_test(self)
+                finally:
+                    g.new_undoers = old
 
             def __repr__(self) -> str:
                 return f"UndoTester: {self.undo_test.__name__} {self.g_new_undoers=}"

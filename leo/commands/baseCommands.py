@@ -36,7 +36,7 @@ class BaseEditCommandsClass:
     # @+node:ekr.20150514043714.4: *3* BaseEdit.beginCommand
     def beginCommand(self, w: QTextMixin, undoType: str = 'Typing') -> QTextMixin:
         """Do the common processing at the start of each command."""
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c, p, _u = self.c, self.c.p, self.c.undoer
         name = c.widget_name(w)
         if name.startswith('body'):
             self.undoData = b = g.Bunch()
@@ -47,7 +47,8 @@ class BaseEditCommandsClass:
             b.oldText = p.b
             b.w = w
             b.undoType = undoType
-            b.undoer_bunch = u.beforeChangeBody(p)  # #1733.
+            b.oldIns = w.getInsertPoint()
+            b.oldYScroll = w.getYScrollPosition()
         else:
             self.undoData = None  # pragma: no cover
         return w
@@ -72,7 +73,7 @@ class BaseEditCommandsClass:
         if bunch and bunch.name.startswith('body') and changed:
             newText = w.getAllText()
             if bunch.undoType.capitalize() == 'Typing':
-                u.doTyping(
+                u.type_text(
                     p,
                     'Typing',
                     oldText=bunch.oldText,
@@ -80,8 +81,13 @@ class BaseEditCommandsClass:
                     oldSel=bunch.oldSel,
                 )
             else:
-                p.v.b = newText  # p.b would cause a redraw.
-                u.afterChangeBody(p, bunch.undoType, bunch.undoer_bunch)
+                with u:
+                    u.set_command_name(bunch.undoType)
+                    u.set_body(p, newText, old_body=bunch.oldText)
+                    u.set_selection_range(
+                        bunch.oldIns, bunch.oldSel, old_y_scroll=bunch.oldYScroll,
+                        new_y_scroll=w.getYScrollPosition(),
+                    )
         self.undoData = None
         k.clearState()
         # Warning: basic editing commands **must not** set the label.
