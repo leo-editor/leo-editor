@@ -2529,8 +2529,6 @@ class Undoer:
         b = u.undoBead
         c = u.c
         del_p = p.copy()
-        old_back = p.back()
-        old_parent = p.parent()
         new_p = p.visBack(c) if p.hasVisBack(c) else p.next()
         if not new_p:
             g.error(f"Can not delete {p.h}")
@@ -2546,6 +2544,10 @@ class Undoer:
 
         def delete_node_redoer() -> None:
             del_p.doDelete()
+
+        # Capture the necessary data.
+        old_back = p.back()
+        old_parent = p.parent()
 
         def delete_node_undoer() -> None:
             # Similar to u.undoDeleteNode.
