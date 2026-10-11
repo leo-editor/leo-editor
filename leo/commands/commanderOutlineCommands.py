@@ -1111,7 +1111,6 @@ def clone(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     c, p, u = self, self.p, self.undoer
     if not p:
         return None
-
     if g.new_undoers:
         ### test_clone still fails, but only when g.new_undoers is *always* True.
         g.trace('======', g.callers())

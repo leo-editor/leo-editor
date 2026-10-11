@@ -2529,14 +2529,13 @@ class Undoer:
         clone = p.clone()
         if c.checkOutline():
             # Errors!
-            g.trace(f"Invalid Clone at {p.h}")
+            g.trace(f"Invalid Clone at {p.h}")  ### Temp warning.
             clone.doDelete()
             c.p = p
             return
 
         # Do the action.
         clone.setDirty()
-        c.setChanged()
         c.p = clone
 
         # Add undo/redo helpers.
