@@ -708,11 +708,9 @@ class TestOutlineCommands(LeoUnitTest):
 
     # @+node:ekr.20261011034851.1: *3* TestOutlineCommands.test_promote_at_others
     def test_promote_at_others(self):
-        # Setup.
-        c, u = self.c, self.c.undoer
+        c = self.c
         p = c.p
-        root = self.root_p
-
+        u = c.undoer
         # @+<< create promote-at-others outline >>
         # @+node:ekr.20261011040028.1: *4* << create promote-at-others outline >>
         assert p == self.root_p
@@ -767,14 +765,12 @@ class TestOutlineCommands(LeoUnitTest):
         ''')
         # @-<< create promote-at-others outline >>
         # self.dump_tree(self.root_p)
-        self.dump_headlines(c, tag='1')
+        # self.dump_headlines(c, tag='1')
         c.p = promote_p
         c.promoteToAtOthers()
-        self.dump_headlines(c, tag='2')
-        c.undo()
-        self.dump_headlines(c, tag='3')
-        c.redo()
-        self.dump_headlines(c, tag='4')
+        for i in range(3):
+            u.undo()
+            u.redo()
 
     # @-others
 

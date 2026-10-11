@@ -176,12 +176,11 @@ class UndoBead:
     # @+node:ekr.20261006040132.1: *3* UndoBead.redo
     def redo(self) -> None:
         c = self.c
-        print()
         for f in self.redo_functions:
-            g.trace('redoer:', f.__name__)
+            # g.trace('redoer:', f.__name__)
             f()
         for f in self.redo_finishers:
-            g.trace('finisher:', f.__name__)
+            # g.trace('finisher:', f.__name__)
             f()
         c.setChanged()  # Elegant!
 
@@ -2520,51 +2519,46 @@ class Undoer:
     def clone_node(self, p: Position) -> None:
         g.trace(p.h)
 
-    # @+node:ekr.20261005143707.1: *4* u.delete_node (fails for command)
+    # @+node:ekr.20261005143707.1: *4* u.delete_node
     def delete_node(self, p: Position) -> None:
-
+        """
+        Undoably call p.doDelete.
+        This method *must not* schedule any redraw.
+        """
         u = self
         b = u.undoBead
         c = u.c
-        old_p = c.p.copy()
+        del_p = p.copy()
         old_back = p.back()
         old_parent = p.parent()
         new_p = p.visBack(c) if p.hasVisBack(c) else p.next()
-
-        # Similar to code for delete-node command:
         if not new_p:
             g.error(f"Can not delete {p.h}")
             return
 
-        def update(p: Position) -> None:
-            p.contract()
-            p.setDirty()
-            c.p = p
-
         # Do the action *first*.
-        print()
-        g.trace(f"**** {old_p.h=} {new_p.h=}")
-        old_p.doDelete()
-        c.redraw(new_p)
-        c.checkOutline()
+        del_p.doDelete()
+        new_p.contract()
+        new_p.setDirty()
+        # UndoBead.undo/redo handle c.changed!
+
+        # Add undo/redo helpers.
 
         def delete_node_redoer() -> None:
-            old_p.doDelete()
-            update(new_p)
+            del_p.doDelete()
 
         def delete_node_undoer() -> None:
             # Similar to u.undoDeleteNode.
             if old_back:
-                old_p._linkAfter(old_back)
+                del_p._linkAfter(old_back)
             elif old_parent:
-                old_p._linkAsNthChild(old_parent, 0)
+                del_p._linkAsNthChild(old_parent, 0)
                 old_parent.contract()
             else:
-                old_p._linkAsRoot()
-            update(old_p)
+                del_p._linkAsRoot()
+            new_p.contract()
 
         b.add_helpers(delete_node_redoer, delete_node_undoer)
-        b.add_redraw(old_p, new_p)
 
     # @+node:ekr.20261006155622.1: *4* u.insert_node (fails)
     def insert_node(self, p: Position) -> None:
