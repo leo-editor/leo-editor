@@ -448,6 +448,7 @@ class Undoer:
         # Create a new node to hold clones.
         p1 = p.copy()
         parent = p1.insertAfter()
+        parent.h = 'Clones of marked nodes'
         cloned, n, p = [], 0, c.rootPosition()  # Does not use c.p!
         while p:
             # Careful: don't clone already-cloned nodes.
@@ -463,10 +464,17 @@ class Undoer:
                 n += 1
             else:
                 p.moveToThreadNext()
+        if n:
+            c.setChanged()
+            parent.expand()
+            c.selectPosition(parent)
+            u.afterCloneMarkedNodes(p1)
+        else:
+            parent.doDelete()
+            c.selectPosition(p1)
 
         # Legacy.
-        # u.newP = c.p  # Huh?
-        u.newP = u.p
+        u.newP = c.p
 
     # @+node:ekr.20160502175557.1: *5* u.redoCopyMarkedNodes
     def redoCopyMarkedNodes(self) -> None:
