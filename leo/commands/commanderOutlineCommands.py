@@ -1396,7 +1396,7 @@ def insertHeadlineBefore(self: Cmdr, event: LeoKeyEvent | None = None) -> Positi
 
 
 # @+node:ekr.20031218072017.2922: ** c_oc.Mark commands
-# @+node:ekr.20090905110447.6098: *3* c_oc.cloneMarked (to do)
+# @+node:ekr.20090905110447.6098: *3* c_oc.cloneMarked (to do: Add new undoer)
 @g.commander_command('clone-marked-nodes')
 def cloneMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Clone all marked nodes as children of a new node."""

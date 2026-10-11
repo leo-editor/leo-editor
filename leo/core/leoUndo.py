@@ -434,12 +434,39 @@ class Undoer:
         rf.setRecentFiles(u.newRecentFiles[:])
         rf.createRecentFilesMenuItems(c)
 
-    # @+node:ekr.20111005152227.15558: *5* u.redoCloneMarkedNodes (calls c.cloneMarked)
+    # @+node:ekr.20111005152227.15558: *5* u.redoCloneMarkedNodes (converted)
     def redoCloneMarkedNodes(self) -> None:
         c, u = self.c, self
-        c.selectPosition(u.p)
-        c.cloneMarked()
-        u.newP = c.p
+
+        # PR #4996: Remove dependency on c.deleteOutline.
+        # g.trace(f"{u.p.h=}")  # Not covered by unit tests.
+
+        # c.selectPosition(u.p)
+        p = u.p
+
+        # c.cloneMarked()
+        # Create a new node to hold clones.
+        p1 = p.copy()
+        parent = p1.insertAfter()
+        cloned, n, p = [], 0, c.rootPosition()  # Does not use c.p!
+        while p:
+            # Careful: don't clone already-cloned nodes.
+            if p == parent:
+                p.moveToNodeAfterTree()
+            elif p.isMarked() and p.v not in cloned:
+                cloned.append(p.v)
+                # Create the clone directly as a child of parent.
+                p2 = p.copy()
+                n = parent.numberOfChildren()
+                p2._linkAsNthChild(parent, n)
+                p.moveToNodeAfterTree()
+                n += 1
+            else:
+                p.moveToThreadNext()
+
+        # Legacy.
+        # u.newP = c.p  # Huh?
+        u.newP = u.p
 
     # @+node:ekr.20160502175557.1: *5* u.redoCopyMarkedNodes
     def redoCopyMarkedNodes(self) -> None:
