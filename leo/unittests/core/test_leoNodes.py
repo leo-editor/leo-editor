@@ -370,7 +370,7 @@ class TestNodes(LeoUnitTest):
             p.moveToThreadNext()
 
     # @+node:ekr.20220306072631.1: *3* TestNodes: Outline operations
-    # @+node:ekr.20210830095545.42: *4* TestNodes.test_clone (fails)
+    # @+node:ekr.20210830095545.42: *4* TestNodes.test_clone
     def test_clone(self):
 
         # This method's name should *not* start with 'test'.
@@ -404,10 +404,8 @@ class TestNodes(LeoUnitTest):
             clone.doDelete()
             assert not child.isCloned(), 'fail 7'
 
-        if 1:  ### Skip the test!
-            return
-        elif 1:
-            g.new_undoers = True  ###
+        if 0:
+            g.new_undoers = True
             clone_test(self)
         else:
             self.run_undo_test(clone_test)

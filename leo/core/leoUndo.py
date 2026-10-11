@@ -125,7 +125,10 @@ class UndoBead:
 
     # @+node:ekr.20261010150247.9: *3* undoBead.add_redraw
     def add_redraw(self, new_p: Position, old_p: Position, contract: bool = False) -> None:
-
+        """
+        Add finishers that will call c.redraw.
+        Call this method *only* if the tree has *not* changed.
+        """
         c = self.c
         new_p = new_p.copy()
         old_p = old_p.copy()
@@ -816,13 +819,23 @@ class Undoer:
         u.p.setAllAncestorAtFileNodesDirty()
         u.c.selectPosition(u.p)
 
-    # @+node:ekr.20050412083057.1: *5* u.undoCloneNode (calls c.deleteOutline)
+    # @+node:ekr.20050412083057.1: *5* u.undoCloneNode (converted)
     def undoCloneNode(self) -> None:
         c, u = self.c, self
         if cc := c.chapterController:
             cc.selectChapterByName('main')
-        c.selectPosition(u.newP)
-        c.deleteOutline()
+
+        # 2026/10/11: Remove dependency on c.deleteOutline.
+        # g.trace(f"new: {id(u.newP)} old: {id(u.p)}")
+
+        # c.selectPosition(u.newP)
+        p = u.newP
+
+        # c.deleteOutline()
+        newNode = p.visBack(c) if p.hasVisBack(c) else p.next()
+        p.doDelete(newNode)
+
+        # Legacy code.
         u.p.setDirty()
         c.selectPosition(u.p)
 
@@ -2522,6 +2535,8 @@ class Undoer:
     # @+node:ekr.20261006155509.1: *4* u.clone_node (test)
     def clone_node(self, p: Position) -> None:
 
+        g.trace(p.h)  ###
+
         u = self
         b = u.undoBead
         c = u.c
@@ -2545,10 +2560,12 @@ class Undoer:
         clone_p = clone.copy()
 
         def clone_node_redoer() -> None:
+            g.trace('-----')
             c.p = old_p
             old_p.clone()
 
         def clone_node_undoer() -> None:
+            g.trace('-----')
             clone_p.doDelete()
             c.p = old_p
 

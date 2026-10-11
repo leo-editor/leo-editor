@@ -1214,7 +1214,7 @@ def cloneToLastNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     # return clone # For mod_labels and chapters plugins.
 
 
-# @+node:ekr.20031218072017.1193: *3* c_oc:delete-node (sometimes fails)
+# @+node:ekr.20031218072017.1193: *3* c_oc:delete-node
 @g.commander_command('delete-node')
 def deleteOutline(
     self: Cmdr,
@@ -1228,11 +1228,8 @@ def deleteOutline(
         return
     c.endEditing()  # Make sure we capture the headline for Undo.
 
-    # Legacy: select previous node if possible.
-    if p.hasVisBack(c):
-        newNode = p.visBack(c)
-    else:
-        newNode = p.next()  # _not_ p.visNext(): we are at the top level.
+    # Select previous node if possible.
+    newNode = p.visBack(c) if p.hasVisBack(c) else p.next()
     if not newNode:
         return
     if g.new_undoers:
