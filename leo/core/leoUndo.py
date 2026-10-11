@@ -469,12 +469,22 @@ class Undoer:
         c.deleteMarked()
         c.selectPosition(u.newP)
 
-    # @+node:EKR.20040526072519.2: *5* u.redoDeleteNode (calls c.deleteOutline)
+    # @+node:EKR.20040526072519.2: *5* u.redoDeleteNode (converted)
     def redoDeleteNode(self) -> None:
         c, u = self.c, self
         newP = u.newP.copy() if u.newP else c.p
-        c.selectPosition(u.p)
-        c.deleteOutline()
+
+        # PR #4996: Remove dependency on c.deleteOutline.
+        # g.trace(f"new: {id(u.newP)} old: {id(u.p)}")
+
+        # c.selectPosition(u.p)
+        p = u.p
+
+        # c.deleteOutline()
+        newNode = p.visBack(c) if p.hasVisBack(c) else p.next()
+        p.doDelete(newNode)
+
+        # Legacy.
         if c.positionExists(newP):  # PR #4991.
             c.p = newP
 
@@ -825,7 +835,7 @@ class Undoer:
         if cc := c.chapterController:
             cc.selectChapterByName('main')
 
-        # 2026/10/11: Remove dependency on c.deleteOutline.
+        # PR #4996: Remove dependency on c.deleteOutline.
         # g.trace(f"new: {id(u.newP)} old: {id(u.p)}")
 
         # c.selectPosition(u.newP)

@@ -370,7 +370,7 @@ class TestNodes(LeoUnitTest):
             p.moveToThreadNext()
 
     # @+node:ekr.20220306072631.1: *3* TestNodes: Outline operations
-    # @+node:ekr.20210830095545.42: *4* TestNodes.test_clone
+    # @+node:ekr.20210830095545.42: *4* TestNodes.test_clone (Fails)
     def test_clone(self):
 
         # This method's name should *not* start with 'test'.
