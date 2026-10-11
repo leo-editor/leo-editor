@@ -2519,9 +2519,41 @@ class Undoer:
         b.add_finishers(change_headline_finisher, change_headline_finisher)
         b.add_recolor(new_p, old_p)
 
-    # @+node:ekr.20261006155509.1: *4* u.clone_node (to do)
+    # @+node:ekr.20261006155509.1: *4* u.clone_node (test)
     def clone_node(self, p: Position) -> None:
+
+        u = self
+        b = u.undoBead
+        c = u.c
         g.trace(p.h)
+        clone = p.clone()
+        if c.checkOutline():
+            # Errors!
+            g.trace(f"Invalid Clone at {p.h}")
+            clone.doDelete()
+            c.p = p
+            return
+
+        # Do the action.
+        clone.setDirty()
+        c.setChanged()
+        c.p = clone
+
+        # Add undo/redo helpers.
+
+        # Capture the necessary data.
+        old_p = p.copy()
+        clone_p = clone.copy()
+
+        def clone_node_redoer() -> None:
+            c.p = old_p
+            old_p.clone()
+
+        def clone_node_undoer() -> None:
+            clone_p.doDelete()
+            c.p = old_p
+
+        b.add_helpers(clone_node_redoer, clone_node_undoer)
 
     # @+node:ekr.20261005143707.1: *4* u.delete_node
     def delete_node(self, p: Position) -> None:

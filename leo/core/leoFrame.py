@@ -1078,6 +1078,7 @@ class LeoTree:
             return  # The hook claims to have handled the event.
         # Handle undo.
         if g.new_undoers:
+            g.trace('=====', g.callers())
             with c.undoer as u:
                 u.set_command_name(undoType)
                 u.change_headline(p, ch, s)

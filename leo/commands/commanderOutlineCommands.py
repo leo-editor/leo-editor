@@ -1104,26 +1104,38 @@ def hoist(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 
 
 # @+node:ekr.20031218072017.1759: ** c_oc.Insert, Delete & Clone commands
-# @+node:ekr.20031218072017.1762: *3* c_oc:clone-node (to do)
+# @+node:ekr.20031218072017.1762: *3* c_oc:clone-node (test)
 @g.commander_command('clone-node')
 def clone(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Create a clone of the selected outline."""
     c, p, u = self, self.p, self.undoer
     if not p:
         return None
-    undoData = c.undoer.beforeCloneNode(p)
-    c.endEditing()  # Capture any changes to the headline.
-    clone = p.clone()
-    clone.setDirty()
-    c.setChanged()
-    if c.checkOutline() == 0:
-        u.afterCloneNode(clone, 'Clone Node', undoData)
-        c.redraw(clone)
-        c.treeWantsFocus()
-        return clone  # For mod_labels and chapters plugins.
-    clone.doDelete()
-    c.p = p
-    return None
+
+    if g.new_undoers:
+        ### test_clone still fails, but only when g.new_undoers is *always* True.
+        g.trace('======', g.callers())
+        c.endEditing()
+        with c.undoer as u:
+            u.set_command_name('Clone Node')
+            u.clone_node(p)
+            c.redraw()
+            # c.checkOutline()
+            c.treeWantsFocus()
+    else:
+        undoData = c.undoer.beforeCloneNode(p)
+        c.endEditing()  # Capture any changes to the headline.
+        clone = p.clone()
+        clone.setDirty()
+        c.setChanged()
+        if c.checkOutline() == 0:
+            u.afterCloneNode(clone, 'Clone Node', undoData)
+            c.redraw(clone)
+            c.treeWantsFocus()
+            return clone  # For mod_labels and chapters plugins.
+        clone.doDelete()
+        c.p = p
+        return None
 
 
 # @+node:ekr.20150630152607.1: *3* c_oc.clone-to-at-spot
@@ -1225,8 +1237,8 @@ def deleteOutline(
     if not newNode:
         return
     if g.new_undoers:
-        ### test_clone still fails.
-        ### g.trace('***************', g.callers())
+        ### test_clone still fails, but only when g.new_undoers is *always* True.
+        g.trace('======', g.callers())
         with c.undoer as u:
             u.set_command_name(op_name)
             u.delete_node(p)
@@ -1324,6 +1336,7 @@ def insertHeadline(
         return None
     c.endEditing()
     if False:  ### g.new_undoers:
+        g.trace('=====', g.callers())
         with c.undoer as u:
             u.set_command_name(op_name)
             u.insert_node(current)
