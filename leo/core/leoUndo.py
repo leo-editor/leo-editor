@@ -121,7 +121,7 @@ class UndoBead:
             c.frame.scanForTabWidth(old_p)
             c.redraw(old_p)
 
-        self.set_finishers(recolor_redoer, recolor_undoer)
+        self.add_finishers(recolor_redoer, recolor_undoer)
 
     # @+node:ekr.20261010150247.9: *3* undoBead.add_redraw
     def add_redraw(self, new_p: Position, old_p: Position, contract: bool = False) -> None:
@@ -138,7 +138,7 @@ class UndoBead:
                 old_p.contract()
             c.redraw(old_p)
 
-        self.set_finishers(redraw_redoer, redraw_undoer)
+        self.add_finishers(redraw_redoer, redraw_undoer)
 
     # @+node:ekr.20261010150247.10: *3* undoBead.add_redraw_and_edit
     def add_redraw_and_edit(self, new_p: Position, old_p: Position) -> None:
@@ -153,7 +153,7 @@ class UndoBead:
         def redraw_and_edit_undoer() -> None:
             c.redrawAndEdit(old_p)
 
-        self.set_finishers(redraw_and_edit_redoer, redraw_and_edit_undoer)
+        self.add_finishers(redraw_and_edit_redoer, redraw_and_edit_undoer)
 
     # @+node:ekr.20261007104333.1: *3* UndoBead.get (compatility)
     def get(self, key) -> Any:
@@ -176,21 +176,22 @@ class UndoBead:
     # @+node:ekr.20261006040132.1: *3* UndoBead.redo
     def redo(self) -> None:
         c = self.c
+        print()
         for f in self.redo_functions:
-            # g.trace('redoer:', f.__name__)
+            g.trace('redoer:', f.__name__)
             f()
         for f in self.redo_finishers:
-            # g.trace('redo finisher:', f.__name__)
+            g.trace('finisher:', f.__name__)
             f()
         c.setChanged()  # Elegant!
 
-    # @+node:ekr.20261006040137.2: *3* UndoBead.set_helpers & set_finishers
-    def set_helpers(self, redo_function: Callable, undo_function: Callable) -> None:
+    # @+node:ekr.20261006040137.2: *3* UndoBead.add_helpers & add_finishers
+    def add_helpers(self, redo_function: Callable, undo_function: Callable) -> None:
         """Append the helpers (in correct order!) to the undo/redo lists."""
         self.redo_functions.append(redo_function)
         self.undo_functions.insert(0, undo_function)  # Execute in reverse order.
 
-    def set_finishers(self, redo_finisher: Callable, undo_finisher: Callable) -> None:
+    def add_finishers(self, redo_finisher: Callable, undo_finisher: Callable) -> None:
         """Append the helpers (in correct order!) to the undo/redo lists."""
         self.redo_finishers.append(redo_finisher)
         self.undo_finishers.append(undo_finisher)  # Execute in given order.
@@ -2506,20 +2507,20 @@ class Undoer:
 
         # Add finishers.
 
-        b.set_helpers(change_headline_redoer, change_headline_undoer)
+        b.add_helpers(change_headline_redoer, change_headline_undoer)
 
         # Use the same finisher for undo/redo.
         def change_headline_finisher() -> None:
             c.redraw_after_head_changed()
 
-        b.set_finishers(change_headline_finisher, change_headline_finisher)
+        b.add_finishers(change_headline_finisher, change_headline_finisher)
         b.add_recolor(new_p, old_p)
 
     # @+node:ekr.20261006155509.1: *4* u.clone_node (to do)
     def clone_node(self, p: Position) -> None:
         g.trace(p.h)
 
-    # @+node:ekr.20261005143707.1: *4* u.delete_node (fails?
+    # @+node:ekr.20261005143707.1: *4* u.delete_node (fails for command)
     def delete_node(self, p: Position) -> None:
 
         u = self
@@ -2535,15 +2536,14 @@ class Undoer:
             g.error(f"Can not delete {p.h}")
             return
 
-        if 1:
-            g.trace(f"**** {old_p.h=} {new_p.h=}")
-
         def update(p: Position) -> None:
             p.contract()
             p.setDirty()
             c.p = p
 
         # Do the action *first*.
+        print()
+        g.trace(f"**** {old_p.h=} {new_p.h=}")
         old_p.doDelete()
         c.redraw(new_p)
         c.checkOutline()
@@ -2563,8 +2563,8 @@ class Undoer:
                 old_p._linkAsRoot()
             update(old_p)
 
-        b.set_helpers(delete_node_redoer, delete_node_undoer)
-        b.set_redraw(old_p, new_p)
+        b.add_helpers(delete_node_redoer, delete_node_undoer)
+        b.add_redraw(old_p, new_p)
 
     # @+node:ekr.20261006155622.1: *4* u.insert_node (fails)
     def insert_node(self, p: Position) -> None:
@@ -2612,7 +2612,7 @@ class Undoer:
             c.p = old_p
             old_p.setAllAncestorAtFileNodesDirty()
 
-        b.set_helpers(insert_node_redoer, insert_node_undoer)
+        b.add_helpers(insert_node_redoer, insert_node_undoer)
 
         # Add finishers.
         b.add_redraw_and_edit(new_p, old_p)
@@ -2642,7 +2642,7 @@ class Undoer:
             g.error(f"Not a text wrapper: {w=} {g.callers()}")
             return
 
-        g.trace(new_p.h, g.callers())
+        # g.trace(new_p.h, g.callers())
         old_body = c.p.b
         if old_body == new_body:
             return
@@ -2668,7 +2668,7 @@ class Undoer:
         def set_body_undoer() -> None:
             update_p(new_p, old_body)
 
-        b.set_helpers(set_body_redoer, set_body_undoer)
+        b.add_helpers(set_body_redoer, set_body_undoer)
 
         # Add finishers.
         b.add_redraw(new_p, new_p)  # Never change c.p.
@@ -2714,7 +2714,7 @@ class Undoer:
             if old_y_scroll is not None:
                 w.setYScrollPosition(old_y_scroll)
 
-        b.set_finishers(set_selection_range_redoer, set_selection_range_undoer)
+        b.add_finishers(set_selection_range_redoer, set_selection_range_undoer)
 
         # Do the action!
         i, j = new_sel
