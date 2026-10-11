@@ -416,7 +416,11 @@ class TestNodes(LeoUnitTest):
         # This method's name should *not* start with 'test'.
         def delete_node_test(self):
             # This test requires @bool select-next-after-delete = False
-            c, p = self.c, self.c.p
+            c = self.c
+            p = c.p
+            u = c.undoer
+
+            # Setup.
             p2 = p.insertAsNthChild(0)
             p2.setHeadString('A')
             p3 = p.insertAsNthChild(1)
@@ -424,34 +428,41 @@ class TestNodes(LeoUnitTest):
             p4 = p.insertAsNthChild(2)
             p4.setHeadString('C')
             p.expand()
+            # self.dump_headlines(c)
+
+            # Test.
             c.selectPosition(p3)
             c.deleteOutline()
             c.redraw_now()
             p = c.p
             self.assertEqual(p.h, 'A')
             self.assertEqual(p.next().h, 'C')
-            c.undoer.undo()
+            u.undo()  # Fails
             c.outerUpdate()
             p = c.p
             self.assertEqual(p.back(), p2)
             self.assertEqual(p.next(), p4)
-            c.undoer.redo()
+            u.redo()
             c.outerUpdate()
             p = c.p
             self.assertEqual(p.h, 'A')
             self.assertEqual(p.next().h, 'C')
-            c.undoer.undo()
+            u.undo()
             c.outerUpdate()
             p = c.p
             self.assertEqual(p.back(), p2)
             self.assertEqual(p.next(), p4)
-            c.undoer.redo()
+            u.redo()
             c.outerUpdate()
             p = c.p
             self.assertEqual(p.h, 'A')
             self.assertEqual(p.next().h, 'C')
 
-        self.run_undo_test(delete_node_test)
+        if 0:
+            g.new_undoers = True
+            delete_node_test(self)
+        else:
+            self.run_undo_test(delete_node_test)
 
     # @+node:ekr.20210830095545.44: *4* TestNodes.test_delete_root
     def test_delete_root(self):

@@ -1224,10 +1224,14 @@ def deleteOutline(
         newNode = p.next()  # _not_ p.visNext(): we are at the top level.
     if not newNode:
         return
-    if False:  ### g.new_undoers:
+    if g.new_undoers:
+        ### test_clone still fails.
+        ### g.trace('***************', g.callers())
         with c.undoer as u:
             u.set_command_name(op_name)
             u.delete_node(p)
+            c.redraw(newNode)
+            c.checkOutline()
     else:
         u = c.undoer
         undoData = u.beforeDeleteNode(p)
