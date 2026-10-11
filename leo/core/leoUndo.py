@@ -462,11 +462,26 @@ class Undoer:
         c.selectPosition(u.newP)
         u.newP.setDirty()
 
-    # @+node:ekr.20111005152227.15559: *5* u.redoDeleteMarkedNodes (calls c.deleteMarked)
+    # @+node:ekr.20111005152227.15559: *5* u.redoDeleteMarkedNodes (converted)
     def redoDeleteMarkedNodes(self) -> None:
-        c, u = self.c, self
-        c.selectPosition(u.p)
-        c.deleteMarked()
+        u = self
+        c = u.c
+
+        # PR #4996: Remove dependency on c.deleteOutline.
+        # g.trace(f"{u.newP.h=}")  # Not covered by unit tests.
+
+        # c.selectPosition(u.p)
+        # c.deleteMarked()
+        p = c.rootPosition()  # Doesn't use c.p!
+        while p:
+            if p.isMarked():
+                next = p.positionAfterDeletedTree()
+                p.doDelete()
+                p = next
+            else:
+                p.moveToThreadNext()
+
+        # Legacy
         c.selectPosition(u.newP)
 
     # @+node:EKR.20040526072519.2: *5* u.redoDeleteNode (converted)

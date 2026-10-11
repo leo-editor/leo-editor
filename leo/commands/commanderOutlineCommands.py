@@ -1472,7 +1472,7 @@ def copyMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     c.redraw()
 
 
-# @+node:ekr.20111005081134.15540: *3* c_oc.deleteMarked (to do)
+# @+node:ekr.20111005081134.15540: *3* c_oc.deleteMarked (to do: add new undoer)
 @g.commander_command('delete-marked-nodes')
 def deleteMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Delete all marked nodes."""
