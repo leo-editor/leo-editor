@@ -88,6 +88,7 @@ isValidPython = python_version_tuple >= minimum_python_version_tuple
 isMac = sys.platform.startswith('darwin')
 isWindows = sys.platform.startswith('win')
 
+# Unit tests may override this switch.
 new_undoers = False  # True: use new undo code.
 # @-<< leoGlobals: global constants >>
 # @+<< define g.binary_file_extensions >>
