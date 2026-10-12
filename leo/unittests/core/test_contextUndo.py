@@ -715,6 +715,6 @@ class TestContextUndo(LeoUnitTest):
             for path in (root / directory).glob('*.py'):
                 if path.name == 'leoUndo.py':
                     continue
-                for node in ast.walk(ast.parse(path.read_text())):
+                for node in ast.walk(ast.parse(path.read_text(encoding='utf-8'))):
                     if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
                         self.assertNotIn(node.func.attr, legacy, f'{path}:{node.lineno}')
