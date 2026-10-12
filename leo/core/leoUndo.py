@@ -2692,6 +2692,8 @@ class Undoer:
         old_p = p.copy()
 
         def make() -> None:
+            # @+<< make: compute new_p >>
+            # @+node:ekr.20261011191817.1: *5* << make: compute new_p >>
             if (
                 old_p.hasChildren() and old_p.isExpanded() or
                 c.hoistStack and old_p == c.hoistStack[-1].p
@@ -2703,6 +2705,7 @@ class Undoer:
                     new_p = old_p.insertAsNthChild(0)
             else:
                 new_p = old_p.insertAfter()
+            # @-<< make: compute new_p >>
             new_p.setDirty()
             c.p = new_p
             return new_p
@@ -2715,7 +2718,7 @@ class Undoer:
         # Add helpers.
 
         def insert_node_redoer() -> None:
-            make()
+            c.p = make()
 
         def insert_node_undoer() -> None:
             new_p.doDelete(old_p)
