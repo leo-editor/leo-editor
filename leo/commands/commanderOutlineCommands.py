@@ -132,7 +132,6 @@ def pasteOutlineRetainingClones(
             return None
         c.selectPosition(pasted)
         pasted.setDirty()
-        c.setChanged()
         back = pasted.back()
         if back and back.hasChildren() and back.isExpanded():
             pasted.moveToNthChildOf(back, 0)
@@ -1134,7 +1133,6 @@ def cloneToAtSpot(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         clone = p.copy()
         clone._linkAsNthChild(last_spot, n=last_spot.numberOfChildren())
         clone.setDirty()
-        c.setChanged()
         if c.checkOutline() == 0:
             c.contractAllHeadlines()
             u.redraw(clone)
@@ -1164,7 +1162,6 @@ def cloneToLastNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
             last.moveToNext()
         clone.moveAfter(last)
         clone.setDirty()
-        c.setChanged()
         c.undoer.redraw(prev)
     # return clone # For mod_labels and chapters plugins.
 
@@ -1504,7 +1501,6 @@ def markHeadline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         else:
             c.setMarked(p)
         p.setDirty()
-        c.setChanged()
         u.redraw(c.p)
 
 
@@ -1580,7 +1576,6 @@ def demote(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
             child.parents.append(p.v)
         p.expand()
         p.setDirty()
-        c.setChanged()
         u.redraw(p)
         c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
 
@@ -1663,7 +1658,6 @@ def moveOutlineLeft(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         p.setDirty()
         p.moveAfter(parent)
         p.setDirty()
-        c.setChanged()
         # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
         if c.collapse_nodes_after_move and c.sparse_move:  # New in Leo 4.4.2
             parent.contract()
@@ -1695,7 +1689,6 @@ def moveOutlineRight(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         n = back.numberOfChildren()
         p.moveToNthChildOf(back, n)
         p.setDirty()
-        c.setChanged()  # #2036.
         u.redraw(p)
 
 
@@ -1785,7 +1778,6 @@ def moveOutlineToFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Non
     with u.change_position(p, 'Move To First Child'):
         p.moveToNthChildOf(p.parent(), 0)
         p.setDirty()
-        c.setChanged()
         u.redraw(p)
 
 
@@ -1811,7 +1803,6 @@ def moveOutlineToLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> None
     with u.change_position(p, 'Move To Last Child'):
         p.moveToNthChildOf(parent, len(parent.v.children) - 1)
         p.setDirty()
-        c.setChanged()
         u.redraw(p)
 
 
@@ -1920,7 +1911,6 @@ def sortSiblings(
         return
     # 2010/01/20. Fix bug 510148.
     with u.change_outline(undoType):
-        c.setChanged()
         # A copy, so its not the undo bead's oldChildren. Fixes #3205
         parent_v.children = newChildren[:]
         # Sorting destroys position p, and possibly the root position.

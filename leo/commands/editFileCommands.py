@@ -354,8 +354,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 (changed, f"changed: as in {fn2}"),
             ):
                 self.createCompareClones(d, kind, parent)
-            c.selectPosition(parent)
-            u.redraw()
+            u.redraw(parent)
 
     # @+node:ekr.20170806094317.12: *5* efc.createCompareClones
     def createCompareClones(self, d: dict[str, Position], kind: str, parent: Position) -> None:

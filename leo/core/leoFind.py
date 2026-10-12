@@ -518,7 +518,6 @@ class LeoFind:
                         c.clearMarked(p)
                 n = root.numberOfChildren()
                 root.b = f"# Found {n} marked node{g.plural(n)}"
-                c.selectPosition(root)
                 u.redraw(root)
             return bool(root)
 
@@ -556,7 +555,6 @@ class LeoFind:
                     clone = parent.copy()
                     n = found.numberOfChildren()
                     clone._linkCopiedAsNthChild(found, n)
-            c.setChanged()
             u.redraw(found)
             return True
 
@@ -751,7 +749,6 @@ class LeoFind:
             ftm.set_find_text(word)
 
             # Set the undo data.
-            c.setChanged()
             found.expand()
             u.redraw(found)
 
@@ -1602,9 +1599,7 @@ class LeoFind:
         with u.change_outline('Clone Find Tag'):
             found = self._create_clone_tag_nodes(clones)
             assert c.positionExists(found, trace=True), found
-            c.setChanged()
-            c.selectPosition(found)
-            u.redraw()
+            u.redraw(found)
             return len(clones), found
 
     # @+node:ekr.20210110073117.12: *6* find._create_clone_tag_nodes
@@ -1791,7 +1786,6 @@ class LeoFind:
                             p.setDirty()
                 # Finish undo group only if mark_finds is true
 
-            c.setChanged()
             u.redraw()
             # Return a dict containing the actual results and statistics.
             return {

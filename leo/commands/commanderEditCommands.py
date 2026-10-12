@@ -753,7 +753,6 @@ def line_to_headline(self: Self, event: LeoKeyEvent | None = None) -> None:
         p.b = s[:i] + s[j:]
         w.setInsertPoint(i)
         p2.setDirty()
-        c.setChanged()
 
         # "after" snapshot.
 
@@ -1282,7 +1281,6 @@ def toggleAngleBrackets(self: Self, event: LeoKeyEvent | None = None) -> None:
             s = g.angleBrackets(' ' + s + ' ')
         p.setHeadString(s)
         p.setDirty()  # #1449.
-        c.setChanged()  # #1449.
         u.redraw_and_edit(p, select_all=True)
 
 

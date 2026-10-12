@@ -353,7 +353,6 @@ def import_txt_file(self: Self, fn: str) -> None:
         p.h = f"@edit {c.relativeDirectory(fn)}"
         s, e = g.readFileIntoString(fn, kind='@edit')
         p.b = s or ''
-        c.setChanged()
         u.redraw(p)
 
 
@@ -866,7 +865,6 @@ def flattenOutlineToNode(self: Self, event: LeoKeyEvent | None = None) -> None:
         p = c.lastTopLevel().insertAfter()
         p.h = f"Flattened {root.h}"
         p.b = ''.join(aList).strip() + '\n'
-        c.selectPosition(p)
         u.redraw(p)
 
 

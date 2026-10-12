@@ -181,10 +181,8 @@ def promote_section_definition(event: LeoKeyEvent | None = None) -> None:
 
         # Delete and select ref_p.
         c.p.doDelete(ref_p)
-        c.selectPosition(ref_p)
 
         # Finish the group.
-        c.setChanged()
         u.redraw(ref_p)
 
 
@@ -210,7 +208,6 @@ def merge_node_with_next_node(event: LeoKeyEvent | None = None) -> None:
         w.setAllText(next.b)
         # Inner undo 2: delete p.
         p.doDelete(next)  # This adjusts next._childIndex.
-        c.selectPosition(next)
         # End outer undo:
         u.redraw(next)
 
@@ -237,7 +234,6 @@ def merge_node_with_prev_node(event: LeoKeyEvent | None = None) -> None:
         w.setAllText(prev.b)
         # Inner undo 2: delete p, select prev.
         p.doDelete()  # No need to adjust prev._childIndex.
-        c.selectPosition(prev)
         # End outer undo.
         u.redraw(prev)
 
@@ -1194,7 +1190,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             for p in c.all_unique_positions():
                 self.hn_delete(p)
                 self.hn_add(p)
-            c.setChanged()
             u.redraw()
 
     # @+node:ekr.20230328013256.1: *5* hn_add
@@ -1241,7 +1236,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             for p in c.p.subtree():
                 self.hn_delete(p)
                 self.hn_add_relative(p, root)
-            c.setChanged()
             root.expand()
             u.redraw()
 
@@ -1272,7 +1266,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         with u.change_outline(command):
             for p in c.all_unique_positions():
                 self.hn_delete(p)
-            c.setChanged()
             u.redraw()
 
     # @+node:ekr.20230328015118.1: *4* hn-delete-subtree
@@ -1286,7 +1279,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         with u.change_outline(command):
             for p in c.p.subtree():
                 self.hn_delete(p)
-            c.setChanged()
             u.redraw()
 
     # @+node:ekr.20230328014223.1: *4* hn_delete
@@ -4212,7 +4204,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         with u.change_node(p, 'set-ua'):
             d[self.uaName] = val
             p.setDirty()
-            c.setChanged()
             self.showNodeUas()
             k.clearState()
             k.resetLabel()

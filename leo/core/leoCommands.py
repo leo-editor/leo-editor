@@ -4327,7 +4327,6 @@ class Commands:
             p.setDirty()
             p.moveToNthChildOf(parent, n)
             p.setDirty()
-            c.setChanged()
             u.redraw(p)
             c.updateSyntaxColorer(p)  # Dragging can change syntax coloring.
 
@@ -4344,7 +4343,6 @@ class Commands:
             p.setDirty()
             p.moveAfter(after)
             p.setDirty()
-            c.setChanged()
             u.redraw(p)
             c.updateSyntaxColorer(p)  # Dragging can change syntax coloring.
 
@@ -4365,7 +4363,6 @@ class Commands:
             clone.setDirty()
             clone.moveToNthChildOf(parent, n)
             clone.setDirty()
-            c.setChanged()
             u.redraw(clone)
             c.updateSyntaxColorer(clone)  # Dragging can change syntax coloring.
 

@@ -751,7 +751,6 @@ class LeoImportCommands:
                 p.contract()
                 p.setDirty()  # 2011/10/09: tell why the file is dirty!
             current.expand()
-            c.setChanged()
             u.redraw(current)
             return p
 
@@ -822,7 +821,6 @@ class LeoImportCommands:
                 p.contract()
                 p.setDirty()
             parent.expand()
-            c.setChanged()
             u.redraw(parent)
             return parent
 
@@ -1546,8 +1544,7 @@ class MORE_Importer:
                     c.checkOutline()
                     p.setDirty()
                     c.setChanged()
-                    c.selectPosition(root)
-                    u.redraw()
+                    u.redraw(root)
                     return root
             if not g.unitTesting:
                 g.es("not a valid MORE file", fileName)
