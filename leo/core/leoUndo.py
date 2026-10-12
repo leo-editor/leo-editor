@@ -2711,7 +2711,6 @@ class Undoer:
         assert isinstance(b, UndoBead), repr(b)
         new_p = make()
         g.doHook('create-node', c=c, p=c.p)
-        ### c.redrawAndEdit(c.p, selectAll=True)
 
         # Add helpers.
 
