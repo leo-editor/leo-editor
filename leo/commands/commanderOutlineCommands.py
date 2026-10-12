@@ -90,7 +90,7 @@ def pasteOutline(
             return None
         if c.checkOutline():
             pasted.doDelete()
-            c.redraw(c.rootPosition())
+            c.undoer.redraw(c.rootPosition())
             return None
         c.selectPosition(pasted)
         pasted.setDirty()
@@ -99,7 +99,7 @@ def pasteOutline(
         if back and back.hasChildren() and back.isExpanded():
             pasted.moveToNthChildOf(back, 0)
             pasted.setDirty()
-        c.redraw(pasted)
+        c.undoer.redraw(pasted)
         return pasted
 
 
@@ -128,7 +128,7 @@ def pasteOutlineRetainingClones(
             return None
         if c.checkOutline():
             pasted.doDelete()
-            c.redraw(c.rootPosition())
+            c.undoer.redraw(c.rootPosition())
             return None
         c.selectPosition(pasted)
         pasted.setDirty()
@@ -139,7 +139,7 @@ def pasteOutlineRetainingClones(
             pasted.setDirty()
         for p in pasted.self_and_subtree():
             p.setAllAncestorAtFileNodesDirty()
-        c.redraw(pasted)
+        c.undoer.redraw(pasted)
         return pasted
 
 
@@ -1094,7 +1094,7 @@ def clone(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
         u.set_command_name('Clone Node')
         clone = u.clone_node(c.p)
         if clone:
-            c.redraw(clone)
+            u.redraw(clone)
             c.treeWantsFocus()
         return clone
 
@@ -1118,7 +1118,6 @@ def cloneToAtSpot(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     # Start the undo Group.
     c.endEditing()  # Capture any changes to the headline.
     with u.change_outline(tag):
-
         # Create the @spot node if necessary.
         created_last_spot = False
         last_spot = None
@@ -1138,7 +1137,7 @@ def cloneToAtSpot(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         c.setChanged()
         if c.checkOutline() == 0:
             c.contractAllHeadlines()
-            c.redraw(clone)
+            u.redraw(clone)
         else:
             clone.doDelete()
             if created_last_spot:
@@ -1166,7 +1165,7 @@ def cloneToLastNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         clone.moveAfter(last)
         clone.setDirty()
         c.setChanged()
-        c.redraw(prev)
+        c.undoer.redraw(prev)
     # return clone # For mod_labels and chapters plugins.
 
 
@@ -1188,7 +1187,7 @@ def deleteOutline(
     with c.undoer as u:
         u.set_command_name(op_name)
         u.delete_node(p)
-        c.redraw(c.p)
+        u.redraw(c.p)
         c.checkOutline()
 
 
@@ -1202,7 +1201,9 @@ def insertChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None
     c.endEditing()
     with c.undoer as u:
         u.set_command_name('Insert Child')
-        return u.insert_node(c.p, as_child=True)
+        new_p = u.insert_node(c.p, as_child=True)
+        u.redraw_and_edit(new_p)
+        return new_p
 
 
 # @+node:ekr.20261008042700.1: *3* c_oc:insert-headline-as-first-child
@@ -1215,7 +1216,9 @@ def insertNodeAsFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Posi
     c.endEditing()
     with c.undoer as u:
         u.set_command_name('Insert As First Child')
-        return u.insert_node(c.p, as_child=True, index=0)
+        new_p = u.insert_node(c.p, as_child=True, index=0)
+        u.redraw_and_edit(new_p)
+        return new_p
 
 
 # @+node:ekr.20261008042932.1: *3* c_oc:insert-headline-as-last-child
@@ -1228,7 +1231,9 @@ def insertNodeAsLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Posit
     c.endEditing()
     with c.undoer as u:
         u.set_command_name('Insert As Last Child')
-        return u.insert_node(c.p, as_child=True, index=c.p.numberOfChildren())
+        new_p = u.insert_node(c.p, as_child=True, index=c.p.numberOfChildren())
+        u.redraw_and_edit(new_p)
+        return new_p
 
 
 # @+node:ekr.20261008042653.1: *3* c_oc:insert-node
@@ -1248,7 +1253,9 @@ def insertHeadline(
     c.endEditing()
     with c.undoer as u:
         u.set_command_name(op_name)
-        return u.insert_node(c.p)
+        new_p = u.insert_node(c.p)
+        u.redraw_and_edit(new_p)
+        return new_p
 
 
 # @+node:ekr.20130922133218.11540: *3* c_oc:insert-node-before
@@ -1264,7 +1271,9 @@ def insertHeadlineBefore(self: Cmdr, event: LeoKeyEvent | None = None) -> Positi
     c.endEditing()
     with c.undoer as u:
         u.set_command_name('Insert Node Before')
-        return u.insert_node(c.p, before=True)
+        new_p = u.insert_node(c.p, before=True)
+        u.redraw_and_edit(new_p)
+        return new_p
 
 
 # @+node:ekr.20031218072017.2922: ** c_oc.Mark commands
@@ -1306,7 +1315,7 @@ def cloneMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
             c.selectPosition(p1)
         if not g.unitTesting:
             g.blue(f"cloned {n} nodes")
-        c.redraw()
+        u.redraw()
 
 
 # @+node:ekr.20160502090456.1: *3* c_oc.copyMarked
@@ -1341,7 +1350,7 @@ def copyMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
             c.selectPosition(p1)
         if not g.unitTesting:
             g.blue(f"copied {n} nodes")
-        c.redraw()
+        u.redraw()
 
 
 # @+node:ekr.20111005081134.15540: *3* c_oc.deleteMarked
@@ -1365,7 +1374,7 @@ def deleteMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
             c.setChanged()
         # Don't even *think* about restoring the old position.
         c.contractAllHeadlines()
-        c.redraw(c.rootPosition())
+        u.redraw(c.rootPosition())
 
 
 # @+node:ekr.20111005081134.15539: *3* c_oc.moveMarked & helper
@@ -1496,6 +1505,7 @@ def markHeadline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
             c.setMarked(p)
         p.setDirty()
         c.setChanged()
+        u.redraw(c.p)
 
 
 # @+node:ekr.20031218072017.2929: *3* c_oc.markSubheads
@@ -1571,7 +1581,7 @@ def demote(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         p.expand()
         p.setDirty()
         c.setChanged()
-        c.redraw(p)
+        u.redraw(p)
         c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
 
 
@@ -1628,7 +1638,7 @@ def moveOutlineDown(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         if moved:
             p.setDirty()
             c.setChanged()
-        c.redraw(p)
+        u.redraw(p)
         c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
 
 
@@ -1657,7 +1667,7 @@ def moveOutlineLeft(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
         if c.collapse_nodes_after_move and c.sparse_move:  # New in Leo 4.4.2
             parent.contract()
-        c.redraw(p)
+        u.redraw(p)
 
 
 # @+node:ekr.20031218072017.1771: *3* c_oc.moveOutlineRight
@@ -1686,7 +1696,7 @@ def moveOutlineRight(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         p.moveToNthChildOf(back, n)
         p.setDirty()
         c.setChanged()  # #2036.
-        c.redraw(p)
+        u.redraw(p)
 
 
 # @+node:ekr.20031218072017.1772: *3* c_oc.moveOutlineUp
@@ -1749,7 +1759,7 @@ def moveOutlineUp(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         if moved:
             p.setDirty()
             c.setChanged()
-        c.redraw(p)
+        u.redraw(p)
         c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
 
 
@@ -1776,7 +1786,7 @@ def moveOutlineToFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Non
         p.moveToNthChildOf(p.parent(), 0)
         p.setDirty()
         c.setChanged()
-        c.redraw(p)
+        u.redraw(p)
 
 
 # @+node:ekr.20230902051833.1: *3* c_oc.moveOutlineToLastChild
@@ -1802,7 +1812,7 @@ def moveOutlineToLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> None
         p.moveToNthChildOf(parent, len(parent.v.children) - 1)
         p.setDirty()
         c.setChanged()
-        c.redraw(p)
+        u.redraw(p)
 
 
 # @+node:ekr.20031218072017.1774: *3* c_oc.promote
@@ -1823,7 +1833,7 @@ def promote(
         c.setChanged()
         if undoFlag:
             p.setDirty()
-        c.redraw(p)
+        u.redraw(p)
         c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
 
 
@@ -1924,9 +1934,9 @@ def sortSiblings(
             newP.parent().setDirty()
 
         if sortChildren:
-            c.redraw(newP.parent())
+            u.redraw(newP.parent())
         else:
-            c.redraw(newP)
+            u.redraw(newP)
 
 
 # @+node:ekr.20070420092425: ** def cantMoveMessage

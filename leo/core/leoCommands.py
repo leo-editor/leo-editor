@@ -4328,7 +4328,7 @@ class Commands:
             p.moveToNthChildOf(parent, n)
             p.setDirty()
             c.setChanged()
-            c.redraw(p)
+            u.redraw(p)
             c.updateSyntaxColorer(p)  # Dragging can change syntax coloring.
 
     # @+node:ekr.20031218072017.2353: *5* c.dragAfter (not used)
@@ -4345,7 +4345,7 @@ class Commands:
             p.moveAfter(after)
             p.setDirty()
             c.setChanged()
-            c.redraw(p)
+            u.redraw(p)
             c.updateSyntaxColorer(p)  # Dragging can change syntax coloring.
 
     # @+node:ekr.20031218072017.2946: *5* c.dragCloneToNthChildOf
@@ -4355,7 +4355,9 @@ class Commands:
         undoType = 'Clone Drag'
         with u.change_outline(undoType):
             clone = p.clone()  # Creates clone & dependents, does not set undo.
-            if not c.checkDrag(p, parent) or not c.checkMoveWithParentWithWarning(clone, parent, True):
+            if not c.checkDrag(p, parent) or not c.checkMoveWithParentWithWarning(
+                clone, parent, True
+            ):
                 clone.doDelete(newNode=p)  # Destroys clone and makes p the current node.
                 c.selectPosition(p)  # Also sets root position.
                 return
@@ -4364,7 +4366,7 @@ class Commands:
             clone.moveToNthChildOf(parent, n)
             clone.setDirty()
             c.setChanged()
-            c.redraw(clone)
+            u.redraw(clone)
             c.updateSyntaxColorer(clone)  # Dragging can change syntax coloring.
 
     # @+node:ekr.20031218072017.2948: *5* c.dragCloneAfter
@@ -4375,7 +4377,9 @@ class Commands:
         with u.change_outline(undoType):
             clone = p.clone()  # Creates clone.  Does not set undo.
             assert clone.v
-            if c.checkDrag(p, after) and c.checkMoveWithParentWithWarning(clone, after.parent(), True):
+            if c.checkDrag(p, after) and c.checkMoveWithParentWithWarning(
+                clone, after.parent(), True
+            ):
                 c.endEditing()
                 clone.setDirty()
                 clone.moveAfter(after)
@@ -4384,7 +4388,7 @@ class Commands:
                 p = clone
             else:
                 clone.doDelete(newNode=p)
-            c.redraw(p)
+            u.redraw(p)
             c.updateSyntaxColorer(clone)  # Dragging can change syntax coloring.
 
     # @+node:ekr.20031218072017.2949: *4* c.Drawing

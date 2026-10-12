@@ -138,7 +138,7 @@ def mark_node_and_parents(event: LeoKeyEvent | None = None) -> list[Position]:
                 changed.append(parent.copy())
         if changed:
             c.setChanged()
-            c.redraw()
+            u.redraw()
         return changed
 
 
@@ -170,7 +170,6 @@ def promote_section_definition(event: LeoKeyEvent | None = None) -> None:
     # Start the undo group.
     ref_p = parent
     with u.change_outline(tag):
-
         # Change ref_p.b.
         new_ref_lines = []
         for line in g.splitLines(ref_p.b):
@@ -186,7 +185,7 @@ def promote_section_definition(event: LeoKeyEvent | None = None) -> None:
 
         # Finish the group.
         c.setChanged()
-        c.redraw(ref_p)
+        u.redraw(ref_p)
 
 
 # @+node:ekr.20220515193048.1: *3* @g.command('merge-node-with-next-node')
@@ -213,7 +212,7 @@ def merge_node_with_next_node(event: LeoKeyEvent | None = None) -> None:
         p.doDelete(next)  # This adjusts next._childIndex.
         c.selectPosition(next)
         # End outer undo:
-        c.redraw(next)
+        u.redraw(next)
 
 
 # @+node:ekr.20220515193124.1: *3* @g.command('merge-node-with-prev-node')
@@ -240,7 +239,7 @@ def merge_node_with_prev_node(event: LeoKeyEvent | None = None) -> None:
         p.doDelete()  # No need to adjust prev._childIndex.
         c.selectPosition(prev)
         # End outer undo.
-        c.redraw(prev)
+        u.redraw(prev)
 
 
 # @+node:ekr.20190926103245.1: *3* @g.command('next-or-end-of-line')
@@ -290,6 +289,7 @@ def promoteBodies(event: LeoKeyEvent | None = None) -> None:
     with c.undoer.change_node(p, 'promote-bodies'):
         result = [child.b.rstrip() + '\n\n' for child in p.subtree()]
         p.b = ''.join(result).rstrip() + '\n\n'
+        c.undoer.redraw(c.p)
 
 
 # @+node:ekr.20190323085410.1: *3* @g.command('promote-headlines')
@@ -303,6 +303,7 @@ def promoteHeadlines(event: LeoKeyEvent | None = None) -> None:
     with c.undoer.change_node(p, 'promote-headlines'):
         if result := '\n'.join([p.h.rstrip() for p in p.subtree()]):
             p.b = p.b.lstrip() + '\n' + result
+        c.undoer.redraw(c.p)
 
 
 # @+node:ekr.20180504180647.1: *3* @g.command('select-next-trace-statement')
@@ -399,7 +400,7 @@ def unmark_node_and_parents(event: LeoKeyEvent | None = None) -> list[Position]:
                 changed.append(parent.copy())
         if changed:
             c.setChanged()
-            c.redraw()
+            u.redraw()
         return changed
 
 
@@ -486,6 +487,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                     w.deleteTextSelection()
                     w.insert(i, arg)
                     c.p.v.b = w.getAllText()
+                    c.undoer.redraw(c.p)
             else:
                 i = w.getSelectionRange()[0]
                 w.deleteTextSelection()
@@ -534,7 +536,6 @@ class EditCommandsClass(BaseEditCommandsClass):
                 c.endEditing()
                 time = c.getTime(body=False)
 
-
                 if s := p.h.rstrip():
                     p.h = ' '.join([s, time])
                 else:
@@ -544,9 +545,9 @@ class EditCommandsClass(BaseEditCommandsClass):
                 p.setDirty()
                 # For external clients
                 if g.app.inBridge:
-                    c.redraw()
+                    c.undoer.redraw()
                 else:
-                    c.redrawAndEdit(p, selectAll=True)  # regular client
+                    c.undoer.redraw_and_edit(p, select_all=True)  # regular client
 
     # @+node:tom.20210922140250.1: *3* ec.capitalizeHeadline
     @cmd('capitalize-headline')
@@ -562,14 +563,13 @@ class EditCommandsClass(BaseEditCommandsClass):
         h = p.h
         undoType = 'capitalize-headline'
         with u.change_node(p, undoType):
-
             words = [w.capitalize() for w in h.split()]
             capitalized = ' '.join(words)
             if capitalized != h:
                 p.h = capitalized
                 c.setChanged()
                 p.setDirty()
-                c.redraw()
+                u.redraw()
 
     # @+node:tbrown.20151118134307.1: *3* ec.path_for_p
     def path_for_p(self, c: Cmdr, p: Position) -> str:
@@ -695,7 +695,6 @@ class EditCommandsClass(BaseEditCommandsClass):
 
         undoType = 'capitalize-body-words'
         with u.change_node(p, undoType):
-
             i, j = w.getSelectionRange()
             if i == j:
                 sel = ''
@@ -718,7 +717,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 p.b = prefix + capitalized + suffix if sel else capitalized
                 c.setChanged()
                 p.setDirty()
-                c.redraw()
+                u.redraw()
 
     # @+node:ekr.20150514063305.195: *3* ec: clicks and focus
     # @+node:ekr.20150514063305.196: *4* ec.activate-x-menu & activateMenu
@@ -1196,7 +1195,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 self.hn_delete(p)
                 self.hn_add(p)
             c.setChanged()
-            c.redraw()
+            u.redraw()
 
     # @+node:ekr.20230328013256.1: *5* hn_add
     def hn_add(self, p: Position) -> None:
@@ -1244,7 +1243,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 self.hn_add_relative(p, root)
             c.setChanged()
             root.expand()
-            c.redraw()
+            u.redraw()
 
     # @+node:ekr.20230329031045.1: *5* hn_add_relative
     def hn_add_relative(self, p: Position, root: Position) -> None:
@@ -1274,7 +1273,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             for p in c.all_unique_positions():
                 self.hn_delete(p)
             c.setChanged()
-            c.redraw()
+            u.redraw()
 
     # @+node:ekr.20230328015118.1: *4* hn-delete-subtree
     @cmd('hn-delete-subtree')
@@ -1288,7 +1287,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             for p in c.p.subtree():
                 self.hn_delete(p)
             c.setChanged()
-            c.redraw()
+            u.redraw()
 
     # @+node:ekr.20230328014223.1: *4* hn_delete
     # Match exactly one trailing blank.
@@ -2036,6 +2035,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             i, j = 0, max(0, len(result) - 1)
             w.setSelectionRange(i, j, insert=j)
             w.setYScrollPosition(oldYview)
+            u.redraw(c.p)
             # "after" snapshot.
 
     # @+node:ekr.20150514063305.267: *4* ec.replaceCurrentCharacter
@@ -4147,7 +4147,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 # #1276.
                 p.setDirty()
                 c.setChanged()
-                c.redraw()
+                u.redraw()
 
     @cmd('clear-all-uas')
     def clearAllUas(self, event: LeoKeyEvent | None = None) -> None:
@@ -4164,7 +4164,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                     p.setDirty()
             if changed:
                 c.setChanged()
-                c.redraw()
+                u.redraw()
 
     # @+node:ekr.20150514063305.350: *4* ec.showUas & showAllUas
     @cmd('show-all-uas')
@@ -4217,6 +4217,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             k.clearState()
             k.resetLabel()
             k.showStateAndMode()
+            u.redraw(c.p)
 
     # @-others
 

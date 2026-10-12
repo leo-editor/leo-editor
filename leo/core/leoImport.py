@@ -752,7 +752,7 @@ class LeoImportCommands:
                 p.setDirty()  # 2011/10/09: tell why the file is dirty!
             current.expand()
             c.setChanged()
-            c.redraw(current)
+            u.redraw(current)
             return p
 
     # @+node:ekr.20031218072017.3212: *4* ic.importFilesCommand
@@ -823,7 +823,7 @@ class LeoImportCommands:
                 p.setDirty()
             parent.expand()
             c.setChanged()
-            c.redraw(parent)
+            u.redraw(parent)
             return parent
 
     # @+node:ekr.20160503125219.1: *4* ic.importMindMap
@@ -1162,7 +1162,7 @@ class LeoImportCommands:
                     return  # Error!
                 if changed:
                     c.setChanged()
-                    c.redraw(old_p)
+                    u.redraw(old_p)
             except Exception:
                 g.es_exception()
 
@@ -1392,7 +1392,7 @@ class MindMapImporter:
                 f = open(path)
                 self.scan(f, p)
                 f.close()
-                c.redraw()
+                c.undoer.redraw()
             except Exception:
                 g.es_print('Invalid MindJet file:', fn)
             return p
@@ -1547,7 +1547,7 @@ class MORE_Importer:
                     p.setDirty()
                     c.setChanged()
                     c.selectPosition(root)
-                    c.redraw()
+                    u.redraw()
                     return root
             if not g.unitTesting:
                 g.es("not a valid MORE file", fileName)
@@ -2001,7 +2001,7 @@ class RecursiveImportController:
                 for p2 in parent.self_and_subtree(copy=False):
                     p2.contract()
                 c.setChanged()  # Imported nodes must be saved.
-                c.redraw(parent)
+                c.undoer.redraw(parent)
             if not g.unitTesting:
                 t2 = time.time()
                 n = len(list(parent.subtree()))
@@ -2076,7 +2076,7 @@ class TabImporter:
                         p.setDirty()
                     if p:
                         c.setChanged()
-                        c.redraw(p)
+                        u.redraw(p)
 
     # @+node:ekr.20161006071801.4: *3* tabbed.lws
     def lws(self, s: str) -> str:

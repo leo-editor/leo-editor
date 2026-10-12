@@ -3272,7 +3272,6 @@ class LeoServer:
             filePath = commonPath + g.os_path_basename(filePath)
 
         with u.change_outline('Insert Node'):
-
             newNode = None
             if (p.hasChildren() and p.isExpanded()) or (c.hoistStack and p == c.hoistStack[-1].p):
                 # Make sure the new node is visible when hoisting.
@@ -3544,6 +3543,7 @@ class LeoServer:
             c.setChanged()
             p.setDirty()
             return self._make_response()
+            u.redraw(c.p)
 
     # @+node:felix.20210621233316.63: *5* server.set_selection
     def set_selection(self, param: Param) -> Response:

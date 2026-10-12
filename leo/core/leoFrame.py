@@ -1080,6 +1080,7 @@ class LeoTree:
         with c.undoer as u:
             u.set_command_name(undoType)
             u.change_headline(p, ch, s, update_editor=False)
+            u.redraw_after_head_changed()
 
     # @+node:ekr.20061109165848: *3* LeoTree: Must be defined in base class
     # @+node:ekr.20040803072955.126: *4* LeoTree.endEditLabel

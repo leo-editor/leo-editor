@@ -740,7 +740,7 @@ def diffMarkedNodes(event: LeoKeyEvent | None = None) -> None:
                 clone.moveToLastChildOf(p)
         root.expand()
         c.selectPosition(root)
-        c.redraw()
+        u.redraw()
 
 
 # @+node:ekr.20180213104627.1: *3* diff_leo_files_helper

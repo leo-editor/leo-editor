@@ -355,7 +355,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             ):
                 self.createCompareClones(d, kind, parent)
             c.selectPosition(parent)
-            c.redraw()
+            u.redraw()
 
     # @+node:ekr.20170806094317.12: *5* efc.createCompareClones
     def createCompareClones(self, d: dict[str, Position], kind: str, parent: Position) -> None:
@@ -520,7 +520,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             p = c.p.insertAfter()
             p.h = 'diff'
             p.b = ''.join(aList)
-            c.redraw()
+            u.redraw()
 
     # @+node:ekr.20170806094318.6: *3* efc.getReadableTextFile
     def getReadableTextFile(self) -> str:
@@ -1301,7 +1301,7 @@ class GitDiffController:
                     g.es_print(f"diff: {i} files", color='blue')
             c.selectPosition(self.root)
             self.root.expand()
-            c.redraw(self.root)
+            u.redraw(self.root)
             print(f"done! diffed: {n} files")
 
     # @+node:ekr.20260112115520.1: *4* gdc.summary_diff_python_file & helper

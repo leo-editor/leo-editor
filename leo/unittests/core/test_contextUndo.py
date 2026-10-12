@@ -39,7 +39,9 @@ class TestContextUndo(LeoUnitTest):
         self.assertEqual(u.beads[0].command_name, 'outer')
         self.assertIsNone(u.undoBead)
         self.assertEqual(u.undoBeadLevel, 0)
-        self.cycles(lambda: self.assertEqual(p.b, 'original'), lambda: self.assertEqual(p.b, 'final'))
+        self.cycles(
+            lambda: self.assertEqual(p.b, 'original'), lambda: self.assertEqual(p.b, 'final')
+        )
 
     def test_nested_node_contexts_capture_distinct_nodes_and_same_node_once(self):
         c, u = self.c, self.c.undoer
@@ -71,6 +73,89 @@ class TestContextUndo(LeoUnitTest):
             lambda: self.assertEqual(tuple(c.all_unique_nodes()), before),
             lambda: self.assertEqual(tuple(c.all_unique_nodes()), after),
         )
+
+    def test_action_helpers_leave_redraw_to_caller(self):
+        c, p, u = self.c, self.c.p, self.c.undoer
+        with (
+            patch.object(c, 'redraw') as redraw,
+            patch.object(c, 'redrawAndEdit') as edit,
+            patch.object(c, 'redraw_after_head_changed') as headline,
+        ):
+            with u:
+                u.set_command_name('composed actions')
+                inserted = u.insert_node(p)
+                u.change_headline(inserted, '', 'inserted')
+                clone = u.clone_node(inserted)
+                u.delete_node(clone)
+                redraw.assert_not_called()
+                edit.assert_not_called()
+                headline.assert_not_called()
+                u.redraw(inserted)
+            redraw.assert_called_once()
+            redraw.reset_mock()
+            u.undo()
+            redraw.assert_called_once()
+            self.assertEqual(c.p, p)
+            redraw.reset_mock()
+            u.redo()
+            redraw.assert_called_once()
+            self.assertEqual(c.p, inserted)
+
+    def test_insert_command_redraw_and_edit_replays_once(self):
+        c, p, u = self.c, self.c.p, self.c.undoer
+        with patch.object(c, 'redrawAndEdit', wraps=c.redrawAndEdit) as edit:
+            inserted = c.insertHeadline()
+            edit.assert_called_once_with(inserted, selectAll=True)
+            edit.reset_mock()
+            u.undo()
+            edit.assert_called_once_with(p, selectAll=True)
+            edit.reset_mock()
+            u.redo()
+            edit.assert_called_once_with(inserted, selectAll=True)
+
+    def test_snapshot_redraw_restores_body_selection_after_refresh(self):
+        c, p, u = self.c, self.c.p, self.c.undoer
+        p.b = 'before'
+        w = c.frame.body.wrapper
+        w.setSelectionRange(1, 3, insert=1)
+        with patch.object(c, 'redraw', wraps=c.redraw) as redraw:
+            with u.change_node(p, 'edit'):
+                p.b = 'after'
+                w.setSelectionRange(2, 4, insert=4)
+                u.redraw(p)
+            redraw.assert_called_once()
+            redraw.reset_mock()
+            u.undo()
+            redraw.assert_called_once()
+            self.assertEqual(w.getSelectionRange(), (1, 3))
+            self.assertEqual(w.getInsertPoint(), 1)
+            redraw.reset_mock()
+            u.redo()
+            redraw.assert_called_once()
+            self.assertEqual(w.getSelectionRange(), (2, 4))
+            self.assertEqual(w.getInsertPoint(), 4)
+
+    def test_headline_refresh_replays_without_full_redraw(self):
+        c, p, u = self.c, self.c.p, self.c.undoer
+        old_head = p.h
+        with (
+            patch.object(c, 'redraw_after_head_changed') as headline,
+            patch.object(c, 'redraw') as redraw,
+        ):
+            with u:
+                u.set_command_name('headline')
+                u.change_headline(p, '', 'new headline')
+                u.redraw_after_head_changed()
+            headline.assert_called_once()
+            headline.reset_mock()
+            u.undo()
+            headline.assert_called_once()
+            self.assertEqual(p.h, old_head)
+            headline.reset_mock()
+            u.redo()
+            headline.assert_called_once()
+            self.assertEqual(p.h, 'new headline')
+            redraw.assert_not_called()
 
     def test_noop_context_preserves_redo(self):
         _c, p, u = self.c, self.c.p, self.c.undoer
@@ -117,15 +202,18 @@ class TestContextUndo(LeoUnitTest):
                 after = 'aef' if command == 'cutText' else 'aXYZef'
                 self.assertEqual(p.b, after)
                 self.assertTrue(c.changed)
-                def before():
+
+                def before(p=p, w=w):
                     self.assertEqual(p.b, 'abcdef')
                     self.assertEqual(w.getAllText(), p.b)
                     self.assertEqual(w.getSelectionRange(), (1, 4))
                     self.assertEqual(w.getInsertPoint(), 1)
-                self.cycles(before, lambda: self.assertEqual(p.b, after))
+
+                self.cycles(before, lambda p=p, after=after: self.assertEqual(p.b, after))
 
     def test_undo_after_actual_save_is_changed(self):
         import tempfile
+
         for initially_changed in (False, True):
             with self.subTest(initially_changed=initially_changed):
                 c, p, u = self.c, self.c.p, self.c.undoer
@@ -159,8 +247,10 @@ class TestContextUndo(LeoUnitTest):
             u.set_command_name('edit child')
             u.set_body(child, 'child after')
         self.assertTrue(parent.isDirty())
-        self.cycles(lambda: self.assertEqual(child.b, 'child before'),
-                    lambda: self.assertEqual(child.b, 'child after'))
+        self.cycles(
+            lambda: self.assertEqual(child.b, 'child before'),
+            lambda: self.assertEqual(child.b, 'child after'),
+        )
         self.assertEqual(parent.b, 'parent')
 
     def test_insert_reuses_vnode_and_preserves_later_contents(self):
@@ -172,18 +262,26 @@ class TestContextUndo(LeoUnitTest):
         inserted.b = 'body added directly'
         child = inserted.insertAsLastChild()
         child.h = 'child'
+
         def before():
             self.assertEqual(c.p, original)
             self.assertFalse(c.positionExists(inserted))
+
         def after():
             self.assertIs(c.p.v, vnode)
             self.assertEqual(c.p.h, 'renamed directly')
             self.assertEqual(c.p.b, 'body added directly')
             self.assertIs(c.p.firstChild().v, child.v)
+
         self.cycles(before, after)
 
     def test_all_insert_commands_repeat(self):
-        for command in ('insertChild', 'insertNodeAsFirstChild', 'insertNodeAsLastChild', 'insertHeadlineBefore'):
+        for command in (
+            'insertChild',
+            'insertNodeAsFirstChild',
+            'insertNodeAsLastChild',
+            'insertHeadlineBefore',
+        ):
             with self.subTest(command=command):
                 self.setUp()
                 c, u = self.c, self.c.undoer
@@ -192,19 +290,25 @@ class TestContextUndo(LeoUnitTest):
                 self.assertIsNotNone(inserted)
                 vnode = inserted.v
                 self.assertTrue(c.changed)
-                self.cycles(lambda: self.assertEqual(c.p, original), lambda: self.assertIs(c.p.v, vnode))
+                self.cycles(
+                    lambda c=c, original=original: self.assertEqual(c.p, original),
+                    lambda c=c, vnode=vnode: self.assertIs(c.p.v, vnode),
+                )
                 u.undo()
 
     def test_clone_returns_position_and_selects_it_on_redo(self):
         c, p = self.c, self.c.p
         clone = c.clone()
         self.assertEqual(clone, c.p)
+
         def before():
             self.assertFalse(p.isCloned())
             self.assertEqual(c.p, p)
+
         def after():
             self.assertTrue(p.isCloned())
             self.assertEqual(c.p, clone)
+
         self.cycles(before, after)
 
     def test_delete_first_root_adjusts_following_selection(self):
@@ -213,12 +317,15 @@ class TestContextUndo(LeoUnitTest):
         second = first.next().copy()
         c.deleteOutline()
         self.assertIs(c.p.v, second.v)
+
         def before():
             self.assertEqual(c.p, first)
             self.assertIs(c.rootPosition().next().v, second.v)
+
         def after():
             self.assertIs(c.p.v, second.v)
             self.assertEqual(c.p.childIndex(), 0)
+
         self.cycles(before, after)
 
     def test_delete_selected_subtree_preserves_children(self):
@@ -229,8 +336,10 @@ class TestContextUndo(LeoUnitTest):
         p.expand()
         c.selectPosition(child)
         c.deleteOutline()
-        self.cycles(lambda: self.assertIs(c.p.firstChild().v, grandchild.v),
-                    lambda: self.assertFalse(c.positionExists(child)))
+        self.cycles(
+            lambda: self.assertIs(c.p.firstChild().v, grandchild.v),
+            lambda: self.assertFalse(c.positionExists(child)),
+        )
 
     def test_outline_context_preserves_clones_and_nested_user_attributes(self):
         c, p, u = self.c, self.c.p, self.c.undoer
@@ -242,14 +351,17 @@ class TestContextUndo(LeoUnitTest):
             child.v.u['nested']['items'].append(2)
             child.b = 'new body'
             c.redraw(child)
+
         def before():
             self.assertTrue(child.isCloned())
             self.assertEqual(child.v.u, {'nested': {'items': [1]}})
             self.assertEqual(child.b, '')
+
         def after():
             self.assertFalse(child.isCloned())
             self.assertEqual(child.v.u, {'nested': {'items': [1, 2]}})
             self.assertEqual(child.b, 'new body')
+
         self.cycles(before, after)
 
     def test_nested_bulk_and_action_helpers_make_one_record(self):
@@ -261,8 +373,10 @@ class TestContextUndo(LeoUnitTest):
                 u.set_body(p, 'after')
                 clone = u.clone_node(p)
         self.assertEqual(len(u.beads), 1)
-        self.cycles(lambda: (self.assertEqual(p.b, 'before'), self.assertFalse(p.isCloned())),
-                    lambda: (self.assertEqual(p.b, 'after'), self.assertEqual(c.p, clone)))
+        self.cycles(
+            lambda: (self.assertEqual(p.b, 'before'), self.assertFalse(p.isCloned())),
+            lambda: (self.assertEqual(p.b, 'after'), self.assertEqual(c.p, clone)),
+        )
 
     def test_plain_and_clone_preserving_paste_repeat(self):
         for retain in (False, True):
@@ -278,8 +392,13 @@ class TestContextUndo(LeoUnitTest):
                 pasted_child = pasted.firstChild().v
                 self.assertEqual(vnode is p.v, retain)
                 self.assertEqual(pasted_child is child.v, retain)
-                self.cycles(lambda: self.assertEqual(c.hiddenRootNode.children, before),
-                            lambda: (self.assertIs(c.p.v, vnode), self.assertIs(c.p.firstChild().v, pasted_child)))
+                self.cycles(
+                    lambda c=c, before=before: self.assertEqual(c.hiddenRootNode.children, before),
+                    lambda c=c, vnode=vnode, pasted_child=pasted_child: (
+                        self.assertIs(c.p.v, vnode),
+                        self.assertIs(c.p.firstChild().v, pasted_child),
+                    ),
+                )
 
     def test_move_context_does_not_scan_outline(self):
         c, p, u = self.c, self.c.p, self.c.undoer
@@ -287,7 +406,9 @@ class TestContextUndo(LeoUnitTest):
         c.selectPosition(sibling)
         with patch.object(u, 'capture_outline', side_effect=AssertionError('whole outline scan')):
             c.moveOutlineRight()
-        self.cycles(lambda: self.assertEqual(c.p, sibling), lambda: self.assertEqual(c.p.parent(), p))
+        self.cycles(
+            lambda: self.assertEqual(c.p, sibling), lambda: self.assertEqual(c.p.parent(), p)
+        )
 
     def test_bulk_context_releases_state_after_exception_and_can_undo_partial_work(self):
         _c, p, u = self.c, self.c.p, self.c.undoer
@@ -306,8 +427,10 @@ class TestContextUndo(LeoUnitTest):
 
     def test_replay_exception_resets_flags_and_keeps_pointer(self):
         u, p = self.c.undoer, self.c.p
+
         def fail():
             raise RuntimeError('replay')
+
         with u:
             u.set_command_name('failure')
             u.set_body(p, 'changed')
@@ -367,7 +490,10 @@ class TestContextUndo(LeoUnitTest):
                     w.setSelectionRange(len(new), len(new))
                     u.type_text(p, 'Typing', old, new, oldSel=(len(old), len(old)))
                     self.assertIsInstance(u.beads[-1], TypingBead)
-                    self.cycles(lambda: self.assertEqual(p.b, old), lambda: self.assertEqual(p.b, new))
+                    self.cycles(
+                        lambda old=old: self.assertEqual(p.b, old),
+                        lambda new=new: self.assertEqual(p.b, new),
+                    )
                     self.assertEqual(p.isMarked(), marked)
 
     def test_typing_granularity_and_save_boundary(self):
@@ -418,9 +544,11 @@ class TestContextUndo(LeoUnitTest):
     def test_dual_mode_harness_sets_and_restores_switch(self):
         seen = []
         old = g.new_undoers
+
         def exercise(test):
             seen.append(g.new_undoers)
             test.assertIsNotNone(test.c)
+
         self.run_undo_test(exercise)
         self.assertEqual(seen, [True, False])
         self.assertEqual(g.new_undoers, old)
@@ -456,12 +584,16 @@ class TestContextUndo(LeoUnitTest):
         second = first.insertAfter()
         second.h = 'A'
         c.sortChildren()
-        self.cycles(lambda: self.assertEqual(p.v.children, [first.v, second.v]),
-                    lambda: self.assertEqual(p.v.children, [second.v, first.v]))
+        self.cycles(
+            lambda: self.assertEqual(p.v.children, [first.v, second.v]),
+            lambda: self.assertEqual(p.v.children, [second.v, first.v]),
+        )
         u.clearUndoState()
         c.markSubheads()
-        self.cycles(lambda: self.assertFalse(first.isMarked() or second.isMarked()),
-                    lambda: self.assertTrue(first.isMarked() and second.isMarked()))
+        self.cycles(
+            lambda: self.assertFalse(first.isMarked() or second.isMarked()),
+            lambda: self.assertTrue(first.isMarked() and second.isMarked()),
+        )
 
     def test_marked_clone_and_copy_commands_repeat(self):
         for name in ('cloneMarked', 'copyMarked'):
@@ -475,9 +607,13 @@ class TestContextUndo(LeoUnitTest):
                 container = c.p.copy()
                 result_child = container.firstChild().v
                 self.assertEqual(result_child is child.v, name == 'cloneMarked')
-                self.cycles(lambda: self.assertEqual(c.hiddenRootNode.children, before),
-                            lambda: (self.assertEqual(c.p, container),
-                                     self.assertIs(c.p.firstChild().v, result_child)))
+                self.cycles(
+                    lambda c=c, before=before: self.assertEqual(c.hiddenRootNode.children, before),
+                    lambda c=c, container=container, result_child=result_child: (
+                        self.assertEqual(c.p, container),
+                        self.assertIs(c.p.firstChild().v, result_child),
+                    ),
+                )
 
     def test_drag_clone_is_removed_on_undo(self):
         c, p = self.c, self.c.p
@@ -486,20 +622,32 @@ class TestContextUndo(LeoUnitTest):
         c.dragCloneToNthChildOf(p, target, 0)
         clone = c.p.copy()
         self.assertTrue(p.isCloned())
-        self.cycles(lambda: (self.assertEqual(c.hiddenRootNode.children, before),
-                             self.assertFalse(p.isCloned())),
-                    lambda: (self.assertEqual(c.p, clone), self.assertTrue(p.isCloned())))
+        self.cycles(
+            lambda: (
+                self.assertEqual(c.hiddenRootNode.children, before),
+                self.assertFalse(p.isCloned()),
+            ),
+            lambda: (self.assertEqual(c.p, clone), self.assertTrue(p.isCloned())),
+        )
 
     def test_randomized_composite_operations_restore_graph(self):
         import random
+
         c, u = self.c, self.c.undoer
         rng = random.Random(4996)
+
         def graph():
             return {
-                v.gnx: (v.h, v.b, v.isMarked(), tuple(child.gnx for child in v.children),
-                        tuple(sorted(parent.gnx for parent in v.parents)))
+                v.gnx: (
+                    v.h,
+                    v.b,
+                    v.isMarked(),
+                    tuple(child.gnx for child in v.children),
+                    tuple(sorted(parent.gnx for parent in v.parents)),
+                )
                 for v in [c.hiddenRootNode, *c.all_unique_nodes()]
             }
+
         snapshots = [graph()]
         for i in range(40):
             positions = list(c.all_positions())
@@ -555,12 +703,14 @@ class TestContextUndo(LeoUnitTest):
     def test_core_callers_do_not_use_legacy_undo_api(self):
         root = Path(g.__file__).parents[1]
         legacy = {
-            name for name in dir(self.c.undoer)
+            name
+            for name in dir(self.c.undoer)
             if name.startswith(('before', 'after')) and name[6:7].isupper()
         }
         # Match all public before/after methods, including aliases.
-        legacy.update(name for name in dir(self.c.undoer)
-                      if name.startswith('after') and name[5:6].isupper())
+        legacy.update(
+            name for name in dir(self.c.undoer) if name.startswith('after') and name[5:6].isupper()
+        )
         for directory in ('core', 'commands'):
             for path in (root / directory).glob('*.py'):
                 if path.name == 'leoUndo.py':

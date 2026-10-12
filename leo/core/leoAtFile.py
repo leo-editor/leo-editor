@@ -2705,7 +2705,7 @@ class AtFile:
             c.refreshFromDisk(root)
             c.selectPosition(old_p)
             c.contractAllOtherNodes()
-            c.redraw(old_p)
+            u.redraw(old_p)
         return True
 
     # @+node:vv.20260807130000.1: *6* at.runRuff

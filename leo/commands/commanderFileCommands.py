@@ -354,7 +354,7 @@ def import_txt_file(self: Self, fn: str) -> None:
         s, e = g.readFileIntoString(fn, kind='@edit')
         p.b = s or ''
         c.setChanged()
-        c.redraw(p)
+        u.redraw(p)
 
 
 # @+node:ekr.20031218072017.1623: *3* c_file.new
@@ -867,7 +867,7 @@ def flattenOutlineToNode(self: Self, event: LeoKeyEvent | None = None) -> None:
         p.h = f"Flattened {root.h}"
         p.b = ''.join(aList).strip() + '\n'
         c.selectPosition(p)
-        c.redraw(p)
+        u.redraw(p)
 
 
 # @+node:ekr.20031218072017.2857: *3* c_file.outlineToCWEB
@@ -1038,7 +1038,7 @@ def readFileIntoNode(self: Self, event: LeoKeyEvent | None = None) -> None:
         p.setHeadString('@read-file-into-node ' + fileName)
         p.setBodyString(s)
         w.setAllText(s)
-        c.redraw(p)
+        u.redraw(p)
 
 
 # @+node:ekr.20070915142635: *3* c_file.writeFileFromNode

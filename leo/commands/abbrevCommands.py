@@ -213,7 +213,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 prevSibling.expand()
 
             # End the undo.
-            c.redraw(c.p)
+            u.redraw(c.p)
 
     # @+node:ekr.20260515084054.1: *5* abbrev.init_place_holder_search
     def init_place_holder_search(self, *, node_only: bool) -> None:
@@ -276,7 +276,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
 
         # Start the undo.
         with u.change_node(p, 'Abbreviation'):
-
             # Make the replacement.
             w.delete(i, j)
             w.insert(i, s)
@@ -284,6 +283,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             # Update only body text. Setting p.h here would be wrong.
             if not self.in_head:
                 p.v.b = w.getAllText()
+            u.redraw(c.p)
 
             # Complete the undo.
 

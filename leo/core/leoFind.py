@@ -504,7 +504,6 @@ class LeoFind:
             return p.isMarked()
 
         with u.change_outline(undoType):
-
             root = c.cloneFindByPredicate(
                 generator=c.all_unique_positions,
                 predicate=isMarked,
@@ -520,7 +519,7 @@ class LeoFind:
                 n = root.numberOfChildren()
                 root.b = f"# Found {n} marked node{g.plural(n)}"
                 c.selectPosition(root)
-                c.redraw(root)
+                u.redraw(root)
             return bool(root)
 
     # @+node:ekr.20140828080010.18532: *4* find.clone-find-parents
@@ -558,7 +557,7 @@ class LeoFind:
                     n = found.numberOfChildren()
                     clone._linkCopiedAsNthChild(found, n)
             c.setChanged()
-            c.redraw(found)
+            u.redraw(found)
             return True
 
     # @+node:ekr.20150629084204.1: *4* find.find-def/var & helper
@@ -733,7 +732,6 @@ class LeoFind:
         ftm = self.ftm
         u = c.undoer
         with u.change_outline('find-def'):
-
             # Create the found node.
             found = c.lastTopLevel().insertAfter()
             assert found.v
@@ -755,7 +753,7 @@ class LeoFind:
             # Set the undo data.
             c.setChanged()
             found.expand()
-            c.redraw(found)
+            u.redraw(found)
 
     # @+node:ekr.20240525172445.1: *6* find._make_patterns
     bad_regex_patterns: list[str] = []
@@ -1286,7 +1284,7 @@ class LeoFind:
             t2 = time.process_time()
             if not g.unitTesting:  # pragma: no cover
                 g.es_print(f"changed {count} instances{g.plural(count)} in {t2 - t1:4.2f} sec.")
-            c.redraw(new_p)
+            u.redraw(new_p)
             self.restore(saveData)
             return count
 
@@ -1606,7 +1604,7 @@ class LeoFind:
             assert c.positionExists(found, trace=True), found
             c.setChanged()
             c.selectPosition(found)
-            c.redraw()
+            u.redraw()
             return len(clones), found
 
     # @+node:ekr.20210110073117.12: *6* find._create_clone_tag_nodes
@@ -1779,7 +1777,6 @@ class LeoFind:
             return {}
         # Check first if need to make a 'group' undo bead
         with u.change_outline(undoType):
-
             # Create the result dict.
             result_string = self.make_result_from_matches(matches_dict)
             # Create the summary node.
@@ -1795,7 +1792,7 @@ class LeoFind:
                 # Finish undo group only if mark_finds is true
 
             c.setChanged()
-            c.redraw()
+            u.redraw()
             # Return a dict containing the actual results and statistics.
             return {
                 'distinct_body_lines': distinct_body_lines,
@@ -2560,6 +2557,7 @@ class LeoFind:
                 p.setMarked()
                 p.setDirty()
             return True
+            u.redraw(c.p)
 
     # @+node:ekr.20210110073117.31: *4* find.check_args
     def check_args(self, tag: str) -> bool:

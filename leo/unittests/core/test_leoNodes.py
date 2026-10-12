@@ -534,6 +534,7 @@ class TestNodes(LeoUnitTest):
                 self.assertEqual(c.p.h, 'inserted')
                 self.assertEqual(c.p.back(), first)
                 self.assertIs(c.p.next().v, last.v)
+
         self.run_undo_test(insert_node_test)
 
     # @+node:ekr.20210830095545.47: *4* TestNodes.test_move_outline_down

@@ -13,13 +13,16 @@ Use the smallest context that captures the operation:
 with c.undoer.change_node(p, 'Edit Node'):
     p.b = new_body
     p.u['metadata'] = {'value': 1}
+    c.undoer.redraw(p)
 
 with c.undoer.change_position(p, 'Move Node'):
     p.moveToLastChildOf(parent)
+    c.undoer.redraw(p)
 
 with c.undoer.change_outline('Bulk Edit'):
     # Perform structural changes, changes to clones, or edits to many nodes.
     perform_bulk_edit()
+    c.undoer.redraw(c.p)
 ```
 
 `change_node` captures headline, body, marked state, and a deep copy of user
@@ -56,7 +59,16 @@ with c.undoer as u:
     inserted = u.insert_node(c.p)
     u.set_body(inserted, 'New body')
     u.change_headline(inserted, '', 'New headline')
+    u.redraw_and_edit(inserted)
 ```
+
+The outer caller requests one redraw per context, after all edits, using
+`u.redraw(p)`, `u.redraw_and_edit(p, select_all=True)`, or
+`u.redraw_after_head_changed()`. Action helpers and snapshot restoration do
+not redraw. The redraw helpers perform the initial refresh and register one
+final refresh for undo/redo, before restoring body selection and scroll.
+Nested contexts share the final redraw callback. Redraw helpers also work
+with `change_outline(enabled=False)` without recording undo callbacks.
 
 Action helpers require an active context before mutating anything:
 

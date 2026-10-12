@@ -2238,9 +2238,9 @@ class VNode:
         'scrollBarSpot',      # Not written to any file.
         'selectionLength',    # Not written to any file.
         'selectionStart',     # Not written to any file.
-        'undo_info',          # Optional per-node undo history; not written to files.
         'statusBits',
         'tempAttributes',     # Injected by read code.
+        'undo_info',          # Optional per-node undo history; not written to files.
         'unknownAttributes',
     ]  # fmt: skip
 

@@ -63,6 +63,7 @@ def addComments(self: Self, event: LeoKeyEvent | None = None) -> None:
         j = max(i, len(head) + len(middle) - 1)
         w.setSelectionRange(i, j, insert=j)
         w.setYScrollPosition(oldYview)
+        u.redraw(c.p)
         # "after" snapshot.
 
 
@@ -90,7 +91,9 @@ def convertAllBlanks(self: Self, event: LeoKeyEvent | None = None) -> None:
                 lines = text.split('\n')
                 for line in lines:
                     i, w = g.skip_leading_ws_with_indent(line, 0, tabWidth)
-                    s = g.computeLeadingWhitespace(w, abs(tabWidth)) + line[i:]  # use positive width.
+                    s = (
+                        g.computeLeadingWhitespace(w, abs(tabWidth)) + line[i:]
+                    )  # use positive width.
                     if s != line:
                         changed = True
                     result.append(s)
@@ -128,7 +131,9 @@ def convertAllTabs(self: Self, event: LeoKeyEvent | None = None) -> None:
                 lines = text.split('\n')
                 for line in lines:
                     i, w = g.skip_leading_ws_with_indent(line, 0, tabWidth)
-                    s = g.computeLeadingWhitespace(w, -abs(tabWidth)) + line[i:]  # use negative width.
+                    s = (
+                        g.computeLeadingWhitespace(w, -abs(tabWidth)) + line[i:]
+                    )  # use negative width.
                     if s != line:
                         changed = True
                     result.append(s)
@@ -172,6 +177,7 @@ def convertBlanks(self: Self, event: LeoKeyEvent | None = None) -> bool:
         w.setYScrollPosition(oldYview)
         # "after" snapshot.
         return True
+        u.redraw(c.p)
 
 
 # @+node:ekr.20171123135625.19: ** c_ec.convertTabs
@@ -212,6 +218,7 @@ def convertTabs(self: Self, event: LeoKeyEvent | None = None) -> bool:
 
         # "after" snapshot.
         return True
+        u.redraw(c.p)
 
 
 # @+node:ekr.20171123135625.21: ** c_ec.dedentBody (unindent-region)
@@ -225,7 +232,6 @@ def dedentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     tab_width = c.getTabWidth(c.p)
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
     with u.change_node(p, 'Unindent Region'):
-
         # Calculate the result.
         changed, result = False, []
         for line in lines:
@@ -257,6 +263,7 @@ def dedentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
         # Set the selection range and scroll position.
         w.setSelectionRange(i, j, insert=j)
         w.setYScrollPosition(oldYview)
+        u.redraw(c.p)
 
 
 # @+node:ekr.20171123135625.36: ** c_ec.deleteComments
@@ -281,7 +288,6 @@ def deleteComments(self: Self, event: LeoKeyEvent | None = None) -> None:
 
     # "Before" snapshot.
     with u.change_node(p, 'Delete Comments'):
-
         # Initial data.
         head, lines, tail, oldSel, oldYview = self.getBodyLines()
         if not lines:
@@ -339,6 +345,7 @@ def deleteComments(self: Self, event: LeoKeyEvent | None = None) -> None:
         j = ins = max(i, len(head) + len(middle) - 1)
         w.setSelectionRange(i, j, insert=ins)
         w.setYScrollPosition(oldYview)
+        u.redraw(c.p)
 
         # "after" snapshot.
 
@@ -441,7 +448,7 @@ def extract(self: Self, event: LeoKeyEvent | None = None) -> None:
 
         # Add the changes to the outer undo group.
         p.parent().expand()
-        c.redraw(p.parent())  # A bit more convenient than p.
+        u.redraw(p.parent())  # A bit more convenient than p.
         c.bodyWantsFocus()
 
 
@@ -546,7 +553,7 @@ def extractSectionNames(self: Self, event: LeoKeyEvent | None = None) -> None:
                 found = True
         c.checkOutline()
         if found:
-            c.redraw(p)
+            u.redraw(p)
         else:
             g.warning("selected text should contain section names")
         # Restore the selection.
@@ -611,7 +618,6 @@ def alwaysIndentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
 
     # "Before" snapshot.
     with u.change_node(p, 'Indent Region'):
-
         # Initial data.
         sel_1, sel_2 = w.getSelectionRange()
         tab_width = c.getTabWidth(p)
@@ -651,6 +657,7 @@ def alwaysIndentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
         # Set the selection range and scroll position.
         w.setSelectionRange(i, j, insert=j)
         w.setYScrollPosition(oldYview)
+        u.redraw(c.p)
 
         # "after" snapshot.
 
@@ -702,6 +709,7 @@ def insertBodyTime(self: Self, event: LeoKeyEvent | None = None) -> None:
         i = w.getInsertPoint()
         w.insert(i, s)
         p.v.b = w.getAllText()
+        u.redraw(c.p)
 
 
 # @+node:ekr.20171123135625.52: ** c_ec.justify-toggle-auto
@@ -737,7 +745,6 @@ def line_to_headline(self: Self, event: LeoKeyEvent | None = None) -> None:
     if not line:
         return
     with u.change_outline(undoType):
-
         # Start outer undo.
         p2 = p.insertAsLastChild()
         p2.h = line
@@ -752,7 +759,7 @@ def line_to_headline(self: Self, event: LeoKeyEvent | None = None) -> None:
 
         # Finish outer undo.
         p.expand()
-        c.redraw(p)
+        u.redraw(p)
         c.bodyWantsFocus()
 
 
@@ -899,7 +906,7 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
         p.doDelete()
 
         # Redraw.
-        c.redraw(parent)
+        u.redraw(parent)
         w.setInsertPoint(ins)
 
 
@@ -1098,6 +1105,7 @@ def rp_reformat(
         # Finish.
         p.v.b = s  # p.b would cause a redraw.
         w.setXScrollPosition(0)  # Never scroll horizontally.
+        u.redraw(c.p)
 
 
 # @+node:ekr.20171123135625.48: *3* function: rp_wrap_all_lines
@@ -1205,6 +1213,7 @@ def reformatSelection(
         # Finish.
         p.v.b = s  # p.b would cause a redraw.
         w.setXScrollPosition(0)  # Never scroll horizontally.
+        u.redraw(c.p)
 
 
 # @+node:ekr.20171123135625.12: ** c_ec.show/hide/toggleInvisibles
@@ -1274,7 +1283,7 @@ def toggleAngleBrackets(self: Self, event: LeoKeyEvent | None = None) -> None:
         p.setHeadString(s)
         p.setDirty()  # #1449.
         c.setChanged()  # #1449.
-        c.redrawAndEdit(p, selectAll=True)
+        u.redraw_and_edit(p, select_all=True)
 
 
 # @+node:ekr.20171123135625.49: ** c_ec.unformatParagraph & helper
@@ -1341,6 +1350,7 @@ def unreformat(
         w.see(ins)
         # Make sure we never scroll horizontally.
         w.setXScrollPosition(0)
+        u.redraw(c.p)
 
 
 # @+node:ekr.20180410054716.1: ** c_ec: insert-jupyter-toc & insert-markdown-toc
@@ -1377,6 +1387,7 @@ def insert_toc(c: Cmdr, kind: str) -> None:
         i = w.getInsertPoint()
         w.insert(i, s)
         p.v.b = w.getAllText()
+        u.redraw(c.p)
 
 
 # @+node:ekr.20180410054926.1: *3* make_toc
