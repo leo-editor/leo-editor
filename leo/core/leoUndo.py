@@ -232,7 +232,7 @@ class Undoer:
     # @+node:ekr.20261005094529.1: *3* u.__enter__ and __exit__
     def __enter__(self) -> Self:
         """
-        Support context manager.
+        Enter a "with" statement.
         The u.undoBead ivar exists *only* during the lifetime of the "with" statement,
         including nested "with" statements.
         """
@@ -252,7 +252,6 @@ class Undoer:
         """Called when leaving a "with" statement."""
         # *Never* pop u.beads!
         u = self
-        ### g.trace(u.undoBeadLevel)
         assert isinstance(u.undoBead, UndoBead), repr(u.undoBead)
         if not u.undoBead.command_name:
             message = "Missing call to u.set_command_name: {g.callers()}"
