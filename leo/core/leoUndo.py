@@ -158,6 +158,17 @@ class UndoBead:
 
         self.add_finishers(redraw_and_edit_redoer, redraw_and_edit_undoer)
 
+    # @+node:ekr.20261011192651.1: *3* undoBead.add_redraw_after_head_changed
+    def add_redraw_after_head_changed(self) -> None:
+
+        c = self.c
+
+        # A single callback suffices.
+        def redraw_after_head_changed_callback() -> None:
+            c.redraw_after_head_changed()
+
+        self.add_finishers(redraw_after_head_changed_callback, redraw_after_head_changed_callback)
+
     # @+node:ekr.20261011185637.1: *3* undoBead.check_undo
     def check_undo(self) -> None:
         """Perform an important sanity check."""
@@ -362,13 +373,14 @@ class Undoer:
         u.updateMarks('new')
         u.p.setDirty()
 
-    # @+node:ekr.20201107150619.1: *5* u.redoChangeHeadline (to do)
+    # @+node:ekr.20201107150619.1: *5* u.redoChangeHeadline (buggy?)
     def redoChangeHeadline(self) -> None:
         c, u = self.c, self
         ### Crashes when new undoer is hooked up ???
-        print()
-        g.trace('***********', u.p.h, repr(u.undoBead))
-        print()
+        if 0:
+            print()
+            g.trace('***********', u.p.h, repr(u.undoBead))
+            print()
 
         # selectPosition causes recoloring, so don't do this unless needed.
         if c.p != u.p:  # #1333.
@@ -2569,7 +2581,7 @@ class Undoer:
         # Do the action!
         update(new_h)
         g.doHook("headkey2", c=c, p=new_p, ch=ch, changed=True)
-        c.redraw_after_head_changed()  # Redraw doesn't work???
+        ### c.redraw_after_head_changed()  # Redraw doesn't work???
 
         # Add helpers.
 
@@ -2595,12 +2607,11 @@ class Undoer:
     # @+node:ekr.20261006155509.1: *4* u.clone_node (test)
     def clone_node(self, p: Position) -> None:
 
-        g.trace(p.h)  ###
+        ### g.trace(p.h)  ###
 
         u = self
         b = u.undoBead
         c = u.c
-        g.trace(p.h)
         clone = p.clone()
         if c.checkOutline():
             # Errors!
@@ -2620,12 +2631,12 @@ class Undoer:
         clone_p = clone.copy()
 
         def clone_node_redoer() -> None:
-            g.trace('-----')
+            ### g.trace('-----')
             c.p = old_p
             old_p.clone()
 
         def clone_node_undoer() -> None:
-            g.trace('-----')
+            ### g.trace('-----')
             clone_p.doDelete()
             c.p = old_p
 
@@ -2739,6 +2750,19 @@ class Undoer:
 
         # Add the redraw finishers.
         b.add_redraw(new_p, old_p, contract=contract)
+
+    # @+node:ekr.20261011193020.1: *4* u.redraw_after_head_changed
+    def redraw_after_head_changed(self):
+
+        u = self
+        b = u.undoBead
+        c = u.c
+
+        # Do the action. This is safe because it isn't undoable.
+        c.redraw_after_head_changed()
+
+        # Add the redrawers.
+        b.add_redraw_after_head_changed()
 
     # @+node:ekr.20261011190258.1: *4* u.redraw_and_edit
     def redraw_and_edit(

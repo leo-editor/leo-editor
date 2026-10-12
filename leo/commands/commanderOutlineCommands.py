@@ -1113,12 +1113,13 @@ def clone(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
         return None
     if g.new_undoers:
         ### test_clone still fails, but only when g.new_undoers is *always* True.
-        g.trace('======', g.callers())
+        ### g.trace('======', g.callers())
         c.endEditing()
         with c.undoer as u:
             u.set_command_name('Clone Node')
             u.clone_node(p)
-            c.redraw()
+            ## c.redraw()
+            u.redraw(c.p)  ### Experimental
             # c.checkOutline()
             c.treeWantsFocus()
     else:
@@ -1234,11 +1235,12 @@ def deleteOutline(
         return
     if g.new_undoers:
         ### test_clone still fails, but only when g.new_undoers is *always* True.
-        g.trace('======', g.callers())
+        ### g.trace('======', g.callers())
         with c.undoer as u:
             u.set_command_name(op_name)
             u.delete_node(p)
-            c.redraw(newNode)
+            # c.redraw(newNode)
+            u.redraw(newNode)
             c.checkOutline()
     else:
         u = c.undoer
