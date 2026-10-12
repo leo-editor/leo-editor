@@ -144,7 +144,7 @@ class UndoBead:
         self.add_finishers(redraw_redoer, redraw_undoer)
 
     # @+node:ekr.20261010150247.10: *3* undoBead.add_redraw_and_edit
-    def add_redraw_and_edit(self, new_p: Position, old_p: Position) -> None:
+    def add_redraw_and_edit(self, new_p: Position, old_p: Position, select_all: bool) -> None:
 
         c = self.c
         new_p = new_p.copy()
@@ -157,6 +157,16 @@ class UndoBead:
             c.redrawAndEdit(old_p)
 
         self.add_finishers(redraw_and_edit_redoer, redraw_and_edit_undoer)
+
+    # @+node:ekr.20261011185637.1: *3* undoBead.check_undo
+    def check_undo(self) -> None:
+        """Perform an important sanity check."""
+        c = self.c
+        old_p = self.old_p
+        if old_p != c.p:
+            message = f"\nUndoBead.und: Bad c.p\n  {c.p.h=}\n{old_p.h=}\n{g.callers()=}\n"
+            print()
+            g.trace(message)
 
     # @+node:ekr.20261007104333.1: *3* UndoBead.get (compatility)
     def get(self, key) -> Any:
@@ -198,7 +208,7 @@ class UndoBead:
         self.redo_finishers.append(redo_finisher)
         self.undo_finishers.append(undo_finisher)  # Execute in given order.
 
-    # @+node:ekr.20261006040137.1: *3* UndoBead.undo (sanity check)
+    # @+node:ekr.20261006040137.1: *3* UndoBead.undo
     def undo(self) -> None:
         c = self.c
         for f in self.undo_functions:
@@ -209,16 +219,7 @@ class UndoBead:
             f()
         if not self.old_changed:
             c.clearChanged()  # Elegant!
-
-        # An important sanity check.
-        old_p = self.old_p
-        if old_p != c.p:
-            message = f"\nUndoBead.und: Bad c.p\n  {c.p.h=}\n{old_p.h=}\n{g.callers()=}\n"
-            print()
-            g.trace(message)
-            # message = f"\nInternal error! Bad c.p\n  {c.p=}\n{old_p=}\n{g.callers()=}\n"
-            if False and g.unitTesting:
-                assert False
+        self.check_undo()
 
     # @-others
 
@@ -2708,10 +2709,9 @@ class Undoer:
 
         # Do the action!
         assert isinstance(b, UndoBead), repr(b)
-        ### b.must_redraw_and_edit = True
         new_p = make()
         g.doHook('create-node', c=c, p=c.p)
-        c.redrawAndEdit(c.p, selectAll=True)
+        ### c.redrawAndEdit(c.p, selectAll=True)
 
         # Add helpers.
 
@@ -2724,9 +2724,6 @@ class Undoer:
             old_p.setAllAncestorAtFileNodesDirty()
 
         b.add_helpers(insert_node_redoer, insert_node_undoer)
-
-        # Add finishers.
-        b.add_redraw_and_edit(new_p, old_p)
 
     # @+node:ekr.20261005182243.1: *4* u.redraw
     def redraw(self, new_p: Position, contract: bool = True) -> None:
@@ -2741,6 +2738,26 @@ class Undoer:
 
         # Add the redraw finishers.
         b.add_redraw(new_p, old_p, contract=contract)
+
+    # @+node:ekr.20261011190258.1: *4* u.redraw_and_edit
+    def redraw_and_edit(
+        self,
+        new_p: Position,
+        contract: bool = True,
+        select_all: bool = True,
+    ) -> None:
+
+        u = self
+        b = u.undoBead
+        c = u.c
+        old_p = c.p.copy()
+
+        # Do the action!
+        # This is safe because c.redrawAndEdit is not undoable.
+        c.redrawAndEdit(new_p, selectAll=select_all)
+
+        # Add the redraw finishers.
+        b.add_redraw_and_edit(new_p, old_p, contract=contract, select_all=select_all)
 
     # @+node:ekr.20261005140833.1: *4* u.set_body
     def set_body(self, new_p: Position, new_body: str) -> None:

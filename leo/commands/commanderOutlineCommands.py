@@ -1327,18 +1327,19 @@ def insertHeadline(
     If c.p is not expanded, insert a new node after c.p.
     """
     c = self
-    current = c.p
-    if not current:
+    if not c.p:
         return None
     c.endEditing()
     if False:  ### g.new_undoers:
         g.trace('=====', g.callers())
         with c.undoer as u:
             u.set_command_name(op_name)
-            u.insert_node(current)
+            u.insert_node(c.p)
+            u.redraw_and_edit(c.p)
         return c.p
     else:
         u = c.undoer
+        current = c.p
         # Create the new node.
         if (
             current.hasChildren() and current.isExpanded() or
