@@ -4265,17 +4265,16 @@ class TestEditCommands(LeoUnitTest):
         self.assertTrue('Help on module os' in s)
 
     # @+node:ekr.20210905064816.19: *4* TestEditCommands.xxx_test_undo_insert_node_before
-    def xxx_test_undo_insert_node_before(self):
+    def test_undo_insert_node_before(self):
 
         # This method's name should *not* start with 'test'.
         def insert_node_test2(self):
             c = self.c
             u = c.undoer
-            ### c.p = c.p.next()  ###
             c.insertHeadlineBefore()
             self.assertTrue(c.positionExists(c.p))
             self.assertEqual(u.undoMenuLabel, 'Undo Insert Node Before')
-            u.undo()  ### A real bug.
+            u.undo()
             self.assertEqual(u.redoMenuLabel, 'Redo Insert Node Before')
 
         self.run_undo_test(insert_node_test2)
