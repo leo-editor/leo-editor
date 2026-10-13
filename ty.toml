@@ -46,8 +46,8 @@ unresolved-attribute = "ignore"
 unresolved-import = "ignore"
 
 # Warn about unused suppressions.
-unused-ignore-comment = "ignore"  # Python 3.14 and 3.150rc2 differ.
-unused-type-ignore-comment = "ignore"  # Python 3.14 and 3.150rc2 differ.
+unused-ignore-comment = "ignore"  # Python 3.14 and 3.15 differ.
+unused-type-ignore-comment = "ignore"  # Python 3.14 and 3.15 differ.
 
 # Ignore warnings about overridden methods.
 invalid-method-override = "ignore"

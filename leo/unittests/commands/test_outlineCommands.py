@@ -5,9 +5,9 @@ New unit tests for Leo's outline commands.
 
 Older tests are in unittests/core/test_leoNodes.py
 """
-# pylint: disable=no-member
 
 import sys
+import textwrap
 from leo.core.leoTest2 import LeoUnitTest
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position
@@ -705,6 +705,72 @@ class TestOutlineCommands(LeoUnitTest):
         u.undo()
         assert c.checkOutline() == 0
         assert root.v.children == original_children
+
+    # @+node:ekr.20261011034851.1: *3* TestOutlineCommands.test_promote_at_others
+    def test_promote_at_others(self):
+        c = self.c
+        p = c.p
+        u = c.undoer
+        # @+<< create promote-at-others outline >>
+        # @+node:ekr.20261011040028.1: *4* << create promote-at-others outline >>
+        assert p == self.root_p
+        assert p.h == 'root'
+
+        next_p = p.next()
+        assert next_p.h == '@settings', next_p.h
+        next_p.doDelete()
+
+        before_p = self.root_p.insertAsLastChild()
+        before_p.h = 'before'
+
+        promote_p = before_p.insertAfter()
+        promote_p.h = 'Promote_test'
+
+        section_p = promote_p.insertAsLastChild()
+        section_p.h = '< < section a >>'.replace('< <', '<<')
+
+        spam_p = section_p.insertAfter()
+        spam_p.h = 'def spam'
+
+        eggs_p = spam_p.insertAfter()
+        eggs_p.h = 'def eggs'
+
+        promote_p.b = (
+            textwrap.dedent('''
+        ATlanguage python
+
+        # Comment 1.
+
+        < < section a >>
+
+        # Comment 2.
+
+        ATothers
+
+        # Comment 3.
+
+        ''')
+            .replace('AT', '@')
+            .replace('< <', '<<')
+        )
+
+        spam_p.b = textwrap.dedent('''
+        def spam():
+            pass
+        ''')
+
+        eggs_p.b = textwrap.dedent('''
+        def eggs():
+            pass
+        ''')
+        # @-<< create promote-at-others outline >>
+        # self.dump_tree(self.root_p)
+        # self.dump_headlines(c, tag='1')
+        c.p = promote_p
+        c.promoteToAtOthers()
+        for i in range(3):
+            u.undo()
+            u.redo()
 
     # @-others
 

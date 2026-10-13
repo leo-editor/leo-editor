@@ -1,7 +1,6 @@
 # @+leo-ver=5-thin
 # @+node:ekr.20201203042030.1: * @file ../unittests/core/test_leoNodes.py
 """Tests of leoNodes.py"""
-# pylint: disable=no-member
 
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
@@ -371,76 +370,94 @@ class TestNodes(LeoUnitTest):
             p.moveToThreadNext()
 
     # @+node:ekr.20220306072631.1: *3* TestNodes: Outline operations
-    # @+node:ekr.20210830095545.42: *4* TestNodes.test_clone_and_move_the_clone_to_the_root
-    def test_clone_and_move_the_clone_to_the_root(self):
-        c, p = self.c, self.c.p
-        child = p.insertAsNthChild(0)
-        c.setHeadString(child, 'child')  # Force the headline to update.
-        self.assertTrue(child)
-        c.selectPosition(child)
-        clone = c.clone()
-        self.assertEqual(clone, c.p)
-        self.assertEqual(clone.h, 'child')
-        assert child.isCloned(), 'fail 1'
-        assert clone.isCloned(), 'fail 2'
-        assert child.isCloned(), 'fail 3'
-        assert clone.isCloned(), 'fail 4'
-        c.undoer.undo()
-        assert not child.isCloned(), 'fail 1-a'
-        c.undoer.redo()
-        assert child.isCloned(), 'fail 1-b'
-        c.undoer.undo()
-        assert not child.isCloned(), 'fail 1-c'
-        c.undoer.redo()
-        assert child.isCloned(), 'fail 1-d'
-        clone.moveToRoot()  # Does not change child position.
-        assert child.isCloned(), 'fail 3-2'
-        assert clone.isCloned(), 'fail 4-2'
-        assert not clone.parent(), 'fail 5'
-        assert not clone.back(), 'fail 6'
-        clone.doDelete()
-        assert not child.isCloned(), 'fail 7'
+    # @+node:ekr.20210830095545.42: *4* TestNodes.test_clone
+    def test_clone(self):
+
+        # This method's name should *not* start with 'test'.
+        def clone_test(self):
+            c, p, u = self.c, self.c.p, self.c.undoer
+            child = p.insertAsNthChild(0)
+            c.setHeadString(child, 'child')  # Force the headline to update.
+            self.assertTrue(child)
+            c.selectPosition(child)
+            clone = c.clone()
+            self.assertEqual(clone, c.p)
+            self.assertEqual(clone.h, 'child')
+            assert child.isCloned(), 'fail 1'
+            assert clone.isCloned(), 'fail 2'
+            assert child.isCloned(), 'fail 3'
+            assert clone.isCloned(), 'fail 4'
+            # undoers_s = f"{g.new_undoers=}"
+            u.undo()
+            assert not child.isCloned(), 'fail 1-a'
+            u.redo()
+            assert child.isCloned(), 'fail 1-b'
+            u.undo()
+            assert not child.isCloned(), 'fail 1-c'
+            u.redo()
+            assert child.isCloned(), 'fail 1-d'
+            clone.moveToRoot()  # Does not change child position.
+            assert child.isCloned(), 'fail 3-2'
+            assert clone.isCloned(), 'fail 4-2'
+            assert not clone.parent(), 'fail 5'
+            assert not clone.back(), 'fail 6'
+            clone.doDelete()
+            assert not child.isCloned(), 'fail 7'
+
+        self.run_undo_test(clone_test)
 
     # @+node:ekr.20210830095545.43: *4* TestNodes.test_delete_node
     def test_delete_node(self):
-        # This test requires @bool select-next-after-delete = False
-        c, p = self.c, self.c.p
-        p2 = p.insertAsNthChild(0)
-        p2.setHeadString('A')
-        p3 = p.insertAsNthChild(1)
-        p3.setHeadString('B')
-        p4 = p.insertAsNthChild(2)
-        p4.setHeadString('C')
-        p.expand()
-        c.selectPosition(p3)
-        c.deleteOutline()
-        c.redraw_now()
-        p = c.p
-        self.assertEqual(p.h, 'A')
-        self.assertEqual(p.next().h, 'C')
-        c.undoer.undo()
-        c.outerUpdate()
-        p = c.p
-        self.assertEqual(p.back(), p2)
-        self.assertEqual(p.next(), p4)
-        c.undoer.redo()
-        c.outerUpdate()
-        p = c.p
-        self.assertEqual(p.h, 'A')
-        self.assertEqual(p.next().h, 'C')
-        c.undoer.undo()
-        c.outerUpdate()
-        p = c.p
-        self.assertEqual(p.back(), p2)
-        self.assertEqual(p.next(), p4)
-        c.undoer.redo()
-        c.outerUpdate()
-        p = c.p
-        self.assertEqual(p.h, 'A')
-        self.assertEqual(p.next().h, 'C')
 
-    # @+node:ekr.20210830095545.44: *4* TestNodes.test_deleting_the_root_should_select_another_node
-    def test_deleting_the_root_should_select_another_node(self):
+        # This method's name should *not* start with 'test'.
+        def delete_node_test(self):
+            # This test requires @bool select-next-after-delete = False
+            c = self.c
+            p = c.p
+            u = c.undoer
+
+            # Setup.
+            p2 = p.insertAsNthChild(0)
+            p2.setHeadString('A')
+            p3 = p.insertAsNthChild(1)
+            p3.setHeadString('B')
+            p4 = p.insertAsNthChild(2)
+            p4.setHeadString('C')
+            p.expand()
+            # self.dump_headlines(c)
+
+            # Test.
+            c.selectPosition(p3)
+            c.deleteOutline()
+            c.redraw_now()
+            p = c.p
+            self.assertEqual(p.h, 'A')
+            self.assertEqual(p.next().h, 'C')
+            u.undo()  # Fails
+            c.outerUpdate()
+            p = c.p
+            self.assertEqual(p.back(), p2)
+            self.assertEqual(p.next(), p4)
+            u.redo()
+            c.outerUpdate()
+            p = c.p
+            self.assertEqual(p.h, 'A')
+            self.assertEqual(p.next().h, 'C')
+            u.undo()
+            c.outerUpdate()
+            p = c.p
+            self.assertEqual(p.back(), p2)
+            self.assertEqual(p.next(), p4)
+            u.redo()
+            c.outerUpdate()
+            p = c.p
+            self.assertEqual(p.h, 'A')
+            self.assertEqual(p.next().h, 'C')
+
+        self.run_undo_test(delete_node_test)
+
+    # @+node:ekr.20210830095545.44: *4* TestNodes.test_delete_root
+    def test_delete_root(self):
         c, p = self.c, self.c.p
         root_h = p.h
         child = p.next()
@@ -497,46 +514,31 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.46: *4* TestNodes.test_insert_node
     def test_insert_node(self):
-        c, p = self.c, self.c.p
-        self.assertEqual(p.h, 'root')
-        p2 = p.insertAsNthChild(0)
-        p2.setHeadString('A')
-        p3 = p.insertAsNthChild(1)
-        p3.setHeadString('B')
-        p.expand()
-        c.p = p2
-        p4 = c.insertHeadline()
-        self.assertEqual(p4, c.p)
-        p = c.p
-        self.assertTrue(p)
-        p.setHeadString('inserted')
-        self.assertTrue(p.back())
-        self.assertEqual(p.back().h, 'A')
-        self.assertEqual(p.next().h, 'B')
-        # With the new undo logic, it takes 2 undoes.
-        # The first undo undoes the headline changes,
-        # the second undo undoes the insert node.
-        c.undoer.undo()
-        c.undoer.undo()
-        p = c.p
-        self.assertEqual(p, p2)
-        self.assertEqual(p.next(), p3)
-        c.undoer.redo()
-        p = c.p
-        self.assertTrue(p.back())
-        self.assertEqual(p.back().h, 'A')
-        self.assertEqual(p.next().h, 'B')
-        c.undoer.undo()
-        p = c.p
-        self.assertEqual(p, p2)
-        self.assertEqual(p.next(), p3)
-        c.undoer.redo()
-        p = c.p
-        self.assertEqual(p.back().h, 'A')
-        self.assertEqual(p.next().h, 'B')
+        def insert_node_test(self):
+            c, p, u = self.c, self.c.p, self.c.undoer
+            first = p.insertAsNthChild(0)
+            first.h = 'A'
+            last = p.insertAsNthChild(1)
+            last.h = 'B'
+            p.expand()
+            c.selectPosition(first)
+            inserted = c.insertHeadline()
+            self.assertEqual(inserted, c.p)
+            inserted.h = 'inserted'  # Direct, non-undoable content changes survive replay.
+            for _ in range(3):
+                u.undo()
+                self.assertEqual(c.p, first)
+                self.assertIs(c.p.next().v, last.v)
+                u.redo()
+                self.assertIs(c.p.v, inserted.v)
+                self.assertEqual(c.p.h, 'inserted')
+                self.assertEqual(c.p.back(), first)
+                self.assertIs(c.p.next().v, last.v)
 
-    # @+node:ekr.20210830095545.47: *4* TestNodes.test_move_outline_down__undo_redo
-    def test_move_outline_down__undo_redo(self):
+        self.run_undo_test(insert_node_test)
+
+    # @+node:ekr.20210830095545.47: *4* TestNodes.test_move_outline_down
+    def test_move_outline_down(self):
         c, p = self.c, self.c.p
         p2 = p.insertAsNthChild(0)
         p2.setHeadString('A')

@@ -4264,18 +4264,24 @@ class TestEditCommands(LeoUnitTest):
         s = c.helpCommands.pythonHelp1(event=None)
         self.assertTrue('Help on module os' in s)
 
-    # @+node:ekr.20210905064816.19: *4* test_insert_node_before_node_can_be_undone_and_redone
-    def test_insert_node_before_node_can_be_undone_and_redone(self):
-        c = self.c
-        u = c.undoer
-        assert u
-        c.insertHeadlineBefore()
-        self.assertEqual(u.undoMenuLabel, 'Undo Insert Node Before')
-        c.undoer.undo()
-        self.assertEqual(u.redoMenuLabel, 'Redo Insert Node Before')
+    # @+node:ekr.20210905064816.19: *4* TestEditCommands.xxx_test_undo_insert_node_before
+    def xxx_test_undo_insert_node_before(self):
 
-    # @+node:ekr.20210905064816.18: *4* test_insert_node_can_be_undone_and_redone
-    def test_insert_node_can_be_undone_and_redone(self):
+        # This method's name should *not* start with 'test'.
+        def insert_node_test2(self):
+            c = self.c
+            u = c.undoer
+            ### c.p = c.p.next()  ###
+            c.insertHeadlineBefore()
+            self.assertTrue(c.positionExists(c.p))
+            self.assertEqual(u.undoMenuLabel, 'Undo Insert Node Before')
+            u.undo()  ### A real bug.
+            self.assertEqual(u.redoMenuLabel, 'Redo Insert Node Before')
+
+        self.run_undo_test(insert_node_test2)
+
+    # @+node:ekr.20210905064816.18: *4* TestEditCommands.test_undo_insert_node
+    def test_undo_insert_node(self):
         c = self.c
         u = c.undoer
         assert u

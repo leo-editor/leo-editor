@@ -130,20 +130,16 @@ def mark_node_and_parents(event: LeoKeyEvent | None = None) -> list[Position]:
         return changed
     c.endEditing()
     u = c.undoer
-    for parent in c.p.self_and_parents():
-        if not parent.isMarked():
-            if not changed:
-                u.beforeChangeGroup(c.p, command=tag)
-            bunch = u.beforeMark(parent, command='mark')
-            parent.setMarked()
-            parent.setDirty()
-            u.afterMark(parent, command='mark', bunch=bunch)
-            changed.append(parent.copy())
-    if changed:
-        u.afterChangeGroup(c.p, undoType=tag)
-        c.setChanged()
-        c.redraw()
-    return changed
+    with u.change_outline(tag):
+        for parent in c.p.self_and_parents():
+            if not parent.isMarked():
+                parent.setMarked()
+                parent.setDirty()
+                changed.append(parent.copy())
+        if changed:
+            c.setChanged()
+            u.redraw()
+        return changed
 
 
 # @+node:ekr.20230901111715.1: *3* @g.command('promote-section-definition')
@@ -173,29 +169,21 @@ def promote_section_definition(event: LeoKeyEvent | None = None) -> None:
 
     # Start the undo group.
     ref_p = parent
-    u.beforeChangeGroup(c.p, command=tag)
+    with u.change_outline(tag):
+        # Change ref_p.b.
+        new_ref_lines = []
+        for line in g.splitLines(ref_p.b):
+            if line.strip() == ref_s:
+                new_ref_lines.extend(g.splitLines(c.p.b))
+            else:
+                new_ref_lines.append(line)
+        ref_p.b = ''.join(new_ref_lines)
 
-    # Change ref_p.b.
-    bunch1 = u.beforeChangeBody(ref_p)
-    new_ref_lines = []
-    for line in g.splitLines(ref_p.b):
-        if line.strip() == ref_s:
-            new_ref_lines.extend(g.splitLines(c.p.b))
-        else:
-            new_ref_lines.append(line)
-    ref_p.b = ''.join(new_ref_lines)
-    u.afterChangeBody(ref_p, command='change-body', bunch=bunch1)
+        # Delete and select ref_p.
+        c.p.doDelete(ref_p)
 
-    # Delete and select ref_p.
-    bunch2 = u.beforeDeleteNode(c.p)
-    c.p.doDelete(ref_p)
-    u.afterDeleteNode(ref_p, command='delete-node', bunch=bunch2)
-    c.selectPosition(ref_p)
-
-    # Finish the group.
-    u.afterChangeGroup(c.p, undoType=tag)
-    c.setChanged()
-    c.redraw(ref_p)
+        # Finish the group.
+        u.redraw(ref_p)
 
 
 # @+node:ekr.20220515193048.1: *3* @g.command('merge-node-with-next-node')
@@ -214,20 +202,14 @@ def merge_node_with_next_node(event: LeoKeyEvent | None = None) -> None:
     if not next:
         return
     # Outer undo.
-    u.beforeChangeGroup(p, command)
-    # Inner undo 1: change next.b.
-    bunch1 = u.beforeChangeBody(next)
-    next.b = p.b.rstrip() + '\n\n' + next.b
-    w.setAllText(next.b)
-    u.afterChangeBody(next, command, bunch1)
-    # Inner undo 2: delete p.
-    bunch2 = u.beforeDeleteNode(p)
-    p.doDelete(next)  # This adjusts next._childIndex.
-    c.selectPosition(next)
-    u.afterDeleteNode(next, command, bunch2)
-    # End outer undo:
-    u.afterChangeGroup(next, command)
-    c.redraw(next)
+    with u.change_outline(command):
+        # Inner undo 1: change next.b.
+        next.b = p.b.rstrip() + '\n\n' + next.b
+        w.setAllText(next.b)
+        # Inner undo 2: delete p.
+        p.doDelete(next)  # This adjusts next._childIndex.
+        # End outer undo:
+        u.redraw(next)
 
 
 # @+node:ekr.20220515193124.1: *3* @g.command('merge-node-with-prev-node')
@@ -246,20 +228,14 @@ def merge_node_with_prev_node(event: LeoKeyEvent | None = None) -> None:
     if not prev:
         return
     # Outer undo.
-    u.beforeChangeGroup(p, command)
-    # Inner undo 1: change prev.b.
-    bunch1 = u.beforeChangeBody(prev)
-    prev.b = prev.b.rstrip() + '\n\n' + p.b
-    w.setAllText(prev.b)
-    u.afterChangeBody(prev, command, bunch1)
-    # Inner undo 2: delete p, select prev.
-    bunch2 = u.beforeDeleteNode(p)
-    p.doDelete()  # No need to adjust prev._childIndex.
-    c.selectPosition(prev)
-    u.afterDeleteNode(prev, command, bunch2)
-    # End outer undo.
-    u.afterChangeGroup(prev, command)
-    c.redraw(prev)
+    with u.change_outline(command):
+        # Inner undo 1: change prev.b.
+        prev.b = prev.b.rstrip() + '\n\n' + p.b
+        w.setAllText(prev.b)
+        # Inner undo 2: delete p, select prev.
+        p.doDelete()  # No need to adjust prev._childIndex.
+        # End outer undo.
+        u.redraw(prev)
 
 
 # @+node:ekr.20190926103245.1: *3* @g.command('next-or-end-of-line')
@@ -306,10 +282,10 @@ def promoteBodies(event: LeoKeyEvent | None = None) -> None:
     if not c:
         return
     p = c.p
-    bunch = c.undoer.beforeChangeNodeContents(p)
-    result = [child.b.rstrip() + '\n\n' for child in p.subtree()]
-    p.b = ''.join(result).rstrip() + '\n\n'
-    c.undoer.afterChangeNodeContents(p, 'promote-bodies', bunch)
+    with c.undoer.change_node(p, 'promote-bodies'):
+        result = [child.b.rstrip() + '\n\n' for child in p.subtree()]
+        p.b = ''.join(result).rstrip() + '\n\n'
+        c.undoer.redraw(c.p)
 
 
 # @+node:ekr.20190323085410.1: *3* @g.command('promote-headlines')
@@ -320,10 +296,10 @@ def promoteHeadlines(event: LeoKeyEvent | None = None) -> None:
     if not c:
         return
     p = c.p
-    b = c.undoer.beforeChangeNodeContents(p)
-    if result := '\n'.join([p.h.rstrip() for p in p.subtree()]):
-        p.b = p.b.lstrip() + '\n' + result
-        c.undoer.afterChangeNodeContents(p, 'promote-headlines', b)
+    with c.undoer.change_node(p, 'promote-headlines'):
+        if result := '\n'.join([p.h.rstrip() for p in p.subtree()]):
+            p.b = p.b.lstrip() + '\n' + result
+        c.undoer.redraw(c.p)
 
 
 # @+node:ekr.20180504180647.1: *3* @g.command('select-next-trace-statement')
@@ -412,20 +388,16 @@ def unmark_node_and_parents(event: LeoKeyEvent | None = None) -> list[Position]:
     if not c:
         return changed
     u = c.undoer
-    for parent in c.p.self_and_parents():
-        if parent.isMarked():
-            if not changed:
-                u.beforeChangeGroup(c.p, command=tag)
-            bunch = u.beforeMark(parent, command='unmark')
-            parent.clearMarked()
-            parent.setDirty()
-            u.afterMark(parent, command='unmark', bunch=bunch)
-            changed.append(parent.copy())
-    if changed:
-        u.afterChangeGroup(c.p, undoType=tag)
-        c.setChanged()
-        c.redraw()
-    return changed
+    with u.change_outline(tag):
+        for parent in c.p.self_and_parents():
+            if parent.isMarked():
+                parent.clearMarked()
+                parent.setDirty()
+                changed.append(parent.copy())
+        if changed:
+            c.setChanged()
+            u.redraw()
+        return changed
 
 
 # @+node:ekr.20160514100029.1: ** class EditCommandsClass
@@ -499,21 +471,23 @@ class EditCommandsClass(BaseEditCommandsClass):
         text, if there is any, or any path like text immediately preceding the
         cursor.
         """
-        c, u = self.c, self.c.undoer
+        c = self.c
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
 
         def callback(arg: str, w: QTextMixin = w) -> None:
-            i = w.getSelectionRange()[0]
-            p = c.p
-            w.deleteTextSelection()
-            w.insert(i, arg)
-            newText = w.getAllText()
-            if g.app.gui.widget_name(w) == 'body' and p.b != newText:
-                bunch = u.beforeChangeBody(p)
-                p.v.b = newText  # p.b would cause a redraw.
-                u.afterChangeBody(p, 'insert-file-name', bunch)
+            if g.app.gui.widget_name(w) == 'body':
+                with c.undoer.change_node(c.p, 'insert-file-name'):
+                    i = w.getSelectionRange()[0]
+                    w.deleteTextSelection()
+                    w.insert(i, arg)
+                    c.p.v.b = w.getAllText()
+                    c.undoer.redraw(c.p)
+            else:
+                i = w.getSelectionRange()[0]
+                w.deleteTextSelection()
+                w.insert(i, arg)
 
         # see if the widget already contains the start of a path
 
@@ -545,35 +519,31 @@ class EditCommandsClass(BaseEditCommandsClass):
             c.notValidInBatchMode("Insert Headline Time")
             return
         w = c.frame.tree.headline_wrapper(p)
-        if w and not g.app.inBridge:
-            # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1185933
-            # insert-headline-time should insert at cursor.
-            # Note: The command must be bound to a key for this to work.
+        with c.undoer.change_outline('insertHeadlineTime'):
+            if w and not g.app.inBridge:
+                # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1185933
+                # insert-headline-time should insert at cursor.
+                # Note: The command must be bound to a key for this to work.
 
-            ins = w.getInsertPoint()
-            s = c.getTime(body=False)
-            w.insert(ins, s)
-        else:
-            c.endEditing()
-            time = c.getTime(body=False)
-
-            u = self.c.undoer
-            undoType = 'insert-headline-time'
-            undoData = u.beforeChangeNodeContents(p)
-
-            if s := p.h.rstrip():
-                p.h = ' '.join([s, time])
+                ins = w.getInsertPoint()
+                s = c.getTime(body=False)
+                w.insert(ins, s)
             else:
-                p.h = time
+                c.endEditing()
+                time = c.getTime(body=False)
 
-            c.setChanged()
-            p.setDirty()
-            u.afterChangeNodeContents(p, undoType, undoData)
-            # For external clients
-            if g.app.inBridge:
-                c.redraw()
-            else:
-                c.redrawAndEdit(p, selectAll=True)  # regular client
+                if s := p.h.rstrip():
+                    p.h = ' '.join([s, time])
+                else:
+                    p.h = time
+
+                c.setChanged()
+                p.setDirty()
+                # For external clients
+                if g.app.inBridge:
+                    c.undoer.redraw()
+                else:
+                    c.undoer.redraw_and_edit(p, select_all=True)  # regular client
 
     # @+node:tom.20210922140250.1: *3* ec.capitalizeHeadline
     @cmd('capitalize-headline')
@@ -588,16 +558,14 @@ class EditCommandsClass(BaseEditCommandsClass):
 
         h = p.h
         undoType = 'capitalize-headline'
-        undoData = u.beforeChangeNodeContents(p)
-
-        words = [w.capitalize() for w in h.split()]
-        capitalized = ' '.join(words)
-        if capitalized != h:
-            p.h = capitalized
-            c.setChanged()
-            p.setDirty()
-            u.afterChangeNodeContents(p, undoType, undoData)
-            c.redraw()
+        with u.change_node(p, undoType):
+            words = [w.capitalize() for w in h.split()]
+            capitalized = ' '.join(words)
+            if capitalized != h:
+                p.h = capitalized
+                c.setChanged()
+                p.setDirty()
+                u.redraw()
 
     # @+node:tbrown.20151118134307.1: *3* ec.path_for_p
     def path_for_p(self, c: Cmdr, p: Position) -> str:
@@ -722,32 +690,30 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
 
         undoType = 'capitalize-body-words'
-        undoData = u.beforeChangeNodeContents(p)
+        with u.change_node(p, undoType):
+            i, j = w.getSelectionRange()
+            if i == j:
+                sel = ''
+            else:
+                sel = s[i:j]
+            text = sel or s
+            if sel:
+                prefix = s[:i]
+                suffix = s[j:]
 
-        i, j = w.getSelectionRange()
-        if i == j:
-            sel = ''
-        else:
-            sel = s[i:j]
-        text = sel or s
-        if sel:
-            prefix = s[:i]
-            suffix = s[j:]
+            # Thanks to
+            # https://thispointer.com/python-capitalize-the-first-letter-of-each-word-in-a-string/
+            def convert_to_uppercase(m: re.Match) -> str:
+                """Convert the second group to uppercase and join both group 1 & group 2"""
+                return m.group(1) + m.group(2).upper()
 
-        # Thanks to
-        # https://thispointer.com/python-capitalize-the-first-letter-of-each-word-in-a-string/
-        def convert_to_uppercase(m: re.Match) -> str:
-            """Convert the second group to uppercase and join both group 1 & group 2"""
-            return m.group(1) + m.group(2).upper()
+            capitalized = re.sub(r"(^|\s)(\S)", convert_to_uppercase, text)
 
-        capitalized = re.sub(r"(^|\s)(\S)", convert_to_uppercase, text)
-
-        if capitalized != text:
-            p.b = prefix + capitalized + suffix if sel else capitalized
-            c.setChanged()
-            p.setDirty()
-            u.afterChangeNodeContents(p, undoType, undoData)
-            c.redraw()
+            if capitalized != text:
+                p.b = prefix + capitalized + suffix if sel else capitalized
+                c.setChanged()
+                p.setDirty()
+                u.redraw()
 
     # @+node:ekr.20150514063305.195: *3* ec: clicks and focus
     # @+node:ekr.20150514063305.196: *4* ec.activate-x-menu & activateMenu
@@ -1220,13 +1186,11 @@ class EditCommandsClass(BaseEditCommandsClass):
         """
         c, command = self.c, 'add-all-headline-numbers'
         u = c.undoer
-        data = u.beforeChangeMultiHeadline(c.p)
-        for p in c.all_unique_positions():
-            self.hn_delete(p)
-            self.hn_add(p)
-        c.setChanged()
-        u.afterChangeMultiHeadline(command, data)
-        c.redraw()
+        with u.change_outline(command):
+            for p in c.all_unique_positions():
+                self.hn_delete(p)
+                self.hn_add(p)
+            u.redraw()
 
     # @+node:ekr.20230328013256.1: *5* hn_add
     def hn_add(self, p: Position) -> None:
@@ -1268,14 +1232,12 @@ class EditCommandsClass(BaseEditCommandsClass):
         c, command = self.c, 'add-subtree-headline-numbers'
         u = c.undoer
         root = c.p
-        data = u.beforeChangeMultiHeadline(root)
-        for p in c.p.subtree():
-            self.hn_delete(p)
-            self.hn_add_relative(p, root)
-        c.setChanged()
-        u.afterChangeMultiHeadline(command, data)
-        root.expand()
-        c.redraw()
+        with u.change_outline(command):
+            for p in c.p.subtree():
+                self.hn_delete(p)
+                self.hn_add_relative(p, root)
+            root.expand()
+            u.redraw()
 
     # @+node:ekr.20230329031045.1: *5* hn_add_relative
     def hn_add_relative(self, p: Position, root: Position) -> None:
@@ -1301,12 +1263,10 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Delete all headline numbers in the entire outline."""
         c, command = self.c, 'delete-all-headline-numbers'
         u = c.undoer
-        data = u.beforeChangeMultiHeadline(c.p)
-        for p in c.all_unique_positions():
-            self.hn_delete(p)
-        c.setChanged()
-        u.afterChangeMultiHeadline(command, data)
-        c.redraw()
+        with u.change_outline(command):
+            for p in c.all_unique_positions():
+                self.hn_delete(p)
+            u.redraw()
 
     # @+node:ekr.20230328015118.1: *4* hn-delete-subtree
     @cmd('hn-delete-subtree')
@@ -1316,12 +1276,10 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Delete all headline numbers in c.p's subtree."""
         c, command = self.c, 'delete-subtree-headline-numbers'
         u = c.undoer
-        data = u.beforeChangeMultiHeadline(c.p)
-        for p in c.p.subtree():
-            self.hn_delete(p)
-        c.setChanged()
-        u.afterChangeMultiHeadline(command, data)
-        c.redraw()
+        with u.change_outline(command):
+            for p in c.p.subtree():
+                self.hn_delete(p)
+            u.redraw()
 
     # @+node:ekr.20230328014223.1: *4* hn_delete
     # Match exactly one trailing blank.
@@ -1558,20 +1516,19 @@ class EditCommandsClass(BaseEditCommandsClass):
             if line.strip():
                 break
         self.beginCommand(w, undoType=undoType)
-        try:
-            bunch = u.beforeChangeBody(p)
-            k = g.skip_ws(s, i)
-            ws = s[i:k]
-            i2, j2 = g.getLine(s, ins)
-            k = g.skip_ws(s, i2)
-            line = ws + s[k:j2]
-            w.delete(i2, j2)
-            w.insert(i2, line)
-            w.setInsertPoint(i2 + len(ws))
-            p.v.b = w.getAllText()
-            u.afterChangeBody(p, undoType, bunch)
-        finally:
-            self.endCommand(changed=True, setLabel=True)
+        with u.change_outline(undoType):
+            try:
+                k = g.skip_ws(s, i)
+                ws = s[i:k]
+                i2, j2 = g.getLine(s, ins)
+                k = g.skip_ws(s, i2)
+                line = ws + s[k:j2]
+                w.delete(i2, j2)
+                w.insert(i2, line)
+                w.setInsertPoint(i2 + len(ws))
+                p.v.b = w.getAllText()
+            finally:
+                self.endCommand(changed=True, setLabel=True)
 
     # @+node:ekr.20150514063305.245: *3* ec: info
     # @+node:ekr.20210311154956.1: *4* ec.copyGnx
@@ -1770,25 +1727,22 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         tag = 'clean-all-lines'
         roots = g.findRootsWithPredicate(c, c.p)
-        u.beforeChangeGroup(c.p, tag)
-        n = 0
-        for root in roots:
-            for p in root.self_and_subtree():
-                lines = []
-                for line in g.splitLines(p.b):
-                    if line.rstrip():
-                        lines.append(line.rstrip())
-                    if line.endswith('\n'):
-                        lines.append('\n')
-                s2 = ''.join(lines)
-                if s2 != p.b:
-                    bunch = u.beforeChangeNodeContents(p)
-                    p.b = s2
-                    p.setDirty()
-                    n += 1
-                    u.afterChangeNodeContents(p, tag, bunch)
-        u.afterChangeGroup(c.p, tag)
-        g.es(f"cleaned {n} nodes")
+        with u.change_outline(tag):
+            n = 0
+            for root in roots:
+                for p in root.self_and_subtree():
+                    lines = []
+                    for line in g.splitLines(p.b):
+                        if line.rstrip():
+                            lines.append(line.rstrip())
+                        if line.endswith('\n'):
+                            lines.append('\n')
+                    s2 = ''.join(lines)
+                    if s2 != p.b:
+                        p.b = s2
+                        p.setDirty()
+                        n += 1
+            g.es(f"cleaned {n} nodes")
 
     # @+node:ekr.20150514063305.256: *4* ec.cleanLines
     @cmd('clean-lines')
@@ -2052,29 +2006,29 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not w:
             return
         # "Before" snapshot.
-        bunch = u.beforeChangeBody(p)
-        # Initial data.
-        oldYview = w.getYScrollPosition()
-        lines = g.splitLines(w.getAllText())
-        # Calculate the result.
-        result_list = []
-        changed = False
-        for line in lines:
-            if line.strip():
-                result_list.append(line)
-            else:
-                changed = True
-        if not changed:
-            return  # pragma: no cover (defensive)
-        # Set p.b and w's text first.
-        result = ''.join(result_list)
-        p.b = result
-        w.setAllText(result)
-        i, j = 0, max(0, len(result) - 1)
-        w.setSelectionRange(i, j, insert=j)
-        w.setYScrollPosition(oldYview)
-        # "after" snapshot.
-        c.undoer.afterChangeBody(p, 'remove-blank-lines', bunch)
+        with u.change_node(p, 'remove-blank-lines'):
+            # Initial data.
+            oldYview = w.getYScrollPosition()
+            lines = g.splitLines(w.getAllText())
+            # Calculate the result.
+            result_list = []
+            changed = False
+            for line in lines:
+                if line.strip():
+                    result_list.append(line)
+                else:
+                    changed = True
+            if not changed:
+                return  # pragma: no cover (defensive)
+            # Set p.b and w's text first.
+            result = ''.join(result_list)
+            p.b = result
+            w.setAllText(result)
+            i, j = 0, max(0, len(result) - 1)
+            w.setSelectionRange(i, j, insert=j)
+            w.setYScrollPosition(oldYview)
+            u.redraw(c.p)
+            # "after" snapshot.
 
     # @+node:ekr.20150514063305.267: *4* ec.replaceCurrentCharacter
     @cmd('replace-current-character')
@@ -2172,11 +2126,11 @@ class EditCommandsClass(BaseEditCommandsClass):
         # Update the text and handle undo.
         newText = w.getAllText()
         if newText != oldText:
-            # Call u.doTyping to honor the user's undo granularity.
+            # Call u.type_text to honor the user's undo granularity.
             newSel = w.getSelectionRange()
             newInsert = w.getInsertPoint()
             newSel = w.getSelectionRange()
-            u.doTyping(
+            u.type_text(
                 p,
                 'Typing',
                 oldText,
@@ -3558,7 +3512,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('fill-region')
     def fillRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Fill all paragraphs in the selected text."""
-        c, p = self.c, self.c.p
+        c, _p = self.c, self.c.p
         undoType = 'fill-region'
         w = event.w if event else c.frame.body.wrapper
         if not w:
@@ -3566,16 +3520,15 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not g.isTextWrapper(w):
             return
         i, j = w.getSelectionRange()
-        c.undoer.beforeChangeGroup(p, undoType)
-        while 1:
-            progress = w.getInsertPoint()
-            c.reformatParagraph(event, undoType='reformat-paragraph')
-            ins = w.getInsertPoint()
-            s = w.getAllText()
-            w.setInsertPoint(ins)
-            if progress >= ins or ins >= j or ins >= len(s):
-                break
-        c.undoer.afterChangeGroup(p, undoType)
+        with c.undoer.change_outline(undoType):
+            while 1:
+                progress = w.getInsertPoint()
+                c.reformatParagraph(event, undoType='reformat-paragraph')
+                ins = w.getInsertPoint()
+                s = w.getAllText()
+                w.setInsertPoint(ins)
+                if progress >= ins or ins >= j or ins >= len(s):
+                    break
 
     # @+node:ekr.20150514063305.322: *4* ec.fillRegionAsParagraph
     @cmd('fill-region-as-paragraph')
@@ -4180,14 +4133,13 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
-        if p and p.v.u:
-            bunch = u.beforeChangeUA(p)
-            p.v.u = {}
-            # #1276.
-            p.setDirty()
-            c.setChanged()
-            u.afterChangeUA(p, 'clear-node-uas', bunch)
-            c.redraw()
+        with u.change_outline('clear-node-uas'):
+            if p and p.v.u:
+                p.v.u = {}
+                # #1276.
+                p.setDirty()
+                c.setChanged()
+                u.redraw()
 
     @cmd('clear-all-uas')
     def clearAllUas(self, event: LeoKeyEvent | None = None) -> None:
@@ -4195,20 +4147,16 @@ class EditCommandsClass(BaseEditCommandsClass):
         c, u, undoType = self.c, self.c.undoer, 'clear-all-uas'
         # #1276.
         changed = False
-        first_p = c.p
-        for p in c.all_unique_positions():
-            if p.v.u:
-                if not changed:  # #4443
-                    u.beforeChangeGroup(first_p, undoType)
-                    changed = True
-                bunch = u.beforeChangeUA(p)
-                p.v.u = {}
-                p.setDirty()
-                u.afterChangeUA(p, undoType, bunch)
-        if changed:
-            c.setChanged()
-            u.afterChangeGroup(c.p, undoType)
-            c.redraw()
+        with u.change_outline(undoType):
+            for p in c.all_unique_positions():
+                if p.v.u:
+                    if not changed:  # #4443
+                        changed = True
+                    p.v.u = {}
+                    p.setDirty()
+            if changed:
+                c.setChanged()
+                u.redraw()
 
     # @+node:ekr.20150514063305.350: *4* ec.showUas & showAllUas
     @cmd('show-all-uas')
@@ -4253,15 +4201,14 @@ class EditCommandsClass(BaseEditCommandsClass):
         p = c.p
         val = k.arg
         d = p.v.u
-        bunch = u.beforeChangeUA(p)
-        d[self.uaName] = val
-        p.setDirty()
-        c.setChanged()
-        u.afterChangeUA(p, 'set-ua', bunch)
-        self.showNodeUas()
-        k.clearState()
-        k.resetLabel()
-        k.showStateAndMode()
+        with u.change_node(p, 'set-ua'):
+            d[self.uaName] = val
+            p.setDirty()
+            self.showNodeUas()
+            k.clearState()
+            k.resetLabel()
+            k.showStateAndMode()
+            u.redraw(c.p)
 
     # @-others
 

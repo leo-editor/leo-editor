@@ -441,19 +441,18 @@ class Chapter:
         # Recompute p *after* switching roots.
         # Careful: c.selectPosition would pop the hoist stack.
         self.p = p = self.findPositionInChapter(self.p) or root.copy()
-        if g.match_word(p.h, 0, '@chapter'):
-            if p.hasChildren():
-                self.p = p = p.firstChild()
-            else:
-                bunch = u.beforeInsertNode(p)
-                # Create a dummy first child.
-                self.p = p = p.insertAsLastChild()
-                p.h = 'New Headline'
-                u.afterInsertNode(self.p, 'Insert Node', bunch)
-        c.hoistStack.append(g.Bunch(p=root.copy(), expanded=True))
-        # Careful: c.selectPosition would pop the hoist stack.
-        c.p = p
-        g.doHook('hoist-changed', c=c)
+        with u.change_outline('Insert Node'):
+            if g.match_word(p.h, 0, '@chapter'):
+                if p.hasChildren():
+                    self.p = p = p.firstChild()
+                else:
+                    # Create a dummy first child.
+                    self.p = p = p.insertAsLastChild()
+                    p.h = 'New Headline'
+            c.hoistStack.append(g.Bunch(p=root.copy(), expanded=True))
+            # Careful: c.selectPosition would pop the hoist stack.
+            c.p = p
+            g.doHook('hoist-changed', c=c)
 
     # @+node:ekr.20070317131708: *4* chapter.findPositionInChapter
     def findPositionInChapter(self, p1: Position, strict: bool = False) -> Position | None:

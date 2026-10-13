@@ -194,22 +194,19 @@ class CPrettyPrinter:
         if should_kill_beautify(p):
             return
         u, undoType = c.undoer, 'beautify-c'
-        u.beforeChangeGroup(c.p, undoType)
-        changed = False
-        for p in c.p.self_and_subtree():
-            if c.getLanguage(p) == "c":
-                bunch = u.beforeChangeNodeContents(p)
-                s = self.indent(p)
-                if p.b != s:
-                    p.b = s
-                    p.setDirty()
-                    u.afterChangeNodeContents(p, undoType, bunch)
-                    changed = True
-        # Call this only once, at end.
-        u.afterChangeGroup(c.p, undoType)
-        if not changed:
-            g.es("Command did not find any content to beautify")
-        c.bodyWantsFocus()
+        with u.change_outline(undoType):
+            changed = False
+            for p in c.p.self_and_subtree():
+                if c.getLanguage(p) == "c":
+                    s = self.indent(p)
+                    if p.b != s:
+                        p.b = s
+                        p.setDirty()
+                        changed = True
+            # Call this only once, at end.
+            if not changed:
+                g.es("Command did not find any content to beautify")
+            c.bodyWantsFocus()
 
     # @+node:ekr.20110917174948.6911: *3* cpp.indent & helpers
     @overload

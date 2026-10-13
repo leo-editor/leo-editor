@@ -353,9 +353,9 @@ class AutoCompleterClass:
         newText = w.getAllText()
         if p.b == newText:
             return
-        bunch = u.beforeChangeBody(p)
-        p.v.b = newText  # p.b would cause a redraw.
-        u.afterChangeBody(p, 'auto-completer', bunch)
+        with u.change_node(p, 'auto-completer'):
+            p.v.b = newText  # p.b would cause a redraw.
+            u.redraw(c.p)
 
     finish = exit
     abort = exit
@@ -3713,37 +3713,34 @@ class KeyHandlerClass:
     def handleInputShortcut(self, event: LeoKeyEvent, stroke: Stroke) -> None:
         c, k, p, u = self.c, self, self.c.p, self.c.undoer
         k.clearState()
-        if p.h.startswith(('@shortcuts', '@mode')):
-            # line of text in body
-            w = c.frame.body.wrapper
-            before, sel, after = w.getInsertLines()
-            m = k._cmd_handle_input_pattern.search(sel)
-            assert m  # edit-shortcut was invoked on a malformed body line
-            sel = f"{m.group(0)} {stroke.s}"
-            udata = u.beforeChangeNodeContents(p)
-            pos = w.getYScrollPosition()
-            i = len(before)
-            j = max(i, len(before) + len(sel) - 1)
-            w.setAllText(before + sel + after)
-            w.setSelectionRange(i, j, insert=j)
-            w.setYScrollPosition(pos)
-            u.afterChangeNodeContents(p, 'change shortcut', udata)
-            cmdname = m.group(0).rstrip('= ')
-            k.editShortcut_do_bind_helper(stroke, cmdname)
-            return
-        if p.h.startswith(('@command', '@button')):
-            udata = u.beforeChangeNodeContents(p)
-            cmd = p.h.split('@key', 1)[0]
-            p.h = f"{cmd} @key={stroke.s}"
-            u.afterChangeNodeContents(p, 'change shortcut', udata)
-            try:
-                cmdname = cmd.split(' ', 1)[1].strip()
+        with u.change_outline('change shortcut'):
+            if p.h.startswith(('@shortcuts', '@mode')):
+                # line of text in body
+                w = c.frame.body.wrapper
+                before, sel, after = w.getInsertLines()
+                m = k._cmd_handle_input_pattern.search(sel)
+                assert m  # edit-shortcut was invoked on a malformed body line
+                sel = f"{m.group(0)} {stroke.s}"
+                pos = w.getYScrollPosition()
+                i = len(before)
+                j = max(i, len(before) + len(sel) - 1)
+                w.setAllText(before + sel + after)
+                w.setSelectionRange(i, j, insert=j)
+                w.setYScrollPosition(pos)
+                cmdname = m.group(0).rstrip('= ')
                 k.editShortcut_do_bind_helper(stroke, cmdname)
-            except IndexError:
-                pass
-            return
-        # this should never happen
-        g.error('not in settings node shortcut')
+                return
+            if p.h.startswith(('@command', '@button')):
+                cmd = p.h.split('@key', 1)[0]
+                p.h = f"{cmd} @key={stroke.s}"
+                try:
+                    cmdname = cmd.split(' ', 1)[1].strip()
+                    k.editShortcut_do_bind_helper(stroke, cmdname)
+                except IndexError:
+                    pass
+                return
+            # this should never happen
+            g.error('not in settings node shortcut')
 
     # @+node:vitalije.20170709151653.1: *7* k.isInShortcutBodyLine
     _cmd_handle_input_pattern = re.compile(r'[A-Za-z0-9_\-]+\s*=')

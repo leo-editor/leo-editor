@@ -2499,13 +2499,12 @@ class VimCommands:
         c, p, u = self.c, self.c.p, self.c.undoer
         w = self.command_w or self.w
         name = c.widget_name(w)
-        if w and name.startswith('body'):
-            bunch = u.beforeChangeBody(p)
-            # Similar to selfInsertCommand.
-            newText = w.getAllText()
-            if c.p.b != newText:
-                p.v.b = newText
-                u.afterChangeBody(p, 'vc-save-body', bunch)
+        with u.change_outline('vc-save-body'):
+            if w and name.startswith('body'):
+                # Similar to selfInsertCommand.
+                newText = w.getAllText()
+                if c.p.b != newText:
+                    p.v.b = newText
 
     # @+node:ekr.20140804123147.18929: *4* vc.set_border & helper
     def set_border(
