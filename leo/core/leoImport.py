@@ -80,14 +80,13 @@ class FreeMindImporter:
         """Create a tree of nodes from a FreeMind file."""
         c = self.c
         _, fileName = g.os_path_split(path)
-        undoData = c.undoer.beforeInsertNode(c.p)
-        try:
-            self.import_file(path)
-            c.undoer.afterInsertNode(c.p, 'Import', undoData)
-        except Exception:
-            g.es_print('Exception importing FreeMind file', g.shortFileName(path))
-            g.es_exception()
-        return c.p
+        with c.undoer.change_outline('Import'):
+            try:
+                self.import_file(path)
+            except Exception:
+                g.es_print('Exception importing FreeMind file', g.shortFileName(path))
+                g.es_exception()
+            return c.p
 
     # @+node:ekr.20160503191518.4: *3* freemind.import_file
     def import_file(self, path: str) -> None:
@@ -736,32 +735,24 @@ class LeoImportCommands:
         if not paths:
             return None
         # Initial open from command line is not undoable.
-        if command:
-            u.beforeChangeGroup(current, command)
-        for fileName in paths:
-            fileName = fileName.replace('\\', '/')  # 2011/10/09.
-            g.setGlobalOpenDir(fileName)
-            isThin = at.scanHeaderForThin(fileName)
-            if command:
-                undoData = u.beforeInsertNode(parent)
-            p = parent.insertAfter()
-            if isThin:
-                # Create @file node, not a deprecated @thin node.
-                p.initHeadString("@file " + fileName)
-                at.read(p)
-            else:
-                p.initHeadString("Imported @file " + fileName)
-                at.read(p)
-            p.contract()
-            p.setDirty()  # 2011/10/09: tell why the file is dirty!
-            if command:
-                u.afterInsertNode(p, command, undoData)
-        current.expand()
-        c.setChanged()
-        if command:
-            u.afterChangeGroup(c.p, command)
-        c.redraw(current)
-        return p
+        with u.change_outline(command):
+            for fileName in paths:
+                fileName = fileName.replace('\\', '/')  # 2011/10/09.
+                g.setGlobalOpenDir(fileName)
+                isThin = at.scanHeaderForThin(fileName)
+                p = parent.insertAfter()
+                if isThin:
+                    # Create @file node, not a deprecated @thin node.
+                    p.initHeadString("@file " + fileName)
+                    at.read(p)
+                else:
+                    p.initHeadString("Imported @file " + fileName)
+                    at.read(p)
+                p.contract()
+                p.setDirty()  # 2011/10/09: tell why the file is dirty!
+            current.expand()
+            u.redraw(current)
+            return p
 
     # @+node:ekr.20031218072017.3212: *4* ic.importFilesCommand
     def importFilesCommand(
@@ -781,26 +772,25 @@ class LeoImportCommands:
         if not parent:
             g.trace('===== no parent', g.callers())
             return
-        for fn in files or []:
-            # Report exceptions here, not in the caller.
-            try:
-                g.setGlobalOpenDir(fn)
-                # Leo 5.6: Handle undo here, not in createOutline.
-                undoData = u.beforeInsertNode(parent)
-                p = parent.insertAsLastChild()
-                fn = c.relativeDirectory(fn)
-                p.h = f"{treeType} {fn}"
-                u.afterInsertNode(p, 'Import', undoData)
-                p = self.createOutline(parent=p, treeType=self.treeType)
-                if p:  # createOutline may fail.
-                    p.contract()
-                    p.setDirty()
-                    c.setChanged()
-            except Exception:
-                g.es_print('Exception importing', fn)
-                g.es_exception()
-        c.checkOutline()
-        parent.expand()
+        with u.change_outline('Import'):
+            for fn in files or []:
+                # Report exceptions here, not in the caller.
+                try:
+                    g.setGlobalOpenDir(fn)
+                    # Leo 5.6: Handle undo here, not in createOutline.
+                    p = parent.insertAsLastChild()
+                    fn = c.relativeDirectory(fn)
+                    p.h = f"{treeType} {fn}"
+                    p = self.createOutline(parent=p, treeType=self.treeType)
+                    if p:  # createOutline may fail.
+                        p.contract()
+                        p.setDirty()
+                        c.setChanged()
+                except Exception:
+                    g.es_print('Exception importing', fn)
+                    g.es_exception()
+            c.checkOutline()
+            parent.expand()
 
     # @+node:ekr.20160503125237.1: *4* ic.importFreeMind
     def importFreeMind(self, files: list[str]) -> None:
@@ -821,22 +811,18 @@ class LeoImportCommands:
         parent = c.p
         if not parent or not paths:
             return None
-        u.beforeChangeGroup(parent, command)
-        for fileName in paths:
-            fileName = fileName.replace('\\', '/')
-            g.setGlobalOpenDir(fileName)
-            undoData = u.beforeInsertNode(parent)
-            p = parent.insertAfter()
-            p.initHeadString("@jupytext " + fileName)
-            at.readOneAtJupytextNode(p)
-            p.contract()
-            p.setDirty()
-            u.afterInsertNode(p, command, undoData)
-        parent.expand()
-        c.setChanged()
-        u.afterChangeGroup(parent, command)
-        c.redraw(parent)
-        return parent
+        with u.change_outline(command):
+            for fileName in paths:
+                fileName = fileName.replace('\\', '/')
+                g.setGlobalOpenDir(fileName)
+                p = parent.insertAfter()
+                p.initHeadString("@jupytext " + fileName)
+                at.readOneAtJupytextNode(p)
+                p.contract()
+                p.setDirty()
+            parent.expand()
+            u.redraw(parent)
+            return parent
 
     # @+node:ekr.20160503125219.1: *4* ic.importMindMap
     def importMindMap(self, files: list[str]) -> None:
@@ -867,16 +853,15 @@ class LeoImportCommands:
         c = self.c
         u = c.undoer
         _, fileName = g.os_path_split(path)
-        undoData = u.beforeInsertNode(parent)
-        # Create the top-level headline.
-        p = parent.insertAfter()
-        p.initHeadString(fileName)
-        if self.webType == "cweb":
-            self.setBodyString(p, "@ignore\n@language cweb")
-        # Scan the file, creating one section for each function definition.
-        self.scanWebFile(path, p)
-        u.afterInsertNode(p, 'Import', undoData)
-        return p
+        with u.change_outline('Import'):
+            # Create the top-level headline.
+            p = parent.insertAfter()
+            p.initHeadString(fileName)
+            if self.webType == "cweb":
+                self.setBodyString(p, "@ignore\n@language cweb")
+            # Scan the file, creating one section for each function definition.
+            self.scanWebFile(path, p)
+            return p
 
     # @+node:ekr.20031218072017.3227: *5* ic.findFunctionDef
     def findFunctionDef(self, s: str, i: int) -> str | None:
@@ -1165,19 +1150,19 @@ class LeoImportCommands:
             g.es_print(f"No importer class for @language {language}")
             return
         importer = importer_class(c)
-        try:
-            old_p = p.copy()
-            c.selectPosition(p)
-            changed = self.parse_body_helper(p, importer=importer)
-            c.selectPosition(old_p)
-            if c.checkOutline():
-                return  # Error!
-            if changed:
-                u.afterChangeGroup(p, undoType)
-                c.setChanged()
-                c.redraw(old_p)
-        except Exception:
-            g.es_exception()
+        with u.change_outline(undoType):
+            try:
+                old_p = p.copy()
+                c.selectPosition(p)
+                changed = self.parse_body_helper(p, importer=importer)
+                c.selectPosition(old_p)
+                if c.checkOutline():
+                    return  # Error!
+                if changed:
+                    c.setChanged()
+                    u.redraw(old_p)
+            except Exception:
+                g.es_exception()
 
     # @+node:ekr.20250807161513.1: *4* ic.compute_imported_headline
     def compute_imported_headline(self, importer: Any, lines: list[str], p: Position) -> str:
@@ -1199,30 +1184,25 @@ class LeoImportCommands:
     def parse_body_helper(self, p: Position, *, importer: Any) -> bool:
         """The common code for the parse-body command."""
         c = self.c
-        u, undoType = c.undoer, 'parse-body'
+        _u, _undoType = c.undoer, 'parse-body'
         importer.lines = lines = g.splitLines(p.b)
         importer.guide_lines = importer.delete_comments_and_strings(lines)
         blocks = importer.find_blocks(0, len(lines))
 
         # The main loop.
-        if changed := len(blocks) > 1:
-            u.beforeChangeGroup(p, undoType)
+        changed = len(blocks) > 1
         self.preprocess_blocks(blocks)
         while len(blocks) > 1:
             # Change the node.
-            bunch = u.beforeChangeBody(p)
             block = blocks.pop(0)
             head = lines[block.start : block.end]
             tail = lines[block.end :]
             p.b = ''.join(head)
             p.h = self.compute_imported_headline(importer, head, p)
-            u.afterChangeBody(p, undoType, bunch)
             # Insert another node.
-            bunch = u.beforeInsertNode(p)
             p2 = p.insertAfter()
             p2.h = self.compute_imported_headline(importer, tail, p)
             p2.b = ''.join(tail)
-            u.afterInsertNode(p2, undoType, bunch)
             # Continue splitting p2.
             p = p2
         return changed
@@ -1399,22 +1379,21 @@ class MindMapImporter:
     def create_outline(self, path: str) -> Position:
         c = self.c
         _, fileName = g.os_path_split(path)
-        undoData = c.undoer.beforeInsertNode(c.p)
-        # Create the top-level headline.
-        p = c.lastTopLevel().insertAfter()
-        fn = g.shortFileName(path).strip()
-        if fn.endswith('.csv'):
-            fn = fn[:-4]
-        p.h = fn
-        try:
-            f = open(path)
-            self.scan(f, p)
-            f.close()
-            c.redraw()
-        except Exception:
-            g.es_print('Invalid MindJet file:', fn)
-        c.undoer.afterInsertNode(p, 'Import', undoData)
-        return p
+        with c.undoer.change_outline('Import'):
+            # Create the top-level headline.
+            p = c.lastTopLevel().insertAfter()
+            fn = g.shortFileName(path).strip()
+            if fn.endswith('.csv'):
+                fn = fn[:-4]
+            p.h = fn
+            try:
+                f = open(path)
+                self.scan(f, p)
+                f.close()
+                c.undoer.redraw()
+            except Exception:
+                g.es_print('Invalid MindJet file:', fn)
+            return p
 
     # @+node:ekr.20160503144647.1: *3* mindmap.import_files
     def import_files(self, files: list[str]) -> None:
@@ -1555,23 +1534,21 @@ class MORE_Importer:
         s = s.replace('\r', '')  # Fixes bug 626101.
         lines = g.splitLines(s)
         # Convert the string to an outline and insert it after the current node.
-        if self.check_lines(lines):
-            last = c.lastTopLevel()
-            undoData = u.beforeInsertNode(c.p)
-            root = last.insertAfter()
-            root.h = fileName
-            if p := self.import_lines(lines, root):
-                c.endEditing()
-                c.checkOutline()
-                p.setDirty()
-                c.setChanged()
-                u.afterInsertNode(root, 'Import MORE File', undoData)
-                c.selectPosition(root)
-                c.redraw()
-                return root
-        if not g.unitTesting:
-            g.es("not a valid MORE file", fileName)
-        return None
+        with u.change_outline('Import MORE File'):
+            if self.check_lines(lines):
+                last = c.lastTopLevel()
+                root = last.insertAfter()
+                root.h = fileName
+                if p := self.import_lines(lines, root):
+                    c.endEditing()
+                    c.checkOutline()
+                    p.setDirty()
+                    c.setChanged()
+                    u.redraw(root)
+                    return root
+            if not g.unitTesting:
+                g.es("not a valid MORE file", fileName)
+            return None
 
     # @+node:ekr.20031218072017.3215: *3* MORE.import_lines
     def import_lines(self, strings: list[str], first_p: Position) -> Position | None:
@@ -1991,46 +1968,45 @@ class RecursiveImportController:
             return
 
         # Import all requested files.
-        try:
-            c, u = self.c, self.c.undoer
-            t1 = time.time()
-            g.app.disable_redraw = True
-            last = c.lastTopLevel()
-            c.selectPosition(last)
-            undoData = u.beforeInsertNode(last)
-            # Always create a new last top-level node.
-            self.root = parent = last.insertAfter()
-            assert parent.v
-            parent.v.h = 'imported files'
-            # Special case for a single file.
-            self.n_files = 0
-            if g.os_path_isfile(dir_):
-                if self.verbose:
-                    # Only print this message if importing a *single* file.
-                    print('')
-                    print(f"importing file: {os.path.normpath(dir_)}")
-                self.import_one_file(dir_, parent)
-            else:
-                self.import_dir(dir_, parent)
-            self.post_process(parent)
-            u.afterInsertNode(parent, 'recursive-import', undoData)
-        except Exception:
-            self.error('Exception in recursive import')
-            g.es_exception()
-        finally:
-            g.app.disable_redraw = False
-            for p2 in parent.self_and_subtree(copy=False):
-                p2.contract()
-            c.setChanged()  # Imported nodes must be saved.
-            c.redraw(parent)
-        if not g.unitTesting:
-            t2 = time.time()
-            n = len(list(parent.subtree()))
-            g.es_print(
-                f"imported {n} node{g.plural(n)} "
-                f"in {self.n_files} file{g.plural(self.n_files)} "
-                f"in {t2 - t1:2.2f} seconds"
-            )
+        with self.c.undoer.change_outline('recursive-import'):
+            try:
+                c, _u = self.c, self.c.undoer
+                t1 = time.time()
+                g.app.disable_redraw = True
+                last = c.lastTopLevel()
+                c.selectPosition(last)
+                # Always create a new last top-level node.
+                self.root = parent = last.insertAfter()
+                assert parent.v
+                parent.v.h = 'imported files'
+                # Special case for a single file.
+                self.n_files = 0
+                if g.os_path_isfile(dir_):
+                    if self.verbose:
+                        # Only print this message if importing a *single* file.
+                        print('')
+                        print(f"importing file: {os.path.normpath(dir_)}")
+                    self.import_one_file(dir_, parent)
+                else:
+                    self.import_dir(dir_, parent)
+                self.post_process(parent)
+            except Exception:
+                self.error('Exception in recursive import')
+                g.es_exception()
+            finally:
+                g.app.disable_redraw = False
+                for p2 in parent.self_and_subtree(copy=False):
+                    p2.contract()
+                c.setChanged()  # Imported nodes must be saved.
+                c.undoer.redraw(parent)
+            if not g.unitTesting:
+                t2 = time.time()
+                n = len(list(parent.subtree()))
+                g.es_print(
+                    f"imported {n} node{g.plural(n)} "
+                    f"in {self.n_files} file{g.plural(self.n_files)} "
+                    f"in {t2 - t1:2.2f} seconds"
+                )
 
     # @-others
 
@@ -2078,27 +2054,26 @@ class TabImporter:
     def import_files(self, files: list[str]) -> None:
         """Import a list of tab-delimited files."""
         c, u = self.c, self.c.undoer
-        if files:
-            p = None
-            for fn in files:
-                try:
-                    g.setGlobalOpenDir(fn)
-                    s = open(fn).read()
-                    s = s.replace('\r', '')
-                except Exception:
-                    continue
-                if s.strip() and self.check(g.splitLines(s)):
-                    undoData = u.beforeInsertNode(c.p)
-                    last = c.lastTopLevel()
-                    self.root = p = last.insertAfter()
-                    self.scan(s)
-                    p.h = g.shortFileName(fn)
-                    p.contract()
-                    p.setDirty()
-                    u.afterInsertNode(p, 'Import Tabbed File', undoData)
-                if p:
-                    c.setChanged()
-                    c.redraw(p)
+        with u.change_outline('Import Tabbed File'):
+            if files:
+                p = None
+                for fn in files:
+                    try:
+                        g.setGlobalOpenDir(fn)
+                        s = open(fn).read()
+                        s = s.replace('\r', '')
+                    except Exception:
+                        continue
+                    if s.strip() and self.check(g.splitLines(s)):
+                        last = c.lastTopLevel()
+                        self.root = p = last.insertAfter()
+                        self.scan(s)
+                        p.h = g.shortFileName(fn)
+                        p.contract()
+                        p.setDirty()
+                    if p:
+                        c.setChanged()
+                        u.redraw(p)
 
     # @+node:ekr.20161006071801.4: *3* tabbed.lws
     def lws(self, s: str) -> str:

@@ -26,45 +26,45 @@ def addComments(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Undoably add comments to the selected text."""
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
     # "Before" snapshot.
-    bunch = u.beforeChangeBody(p)
-    # Make sure there is a selection.
-    head, lines, tail, oldSel, oldYview = self.getBodyLines()
-    if not lines:
-        g.warning('no text selected')
-        return
-    # The default language in effect at p.
-    language = c.frame.body.colorizer.scanLanguageDirectives(p)
-    if c.hasAmbiguousLanguage(p):
-        language = c.getLanguageAtCursor(p, language)
-    d1, d2, d3 = g.set_delims_from_language(language)
-    d2 = d2 or ''
-    d3 = d3 or ''
-    if d1:
-        openDelim, closeDelim = d1 + ' ', ''
-    else:
-        openDelim, closeDelim = d2 + ' ', ' ' + d3
-    # Calculate the result.
-    result = []
-    i: int | None = None
-    for line in lines:
-        if line.strip():
-            if i is None:
-                i = g.skip_ws(line, 0)
-            s = line[i:].replace('\n', '')
-            result.append(line[0:i] + openDelim + s + closeDelim + '\n')
+    with u.change_node(p, 'Add Comments'):
+        # Make sure there is a selection.
+        head, lines, tail, oldSel, oldYview = self.getBodyLines()
+        if not lines:
+            g.warning('no text selected')
+            return
+        # The default language in effect at p.
+        language = c.frame.body.colorizer.scanLanguageDirectives(p)
+        if c.hasAmbiguousLanguage(p):
+            language = c.getLanguageAtCursor(p, language)
+        d1, d2, d3 = g.set_delims_from_language(language)
+        d2 = d2 or ''
+        d3 = d3 or ''
+        if d1:
+            openDelim, closeDelim = d1 + ' ', ''
         else:
-            result.append(line)
-    # Set p.b and w's text first.
-    middle = ''.join(result)
-    p.b = head + middle + tail  # Sets dirty and changed bits.
-    w.setAllText(head + middle + tail)
-    # Set the selection range and scroll position.
-    i = len(head)
-    j = max(i, len(head) + len(middle) - 1)
-    w.setSelectionRange(i, j, insert=j)
-    w.setYScrollPosition(oldYview)
-    # "after" snapshot.
-    u.afterChangeBody(p, 'Add Comments', bunch)
+            openDelim, closeDelim = d2 + ' ', ' ' + d3
+        # Calculate the result.
+        result = []
+        i: int | None = None
+        for line in lines:
+            if line.strip():
+                if i is None:
+                    i = g.skip_ws(line, 0)
+                s = line[i:].replace('\n', '')
+                result.append(line[0:i] + openDelim + s + closeDelim + '\n')
+            else:
+                result.append(line)
+        # Set p.b and w's text first.
+        middle = ''.join(result)
+        p.b = head + middle + tail  # Sets dirty and changed bits.
+        w.setAllText(head + middle + tail)
+        # Set the selection range and scroll position.
+        i = len(head)
+        j = max(i, len(head) + len(middle) - 1)
+        w.setSelectionRange(i, j, insert=j)
+        w.setYScrollPosition(oldYview)
+        u.redraw(c.p)
+        # "after" snapshot.
 
 
 # @+node:ekr.20171123135625.16: ** c_ec.convertAllBlanks
@@ -79,32 +79,31 @@ def convertAllBlanks(self: Self, event: LeoKeyEvent | None = None) -> None:
         return
     tabWidth = c.getTabWidth(c.p)
     count = 0
-    u.beforeChangeGroup(current, undoType)
-    for p in current.self_and_subtree():
-        innerUndoData = u.beforeChangeNodeContents(p)
-        if p == current:
-            if changed := c.convertBlanks():
-                count += 1
-        else:
-            changed = False
-            result = []
-            text = p.v.b
-            lines = text.split('\n')
-            for line in lines:
-                i, w = g.skip_leading_ws_with_indent(line, 0, tabWidth)
-                s = g.computeLeadingWhitespace(w, abs(tabWidth)) + line[i:]  # use positive width.
-                if s != line:
-                    changed = True
-                result.append(s)
-            if changed:
-                count += 1
-                p.setDirty()
-                p.setBodyString('\n'.join(result))
-                u.afterChangeNodeContents(p, undoType, innerUndoData)
-    u.afterChangeGroup(current, undoType)
-    if not g.unitTesting:
-        # Must come before c.redraw().
-        g.es("blanks converted to tabs in", count, "nodes")
+    with u.change_outline(undoType):
+        for p in current.self_and_subtree():
+            if p == current:
+                if changed := c.convertBlanks():
+                    count += 1
+            else:
+                changed = False
+                result = []
+                text = p.v.b
+                lines = text.split('\n')
+                for line in lines:
+                    i, w = g.skip_leading_ws_with_indent(line, 0, tabWidth)
+                    s = (
+                        g.computeLeadingWhitespace(w, abs(tabWidth)) + line[i:]
+                    )  # use positive width.
+                    if s != line:
+                        changed = True
+                    result.append(s)
+                if changed:
+                    count += 1
+                    p.setDirty()
+                    p.setBodyString('\n'.join(result))
+        if not g.unitTesting:
+            # Must come before c.redraw().
+            g.es("blanks converted to tabs in", count, "nodes")
 
 
 # @+node:ekr.20171123135625.17: ** c_ec.convertAllTabs
@@ -120,31 +119,30 @@ def convertAllTabs(self: Self, event: LeoKeyEvent | None = None) -> None:
         return
     tabWidth = c.getTabWidth(c.p)
     count = 0
-    u.beforeChangeGroup(current, undoType)
-    for p in current.self_and_subtree():
-        undoData = u.beforeChangeNodeContents(p)
-        if p == current:
-            if changed := self.convertTabs(event):
-                count += 1
-        else:
-            result = []
-            changed = False
-            text = p.v.b
-            lines = text.split('\n')
-            for line in lines:
-                i, w = g.skip_leading_ws_with_indent(line, 0, tabWidth)
-                s = g.computeLeadingWhitespace(w, -abs(tabWidth)) + line[i:]  # use negative width.
-                if s != line:
-                    changed = True
-                result.append(s)
-            if changed:
-                count += 1
-                p.setDirty()
-                p.setBodyString('\n'.join(result))
-                u.afterChangeNodeContents(p, undoType, undoData)
-    u.afterChangeGroup(current, undoType)
-    if not g.unitTesting:
-        g.es("tabs converted to blanks in", count, "nodes")
+    with u.change_outline(undoType):
+        for p in current.self_and_subtree():
+            if p == current:
+                if changed := self.convertTabs(event):
+                    count += 1
+            else:
+                result = []
+                changed = False
+                text = p.v.b
+                lines = text.split('\n')
+                for line in lines:
+                    i, w = g.skip_leading_ws_with_indent(line, 0, tabWidth)
+                    s = (
+                        g.computeLeadingWhitespace(w, -abs(tabWidth)) + line[i:]
+                    )  # use negative width.
+                    if s != line:
+                        changed = True
+                    result.append(s)
+                if changed:
+                    count += 1
+                    p.setDirty()
+                    p.setBodyString('\n'.join(result))
+        if not g.unitTesting:
+            g.es("tabs converted to blanks in", count, "nodes")
 
 
 # @+node:ekr.20171123135625.18: ** c_ec.convertBlanks
@@ -156,30 +154,30 @@ def convertBlanks(self: Self, event: LeoKeyEvent | None = None) -> bool:
     """
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
     # "Before" snapshot.
-    bunch = u.beforeChangeBody(p)
-    oldYview = w.getYScrollPosition()
-    w.selectAllText()
-    head, lines, tail, oldSel, oldYview = c.getBodyLines()
-    tabWidth = c.getTabWidth(c.p)
-    # Calculate the result.
-    changed, result = False, []
-    for line in lines:
-        s = g.optimizeLeadingWhitespace(line, abs(tabWidth))  # Use positive width.
-        if s != line:
-            changed = True
-        result.append(s)
-    if not changed:
-        return False
-    # Set p.b and w's text first.
-    middle = ''.join(result)
-    p.b = head + middle + tail  # Sets dirty and changed bits.
-    w.setAllText(head + middle + tail)
-    # Select all text and set scroll position.
-    w.selectAllText()
-    w.setYScrollPosition(oldYview)
-    # "after" snapshot.
-    u.afterChangeBody(p, 'Convert Blanks', bunch)
-    return True
+    with u.change_node(p, 'Convert Blanks'):
+        oldYview = w.getYScrollPosition()
+        w.selectAllText()
+        head, lines, tail, oldSel, oldYview = c.getBodyLines()
+        tabWidth = c.getTabWidth(c.p)
+        # Calculate the result.
+        changed, result = False, []
+        for line in lines:
+            s = g.optimizeLeadingWhitespace(line, abs(tabWidth))  # Use positive width.
+            if s != line:
+                changed = True
+            result.append(s)
+        if not changed:
+            return False
+        # Set p.b and w's text first.
+        middle = ''.join(result)
+        p.b = head + middle + tail  # Sets dirty and changed bits.
+        w.setAllText(head + middle + tail)
+        # Select all text and set scroll position.
+        w.selectAllText()
+        w.setYScrollPosition(oldYview)
+        # "after" snapshot.
+        return True
+        u.redraw(c.p)
 
 
 # @+node:ekr.20171123135625.19: ** c_ec.convertTabs
@@ -189,38 +187,38 @@ def convertTabs(self: Self, event: LeoKeyEvent | None = None) -> bool:
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
 
     # "Before" snapshot.
-    bunch = u.beforeChangeBody(p)
-    # Data...
-    w.selectAllText()
-    head, lines, tail, oldSel, oldYview = self.getBodyLines()
-    tabWidth = c.getTabWidth(c.p)
-    # Calculate the result.
-    changed, result = False, []
-    for line in lines:
-        i, width = g.skip_leading_ws_with_indent(line, 0, tabWidth)
-        s = g.computeLeadingWhitespace(width, -abs(tabWidth)) + line[i:]  # use negative width.
-        if s != line:
-            changed = True
-        result.append(s)
-    if not changed:
-        return False
+    with u.change_node(p, 'Convert Tabs'):
+        # Data...
+        w.selectAllText()
+        head, lines, tail, oldSel, oldYview = self.getBodyLines()
+        tabWidth = c.getTabWidth(c.p)
+        # Calculate the result.
+        changed, result = False, []
+        for line in lines:
+            i, width = g.skip_leading_ws_with_indent(line, 0, tabWidth)
+            s = g.computeLeadingWhitespace(width, -abs(tabWidth)) + line[i:]  # use negative width.
+            if s != line:
+                changed = True
+            result.append(s)
+        if not changed:
+            return False
 
-    # Set p.b and w's text first.
-    middle = ''.join(result)
-    p.b = head + middle + tail  # Sets dirty and changed bits.
-    w.setAllText(head + middle + tail)
+        # Set p.b and w's text first.
+        middle = ''.join(result)
+        p.b = head + middle + tail  # Sets dirty and changed bits.
+        w.setAllText(head + middle + tail)
 
-    # Calculate the proper selection range (i, j, ins).
-    i = len(head)
-    j = max(i, len(head) + len(middle) - 1)
+        # Calculate the proper selection range (i, j, ins).
+        i = len(head)
+        j = max(i, len(head) + len(middle) - 1)
 
-    # Set the selection range and scroll position.
-    w.setSelectionRange(i, j, insert=j)
-    w.setYScrollPosition(oldYview)
+        # Set the selection range and scroll position.
+        w.setSelectionRange(i, j, insert=j)
+        w.setYScrollPosition(oldYview)
 
-    # "after" snapshot.
-    u.afterChangeBody(p, 'Convert Tabs', bunch)
-    return True
+        # "after" snapshot.
+        return True
+        u.redraw(c.p)
 
 
 # @+node:ekr.20171123135625.21: ** c_ec.dedentBody (unindent-region)
@@ -233,40 +231,39 @@ def dedentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     sel_1, sel_2 = w.getSelectionRange()
     tab_width = c.getTabWidth(c.p)
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
-    bunch = u.beforeChangeBody(p)
+    with u.change_node(p, 'Unindent Region'):
+        # Calculate the result.
+        changed, result = False, []
+        for line in lines:
+            i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
+            s = g.computeLeadingWhitespace(width - abs(tab_width), tab_width) + line[i:]
+            if s != line:
+                changed = True
+            result.append(s)
+        if not changed:
+            return
 
-    # Calculate the result.
-    changed, result = False, []
-    for line in lines:
-        i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
-        s = g.computeLeadingWhitespace(width - abs(tab_width), tab_width) + line[i:]
-        if s != line:
-            changed = True
-        result.append(s)
-    if not changed:
-        return
+        # Set p.b and w's text first.
+        middle = ''.join(result)
+        all = head + middle + tail
+        p.b = all  # Sets dirty and changed bits.
+        w.setAllText(all)
 
-    # Set p.b and w's text first.
-    middle = ''.join(result)
-    all = head + middle + tail
-    p.b = all  # Sets dirty and changed bits.
-    w.setAllText(all)
+        # Calculate the proper selection range (i, j, ins).
+        if sel_1 == sel_2:
+            line = result[0]
+            ins, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
+            i = j = len(head) + ins
+        else:
+            i = len(head)
+            j = len(head) + len(middle)
+            if middle.endswith('\n'):  # #1742.
+                j -= 1
 
-    # Calculate the proper selection range (i, j, ins).
-    if sel_1 == sel_2:
-        line = result[0]
-        ins, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
-        i = j = len(head) + ins
-    else:
-        i = len(head)
-        j = len(head) + len(middle)
-        if middle.endswith('\n'):  # #1742.
-            j -= 1
-
-    # Set the selection range and scroll position.
-    w.setSelectionRange(i, j, insert=j)
-    w.setYScrollPosition(oldYview)
-    u.afterChangeBody(p, 'Unindent Region', bunch)
+        # Set the selection range and scroll position.
+        w.setSelectionRange(i, j, insert=j)
+        w.setYScrollPosition(oldYview)
+        u.redraw(c.p)
 
 
 # @+node:ekr.20171123135625.36: ** c_ec.deleteComments
@@ -290,68 +287,67 @@ def deleteComments(self: Self, event: LeoKeyEvent | None = None) -> None:
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
 
     # "Before" snapshot.
-    bunch = u.beforeChangeBody(p)
+    with u.change_node(p, 'Delete Comments'):
+        # Initial data.
+        head, lines, tail, oldSel, oldYview = self.getBodyLines()
+        if not lines:
+            g.warning('no text selected')
+            return
+        # The default language in effect at p.
+        language = c.frame.body.colorizer.scanLanguageDirectives(p)
+        if c.hasAmbiguousLanguage(p):
+            language = c.getLanguageAtCursor(p, language)
+        d1, d2, d3 = g.set_delims_from_language(language)
 
-    # Initial data.
-    head, lines, tail, oldSel, oldYview = self.getBodyLines()
-    if not lines:
-        g.warning('no text selected')
-        return
-    # The default language in effect at p.
-    language = c.frame.body.colorizer.scanLanguageDirectives(p)
-    if c.hasAmbiguousLanguage(p):
-        language = c.getLanguageAtCursor(p, language)
-    d1, d2, d3 = g.set_delims_from_language(language)
+        # Calculate the result.
+        changed, result = False, []
+        if d1:
+            # Remove the single-line comment delim in front of each line
+            d1b = d1 + ' '
+            n1, n1b = len(d1), len(d1b)
+            for s in lines:
+                i = g.skip_ws(s, 0)
+                if g.match(s, i, d1b):
+                    result.append(s[:i] + s[i + n1b :])
+                    changed = True
+                elif g.match(s, i, d1):
+                    result.append(s[:i] + s[i + n1 :])
+                    changed = True
+                else:
+                    result.append(s)
+        else:
+            # Remove the block comment delimiters from each line.
+            n2, n3 = len(d2), len(d3)
+            for s in lines:
+                i = g.skip_ws(s, 0)
+                j = s.find(d3, i + n2)
+                if g.match(s, i, d2) and j > -1:
+                    first = i + n2
+                    if g.match(s, first, ' '):
+                        first += 1
+                    last = j
+                    if g.match(s, last - 1, ' '):
+                        last -= 1
+                    result.append(s[:i] + s[first:last] + s[j + n3 :])
+                    changed = True
+                else:
+                    result.append(s)
+        if not changed:
+            return
 
-    # Calculate the result.
-    changed, result = False, []
-    if d1:
-        # Remove the single-line comment delim in front of each line
-        d1b = d1 + ' '
-        n1, n1b = len(d1), len(d1b)
-        for s in lines:
-            i = g.skip_ws(s, 0)
-            if g.match(s, i, d1b):
-                result.append(s[:i] + s[i + n1b :])
-                changed = True
-            elif g.match(s, i, d1):
-                result.append(s[:i] + s[i + n1 :])
-                changed = True
-            else:
-                result.append(s)
-    else:
-        # Remove the block comment delimiters from each line.
-        n2, n3 = len(d2), len(d3)
-        for s in lines:
-            i = g.skip_ws(s, 0)
-            j = s.find(d3, i + n2)
-            if g.match(s, i, d2) and j > -1:
-                first = i + n2
-                if g.match(s, first, ' '):
-                    first += 1
-                last = j
-                if g.match(s, last - 1, ' '):
-                    last -= 1
-                result.append(s[:i] + s[first:last] + s[j + n3 :])
-                changed = True
-            else:
-                result.append(s)
-    if not changed:
-        return
+        # Set p.b and w's text first.
+        middle = ''.join(result)
+        p.b = head + middle + tail  # Sets dirty and changed bits.
+        w.setAllText(head + middle + tail)
 
-    # Set p.b and w's text first.
-    middle = ''.join(result)
-    p.b = head + middle + tail  # Sets dirty and changed bits.
-    w.setAllText(head + middle + tail)
+        # Set the selection range and scroll position.
+        i = len(head)
+        j = ins = max(i, len(head) + len(middle) - 1)
+        w.setSelectionRange(i, j, insert=ins)
+        w.setYScrollPosition(oldYview)
+        u.redraw(c.p)
 
-    # Set the selection range and scroll position.
-    i = len(head)
-    j = ins = max(i, len(head) + len(middle) - 1)
-    w.setSelectionRange(i, j, insert=ins)
-    w.setYScrollPosition(oldYview)
-
-    # "after" snapshot.
-    u.afterChangeBody(p, 'Delete Comments', bunch)
+        # "after" snapshot.
 
 
 # @+node:ekr.20171123135625.54: ** c_ec.editHeadline (edit-headline)
@@ -427,38 +423,33 @@ def extract(self: Self, event: LeoKeyEvent | None = None) -> None:
         h, b, middle = lines[0].strip(), lines[1:], ''
 
     # Start the outer undo group.
-    u.beforeChangeGroup(c.p, undoType)
-    undoData = u.beforeInsertNode(c.p)
-    p = createFirstChildNode(c, c.p, h, ''.join(b))
-    u.afterInsertNode(p, undoType, undoData)
+    with u.change_outline(undoType):
+        p = createFirstChildNode(c, c.p, h, ''.join(b))
 
-    # Start inner undo.
-    if oldSel:
-        i, j = oldSel
+        # Start inner undo.
+        if oldSel:
+            i, j = oldSel
+            w.setSelectionRange(i, j, insert=j)
+
+        # Update the text and selection
+        c.p.v.b = head + middle + tail  # Don't redraw.
+        w.setAllText(head + middle + tail)
+        i = len(head)
+        j = max(i, len(head) + len(middle) - 1)
         w.setSelectionRange(i, j, insert=j)
-    bunch = u.beforeChangeBody(c.p)  # Not p.
 
-    # Update the text and selection
-    c.p.v.b = head + middle + tail  # Don't redraw.
-    w.setAllText(head + middle + tail)
-    i = len(head)
-    j = max(i, len(head) + len(middle) - 1)
-    w.setSelectionRange(i, j, insert=j)
+        # End the inner undo.
 
-    # End the inner undo.
-    u.afterChangeBody(c.p, undoType, bunch)
+        # Scroll as necessary.
+        if oldYview:
+            w.setYScrollPosition(oldYview)
+        else:
+            w.seeInsertPoint()
 
-    # Scroll as necessary.
-    if oldYview:
-        w.setYScrollPosition(oldYview)
-    else:
-        w.seeInsertPoint()
-
-    # Add the changes to the outer undo group.
-    u.afterChangeGroup(c.p, undoType=undoType)
-    p.parent().expand()
-    c.redraw(p.parent())  # A bit more convenient than p.
-    c.bodyWantsFocus()
+        # Add the changes to the outer undo group.
+        p.parent().expand()
+        u.redraw(p.parent())  # A bit more convenient than p.
+        c.bodyWantsFocus()
 
 
 # Compatibility
@@ -555,27 +546,23 @@ def extractSectionNames(self: Self, event: LeoKeyEvent | None = None) -> None:
         g.warning('No lines selected')
         return
     found = False
-    for s in lines:
-        if name := findSectionName(c, s):
-            if not found:
-                u.beforeChangeGroup(current, undoType)  # first one!
-            undoData = u.beforeInsertNode(current)
-            p = createFirstChildNode(c, current, name, '')
-            u.afterInsertNode(p, undoType, undoData)
-            found = True
-    c.checkOutline()
-    if found:
-        u.afterChangeGroup(current, undoType)
-        c.redraw(p)
-    else:
-        g.warning("selected text should contain section names")
-    # Restore the selection.
-    if not oldSel:
-        return  # PR #4812
-    i, j = oldSel
-    if w := body.wrapper:
-        w.setSelectionRange(i, j)
-        w.setFocus()
+    with u.change_outline(undoType):
+        for s in lines:
+            if name := findSectionName(c, s):
+                p = createFirstChildNode(c, current, name, '')
+                found = True
+        c.checkOutline()
+        if found:
+            u.redraw(p)
+        else:
+            g.warning("selected text should contain section names")
+        # Restore the selection.
+        if not oldSel:
+            return  # PR #4812
+        i, j = oldSel
+        if w := body.wrapper:
+            w.setSelectionRange(i, j)
+            w.setFocus()
 
 
 # @+node:ekr.20171123135625.28: *3* function: findSectionName
@@ -630,50 +617,49 @@ def alwaysIndentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
         return
 
     # "Before" snapshot.
-    bunch = u.beforeChangeBody(p)
+    with u.change_node(p, 'Indent Region'):
+        # Initial data.
+        sel_1, sel_2 = w.getSelectionRange()
+        tab_width = c.getTabWidth(p)
+        head, lines, tail, oldSel, oldYview = self.getBodyLines()
 
-    # Initial data.
-    sel_1, sel_2 = w.getSelectionRange()
-    tab_width = c.getTabWidth(p)
-    head, lines, tail, oldSel, oldYview = self.getBodyLines()
+        # Calculate the result.
+        changed, result = False, []
+        for line in lines:
+            if line.strip():
+                i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
+                s = g.computeLeadingWhitespace(width + abs(tab_width), tab_width) + line[i:]
+                result.append(s)
+                if s != line:
+                    changed = True
+            else:
+                result.append('\n')  # #2418
+        if not changed:
+            return
 
-    # Calculate the result.
-    changed, result = False, []
-    for line in lines:
-        if line.strip():
+        # Set p.b and w's text first.
+        middle = ''.join(result)
+        all = head + middle + tail
+        p.b = all  # Sets dirty and changed bits.
+        w.setAllText(all)
+
+        # Calculate the proper selection range (i, j, ins).
+        if sel_1 == sel_2:
+            line = result[0]
             i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
-            s = g.computeLeadingWhitespace(width + abs(tab_width), tab_width) + line[i:]
-            result.append(s)
-            if s != line:
-                changed = True
+            i = j = len(head) + i
         else:
-            result.append('\n')  # #2418
-    if not changed:
-        return
+            i = len(head)
+            j = len(head) + len(middle)
+            if middle.endswith('\n'):  # #1742.
+                j -= 1
 
-    # Set p.b and w's text first.
-    middle = ''.join(result)
-    all = head + middle + tail
-    p.b = all  # Sets dirty and changed bits.
-    w.setAllText(all)
+        # Set the selection range and scroll position.
+        w.setSelectionRange(i, j, insert=j)
+        w.setYScrollPosition(oldYview)
+        u.redraw(c.p)
 
-    # Calculate the proper selection range (i, j, ins).
-    if sel_1 == sel_2:
-        line = result[0]
-        i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
-        i = j = len(head) + i
-    else:
-        i = len(head)
-        j = len(head) + len(middle)
-        if middle.endswith('\n'):  # #1742.
-            j -= 1
-
-    # Set the selection range and scroll position.
-    w.setSelectionRange(i, j, insert=j)
-    w.setYScrollPosition(oldYview)
-
-    # "after" snapshot.
-    u.afterChangeBody(p, 'Indent Region', bunch)
+        # "after" snapshot.
 
 
 # @+node:ekr.20210104123442.1: ** c_ec.indentBody (indent-region)
@@ -717,13 +703,13 @@ def insertBodyTime(self: Self, event: LeoKeyEvent | None = None) -> None:
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
         return
-    bunch = u.beforeChangeBody(p)
-    w.deleteTextSelection()
-    s = self.getTime(body=True)
-    i = w.getInsertPoint()
-    w.insert(i, s)
-    p.v.b = w.getAllText()
-    u.afterChangeBody(p, undoType, bunch)
+    with u.change_node(p, undoType):
+        w.deleteTextSelection()
+        s = self.getTime(body=True)
+        i = w.getInsertPoint()
+        w.insert(i, s)
+        p.v.b = w.getAllText()
+        u.redraw(c.p)
 
 
 # @+node:ekr.20171123135625.52: ** c_ec.justify-toggle-auto
@@ -758,29 +744,22 @@ def line_to_headline(self: Self, event: LeoKeyEvent | None = None) -> None:
     line = s[i:j].strip()
     if not line:
         return
-    u.beforeChangeGroup(p, undoType)
+    with u.change_outline(undoType):
+        # Start outer undo.
+        p2 = p.insertAsLastChild()
+        p2.h = line
 
-    # Start outer undo.
-    undoData = u.beforeInsertNode(p)
-    p2 = p.insertAsLastChild()
-    p2.h = line
-    u.afterInsertNode(p2, undoType, undoData)
+        # "before" snapshot.
+        p.b = s[:i] + s[j:]
+        w.setInsertPoint(i)
+        p2.setDirty()
 
-    # "before" snapshot.
-    bunch = u.beforeChangeBody(p)
-    p.b = s[:i] + s[j:]
-    w.setInsertPoint(i)
-    p2.setDirty()
-    c.setChanged()
+        # "after" snapshot.
 
-    # "after" snapshot.
-    u.afterChangeBody(p, undoType, bunch)
-
-    # Finish outer undo.
-    u.afterChangeGroup(p, undoType=undoType)
-    p.expand()
-    c.redraw(p)
-    c.bodyWantsFocus()
+        # Finish outer undo.
+        p.expand()
+        u.redraw(p)
+        c.bodyWantsFocus()
 
 
 # @+node:ekr.20171123135625.11: ** c_ec.preferences
@@ -791,7 +770,7 @@ def preferences(self: Self, event: LeoKeyEvent | None = None) -> None:
     c.openLeoSettings()
 
 
-# @+node:ekr.20261003045123.1: ** c_ec.promoteToAtOthers (promote-to-at-others)
+# @+node:ekr.20261003045123.1: ** c_ec:promote-to-at-others (always uses new undo code)
 @g.commander_command('promote-to-at-others')
 def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
     # @+<< promote-to-at-others: docstring >>
@@ -805,7 +784,7 @@ def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
     """
     # @-<< promote-to-at-others: docstring >>
     c = self
-    p = c.p
+    old_p = c.p
     w = self.frame.body.wrapper
     c.endEditing()
 
@@ -849,24 +828,25 @@ def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
 
     # @-others
 
-    i, indent = find_at_others(p)
+    i, indent = find_at_others(old_p)
     if indent == -1:
         return
-    children = find_promotable_children(p)
+    children = find_promotable_children(old_p)
     if not children:
         g.error('No promotable children')
         return
-    new_body = compute_new_body(i, p, children)
+    new_body = compute_new_body(i, old_p, children)
     old_sel = w.getSelectionRange()
-    j = p.b.find('@others') - len(indent)
-    new_sel = (j, j)  # Not accurate, but better.
+    old_ins = w.getInsertPoint()
+    j = old_p.b.find('@others') - len(indent)
+    w.setSelectionRange(j, j, insert=j)
     with c.undoer as u:
         u.set_command_name('promote-to-at-others')
-        u.set_body(p, new_body)
+        u.set_body(old_p, new_body)
         for child in reversed(children):
             u.delete_node(child)
-        c.redraw(p)
-        u.set_selection_range(new_sel, old_sel=old_sel)
+        u.redraw(old_p)
+        u.set_selection_range(old_ins, old_sel)
         c.bodyWantsFocusNow()
 
 
@@ -913,45 +893,39 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
     ins = parent.b.find(m.group(0))
 
     # Replace the section ref in parent.b with p.b, properly indented.
-    u.beforeChangeGroup(parent, command)
-    lines = g.splitLines(parent.b)
-    result = lines[:i]
-    result.extend([f"{indent}{z}" for z in g.splitLines(p.b)])
-    result.extend(lines[i + 1 :])
-    result.append('\n' if lines[-1].endswith('\n') else '\n\n')
-    bunch = u.beforeChangeBody(parent)
-    parent.b = ''.join(result)
-    u.afterChangeBody(parent, command, bunch)
+    with u.change_outline(command):
+        lines = g.splitLines(parent.b)
+        result = lines[:i]
+        result.extend([f"{indent}{z}" for z in g.splitLines(p.b)])
+        result.extend(lines[i + 1 :])
+        result.append('\n' if lines[-1].endswith('\n') else '\n\n')
+        parent.b = ''.join(result)
 
-    # Delete the definition node.
-    bunch2 = u.beforeDeleteNode(p)
-    p.doDelete()
-    u.afterDeleteNode(p, command, bunch2)
-    u.afterChangeGroup(parent, command)
+        # Delete the definition node.
+        p.doDelete()
 
-    # Redraw.
-    c.redraw(parent)
-    w.setInsertPoint(ins)
+        # Redraw.
+        u.redraw(parent)
+        w.setInsertPoint(ins)
 
 
 # @+node:ekr.20171123135625.40: ** c_ec.reformatBody
 @g.commander_command('reformat-body')
 def reformatBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Reformat all paragraphs in the body."""
-    c, p = self, self.p
+    c, _p = self, self.p
     undoType = 'reformat-body'
     w = c.frame.body.wrapper
-    c.undoer.beforeChangeGroup(p, undoType)
-    w.setInsertPoint(0)
-    while 1:
-        progress = w.getInsertPoint()
-        c.reformatParagraph(event, undoType=undoType)
-        ins = w.getInsertPoint()
-        s = w.getAllText()
-        w.setInsertPoint(ins)
-        if ins <= progress or ins >= len(s):
-            break
-    c.undoer.afterChangeGroup(p, undoType)
+    with c.undoer.change_outline(undoType):
+        w.setInsertPoint(0)
+        while 1:
+            progress = w.getInsertPoint()
+            c.reformatParagraph(event, undoType=undoType)
+            ins = w.getInsertPoint()
+            s = w.getAllText()
+            w.setInsertPoint(ins)
+            if ins <= progress or ins >= len(s):
+                break
 
 
 # @+node:ekr.20171123135625.41: ** c_ec.reformatParagraph & helpers
@@ -1100,37 +1074,37 @@ def rp_reformat(
     p, u, w = c.p, c.undoer, c.frame.body.wrapper
     s = head + result + tail
     changed = original != s
-    bunch = u.beforeChangeBody(p)
-    if changed:
-        w.setAllText(s)  # Destroys coloring.
+    with u.change_node(p, undoType):
+        if changed:
+            w.setAllText(s)  # Destroys coloring.
 
-    # #1748: Always advance to the next paragraph.
-    i = len(head)
-    j = max(i, len(head) + len(result) - 1)
-    ins = j + 1
-    while ins < len(s):
-        i, j = g.getLine(s, ins)
-        line = s[i:j]
-        # It's annoying, imo, to treat @ lines differently.
-        if line.isspace():
-            ins = j + 1
-        else:
-            ins = i
-            break
-    ins = min(ins, len(s))
-    w.setSelectionRange(ins, ins, insert=ins)
+        # #1748: Always advance to the next paragraph.
+        i = len(head)
+        j = max(i, len(head) + len(result) - 1)
+        ins = j + 1
+        while ins < len(s):
+            i, j = g.getLine(s, ins)
+            line = s[i:j]
+            # It's annoying, imo, to treat @ lines differently.
+            if line.isspace():
+                ins = j + 1
+            else:
+                ins = i
+                break
+        ins = min(ins, len(s))
+        w.setSelectionRange(ins, ins, insert=ins)
 
-    # Show more lines, if they exist.
-    k = g.see_more_lines(s, ins, 4)
-    p.v.insertSpot = ins
-    w.see(k)  # New in 6.4. w.see works!
-    if not changed:
-        return
+        # Show more lines, if they exist.
+        k = g.see_more_lines(s, ins, 4)
+        p.v.insertSpot = ins
+        w.see(k)  # New in 6.4. w.see works!
+        if not changed:
+            return
 
-    # Finish.
-    p.v.b = s  # p.b would cause a redraw.
-    u.afterChangeBody(p, undoType, bunch)
-    w.setXScrollPosition(0)  # Never scroll horizontally.
+        # Finish.
+        p.v.b = s  # p.b would cause a redraw.
+        w.setXScrollPosition(0)  # Never scroll horizontally.
+        u.redraw(c.p)
 
 
 # @+node:ekr.20171123135625.48: *3* function: rp_wrap_all_lines
@@ -1216,29 +1190,29 @@ def reformatSelection(
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
         return
-    bunch = u.beforeChangeBody(p)
-    oldSel, oldYview, original, pageWidth, tabWidth = rp_get_args(c)
-    head, middle, tail = c.frame.body.getSelectionLines()
-    lines = g.splitLines(middle)
-    if not lines:
-        return
-    indents, leading_ws = rp_get_leading_ws(c, lines, tabWidth)
-    result = rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth)
-    s = head + result + tail
-    if s == original:
-        return
+    with u.change_node(p, undoType):
+        oldSel, oldYview, original, pageWidth, tabWidth = rp_get_args(c)
+        head, middle, tail = c.frame.body.getSelectionLines()
+        lines = g.splitLines(middle)
+        if not lines:
+            return
+        indents, leading_ws = rp_get_leading_ws(c, lines, tabWidth)
+        result = rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth)
+        s = head + result + tail
+        if s == original:
+            return
 
-    # Update the text and the selection.
-    w.setAllText(s)  # Destroys coloring.
-    i = len(head)
-    j = max(i, len(head) + len(result) - 1)
-    j = min(j, len(s))
-    w.setSelectionRange(i, j, insert=j)
+        # Update the text and the selection.
+        w.setAllText(s)  # Destroys coloring.
+        i = len(head)
+        j = max(i, len(head) + len(result) - 1)
+        j = min(j, len(s))
+        w.setSelectionRange(i, j, insert=j)
 
-    # Finish.
-    p.v.b = s  # p.b would cause a redraw.
-    u.afterChangeBody(p, undoType, bunch)
-    w.setXScrollPosition(0)  # Never scroll horizontally.
+        # Finish.
+        p.v.b = s  # p.b would cause a redraw.
+        w.setXScrollPosition(0)  # Never scroll horizontally.
+        u.redraw(c.p)
 
 
 # @+node:ekr.20171123135625.12: ** c_ec.show/hide/toggleInvisibles
@@ -1292,24 +1266,22 @@ def toggleAngleBrackets(self: Self, event: LeoKeyEvent | None = None) -> None:
         c.notValidInBatchMode("Toggle Angle Brackets")
         return
     c.endEditing()
-    data = u.beforeChangeHeadline(p)
-    s = p.h.strip()
-    # 2019/09/12: Guard against black.
-    lt = "<<"
-    rt = ">>"
-    if s[0:2] == lt or s[-2:] == rt:
-        if s[0:2] == "<<":
-            s = s[2:]
-        if s[-2:] == ">>":
-            s = s[:-2]
-        s = s.strip()
-    else:
-        s = g.angleBrackets(' ' + s + ' ')
-    p.setHeadString(s)
-    u.afterChangeHeadline(p, 'toggle-angle-brackets', data)
-    p.setDirty()  # #1449.
-    c.setChanged()  # #1449.
-    c.redrawAndEdit(p, selectAll=True)
+    with u.change_node(p, 'toggle-angle-brackets'):
+        s = p.h.strip()
+        # 2019/09/12: Guard against black.
+        lt = "<<"
+        rt = ">>"
+        if s[0:2] == lt or s[-2:] == rt:
+            if s[0:2] == "<<":
+                s = s[2:]
+            if s[-2:] == ">>":
+                s = s[:-2]
+            s = s.strip()
+        else:
+            s = g.angleBrackets(' ' + s + ' ')
+        p.setHeadString(s)
+        p.setDirty()  # #1449.
+        u.redraw_and_edit(p, select_all=True)
 
 
 # @+node:ekr.20171123135625.49: ** c_ec.unformatParagraph & helper
@@ -1356,27 +1328,27 @@ def unreformat(
     p, u, w = c.p, c.undoer, c.frame.body.wrapper
     s = head + result + tail
     ins = max(len(head), len(head) + len(result) - 1)
-    bunch = u.beforeChangeBody(p)
-    w.setAllText(s)  # Destroys coloring.
-    if original != s:
-        p.v.b = w.getAllText()
-        u.afterChangeBody(p, undoType, bunch)
-    # Advance to the next paragraph.
-    ins += 1  # Move past the selection.
-    while ins < len(s):
-        i, j = g.getLine(s, ins)
-        line = s[i:j]
-        if line.isspace():
-            ins = j + 1
-        else:
-            ins = i
-            break
-    c.recolor()  # Required.
-    w.setSelectionRange(ins, ins, insert=ins)
-    # More useful than for reformat-paragraph.
-    w.see(ins)
-    # Make sure we never scroll horizontally.
-    w.setXScrollPosition(0)
+    with u.change_node(p, undoType):
+        w.setAllText(s)  # Destroys coloring.
+        if original != s:
+            p.v.b = w.getAllText()
+        # Advance to the next paragraph.
+        ins += 1  # Move past the selection.
+        while ins < len(s):
+            i, j = g.getLine(s, ins)
+            line = s[i:j]
+            if line.isspace():
+                ins = j + 1
+            else:
+                ins = i
+                break
+        c.recolor()  # Required.
+        w.setSelectionRange(ins, ins, insert=ins)
+        # More useful than for reformat-paragraph.
+        w.see(ins)
+        # Make sure we never scroll horizontally.
+        w.setXScrollPosition(0)
+        u.redraw(c.p)
 
 
 # @+node:ekr.20180410054716.1: ** c_ec: insert-jupyter-toc & insert-markdown-toc
@@ -1407,13 +1379,13 @@ def insert_toc(c: Cmdr, kind: str) -> None:
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
         return
-    bunch = u.beforeChangeBody(p)
-    w.deleteTextSelection()
-    s = make_toc(c, kind=kind, root=c.p)
-    i = w.getInsertPoint()
-    w.insert(i, s)
-    p.v.b = w.getAllText()
-    u.afterChangeBody(p, undoType, bunch)
+    with u.change_node(p, undoType):
+        w.deleteTextSelection()
+        s = make_toc(c, kind=kind, root=c.p)
+        i = w.getInsertPoint()
+        w.insert(i, s)
+        p.v.b = w.getAllText()
+        u.redraw(c.p)
 
 
 # @+node:ekr.20180410054926.1: *3* make_toc

@@ -507,16 +507,15 @@ class CompareLeoOutlines:
             return
         undoType = 'diff-files'
         c.selectPosition(c.lastTopLevel())
-        undoData = u.beforeInsertNode(c.p)
-        self.root = self.create_root(aList)
-        self.visible = visible
-        while len(aList) > 1:
-            path1 = aList[0]
-            aList = aList[1:]
-            for path2 in aList:
-                self.diff_two_files(path1, path2)  # adds to self.root
-        u.afterInsertNode(self.root, undoType, undoData)
-        self.finish()
+        with u.change_outline(undoType):
+            self.root = self.create_root(aList)
+            self.visible = visible
+            while len(aList) > 1:
+                path1 = aList[0]
+                aList = aList[1:]
+                for path2 in aList:
+                    self.diff_two_files(path1, path2)  # adds to self.root
+            self.finish()
 
     # @+node:ekr.20180211170333.3: *3* CompareLeoOutlines.diff_two_files
     def diff_two_files(self, fn1: str, fn2: str) -> None:
@@ -720,29 +719,27 @@ def diffMarkedNodes(event: LeoKeyEvent | None = None) -> None:
         g.es_print('Please mark at least 2 nodes')
         return
     c.selectPosition(c.lastTopLevel())
-    undoData = u.beforeInsertNode(c.p)
-    root = c.lastTopLevel().insertAfter()
-    root.h = 'diff marked nodes'
-    root.b = '\n'.join([z.h for z in aList]) + '\n'
-    n = 0
-    while len(aList) > 1:
-        n += 1
-        p1, p2 = aList[0], aList[1]
-        aList = aList[1:]
-        lines = difflib.Differ().compare(
-            g.splitLines(p1.b.rstrip() + '\n'),
-            g.splitLines(p2.b.rstrip() + '\n')
-        )  # fmt: skip
-        p = root.insertAsLastChild()
-        p.h = f"diff {n}"
-        p.b = f"1: {p1.h}\n2: {p2.h}\n{''.join(list(lines))}"
-        for p3 in (p1, p2):
-            clone = p3.clone()
-            clone.moveToLastChildOf(p)
-    u.afterInsertNode(root, undoType, undoData)
-    root.expand()
-    c.selectPosition(root)
-    c.redraw()
+    with u.change_outline(undoType):
+        root = c.lastTopLevel().insertAfter()
+        root.h = 'diff marked nodes'
+        root.b = '\n'.join([z.h for z in aList]) + '\n'
+        n = 0
+        while len(aList) > 1:
+            n += 1
+            p1, p2 = aList[0], aList[1]
+            aList = aList[1:]
+            lines = difflib.Differ().compare(
+                g.splitLines(p1.b.rstrip() + '\n'),
+                g.splitLines(p2.b.rstrip() + '\n')
+            )  # fmt: skip
+            p = root.insertAsLastChild()
+            p.h = f"diff {n}"
+            p.b = f"1: {p1.h}\n2: {p2.h}\n{''.join(list(lines))}"
+            for p3 in (p1, p2):
+                clone = p3.clone()
+                clone.moveToLastChildOf(p)
+        root.expand()
+        u.redraw(root)
 
 
 # @+node:ekr.20180213104627.1: *3* diff_leo_files_helper

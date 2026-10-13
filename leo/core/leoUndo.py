@@ -9,46 +9,41 @@
 # @+node:ekr.20031218072017.2413: ** << How Leo implements unlimited undo >>
 # @@language rest
 # @+at
-# Think of the actions that may be Undone or Redone as a string of beads
-# (g.Bunches) containing all information needed to undo _and_ redo an operation.
+# Undo history is a list of beads, with a pointer to the last applied bead.
+# Undo executes that bead's undo functions and moves the pointer backwards;
+# redo executes the next bead's redo functions and moves the pointer forwards.
+# A new, nonempty command discards the redo tail. No-op commands leave it intact.
 #
-# A bead pointer points to the present bead. Undoing an operation moves the bead
-# pointer backwards; redoing an operation moves the bead pointer forwards. The
-# bead pointer points in front of the first bead when Undo is disabled. The bead
-# pointer points at the last bead when Redo is disabled.
+# Core commands use `with c.undoer as u` and set a command name. Action helpers
+# perform the edit immediately and capture only the data needed to undo/redo it.
+# Nested contexts share one UndoBead, published only on outermost exit. Helpers
+# execute in forward order on redo and reverse order on undo; UI finishers run
+# after all mutations. Saving may occur between creation and replay, so both
+# undo and redo mark the document changed rather than restore a stale clean bit.
 #
-# The Undo command uses the present bead to undo the action, then moves the bead
-# pointer backwards. The Redo command uses the bead after the present bead to redo
-# the action, then moves the bead pointer forwards. The list of beads does not
-# branch; all undoable operations (except the Undo and Redo commands themselves)
-# delete any beads following the newly created bead.
+# change_node records content/marks/user attributes for one vnode;
+# change_position records the old and new links of a moved position;
+# change_outline captures a bulk graph mutation and retains only changed vnodes.
+# All three contexts preserve object identity, so clones and subsequent commands
+# keep referring to the same vnodes. A bulk snapshot absorbs nested outline
+# helpers; external state (such as recent files) uses its own captured functions.
+# TypingBead stores incremental line patches with configurable coalescing.
 #
-# New in Leo 4.3: User (client) code should call u.beforeX and u.afterX methods to
-# create a bead describing the operation that is being performed. (By convention,
-# the code sets u = c.undoer for undoable operations.) Most u.beforeX methods
-# return 'undoData' that the client code merely passes to the corresponding
-# u.afterX method. This data contains the 'before' snapshot. The u.afterX methods
-# then create a bead containing both the 'before' and 'after' snapshots.
+# Legacy before/after methods and g.Bunch beads remain available to plugins and
+# scripts. Legacy groups accept new beads, and old API calls can be composed
+# inside a new context. Only this compatibility layer uses the legacy Undoer
+# ivars. See leo/doc/undo.md for the API, examples, and migration notes.
 #
-# New in Leo 4.3: u.beforeChangeGroup and u.afterChangeGroup allow multiple calls
-# to u.beforeX and u.afterX methods to be treated as a single undoable entry. See
-# the code for the Replace All, Sort, Promote and Demote commands for examples.
-# u.before/afterChangeGroup substantially reduce the number of u.before/afterX
-# methods needed.
-#
-# New in Leo 4.3: It would be possible for plugins or other code to define their
-# own u.before/afterX methods. Indeed, u.afterX merely needs to set the
-# bunch.undoHelper and bunch.redoHelper ivars to the methods used to undo and redo
-# the operation. See the code for the various u.before/afterX methods for
-# guidance.
-#
-# I first saw this model of unlimited undo in the documentation for Apple's Yellow Box classes.
+# I first saw this history model in Apple's Yellow Box documentation.
 # @-<< How Leo implements unlimited undo >>
 # @+<< leoUndo imports & annotations >>
 # @+node:ekr.20220821074023.1: ** << leoUndo imports & annotations >>
 from __future__ import annotations
-from collections.abc import Callable
-from typing import Self, TYPE_CHECKING
+from collections.abc import Callable, Iterator
+from contextlib import contextmanager
+from copy import deepcopy
+import warnings
+from typing import Any, Self, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoFileCommands import FastRead
 from leo.core.leoNodes import Position, VNode
@@ -75,10 +70,11 @@ class UndoBead:
     __slots__ = (
         'c',
         'command_name',
-        'must_redraw',
+        'old_changed',
         'old_p',
         'redo_finishers',
         'redo_functions',
+        'redraw_finishers',
         'undoType',
         'undo_finishers',
         'undo_functions',
@@ -87,40 +83,157 @@ class UndoBead:
 
     # @-<< UndoBead: slots >>
 
+    def __repr__(self) -> str:
+        return f"UndoBead: {self.command_name or '<no command_name>'}"
+
+    # @+others
+    # @+node:ekr.20261007113407.1: *3* UndoBead.__init__
     def __init__(self, undoer: Undoer) -> None:
-        self.c = c = undoer.c
+        # Let.
+        c = undoer.c
+        self.c = c
         self.command_name = None
-        self.must_redraw = False  # Sticky: never cleared once set.
-        self.old_p = c.p
+        self.old_changed = c.changed
+        self.old_p = c.p.copy()
         self.redo_finishers: list[Callable] = []
         self.redo_functions: list[Callable] = []
+        self.redraw_finishers: tuple[Callable, Callable] | None = None
         self.undoType = ''  # Required. Set by u.set_command_name
         self.undo_finishers: list[Callable] = []
         self.undo_functions: list[Callable] = []
         self.undoer = undoer
 
-    def __repr__(self):
-        return f"UndoBead: {self.command_name}"
+    # @+node:ekr.20261010164513.1: *3* undoBead.add_recolor
+    def add_recolor(self, new_p: Position, old_p: Position) -> None:
 
-    # @+others
+        c = self.c
+        new_p = new_p.copy()
+        old_p = old_p.copy()
+
+        def recolor_redoer() -> None:
+            c.frame.scanForTabWidth(new_p)
+            c.recolor(new_p)
+
+        def recolor_undoer() -> None:
+            c.frame.scanForTabWidth(old_p)
+            c.recolor(old_p)
+
+        self.add_finishers(recolor_redoer, recolor_undoer)
+
+    # @+node:ekr.20261010150247.9: *3* undoBead.add_redraw
+    def add_redraw(self, new_p: Position, old_p: Position, contract: bool = False) -> None:
+        """
+        Add finishers that will call c.redraw.
+        The caller chooses the final redraw for the entire command.
+        """
+        c = self.c
+        new_p = new_p.copy()
+        old_p = old_p.copy()
+
+        def redraw_redoer() -> None:
+            c.redraw(new_p if c.positionExists(new_p) else c.p)
+
+        def redraw_undoer() -> None:
+            if contract:
+                old_p.contract()
+            c.redraw(old_p if c.positionExists(old_p) else self.old_p)
+
+        self.redraw_finishers = redraw_redoer, redraw_undoer
+
+    # @+node:ekr.20261010150247.10: *3* undoBead.add_redraw_and_edit
+    def add_redraw_and_edit(
+        self,
+        new_p: Position,
+        old_p: Position,
+        contract: bool = False,
+        select_all: bool = True,
+    ) -> None:
+
+        c = self.c
+        new_p = new_p.copy()
+        old_p = old_p.copy()
+
+        def redraw_and_edit_redoer() -> None:
+            c.redrawAndEdit(new_p if c.positionExists(new_p) else c.p, selectAll=select_all)
+
+        def redraw_and_edit_undoer() -> None:
+            if contract:
+                old_p.contract()
+            c.redrawAndEdit(old_p if c.positionExists(old_p) else self.old_p, selectAll=select_all)
+
+        self.redraw_finishers = redraw_and_edit_redoer, redraw_and_edit_undoer
+
+    # @+node:ekr.20261011192651.1: *3* undoBead.add_redraw_after_head_changed
+    def add_redraw_after_head_changed(self) -> None:
+
+        c = self.c
+
+        # A single callback suffices.
+        def redraw_after_head_changed_callback() -> None:
+            c.redraw_after_head_changed()
+
+        self.redraw_finishers = (
+            redraw_after_head_changed_callback,
+            redraw_after_head_changed_callback,
+        )
+
+    # @+node:ekr.20261011185637.1: *3* undoBead.check_undo
+    def check_undo(self) -> None:
+        """Perform an important sanity check."""
+        c = self.c
+        old_p = self.old_p
+        if old_p != c.p:
+            message = f"\nUndoBead.und: Bad c.p\n  {c.p.h=}\n{old_p.h=}\n{g.callers()=}\n"
+            print()
+            g.trace(message)
+
+    # @+node:ekr.20261007104333.1: *3* UndoBead.get (compatility)
+    def get(self, key, default=None) -> Any:
+        """A wrapper for u.undoTyping"""
+        # Called infequently, but u.undoTyping *does* sometimes call it.
+        d = {
+            'kind':     self.undoType.lower(),
+            'leading':  0,
+            'p':        self.old_p,
+            'trailing': 0,
+            'undoType': self.undoType,
+            'v':        self.old_p.v,
+        }  # fmt: skip
+        return d.get(key, default)
+
     # @+node:ekr.20261006040132.1: *3* UndoBead.redo
     def redo(self) -> None:
         c = self.c
         for f in self.redo_functions:
+            # g.trace('redoer:', f.__name__)
             f()
-        if self.must_redraw:
-            c.redraw()
+        if self.redraw_finishers:
+            self.redraw_finishers[0]()
         for f in self.redo_finishers:
+            # g.trace('finisher:', f.__name__)
             f()
+        c.setChanged()  # Elegant!
 
-    # @+node:ekr.20261006040137.2: *3* UndoBead.set_helpers & set_finishers
-    def set_helpers(self, redo_function: Callable, undo_function: Callable) -> None:
+    # @+node:ekr.20261006040137.2: *3* UndoBead.add_helpers & add_finishers
+    def add_helpers(
+        self,
+        redo_function: Callable,
+        undo_function: Callable,
+        *,
+        force: bool = False,
+        vnode: VNode | None = None,
+    ) -> None:
         """Append the helpers (in correct order!) to the undo/redo lists."""
+        if (self.undoer.capture_level or vnode in self.undoer.node_captures) and not force:
+            return  # The enclosing snapshot records the complete operation.
+        self.c.setChanged()
         self.redo_functions.append(redo_function)
         self.undo_functions.insert(0, undo_function)  # Execute in reverse order.
 
-    def set_finishers(self, redo_finisher: Callable, undo_finisher: Callable) -> None:
+    def add_finishers(self, redo_finisher: Callable, undo_finisher: Callable) -> None:
         """Append the helpers (in correct order!) to the undo/redo lists."""
+        if self.undoer.capture_level:
+            return
         self.redo_finishers.append(redo_finisher)
         self.undo_finishers.append(undo_finisher)  # Execute in given order.
 
@@ -128,13 +241,93 @@ class UndoBead:
     def undo(self) -> None:
         c = self.c
         for f in self.undo_functions:
+            # g.trace('undoer:', f.__name__)
             f()
-        if self.must_redraw:
-            c.redraw(self.old_p)
+        if self.redraw_finishers:
+            self.redraw_finishers[1]()
         for f in self.undo_finishers:
+            # g.trace('undo finisher:', f.__name__)
             f()
+        # A save may have occurred since this bead was created.
+        c.setChanged()
 
     # @-others
+
+
+# @+node:vivainio.202610110002.1: ** class TypingBead
+class TypingBead(UndoBead):
+    """An incremental text patch, independent of the legacy Undoer ivars."""
+
+    def __init__(self, undoer, p, old_text, new_text, old_sel, new_sel, new_ins, scroll):
+        super().__init__(undoer)
+        self.command_name = self.undoType = 'Typing'
+        self.p = p.copy()
+        self.old_sel = old_sel
+        self.new_sel = new_sel
+        self.new_ins = new_ins
+        self.scroll = scroll
+        self.marked = p.isMarked()
+        self.update_patch(old_text, new_text)
+
+    @staticmethod
+    def split_patch(old_text, new_text):
+        old, new = old_text.split('\n'), new_text.split('\n')
+        leading = 0
+        while leading < min(len(old), len(new)) and old[leading] == new[leading]:
+            leading += 1
+        trailing = 0
+        while (
+            trailing < min(len(old), len(new)) - leading
+            and old[-trailing - 1] == new[-trailing - 1]
+        ):
+            trailing += 1
+        return (
+            leading,
+            trailing,
+            old[leading : len(old) - trailing],
+            new[leading : len(new) - trailing],
+        )
+
+    def update_patch(self, old_text, new_text):
+        self.leading, self.trailing, self.old_lines, self.new_lines = self.split_patch(
+            old_text, new_text
+        )
+
+    def replace_middle(self, text, middle):
+        lines = text.split('\n')
+        return '\n'.join(
+            lines[: self.leading] + middle + (lines[-self.trailing :] if self.trailing else [])
+        )
+
+    def apply(self, middle, sel, ins):
+        c, p = self.c, self.p
+        if c.p != p:
+            c.selectPosition(p)
+        p.v.b = self.replace_middle(p.b, middle)
+        p.setDirty()
+        if self.marked:
+            c.setMarked(p)
+        else:
+            c.clearMarked(p)
+        w = c.frame.body.wrapper
+        w.setAllText(p.b)
+        if sel is not None:
+            w.setSelectionRange(*sel, insert=ins)
+        w.setYScrollPosition(self.scroll)
+        c.recolor(p)
+        c.setChanged()
+
+    def undo(self):
+        self.apply(self.old_lines, self.old_sel, self.old_sel[1] if self.old_sel else None)
+
+    def redo(self):
+        self.apply(self.new_lines, self.new_sel, self.new_ins)
+
+    def get(self, key, default=None):
+        # Legacy doTyping must not try to extend a new-style typing bead.
+        if key == 'kind':
+            return 'new-typing'
+        return super().get(key) or default
 
 
 # @+node:ekr.20031218072017.3605: ** class Undoer
@@ -142,6 +335,26 @@ class Undoer:
     """A class that implements unlimited undo and redo."""
 
     # @+others
+    # @+node:ekr.20261005094529.1: *3* u.__enter__ and __exit__
+    def __enter__(self) -> Self:
+        """Compose nested operations into one bead, published on outermost exit."""
+        if self.undoBeadLevel == 0:
+            self.undoBead = UndoBead(self)
+        self.undoBeadLevel += 1
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback) -> None:
+        b = self.undoBead
+        self.undoBeadLevel -= 1
+        if self.undoBeadLevel:
+            return
+        self.undoBead = None
+        if b.undo_functions and not (self.undoing or self.redoing):
+            if not b.command_name:
+                raise AssertionError("Missing call to u.set_command_name")
+            # Record partial mutations even if the command raised an exception.
+            self.pushBead(b)
+
     # @+node:ekr.20031218072017.3606: *3* u.__init__
     def __init__(self, c: Cmdr) -> None:
         self.c = c
@@ -152,6 +365,9 @@ class Undoer:
         self.beads = []  # List of undo nodes.
         self.bead = -1  # Index of the present bead: -1:len(beads)
         self.inHead = False
+        self.capture_level = 0
+        self.node_captures = set()
+        self.undoBeadLevel = 0  # PR #4996
         self.undoBead = None  # PR #4994
         self.undoType = "Can't Undo"
         # These must be set here, _not_ in clearUndoState.
@@ -168,22 +384,6 @@ class Undoer:
         # Update settings.
         self.reloadSettings()
 
-    # @+node:ekr.20261005094529.1: *3* u.__enter__ and __exit__
-    def __enter__(self) -> Self:
-        """Support context manager."""
-        u = self
-        # The u.undoBead ivar exists *only* during the lifetime of the "with" statement!
-        u.undoBead = UndoBead(undoer=self)
-        u.beads.append(u.undoBead)
-        u.bead += 1
-        return self
-
-    def __exit__(self, *args) -> None:
-        """Called when leaving a "with" statement."""
-        u = self
-        assert isinstance(u.undoBead, UndoBead), repr(u.undoBead)
-        u.undoBead = None
-
     # @+node:ekr.20191213085126.1: *3* u.reloadSettings
     def reloadSettings(self) -> None:
         """Undoer.reloadSettings."""
@@ -194,320 +394,956 @@ class Undoer:
         if self.granularity not in ('node', 'line', 'word', 'char'):
             self.granularity = 'line'
 
-    # @+node:ekr.20050416092908.1: *3* u.Internal helpers
-    # @+node:ekr.20031218072017.3607: *4* u.clearOptionalIvars
-    def clearOptionalIvars(self) -> None:
-        u = self
-        u.p = None  # The position/node being operated upon for undo and redo.
-        for ivar in u.optionalIvars:
-            setattr(u, ivar, None)
-
-    # @+node:ekr.20060127052111.1: *4* u.cutStack
-    def cutStack(self) -> None:
-        u = self
-        n = u.max_undo_stack_size
-        if u.bead >= n > 0 and not g.unitTesting:
-            # Do nothing if we are in the middle of creating a group.
-            i = len(u.beads) - 1
-            while i >= 0:
-                bunch = u.beads[i]
-                if hasattr(bunch, 'kind') and bunch.kind == 'beforeGroup':
-                    return
-                i -= 1
-            # This work regardless of how many items appear after bead n.
-            u.beads = u.beads[-n:]
-            u.bead = n - 1
-        if 'undo' in g.app.debug and 'verbose' in g.app.debug:  # pragma: no cover
-            print(f"u.cutStack: {len(u.beads):3}")
-
-    # @+node:ekr.20080623083646.10: *4* u.dumpBead
-    def dumpBead(self, n: int) -> str:  # pragma: no cover
-        u = self
-        if n < 0 or n >= len(u.beads):
-            return 'no bead: n = ', n
-        # bunch = u.beads[n]
-        result = []
-        result.append('-' * 10)
-        result.append(f"len(u.beads): {len(u.beads)}, n: {n}")
-        for ivar in ('kind', 'newP', 'newN', 'p', 'oldN', 'undoHelper'):
-            result.append(f"{ivar} = {getattr(self, ivar)}")
-        return '\n'.join(result)
-
-    def dumpTopBead(self) -> str:  # pragma: no cover
-        u = self
-        n = len(u.beads)
-        if n > 0:
-            return self.dumpBead(n - 1)
-        return '<no top bead>'
-
-    # @+node:EKR.20040526150818: *4* u.getBead
-    def getBead(self, n: int) -> g.Bunch | UndoBead | None:
-        """Set Undoer ivars from the bunch at the top of the undo stack."""
-        u = self
-        if n < 0 or n >= len(u.beads):
-            return None  # pragma: no cover
-        bunch = u.beads[n]
-        if 'undo' in g.app.debug:  # pragma: no cover
-            print(f" u.getBead: {n:3} of {len(u.beads)}")
-        if isinstance(bunch, g.Bunch):  # Legacy undo code:
-            self.setIvarsFromBunch(bunch)
-        return bunch
-
-    # @+node:EKR.20040526150818.1: *4* u.peekBead
-    def peekBead(self, n: int) -> g.Bunch | None:
-        u = self
-        if n < 0 or n >= len(u.beads):
-            return None
-        return u.beads[n]
-
-    # @+node:ekr.20060127113243: *4* u.pushBead
-    def pushBead(self, bunch: g.Bunch) -> None:
-        u = self
-        # New in 4.4b2:  Add this to the group if it is being accumulated.
-        bunch2 = u.bead >= 0 and u.bead < len(u.beads) and u.beads[u.bead]
-        if bunch2 and hasattr(bunch2, 'kind') and bunch2.kind == 'beforeGroup':
-            # Just append the new bunch the group's items.
-            bunch2.items.append(bunch)
-        else:
-            # Push the bunch.
-            u.bead += 1
-            u.beads[u.bead :] = [bunch]
-            # Recalculate the menu labels.
-            u.setUndoTypes()
-        if 'undo' in g.app.debug:  # pragma: no cover
-            print(f"u.pushBead: {len(u.beads):3} {bunch.undoType}")
-
-    # @+node:ekr.20031218072017.3613: *4* u.redoMenuName, undoMenuName
-    def redoMenuName(self, name: str) -> str:
-        if name.startswith("Can't Redo"):
-            return name
-        return "Redo " + name
-
-    def undoMenuName(self, name: str) -> str:
-        if name.startswith("Can't Undo"):
-            return name
-        return "Undo " + name
-
-    # @+node:ekr.20060127070008: *4* u.setIvarsFromBunch
-    def setIvarsFromBunch(self, bunch: g.Bunch) -> None:
-        u = self
-        u.clearOptionalIvars()
-        if False and not g.unitTesting:  # Debugging. # pragma: no cover
-            print('-' * 40)
-            for key in list(bunch.keys()):
-                g.trace(f"{key:20} {bunch.get(key)!r}")
-            print('-' * 20)
-        # bunch is not a dict, so bunch.keys() is required.
-        for key in list(bunch.keys()):
-            val = bunch.get(key)
-            setattr(u, key, val)
-            if key not in u.optionalIvars:
-                u.optionalIvars.append(key)
-
-    # @+node:ekr.20031218072017.3614: *4* u.setRedoType
-    # These routines update both the ivar and the menu label.
-
-    def setRedoType(self, theType: str) -> None:
-        u = self
-        frame = u.c.frame
-        if not isinstance(theType, str):  # pragma: no cover
-            g.trace(f"oops: expected string for command, got {theType!r}")
-            g.trace(g.callers())
-            theType = '<unknown>'
-        menu = frame.menu.getMenu("Edit")
-        name = u.redoMenuName(theType)
-        if name != u.redoMenuLabel:
-            # Update menu using old name.
-            realLabel = frame.menu.getRealMenuName(name)
-            if realLabel == name:
-                underline = -1 if g.match(name, 0, "Can't") else 0
-            else:
-                underline = realLabel.find("&")
-            realLabel = realLabel.replace("&", "")
-            frame.menu.setMenuLabel(menu, u.realRedoMenuLabel, realLabel, underline=underline)
-            u.redoMenuLabel = name
-            u.realRedoMenuLabel = realLabel
-
-    # @+node:ekr.20091221145433.6381: *4* u.setUndoType
-    def setUndoType(self, theType: str) -> None:
-        u = self
-        frame = u.c.frame
-        if not isinstance(theType, str):
-            g.trace(f"oops: expected string for command, got {repr(theType)}")
-            g.trace(g.callers())
-            theType = '<unknown>'
-        menu = frame.menu.getMenu("Edit")
-        name = u.undoMenuName(theType)
-        if name != u.undoMenuLabel:
-            # Update menu using old name.
-            realLabel = frame.menu.getRealMenuName(name)
-            if realLabel == name:
-                underline = -1 if g.match(name, 0, "Can't") else 0
-            else:
-                underline = realLabel.find("&")
-            realLabel = realLabel.replace("&", "")
-            frame.menu.setMenuLabel(menu, u.realUndoMenuLabel, realLabel, underline=underline)
-            u.undoType = theType
-            u.undoMenuLabel = name
-            u.realUndoMenuLabel = realLabel
-
-    # @+node:ekr.20031218072017.3616: *4* u.setUndoTypes
-    def setUndoTypes(self) -> None:
-        u = self
-        # Set the undo type and undo menu label.
-        if bunch := u.peekBead(u.bead):
-            u.setUndoType(bunch.undoType)
-        else:
-            if u.last_undoable_command_name:
-                undoType = f"Can't Undo {u.last_undoable_command_name}"
-            else:
-                undoType = "Can't Undo"
-            u.setUndoType(undoType)
-        # Set only the redo menu label.
-        if bunch := u.peekBead(u.bead + 1):
-            u.setRedoType(bunch.undoType)
-        else:
-            u.setRedoType("Can't Redo")
-        u.cutStack()
-
-    # @+node:ekr.20050525151449: *4* u.trace
-    def trace(self) -> None:  # pragma: no cover
-        ivars = ('kind', 'undoType')
-        for ivar in ivars:
-            g.pr(ivar, getattr(self, ivar))
-
-    # @+node:ekr.20050410095424: *4* u.updateMarks
-    def updateMarks(self, oldOrNew: str) -> None:
-        """Update dirty and marked bits."""
+    # @+node:ekr.20261009154652.1: *3* u:undo, redo, and helpers
+    # @+node:ekr.20031218072017.2030: *4* u.redo
+    @cmd('redo')
+    def redo(self, event: LeoKeyEvent | None = None) -> None:
+        """Redo the operation undone by the last undo."""
         c, u = self.c, self
-        if oldOrNew not in ('new', 'old'):  # pragma: no cover
-            g.trace("can't happen")
+        if not c.p:
             return
-        isOld = oldOrNew == 'old'
-        marked = u.oldMarked if isOld else u.newMarked
-        # Note: c.set/clearMarked call a hook.
-        if marked:
-            c.setMarked(u.p)
-        else:
-            c.clearMarked(u.p)
-        # Undo/redo always set changed/dirty bits because the file may have been saved.
+        # End editing *before* getting state.
+        c.endEditing()
+        if not u.canRedo():
+            return
+        obj = u.getBead(u.bead + 1)
+        if not obj:
+            return
+
+        # Init status.
+        u.redoing = True
+        u.groupCount = 0
+        try:
+            if isinstance(obj, UndoBead):
+                obj.redo()
+            elif u.redoHelper:
+                u.redoHelper()
+            else:
+                g.trace(f"no redo helper for {u.kind} {u.undoType}")
+
+            # Finish.
+            c.checkOutline()
+            u.update_status(redraw=not (isinstance(obj, UndoBead) and obj.redraw_finishers))
+        finally:
+            u.redoing = False
+        u.bead += 1
+        u.setUndoTypes()
+
+    # @+node:ekr.20110519074734.6092: *4* u.redo helpers
+    # @+node:ekr.20191213085226.1: *5*  u.reloadHelper (do nothing)
+    def redoHelper(self) -> None:
+        """The default do-nothing redo helper."""
+
+    # @+node:ekr.20201109080732.1: *5* u.redoChangeBody
+    def redoChangeBody(self) -> None:
+        c, u, w = self.c, self, self.c.frame.body.wrapper
+        # selectPosition causes recoloring, so don't do this unless needed.
+        if c.p != u.p:  # #1333.
+            c.selectPosition(u.p)
         u.p.setDirty()
-        u.c.setChanged()
+        u.p.b = u.newBody
+        u.p.h = u.newHead
+        # This is required so. Otherwise redraw will revert the change!
+        c.frame.tree.setHeadline(u.p, u.newHead)
+        if u.newMarked:
+            u.p.setMarked()
+        else:
+            u.p.clearMarked()
+        if u.groupCount == 0:
+            w.setAllText(u.newBody)
+            i, j = u.newSel
+            w.setSelectionRange(i, j, insert=u.newIns)
+            w.setYScrollPosition(u.newYScroll)
+            c.recolor(u.p)
+        u.updateMarks('new')
+        u.p.setDirty()
 
-    # @+node:ekr.20261005135125.1: *3* u.New helpers
-    # @+node:ekr.20261005094529.2: *4* u.set_command_name
-    def set_command_name(self, command_name: str) -> None:
-        u = self
-        b = u.undoBead
-        assert isinstance(b, UndoBead), repr(b)
-        b.command_name = command_name
-        b.undoType = command_name
-        u.setUndoType(command_name)
-
-    # @+node:ekr.20261005140833.1: *4* u.set_body
-    def set_body(self, p: Position, new_body: str) -> None:
-
-        u = self
-        p = p.copy()
-        old_body = p.b
-
-        def set_body_redoer() -> None:
-            p.b = new_body
-
-        def set_body_undoer() -> None:
-            p.b = old_body
-
-        u.undoBead.set_helpers(set_body_redoer, set_body_undoer)
-
-        # Do the action!
-        p.b = new_body
-
-    # @+node:ekr.20261005143707.1: *4* u.delete_node
-    def delete_node(self, p: Position) -> None:
-
-        u = self
-        b = u.undoBead
-        c = self.c
-        p = p.copy()
-        old_back = p.back()
-        old_parent = p.parent()
-        # Similar to code for delete-node command:
-        new_node = p.visBack(c) if p.hasVisBack(c) else p.next()
-        if not new_node:
-            g.error(f"Can not delete {p.h}")
-            return
-
-        def delete_node_redoer() -> None:
-            p.doDelete(new_node)
-            new_node.setDirty()
-            c.p = new_node  # Required.
-
-        def delete_node_undoer() -> None:
-            # Similar to u.undoDeleteNode.
-            if old_back:
-                p._linkAfter(old_back)
-            elif old_parent:
-                p._linkAsNthChild(old_parent, 0)
-                old_parent.contract()
-            else:
-                p._linkAsRoot()
-            # UndoBead.undo sets c.p to UndoBead.old_p.
-
-        b.set_helpers(delete_node_redoer, delete_node_undoer)
-        b.must_redraw = True
-
-        # Do the action!
-        p.doDelete(new_node)
-        new_node.contract()
-
-    # @+node:ekr.20261005182243.1: *4* u.select_position
-    def select_position(self, p: Position) -> None:
-
+    # @+node:ekr.20201107150619.1: *5* u.redoChangeHeadline (legacy)
+    def redoChangeHeadline(self) -> None:
         c, u = self.c, self
-        old_p = c.p.copy()
+        # selectPosition causes recoloring, so don't do this unless needed.
+        if c.p != u.p:  # #1333.
+            c.selectPosition(u.p)
+        u.p.setDirty()
+        c.recolor(u.p)
+        # Restore the headline.
+        u.p.initHeadString(u.newHead)
+        # This is required. Otherwise redraw will revert the change!
+        c.frame.tree.setHeadline(u.p, u.newHead)
 
-        def select_position_redoer() -> None:
-            c.p = p
+    # @+node:felix.20230326231408.1: *5* u.redoChangeMultiHeadline
+    def redoChangeMultiHeadline(self) -> None:
+        c, u = self.c, self
+        c.recolor(u.p)
+        # Swap the ones from the 'bunch.headline' dict
+        for gnx, oldNewTuple in u.headlines.items():
+            v = c.fileCommands.gnxDict.get(gnx)
+            v.initHeadString(oldNewTuple[1])
+            if v.gnx == u.p.gnx:
+                u.p.setDirty()
+                # This is required.  Otherwise redraw will revert the change!
+                c.frame.tree.setHeadline(u.p, oldNewTuple[1])
+        # selectPosition causes recoloring, so don't do this unless needed.
+        if c.p != u.p:  # #1333.
+            c.selectPosition(u.p)
 
-        def select_position_undoer() -> None:
-            c.p = old_p
+    # @+node:ekr.20230721131611.1: *5* u.redoChangeTree (no calls!)
+    def redoChangeTree(self) -> None:
+        c, u, w = self.c, self, self.c.frame.body.wrapper
+        # selectPosition causes recoloring, so don't do this unless needed.
+        if c.p != u.p:
+            c.selectPosition(u.p)
+        u.p.setDirty()
+        u.p.b = u.newBody
+        u.p.h = u.newHead
+        # This is required so. Otherwise redraw will revert the change!
+        c.frame.tree.setHeadline(u.p, u.newHead)
+        if u.newMarked:
+            u.p.setMarked()
+        else:
+            u.p.clearMarked()
+        if u.groupCount == 0:
+            w.setAllText(u.newBody)
+            i, j = u.newSel
+            w.setSelectionRange(i, j, insert=u.newIns)
+            w.setYScrollPosition(u.newYScroll)
+            c.recolor(u.p)
+        u.updateMarks('new')
+        u.p.setDirty()
 
-        u.undoBead.set_helpers(select_position_redoer, select_position_undoer)
+    # @+node:ekr.20231225134021.1: *5* u.redoChangeUA
+    def redoChangeUA(self) -> None:
+        u = self
+        v = u.p.v
+        v.setDirty()
+        v.u = u.newUA
 
-        # Do the action!
+    # @+node:ekr.20050424170219: *5* u.redoClearRecentFiles
+    def redoClearRecentFiles(self) -> None:
+        c, u = self.c, self
+        rf = g.app.recentFilesManager
+        rf.setRecentFiles(u.newRecentFiles[:])
+        rf.createRecentFilesMenuItems(c)
+
+    # @+node:ekr.20111005152227.15558: *5* u.redoCloneMarkedNodes (converted)
+    def redoCloneMarkedNodes(self) -> None:
+        c, u = self.c, self
+
+        # PR #4996: Remove dependency on c.deleteOutline.
+        # g.trace(f"{u.p.h=}")  # Not covered by unit tests.
+
+        # c.selectPosition(u.p)
+        p = u.p
+
+        # c.cloneMarked()
+        # Create a new node to hold clones.
+        p1 = p.copy()
+        parent = p1.insertAfter()
+        parent.h = 'Clones of marked nodes'
+        cloned, n, p = [], 0, c.rootPosition()  # Does not use c.p!
+        while p:
+            # Careful: don't clone already-cloned nodes.
+            if p == parent:
+                p.moveToNodeAfterTree()
+            elif p.isMarked() and p.v not in cloned:
+                cloned.append(p.v)
+                # Create the clone directly as a child of parent.
+                p2 = p.copy()
+                n = parent.numberOfChildren()
+                p2._linkAsNthChild(parent, n)
+                p.moveToNodeAfterTree()
+                n += 1
+            else:
+                p.moveToThreadNext()
+        if n:
+            c.setChanged()
+            parent.expand()
+            c.selectPosition(parent)
+            u.afterCloneMarkedNodes(p1)
+        else:
+            parent.doDelete()
+            c.selectPosition(p1)
+
+        # Legacy.
+        u.newP = c.p
+
+    # @+node:ekr.20160502175557.1: *5* u.redoCopyMarkedNodes
+    def redoCopyMarkedNodes(self) -> None:
+        c, u = self.c, self
+        c.selectPosition(u.p)
+        c.copyMarked()
+        u.newP = c.p
+
+    # @+node:ekr.20050412083057: *5* u.redoCloneNode (calls p methods only)
+    def redoCloneNode(self) -> None:
+        c, u = self.c, self
+        if cc := c.chapterController:
+            cc.selectChapterByName('main')
+        if u.newBack:
+            u.newP._linkAfter(u.newBack)
+        elif u.newParent:
+            u.newP._linkAsNthChild(u.newParent, 0)
+        else:
+            u.newP._linkAsRoot()
+        c.selectPosition(u.newP)
+        u.newP.setDirty()
+
+    # @+node:ekr.20111005152227.15559: *5* u.redoDeleteMarkedNodes (converted)
+    def redoDeleteMarkedNodes(self) -> None:
+        u = self
+        c = u.c
+
+        # PR #4996: Remove dependency on c.deleteOutline.
+        # g.trace(f"{u.newP.h=}")  # Not covered by unit tests.
+
+        # c.selectPosition(u.p)
+        # c.deleteMarked()
+        p = c.rootPosition()  # Doesn't use c.p!
+        while p:
+            if p.isMarked():
+                next = p.positionAfterDeletedTree()
+                p.doDelete()
+                p = next
+            else:
+                p.moveToThreadNext()
+
+        # Legacy
+        c.selectPosition(u.newP)
+
+    # @+node:EKR.20040526072519.2: *5* u.redoDeleteNode (converted)
+    def redoDeleteNode(self) -> None:
+        c, u = self.c, self
+        newP = u.newP.copy() if u.newP else c.p
+
+        # PR #4996: Remove dependency on c.deleteOutline.
+        # g.trace(f"new: {id(u.newP)} old: {id(u.p)}")
+
+        # c.selectPosition(u.p)
+        p = u.p
+
+        # c.deleteOutline()
+        newNode = p.visBack(c) if p.hasVisBack(c) else p.next()
+        p.doDelete(newNode)
+
+        # Legacy.
+        if c.positionExists(newP):  # PR #4991.
+            c.p = newP
+
+    # @+node:ekr.20080425060424.9: *5* u.redoDemote
+    def redoDemote(self) -> None:
+        c, u = self.c, self
+        parent_v = u.p._parentVnode()
+        n = u.p.childIndex()
+        # Move the demoted nodes from the old parent to the new parent.
+        parent_v.children = parent_v.children[: n + 1]
+        u.p.v.children.extend(u.followingSibs)
+        # Adjust the parent links of the moved nodes.
+        # There is no need to adjust descendant links.
+        for v in u.followingSibs:
+            v.parents.remove(parent_v)
+            v.parents.append(u.p.v)
+        u.p.setDirty()
+        c.p = u.p
+
+    # @+node:ekr.20050318085432.6: *5* u.redoGroup
+    def redoGroup(self) -> None:
+        """Process beads until the matching 'afterGroup' bead is seen."""
+        c, u = self.c, self
+        newSel = u.newSel
+        u.groupCount += 1
+        bunch = u.beads[u.bead + 1]
+        count = 0
+        if not hasattr(bunch, 'items'):
+            g.trace(f"oops: expecting bunch.items. got bunch.kind = {bunch.kind}")
+            g.trace(bunch)
+        else:
+            for z in bunch.items:
+                if isinstance(z, UndoBead):
+                    z.redo()
+                    count += 1
+                    continue
+                self.setIvarsFromBunch(z)
+                if z.redoHelper:
+                    z.redoHelper()
+                    count += 1
+                else:
+                    g.trace(f"oops: no redo helper for {u.undoType} {u.p.h}")
+        u.groupCount -= 1
+        u.updateMarks('new')  # Bug fix: Leo 4.4.6.
+        if not g.unitTesting and u.verboseUndoGroup:
+            g.es("redo", count, "instances")
+
+        # PR #4991: Helpers set dirty bits and c.p. Do not set c.p here!
+
+        # Set the selection, independently of helpers.
+        if newSel:
+            i, j = newSel
+            c.frame.body.wrapper.setSelectionRange(i, j)
+
+    # @+node:ekr.20050412085138.1: *5* u.redoHoistNode & redoDehoistNode (call c.hoist/dehoist)
+    def redoHoistNode(self) -> None:
+        c, u = self.c, self
+        u.p.setDirty()
+        c.selectPosition(u.p)
+        c.hoist()
+
+    def redoDehoistNode(self) -> None:
+        c, u = self.c, self
+        u.p.setDirty()
+        c.selectPosition(u.p)
+        c.dehoist()
+
+    # @+node:ekr.20050412084532: *5* u.redoInsertNode (calls only p/v methods)
+    def redoInsertNode(self) -> None:
+        c, u = self.c, self
+        if cc := c.chapterController:
+            cc.selectChapterByName('main')
+        if u.newBack:
+            u.newP._linkAfter(u.newBack)
+        elif u.newParent:
+            u.newP._linkAsNthChild(u.newParent, 0)
+        else:
+            u.newP._linkAsRoot()
+        if u.pasteAsClone:
+            for bunch in u.afterTree:
+                v = bunch.v
+                if u.newP.v == v:
+                    u.newP.b = bunch.body
+                    u.newP.h = bunch.head
+                else:
+                    v.setBodyString(bunch.body)
+                    v.setHeadString(bunch.head)
+        u.newP.setDirty()
+        c.selectPosition(u.newP)
+
+    # @+node:ekr.20050526125801: *5* u.redoMark
+    def redoMark(self) -> None:
+        c, u = self.c, self
+        u.updateMarks('new')
+        if u.groupCount == 0:
+            u.p.setDirty()
+            c.selectPosition(u.p)
+
+    # @+node:ekr.20050411111847: *5* u.redoMove
+    def redoMove(self) -> None:
+        c, u = self.c, self
+        cc = c.chapterController
+        v = u.p.v
+        assert u.oldParent_v
+        assert u.newParent_v
+        assert v
+        if cc:
+            cc.selectChapterByName('main')
+        # Adjust the children arrays of the old parent.
+        assert u.oldParent_v.children[u.oldN] == v
+        del u.oldParent_v.children[u.oldN]
+        u.oldParent_v.setDirty()
+        # Adjust the children array of the new parent.
+        parent_v = u.newParent_v
+        parent_v.children.insert(u.newN, v)
+        v.parents.append(u.newParent_v)
+        v.parents.remove(u.oldParent_v)
+        u.newParent_v.setDirty()
+        u.updateMarks('new')
+        u.newP.setDirty()
+        c.selectPosition(u.newP)
+
+    # @+node:ekr.20050318085432.7: *5* u.redoNodeContents
+    def redoNodeContents(self) -> None:
+        c, u = self.c, self
+        w = c.frame.body.wrapper
+        # selectPosition causes recoloring, so don't do this unless needed.
+        if c.p != u.p:  # #1333.
+            c.selectPosition(u.p)
+        u.p.setDirty()
+        # Restore the body.
+        u.p.setBodyString(u.newBody)
+        w.setAllText(u.newBody)
+        c.recolor(u.p)
+        # Restore the headline.
+        u.p.initHeadString(u.newHead)
+        # This is required so.  Otherwise redraw will revert the change!
+        c.frame.tree.setHeadline(u.p, u.newHead)  # New in 4.4b2.
+        if u.groupCount == 0 and u.newSel:
+            i, j = u.newSel
+            w.setSelectionRange(i, j)
+        if u.groupCount == 0 and u.newYScroll is not None:
+            w.setYScrollPosition(u.newYScroll)
+        u.updateMarks('new')
+        u.p.setDirty()
+
+    # @+node:ekr.20230713150847.1: *5* u.redoParseBody (calls ic.parse_body)
+    def redoParseBody(self) -> None:
+        """Redo the parse-body command."""
+        u = self
+        c = u.c
+        ic = c.importCommands
+        p = u.p
+        if c.p != p:
+            c.selectPosition(p)
+        ic.parse_body(p)
+
+    # @+node:ekr.20080425060424.13: *5* u.redoPromote
+    def redoPromote(self) -> None:
+        c, u = self.c, self
+        parent_v = u.p._parentVnode()
+        # Add the children to parent_v's children.
+        n = u.p.childIndex() + 1
+        old_children = parent_v.children[:]
+        # Add children up to the promoted nodes.
+        parent_v.children = old_children[:n]
+        # Add the promoted nodes.
+        parent_v.children.extend(u.children)
+        # Add the children up to the promoted nodes.
+        parent_v.children.extend(old_children[n:])
+        # Remove the old children.
+        u.p.v.children = []
+        # Adjust the parent links in the moved children.
+        # There is no need to adjust descendant links.
+        for child in u.children:
+            child.parents.remove(u.p.v)
+            child.parents.append(parent_v)
+        u.p.setDirty()
+        c.p = u.p
+
+    # @+node:ekr.20080425060424.4: *5* u.redoSort
+    def redoSort(self) -> None:
+        c, u = self.c, self
+        p = u.p
+        if u.sortChildren:
+            p.v.children = u.newChildren[:]
+        else:
+            parent_v = p._parentVnode()
+            parent_v.children = u.newChildren[:]
+            # Only the child index of new position changes!
+            for i, v in enumerate(parent_v.children):
+                if v.gnx == p.v.gnx:
+                    p._childIndex = i
+                    break
+        p.setAllAncestorAtFileNodesDirty()
         c.p = p
 
-    # @+node:ekr.20261005143752.1: *4* u.set_selection_range
-    def set_selection_range(
-        self,
-        new_sel: tuple[int, int],
-        *,
-        old_sel: tuple[int, int] | None = None,
-    ) -> None:
+    # @+node:EKR.20040526075238.5: *5* u.redoTyping
+    def redoTyping(self) -> None:
+        c, u = self.c, self
+        current = c.p
+        w = c.frame.body.wrapper
+        # selectPosition causes recoloring, so avoid if possible.
+        if current != u.p:
+            c.selectPosition(u.p)
+        u.p.setDirty()
+        self.undoRedoText(
+            u.p,
+            u.leading,
+            u.trailing,
+            u.newMiddleLines,
+            u.oldMiddleLines,
+            u.newNewlines,
+            u.oldNewlines,
+            tag="redo",
+            undoType=u.undoType,
+        )
+        u.updateMarks('new')
+        if u.newSel:
+            c.bodyWantsFocus()
+            i, j = u.newSel
+            w.setSelectionRange(i, j, insert=j)
+        if u.yview:
+            c.bodyWantsFocus()
+            w.setYScrollPosition(u.yview)
 
-        u = self
-        w = u.c.frame.body.wrapper
-        if not w:
+    # @+node:ekr.20031218072017.2039: *4* u.undo
+    @cmd('undo')
+    def undo(self, event: LeoKeyEvent | None = None) -> None:
+        """Undo the operation described by the undo parameters."""
+        c, u = self.c, self
+        if not c.p:
+            g.trace('no current position')
             return
-        if old_sel is None:
-            old_sel = w.getSelectionRange()
+        # End editing *before* getting state.
+        c.endEditing()
+        if not u.canUndo():
+            return
+        obj = u.getBead(u.bead)
+        if not obj:
+            return
 
-        def set_selection_range_redoer() -> None:
-            i, j = new_sel
+        # Init status.
+        u.undoing = True
+        u.groupCount = 0
+
+        # Dispatch.
+        try:
+            if isinstance(obj, UndoBead):
+                obj.undo()
+            elif u.undoHelper:
+                if u.per_node_undo:
+                    u.setIvarsFromVnode(c.p)
+                u.undoHelper()
+            else:
+                g.trace(f"no undo helper for {u.kind} {u.undoType}")
+
+            # Finish.
+            c.checkOutline()
+            u.update_status(redraw=not (isinstance(obj, UndoBead) and obj.redraw_finishers))
+        finally:
+            u.undoing = False
+        u.bead -= 1
+        u.setUndoTypes()
+
+    # @+node:ekr.20110519074734.6093: *4* u.undo helpers
+    # @+node:ekr.20191213085246.1: *5*  u.undoHelper
+    def undoHelper(self) -> None:
+        """The default do-nothing undo helper."""
+
+    # @+node:ekr.20201109080631.1: *5* u.undoChangeBody
+    def undoChangeBody(self) -> None:
+        """
+        Undo all changes to the contents of a node,
+        including headline and body text, and marked bits.
+        """
+        c, u, w = self.c, self, self.c.frame.body.wrapper
+        # PR #4991: do not change c.p here!
+        u.p.setDirty()
+        u.p.b = u.oldBody
+        u.p.h = u.oldHead
+        # This is required.  Otherwise c.redraw will revert the change!
+        c.frame.tree.setHeadline(u.p, u.oldHead)
+        if u.oldMarked:
+            u.p.setMarked()
+        else:
+            u.p.clearMarked()
+        if u.groupCount == 0:
+            w.setAllText(u.oldBody)
+            i, j = u.oldSel
+            w.setSelectionRange(i, j, insert=u.oldIns)
+            w.setYScrollPosition(u.oldYScroll)
+            c.recolor(u.p)
+        u.updateMarks('old')
+
+    # @+node:ekr.20201107150041.1: *5* u.undoChangeHeadline
+    def undoChangeHeadline(self) -> None:
+        """Undo a change to a node's headline."""
+        c, u = self.c, self
+        # selectPosition causes recoloring, so don't do this unless needed.
+        if c.p != u.p:  # #1333.
+            c.selectPosition(u.p)
+        u.p.setDirty()
+        c.recolor(u.p)
+        u.p.initHeadString(u.oldHead)
+        # This is required. Otherwise c.redraw will revert the change!
+        c.frame.tree.setHeadline(u.p, u.oldHead)
+
+    # @+node:felix.20230326231543.1: *5* u.undoChangeMultiHeadline
+    def undoChangeMultiHeadline(self) -> None:
+        """Undo a change to a node's headline."""
+        c, u = self.c, self
+        # selectPosition causes recoloring, so don't do this unless needed.
+        c.recolor(u.p)
+
+        # Swap the ones from the 'bunch.headline' dict
+        for gnx, oldNewTuple in u.headlines.items():
+            v = c.fileCommands.gnxDict.get(gnx)
+            v.initHeadString(oldNewTuple[0])
+            if v.gnx == u.p.gnx:
+                u.p.setDirty()
+                # This is required.  Otherwise redraw will revert the change!
+                c.frame.tree.setHeadline(u.p, oldNewTuple[0])
+        if c.p != u.p:
+            c.selectPosition(u.p)
+
+    # @+node:ekr.20231225133712.1: *5* u.undoChangeUA
+    def undoChangeUA(self) -> None:
+        u = self
+        v = u.p.v
+        v.setDirty()
+        v.u = u.oldUA
+
+    # @+node:ekr.20050424170219.1: *5* u.undoClearRecentFiles
+    def undoClearRecentFiles(self) -> None:
+        c, u = self.c, self
+        rf = g.app.recentFilesManager
+        rf.setRecentFiles(u.oldRecentFiles[:])
+        rf.createRecentFilesMenuItems(c)
+
+    # @+node:ekr.20111005152227.15560: *5* u.undoCloneMarkedNodes (calls p.next)
+    def undoCloneMarkedNodes(self) -> None:
+        u = self
+        next = u.p.next()
+        assert next.h == 'Clones of marked nodes', (u.p, next.h)
+        next.doDelete()
+        u.p.setAllAncestorAtFileNodesDirty()
+        u.c.selectPosition(u.p)
+
+    # @+node:ekr.20050412083057.1: *5* u.undoCloneNode (converted)
+    def undoCloneNode(self) -> None:
+        c, u = self.c, self
+        if cc := c.chapterController:
+            cc.selectChapterByName('main')
+
+        # PR #4996: Remove dependency on c.deleteOutline.
+        # g.trace(f"new: {id(u.newP)} old: {id(u.p)}")
+
+        # c.selectPosition(u.newP)
+        p = u.newP
+
+        # c.deleteOutline()
+        newNode = p.visBack(c) if p.hasVisBack(c) else p.next()
+        p.doDelete(newNode)
+
+        # Legacy code.
+        u.p.setDirty()
+        c.selectPosition(u.p)
+
+    # @+node:ekr.20160502175653.1: *5* u.undoCopyMarkedNodes
+    def undoCopyMarkedNodes(self) -> None:
+        u = self
+        next = u.p.next()
+        assert next.h == 'Copies of marked nodes', (u.p.h, next.h)
+        next.doDelete()
+        u.p.setAllAncestorAtFileNodesDirty()
+        u.c.selectPosition(u.p)
+
+    # @+node:ekr.20111005152227.15557: *5* u.undoDeleteMarkedNodes (calls p methods)
+    def undoDeleteMarkedNodes(self) -> None:
+        c, u = self.c, self
+        # Undo the deletes in reverse order
+        aList = u.deleteMarkedNodesData[:]
+        aList.reverse()
+        for p in aList:
+            if p.stack:
+                parent_v, _ = p.stack[-1]
+            else:
+                parent_v = c.hiddenRootNode
+            p.v._addLink(p._childIndex, parent_v)
+            p.v.setDirty()
+        u.p.setAllAncestorAtFileNodesDirty()
+        c.selectPosition(u.p)
+
+    # @+node:ekr.20050412084055: *5* u.undoDeleteNode (calls p methods)
+    def undoDeleteNode(self) -> None:
+        c, u = self.c, self
+        if u.oldBack:
+            u.p._linkAfter(u.oldBack)
+        elif u.oldParent:
+            u.p._linkAsNthChild(u.oldParent, 0)
+        else:
+            u.p._linkAsRoot()
+        u.p.setDirty()
+        c.selectPosition(u.p)  # Required.
+
+    # @+node:ekr.20080425060424.10: *5* u.undoDemote
+    def undoDemote(self) -> None:
+        c, u = self.c, self
+        parent_v = u.p._parentVnode()
+        n = len(u.followingSibs)
+        # Remove the demoted nodes from p's children.
+        u.p.v.children = u.p.v.children[:-n]
+        # Add the demoted nodes to the parent's children.
+        parent_v.children.extend(u.followingSibs)
+        # Adjust the parent links.
+        # There is no need to adjust descendant links.
+        parent_v.setDirty()
+        for sib in u.followingSibs:
+            sib.parents.remove(u.p.v)
+            sib.parents.append(parent_v)
+        u.p.setAllAncestorAtFileNodesDirty()
+        c.p = u.p
+
+    # @+node:ekr.20050318085713: *5* u.undoGroup
+    def undoGroup(self) -> None:
+        """Process beads until the matching 'beforeGroup' bead is seen."""
+        c, u = self.c, self
+        oldSel = u.oldSel
+        u.groupCount += 1
+        bunch = u.beads[u.bead]
+        count = 0
+        if not hasattr(bunch, 'items'):
+            g.trace(f"oops: expecting bunch.items. got bunch.kind = {bunch.kind}")
+            g.trace(bunch)
+        else:
+            # Important bug fix: 9/8/06: reverse the items first.
+            reversedItems = bunch.items[:]
+            reversedItems.reverse()
+            for z in reversedItems:
+                if isinstance(z, UndoBead):
+                    z.undo()
+                    count += 1
+                    continue
+                self.setIvarsFromBunch(z)
+                if z.undoHelper:
+                    z.undoHelper()
+                    count += 1
+                else:
+                    g.trace(f"oops: no undo helper for {u.undoType} {u.p.v}")
+        u.groupCount -= 1
+        u.updateMarks('old')  # Bug fix: Leo 4.4.6.
+        if not g.unitTesting and u.verboseUndoGroup:
+            g.es("undo", count, "instances")
+
+        # PR #4991: Helpers set dirty bits and c.p. Do not set c.p here!
+
+        if oldSel:
+            # Restore the selection, independently of helpers.
+            i, j = oldSel
+            c.frame.body.wrapper.setSelectionRange(i, j)
+
+    # @+node:ekr.20050412083244: *5* u.undoHoistNode & undoDehoistNode (call c.hoist/deHoist)
+    def undoHoistNode(self) -> None:
+        c, u = self.c, self
+        u.p.setDirty()
+        c.selectPosition(u.p)
+        c.dehoist()
+
+    def undoDehoistNode(self) -> None:
+        c, u = self.c, self
+        u.p.setDirty()
+        c.selectPosition(u.p)
+        c.hoist()
+
+    # @+node:ekr.20050412085112: *5* u.undoInsertNode (converted, calls only p methods)
+    def undoInsertNode(self) -> None:
+        c, u = self.c, self
+        if cc := c.chapterController:
+            cc.selectChapterByName('main')
+        u.newP.setAllAncestorAtFileNodesDirty()
+        c.selectPosition(u.newP)
+        p = c.p
+        newNode = p.visBack(c) if p.hasVisBack(c) else p.next()
+        p.doDelete(newNode)
+        c.redraw(newNode)
+        c.checkOutline()
+
+        if u.pasteAsClone:
+            for bunch in u.beforeTree:
+                v = bunch.v
+                if u.p.v == v:
+                    u.p.b = bunch.body
+                    u.p.h = bunch.head
+                else:
+                    v.setBodyString(bunch.body)
+                    v.setHeadString(bunch.head)
+
+    # @+node:ekr.20050526124906: *5* u.undoMark
+    def undoMark(self) -> None:
+        c, u = self.c, self
+        u.updateMarks('old')
+        if u.groupCount == 0:
+            u.p.setDirty()
+            c.selectPosition(u.p)
+
+    # @+node:ekr.20050411112033: *5* u.undoMove
+    def undoMove(self) -> None:
+        c, u = self.c, self
+        if cc := c.chapterController:
+            cc.selectChapterByName('main')
+        v = u.p.v
+        assert u.oldParent_v
+        assert u.newParent_v
+        assert v
+        # Adjust the children arrays.
+        assert u.newParent_v.children[u.newN] == v
+        del u.newParent_v.children[u.newN]
+        u.oldParent_v.children.insert(u.oldN, v)
+        # Recompute the parent links.
+        v.parents.append(u.oldParent_v)
+        v.parents.remove(u.newParent_v)
+        u.updateMarks('old')
+        u.p.setDirty()
+        c.selectPosition(u.p)
+
+    # @+node:ekr.20050318085713.1: *5* u.undoNodeContents
+    def undoNodeContents(self) -> None:
+        """
+        Undo all changes to the contents of a node,
+        including headline and body text, and marked bits.
+        """
+        c, u = self.c, self
+        w = c.frame.body.wrapper
+        # selectPosition causes recoloring, so don't do this unless needed.
+        if c.p != u.p:  # #1333.
+            c.selectPosition(u.p)
+        u.p.setDirty()
+        u.p.b = u.oldBody
+        w.setAllText(u.oldBody)
+        c.recolor(u.p)
+        u.p.h = u.oldHead
+        # This is required.  Otherwise c.redraw will revert the change!
+        c.frame.tree.setHeadline(u.p, u.oldHead)
+        if u.groupCount == 0 and u.oldSel:
+            i, j = u.oldSel
             w.setSelectionRange(i, j)
+        if u.groupCount == 0 and u.oldYScroll is not None:
+            w.setYScrollPosition(u.oldYScroll)
+        u.updateMarks('old')
 
-        def set_selection_range_undoer() -> None:
-            i, j = old_sel
-            w.setSelectionRange(i, j)
+    # @+node:ekr.20230721131446.1: *5* u.undoChangeTree (calls c.p.back().doDelete)
+    def undoChangeTree(self) -> None:
+        """
+        Undo all changes to the node and its subtree.
+        """
+        c = self.c
+        u = self
+        w = c.frame.body.wrapper
+        # selectPosition causes recoloring, so don't do this unless needed.
+        if c.p != u.p:
+            c.selectPosition(u.p)
+        assert c.p == u.p
+        p = u.p
+        # u.p.setDirty()
 
-        u.undoBead.set_finishers(set_selection_range_redoer, set_selection_range_undoer)
+        # Paste the outline and select it.
+        s = u.oldPastedTree
+        pasted = c.fileCommands.getLeoOutlineFromClipboardRetainingClones(s)
+        assert c.p == pasted
 
-        # Do the action!
-        i, j = new_sel
+        # Delete the old tree. Its position should still exist.
+        c.p.back().doDelete(pasted)  # 2025/12/01
+
+        # Finish
+        w.setAllText(u.oldBody)
+        c.recolor(u.p)
+        p.h = u.oldHead
+        # This is required.  Otherwise c.redraw will revert the change!
+        c.frame.tree.setHeadline(p, u.oldHead)
+        i, j = u.oldSel
         w.setSelectionRange(i, j)
+        w.setYScrollPosition(u.oldYScroll)
+        u.updateMarks('old')
 
-    # @+node:ekr.20031218072017.3608: *3* u.Externally visible entries
-    # @+node:ekr.20050318085432.4: *4* u.afterX...
+    # @+node:ekr.20230713150109.1: *5* u.undoParseBody (calls p.deleteAllChildren)
+    def undoParseBody(self) -> None:
+        """Restore p.b and delete all children."""
+        u = self
+        c = u.c
+        p = u.p
+        w = c.frame.body.wrapper
+        p.deleteAllChildren()
+        c.selectPosition(p)
+        p.setDirty()
+        p.b = u.oldBody
+        w.setAllText(u.oldBody)
+        w.setSelectionRange(0, 0, insert=0)
+        w.setYScrollPosition(0)
+
+    # @+node:ekr.20080425060424.14: *5* u.undoPromote
+    def undoPromote(self) -> None:
+        c, u = self.c, self
+        parent_v = u.p._parentVnode()  # The parent of the all the *promoted* nodes.
+        # Remove the promoted nodes from parent_v's children.
+        n = u.p.childIndex() + 1
+        # Adjust the old parents children
+        old_children = parent_v.children
+        # Add the nodes before the promoted nodes.
+        parent_v.children = old_children[:n]
+        # Add the nodes after the promoted nodes.
+        parent_v.children.extend(old_children[n + len(u.children) :])
+        # Add the demoted nodes to v's children.
+        u.p.v.children = u.children[:]
+        # Adjust the parent links.
+        # There is no need to adjust descendant links.
+        parent_v.setDirty()
+        for child in u.children:
+            child.parents.remove(parent_v)
+            child.parents.append(u.p.v)
+        u.p.setAllAncestorAtFileNodesDirty()
+        c.p = u.p
+
+    # @+node:ekr.20031218072017.1493: *5* u.undoRedoText
+    def undoRedoText(
+        self,
+        p: Position,
+        leading: int,
+        trailing: int,  # Number of matching leading & trailing lines.
+        oldMidLines: list[str],
+        newMidLines: list[str],  # Lists of unmatched lines.
+        oldNewlines: list[str],
+        newNewlines: list[str],  # Number of trailing newlines.
+        tag: str = "undo",  # "undo" or "redo"
+        undoType: str | None = None,
+    ) -> None:
+        """Handle text undo and redo: converts _new_ text into _old_ text."""
+        # newNewlines is unused, but it has symmetry.
+        c, u = self.c, self
+        w = c.frame.body.wrapper
+        # @+<< Compute the result using p's body text >>
+        # @+node:ekr.20061106105812.1: *6* << Compute the result using p's body text >>
+        # Recreate the text using the present body text.
+        body = p.b
+        body = g.checkUnicode(body)
+        body_lines = body.split('\n')
+        aList = []
+        if leading > 0:
+            aList.extend(body_lines[:leading])
+        if oldMidLines:
+            aList.extend(oldMidLines)
+        if trailing > 0:
+            aList.extend(body_lines[-trailing:])
+        s = '\n'.join(aList)
+        # Remove trailing newlines in s.
+        while s and s[-1] == '\n':
+            s = s[:-1]
+        # Add oldNewlines newlines.
+        if oldNewlines > 0:
+            s = s + '\n' * oldNewlines
+        result = s
+        # @-<< Compute the result using p's body text >>
+        p.setBodyString(result)
+        p.setDirty()
+        w.setAllText(result)
+        if sel := u.oldSel if tag == 'undo' else u.newSel:
+            i, j = sel
+            w.setSelectionRange(i, j, insert=j)
+        c.recolor(u.p)
+        w.seeInsertPoint()  # 2009/12/21
+
+    # @+node:ekr.20080425060424.5: *5* u.undoSort
+    def undoSort(self) -> None:
+        c, u = self.c, self
+        p = u.p
+        if u.sortChildren:
+            p.v.children = u.oldChildren[:]
+        else:
+            parent_v = p._parentVnode()
+            parent_v.children = u.oldChildren[:]
+            # Only the child index of new position changes!
+            for i, v in enumerate(parent_v.children):
+                if v.gnx == p.v.gnx:
+                    p._childIndex = i
+                    break
+        p.setAllAncestorAtFileNodesDirty()
+        c.p = p
+
+    # @+node:EKR.20040526090701.4: *5* u.undoTyping
+    def undoTyping(self) -> None:
+        c, u = self.c, self
+        w = c.frame.body.wrapper
+        # selectPosition causes recoloring, so don't do this unless needed.
+        if c.p != u.p:
+            c.selectPosition(u.p)
+        u.p.setDirty()
+        u.undoRedoText(
+            u.p,
+            u.leading,
+            u.trailing,
+            u.oldMiddleLines,
+            u.newMiddleLines,
+            u.oldNewlines,
+            u.newNewlines,
+            tag="undo",
+            undoType=u.undoType,
+        )
+        u.updateMarks('old')
+        if u.oldSel:
+            c.bodyWantsFocus()
+            i, j = u.oldSel
+            w.setSelectionRange(i, j, insert=j)
+        if u.yview:
+            c.bodyWantsFocus()
+            w.setYScrollPosition(u.yview)
+
+    # @+node:ekr.20031218072017.3608: *3* u:Externally visible entries
+    # @+node:ekr.20050318085432.4: *4* u.afterX... (deprecated)
     # @+node:ekr.20201109075104.1: *5* u.afterChangeBody
     def afterChangeBody(self, p: Position, command: str, bunch: g.Bunch) -> None:
         """
@@ -518,8 +1354,10 @@ class Undoer:
         - Set the desired selection range and insert point.
         - Set the y-scroll position, if desired.
         """
-        c = self.c
-        u, w = self, c.frame.body.wrapper
+        u = self
+        u.deprecated()
+        c = u.c
+        w = c.frame.body.wrapper
         if u.redoing or u.undoing:
             return  # pragma: no cover
         # Set the type & helpers.
@@ -559,8 +1397,13 @@ class Undoer:
         Create an undo node for general tree operations using d created by
         beforeChangeGroup
         """
-        c, u = self.c, self
+        u = self
+        u.deprecated()
+        c = u.c
         w = c.frame.body.wrapper
+        if u.undoBead is not None:
+            u.__exit__(None, None, None)
+            return
         if u.redoing or u.undoing:
             return  # pragma: no cover
         if not u.beads:  # pragma: no cover
@@ -578,6 +1421,7 @@ class Undoer:
         bunch.redoHelper = u.redoGroup
         bunch.p = p.copy()  # PR #4991.
         bunch.newP = p.copy()
+        bunch.newMarked = p.isMarked()
         bunch.newSel = w.getSelectionRange()
         # Tells whether to report the number of separate changes undone/redone.
         if 0:
@@ -591,7 +1435,8 @@ class Undoer:
     def afterChangeNodeContents(self, p: Position, command: str, bunch: g.Bunch) -> None:
         """Create an undo node using d created by beforeChangeNode."""
         u = self
-        c = self.c
+        u.deprecated()
+        c = u.c
         w = c.frame.body.wrapper
         if u.redoing or u.undoing:
             return
@@ -616,6 +1461,7 @@ class Undoer:
     def afterChangeHeadline(self, p: Position, command: str, bunch: g.Bunch) -> None:
         """Create an undo node using d created by beforeChangeHeadline."""
         u = self
+        u.deprecated()
         if u.redoing or u.undoing:
             return  # pragma: no cover
 
@@ -633,6 +1479,7 @@ class Undoer:
     def afterChangeMultiHeadline(self, command: str, bunch: g.Bunch) -> None:
         """Create an undo node using d created by beforeChangeMultiHeadline."""
         u = self
+        u.deprecated()
         c = self.c
         if u.redoing or u.undoing:
             return  # pragma: no cover
@@ -654,9 +1501,10 @@ class Undoer:
 
     # @+node:ekr.20230721130238.1: *5* u.afterChangeTree
     def afterChangeTree(self, command: str, bunch: g.Bunch) -> None:
+        u = self
+        u.deprecated()
         c = self.c
         p = self.p
-        u = self
         w = c.frame.body.wrapper
         # Set types.
         bunch.kind = 'afterChangeTree'
@@ -676,6 +1524,7 @@ class Undoer:
     # @+node:ekr.20231225132413.1: *5* u.afterChangeUA
     def afterChangeUA(self, p: Position, command: str, bunch: g.Bunch) -> None:
         u = self
+        u.deprecated()
         if u.redoing or u.undoing:
             return  # pragma: no cover
         bunch.undoType = command
@@ -687,6 +1536,7 @@ class Undoer:
     # @+node:ekr.20050424161505: *5* u.afterClearRecentFiles
     def afterClearRecentFiles(self, bunch: g.Bunch) -> None:
         u = self
+        u.deprecated()
         bunch.newRecentFiles = g.app.config.recentFiles[:]
         bunch.undoType = 'Clear Recent Files'
         bunch.undoHelper = u.undoClearRecentFiles
@@ -697,6 +1547,7 @@ class Undoer:
     # @+node:ekr.20111006060936.15639: *5* u.afterCloneMarkedNodes
     def afterCloneMarkedNodes(self, p: Position) -> None:
         u = self
+        u.deprecated()
         if u.redoing or u.undoing:
             return
         # createCommonBunch sets:
@@ -718,6 +1569,7 @@ class Undoer:
     # @+node:ekr.20160502175451.1: *5* u.afterCopyMarkedNodes
     def afterCopyMarkedNodes(self, p: Position) -> None:
         u = self
+        u.deprecated()
         if u.redoing or u.undoing:
             return
         # createCommonBunch sets:
@@ -739,6 +1591,7 @@ class Undoer:
     # @+node:ekr.20050411193627.5: *5* u.afterCloneNode
     def afterCloneNode(self, p: Position, command: str, bunch: g.Bunch) -> None:
         u = self
+        u.deprecated()
         if u.redoing or u.undoing:
             return  # pragma: no cover
         # Set types & helpers
@@ -756,6 +1609,7 @@ class Undoer:
     # @+node:ekr.20050411193627.8: *5* u.afterDeleteNode
     def afterDeleteNode(self, p: Position, command: str, bunch: g.Bunch) -> None:
         u = self
+        u.deprecated()
         if u.redoing or u.undoing:
             return
         # Set types & helpers
@@ -771,6 +1625,7 @@ class Undoer:
     # @+node:ekr.20111005152227.15555: *5* u.afterDeleteMarkedNodes
     def afterDeleteMarkedNodes(self, data: list[Position], p: Position) -> None:
         u = self
+        u.deprecated()
         if u.redoing or u.undoing:
             return
         bunch = u.createCommonBunch(p)
@@ -789,6 +1644,7 @@ class Undoer:
     def afterDemote(self, p: Position, followingSibs: list[VNode]) -> None:
         """Create an undo node for demote operations."""
         u = self
+        u.deprecated()
         bunch = u.createCommonBunch(p)
         # Set types.
         bunch.kind = 'demote'
@@ -797,14 +1653,14 @@ class Undoer:
         bunch.redoHelper = u.redoDemote
         bunch.followingSibs = followingSibs
         # Push the bunch.
-        u.bead += 1
-        u.beads[u.bead :] = [bunch]
+        u.pushBead(bunch)
         # Recalculate the menu labels.
         u.setUndoTypes()
 
     # @+node:ekr.20050411193627.9: *5* u.afterInsertNode
     def afterInsertNode(self, p: Position, command: str, bunch: g.Bunch) -> None:
         u = self
+        u.deprecated()
         if u.redoing or u.undoing:
             return
         # Set types & helpers
@@ -831,6 +1687,7 @@ class Undoer:
         """Create an undo node for mark and unmark commands."""
         # 'command' unused, but present for compatibility with similar methods.
         u = self
+        u.deprecated()
         if u.redoing or u.undoing:
             return  # pragma: no cover
         # Set the type & helpers.
@@ -842,6 +1699,7 @@ class Undoer:
     # @+node:ekr.20050410110343: *5* u.afterMoveNode
     def afterMoveNode(self, p: Position, command: str, bunch: g.Bunch) -> None:
         u = self
+        u.deprecated()
         if u.redoing or u.undoing:
             return
         # Set the types & helpers.
@@ -861,6 +1719,7 @@ class Undoer:
     def afterPromote(self, p: Position, children: list[VNode]) -> None:
         """Create an undo node for demote operations."""
         u = self
+        u.deprecated()
         bunch = u.createCommonBunch(p)
         # Set types.
         bunch.kind = 'promote'
@@ -869,8 +1728,7 @@ class Undoer:
         bunch.redoHelper = u.redoPromote
         bunch.children = children
         # Push the bunch.
-        u.bead += 1
-        u.beads[u.bead :] = [bunch]
+        u.pushBead(bunch)
         # Recalculate the menu labels.
         u.setUndoTypes()
 
@@ -878,17 +1736,19 @@ class Undoer:
     def afterSort(self, p: Position, bunch: g.Bunch) -> None:
         """Completes bead for sort operations, which was added to u.beads in beforeSort"""
         u = self
-        # c = self.c
+        u.deprecated()
         if u.redoing or u.undoing:
             return  # pragma: no cover
         # Recalculate the menu labels.
         u.setUndoTypes()
 
-    # @+node:ekr.20050318085432.3: *4* u.beforeX...
+    # @+node:ekr.20050318085432.3: *4* u.beforeX... (deprecated)
     # @+node:ekr.20201109074740.1: *5* u.beforeChangeBody
     def beforeChangeBody(self, p: Position) -> g.Bunch:
         """Return data that gets passed to afterChangeBody."""
-        w = self.c.frame.body.wrapper
+        u = self
+        u.deprecated()
+        w = u.c.frame.body.wrapper
         bunch = self.createCommonBunch(p)  # Sets u.oldMarked, u.oldSel, u.p
         bunch.oldBody = p.b
         bunch.oldHead = p.h
@@ -902,6 +1762,10 @@ class Undoer:
     def beforeChangeGroup(self, p: Position, command: str, verboseUndoGroup: bool = False) -> None:
         """Prepare to undo a group of undoable operations."""
         u = self
+        u.deprecated()
+        if u.undoBead is not None:
+            u.__enter__()
+            return
         bunch = u.createCommonBunch(p)
         # Set types.
         bunch.kind = 'beforeGroup'
@@ -924,6 +1788,7 @@ class Undoer:
         The oldHead kwarg works around a Qt difficulty when changing headlines.
         """
         u = self
+        u.deprecated()
         bunch = u.createCommonBunch(p)
         bunch.oldHead = p.h
         return bunch
@@ -937,6 +1802,7 @@ class Undoer:
         p is used to select position after undo/redo multiple headline changes is done
         """
         c, u = self.c, self
+        u.deprecated()
         bunch = u.createCommonBunch(p)
         headlines = {}
         for p in c.all_unique_positions():
@@ -951,6 +1817,7 @@ class Undoer:
     def beforeChangeNodeContents(self, p: Position) -> g.Bunch:
         """Return data that gets passed to afterChangeNode."""
         c, u = self.c, self
+        u.deprecated()
         w = c.frame.body.wrapper
         bunch = u.createCommonBunch(p)
         bunch.kind = 'beforeChangeNodeContents'
@@ -962,8 +1829,10 @@ class Undoer:
 
     # @+node:ekr.20230721130319.1: *5* u.beforeChangeTree
     def beforeChangeTree(self, p: Position) -> None:
-        c = self.c
-        w = self.c.frame.body.wrapper
+        u = self
+        u.deprecated()
+        c = u.c
+        w = c.frame.body.wrapper
         bunch = self.createCommonBunch(p)  # Sets u.oldMarked, u.oldSel, u.p
         bunch.kind = 'beforeChangeTree'
         bunch.oldPastedTree = c.fileCommands.outline_to_clipboard_string(c.p)
@@ -976,6 +1845,7 @@ class Undoer:
     # @+node:ekr.20231225131907.1: *5* u.beforeChangeUA
     def beforeChangeUA(self, p: Position) -> g.Bunch:
         u = self
+        u.deprecated()
         bunch = u.createCommonBunch(p)
         bunch.oldUA = p.v.u
         return bunch
@@ -983,6 +1853,7 @@ class Undoer:
     # @+node:ekr.20050424161505.1: *5* u.beforeClearRecentFiles
     def beforeClearRecentFiles(self) -> g.Bunch:
         u = self
+        u.deprecated()
         p = u.c.p
         bunch = u.createCommonBunch(p)
         bunch.oldRecentFiles = g.app.config.recentFiles[:]
@@ -991,12 +1862,14 @@ class Undoer:
     # @+node:ekr.20050412080354: *5* u.beforeCloneNode
     def beforeCloneNode(self, p: Position) -> g.Bunch:
         u = self
+        u.deprecated()
         bunch = u.createCommonBunch(p)
         return bunch
 
     # @+node:ekr.20050411193627.3: *5* u.beforeDeleteNode
     def beforeDeleteNode(self, p: Position) -> g.Bunch:
         u = self
+        u.deprecated()
         bunch = u.createCommonBunch(p)
         bunch.oldBack = p.back()
         bunch.oldParent = p.parent()
@@ -1010,6 +1883,7 @@ class Undoer:
         copiedBunchList: list[g.Bunch] | None = None,
     ) -> g.Bunch:
         u = self
+        u.deprecated()
         if copiedBunchList is None:
             copiedBunchList = []
         bunch = u.createCommonBunch(p)
@@ -1022,6 +1896,7 @@ class Undoer:
     # @+node:ekr.20050526131252: *5* u.beforeMark
     def beforeMark(self, p: Position, command: str) -> g.Bunch:
         u = self
+        u.deprecated()
         bunch = u.createCommonBunch(p)
         bunch.kind = 'mark'
         bunch.undoType = command
@@ -1030,6 +1905,7 @@ class Undoer:
     # @+node:ekr.20050410110215: *5* u.beforeMoveNode
     def beforeMoveNode(self, p: Position) -> g.Bunch:
         u = self
+        u.deprecated()
         bunch = u.createCommonBunch(p)
         bunch.oldN = p.childIndex()
         bunch.oldParent_v = p._parentVnode()
@@ -1046,6 +1922,7 @@ class Undoer:
     ) -> g.Bunch:
         """Create an undo node for sort operations."""
         u = self
+        u.deprecated()
         if sortChildren:
             bunch = u.createCommonBunch(p.parent())
         else:
@@ -1059,8 +1936,7 @@ class Undoer:
         bunch.newChildren = newChildren
         bunch.sortChildren = sortChildren  # A bool
         # Push the bunch.
-        u.bead += 1
-        u.beads[u.bead :] = [bunch]
+        u.pushBead(bunch)
         return bunch
 
     # @+node:ekr.20050318085432.2: *5* u.createCommonBunch
@@ -1110,6 +1986,79 @@ class Undoer:
         u.setUndoType(undoType)
         u.beads = []  # List of undo nodes.
         u.bead = -1  # Index of the present bead: -1:len(beads)
+
+    # @+node:vivainio.202610110002.2: *4* u.type_text
+    def type_text(
+        self,
+        p: Position,
+        undo_type: str,
+        oldText: str,
+        newText: str,
+        newInsert: int | None = None,
+        oldSel: tuple[int, int] | None = None,
+        newSel: tuple[int, int] | None = None,
+        oldYview: int | None = None,
+    ) -> None:
+        """Record actual typing, retaining the configured char/line/word/node granularity."""
+        if self.undoing or self.redoing or oldText == newText:
+            return
+        assert undo_type.capitalize() == 'Typing', undo_type
+        c, w = self.c, self.c.frame.body.wrapper
+        newSel = newSel if newSel is not None else w.getSelectionRange()
+        newInsert = newInsert if newInsert is not None else w.getInsertPoint()
+        scroll = oldYview if oldYview is not None else w.getYScrollPosition()
+        bead = self.peekBead(self.bead)
+        # A save, intervening command, selection change, or undo ends coalescing.
+        merge = (
+            isinstance(bead, TypingBead)
+            and self.bead == len(self.beads) - 1
+            and bead.p.v == p.v
+            and c.changed
+            and self.granularity != 'char'
+        )
+        if merge and self.granularity in ('line', 'word'):
+            leading, trailing, _, _ = TypingBead.split_patch(oldText, newText)
+            merge = (leading, trailing) == (bead.leading, bead.trailing)
+            if merge and self.granularity == 'word':
+                merge = oldSel is not None and newSel is not None and bead.new_sel is not None
+                if merge:
+                    old_start, old_end = oldSel
+                    new_start, new_end = newSel
+                    merge = old_start == old_end and new_start == new_end
+                    if merge:
+                        old_row, old_col = g.convertPythonIndexToRowCol(oldText, old_start)
+                        new_row, new_col = g.convertPythonIndexToRowCol(newText, new_start)
+                        prev_row, prev_col = g.convertPythonIndexToRowCol(oldText, bead.new_sel[0])
+                        merge = old_row == new_row and abs(old_col - new_col) == 1
+                        if merge and old_col and new_col:
+                            merge = not self.recognizeStartOfTypingWord(
+                                g.splitLines(oldText),
+                                old_row,
+                                old_col,
+                                oldText[old_start - 1],
+                                g.splitLines(newText),
+                                new_row,
+                                new_col,
+                                newText[new_start - 1],
+                                prev_row,
+                                prev_col,
+                            )
+        if self.undoBead is not None:
+            # Typing within an explicit command belongs to that command's bead.
+            self.set_body(p, newText, old_body=oldText)
+            self.set_selection_range(oldSel[1] if oldSel else 0, oldSel or (0, 0))
+            return
+        if merge:
+            original = bead.replace_middle(oldText, bead.old_lines)
+            bead.update_patch(original, newText)
+            bead.new_sel, bead.new_ins = newSel, newInsert
+        else:
+            bead = TypingBead(self, p, oldText, newText, oldSel, newSel, newInsert, scroll)
+            self.pushBead(bead)
+        p.v.b = newText
+        self.updateAfterTyping(p, w)
+        if self.per_node_undo:
+            self.putIvarsToVnode(p)
 
     # @+node:ekr.20031218072017.1490: *4* u.doTyping & helper
     def doTyping(
@@ -1401,6 +2350,16 @@ class Undoer:
         moved_cursor = new_row != prev_row or new_col != prev_col + 1
         return new_word_started or moved_cursor
 
+    # @+node:ekr.20261008093043.1: *4* u.dump_stack
+    def dump_stack(self, message: str = '') -> None:
+        u = self
+        print()
+        print(f"Dump of undo stack: {g.caller()} {message}")
+        for i, obj in enumerate(u.beads):
+            s = obj.kind if isinstance(obj, g.Bunch) else repr(obj)
+            prefix = '**' if i == u.bead else '  '
+            print(f"{prefix} {i:} {obj.__class__.__name__} {s}")
+
     # @+node:ekr.20031218072017.3611: *4* u.enableMenuItems
     def enableMenuItems(self) -> None:
         u = self
@@ -1412,7 +2371,7 @@ class Undoer:
     # @+node:ekr.20110519074734.6094: *4* u.onSelect & helpers
     def onSelect(self, old_p: Position, p: Position) -> None:
         u = self
-        if u.per_node_undo:
+        if u.per_node_undo and not (u.undoing or u.redoing):
             if old_p and u.beads:
                 u.putIvarsToVnode(old_p)
             u.setIvarsFromVnode(p)
@@ -1438,54 +2397,6 @@ class Undoer:
         u.clearUndoState()
         if hasattr(v, 'undo_info'):
             u.setIvarsFromBunch(v.undo_info)
-
-    # @+node:ekr.20201127035748.1: *4* u.updateAfterTyping
-    def updateAfterTyping(self, p: Position, w: QTextMixin) -> None:
-        """
-        Perform all update tasks after changing body text.
-
-        This is ugly, ad-hoc code, but should be done uniformly.
-        """
-        c = self.c
-        if g.isTextWrapper(w):
-            # An important, ever-present unit test.
-            if p == c.p:
-                all = w.getAllText()
-                if g.unitTesting:
-                    assert p.b == all, (w, g.callers())
-                elif p.b != all:
-                    g.trace(
-                        f"\np.b != w.getAllText() p: {p.h} \n"
-                        f"w: {w!r} \n{g.callers()}\n"
-                    )  # fmt: skip
-            p.v.insertSpot = ins = w.getInsertPoint()
-            # From u.doTyping.
-            newSel = w.getSelectionRange()
-            if newSel is None:
-                p.v.selectionStart, p.v.selectionLength = (ins, 0)
-            else:
-                i, j = newSel
-                p.v.selectionStart, p.v.selectionLength = (i, j - i)
-        else:
-            if g.unitTesting:
-                assert False, f"Not a text wrapper: {g.callers()}"  # noqa
-            g.trace('Not a text wrapper')
-            p.v.insertSpot = 0
-            p.v.selectionStart, p.v.selectionLength = (0, 0)
-        if not p.isDirty():
-            p.setDirty()
-        if not c.isChanged():
-            c.setChanged()
-
-        # Update icons.
-        val = p.computeIcon()
-        if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
-            p.v.iconVal = val
-        if p == c.p:
-            # Recolor the body.
-            c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
-            c.recolor()
-            w.setFocus()
 
     # @+node:ekr.20230722062645.1: *4* u.restoreFromCopiedTree
     def restoreFromCopiedTree(self, v: VNode, s: str) -> None:
@@ -1535,871 +2446,8 @@ class Undoer:
         for v in c.all_unique_nodes():
             ni.check_gnx(c, v.fileIndex, v)
 
-    # @+node:ekr.20031218072017.2030: *3* u.redo
-    @cmd('redo')
-    def redo(self, event: LeoKeyEvent | None = None) -> None:
-        """Redo the operation undone by the last undo."""
-        c, u = self.c, self
-        if not c.p:
-            return
-        # End editing *before* getting state.
-        c.endEditing()
-        if not u.canRedo():
-            return
-        obj = u.getBead(u.bead + 1)
-        if not obj:
-            return
-
-        # Init status.
-        u.redoing = True
-        u.groupCount = 0
-        if isinstance(obj, UndoBead):
-            obj.redo()
-        elif u.redoHelper:
-            u.redoHelper()
-        else:
-            g.trace(f"no redo helper for {u.kind} {u.undoType}")
-
-        # Finish.
-        c.checkOutline()
-        u.update_status()
-        u.redoing = False
-        u.bead += 1
-        u.setUndoTypes()
-
-    # @+node:ekr.20110519074734.6092: *3* u.redo helpers
-    # @+node:ekr.20191213085226.1: *4*  u.reloadHelper (do nothing)
-    def redoHelper(self) -> None:
-        """The default do-nothing redo helper."""
-
-    # @+node:ekr.20201109080732.1: *4* u.redoChangeBody
-    def redoChangeBody(self) -> None:
-        c, u, w = self.c, self, self.c.frame.body.wrapper
-        # selectPosition causes recoloring, so don't do this unless needed.
-        if c.p != u.p:  # #1333.
-            c.selectPosition(u.p)
-        u.p.setDirty()
-        u.p.b = u.newBody
-        u.p.h = u.newHead
-        # This is required so. Otherwise redraw will revert the change!
-        c.frame.tree.setHeadline(u.p, u.newHead)
-        if u.newMarked:
-            u.p.setMarked()
-        else:
-            u.p.clearMarked()
-        if u.groupCount == 0:
-            w.setAllText(u.newBody)
-            i, j = u.newSel
-            w.setSelectionRange(i, j, insert=u.newIns)
-            w.setYScrollPosition(u.newYScroll)
-            c.recolor(u.p)
-        u.updateMarks('new')
-        u.p.setDirty()
-
-    # @+node:ekr.20201107150619.1: *4* u.redoChangeHeadline
-    def redoChangeHeadline(self) -> None:
-        c, u = self.c, self
-        # selectPosition causes recoloring, so don't do this unless needed.
-        if c.p != u.p:  # #1333.
-            c.selectPosition(u.p)
-        u.p.setDirty()
-        c.recolor(u.p)
-        # Restore the headline.
-        u.p.initHeadString(u.newHead)
-        # This is required. Otherwise redraw will revert the change!
-        c.frame.tree.setHeadline(u.p, u.newHead)
-
-    # @+node:felix.20230326231408.1: *4* u.redoChangeMultiHeadline
-    def redoChangeMultiHeadline(self) -> None:
-        c, u = self.c, self
-        c.recolor(u.p)
-        # Swap the ones from the 'bunch.headline' dict
-        for gnx, oldNewTuple in u.headlines.items():
-            v = c.fileCommands.gnxDict.get(gnx)
-            v.initHeadString(oldNewTuple[1])
-            if v.gnx == u.p.gnx:
-                u.p.setDirty()
-                # This is required.  Otherwise redraw will revert the change!
-                c.frame.tree.setHeadline(u.p, oldNewTuple[1])
-        # selectPosition causes recoloring, so don't do this unless needed.
-        if c.p != u.p:  # #1333.
-            c.selectPosition(u.p)
-
-    # @+node:ekr.20230721131611.1: *4* u.redoChangeTree
-    def redoChangeTree(self) -> None:
-        c, u, w = self.c, self, self.c.frame.body.wrapper
-        # selectPosition causes recoloring, so don't do this unless needed.
-        if c.p != u.p:
-            c.selectPosition(u.p)
-        u.p.setDirty()
-        u.p.b = u.newBody
-        u.p.h = u.newHead
-        # This is required so. Otherwise redraw will revert the change!
-        c.frame.tree.setHeadline(u.p, u.newHead)
-        if u.newMarked:
-            u.p.setMarked()
-        else:
-            u.p.clearMarked()
-        if u.groupCount == 0:
-            w.setAllText(u.newBody)
-            i, j = u.newSel
-            w.setSelectionRange(i, j, insert=u.newIns)
-            w.setYScrollPosition(u.newYScroll)
-            c.recolor(u.p)
-        u.updateMarks('new')
-        u.p.setDirty()
-
-    # @+node:ekr.20231225134021.1: *4* u.redoChangeUA
-    def redoChangeUA(self) -> None:
-        u = self
-        v = u.p.v
-        v.setDirty()
-        v.u = u.newUA
-
-    # @+node:ekr.20050424170219: *4* u.redoClearRecentFiles
-    def redoClearRecentFiles(self) -> None:
-        c, u = self.c, self
-        rf = g.app.recentFilesManager
-        rf.setRecentFiles(u.newRecentFiles[:])
-        rf.createRecentFilesMenuItems(c)
-
-    # @+node:ekr.20111005152227.15558: *4* u.redoCloneMarkedNodes
-    def redoCloneMarkedNodes(self) -> None:
-        c, u = self.c, self
-        c.selectPosition(u.p)
-        c.cloneMarked()
-        u.newP = c.p
-
-    # @+node:ekr.20160502175557.1: *4* u.redoCopyMarkedNodes
-    def redoCopyMarkedNodes(self) -> None:
-        c, u = self.c, self
-        c.selectPosition(u.p)
-        c.copyMarked()
-        u.newP = c.p
-
-    # @+node:ekr.20050412083057: *4* u.redoCloneNode
-    def redoCloneNode(self) -> None:
-        c, u = self.c, self
-        if cc := c.chapterController:
-            cc.selectChapterByName('main')
-        if u.newBack:
-            u.newP._linkAfter(u.newBack)
-        elif u.newParent:
-            u.newP._linkAsNthChild(u.newParent, 0)
-        else:
-            u.newP._linkAsRoot()
-        c.selectPosition(u.newP)
-        u.newP.setDirty()
-
-    # @+node:ekr.20111005152227.15559: *4* u.redoDeleteMarkedNodes
-    def redoDeleteMarkedNodes(self) -> None:
-        c, u = self.c, self
-        c.selectPosition(u.p)
-        c.deleteMarked()
-        c.selectPosition(u.newP)
-
-    # @+node:EKR.20040526072519.2: *4* u.redoDeleteNode
-    def redoDeleteNode(self) -> None:
-        c, u = self.c, self
-        newP = u.newP.copy() if u.newP else c.p
-        c.selectPosition(u.p)
-        c.deleteOutline()
-        if c.positionExists(newP):  # PR #4991.
-            c.p = newP
-
-    # @+node:ekr.20080425060424.9: *4* u.redoDemote
-    def redoDemote(self) -> None:
-        c, u = self.c, self
-        parent_v = u.p._parentVnode()
-        n = u.p.childIndex()
-        # Move the demoted nodes from the old parent to the new parent.
-        parent_v.children = parent_v.children[: n + 1]
-        u.p.v.children.extend(u.followingSibs)
-        # Adjust the parent links of the moved nodes.
-        # There is no need to adjust descendant links.
-        for v in u.followingSibs:
-            v.parents.remove(parent_v)
-            v.parents.append(u.p.v)
-        u.p.setDirty()
-        c.p = u.p
-
-    # @+node:ekr.20050318085432.6: *4* u.redoGroup
-    def redoGroup(self) -> None:
-        """Process beads until the matching 'afterGroup' bead is seen."""
-        c, u = self.c, self
-        newSel = u.newSel
-        u.groupCount += 1
-        bunch = u.beads[u.bead + 1]
-        count = 0
-        if not hasattr(bunch, 'items'):
-            g.trace(f"oops: expecting bunch.items. got bunch.kind = {bunch.kind}")
-            g.trace(bunch)
-        else:
-            for z in bunch.items:
-                self.setIvarsFromBunch(z)
-                if z.redoHelper:
-                    z.redoHelper()
-                    count += 1
-                else:
-                    g.trace(f"oops: no redo helper for {u.undoType} {u.p.h}")
-        u.groupCount -= 1
-        u.updateMarks('new')  # Bug fix: Leo 4.4.6.
-        if not g.unitTesting and u.verboseUndoGroup:
-            g.es("redo", count, "instances")
-
-        # PR #4991: Helpers set dirty bits and c.p. Do not set c.p here!
-
-        # Set the selection, independently of helpers.
-        if newSel:
-            i, j = newSel
-            c.frame.body.wrapper.setSelectionRange(i, j)
-
-    # @+node:ekr.20050412085138.1: *4* u.redoHoistNode & redoDehoistNode
-    def redoHoistNode(self) -> None:
-        c, u = self.c, self
-        u.p.setDirty()
-        c.selectPosition(u.p)
-        c.hoist()
-
-    def redoDehoistNode(self) -> None:
-        c, u = self.c, self
-        u.p.setDirty()
-        c.selectPosition(u.p)
-        c.dehoist()
-
-    # @+node:ekr.20050412084532: *4* u.redoInsertNode
-    def redoInsertNode(self) -> None:
-        c, u = self.c, self
-        if cc := c.chapterController:
-            cc.selectChapterByName('main')
-        if u.newBack:
-            u.newP._linkAfter(u.newBack)
-        elif u.newParent:
-            u.newP._linkAsNthChild(u.newParent, 0)
-        else:
-            u.newP._linkAsRoot()
-        if u.pasteAsClone:
-            for bunch in u.afterTree:
-                v = bunch.v
-                if u.newP.v == v:
-                    u.newP.b = bunch.body
-                    u.newP.h = bunch.head
-                else:
-                    v.setBodyString(bunch.body)
-                    v.setHeadString(bunch.head)
-        u.newP.setDirty()
-        c.selectPosition(u.newP)
-
-    # @+node:ekr.20050526125801: *4* u.redoMark
-    def redoMark(self) -> None:
-        c, u = self.c, self
-        u.updateMarks('new')
-        if u.groupCount == 0:
-            u.p.setDirty()
-            c.selectPosition(u.p)
-
-    # @+node:ekr.20050411111847: *4* u.redoMove
-    def redoMove(self) -> None:
-        c, u = self.c, self
-        cc = c.chapterController
-        v = u.p.v
-        assert u.oldParent_v
-        assert u.newParent_v
-        assert v
-        if cc:
-            cc.selectChapterByName('main')
-        # Adjust the children arrays of the old parent.
-        assert u.oldParent_v.children[u.oldN] == v
-        del u.oldParent_v.children[u.oldN]
-        u.oldParent_v.setDirty()
-        # Adjust the children array of the new parent.
-        parent_v = u.newParent_v
-        parent_v.children.insert(u.newN, v)
-        v.parents.append(u.newParent_v)
-        v.parents.remove(u.oldParent_v)
-        u.newParent_v.setDirty()
-        u.updateMarks('new')
-        u.newP.setDirty()
-        c.selectPosition(u.newP)
-
-    # @+node:ekr.20050318085432.7: *4* u.redoNodeContents
-    def redoNodeContents(self) -> None:
-        c, u = self.c, self
-        w = c.frame.body.wrapper
-        # selectPosition causes recoloring, so don't do this unless needed.
-        if c.p != u.p:  # #1333.
-            c.selectPosition(u.p)
-        u.p.setDirty()
-        # Restore the body.
-        u.p.setBodyString(u.newBody)
-        w.setAllText(u.newBody)
-        c.recolor(u.p)
-        # Restore the headline.
-        u.p.initHeadString(u.newHead)
-        # This is required so.  Otherwise redraw will revert the change!
-        c.frame.tree.setHeadline(u.p, u.newHead)  # New in 4.4b2.
-        if u.groupCount == 0 and u.newSel:
-            i, j = u.newSel
-            w.setSelectionRange(i, j)
-        if u.groupCount == 0 and u.newYScroll is not None:
-            w.setYScrollPosition(u.newYScroll)
-        u.updateMarks('new')
-        u.p.setDirty()
-
-    # @+node:ekr.20230713150847.1: *4* u.redoParseBody
-    def redoParseBody(self) -> None:
-        """Redo the parse-body command."""
-        u = self
-        c = u.c
-        ic = c.importCommands
-        p = u.p
-        if c.p != p:
-            c.selectPosition(p)
-        ic.parse_body(p)
-
-    # @+node:ekr.20080425060424.13: *4* u.redoPromote
-    def redoPromote(self) -> None:
-        c, u = self.c, self
-        parent_v = u.p._parentVnode()
-        # Add the children to parent_v's children.
-        n = u.p.childIndex() + 1
-        old_children = parent_v.children[:]
-        # Add children up to the promoted nodes.
-        parent_v.children = old_children[:n]
-        # Add the promoted nodes.
-        parent_v.children.extend(u.children)
-        # Add the children up to the promoted nodes.
-        parent_v.children.extend(old_children[n:])
-        # Remove the old children.
-        u.p.v.children = []
-        # Adjust the parent links in the moved children.
-        # There is no need to adjust descendant links.
-        for child in u.children:
-            child.parents.remove(u.p.v)
-            child.parents.append(parent_v)
-        u.p.setDirty()
-        c.p = u.p
-
-    # @+node:ekr.20080425060424.4: *4* u.redoSort
-    def redoSort(self) -> None:
-        c, u = self.c, self
-        p = u.p
-        if u.sortChildren:
-            p.v.children = u.newChildren[:]
-        else:
-            parent_v = p._parentVnode()
-            parent_v.children = u.newChildren[:]
-            # Only the child index of new position changes!
-            for i, v in enumerate(parent_v.children):
-                if v.gnx == p.v.gnx:
-                    p._childIndex = i
-                    break
-        p.setAllAncestorAtFileNodesDirty()
-        c.p = p
-
-    # @+node:EKR.20040526075238.5: *4* u.redoTyping
-    def redoTyping(self) -> None:
-        c, u = self.c, self
-        current = c.p
-        w = c.frame.body.wrapper
-        # selectPosition causes recoloring, so avoid if possible.
-        if current != u.p:
-            c.selectPosition(u.p)
-        u.p.setDirty()
-        self.undoRedoText(
-            u.p,
-            u.leading,
-            u.trailing,
-            u.newMiddleLines,
-            u.oldMiddleLines,
-            u.newNewlines,
-            u.oldNewlines,
-            tag="redo",
-            undoType=u.undoType,
-        )
-        u.updateMarks('new')
-        if u.newSel:
-            c.bodyWantsFocus()
-            i, j = u.newSel
-            w.setSelectionRange(i, j, insert=j)
-        if u.yview:
-            c.bodyWantsFocus()
-            w.setYScrollPosition(u.yview)
-
-    # @+node:ekr.20031218072017.2039: *3* u.undo
-    @cmd('undo')
-    def undo(self, event: LeoKeyEvent | None = None) -> None:
-        """Undo the operation described by the undo parameters."""
-        c, u = self.c, self
-        if not c.p:
-            g.trace('no current position')
-            return
-        # End editing *before* getting state.
-        c.endEditing()
-        if not u.canUndo():
-            return
-        obj = u.getBead(u.bead)
-        if not obj:
-            return
-
-        # Init status.
-        u.undoing = True
-        u.groupCount = 0
-
-        # Dispatch.
-        if isinstance(obj, UndoBead):
-            obj.undo()
-        elif u.undoHelper:
-            if u.per_node_undo:
-                u.setIvarsFromVnode(c.p)
-            u.undoHelper()
-        else:
-            g.trace(f"no undo helper for {u.kind} {u.undoType}")
-
-        # Finish.
-        c.checkOutline()
-        u.update_status()
-        u.undoing = False
-        u.bead -= 1
-        u.setUndoTypes()
-
-    # @+node:ekr.20110519074734.6093: *3* u.undo helpers
-    # @+node:ekr.20191213085246.1: *4*  u.undoHelper
-    def undoHelper(self) -> None:
-        """The default do-nothing undo helper."""
-
-    # @+node:ekr.20201109080631.1: *4* u.undoChangeBody
-    def undoChangeBody(self) -> None:
-        """
-        Undo all changes to the contents of a node,
-        including headline and body text, and marked bits.
-        """
-        c, u, w = self.c, self, self.c.frame.body.wrapper
-        # PR #4991: do not change c.p here!
-        u.p.setDirty()
-        u.p.b = u.oldBody
-        u.p.h = u.oldHead
-        # This is required.  Otherwise c.redraw will revert the change!
-        c.frame.tree.setHeadline(u.p, u.oldHead)
-        if u.oldMarked:
-            u.p.setMarked()
-        else:
-            u.p.clearMarked()
-        if u.groupCount == 0:
-            w.setAllText(u.oldBody)
-            i, j = u.oldSel
-            w.setSelectionRange(i, j, insert=u.oldIns)
-            w.setYScrollPosition(u.oldYScroll)
-            c.recolor(u.p)
-        u.updateMarks('old')
-
-    # @+node:ekr.20201107150041.1: *4* u.undoChangeHeadline
-    def undoChangeHeadline(self) -> None:
-        """Undo a change to a node's headline."""
-        c, u = self.c, self
-        # selectPosition causes recoloring, so don't do this unless needed.
-        if c.p != u.p:  # #1333.
-            c.selectPosition(u.p)
-        u.p.setDirty()
-        c.recolor(u.p)
-        u.p.initHeadString(u.oldHead)
-        # This is required. Otherwise c.redraw will revert the change!
-        c.frame.tree.setHeadline(u.p, u.oldHead)
-
-    # @+node:felix.20230326231543.1: *4* u.undoChangeMultiHeadline
-    def undoChangeMultiHeadline(self) -> None:
-        """Undo a change to a node's headline."""
-        c, u = self.c, self
-        # selectPosition causes recoloring, so don't do this unless needed.
-        c.recolor(u.p)
-
-        # Swap the ones from the 'bunch.headline' dict
-        for gnx, oldNewTuple in u.headlines.items():
-            v = c.fileCommands.gnxDict.get(gnx)
-            v.initHeadString(oldNewTuple[0])
-            if v.gnx == u.p.gnx:
-                u.p.setDirty()
-                # This is required.  Otherwise redraw will revert the change!
-                c.frame.tree.setHeadline(u.p, oldNewTuple[0])
-        if c.p != u.p:
-            c.selectPosition(u.p)
-
-    # @+node:ekr.20231225133712.1: *4* u.undoChangeUA
-    def undoChangeUA(self) -> None:
-        u = self
-        v = u.p.v
-        v.setDirty()
-        v.u = u.oldUA
-
-    # @+node:ekr.20050424170219.1: *4* u.undoClearRecentFiles
-    def undoClearRecentFiles(self) -> None:
-        c, u = self.c, self
-        rf = g.app.recentFilesManager
-        rf.setRecentFiles(u.oldRecentFiles[:])
-        rf.createRecentFilesMenuItems(c)
-
-    # @+node:ekr.20111005152227.15560: *4* u.undoCloneMarkedNodes
-    def undoCloneMarkedNodes(self) -> None:
-        u = self
-        next = u.p.next()
-        assert next.h == 'Clones of marked nodes', (u.p, next.h)
-        next.doDelete()
-        u.p.setAllAncestorAtFileNodesDirty()
-        u.c.selectPosition(u.p)
-
-    # @+node:ekr.20050412083057.1: *4* u.undoCloneNode
-    def undoCloneNode(self) -> None:
-        c, u = self.c, self
-        if cc := c.chapterController:
-            cc.selectChapterByName('main')
-        c.selectPosition(u.newP)
-        c.deleteOutline()
-        u.p.setDirty()
-        c.selectPosition(u.p)
-
-    # @+node:ekr.20160502175653.1: *4* u.undoCopyMarkedNodes
-    def undoCopyMarkedNodes(self) -> None:
-        u = self
-        next = u.p.next()
-        assert next.h == 'Copies of marked nodes', (u.p.h, next.h)
-        next.doDelete()
-        u.p.setAllAncestorAtFileNodesDirty()
-        u.c.selectPosition(u.p)
-
-    # @+node:ekr.20111005152227.15557: *4* u.undoDeleteMarkedNodes
-    def undoDeleteMarkedNodes(self) -> None:
-        c, u = self.c, self
-        # Undo the deletes in reverse order
-        aList = u.deleteMarkedNodesData[:]
-        aList.reverse()
-        for p in aList:
-            if p.stack:
-                parent_v, _ = p.stack[-1]
-            else:
-                parent_v = c.hiddenRootNode
-            p.v._addLink(p._childIndex, parent_v)
-            p.v.setDirty()
-        u.p.setAllAncestorAtFileNodesDirty()
-        c.selectPosition(u.p)
-
-    # @+node:ekr.20050412084055: *4* u.undoDeleteNode
-    def undoDeleteNode(self) -> None:
-        c, u = self.c, self
-        if u.oldBack:
-            u.p._linkAfter(u.oldBack)
-        elif u.oldParent:
-            u.p._linkAsNthChild(u.oldParent, 0)
-        else:
-            u.p._linkAsRoot()
-        u.p.setDirty()
-        c.selectPosition(u.p)  # Required.
-
-    # @+node:ekr.20080425060424.10: *4* u.undoDemote
-    def undoDemote(self) -> None:
-        c, u = self.c, self
-        parent_v = u.p._parentVnode()
-        n = len(u.followingSibs)
-        # Remove the demoted nodes from p's children.
-        u.p.v.children = u.p.v.children[:-n]
-        # Add the demoted nodes to the parent's children.
-        parent_v.children.extend(u.followingSibs)
-        # Adjust the parent links.
-        # There is no need to adjust descendant links.
-        parent_v.setDirty()
-        for sib in u.followingSibs:
-            sib.parents.remove(u.p.v)
-            sib.parents.append(parent_v)
-        u.p.setAllAncestorAtFileNodesDirty()
-        c.p = u.p
-
-    # @+node:ekr.20050318085713: *4* u.undoGroup
-    def undoGroup(self) -> None:
-        """Process beads until the matching 'beforeGroup' bead is seen."""
-        c, u = self.c, self
-        oldSel = u.oldSel
-        u.groupCount += 1
-        bunch = u.beads[u.bead]
-        count = 0
-        if not hasattr(bunch, 'items'):
-            g.trace(f"oops: expecting bunch.items. got bunch.kind = {bunch.kind}")
-            g.trace(bunch)
-        else:
-            # Important bug fix: 9/8/06: reverse the items first.
-            reversedItems = bunch.items[:]
-            reversedItems.reverse()
-            for z in reversedItems:
-                self.setIvarsFromBunch(z)
-                if z.undoHelper:
-                    z.undoHelper()
-                    count += 1
-                else:
-                    g.trace(f"oops: no undo helper for {u.undoType} {u.p.v}")
-        u.groupCount -= 1
-        u.updateMarks('old')  # Bug fix: Leo 4.4.6.
-        if not g.unitTesting and u.verboseUndoGroup:
-            g.es("undo", count, "instances")
-
-        # PR #4991: Helpers set dirty bits and c.p. Do not set c.p here!
-
-        if oldSel:
-            # Restore the selection, independently of helpers.
-            i, j = oldSel
-            c.frame.body.wrapper.setSelectionRange(i, j)
-
-    # @+node:ekr.20050412083244: *4* u.undoHoistNode & undoDehoistNode
-    def undoHoistNode(self) -> None:
-        c, u = self.c, self
-        u.p.setDirty()
-        c.selectPosition(u.p)
-        c.dehoist()
-
-    def undoDehoistNode(self) -> None:
-        c, u = self.c, self
-        u.p.setDirty()
-        c.selectPosition(u.p)
-        c.hoist()
-
-    # @+node:ekr.20050412085112: *4* u.undoInsertNode
-    def undoInsertNode(self) -> None:
-        c, u = self.c, self
-        if cc := c.chapterController:
-            cc.selectChapterByName('main')
-        u.newP.setAllAncestorAtFileNodesDirty()
-        c.selectPosition(u.newP)
-        # Bug fix: 2016/03/30.
-        # This always selects the proper new position.
-        # c.selectPosition(u.p)
-        c.deleteOutline()
-        if u.pasteAsClone:
-            for bunch in u.beforeTree:
-                v = bunch.v
-                if u.p.v == v:
-                    u.p.b = bunch.body
-                    u.p.h = bunch.head
-                else:
-                    v.setBodyString(bunch.body)
-                    v.setHeadString(bunch.head)
-
-    # @+node:ekr.20050526124906: *4* u.undoMark
-    def undoMark(self) -> None:
-        c, u = self.c, self
-        u.updateMarks('old')
-        if u.groupCount == 0:
-            u.p.setDirty()
-            c.selectPosition(u.p)
-
-    # @+node:ekr.20050411112033: *4* u.undoMove
-    def undoMove(self) -> None:
-        c, u = self.c, self
-        if cc := c.chapterController:
-            cc.selectChapterByName('main')
-        v = u.p.v
-        assert u.oldParent_v
-        assert u.newParent_v
-        assert v
-        # Adjust the children arrays.
-        assert u.newParent_v.children[u.newN] == v
-        del u.newParent_v.children[u.newN]
-        u.oldParent_v.children.insert(u.oldN, v)
-        # Recompute the parent links.
-        v.parents.append(u.oldParent_v)
-        v.parents.remove(u.newParent_v)
-        u.updateMarks('old')
-        u.p.setDirty()
-        c.selectPosition(u.p)
-
-    # @+node:ekr.20050318085713.1: *4* u.undoNodeContents
-    def undoNodeContents(self) -> None:
-        """
-        Undo all changes to the contents of a node,
-        including headline and body text, and marked bits.
-        """
-        c, u = self.c, self
-        w = c.frame.body.wrapper
-        # selectPosition causes recoloring, so don't do this unless needed.
-        if c.p != u.p:  # #1333.
-            c.selectPosition(u.p)
-        u.p.setDirty()
-        u.p.b = u.oldBody
-        w.setAllText(u.oldBody)
-        c.recolor(u.p)
-        u.p.h = u.oldHead
-        # This is required.  Otherwise c.redraw will revert the change!
-        c.frame.tree.setHeadline(u.p, u.oldHead)
-        if u.groupCount == 0 and u.oldSel:
-            i, j = u.oldSel
-            w.setSelectionRange(i, j)
-        if u.groupCount == 0 and u.oldYScroll is not None:
-            w.setYScrollPosition(u.oldYScroll)
-        u.updateMarks('old')
-
-    # @+node:ekr.20230721131446.1: *4* u.undoChangeTree
-    def undoChangeTree(self) -> None:
-        """
-        Undo all changes to the node and its subtree.
-        """
-        c = self.c
-        u = self
-        w = c.frame.body.wrapper
-        # selectPosition causes recoloring, so don't do this unless needed.
-        if c.p != u.p:
-            c.selectPosition(u.p)
-        assert c.p == u.p
-        p = u.p
-        # u.p.setDirty()
-
-        # Paste the outline and select it.
-        s = u.oldPastedTree
-        pasted = c.fileCommands.getLeoOutlineFromClipboardRetainingClones(s)
-        assert c.p == pasted
-
-        # Delete the old tree. Its position should still exist.
-        c.p.back().doDelete(pasted)  # 2025/12/01
-
-        # Finish
-        w.setAllText(u.oldBody)
-        c.recolor(u.p)
-        p.h = u.oldHead
-        # This is required.  Otherwise c.redraw will revert the change!
-        c.frame.tree.setHeadline(p, u.oldHead)
-        i, j = u.oldSel
-        w.setSelectionRange(i, j)
-        w.setYScrollPosition(u.oldYScroll)
-        u.updateMarks('old')
-
-    # @+node:ekr.20230713150109.1: *4* u.undoParseBody
-    def undoParseBody(self) -> None:
-        """Restore p.b and delete all children."""
-        u = self
-        c = u.c
-        p = u.p
-        w = c.frame.body.wrapper
-        p.deleteAllChildren()
-        c.selectPosition(p)
-        p.setDirty()
-        p.b = u.oldBody
-        w.setAllText(u.oldBody)
-        w.setSelectionRange(0, 0, insert=0)
-        w.setYScrollPosition(0)
-
-    # @+node:ekr.20080425060424.14: *4* u.undoPromote
-    def undoPromote(self) -> None:
-        c, u = self.c, self
-        parent_v = u.p._parentVnode()  # The parent of the all the *promoted* nodes.
-        # Remove the promoted nodes from parent_v's children.
-        n = u.p.childIndex() + 1
-        # Adjust the old parents children
-        old_children = parent_v.children
-        # Add the nodes before the promoted nodes.
-        parent_v.children = old_children[:n]
-        # Add the nodes after the promoted nodes.
-        parent_v.children.extend(old_children[n + len(u.children) :])
-        # Add the demoted nodes to v's children.
-        u.p.v.children = u.children[:]
-        # Adjust the parent links.
-        # There is no need to adjust descendant links.
-        parent_v.setDirty()
-        for child in u.children:
-            child.parents.remove(parent_v)
-            child.parents.append(u.p.v)
-        u.p.setAllAncestorAtFileNodesDirty()
-        c.p = u.p
-
-    # @+node:ekr.20031218072017.1493: *4* u.undoRedoText
-    def undoRedoText(
-        self,
-        p: Position,
-        leading: int,
-        trailing: int,  # Number of matching leading & trailing lines.
-        oldMidLines: list[str],
-        newMidLines: list[str],  # Lists of unmatched lines.
-        oldNewlines: list[str],
-        newNewlines: list[str],  # Number of trailing newlines.
-        tag: str = "undo",  # "undo" or "redo"
-        undoType: str | None = None,
-    ) -> None:
-        """Handle text undo and redo: converts _new_ text into _old_ text."""
-        # newNewlines is unused, but it has symmetry.
-        c, u = self.c, self
-        w = c.frame.body.wrapper
-        # @+<< Compute the result using p's body text >>
-        # @+node:ekr.20061106105812.1: *5* << Compute the result using p's body text >>
-        # Recreate the text using the present body text.
-        body = p.b
-        body = g.checkUnicode(body)
-        body_lines = body.split('\n')
-        aList = []
-        if leading > 0:
-            aList.extend(body_lines[:leading])
-        if oldMidLines:
-            aList.extend(oldMidLines)
-        if trailing > 0:
-            aList.extend(body_lines[-trailing:])
-        s = '\n'.join(aList)
-        # Remove trailing newlines in s.
-        while s and s[-1] == '\n':
-            s = s[:-1]
-        # Add oldNewlines newlines.
-        if oldNewlines > 0:
-            s = s + '\n' * oldNewlines
-        result = s
-        # @-<< Compute the result using p's body text >>
-        p.setBodyString(result)
-        p.setDirty()
-        w.setAllText(result)
-        if sel := u.oldSel if tag == 'undo' else u.newSel:
-            i, j = sel
-            w.setSelectionRange(i, j, insert=j)
-        c.recolor(u.p)
-        w.seeInsertPoint()  # 2009/12/21
-
-    # @+node:ekr.20080425060424.5: *4* u.undoSort
-    def undoSort(self) -> None:
-        c, u = self.c, self
-        p = u.p
-        if u.sortChildren:
-            p.v.children = u.oldChildren[:]
-        else:
-            parent_v = p._parentVnode()
-            parent_v.children = u.oldChildren[:]
-            # Only the child index of new position changes!
-            for i, v in enumerate(parent_v.children):
-                if v.gnx == p.v.gnx:
-                    p._childIndex = i
-                    break
-        p.setAllAncestorAtFileNodesDirty()
-        c.p = p
-
-    # @+node:EKR.20040526090701.4: *4* u.undoTyping
-    def undoTyping(self) -> None:
-        c, u = self.c, self
-        w = c.frame.body.wrapper
-        # selectPosition causes recoloring, so don't do this unless needed.
-        if c.p != u.p:
-            c.selectPosition(u.p)
-        u.p.setDirty()
-        u.undoRedoText(
-            u.p,
-            u.leading,
-            u.trailing,
-            u.oldMiddleLines,
-            u.newMiddleLines,
-            u.oldNewlines,
-            u.newNewlines,
-            tag="undo",
-            undoType=u.undoType,
-        )
-        u.updateMarks('old')
-        if u.oldSel:
-            c.bodyWantsFocus()
-            i, j = u.oldSel
-            w.setSelectionRange(i, j, insert=j)
-        if u.yview:
-            c.bodyWantsFocus()
-            w.setYScrollPosition(u.yview)
-
-    # @+node:ekr.20191213092304.1: *3* u.update_status
-    def update_status(self) -> None:
+    # @+node:ekr.20191213092304.1: *4* u.update_status
+    def update_status(self, *, redraw: bool = True) -> None:
         """
         Update status after either an undo or redo:
         """
@@ -2412,7 +2460,8 @@ class Undoer:
         # Redrawing *must* be done here before setting u.undoing to False.
         i, j = w.getSelectionRange()
         ins = w.getInsertPoint()
-        c.redraw()
+        if redraw:
+            c.redraw()
         c.recolor()
         if u.inHead:
             c.editHeadline()
@@ -2421,6 +2470,759 @@ class Undoer:
             c.bodyWantsFocus()
             w.setSelectionRange(i, j, insert=ins)
             w.seeInsertPoint()
+
+    # @+node:ekr.20201127035748.1: *4* u.updateAfterTyping
+    def updateAfterTyping(self, p: Position, w: QTextMixin) -> None:
+        """
+        Perform all update tasks after changing body text.
+
+        This is ugly, ad-hoc code, but should be done uniformly.
+        """
+        c = self.c
+        if g.isTextWrapper(w):
+            # An important, ever-present unit test.
+            if p == c.p:
+                all = w.getAllText()
+                if g.unitTesting:
+                    assert p.b == all, (w, g.callers())
+                elif p.b != all:
+                    g.trace(
+                        f"\np.b != w.getAllText() p: {p.h} \n"
+                        f"w: {w!r} \n{g.callers()}\n"
+                    )  # fmt: skip
+            p.v.insertSpot = ins = w.getInsertPoint()
+            # From u.doTyping.
+            newSel = w.getSelectionRange()
+            if newSel is None:
+                p.v.selectionStart, p.v.selectionLength = (ins, 0)
+            else:
+                i, j = newSel
+                p.v.selectionStart, p.v.selectionLength = (i, j - i)
+        else:
+            if g.unitTesting:
+                assert False, f"Not a text wrapper: {g.callers()}"  # noqa
+            g.trace('Not a text wrapper')
+            p.v.insertSpot = 0
+            p.v.selectionStart, p.v.selectionLength = (0, 0)
+        if not p.isDirty():
+            p.setDirty()
+        if not c.isChanged():
+            c.setChanged()
+
+        # Update icons.
+        val = p.computeIcon()
+        if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
+            p.v.iconVal = val
+        if p == c.p:
+            # Recolor the body.
+            c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
+            c.recolor()
+            w.setFocus()
+
+    # @+node:ekr.20050416092908.1: *3* u:Internal helpers
+    # @+node:ekr.20031218072017.3607: *4* u.clearOptionalIvars
+    def clearOptionalIvars(self) -> None:
+        u = self
+        u.p = None  # The position/node being operated upon for undo and redo.
+        for ivar in u.optionalIvars:
+            setattr(u, ivar, None)
+
+    # @+node:ekr.20060127052111.1: *4* u.cutStack
+    def cutStack(self) -> None:
+        u = self
+        n = u.max_undo_stack_size
+        if u.bead >= n > 0 and not g.unitTesting:
+            # Do nothing if we are in the middle of creating a group.
+            i = len(u.beads) - 1
+            while i >= 0:
+                bunch = u.beads[i]
+                if hasattr(bunch, 'kind') and bunch.kind == 'beforeGroup':
+                    return
+                i -= 1
+            # This work regardless of how many items appear after bead n.
+            u.beads = u.beads[-n:]
+            u.bead = n - 1
+        if 'undo' in g.app.debug and 'verbose' in g.app.debug:  # pragma: no cover
+            print(f"u.cutStack: {len(u.beads):3}")
+
+    # @+node:ekr.20261009154747.1: *4* u.deprecated
+    def deprecated(self):
+        warnings.warn(
+            f"Undoer.{g.caller()} is deprecated; use composable undo contexts instead",
+            DeprecationWarning,
+            stacklevel=3,
+        )
+
+    # @+node:ekr.20080623083646.10: *4* u.dumpBead
+    def dumpBead(self, n: int) -> str:  # pragma: no cover
+        u = self
+        if n < 0 or n >= len(u.beads):
+            return 'no bead: n = ', n
+        # bunch = u.beads[n]
+        result = []
+        result.append('-' * 10)
+        result.append(f"len(u.beads): {len(u.beads)}, n: {n}")
+        for ivar in ('kind', 'newP', 'newN', 'p', 'oldN', 'undoHelper'):
+            result.append(f"{ivar} = {getattr(self, ivar)}")
+        return '\n'.join(result)
+
+    def dumpTopBead(self) -> str:  # pragma: no cover
+        u = self
+        n = len(u.beads)
+        if n > 0:
+            return self.dumpBead(n - 1)
+        return '<no top bead>'
+
+    # @+node:EKR.20040526150818: *4* u.getBead
+    def getBead(self, n: int) -> g.Bunch | UndoBead | None:
+        """Set Undoer ivars from the bunch at the top of the undo stack."""
+        u = self
+        if n < 0 or n >= len(u.beads):
+            return None  # pragma: no cover
+        bunch = u.beads[n]
+        if 'undo' in g.app.debug:  # pragma: no cover
+            print(f" u.getBead: {n:3} of {len(u.beads)}")
+        if isinstance(bunch, g.Bunch):  # Legacy undo code:
+            self.setIvarsFromBunch(bunch)
+        return bunch
+
+    # @+node:EKR.20040526150818.1: *4* u.peekBead
+    def peekBead(self, n: int) -> g.Bunch | None:
+        u = self
+        if n < 0 or n >= len(u.beads):
+            return None
+        return u.beads[n]
+
+    # @+node:ekr.20060127113243: *4* u.pushBead
+    def pushBead(self, bunch: g.Bunch) -> None:
+        u = self
+        if u.undoBead is not None and not isinstance(bunch, UndoBead):
+
+            def replay(helper):
+                u.setIvarsFromBunch(bunch)
+                helper()
+
+            u.undoBead.add_helpers(
+                lambda: replay(bunch.redoHelper),
+                lambda: replay(bunch.undoHelper),
+            )
+            return
+        # New in 4.4b2:  Add this to the group if it is being accumulated.
+        bunch2 = u.bead >= 0 and u.bead < len(u.beads) and u.beads[u.bead]
+        if bunch2 and hasattr(bunch2, 'kind') and bunch2.kind == 'beforeGroup':
+            # Just append the new bunch the group's items.
+            bunch2.items.append(bunch)
+        else:
+            # Push the bunch.
+            u.bead += 1
+            u.beads[u.bead :] = [bunch]
+            # Recalculate the menu labels.
+            u.setUndoTypes()
+        if 'undo' in g.app.debug:  # pragma: no cover
+            print(f"u.pushBead: {len(u.beads):3} {bunch.undoType}")
+
+    # @+node:ekr.20031218072017.3613: *4* u.redoMenuName, undoMenuName
+    def redoMenuName(self, name: str) -> str:
+        if name.startswith("Can't Redo"):
+            return name
+        return "Redo " + name
+
+    def undoMenuName(self, name: str) -> str:
+        if name.startswith("Can't Undo"):
+            return name
+        return "Undo " + name
+
+    # @+node:ekr.20060127070008: *4* u.setIvarsFromBunch
+    def setIvarsFromBunch(self, bunch: g.Bunch) -> None:
+        u = self
+        u.clearOptionalIvars()
+        if False and not g.unitTesting:  # Debugging. # pragma: no cover
+            print('-' * 40)
+            for key in list(bunch.keys()):
+                g.trace(f"{key:20} {bunch.get(key)!r}")
+            print('-' * 20)
+        # bunch is not a dict, so bunch.keys() is required.
+        for key in list(bunch.keys()):
+            val = bunch.get(key)
+            setattr(u, key, val)
+            if key not in u.optionalIvars:
+                u.optionalIvars.append(key)
+
+    # @+node:ekr.20031218072017.3614: *4* u.setRedoType
+    # These routines update both the ivar and the menu label.
+
+    def setRedoType(self, theType: str) -> None:
+        u = self
+        frame = u.c.frame
+        if not isinstance(theType, str):  # pragma: no cover
+            g.trace(f"oops: expected string for command, got {theType!r}")
+            g.trace(g.callers())
+            theType = '<unknown>'
+        menu = frame.menu.getMenu("Edit")
+        name = u.redoMenuName(theType)
+        if name != u.redoMenuLabel:
+            # Update menu using old name.
+            realLabel = frame.menu.getRealMenuName(name)
+            if realLabel == name:
+                underline = -1 if g.match(name, 0, "Can't") else 0
+            else:
+                underline = realLabel.find("&")
+            realLabel = realLabel.replace("&", "")
+            frame.menu.setMenuLabel(menu, u.realRedoMenuLabel, realLabel, underline=underline)
+            u.redoMenuLabel = name
+            u.realRedoMenuLabel = realLabel
+
+    # @+node:ekr.20091221145433.6381: *4* u.setUndoType
+    def setUndoType(self, theType: str) -> None:
+        u = self
+        frame = u.c.frame
+        if not isinstance(theType, str):
+            g.trace(f"oops: expected string for command, got {repr(theType)}")
+            g.trace(g.callers())
+            theType = '<unknown>'
+        menu = frame.menu.getMenu("Edit")
+        name = u.undoMenuName(theType)
+        if name != u.undoMenuLabel:
+            # Update menu using old name.
+            realLabel = frame.menu.getRealMenuName(name)
+            if realLabel == name:
+                underline = -1 if g.match(name, 0, "Can't") else 0
+            else:
+                underline = realLabel.find("&")
+            realLabel = realLabel.replace("&", "")
+            frame.menu.setMenuLabel(menu, u.realUndoMenuLabel, realLabel, underline=underline)
+            u.undoType = theType
+            u.undoMenuLabel = name
+            u.realUndoMenuLabel = realLabel
+
+    # @+node:ekr.20031218072017.3616: *4* u.setUndoTypes
+    def setUndoTypes(self) -> None:
+        u = self
+        # Set the undo type and undo menu label.
+        if bunch := u.peekBead(u.bead):
+            u.setUndoType(bunch.undoType)
+        else:
+            if u.last_undoable_command_name:
+                undoType = f"Can't Undo {u.last_undoable_command_name}"
+            else:
+                undoType = "Can't Undo"
+            u.setUndoType(undoType)
+        # Set only the redo menu label.
+        if bunch := u.peekBead(u.bead + 1):
+            u.setRedoType(bunch.undoType)
+        else:
+            u.setRedoType("Can't Redo")
+        u.cutStack()
+
+    # @+node:ekr.20050525151449: *4* u.trace
+    def trace(self) -> None:  # pragma: no cover
+        ivars = ('kind', 'undoType')
+        for ivar in ivars:
+            g.pr(ivar, getattr(self, ivar))
+
+    # @+node:ekr.20050410095424: *4* u.updateMarks
+    def updateMarks(self, oldOrNew: str) -> None:
+        """Update dirty and marked bits."""
+        c, u = self.c, self
+        if oldOrNew not in ('new', 'old'):  # pragma: no cover
+            g.trace("can't happen")
+            return
+        isOld = oldOrNew == 'old'
+        marked = u.oldMarked if isOld else u.newMarked
+        # Note: c.set/clearMarked call a hook.
+        if marked:
+            c.setMarked(u.p)
+        else:
+            c.clearMarked(u.p)
+        # Undo/redo always set changed/dirty bits because the file may have been saved.
+        u.p.setDirty()
+        u.c.setChanged()
+
+    # @+node:ekr.20261005135125.1: *3* u:New helpers
+    # @+node:vivainio.202610110004.1: *4* u.require_bead
+    def require_bead(self) -> UndoBead:
+        """Reject helper calls outside a context before any mutation occurs."""
+        assert isinstance(self.undoBead, UndoBead), "Undo helper requires 'with c.undoer'"
+        return self.undoBead
+
+    # @+node:vivainio.202610110001.1: *4* u.change_node
+    @contextmanager
+    def change_node(self, p: Position, command_name: str) -> Iterator[Undoer]:
+        """Record arbitrary changes to one node, including mutable user attributes."""
+        if self.undoing or self.redoing:
+            yield self
+            return
+        with self as u:
+            u.set_command_name(command_name)
+            if u.capture_level or p.v in u.node_captures:
+                yield u
+                return
+            old_state = u.capture_node(p.v)
+            old_ui = u.capture_ui()
+            u.node_captures.add(p.v)
+            try:
+                yield u
+            finally:
+                u.node_captures.remove(p.v)
+                new_state = u.capture_node(p.v)
+                if old_state != new_state:
+                    new_ui = u.capture_ui()
+                    u.undoBead.add_helpers(
+                        lambda: u.restore_node(p.v, new_state),
+                        lambda: u.restore_node(p.v, old_state),
+                    )
+                    u.undoBead.add_finishers(
+                        lambda: u.restore_ui(new_ui),
+                        lambda: u.restore_ui(old_ui),
+                    )
+
+    # @+node:vivainio.202610110003.1: *4* u.change_position
+    @contextmanager
+    def change_position(self, p: Position, command_name: str) -> Iterator[Undoer]:
+        """Record a move of p without scanning or retaining the rest of the outline."""
+        if self.undoing or self.redoing:
+            yield self
+            return
+        with self as u:
+            u.set_command_name(command_name)
+            if u.capture_level:
+                yield u
+                return
+            old_p, old_ui = p.copy(), u.capture_ui()
+            try:
+                yield u
+            finally:
+                new_p = p.copy()
+                if old_p != new_p:
+                    new_ui = u.capture_ui()
+
+                    def move(source, target):
+                        source.setAllAncestorAtFileNodesDirty()
+                        source.v._cutLink(source.childIndex(), source._parentVnode())
+                        target.v._addLink(target.childIndex(), target._parentVnode())
+                        target.setDirty()
+
+                    u.undoBead.add_helpers(
+                        lambda: move(old_p, new_p),
+                        lambda: move(new_p, old_p),
+                    )
+                    u.undoBead.add_finishers(
+                        lambda: u.restore_ui(new_ui),
+                        lambda: u.restore_ui(old_ui),
+                    )
+
+    # @+node:vivainio.202610110001.2: *4* u.change_outline
+    @contextmanager
+    def change_outline(self, command_name: str, *, enabled: bool = True) -> Iterator[Undoer]:
+        """
+        Record a bulk graph operation, preserving vnode identity and clone links.
+        Only changed vnodes are retained in the bead. Prefer change_node and the
+        action helpers for small edits; this context scans the whole outline.
+        """
+        if not enabled or self.undoing or self.redoing:
+            yield self
+            return
+        with self as u:
+            u.set_command_name(command_name)
+            if u.capture_level:
+                yield u
+                return
+            assert not u.node_captures, "Use change_outline outside change_node for bulk edits"
+            old_state = u.capture_outline()
+            old_ui = u.capture_ui()
+            u.capture_level += 1
+            try:
+                yield u
+            finally:
+                u.capture_level -= 1
+                new_state = u.capture_outline()
+                old_delta, new_delta = {}, {}
+                for v in old_state.keys() | new_state.keys():
+                    old = old_state.get(v)
+                    new = new_state.get(v)
+                    if old is None:
+                        # Preserve the detached subtree's internal links on undo.
+                        old = (*new[:2], tuple(p for p in new[2] if p not in old_state))
+                    if new is None:
+                        new = (*old[:2], tuple(p for p in old[2] if p not in new_state))
+                    if old != new:
+                        old_delta[v], new_delta[v] = old, new
+                if old_delta:
+                    new_ui = u.capture_ui()
+                    u.undoBead.add_helpers(
+                        lambda: u.restore_outline(new_delta),
+                        lambda: u.restore_outline(old_delta),
+                    )
+                    u.undoBead.add_finishers(
+                        lambda: u.restore_ui(new_ui),
+                        lambda: u.restore_ui(old_ui),
+                    )
+
+    # @+node:vivainio.202610110001.3: *4* u.snapshot helpers
+    def capture_node(self, v: VNode) -> tuple:
+        return v.h, v.b, v.isMarked(), deepcopy(v.u)
+
+    def restore_node(self, v: VNode, state: tuple) -> None:
+        head, body, marked, ua = state
+        head_changed = v.h != head
+        v.initHeadString(head)
+        v.setBodyString(body)
+        v.u = deepcopy(ua)
+        if marked:
+            v.setMarked()
+        else:
+            v.clearMarked()
+        v.setAllAncestorAtFileNodesDirty()
+        v.setDirty()
+        # Keep the headline editor from restoring stale text at the next redraw.
+        if head_changed:
+            for p in self.c.vnode2allPositions(v):
+                self.c.frame.tree.setHeadline(p, head)
+
+    def capture_outline(self) -> dict:
+        result = {}
+        pending = [self.c.hiddenRootNode]
+        while pending:
+            v = pending.pop()
+            if v in result:
+                continue
+            result[v] = self.capture_node(v), tuple(v.children), tuple(v.parents)
+            pending.extend(v.children)
+        return result
+
+    def restore_outline(self, delta: dict) -> None:
+        # Restore every link before touching content or propagating dirty bits.
+        for v in delta:
+            v.setAllAncestorAtFileNodesDirty()
+        for v, (_, children, parents) in delta.items():
+            v.children = list(children)
+            v.parents = list(parents)
+        for v, (state, _, _) in delta.items():
+            self.restore_node(v, state)
+
+    def capture_ui(self) -> tuple:
+        c = self.c
+        w = c.frame.body.wrapper
+        return c.p.copy(), w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
+
+    def restore_ui(self, state: tuple) -> None:
+        c = self.c
+        p, sel, ins, scroll = state
+        p = p if c.positionExists(p) else c.rootPosition()
+        c.p = p
+        c.selectPosition(p)
+        c.frame.scanForTabWidth(c.p)
+        c.recolor(c.p)
+        w = c.frame.body.wrapper
+        w.setSelectionRange(*sel, insert=ins)
+        w.setYScrollPosition(scroll)
+
+    # @+node:vivainio.202610110001.4: *4* u.change_recent_files
+    @contextmanager
+    def change_recent_files(self, command_name: str = 'Clear Recent Files') -> Iterator[Undoer]:
+        rf = g.app.recentFilesManager
+        old_files = rf.recentFiles[:]
+        with self as u:
+            u.set_command_name(command_name)
+            try:
+                yield u
+            finally:
+                new_files = rf.recentFiles[:]
+                if old_files != new_files:
+
+                    def restore(files):
+                        rf.recentFiles = files[:]
+                        for frame in g.app.windowList:
+                            rf.createRecentFilesMenuItems(frame.c)
+                        rf.writeRecentFilesFile(u.c)
+
+                    u.undoBead.add_helpers(
+                        lambda: restore(new_files),
+                        lambda: restore(old_files),
+                        force=True,
+                    )
+
+    # @+node:ekr.20261009185938.1: *4* u.change_headline
+    def change_headline(
+        self,
+        p: Position,
+        ch: str,
+        new_h: str,
+        *,
+        update_editor: bool = True,
+    ) -> None:
+        """Change a headline and preserve directives, dirty bits and editor state."""
+        c, b = self.c, self.require_bead()
+        p = p.copy() if c.positionExists(p) else c.vnode2position(p.v)
+        old_h = p.h
+        if old_h == new_h:
+            return
+
+        def update(head):
+            c.p = p
+            p.initHeadString(head)
+            p.setDirty()
+            c.frame.tree.setHeadline(p, head)
+
+        # Leave the live editor alone: it may contain multiline abbreviation text.
+        p.initHeadString(new_h)
+        p.setDirty()
+        if update_editor:
+            c.frame.tree.setHeadline(p, new_h)
+        b.add_helpers(lambda: update(new_h), lambda: update(old_h), vnode=p.v)
+        b.add_recolor(p, p)
+        c.frame.scanForTabWidth(p)
+        c.recolor(p)
+        g.doHook('headkey2', c=c, p=p, ch=ch, changed=True)
+
+    # @+node:ekr.20261006155509.1: *4* u.clone_node
+    def clone_node(self, p: Position) -> Position | None:
+        """Clone p, returning and selecting the new occurrence."""
+        c, b = self.c, self.require_bead()
+        old_p = p.copy()
+        clone = p.clone()
+        if c.checkOutline():
+            clone.doDelete()
+            c.p = old_p
+            return None
+        clone.setDirty()
+        c.p = clone
+        clone_p = clone.copy()
+
+        def redo():
+            clone_p._linkAfter(old_p)
+            clone_p.setDirty()
+            c.p = clone_p
+
+        def undo():
+            clone_p.doDelete(old_p)
+            c.p = old_p
+
+        b.add_helpers(redo, undo)
+        return clone
+
+    # @+node:ekr.20261005143707.1: *4* u.delete_node
+    def delete_node(self, p: Position) -> None:
+        """Delete p without scheduling a redraw; retain its original links."""
+        c, b = self.c, self.require_bead()
+        old_current = c.p.copy()
+        deleted = p.copy()
+        old_back, old_parent = p.back(), p.parent()
+        if p == c.p or p.isAncestorOf(c.p):
+            new_current = p.visBack(c) if p.hasVisBack(c) else p.next()
+            if not new_current:
+                return  # The last top-level node cannot be deleted.
+        else:
+            new_current = c.p.copy()
+        deleted.doDelete(new_current)
+        c.p = new_current
+        new_current.setDirty()
+        new_current = new_current.copy()
+
+        def redo():
+            target = old_current.copy()
+            if deleted == old_current or deleted.isAncestorOf(old_current):
+                target = deleted.visBack(c) if deleted.hasVisBack(c) else deleted.next()
+            deleted.doDelete(target)
+            c.p = target
+
+        def undo():
+            if old_back:
+                deleted._linkAfter(old_back)
+            elif old_parent:
+                deleted._linkAsNthChild(old_parent, 0)
+            else:
+                deleted._linkAsRoot()
+            deleted.setDirty()
+            c.p = old_current
+
+        b.add_helpers(redo, undo)
+
+    # @+node:ekr.20261006155622.1: *4* u.insert_node
+    def insert_node(
+        self,
+        p: Position,
+        *,
+        as_child: bool = False,
+        index: int | None = None,
+        before: bool = False,
+    ) -> Position:
+        """Insert a node once; redo relinks that same vnode, including its subtree."""
+        c, b = self.c, self.require_bead()
+        old_p = p.copy()
+        if before:
+            new_p = p.insertBefore()
+            # Inserting before p changes p's original index.
+        elif (
+            as_child
+            or p.hasChildren()
+            and p.isExpanded()
+            or c.hoistStack
+            and p == c.hoistStack[-1].p
+        ):
+            if index is None:
+                index = p.numberOfChildren() if c.config.getBool('insert-new-nodes-at-end') else 0
+            new_p = p.insertAsNthChild(index)
+        else:
+            new_p = p.insertAfter()
+        new_p.setDirty()
+        c.p = new_p
+        parent = new_p.parent()
+        back = new_p.back()
+        saved = new_p.copy()
+
+        def redo():
+            if back:
+                saved._linkAfter(back)
+            elif parent:
+                saved._linkAsNthChild(parent, 0)
+            else:
+                saved._linkAsRoot()
+            saved.setDirty()
+            c.p = saved
+
+        def undo():
+            saved.doDelete()
+            old_p.setAllAncestorAtFileNodesDirty()
+            c.p = old_p
+
+        b.add_helpers(redo, undo)
+        g.doHook('create-node', c=c, p=new_p)
+        return new_p
+
+    # @+node:ekr.20261005182243.1: *4* u.redraw
+    def redraw(self, new_p: Position | None = None, contract: bool = False) -> None:
+        """Redraw now and choose the command's single undo/redo redraw."""
+        c = self.c
+        new_p = new_p or c.p
+        w = c.frame.body.wrapper
+        preserve_body = new_p == c.p and w.getAllText() == new_p.b
+        if preserve_body:
+            sel, ins, scroll = w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
+        c.redraw(new_p)
+        if preserve_body:
+            w.setSelectionRange(*sel, insert=ins)
+            w.setYScrollPosition(scroll)
+        if self.undoBead:
+            self.undoBead.add_redraw(new_p, self.undoBead.old_p, contract=contract)
+
+    # @+node:ekr.20261011193020.1: *4* u.redraw_after_head_changed
+    def redraw_after_head_changed(self) -> None:
+        """Refresh headlines now and after undo/redo."""
+        self.c.redraw_after_head_changed()
+        if self.undoBead:
+            self.undoBead.add_redraw_after_head_changed()
+
+    # @+node:ekr.20261011190258.1: *4* u.redraw_and_edit
+    def redraw_and_edit(
+        self,
+        new_p: Position,
+        contract: bool = True,
+        select_all: bool = True,
+    ) -> None:
+        """Redraw and edit now and after undo/redo."""
+        self.c.redrawAndEdit(new_p, selectAll=select_all)
+        if self.undoBead:
+            self.undoBead.add_redraw_and_edit(
+                new_p,
+                self.undoBead.old_p,
+                contract=contract,
+                select_all=select_all,
+            )
+
+    # @+node:ekr.20261005140833.1: *4* u.set_body
+    def set_body(self, new_p: Position, new_body: str, *, old_body: str | None = None) -> None:
+        """Change p.b"""
+        u = self
+        b = u.require_bead()
+        c = u.c
+        w = u.c.frame.body.wrapper
+        if not g.isTextWrapper(w):
+            g.error(f"Not a text wrapper: {w=} {g.callers()}")
+            return
+
+        # g.trace(new_p.h, g.callers())
+        new_p = new_p.copy()
+        if old_body is None:
+            old_body = new_p.b
+        if old_body == new_body:
+            return
+
+        def update_p(p: Position, body: str) -> None:
+            """Update p's data."""
+            # Set p.v.b, not p.b! The p.b setter clears the selection!
+            p.v.b = body
+            p.setDirty()
+            val = p.computeIcon()
+            if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
+                p.v.iconVal = val
+
+        # Do the action!
+        update_p(new_p, new_body)
+        if c.p == new_p and w.getAllText() != new_body:
+            sel, ins = w.getSelectionRange(), w.getInsertPoint()
+            w.setAllText(new_body)
+            w.setSelectionRange(*sel, insert=ins)
+        c.recolor(new_p)
+
+        # Add helpers.
+
+        def set_body_redoer() -> None:
+            update_p(new_p, new_body)
+
+        def set_body_undoer() -> None:
+            update_p(new_p, old_body)
+
+        b.add_helpers(set_body_redoer, set_body_undoer, vnode=new_p.v)
+
+        # Add finishers.
+        b.add_redraw(new_p, new_p)  # Never change c.p.
+
+    # @+node:ekr.20261005094529.2: *4* u.set_command_name
+    def set_command_name(self, command_name: str) -> None:
+        u = self
+        b = u.require_bead()
+        assert isinstance(b, UndoBead), repr(b)
+        if u.undoBeadLevel == 1:
+            b.command_name = command_name
+            b.undoType = command_name
+            # Menu labels are updated when the completed bead is pushed.
+
+    # @+node:ekr.20261005143752.1: *4* u.set_selection_range
+    def set_selection_range(
+        self,
+        old_ins: int,
+        old_sel: tuple[int, int],
+        *,
+        old_y_scroll: int | None = None,
+        new_y_scroll: int | None = None,
+    ) -> None:
+        u = self
+        b = u.require_bead()
+        c = u.c
+        w = c.frame.body.wrapper
+        if not w:
+            return
+        new_ins = w.getInsertPoint()
+        new_sel = w.getSelectionRange()
+
+        def set_selection_range_redoer() -> None:
+            i, j = new_sel
+            w.setSelectionRange(i, j, insert=new_ins)
+            if new_y_scroll is not None:
+                w.setYScrollPosition(new_y_scroll)
+
+        def set_selection_range_undoer() -> None:
+            i, j = old_sel
+            w.setSelectionRange(i, j, insert=old_ins)
+            if old_y_scroll is not None:
+                w.setYScrollPosition(old_y_scroll)
+
+        b.add_finishers(set_selection_range_redoer, set_selection_range_undoer)
+
+        # Do the action!
+        i, j = new_sel
+        w.setSelectionRange(i, j, insert=new_ins)
 
     # @-others
 
