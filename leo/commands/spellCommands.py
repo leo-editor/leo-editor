@@ -677,30 +677,29 @@ class SpellTabHandler:
             return False
         c, p, u = self.c, self.c.p, self.c.undoer
         w = c.frame.body.wrapper
-        if selection := self.tab.getSuggestion():
-            bunch = u.beforeChangeBody(p)
-            # Use getattr to keep pylint happy.
-            i = getattr(self.tab, 'change_i', None)
-            j = getattr(self.tab, 'change_j', None)
-            if i is not None and j is not None:
-                start, end = i, j
-            else:
-                start, end = w.getSelectionRange()
-            if start is not None:
-                if start > end:
-                    start, end = end, start
-                w.delete(start, end)
-                w.insert(start, selection)
-                w.setSelectionRange(start, start + len(selection))
-                p.v.b = w.getAllText()
-                u.afterChangeBody(p, 'Change', bunch)
-                c.invalidateFocus()
-                c.bodyWantsFocus()
-                return True
-        # The focus must never leave the body pane.
-        c.invalidateFocus()
-        c.bodyWantsFocus()
-        return False
+        with u.change_outline('Change'):
+            if selection := self.tab.getSuggestion():
+                # Use getattr to keep pylint happy.
+                i = getattr(self.tab, 'change_i', None)
+                j = getattr(self.tab, 'change_j', None)
+                if i is not None and j is not None:
+                    start, end = i, j
+                else:
+                    start, end = w.getSelectionRange()
+                if start is not None:
+                    if start > end:
+                        start, end = end, start
+                    w.delete(start, end)
+                    w.insert(start, selection)
+                    w.setSelectionRange(start, start + len(selection))
+                    p.v.b = w.getAllText()
+                    c.invalidateFocus()
+                    c.bodyWantsFocus()
+                    return True
+            # The focus must never leave the body pane.
+            c.invalidateFocus()
+            c.bodyWantsFocus()
+            return False
 
     # @+node:ekr.20150514063305.505: *4* SpellTabHandler.find & helper
     # Create a pattern that matches words, including contractions.

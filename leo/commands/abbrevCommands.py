@@ -170,51 +170,50 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             return
 
         # Begin the undo.
-        u.beforeChangeGroup(c.p, command=undoType, verboseUndoGroup=True)
-        self.replace_selection(i, j, '')
+        with u.change_outline(undoType):
+            self.replace_selection(i, j, '')
 
-        # Set status flags.
-        isRoot = c.p.isRoot()
-        wasHoisted = len(c.hoistStack) > 0
-        parent = c.p.getParent()
-        noSiblings = parent and parent.numberOfChildren() == 1
-        isFirstChild = parent and parent.firstChild() == c.p
-        prevSibling = c.p.moveToBack()
-        prevSiblingExpanded = prevSibling and prevSibling.isExpanded()
+            # Set status flags.
+            isRoot = c.p.isRoot()
+            wasHoisted = len(c.hoistStack) > 0
+            parent = c.p.getParent()
+            noSiblings = parent and parent.numberOfChildren() == 1
+            isFirstChild = parent and parent.firstChild() == c.p
+            prevSibling = c.p.moveToBack()
+            prevSiblingExpanded = prevSibling and prevSibling.isExpanded()
 
-        # Carefully replace the old node with the new node.
-        if c.canDeleteHeadline():
+            # Carefully replace the old node with the new node.
+            if c.canDeleteHeadline():
+                if prevSiblingExpanded:
+                    prevSibling.contract()  # To prevent pasting as last child of prevSibling.
+                c.deleteOutline(op_name="Cut Node")
+                c.pasteOutline(s=expansion)
+                if noSiblings:
+                    c.moveOutlineRight()  # Inserted below instead of as child, so move right.
+                if isRoot:
+                    c.moveOutlineUp()  # Delete & paste made it second position, so move up.
+            else:
+                c.pasteOutline(s=expansion)
+                c.selectPosition(c.p.moveToBack())
+                c.deleteOutline(op_name="Cut Node")
+                if wasHoisted:
+                    c.selectVisNext()
+
+            # Replace the container node with its first child.
+            if child := c.p.copy().moveToFirstChild():
+                c.selectPosition(child)
+                c.moveOutlineLeft()
+                c.goToPrevSibling()
+                c.deleteOutline(op_name="Cut Node")
+                if isFirstChild or (not isRoot):
+                    c.selectVisNext()
+
+            # Restore the previous expansion.
             if prevSiblingExpanded:
-                prevSibling.contract()  # To prevent pasting as last child of prevSibling.
-            c.deleteOutline(op_name="Cut Node")
-            c.pasteOutline(s=expansion)
-            if noSiblings:
-                c.moveOutlineRight()  # Inserted below instead of as child, so move right.
-            if isRoot:
-                c.moveOutlineUp()  # Delete & paste made it second position, so move up.
-        else:
-            c.pasteOutline(s=expansion)
-            c.selectPosition(c.p.moveToBack())
-            c.deleteOutline(op_name="Cut Node")
-            if wasHoisted:
-                c.selectVisNext()
+                prevSibling.expand()
 
-        # Replace the container node with its first child.
-        if child := c.p.copy().moveToFirstChild():
-            c.selectPosition(child)
-            c.moveOutlineLeft()
-            c.goToPrevSibling()
-            c.deleteOutline(op_name="Cut Node")
-            if isFirstChild or (not isRoot):
-                c.selectVisNext()
-
-        # Restore the previous expansion.
-        if prevSiblingExpanded:
-            prevSibling.expand()
-
-        # End the undo.
-        u.afterChangeGroup(c.p, undoType=undoType)
-        c.redraw(c.p)
+            # End the undo.
+            u.redraw(c.p)
 
     # @+node:ekr.20260515084054.1: *5* abbrev.init_place_holder_search
     def init_place_holder_search(self, *, node_only: bool) -> None:
@@ -276,18 +275,17 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         w = self.w
 
         # Start the undo.
-        bunch = u.beforeChangeNodeContents(p)
+        with u.change_node(p, 'Abbreviation'):
+            # Make the replacement.
+            w.delete(i, j)
+            w.insert(i, s)
 
-        # Make the replacement.
-        w.delete(i, j)
-        w.insert(i, s)
+            # Update only body text. Setting p.h here would be wrong.
+            if not self.in_head:
+                p.v.b = w.getAllText()
+            u.redraw(c.p)
 
-        # Update only body text. Setting p.h here would be wrong.
-        if not self.in_head:
-            p.v.b = w.getAllText()
-
-        # Complete the undo.
-        u.afterChangeNodeContents(p, command='Abbreviation', bunch=bunch)
+            # Complete the undo.
 
     # @+node:ekr.20260516063743.1: *4* abbrev: script substitution
     # @+node:ekr.20260516063159.1: *5* abbrev.make_all_scripting_substitutions
@@ -618,7 +616,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         Insert the common prefix of all dynamic abbrev's matching the present word.
         This corresponds to C-M-/ in Emacs.
         """
-        c, p = self.c, self.c.p
+        c, _p = self.c, self.c.p
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
@@ -635,15 +633,14 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         if word in aList and len(aList) > 1:
             aList.remove(word)
         prefix = functools.reduce(g.longestCommonPrefix, aList)
-        if prefix.strip():
-            ypos = w.getYScrollPosition()
-            b = c.undoer.beforeChangeNodeContents(p)
-            s = s[:i] + prefix + s[j:]
-            w.setAllText(s)
-            w.setInsertPoint(i + len(prefix))
-            w.setYScrollPosition(ypos)
-            c.undoer.afterChangeNodeContents(p, command='dabbrev-completion', bunch=b)
-            c.recolor()
+        with c.undoer.change_outline('dabbrev-completion'):
+            if prefix.strip():
+                ypos = w.getYScrollPosition()
+                s = s[:i] + prefix + s[j:]
+                w.setAllText(s)
+                w.setInsertPoint(i + len(prefix))
+                w.setYScrollPosition(ypos)
+                c.recolor()
 
     # @+node:ekr.20150514043850.21: *4* abbrev.dynamicExpansion M-/ & helper
     @cmd('dabbrev-expands')
@@ -701,26 +698,24 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     def dynamicExpandHelper1(self, event: LeoKeyEvent | None = None) -> None:
         """Finisher for dabbrev-expands."""
         c, k = self.c, self.c.k
-        p = c.p
         c.frame.log.deleteTab('Completion')
         k.clearState()
         k.resetLabel()
-        if k.arg:
-            w = self.w
-            s = w.getAllText()
-            ypos = w.getYScrollPosition()
-            b = c.undoer.beforeChangeNodeContents(p)
-            ins = ins1 = w.getInsertPoint()
-            if 0 < ins < len(s) and not g.isWordChar(s[ins]):
-                ins1 -= 1
-            i, j = g.getWord(s, ins1)
-            # word = s[i: j]
-            s = s[:i] + k.arg + s[j:]
-            w.setAllText(s)
-            w.setInsertPoint(i + len(k.arg))
-            w.setYScrollPosition(ypos)
-            c.undoer.afterChangeNodeContents(p, command='dabbrev-expand', bunch=b)
-            c.recolor()
+        with c.undoer.change_outline('dabbrev-expand'):
+            if k.arg:
+                w = self.w
+                s = w.getAllText()
+                ypos = w.getYScrollPosition()
+                ins = ins1 = w.getInsertPoint()
+                if 0 < ins < len(s) and not g.isWordChar(s[ins]):
+                    ins1 -= 1
+                i, j = g.getWord(s, ins1)
+                # word = s[i: j]
+                s = s[:i] + k.arg + s[j:]
+                w.setAllText(s)
+                w.setInsertPoint(i + len(k.arg))
+                w.setYScrollPosition(ypos)
+                c.recolor()
 
     # @+node:ekr.20150514043850.28: *4* abbrev.killAllAbbrevs
     @cmd('abbrev-kill-all')

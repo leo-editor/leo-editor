@@ -512,44 +512,43 @@ class AtFile:
             return None
 
         # Undoably create the top-level node.
-        undoData = u.beforeInsertNode(c.p)
-        update_p = c.lastTopLevel().insertAfter()
-        update_p.h = 'Updated @clean/@auto nodes'
+        with u.change_outline('Clone Updated Nodes'):
+            update_p = c.lastTopLevel().insertAfter()
+            update_p.h = 'Updated @clean/@auto nodes'
 
-        # Clone nodes as children of the found node.
-        for root in at.changed_roots:
-            parent = update_p.insertAsLastChild()
-            parent.h = f"Updated from: {g.shortFileName(c.fullPath(root))}"
-            parent_body: list[str] = []
-            # Clone all dirty nodes.
-            assert root.v
-            root.v.setDirty()
-            for p in root.self_and_subtree():
-                v = p.v
-                if not v.isDirty():
-                    continue
-                clone = p.clone()
-                clone.moveToLastChildOf(parent)
-                # Insert the diff into the parent's body.
-                a = g.splitLines(at.bodies_dict.get(v, ''))
-                b = g.splitLines(p.b)
-                parent_body.append(f"{p.h}\n")
-                parent_body.extend(difflib.unified_diff(a, b))
-                parent_body.append('\n')
-            # Put the diff.
-            parent.b = ''.join(parent_body)
+            # Clone nodes as children of the found node.
+            for root in at.changed_roots:
+                parent = update_p.insertAsLastChild()
+                parent.h = f"Updated from: {g.shortFileName(c.fullPath(root))}"
+                parent_body: list[str] = []
+                # Clone all dirty nodes.
+                assert root.v
+                root.v.setDirty()
+                for p in root.self_and_subtree():
+                    v = p.v
+                    if not v.isDirty():
+                        continue
+                    clone = p.clone()
+                    clone.moveToLastChildOf(parent)
+                    # Insert the diff into the parent's body.
+                    a = g.splitLines(at.bodies_dict.get(v, ''))
+                    b = g.splitLines(p.b)
+                    parent_body.append(f"{p.h}\n")
+                    parent_body.extend(difflib.unified_diff(a, b))
+                    parent_body.append('\n')
+                # Put the diff.
+                parent.b = ''.join(parent_body)
 
-        # Defensive programming.
-        if c.checkOutline() > 0:
-            return None
+            # Defensive programming.
+            if c.checkOutline() > 0:
+                return None
 
-        # Sort the clones in place, without undo.
-        assert update_p.v
-        update_p.v.children.sort(key=lambda v: v.h.lower())
-        u.afterInsertNode(update_p, 'Clone Updated Nodes', undoData)
-        c.contractAllHeadlinesCommand()
-        update_p.expand()
-        return update_p
+            # Sort the clones in place, without undo.
+            assert update_p.v
+            update_p.v.children.sort(key=lambda v: v.h.lower())
+            c.contractAllHeadlinesCommand()
+            update_p.expand()
+            return update_p
 
     # @+node:ekr.20190108054317.1: *6* at.findFilesToRead
     def findFilesToRead(self, root: Position, all: bool) -> list[Position]:  # pragma: no cover
@@ -2680,7 +2679,6 @@ class AtFile:
             return False
 
         # Copy the old p.b. c.refresh_from_disk clears the undo stack.
-        old_body = p.b
         old_p = p.copy()
         results = c.beautify_with_ruff(contents, root, filename)
 
@@ -2701,20 +2699,13 @@ class AtFile:
             )
             g.printObj(list(diff), tag=f"Diff: {sfn}")
 
-        # Reload the file, suppressing the reload prompt.
-        g.es(f"beautified: {g.shortFileName(filename)}", color='blue')
-        c.refreshFromDisk(root)
-
-        # Handle the undo *after* calling c.refreshFromDisk.
-        bunch = u.beforeChangeBody(old_p)
-        bunch.oldBody = old_body
-        u.afterChangeBody(old_p, 'ruff-format', bunch)
-
-        # #4159: This may not restore the outline as it was,
-        # but it's much better than doing nothing.
-        c.selectPosition(old_p)
-        c.contractAllOtherNodes()
-        c.redraw(old_p)
+        # Snapshot before the reload: refreshFromDisk may also replace children.
+        with u.change_outline('ruff-format'):
+            g.es(f"beautified: {g.shortFileName(filename)}", color='blue')
+            c.refreshFromDisk(root)
+            c.selectPosition(old_p)
+            c.contractAllOtherNodes()
+            u.redraw(old_p)
         return True
 
     # @+node:vv.20260807130000.1: *6* at.runRuff

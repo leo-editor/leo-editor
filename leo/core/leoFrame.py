@@ -1077,27 +1077,10 @@ class LeoTree:
         if g.doHook("headkey1", c=c, p=p, ch=ch, changed=changed):
             return  # The hook claims to have handled the event.
         # Handle undo.
-        if g.new_undoers:
-            ### g.trace('=====', g.callers())
-            with c.undoer as u:
-                u.set_command_name(undoType)
-                u.change_headline(p, ch, s)
-                u.redraw_after_head_changed()
-        else:
-            u = c.undoer
-            undoData = u.beforeChangeHeadline(p)
-            p.initHeadString(s)  # change p.h *after* calling undoer's before method.
-            if not c.changed:
-                c.setChanged()
-            # New in Leo 4.4.5: we must recolor the body because
-            # the headline may contain directives.
-            c.frame.scanForTabWidth(p)
-            c.recolor(p)
-            p.setDirty()
-            u.afterChangeHeadline(p, undoType, undoData)
-            # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
-            c.redraw_after_head_changed()
-            g.doHook("headkey2", c=c, p=p, ch=ch, changed=True)
+        with c.undoer as u:
+            u.set_command_name(undoType)
+            u.change_headline(p, ch, s, update_editor=False)
+            u.redraw_after_head_changed()
 
     # @+node:ekr.20061109165848: *3* LeoTree: Must be defined in base class
     # @+node:ekr.20040803072955.126: *4* LeoTree.endEditLabel

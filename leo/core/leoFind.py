@@ -304,27 +304,23 @@ class LeoFind:
         self.work_s = s
         self.work_sel = (0, 0, 0)
         # The main loop.
-        u.beforeChangeGroup(p1, undoType)
-        count = 0
-        for p in positions:
-            count_h, count_b = 0, 0
-            undoData = u.beforeChangeNodeContents(p)
-            if self.search_headline:
-                count_h, new_h = self._change_all_search_and_replace(p.h)
-                if count_h:
-                    count += count_h
-                    p.h = new_h
-            if self.search_body:
-                count_b, new_b = self._change_all_search_and_replace(p.b)
-                if count_b:
-                    count += count_b
-                    p.b = new_b
-            if count_h or count_b:
-                u.afterChangeNodeContents(p1, 'Replace All', undoData)
-        u.afterChangeGroup(p1, undoType)
-        if not g.unitTesting:  # pragma: no cover
-            print(f"{count:3}: {find_text:>30} => {change_text}")
-        return count
+        with u.change_outline(undoType):
+            count = 0
+            for p in positions:
+                count_h, count_b = 0, 0
+                if self.search_headline:
+                    count_h, new_h = self._change_all_search_and_replace(p.h)
+                    if count_h:
+                        count += count_h
+                        p.h = new_h
+                if self.search_body:
+                    count_b, new_b = self._change_all_search_and_replace(p.b)
+                    if count_b:
+                        count += count_b
+                        p.b = new_b
+            if not g.unitTesting:  # pragma: no cover
+                print(f"{count:3}: {find_text:>30} => {change_text}")
+            return count
 
     # @+node:ekr.20210108083003.1: *4* find._init_from_dict
     def _init_from_dict(self, settings: g.Bunch) -> None:
@@ -507,28 +503,23 @@ class LeoFind:
         def isMarked(p: Position) -> bool:
             return p.isMarked()
 
-        u.beforeChangeGroup(c.p.copy(), undoType, False)  # will create a bead.
-
-        root = c.cloneFindByPredicate(
-            generator=c.all_unique_positions,
-            predicate=isMarked,
-            failMsg=failMsg,
-            flatten=flatten,
-            undoType=undoType,
-        )
-        if root:
-            # Unmarking all nodes is convenient.
-            for p in c.all_unique_positions():
-                if p.isMarked():
-                    bunch = u.beforeMark(p, 'Unmark')
-                    c.clearMarked(p)
-                    u.afterMark(p, 'Unmark', bunch)
-            n = root.numberOfChildren()
-            root.b = f"# Found {n} marked node{g.plural(n)}"
-            c.selectPosition(root)
-            c.redraw(root)
-        u.afterChangeGroup(c.p.copy(), undoType)
-        return bool(root)
+        with u.change_outline(undoType):
+            root = c.cloneFindByPredicate(
+                generator=c.all_unique_positions,
+                predicate=isMarked,
+                failMsg=failMsg,
+                flatten=flatten,
+                undoType=undoType,
+            )
+            if root:
+                # Unmarking all nodes is convenient.
+                for p in c.all_unique_positions():
+                    if p.isMarked():
+                        c.clearMarked(p)
+                n = root.numberOfChildren()
+                root.b = f"# Found {n} marked node{g.plural(n)}"
+                u.redraw(root)
+            return bool(root)
 
     # @+node:ekr.20140828080010.18532: *4* find.clone-find-parents
     @cmd('clone-find-parents')
@@ -544,7 +535,7 @@ class LeoFind:
         if not p.isCloned():  # pragma: no cover
             g.es(f"not a clone: {p.h}")
             return False
-        p0 = p.copy()
+        p.copy()
         undoType = 'Find Clone Parents'
         aList = c.vnode2allPositions(p.v)
         if not aList:  # pragma: no cover
@@ -552,26 +543,20 @@ class LeoFind:
             return False
         # Create the node as the last top-level node.
         # All existing positions remain valid.
-        u.beforeChangeGroup(p, undoType)
-        b = u.beforeInsertNode(p)
-        found = c.lastTopLevel().insertAfter()
-        found.h = f"Found: parents of {p.h}"
-        u.afterInsertNode(found, 'insert', b)
-        seen = []
-        for p2 in aList:
-            parent = p2.parent()
-            if parent and parent.v not in seen:
-                seen.append(parent.v)
-                b = u.beforeCloneNode(parent)
-                # Bug fix 2021/06/15: Create the clone directly as a child of found.
-                clone = parent.copy()
-                n = found.numberOfChildren()
-                clone._linkCopiedAsNthChild(found, n)
-                u.afterCloneNode(clone, 'clone', b)
-        u.afterChangeGroup(p0, undoType)
-        c.setChanged()
-        c.redraw(found)
-        return True
+        with u.change_outline(undoType):
+            found = c.lastTopLevel().insertAfter()
+            found.h = f"Found: parents of {p.h}"
+            seen = []
+            for p2 in aList:
+                parent = p2.parent()
+                if parent and parent.v not in seen:
+                    seen.append(parent.v)
+                    # Bug fix 2021/06/15: Create the clone directly as a child of found.
+                    clone = parent.copy()
+                    n = found.numberOfChildren()
+                    clone._linkCopiedAsNthChild(found, n)
+            u.redraw(found)
+            return True
 
     # @+node:ekr.20150629084204.1: *4* find.find-def/var & helper
     @cmd('find-def')
@@ -744,31 +729,28 @@ class LeoFind:
         c = self.c
         ftm = self.ftm
         u = c.undoer
-        undoData = u.beforeInsertNode(c.p)
+        with u.change_outline('find-def'):
+            # Create the found node.
+            found = c.lastTopLevel().insertAfter()
+            assert found.v
+            found.h = f"Found {len(matches)}: {word}"
+            found.b = f"@nosearch\n\n# found {len(matches)} nodes"
+            # Clone nodes as children of the found node.
+            clones = [p for i, p, s in matches]
+            for p in clones:
+                p2 = p.copy()
+                n = found.numberOfChildren()
+                p2._linkCopiedAsNthChild(found, n)
+            # Sort the clones in place, without undo.
+            found.v.children.sort(key=lambda v: v.h.lower())
 
-        # Create the found node.
-        found = c.lastTopLevel().insertAfter()
-        assert found.v
-        found.h = f"Found {len(matches)}: {word}"
-        found.b = f"@nosearch\n\n# found {len(matches)} nodes"
-        # Clone nodes as children of the found node.
-        clones = [p for i, p, s in matches]
-        for p in clones:
-            p2 = p.copy()
-            n = found.numberOfChildren()
-            p2._linkCopiedAsNthChild(found, n)
-        # Sort the clones in place, without undo.
-        found.v.children.sort(key=lambda v: v.h.lower())
+            # Set the search text. This is convenient and should not cause problems.
+            self.find_text = word
+            ftm.set_find_text(word)
 
-        # Set the search text. This is convenient and should not cause problems.
-        self.find_text = word
-        ftm.set_find_text(word)
-
-        # Set the undo data.
-        u.afterInsertNode(found, 'find-def', undoData)
-        c.setChanged()
-        found.expand()
-        c.redraw(found)
+            # Set the undo data.
+            found.expand()
+            u.redraw(found)
 
     # @+node:ekr.20240525172445.1: *6* find._make_patterns
     bad_regex_patterns: list[str] = []
@@ -1233,83 +1215,75 @@ class LeoFind:
     def _change_all_helper(self, settings: g.Bunch) -> int:
         """Do the change-all command. Return the number of changes, or 0 for error."""
         # Caller has checked settings.
-        c, current, u = self.c, self.c.p, self.c.undoer
+        c, _current, u = self.c, self.c.p, self.c.undoer
         undoType = 'Replace All'
         t1 = time.process_time()
 
         saveData = self.save()
-        u.beforeChangeGroup(current, undoType)
-        if not self.find_text:  # pragma: no cover
-            return 0
-        if not self.search_headline and not self.search_body:  # pragma: no cover
-            return 0
-        self.find_text = self.replace_back_slashes(self.find_text)  # #4609
-        self.change_text = self.replace_back_slashes(self.change_text)
-        matches_dict: list[dict[str, Any]] = []
-        if self.pattern_match:
-            ok = self.compile_pattern()
-            if not ok:
+        with u.change_outline(undoType):
+            if not self.find_text:  # pragma: no cover
                 return 0
-        # #1428: Honor limiters in replace-all.
-        if self.node_only:
-            positions = [c.p]
-        elif self.suboutline_only:
-            positions = list(c.p.self_and_subtree())
-        else:
-            positions = list(c.all_unique_positions())
-        count = 0
-        for p in positions:
-            count_h, count_b = 0, 0
-            body, head = [], []
-            undoData = u.beforeChangeNodeContents(p)
-            if self.search_headline:
-                count_h, new_h = self._change_all_search_and_replace(p.h)
-                if count_h:
-                    head = self.find_all_literal_matches_in_string(p.v.h)
-                    count += count_h
-                    p.h = new_h
-                    p.v.setDirty()  # #4660.
-            if self.search_body:
-                count_b, new_b = self._change_all_search_and_replace(p.b)
-                if count_b:
-                    count += count_b
-                    body = self.find_all_literal_matches_in_string(p.v.b)
-                    p.b = new_b
-                    p.v.setDirty()  # #4660
-            if body or head:
-                matches_dict.append({'body': body, 'head': head, 'v': p.v})
+            if not self.search_headline and not self.search_body:  # pragma: no cover
+                return 0
+            self.find_text = self.replace_back_slashes(self.find_text)  # #4609
+            self.change_text = self.replace_back_slashes(self.change_text)
+            matches_dict: list[dict[str, Any]] = []
+            if self.pattern_match:
+                ok = self.compile_pattern()
+                if not ok:
+                    return 0
+            # #1428: Honor limiters in replace-all.
+            if self.node_only:
+                positions = [c.p]
+            elif self.suboutline_only:
+                positions = list(c.p.self_and_subtree())
+            else:
+                positions = list(c.all_unique_positions())
+            count = 0
+            for p in positions:
+                count_h, count_b = 0, 0
+                body, head = [], []
+                if self.search_headline:
+                    count_h, new_h = self._change_all_search_and_replace(p.h)
+                    if count_h:
+                        head = self.find_all_literal_matches_in_string(p.v.h)
+                        count += count_h
+                        p.h = new_h
+                        p.v.setDirty()  # #4660.
+                if self.search_body:
+                    count_b, new_b = self._change_all_search_and_replace(p.b)
+                    if count_b:
+                        count += count_b
+                        body = self.find_all_literal_matches_in_string(p.v.b)
+                        p.b = new_b
+                        p.v.setDirty()  # #4660
+                if body or head:
+                    matches_dict.append({'body': body, 'head': head, 'v': p.v})
 
-            # Check if there was at least one change with either body or headline
-            if count_h or count_b:
-                u.afterChangeNodeContents(p, 'Replace All', undoData)
-                # Also check to honor 'Mark Changes' option
-                if self.mark_changes and not p.isMarked():  # pragma: no cover
-                    markUndoType = 'Mark Changes'
-                    bunch = u.beforeMark(p, markUndoType)
-                    p.setMarked()
-                    p.setDirty()
-                    u.afterMark(p, markUndoType, bunch)
-        if matches_dict:
-            # Create the result dict.
-            result_string = self.make_result_from_matches(matches_dict)
-            # Create the summary node.
-            undoData = u.beforeInsertNode(c.p)
-            new_p = found_p = self.create_summary_node('change-all', result_string)
-            u.afterInsertNode(found_p, undoType, undoData)
-        else:
-            new_p = c.p
-        # suboutline-only is a one-shot for batch commands.
-        self.ftm.set_radio_button('entire-outline')
-        self.root = None
-        self.node_only = self.suboutline_only = False
-        p = c.p
-        u.afterChangeGroup(p, undoType)
-        t2 = time.process_time()
-        if not g.unitTesting:  # pragma: no cover
-            g.es_print(f"changed {count} instances{g.plural(count)} in {t2 - t1:4.2f} sec.")
-        c.redraw(new_p)
-        self.restore(saveData)
-        return count
+                # Check if there was at least one change with either body or headline
+                if count_h or count_b:
+                    # Also check to honor 'Mark Changes' option
+                    if self.mark_changes and not p.isMarked():  # pragma: no cover
+                        p.setMarked()
+                        p.setDirty()
+            if matches_dict:
+                # Create the result dict.
+                result_string = self.make_result_from_matches(matches_dict)
+                # Create the summary node.
+                new_p = self.create_summary_node('change-all', result_string)
+            else:
+                new_p = c.p
+            # suboutline-only is a one-shot for batch commands.
+            self.ftm.set_radio_button('entire-outline')
+            self.root = None
+            self.node_only = self.suboutline_only = False
+            p = c.p
+            t2 = time.process_time()
+            if not g.unitTesting:  # pragma: no cover
+                g.es_print(f"changed {count} instances{g.plural(count)} in {t2 - t1:4.2f} sec.")
+            u.redraw(new_p)
+            self.restore(saveData)
+            return count
 
     # @+node:ekr.20260504060502.1: *7* find.find_all_literal_matches_in_string
     def find_all_literal_matches_in_string(self, s: str, *, replace_flag: bool = True) -> list[int]:
@@ -1622,14 +1596,11 @@ class LeoFind:
                 g.es_print(f"tag not found: {tag}")
             tc.show_all_tags()
             return 0, c.p
-        undoData = u.beforeInsertNode(c.p)
-        found = self._create_clone_tag_nodes(clones)
-        u.afterInsertNode(found, 'Clone Find Tag', undoData)
-        assert c.positionExists(found, trace=True), found
-        c.setChanged()
-        c.selectPosition(found)
-        c.redraw()
-        return len(clones), found
+        with u.change_outline('Clone Find Tag'):
+            found = self._create_clone_tag_nodes(clones)
+            assert c.positionExists(found, trace=True), found
+            u.redraw(found)
+            return len(clones), found
 
     # @+node:ekr.20210110073117.12: *6* find._create_clone_tag_nodes
     def _create_clone_tag_nodes(self, clones: list[Position]) -> Position:
@@ -1800,40 +1771,30 @@ class LeoFind:
             self.restore(saveData)
             return {}
         # Check first if need to make a 'group' undo bead
-        if self.mark_finds:
-            # Start an undo-group instead of a single 'InsertNode' undo
-            u.beforeChangeGroup(c.p, undoType)
+        with u.change_outline(undoType):
+            # Create the result dict.
+            result_string = self.make_result_from_matches(matches_dict)
+            # Create the summary node.
+            found_p = self.create_summary_node('find-all', result_string)
+            c.selectPosition(found_p)
 
-        # Create the result dict.
-        result_string = self.make_result_from_matches(matches_dict)
-        # Create the summary node.
-        undoData = u.beforeInsertNode(c.p)
-        found_p = self.create_summary_node('find-all', result_string)
-        u.afterInsertNode(found_p, undoType, undoData)
-        c.selectPosition(found_p)
+            if self.mark_finds:
+                for match in matches_dict:
+                    if p := c.vnode2position(match['v']):
+                        if not p.isMarked():
+                            p.setMarked()
+                            p.setDirty()
+                # Finish undo group only if mark_finds is true
 
-        if self.mark_finds:
-            for match in matches_dict:
-                if p := c.vnode2position(match['v']):
-                    if not p.isMarked():
-                        markUndoType = 'Mark Finds'
-                        bunch = u.beforeMark(p, markUndoType)
-                        p.setMarked()
-                        p.setDirty()
-                        u.afterMark(p, markUndoType, bunch)
-            # Finish undo group only if mark_finds is true
-            u.afterChangeGroup(found_p, undoType)
-
-        c.setChanged()
-        c.redraw()
-        # Return a dict containing the actual results and statistics.
-        return {
-            'distinct_body_lines': distinct_body_lines,
-            'match_dict': matches_dict,
-            'result_string': result_string,
-            'total_matches': total_matches,
-            'total_nodes': total_nodes,
-        }
+            u.redraw()
+            # Return a dict containing the actual results and statistics.
+            return {
+                'distinct_body_lines': distinct_body_lines,
+                'match_dict': matches_dict,
+                'result_string': result_string,
+                'total_matches': total_matches,
+                'total_nodes': total_nodes,
+            }
 
     # @+node:ekr.20150717105329.1: *7* find.create_summary_node
     def create_summary_node(self, kind: str, result: str) -> Position:
@@ -2472,22 +2433,21 @@ class LeoFind:
             else:
                 p.moveToThreadNext()
             assert p != progress
-        if clones:
-            undoData = u.beforeInsertNode(c.p)
-            found_p = self._cfa_create_nodes(clones, flattened=False)
-            u.afterInsertNode(found_p, 'Clone Find All', undoData)
-            assert c.positionExists(found_p, trace=True), found_p
-            c.setChanged()
-            c.selectPosition(found_p)
-            # Put the count in found_p.h.
-            found_p.h = found_p.h.replace('Found:', f"Found {count}:")
-        # Reset data after calculating results.
-        self.ftm.set_radio_button('entire-outline')
-        # suboutline-only is a one-shot for batch commands.
-        self.node_only = self.suboutline_only = False
-        self.root = None
-        g.es("found", count, "matches for", self.find_text)
-        return count  # Might be useful for the gui update.
+        with u.change_outline('Clone Find All'):
+            if clones:
+                found_p = self._cfa_create_nodes(clones, flattened=False)
+                assert c.positionExists(found_p, trace=True), found_p
+                c.setChanged()
+                c.selectPosition(found_p)
+                # Put the count in found_p.h.
+                found_p.h = found_p.h.replace('Found:', f"Found {count}:")
+            # Reset data after calculating results.
+            self.ftm.set_radio_button('entire-outline')
+            # suboutline-only is a one-shot for batch commands.
+            self.node_only = self.suboutline_only = False
+            self.root = None
+            g.es("found", count, "matches for", self.find_text)
+            return count  # Might be useful for the gui update.
 
     # @+node:ekr.20210110073117.34: *5* find._cfa_create_nodes
     def _cfa_create_nodes(self, clones: list[Position], flattened: bool) -> Position:
@@ -2554,47 +2514,44 @@ class LeoFind:
         if start == end:  # pragma: no cover
             g.es("no text selected")
             return False
-        bunch = u.beforeChangeBody(p)
-        start, end = oldSel
-        change_text = self.change_text
-        # Perform regex substitutions of \1, \2, ...\9 in the change text.
-        if self.pattern_match and self.match_obj:
-            groups = self.match_obj.groups()
-            if groups:
-                change_text = self.make_regex_subs(change_text, groups)
-        change_text = self.replace_back_slashes(change_text)
-        # Update both the gui widget and the work "widget"
-        new_ins = start if self.reverse else start + len(change_text)
-        if start != end:
-            w.delete(start, end)
-        w.insert(start, change_text)
-        w.setInsertPoint(new_ins)
-        self.work_s = w.getAllText()  # #2220.
-        self.work_sel = (new_ins, new_ins, new_ins)
-        # Update the selection for the next match.
-        w.setSelectionRange(start, start + len(change_text))
-        c.widgetWantsFocus(w)
-        # No redraws here: they would destroy the headline selection.
-        if self.in_headline:
-            # #2220: Let onHeadChanged handle undo, etc.
-            c.frame.tree.onHeadChanged(p, undoType='Change Headline')
-            # w will change after a redraw.
-            w = c.headline_wrapper(p)
-            if g.isTextWrapper(w):
-                # find-next and find-prev work regardless of insert point.
-                assert w
-                w.setSelectionRange(start, start + len(change_text))
-        else:
-            p.v.b = w.getAllText()
-            u.afterChangeBody(p, 'Change Body', bunch)
+        with u.change_node(p, 'change-selection'):
+            start, end = oldSel
+            change_text = self.change_text
+            # Perform regex substitutions of \1, \2, ...\9 in the change text.
+            if self.pattern_match and self.match_obj:
+                groups = self.match_obj.groups()
+                if groups:
+                    change_text = self.make_regex_subs(change_text, groups)
+            change_text = self.replace_back_slashes(change_text)
+            # Update both the gui widget and the work "widget"
+            new_ins = start if self.reverse else start + len(change_text)
+            if start != end:
+                w.delete(start, end)
+            w.insert(start, change_text)
+            w.setInsertPoint(new_ins)
+            self.work_s = w.getAllText()  # #2220.
+            self.work_sel = (new_ins, new_ins, new_ins)
+            # Update the selection for the next match.
+            w.setSelectionRange(start, start + len(change_text))
+            c.widgetWantsFocus(w)
+            # No redraws here: they would destroy the headline selection.
+            if self.in_headline:
+                # #2220: Let onHeadChanged handle undo, etc.
+                c.frame.tree.onHeadChanged(p, undoType='Change Headline')
+                # w will change after a redraw.
+                w = c.headline_wrapper(p)
+                if g.isTextWrapper(w):
+                    # find-next and find-prev work regardless of insert point.
+                    assert w
+                    w.setSelectionRange(start, start + len(change_text))
+            else:
+                p.v.b = w.getAllText()
 
-        if self.mark_changes and not p.isMarked():  # pragma: no cover
-            undoType = 'Mark Changes'
-            bunch = u.beforeMark(p, undoType)
-            p.setMarked()
-            p.setDirty()
-            u.afterMark(p, undoType, bunch)
-        return True
+            if self.mark_changes and not p.isMarked():  # pragma: no cover
+                p.setMarked()
+                p.setDirty()
+            return True
+            u.redraw(c.p)
 
     # @+node:ekr.20210110073117.31: *4* find.check_args
     def check_args(self, tag: str) -> bool:
@@ -2649,36 +2606,34 @@ class LeoFind:
             ok = self.compile_pattern()
             if not ok:
                 return fail
-        while p:
-            pos, newpos = self._fnm_search(p)
-            if pos is not None:
-                # Success.
-                if self.mark_finds and not p.isMarked():  # pragma: no cover
-                    undoType = 'Mark Finds'
-                    bunch = u.beforeMark(p, undoType)
-                    p.setMarked()
-                    p.setDirty()
-                    u.afterMark(p, undoType, bunch)
-                return p, pos, newpos
-            # Searching the pane failed: switch to another pane or node.
-            if self._fnm_should_stay_in_node(p):
-                # Switching panes is possible.  Do so.
-                self.in_headline = not self.in_headline
-                s = p.h if self.in_headline else p.b
-                ins = len(s) if self.reverse else 0
-                self.work_s = s
-                self.work_sel = (ins, ins, ins)
-            else:
-                # Switch to the next/prev node, if possible.
-                attempts += 1
-                if p := self._fnm_next_after_fail(p):  # type:ignore
-                    # Found another node: select the proper pane.
-                    self.in_headline = self._fnm_first_search_pane()
+        with u.change_outline('find-next-match'):
+            while p:
+                pos, newpos = self._fnm_search(p)
+                if pos is not None:
+                    # Success.
+                    if self.mark_finds and not p.isMarked():  # pragma: no cover
+                        p.setMarked()
+                        p.setDirty()
+                    return p, pos, newpos
+                # Searching the pane failed: switch to another pane or node.
+                if self._fnm_should_stay_in_node(p):
+                    # Switching panes is possible.  Do so.
+                    self.in_headline = not self.in_headline
                     s = p.h if self.in_headline else p.b
                     ins = len(s) if self.reverse else 0
                     self.work_s = s
                     self.work_sel = (ins, ins, ins)
-        return fail
+                else:
+                    # Switch to the next/prev node, if possible.
+                    attempts += 1
+                    if p := self._fnm_next_after_fail(p):  # type:ignore
+                        # Found another node: select the proper pane.
+                        self.in_headline = self._fnm_first_search_pane()
+                        s = p.h if self.in_headline else p.b
+                        ins = len(s) if self.reverse else 0
+                        self.work_s = s
+                        self.work_sel = (ins, ins, ins)
+            return fail
 
     # @+node:ekr.20131123132043.16476: *5* find._fnm_next_after_fail & helper
     def _fnm_next_after_fail(self, p: Position) -> Position | None:

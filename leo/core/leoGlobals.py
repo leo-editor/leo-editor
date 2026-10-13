@@ -88,8 +88,9 @@ isValidPython = python_version_tuple >= minimum_python_version_tuple
 isMac = sys.platform.startswith('darwin')
 isWindows = sys.platform.startswith('win')
 
-# Unit tests may override this switch.
-new_undoers = False  # True: use new undo code.
+# Retained for scripts/tests that used the migration switch. Core commands now
+# always use composable undo; the legacy API remains available for plugins.
+new_undoers: bool = True
 # @-<< leoGlobals: global constants >>
 # @+<< define g.binary_file_extensions >>
 # @+node:ekr.20260709184046.1: ** << define g.binary_file_extensions >>

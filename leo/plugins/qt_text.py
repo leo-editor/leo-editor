@@ -221,7 +221,7 @@ class QTextMixin:
             return
         i, j = p.v.selectionStart, p.v.selectionLength
         oldSel = (i, i + j)
-        c.undoer.doTyping(
+        c.undoer.type_text(
             p,
             'Typing',
             oldText,
@@ -675,7 +675,7 @@ if QtWidgets:
                     j = i + len(completion)
                     c.setChanged()
                     w.setInsertPoint(j)
-                    c.undoer.doTyping(
+                    c.undoer.type_text(
                         p,
                         'Typing',
                         oldText,
