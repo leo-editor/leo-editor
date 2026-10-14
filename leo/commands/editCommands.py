@@ -124,13 +124,12 @@ def delete_trace_statements(event: LeoKeyEvent | None = None) -> None:
 def mark_node_and_parents(event: LeoKeyEvent | None = None) -> list[Position]:
     """Mark the node and all its parents."""
     changed: list[Position] = []
-    tag = 'mark-node-and-parents'
     c = event.get('c') if event else None
     if not c:
         return changed
     c.endEditing()
     u = c.undoer
-    with u.change_outline(tag):
+    with u.change_outline('mark-node-and-parents'):
         for parent in c.p.self_and_parents():
             if not parent.isMarked():
                 parent.setMarked()
@@ -151,7 +150,6 @@ def promote_section_definition(event: LeoKeyEvent | None = None) -> None:
     Replace a section reference in an ancestor by c.p.b and delete c.p.
     """
     c = event.get('c') if event else None
-    tag = 'promote-section-definition'
     if not c:
         return
     c.endEditing()
@@ -169,7 +167,7 @@ def promote_section_definition(event: LeoKeyEvent | None = None) -> None:
 
     # Start the undo group.
     ref_p = parent
-    with u.change_outline(tag):
+    with u.change_outline('promote-section-definition'):
         # Change ref_p.b.
         new_ref_lines = []
         for line in g.splitLines(ref_p.b):
@@ -195,14 +193,14 @@ def merge_node_with_next_node(event: LeoKeyEvent | None = None) -> None:
     c = event.get('c') if event else None
     if not c:
         return
-    command, p, u, w = 'merge-node-with-next-node', c.p, c.undoer, c.frame.body.wrapper
+    p, u, w = c.p, c.undoer, c.frame.body.wrapper
     if not p or not p.b.strip() or p.hasChildren():
         return
     next = p.next()
     if not next:
         return
     # Outer undo.
-    with u.change_outline(command):
+    with u.change_outline('merge-node-with-next-node'):
         # Inner undo 1: change next.b.
         next.b = p.b.rstrip() + '\n\n' + next.b
         w.setAllText(next.b)
@@ -221,14 +219,14 @@ def merge_node_with_prev_node(event: LeoKeyEvent | None = None) -> None:
     c = event.get('c') if event else None
     if not c:
         return
-    command, p, u, w = 'merge-node-with-prev-node', c.p, c.undoer, c.frame.body.wrapper
+    p, u, w = c.p, c.undoer, c.frame.body.wrapper
     if not p or not p.b.strip() or p.hasChildren():
         return
     prev = p.back()
     if not prev:
         return
     # Outer undo.
-    with u.change_outline(command):
+    with u.change_outline('merge-node-with-prev-node'):
         # Inner undo 1: change prev.b.
         prev.b = prev.b.rstrip() + '\n\n' + p.b
         w.setAllText(prev.b)
@@ -516,10 +514,10 @@ class EditCommandsClass(BaseEditCommandsClass):
         frame = self
         c, p = frame.c, self.c.p
         if g.app.batchMode:
-            c.notValidInBatchMode("Insert Headline Time")
+            c.notValidInBatchMode('insert-headline-time')
             return
         w = c.frame.tree.headline_wrapper(p)
-        with c.undoer.change_outline('insertHeadlineTime'):
+        with c.undoer.change_outline('insert-headline-time'):
             if w and not g.app.inBridge:
                 # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1185933
                 # insert-headline-time should insert at cursor.
@@ -553,7 +551,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         c, p, u = frame.c, self.c.p, self.c.undoer
 
         if g.app.batchMode:
-            c.notValidInBatchMode("Capitalize Headline")
+            c.notValidInBatchMode('capitalize-headline')
             return
 
         h = p.h

@@ -72,7 +72,7 @@ def addComments(self: Self, event: LeoKeyEvent | None = None) -> None:
 def convertAllBlanks(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Convert all blanks to tabs in the selected outline."""
     c, u = self, self.undoer
-    undoType = 'Convert All Blanks'
+    undoType = 'convert-all-blanks'
     current = c.p
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
@@ -112,7 +112,7 @@ def convertAllTabs(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Convert all tabs to blanks in the selected outline."""
     c = self
     u = c.undoer
-    undoType = 'Convert All Tabs'
+    undoType = 'convert-all-tabs'
     current = c.p
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
@@ -359,7 +359,7 @@ def editHeadline(self: Self, event: LeoKeyEvent | None = None) -> None:
     c = self
     k, tree = c.k, c.frame.tree
     if g.app.batchMode:
-        c.notValidInBatchMode("Edit Headline")
+        c.notValidInBatchMode('edit-headline')
         return
     tree.editLabel(c.p)
     if k:
@@ -587,7 +587,7 @@ def findMatchingBracket(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Select the text between matching brackets."""
     c, p = self, self.p
     if g.app.batchMode:
-        c.notValidInBatchMode("Match Brackets")
+        c.notValidInBatchMode('match-brackets')
         return
     language = c.getLanguage(p)
 
@@ -698,11 +698,10 @@ def insertBodyTime(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Insert a time/date stamp at the cursor."""
     c, p, u = self, self.p, self.undoer
     w = c.frame.body.wrapper
-    undoType = 'Insert Body Time'
     if g.app.batchMode:
-        c.notValidInBatchMode(undoType)
+        c.notValidInBatchMode('insert-body-time')
         return
-    with u.change_node(p, undoType):
+    with u.change_node(p, 'insert-body-time'):
         w.deleteTextSelection()
         s = self.getTime(body=True)
         i = w.getInsertPoint()
@@ -1261,7 +1260,7 @@ def toggleAngleBrackets(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Add or remove double angle brackets from the headline of the selected node."""
     c, p, u = self, self.p, self.undoer
     if g.app.batchMode:
-        c.notValidInBatchMode("Toggle Angle Brackets")
+        c.notValidInBatchMode('toggle-angle-brackets')
         return
     c.endEditing()
     with u.change_node(p, 'toggle-angle-brackets'):

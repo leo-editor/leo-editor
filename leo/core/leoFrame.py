@@ -608,7 +608,7 @@ class LeoFrame:
         c = frame.c
         k = c.k
         if g.app.batchMode:
-            c.notValidInBatchMode("End Edit Headline")
+            c.notValidInBatchMode('end-edit-headline')
             return
         w = event and event.w or c.get_focus()  # #1413.
         w_name = g.app.gui.widget_name(w)

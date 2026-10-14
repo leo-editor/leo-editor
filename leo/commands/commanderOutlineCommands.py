@@ -1106,7 +1106,6 @@ def cloneToAtSpot(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     of the outline. Create the @spot node if necessary.
     """
     c, p, u = self, self.p, self.undoer
-    tag = 'clone-to-at-spot'
     if not p:
         return
     # 2015/12/27: fix bug 220: do not allow clone-to-at-spot on @spot node.
@@ -1116,7 +1115,7 @@ def cloneToAtSpot(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 
     # Start the undo Group.
     c.endEditing()  # Capture any changes to the headline.
-    with u.change_outline(tag):
+    with u.change_outline('clone-to-at-spot'):
         # Create the @spot node if necessary.
         created_last_spot = False
         last_spot = None
@@ -1603,7 +1602,7 @@ def moveOutlineDown(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         c.treeFocusHelper()
         return
     c.endEditing()
-    with u.change_position(p, 'Move Down'):
+    with u.change_position(p, 'Move Outline Down'):
         # @+<< Move p down & set moved if successful >>
         # @+node:ekr.20031218072017.1769: *4* << Move p down & set moved if successful >>
         if next.hasChildren() and next.isExpanded():
