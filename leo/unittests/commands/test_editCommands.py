@@ -4264,7 +4264,7 @@ class TestEditCommands(LeoUnitTest):
         s = c.helpCommands.pythonHelp1(event=None)
         self.assertTrue('Help on module os' in s)
 
-    # @+node:ekr.20210905064816.19: *4* TestEditCommands.xxx_test_undo_insert_node_before
+    # @+node:ekr.20210905064816.19: *4* TestEditCommands.test_undo_insert_node_before
     def test_undo_insert_node_before(self):
 
         # This method's name should *not* start with 'test'.
