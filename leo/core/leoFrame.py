@@ -535,7 +535,6 @@ class LeoFrame:
         s = w.get(i, j)
         w.delete(i, j)
         w.see(i)
-        ### new_sel = (i, i)  ###
         s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
         g.app.gui.replaceClipboardWith(s)
         if c.widget_name(w).startswith('body'):
