@@ -3079,7 +3079,8 @@ class Undoer:
             and p == c.hoistStack[-1].p
         ):
             if index is None:
-                index = p.numberOfChildren() if c.config.getBool('insert-new-nodes-at-end') else 0
+                insert_at_end = c.config.getBool('insert-new-nodes-at-end')
+                index = p.numberOfChildren() if insert_at_end else 0
             new_p = p.insertAsNthChild(index)
         else:
             new_p = p.insertAfter()
@@ -3159,14 +3160,13 @@ class Undoer:
             g.error(f"Not a text wrapper: {w=} {g.callers()}")
             return
 
-        # g.trace(new_p.h, g.callers())
         new_p = new_p.copy()
         if old_body is None:
             old_body = new_p.b
         if old_body == new_body:
             return
 
-        def update_p(p: Position, body: str) -> None:
+        def set_body_update(p: Position, body: str) -> None:
             """Update p's data."""
             # Set p.v.b, not p.b! The p.b setter clears the selection!
             p.v.b = body
@@ -3174,22 +3174,22 @@ class Undoer:
             val = p.computeIcon()
             if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
                 p.v.iconVal = val
+            c.recolor(p)
 
         # Do the action!
-        update_p(new_p, new_body)
+        set_body_update(new_p, new_body)
         if c.p == new_p and w.getAllText() != new_body:
             sel, ins = w.getSelectionRange(), w.getInsertPoint()
             w.setAllText(new_body)
             w.setSelectionRange(*sel, insert=ins)
-        c.recolor(new_p)
 
-        # Add helpers.
+        # Add helpers. Use distinct names for debugging.
 
         def set_body_redoer() -> None:
-            update_p(new_p, new_body)
+            set_body_update(new_p, new_body)
 
         def set_body_undoer() -> None:
-            update_p(new_p, old_body)
+            set_body_update(new_p, old_body)
 
         b.add_helpers(set_body_redoer, set_body_undoer, vnode=new_p.v)
 
