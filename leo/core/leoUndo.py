@@ -254,10 +254,12 @@ class UndoBead:
     # @-others
 
 
-# @+node:vivainio.202610110002.1: ** class TypingBead
+# @+node:vivainio.202610110002.1: ** class TypingBead(UndoBead)
 class TypingBead(UndoBead):
     """An incremental text patch, independent of the legacy Undoer ivars."""
 
+    # @+others
+    # @+node:ekr.20261014100558.1: *3* def __init__
     def __init__(self, undoer, p, old_text, new_text, old_sel, new_sel, new_ins, scroll):
         super().__init__(undoer)
         self.command_name = self.undoType = 'Typing'
@@ -269,6 +271,7 @@ class TypingBead(UndoBead):
         self.marked = p.isMarked()
         self.update_patch(old_text, new_text)
 
+    # @+node:ekr.20261014100625.1: *3* def split_patch
     @staticmethod
     def split_patch(old_text, new_text):
         old, new = old_text.split('\n'), new_text.split('\n')
@@ -288,17 +291,20 @@ class TypingBead(UndoBead):
             new[leading : len(new) - trailing],
         )
 
+    # @+node:ekr.20261014100625.2: *3* def update_patch
     def update_patch(self, old_text, new_text):
         self.leading, self.trailing, self.old_lines, self.new_lines = self.split_patch(
             old_text, new_text
         )
 
+    # @+node:ekr.20261014100625.3: *3* def replace_middle
     def replace_middle(self, text, middle):
         lines = text.split('\n')
         return '\n'.join(
             lines[: self.leading] + middle + (lines[-self.trailing :] if self.trailing else [])
         )
 
+    # @+node:ekr.20261014100625.4: *3* def apply
     def apply(self, middle, sel, ins):
         c, p = self.c, self.p
         if c.p != p:
@@ -317,17 +323,22 @@ class TypingBead(UndoBead):
         c.recolor(p)
         c.setChanged()
 
+    # @+node:ekr.20261014100625.5: *3* def undo
     def undo(self):
         self.apply(self.old_lines, self.old_sel, self.old_sel[1] if self.old_sel else None)
 
+    # @+node:ekr.20261014100625.6: *3* def redo
     def redo(self):
         self.apply(self.new_lines, self.new_sel, self.new_ins)
 
+    # @+node:ekr.20261014100625.7: *3* def get
     def get(self, key, default=None):
         # Legacy doTyping must not try to extend a new-style typing bead.
         if key == 'kind':
             return 'new-typing'
         return super().get(key) or default
+
+    # @-others
 
 
 # @+node:ekr.20031218072017.3605: ** class Undoer
@@ -341,7 +352,7 @@ class Undoer:
         if self.undoBeadLevel == 0:
             self.undoBead = UndoBead(self)
         self.undoBeadLevel += 1
-        if 1:  ###
+        if 0:  ###
             lead_in = '\n' if self.undoBeadLevel == 1 else ''
             s = g.callers(20)
             i = s.find(',test_')
