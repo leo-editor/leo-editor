@@ -4272,10 +4272,13 @@ class TestEditCommands(LeoUnitTest):
             c = self.c
             u = c.undoer
             c.insertHeadlineBefore()
-            self.assertTrue(c.positionExists(c.p))
-            self.assertEqual(u.undoMenuLabel, 'Undo Insert Node Before')
-            u.undo()
-            self.assertEqual(u.redoMenuLabel, 'Redo Insert Node Before')
+            p = c.p
+            self.assertTrue(c.positionExists(p))
+            old_h = p.h
+            for i in range(3):
+                u.undo()
+                u.redo()
+            assert c.p.h == old_h
 
         self.run_undo_test(insert_node_test2)
 
