@@ -205,12 +205,12 @@ class UndoBead:
     def redo(self) -> None:
         c = self.c
         for f in self.redo_functions:
-            # g.trace('redoer:', f.__name__)
+            g.trace('redoer:', f.__name__)
             f()
         if self.redraw_finishers:
             self.redraw_finishers[0]()
         for f in self.redo_finishers:
-            # g.trace('finisher:', f.__name__)
+            g.trace('finisher:', f.__name__)
             f()
         c.setChanged()  # Elegant!
 
@@ -241,12 +241,14 @@ class UndoBead:
     def undo(self) -> None:
         c = self.c
         for f in self.undo_functions:
-            # g.trace('undoer:', f.__name__)
+            if not g.unitTesting:
+                g.trace('undoer:', f.__name__)
             f()
         if self.redraw_finishers:
             self.redraw_finishers[1]()
         for f in self.undo_finishers:
-            # g.trace('undo finisher:', f.__name__)
+            if not g.unitTesting:
+                g.trace('undo finisher:', f.__name__)
             f()
         # A save may have occurred since this bead was created.
         c.setChanged()
@@ -259,7 +261,7 @@ class TypingBead(UndoBead):
     """An incremental text patch, independent of the legacy Undoer ivars."""
 
     # @+others
-    # @+node:ekr.20261014100558.1: *3* def __init__
+    # @+node:ekr.20261014100558.1: *3* TypingBead.__init__
     def __init__(self, undoer, p, old_text, new_text, old_sel, new_sel, new_ins, scroll):
         super().__init__(undoer)
         self.command_name = self.undoType = 'Typing'
@@ -271,7 +273,7 @@ class TypingBead(UndoBead):
         self.marked = p.isMarked()
         self.update_patch(old_text, new_text)
 
-    # @+node:ekr.20261014100625.1: *3* def split_patch
+    # @+node:ekr.20261014100625.1: *3* TypingBead.split_patch
     @staticmethod
     def split_patch(old_text, new_text):
         old, new = old_text.split('\n'), new_text.split('\n')
@@ -291,20 +293,20 @@ class TypingBead(UndoBead):
             new[leading : len(new) - trailing],
         )
 
-    # @+node:ekr.20261014100625.2: *3* def update_patch
+    # @+node:ekr.20261014100625.2: *3* TypingBead.update_patch
     def update_patch(self, old_text, new_text):
         self.leading, self.trailing, self.old_lines, self.new_lines = self.split_patch(
             old_text, new_text
         )
 
-    # @+node:ekr.20261014100625.3: *3* def replace_middle
+    # @+node:ekr.20261014100625.3: *3* TypingBead.replace_middle
     def replace_middle(self, text, middle):
         lines = text.split('\n')
         return '\n'.join(
             lines[: self.leading] + middle + (lines[-self.trailing :] if self.trailing else [])
         )
 
-    # @+node:ekr.20261014100625.4: *3* def apply
+    # @+node:ekr.20261014100625.4: *3* TypingBead.apply
     def apply(self, middle, sel, ins):
         c, p = self.c, self.p
         if c.p != p:
@@ -323,15 +325,15 @@ class TypingBead(UndoBead):
         c.recolor(p)
         c.setChanged()
 
-    # @+node:ekr.20261014100625.5: *3* def undo
+    # @+node:ekr.20261014100625.5: *3* TypingBead.undo
     def undo(self):
         self.apply(self.old_lines, self.old_sel, self.old_sel[1] if self.old_sel else None)
 
-    # @+node:ekr.20261014100625.6: *3* def redo
+    # @+node:ekr.20261014100625.6: *3* TypingBead.redo
     def redo(self):
         self.apply(self.new_lines, self.new_sel, self.new_ins)
 
-    # @+node:ekr.20261014100625.7: *3* def get
+    # @+node:ekr.20261014100625.7: *3* TypingBead.get
     def get(self, key, default=None):
         # Legacy doTyping must not try to extend a new-style typing bead.
         if key == 'kind':
@@ -3113,6 +3115,7 @@ class Undoer:
     def redraw(self, new_p: Position | None = None, contract: bool = False) -> None:
         """Redraw now and choose the command's single undo/redo redraw."""
         c = self.c
+        g.trace()  ###
         new_p = new_p or c.p
         w = c.frame.body.wrapper
         preserve_body = new_p == c.p and w.getAllText() == new_p.b
@@ -3174,10 +3177,13 @@ class Undoer:
             val = p.computeIcon()
             if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
                 p.v.iconVal = val
-            c.recolor(p)
+            c.recolor(p)  # Only for QScintilla.
+
+        g.trace()
 
         # Do the action!
         set_body_update(new_p, new_body)
+
         if c.p == new_p and w.getAllText() != new_body:
             sel, ins = w.getSelectionRange(), w.getInsertPoint()
             w.setAllText(new_body)
