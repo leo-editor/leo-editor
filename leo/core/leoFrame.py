@@ -516,7 +516,7 @@ class LeoFrame:
 
     OnCopyFromMenu = copyText
 
-    # @+node:ekr.20070130115927.6: *5* LeoFrame.cutText (always uses new undoers)
+    # @+node:ekr.20070130115927.6: *5* LeoFrame.cutText
     @frame_cmd('cut-text')
     def cutText(self, event: LeoKeyEvent | None = None) -> None:
         """Invoked from the mini-buffer and from shortcuts."""
@@ -547,7 +547,7 @@ class LeoFrame:
 
     OnCutFromMenu = cutText
 
-    # @+node:ekr.20070130115927.7: *5* LeoFrame.pasteText (always uses new undoers)
+    # @+node:ekr.20070130115927.7: *5* LeoFrame.pasteText
     @frame_cmd('paste-text')
     def pasteText(self, event: LeoKeyEvent | None = None, middleButton: bool = False) -> None:
         """

@@ -3536,9 +3536,8 @@ class LeoServer:
         if h == oldH:
             return self._make_response()
         with u.change_node(p, 'Change Headline'):
-            c.setHeadString(
-                p, h
-            )  # c.setHeadString fixes the headline revert bug of p.initHeadString(h)
+            # c.setHeadString fixes the headline revert bug of p.initHeadString(h)
+            c.setHeadString(p, h)
             c.setChanged()
             p.setDirty()
             return self._make_response()
