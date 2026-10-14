@@ -233,7 +233,7 @@ def deletenodes_rclick(c: Cmdr, p: Position, menu: LeoQtMenu) -> None:
         c.redraw()
 
     # @-<< define deletenodes_rclick_cb >>
-    action = menu.addAction("Delete Node")
+    action = menu.addAction(undoType)
     action.triggered.connect(deletenodes_rclick_cb)
 
 

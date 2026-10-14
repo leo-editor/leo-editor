@@ -557,8 +557,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
 
         h = p.h
-        undoType = 'capitalize-headline'
-        with u.change_node(p, undoType):
+        with u.change_node(p, 'capitalize-headline'):
             words = [w.capitalize() for w in h.split()]
             capitalized = ' '.join(words)
             if capitalized != h:
@@ -688,9 +687,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         s = w.getAllText()
         if not s:
             return
-
-        undoType = 'capitalize-body-words'
-        with u.change_node(p, undoType):
+        with u.change_node(p, 'capitalize-body-words'):
             i, j = w.getSelectionRange()
             if i == j:
                 sel = ''
@@ -894,7 +891,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         line = s[i:j].strip()
         if not line or len(line) >= fillColumn:
             return
-        self.beginCommand(w, undoType='center-line')
+        self.beginCommand(w, 'center-line')
         n = (fillColumn - len(line)) / 2
         ws = ' ' * int(n)  # mypy.
         k = g.skip_ws(s, i)
@@ -941,7 +938,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             fillColumn = self.fillColumn
         else:
             fillColumn = c.getPageWidth(c.p)
-        self.beginCommand(w, undoType='center-region')
+        self.beginCommand(w, 'center-region')
         inserted = 0
         while ind < end:
             s = w.getAllText()
@@ -1477,7 +1474,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         line = s[i:j]
         line2 = s[i:j].lstrip()
         if delta := len(line) - len(line2):
-            self.beginCommand(w, undoType='delete-indentation')
+            self.beginCommand(w, 'delete-indentation')
             w.delete(i, j)
             w.insert(i, line2)
             ins -= delta
@@ -1662,7 +1659,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         ins = w.getInsertPoint()
         i, j = w.getSelectionRange()
         if wname.startswith('body'):
-            self.beginCommand(w, undoType='Typing')
+            self.beginCommand(w, 'Typing')
             changed = True
             try:
                 tab_width = c.getTabWidth(c.p)
@@ -1765,7 +1762,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 lines.append('\n')
         result = ''.join(lines)
         if s != result:
-            self.beginCommand(w, undoType='clean-lines')
+            self.beginCommand(w, 'clean-lines')
             w.delete(0, w.getLastIndex())
             w.insert(0, result)
             w.setInsertPoint(0)
@@ -1782,7 +1779,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         i, j = w.getSelectionRange()
         if i == j:
             return
-        self.beginCommand(w, undoType='clear-selected-text')
+        self.beginCommand(w, 'clear-selected-text')
         w.delete(i, j)
         w.setInsertPoint(i)
         self.endCommand(changed=True, setLabel=True)
@@ -1817,7 +1814,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, undoType="delete-word")
+        self.beginCommand(w, "delete-word")
         if w.hasSelection():
             from_pos, to_pos = w.getSelectionRange()
         else:
@@ -1842,7 +1839,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if wname.startswith('body'):
             s = w.getAllText()
             i, j = w.getSelectionRange()
-            self.beginCommand(w, undoType='delete-char')
+            self.beginCommand(w, 'delete-char')
             changed = True
             if i != j:
                 w.delete(i, j)
@@ -1873,7 +1870,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        undoType = 'insert-space' if insertspace else 'delete-spaces'
         s = w.getAllText()
         ins = w.getInsertPoint()
         i, j = g.getLine(s, ins)
@@ -1885,7 +1881,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         while w2 <= j and s[w2].isspace():
             w2 += 1
         if s[w1:w2]:  # spaces.
-            self.beginCommand(w, undoType=undoType)
+            self.beginCommand(w, 'insert-space' if insertspace else 'delete-spaces')
             if insertspace:
                 s = s[:w1] + ' ' + s[w2:]
             else:
@@ -3497,7 +3493,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, undoType='backward-kill-paragraph')
+        self.beginCommand(w, 'backward-kill-paragraph')
         try:
             self.backwardParagraphHelper(event, extend=True)
             i, j = w.getSelectionRange()
@@ -4144,10 +4140,10 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('clear-all-uas')
     def clearAllUas(self, event: LeoKeyEvent | None = None) -> None:
         """Clear all uAs in the entire outline."""
-        c, u, undoType = self.c, self.c.undoer, 'clear-all-uas'
+        c, u = self.c, self.c.undoer
         # #1276.
         changed = False
-        with u.change_outline(undoType):
+        with u.change_outline('clear-all-uas'):
             for p in c.all_unique_positions():
                 if p.v.u:
                     if not changed:  # #4443

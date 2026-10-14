@@ -4350,8 +4350,7 @@ class Commands:
     def dragCloneToNthChildOf(self, p: Position, parent: Position, n: int) -> None:
         c = self
         u = c.undoer
-        undoType = 'Clone Drag'
-        with u.change_outline(undoType):
+        with u.change_outline('Clone Drag'):
             clone = p.clone()  # Creates clone & dependents, does not set undo.
             if not c.checkDrag(p, parent) or not c.checkMoveWithParentWithWarning(
                 clone, parent, True
@@ -4370,8 +4369,7 @@ class Commands:
     def dragCloneAfter(self, p: Position, after: Position) -> None:
         c = self
         u = c.undoer
-        undoType = 'Clone Drag'
-        with u.change_outline(undoType):
+        with u.change_outline('Clone Drag'):
             clone = p.clone()  # Creates clone.  Does not set undo.
             assert clone.v
             if c.checkDrag(p, after) and c.checkMoveWithParentWithWarning(
@@ -5456,9 +5454,8 @@ class Commands:
         returns the final position ('baz' in the above example)
         """
         u = self.undoer
-        undoType = 'Create Node Hierarchy'
         parent or self.rootPosition()
-        with u.change_outline(undoType):
+        with u.change_outline('Create Node Hierarchy'):
             changed_node = False
             for idx, head in enumerate(heads):
                 # if parent = None, create top level node for first head
@@ -5492,7 +5489,7 @@ class Commands:
         *Undoably* delete all vnodes corresponding to the positions in aList.
         """
         c = self
-        u, undoType = c.undoer, 'c.deletePositionsInList'
+        u = c.undoer
         root = c.rootPosition()
 
         # Ensure all positions are valid.
@@ -5518,7 +5515,7 @@ class Commands:
                         delete(child)
 
         # The main line. Start the recursion with the top-level nodes.
-        with u.change_outline(undoType):
+        with u.change_outline('c.deletePositionsInList'):
             to_do: list[Position] = list(reversed(list(root.self_and_siblings())))
             while to_do:
                 p = to_do.pop()

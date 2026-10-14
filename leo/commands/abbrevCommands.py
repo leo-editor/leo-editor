@@ -161,7 +161,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         This happens *before* any substitutions are made.
         """
         c = self.c
-        u, undoType = c.undoer, 'Expand Tree Abbreviation'
+        u = c.undoer
         if c.p.hasChildren():
             g.es_print('tree abbreviations must not have children', color='blue')
             return
@@ -170,7 +170,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             return
 
         # Begin the undo.
-        with u.change_outline(undoType):
+        with u.change_outline('Expand Tree Abbreviation'):
             self.replace_selection(i, j, '')
 
             # Set status flags.

@@ -191,10 +191,10 @@ class CPrettyPrinter:
     # @+node:ekr.20191104195610.1: *3* cpp.pretty_print_tree
     def pretty_print_tree(self, p: Position) -> None:
         c = self.c
+        u = c.undoer
         if should_kill_beautify(p):
             return
-        u, undoType = c.undoer, 'beautify-c'
-        with u.change_outline(undoType):
+        with u.change_outline('beautify-c'):
             changed = False
             for p in c.p.self_and_subtree():
                 if c.getLanguage(p) == "c":

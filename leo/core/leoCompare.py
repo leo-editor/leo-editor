@@ -505,9 +505,8 @@ class CompareLeoOutlines:
         if len(aList) < 2:
             g.trace('Not enough files in', repr(aList))
             return
-        undoType = 'diff-files'
         c.selectPosition(c.lastTopLevel())
-        with u.change_outline(undoType):
+        with u.change_outline('diff-files'):
             self.root = self.create_root(aList)
             self.visible = visible
             while len(aList) > 1:
@@ -713,13 +712,12 @@ def diffMarkedNodes(event: LeoKeyEvent | None = None) -> None:
     if not c:
         return
     u = c.undoer
-    undoType = 'diff-marked-nodes'
     aList = [z for z in c.all_unique_positions() if z.isMarked()]
     if len(aList) < 2:
         g.es_print('Please mark at least 2 nodes')
         return
     c.selectPosition(c.lastTopLevel())
-    with u.change_outline(undoType):
+    with u.change_outline('diff-marked-nodes'):
         root = c.lastTopLevel().insertAfter()
         root.h = 'diff marked nodes'
         root.b = '\n'.join([z.h for z in aList]) + '\n'

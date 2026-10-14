@@ -396,7 +396,7 @@ def extract(self: Self, event: LeoKeyEvent | None = None) -> None:
     """
     # @-<< docstring for extract command >>
     c, u, w = self, self.undoer, self.frame.body.wrapper
-    undoType = 'Extract'
+
     # Set data.
     head, lines, tail, oldSel, oldYview = c.getBodyLines()
     if not lines:
@@ -423,7 +423,7 @@ def extract(self: Self, event: LeoKeyEvent | None = None) -> None:
         h, b, middle = lines[0].strip(), lines[1:], ''
 
     # Start the outer undo group.
-    with u.change_outline(undoType):
+    with u.change_outline('Extract'):
         p = createFirstChildNode(c, c.p, h, ''.join(b))
 
         # Start inner undo.
@@ -539,14 +539,13 @@ def extractSectionNames(self: Self, event: LeoKeyEvent | None = None) -> None:
     c = self
     current = c.p
     u = c.undoer
-    undoType = 'Extract Section Names'
     body = c.frame.body
     head, lines, tail, oldSel, oldYview = c.getBodyLines()
     if not lines:
         g.warning('No lines selected')
         return
     found = False
-    with u.change_outline(undoType):
+    with u.change_outline('Extract Section Names'):
         for s in lines:
             if name := findSectionName(c, s):
                 p = createFirstChildNode(c, current, name, '')
@@ -737,14 +736,13 @@ def line_to_headline(self: Self, event: LeoKeyEvent | None = None) -> None:
     Cut the selected line and make it the new node's headline
     """
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
-    undoType = 'line-to-headline'
     ins, s = w.getInsertPoint(), p.b
     i = g.find_line_start(s, ins)
     j = g.skip_line(s, i)
     line = s[i:j].strip()
     if not line:
         return
-    with u.change_outline(undoType):
+    with u.change_outline('line-to-headline'):
         # Start outer undo.
         p2 = p.insertAsLastChild()
         p2.h = line

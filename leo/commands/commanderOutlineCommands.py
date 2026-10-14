@@ -1452,9 +1452,8 @@ def createMoveMarkedNode(c: Cmdr) -> Position:
 def markChangedHeadlines(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Mark all nodes that have been changed."""
     c, _current, u = self, self.p, self.undoer
-    undoType = 'Mark Changed'
     c.endEditing()
-    with u.change_outline(undoType):
+    with u.change_outline('Mark Changed'):
         for p in c.all_unique_positions():
             if p.isDirty() and not p.isMarked():
                 # c.setMarked calls a hook.
@@ -1469,9 +1468,8 @@ def markChangedHeadlines(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 def markChangedRoots(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Mark all changed @root nodes."""
     c, _current, u = self, self.p, self.undoer
-    undoType = 'Mark Changed'
     c.endEditing()
-    with u.change_outline(undoType):
+    with u.change_outline('Mark Changed'):
         for p in c.all_unique_positions():
             if p.isDirty() and not p.isMarked():
                 s = p.b
@@ -1493,8 +1491,7 @@ def markHeadline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     if not p:
         return
     c.endEditing()
-    undoType = 'Unmark' if p.isMarked() else 'Mark'
-    with u.change_node(p, undoType):
+    with u.change_node(p, 'Unmark' if p.isMarked() else 'Mark'):
         # c.set/clearMarked call a hook.
         if p.isMarked():
             c.clearMarked(p)
@@ -1509,11 +1506,10 @@ def markHeadline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 def markSubheads(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Mark all children of the selected node as changed."""
     c, current, u = self, self.p, self.undoer
-    undoType = 'Mark Subheads'
     if not current:
         return
     c.endEditing()
-    with u.change_outline(undoType):
+    with u.change_outline('Mark Subheads'):
         for p in current.children():
             if not p.isMarked():
                 c.setMarked(p)  # Calls a hook.
@@ -1526,13 +1522,12 @@ def markSubheads(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 def unmarkAll(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Unmark all nodes in the entire outline."""
     c, current, u = self, self.p, self.undoer
-    undoType = 'Unmark All'
     if not current:
         return
     c.endEditing()
     changed = False
     p = None  # To keep pylint happy.
-    with u.change_outline(undoType):
+    with u.change_outline('Unmark All'):
         for p in c.all_unique_positions():
             if p.isMarked():
                 # c.clearMarked(p) # Very slow: calls a hook.

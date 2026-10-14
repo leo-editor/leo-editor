@@ -853,10 +853,9 @@ def flattenOutlineToNode(self: Self, event: LeoKeyEvent | None = None) -> None:
     body text of a new (last) top-level node.
     """
     c, root, u = self, self.p, self.undoer
-    undoType = 'flatten-outline-to-node'
     if not root.hasChildren():
         return
-    with u.change_outline(undoType):
+    with u.change_outline('flatten-outline-to-node'):
         aList = []
         for p in root.self_and_subtree():
             if p.b.strip():
@@ -1013,7 +1012,6 @@ def readFileIntoNode(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Read a file into a single node."""
     c = self
     u = c.undoer
-    undoType = 'Read File Into Node'
     c.endEditing()
     filetypes = [
         ("All files", "*"),
@@ -1031,7 +1029,7 @@ def readFileIntoNode(self: Self, event: LeoKeyEvent | None = None) -> None:
     g.chdir(fileName)
     s = '@nocolor\n' + s
     w = c.frame.body.wrapper
-    with u.change_outline(undoType):
+    with u.change_outline('Read File Into Node'):
         p = c.p.insertAfter()
         p.setHeadString('@read-file-into-node ' + fileName)
         p.setBodyString(s)
