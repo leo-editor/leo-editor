@@ -5386,20 +5386,21 @@ class Commands:
                     for p2 in p.self_and_subtree(copy=False):
                         seen.add(p2.v)
                 clones.append(p.copy())
-        with u.change_outline(undoType):
-            if clones:
-                root = c.createCloneFindPredicateRoot(flatten, undoType)
-                for p in clones:
-                    # Create the clone directly as a child of found.
-                    p2 = p.copy()
-                    n = root.numberOfChildren()
-                    p2._linkCopiedAsNthChild(root, n)
-                c.selectPosition(root)
-                c.setChanged()
-                c.contractAllHeadlines()
-                root.expand()
-            elif failMsg:
+        if not clones:
+            if failMsg:
                 g.es(failMsg, color='red')
+            return None
+        with u.change_outline(undoType):
+            root = c.createCloneFindPredicateRoot(flatten, undoType)
+            for p in clones:
+                # Create the clone directly as a child of found.
+                p2 = p.copy()
+                n = root.numberOfChildren()
+                p2._linkCopiedAsNthChild(root, n)
+            c.selectPosition(root)
+            c.setChanged()
+            c.contractAllHeadlines()
+            root.expand()
             return root
 
     # @+node:ekr.20160304054950.1: *5* c.setCloneFindByPredicateIcon

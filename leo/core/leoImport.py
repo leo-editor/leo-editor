@@ -2054,26 +2054,27 @@ class TabImporter:
     def import_files(self, files: list[str]) -> None:
         """Import a list of tab-delimited files."""
         c, u = self.c, self.c.undoer
+        if not files:
+            return
         with u.change_outline('Import Tabbed File'):
-            if files:
-                p = None
-                for fn in files:
-                    try:
-                        g.setGlobalOpenDir(fn)
-                        s = open(fn).read()
-                        s = s.replace('\r', '')
-                    except Exception:
-                        continue
-                    if s.strip() and self.check(g.splitLines(s)):
-                        last = c.lastTopLevel()
-                        self.root = p = last.insertAfter()
-                        self.scan(s)
-                        p.h = g.shortFileName(fn)
-                        p.contract()
-                        p.setDirty()
-                    if p:
-                        c.setChanged()
-                        u.redraw(p)
+            p = None
+            for fn in files:
+                try:
+                    g.setGlobalOpenDir(fn)
+                    s = open(fn).read()
+                    s = s.replace('\r', '')
+                except Exception:
+                    continue
+                if s.strip() and self.check(g.splitLines(s)):
+                    last = c.lastTopLevel()
+                    self.root = p = last.insertAfter()
+                    self.scan(s)
+                    p.h = g.shortFileName(fn)
+                    p.contract()
+                    p.setDirty()
+                if p:
+                    c.setChanged()
+                    u.redraw(p)
 
     # @+node:ekr.20161006071801.4: *3* tabbed.lws
     def lws(self, s: str) -> str:
