@@ -103,6 +103,19 @@ class UndoBead:
         self.undo_functions: list[Callable] = []
         self.undoer = undoer
 
+    # @+node:ekr.20261014182326.1: *3* undoBead.add_redraw_finishers
+    def add_redraw_finishers(
+        self,
+        redo_redraw_finisher: Callable,
+        undo_redraw_finisher: Callable,
+    ) -> None:
+
+        if self.redraw_finishers is not None:
+            print()
+            g.trace(f"u.redraw_finishers already exist: {g.callers()=}\n")
+
+        self.redraw_finishers = redo_redraw_finisher, undo_redraw_finisher
+
     # @+node:ekr.20261010164513.1: *3* undoBead.add_recolor
     def add_recolor(self, new_p: Position, old_p: Position) -> None:
 
@@ -138,7 +151,7 @@ class UndoBead:
                 old_p.contract()
             c.redraw(old_p if c.positionExists(old_p) else self.old_p)
 
-        self.redraw_finishers = redraw_redoer, redraw_undoer
+        self.add_redraw_finishers(redraw_redoer, redraw_undoer)
 
     # @+node:ekr.20261010150247.10: *3* undoBead.add_redraw_and_edit
     def add_redraw_and_edit(
@@ -153,37 +166,41 @@ class UndoBead:
         new_p = new_p.copy()
         old_p = old_p.copy()
 
-        def redraw_and_edit_redoer() -> None:
+        def redraw_and_edit_redoer_finiser() -> None:
             c.redrawAndEdit(new_p if c.positionExists(new_p) else c.p, selectAll=select_all)
 
-        def redraw_and_edit_undoer() -> None:
+        def redraw_and_edit_undoer_finisher() -> None:
             if contract:
                 old_p.contract()
             c.redrawAndEdit(old_p if c.positionExists(old_p) else self.old_p, selectAll=select_all)
 
-        self.redraw_finishers = redraw_and_edit_redoer, redraw_and_edit_undoer
+        self.add_redraw_finishers(redraw_and_edit_redoer_finiser, redraw_and_edit_undoer_finisher)
 
     # @+node:ekr.20261011192651.1: *3* undoBead.add_redraw_after_head_changed
     def add_redraw_after_head_changed(self) -> None:
 
         c = self.c
 
-        # A single callback suffices.
-        def redraw_after_head_changed_callback() -> None:
+        # A single finisher suffices.
+        def redraw_after_head_changed_finisher() -> None:
             c.redraw_after_head_changed()
 
-        self.redraw_finishers = (
-            redraw_after_head_changed_callback,
-            redraw_after_head_changed_callback,
+        self.add_redraw_finishers(
+            redraw_after_head_changed_finisher, redraw_after_head_changed_finisher
         )
 
     # @+node:ekr.20261011185637.1: *3* undoBead.check_undo
     def check_undo(self) -> None:
         """Perform an important sanity check."""
+        tag = 'UndoBead.undo'
         c = self.c
         old_p = self.old_p
         if old_p != c.p:
-            message = f"\nUndoBead.und: Bad c.p\n  {c.p.h=}\n{old_p.h=}\n{g.callers()=}\n"
+            message = f"{tag}: Bad c.p\n  {c.p.h=}\n{old_p.h=}\n{g.callers()=}\n"
+            print()
+            g.trace(message)
+        if len(self.redraw_finishers) != 2:
+            message = f"{tag}: Bad redraw_finishers. {g.callers()=}\n"
             print()
             g.trace(message)
 
