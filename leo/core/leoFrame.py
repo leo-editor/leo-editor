@@ -538,11 +538,11 @@ class LeoFrame:
         s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
         g.app.gui.replaceClipboardWith(s)
         if c.widget_name(w).startswith('body'):
-            g.trace()  ###
             with c.undoer as u:
                 u.set_command_name('cut-text')
                 u.set_body(p, new_body=w.getAllText())
                 u.set_selection_range(old_ins, old_sel)
+                u.redraw(p)
 
         # Otherwise, the headline has not yet offcially changed.
 
@@ -583,11 +583,11 @@ class LeoFrame:
         w.see(new_ins + 2)
         w.setSelectionRange(new_ins, new_ins, insert=new_ins)
         if wname.startswith('body'):
-            g.trace()  ###
             with c.undoer as u:
                 u.set_command_name('paste-text')
                 u.set_body(p, new_body=w.getAllText())
                 u.set_selection_range(old_ins, old_sel)
+                u.redraw(p)
 
         if hasattr(w, 'getXScrollPosition'):
             w.setXScrollPosition(x_pos)

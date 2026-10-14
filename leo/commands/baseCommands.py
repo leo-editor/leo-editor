@@ -90,6 +90,7 @@ class BaseEditCommandsClass:
                         old_y_scroll=bunch.oldYScroll,
                         new_y_scroll=w.getYScrollPosition(),
                     )
+                    u.redraw(p)
         self.undoData = None
         k.clearState()
         # Warning: basic editing commands **must not** set the label.

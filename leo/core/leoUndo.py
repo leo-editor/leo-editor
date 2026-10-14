@@ -205,12 +205,12 @@ class UndoBead:
     def redo(self) -> None:
         c = self.c
         for f in self.redo_functions:
-            g.trace('redoer:', f.__name__)
+            # g.trace('redoer:', f.__name__)
             f()
         if self.redraw_finishers:
             self.redraw_finishers[0]()
         for f in self.redo_finishers:
-            g.trace('finisher:', f.__name__)
+            # g.trace('finisher:', f.__name__)
             f()
         c.setChanged()  # Elegant!
 
@@ -241,14 +241,12 @@ class UndoBead:
     def undo(self) -> None:
         c = self.c
         for f in self.undo_functions:
-            if not g.unitTesting:
-                g.trace('undoer:', f.__name__)
+            # g.trace('undoer:', f.__name__)
             f()
         if self.redraw_finishers:
             self.redraw_finishers[1]()
         for f in self.undo_finishers:
-            if not g.unitTesting:
-                g.trace('undo finisher:', f.__name__)
+            # g.trace('undo finisher:', f.__name__)
             f()
         # A save may have occurred since this bead was created.
         c.setChanged()
@@ -550,7 +548,6 @@ class Undoer:
         c, u = self.c, self
 
         # PR #4996: Remove dependency on c.deleteOutline.
-        # g.trace(f"{u.p.h=}")  # Not covered by unit tests.
 
         # c.selectPosition(u.p)
         p = u.p
@@ -614,7 +611,6 @@ class Undoer:
         c = u.c
 
         # PR #4996: Remove dependency on c.deleteOutline.
-        # g.trace(f"{u.newP.h=}")  # Not covered by unit tests.
 
         # c.selectPosition(u.p)
         # c.deleteMarked()
@@ -636,7 +632,6 @@ class Undoer:
         newP = u.newP.copy() if u.newP else c.p
 
         # PR #4996: Remove dependency on c.deleteOutline.
-        # g.trace(f"new: {id(u.newP)} old: {id(u.p)}")
 
         # c.selectPosition(u.p)
         p = u.p
@@ -1002,7 +997,6 @@ class Undoer:
             cc.selectChapterByName('main')
 
         # PR #4996: Remove dependency on c.deleteOutline.
-        # g.trace(f"new: {id(u.newP)} old: {id(u.p)}")
 
         # c.selectPosition(u.newP)
         p = u.newP
@@ -3115,7 +3109,6 @@ class Undoer:
     def redraw(self, new_p: Position | None = None, contract: bool = False) -> None:
         """Redraw now and choose the command's single undo/redo redraw."""
         c = self.c
-        g.trace()  ###
         new_p = new_p or c.p
         w = c.frame.body.wrapper
         preserve_body = new_p == c.p and w.getAllText() == new_p.b
@@ -3179,8 +3172,6 @@ class Undoer:
                 p.v.iconVal = val
             c.recolor(p)  # Only for QScintilla.
 
-        g.trace()
-
         # Do the action!
         set_body_update(new_p, new_body)
 
@@ -3198,9 +3189,6 @@ class Undoer:
             set_body_update(new_p, old_body)
 
         b.add_helpers(set_body_redoer, set_body_undoer, vnode=new_p.v)
-
-        # Add finishers.
-        b.add_redraw(new_p, new_p)  # Never change c.p.
 
     # @+node:ekr.20261005094529.2: *4* u.set_command_name
     def set_command_name(self, command_name: str) -> None:
