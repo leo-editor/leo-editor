@@ -1081,7 +1081,7 @@ def hoist(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 
 
 # @+node:ekr.20031218072017.1759: ** c_oc.Insert, Delete & Clone commands
-# @+node:ekr.20031218072017.1762: *3* c_oc:clone-node (test)
+# @+node:ekr.20031218072017.1762: *3* c_oc:clone-node
 @g.commander_command('clone-node')
 def clone(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Create a clone of the selected outline."""
@@ -1196,13 +1196,13 @@ def insertChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None
         return None
     c.endEditing()
     with c.undoer as u:
-        u.set_command_name('Insert Child')
+        u.set_command_name('insert-child')
         new_p = u.insert_node(c.p, as_child=True)
         u.redraw_and_edit(new_p)
         return new_p
 
 
-# @+node:ekr.20261008042700.1: *3* c_oc:insert-headline-as-first-child
+# @+node:ekr.20261008042700.1: *3* c_oc:insert-as-first-child
 @g.commander_command('insert-as-first-child')
 def insertNodeAsFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Insert a node as the first child of the previous node."""
@@ -1211,13 +1211,13 @@ def insertNodeAsFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Posi
         return None
     c.endEditing()
     with c.undoer as u:
-        u.set_command_name('Insert As First Child')
+        u.set_command_name('insert-as-first-child')
         new_p = u.insert_node(c.p, as_child=True, index=0)
         u.redraw_and_edit(new_p)
         return new_p
 
 
-# @+node:ekr.20261008042932.1: *3* c_oc:insert-headline-as-last-child
+# @+node:ekr.20261008042932.1: *3* c_oc:insert-as-last-child
 @g.commander_command('insert-as-last-child')
 def insertNodeAsLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Insert a node as the last child of the previous node."""
@@ -1226,7 +1226,7 @@ def insertNodeAsLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Posit
         return None
     c.endEditing()
     with c.undoer as u:
-        u.set_command_name('Insert As Last Child')
+        u.set_command_name('insert-as-last-child')
         new_p = u.insert_node(c.p, as_child=True, index=c.p.numberOfChildren())
         u.redraw_and_edit(new_p)
         return new_p
@@ -1266,7 +1266,7 @@ def insertHeadlineBefore(self: Cmdr, event: LeoKeyEvent | None = None) -> Positi
         return None
     c.endEditing()
     with c.undoer as u:
-        u.set_command_name('Insert Node Before')
+        u.set_command_name('insert-node-before')
         new_p = u.insert_node(c.p, before=True)
         u.redraw_and_edit(new_p)
         return new_p

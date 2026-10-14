@@ -765,7 +765,7 @@ def preferences(self: Self, event: LeoKeyEvent | None = None) -> None:
     c.openLeoSettings()
 
 
-# @+node:ekr.20261003045123.1: ** c_ec:promote-to-at-others (always uses new undo code)
+# @+node:ekr.20261003045123.1: ** c_ec:promote-to-at-others
 @g.commander_command('promote-to-at-others')
 def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
     # @+<< promote-to-at-others: docstring >>
