@@ -841,7 +841,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, undoType='indent-to-comment-column')
+        self.beginCommand(w, 'indent-to-comment-column')
         s = w.getAllText()
         ins = w.getInsertPoint()
         i, j = g.getLine(s, ins)
@@ -1902,7 +1902,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if name.startswith('head'):
             return
         ins = w.getInsertPoint()
-        self.beginCommand(w, undoType='insert-hard-tab')
+        self.beginCommand(w, 'insert-hard-tab')
         w.insert(ins, '\t')
         ins += 1
         w.setSelectionRange(ins, ins, insert=ins)
@@ -1927,7 +1927,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if name.startswith('head'):
             return
         oldSel = w.getSelectionRange()
-        self.beginCommand(w, undoType='newline')
+        self.beginCommand(w, 'insert-newline')
         self.insertNewlineHelper(w=w, oldSel=oldSel, undoType='')
         k.setInputState('insert')
         k.showStateAndMode()
@@ -1948,7 +1948,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         if trace:
             g.trace('(newline-and-indent)')
-        self.beginCommand(w, undoType='insert-newline-and-indent')
+        self.beginCommand(w, 'insert-newline-and-indent')
         oldSel = w.getSelectionRange()
         self.insertNewlineHelper(w=w, oldSel=oldSel, undoType='')
         self.updateTab(event, p, w, smartTab=False)
@@ -1964,7 +1964,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, undoType='insert-parenthesis')
+        self.beginCommand(w, 'insert-parenthesis')
         i = w.getInsertPoint()
         w.insert(i, '()')
         w.setInsertPoint(i + 1)
@@ -1983,7 +1983,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         tab_width = abs(c.getTabWidth(c.p))
         ins = w.getInsertPoint()
-        self.beginCommand(w, undoType='insert-soft-tab')
+        self.beginCommand(w, 'insert-soft-tab')
         w.insert(ins, ' ' * tab_width)
         ins += tab_width
         w.setSelectionRange(ins, ins, insert=ins)
@@ -2419,7 +2419,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         lines = s[i:j]
         if not lines.strip():
             return
-        self.beginCommand(w, undoType='move-lines-to-next-node')
+        self.beginCommand(w, 'move-lines-to-next-node')
         try:
             next_i, next_j = g.getLine(s, j)
             w.delete(i, next_j)
@@ -2438,7 +2438,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, undoType='split-line')
+        self.beginCommand(w, 'split-line')
         s = w.getAllText()
         ins = w.getInsertPoint()
         w.setAllText(s[:ins] + '\n' + s[ins:])
@@ -3519,7 +3519,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         with c.undoer.change_outline(undoType):
             while 1:
                 progress = w.getInsertPoint()
-                c.reformatParagraph(event, undoType='reformat-paragraph')
+                c.reformatParagraph(event, undoType)
                 ins = w.getInsertPoint()
                 s = w.getAllText()
                 w.setInsertPoint(ins)
@@ -3538,7 +3538,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         if not self._checkSelection(event):
             return
-        self.beginCommand(w, undoType='fill-region-as-paragraph')
+        self.beginCommand(w, 'fill-region-as-paragraph')
         self.endCommand(changed=True, setLabel=True)
 
     # @+node:ekr.20150514063305.323: *4* ec.fillParagraph
@@ -3566,7 +3566,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, undoType='kill-paragraph')
+        self.beginCommand(w, 'kill-paragraph')
         try:
             self.extendToParagraph(event)
             i, j = w.getSelectionRange()
@@ -3637,7 +3637,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         if not self._checkSelection(event):
             return  # pragma: no cover (defensive)
-        self.beginCommand(w, undoType='indent-rigidly')
+        self.beginCommand(w, 'indent-rigidly')
         s = w.getAllText()
         i1, j1 = w.getSelectionRange()
         i, junk = g.getLine(s, i1)
@@ -3692,7 +3692,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         lines = s[i:j]
         # Select from start of the first line to the *start* of the last line.
         # This prevents selection creep.
-        self.beginCommand(w, undoType='move-lines-down')
+        self.beginCommand(w, 'move-lines-down')
         try:
             next_i, next_j = g.getLine(s, j)  # 2011/04/01: was j+1
             next_line = s[next_i:next_j]
@@ -3736,7 +3736,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         i, junk = g.getLine(s, sel_1)
         i2, j = g.getLine(s, sel_2)
         lines = s[i:j]
-        self.beginCommand(w, undoType='move-lines-up')
+        self.beginCommand(w, 'move-lines-up')
         try:
             prev_i, prev_j = g.getLine(s, i - 1)
             prev_line = s[prev_i:prev_j]
@@ -3768,7 +3768,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = event.w if event else None
         if not w or not self._checkSelection(event):
             return  # pragma: no cover (defensive)
-        self.beginCommand(w, undoType='reverse-region')
+        self.beginCommand(w, 'reverse-region')
         s = w.getAllText()
         i1, j1 = w.getSelectionRange()
         i, junk = g.getLine(s, i1)
@@ -3953,7 +3953,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         def toInt(index: str) -> int:
             return g.toPythonIndex(s, index)
 
-        self.beginCommand(w, undoType='sort-columns')
+        self.beginCommand(w, 'sort-columns')
         try:
             sel_1, sel_2 = w.getSelectionRange()
             sint1, sint2 = g.convertPythonIndexToRowCol(s, sel_1)
@@ -4052,7 +4052,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         i, j = g.getLine(s, ins)
         line1 = s[i:j]
-        self.beginCommand(w, undoType='transpose-lines')
+        self.beginCommand(w, 'transpose-lines')
         if i == 0:  # Transpose the next line.
             i2, j2 = g.getLine(s, j + 1)
             line2 = s[i2:j2]
@@ -4081,7 +4081,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, undoType='transpose-words')
+        self.beginCommand(w, 'transpose-words')
         s = w.getAllText()
         i1, j1 = self.extendToWord(event, select=False)
         s1 = s[i1:j1]
@@ -4111,7 +4111,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, undoType='swap-characters')
+        self.beginCommand(w, 'swap-characters')
         s = w.getAllText()
         i = w.getInsertPoint()
         if 0 < i < len(s):

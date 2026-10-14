@@ -2537,7 +2537,7 @@ class LeoFind:
             # No redraws here: they would destroy the headline selection.
             if self.in_headline:
                 # #2220: Let onHeadChanged handle undo, etc.
-                c.frame.tree.onHeadChanged(p, undoType='Change Headline')
+                c.frame.tree.onHeadChanged(p, 'Change Headline')
                 # w will change after a redraw.
                 w = c.headline_wrapper(p)
                 if g.isTextWrapper(w):
