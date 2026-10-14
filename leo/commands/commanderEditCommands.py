@@ -72,14 +72,13 @@ def addComments(self: Self, event: LeoKeyEvent | None = None) -> None:
 def convertAllBlanks(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Convert all blanks to tabs in the selected outline."""
     c, u = self, self.undoer
-    undoType = 'convert-all-blanks'
     current = c.p
     if g.app.batchMode:
-        c.notValidInBatchMode(undoType)
+        c.notValidInBatchMode('convert-all-blanks')
         return
     tabWidth = c.getTabWidth(c.p)
     count = 0
-    with u.change_outline(undoType):
+    with u.change_outline('convert-all-blanks'):
         for p in current.self_and_subtree():
             if p == current:
                 if changed := c.convertBlanks():
@@ -112,14 +111,13 @@ def convertAllTabs(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Convert all tabs to blanks in the selected outline."""
     c = self
     u = c.undoer
-    undoType = 'convert-all-tabs'
     current = c.p
     if g.app.batchMode:
-        c.notValidInBatchMode(undoType)
+        c.notValidInBatchMode('convert-all-tabs')
         return
     tabWidth = c.getTabWidth(c.p)
     count = 0
-    with u.change_outline(undoType):
+    with u.change_outline('convert-all-tabs'):
         for p in current.self_and_subtree():
             if p == current:
                 if changed := self.convertTabs(event):
