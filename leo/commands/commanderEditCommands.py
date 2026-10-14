@@ -421,7 +421,7 @@ def extract(self: Self, event: LeoKeyEvent | None = None) -> None:
         h, b, middle = lines[0].strip(), lines[1:], ''
 
     # Start the outer undo group.
-    with u.change_outline('Extract'):
+    with u.change_outline('extract'):
         p = createFirstChildNode(c, c.p, h, ''.join(b))
 
         # Start inner undo.

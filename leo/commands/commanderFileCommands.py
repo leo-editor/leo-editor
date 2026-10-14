@@ -1029,7 +1029,7 @@ def readFileIntoNode(self: Self, event: LeoKeyEvent | None = None) -> None:
     g.chdir(fileName)
     s = '@nocolor\n' + s
     w = c.frame.body.wrapper
-    with u.change_outline('Read File Into Node'):
+    with u.change_outline('read-file-into-node'):
         p = c.p.insertAfter()
         p.setHeadString('@read-file-into-node ' + fileName)
         p.setBodyString(s)
