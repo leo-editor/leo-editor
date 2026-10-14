@@ -43,9 +43,9 @@ class To_Python:  # pragma: no cover
     def go(self) -> None:
         t1 = time.time()
         c = self.c
-        u, undoType = c.undoer, 'typescript-to-python'
+        u = c.undoer
         pp = leoBeautify.CPrettyPrinter(c)
-        with u.change_outline(undoType):
+        with u.change_outline('typescript-to-python'):
             changed = False
             n_files, n_nodes = 0, 0
             special = ('class ', 'module ', '@file ', '@@file ')

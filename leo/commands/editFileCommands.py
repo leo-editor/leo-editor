@@ -203,8 +203,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     def cleanAtCleanFiles(self, event: LeoKeyEvent | None = None) -> None:
         """Adjust whitespace in all @clean files."""
         c = self.c
-        undoType = 'clean-at-clean-files'
-        with c.undoer.change_outline(undoType):
+        with c.undoer.change_outline('clean-at-clean-files'):
             total = 0
             for p in c.all_unique_positions():
                 if p.isAtCleanNode():
@@ -340,12 +339,12 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     ) -> None:
         """Create the comparison trees."""
         c = self.c  # Always use the visible commander
+        u = c.undoer
         assert c == c1
         # Create parent node at the start of the outline.
-        u, undoType = c.undoer, 'Compare Two Files'
-        with u.change_outline(undoType):
+        with u.change_outline('compare-two-files'):
             parent = c.p.insertAfter()
-            parent.setHeadString(undoType)
+            parent.setHeadString('Compare Two Files')
             fn1 = c1.shortFileName()
             fn2 = c2.shortFileName()
             for d, kind in (
@@ -576,7 +575,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             return
         s, e = g.readFileIntoString(fn)
         if s is not None:
-            self.beginCommand(w, undoType='insert-file')
+            self.beginCommand(w, 'insert-file')
             i = w.getInsertPoint()
             w.insert(i, s)
             w.seeInsertPoint()
@@ -838,11 +837,11 @@ class GitDiffController:
     def diff_two_branches(self, branch1: str, branch2: str, fn: str) -> None:
         """Create an outline describing the git diffs for fn."""
         c = self.c
-        u, undoType = c.undoer, 'diff-two-branches'
+        u = c.undoer
         if not self.get_parent_of_git_directory():
             return
         c.selectPosition(c.lastTopLevel())
-        with u.change_outline(undoType):
+        with u.change_outline('diff-two-branches'):
             self.root = p = c.lastTopLevel().insertAfter()
             p.h = f"git-diff-branches {branch1} {branch2}"
             s1 = self.get_file_from_branch(branch1, fn)
@@ -945,12 +944,11 @@ class GitDiffController:
         """
         c = self.c
         u = c.undoer
-        undoType = 'git-diff-revs'
         files = self.get_files(rev1, rev2)
         if not files:
             return False
         c.selectPosition(c.lastTopLevel())
-        with u.change_outline(undoType):
+        with u.change_outline('git-diff-revs'):
             self.root = self.create_root(rev1, rev2)
             for fn in files:
                 self.diff_file(fn=fn, rev1=rev1, rev2=rev2)

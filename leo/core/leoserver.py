@@ -1749,7 +1749,6 @@ class LeoServer:
         Read a file into a single node.
         """
         tag = 'read_file_into_node'
-        undoType = 'Read File Into Node'
         c = self._check_c(param)
         if c and "name" in param:
             try:
@@ -1760,7 +1759,7 @@ class LeoServer:
                         return None
                     g.chdir(fileName)
                     s = '@nocolor\n' + s
-                    p = c.insertHeadline(op_name=undoType)
+                    p = c.insertHeadline(op_name='Read File Into Node')
                     # New node does not need c.setHeadString. p.setHeadString is ok.
                     p.setHeadString('@read-file-into-node ' + fileName)
                     p.setBodyString(s)

@@ -279,7 +279,6 @@ class LeoFind:
     # @+node:ekr.20210108070948.1: *4* find._batch_change_helper
     def _batch_change_helper(self, p: Position, find_text: str, change_text: str) -> int:
         c, p1, u = self.c, p.copy(), self.c.undoer
-        undoType = 'Batch Change All'
         # Check...
         if not find_text:  # pragma: no cover
             return 0
@@ -304,7 +303,7 @@ class LeoFind:
         self.work_s = s
         self.work_sel = (0, 0, 0)
         # The main loop.
-        with u.change_outline(undoType):
+        with u.change_outline('batch-change-all'):
             count = 0
             for p in positions:
                 count_h, count_b = 0, 0
@@ -536,14 +535,13 @@ class LeoFind:
             g.es(f"not a clone: {p.h}")
             return False
         p.copy()
-        undoType = 'Find Clone Parents'
         aList = c.vnode2allPositions(p.v)
         if not aList:  # pragma: no cover
             g.trace('can not happen: no parents')
             return False
         # Create the node as the last top-level node.
         # All existing positions remain valid.
-        with u.change_outline(undoType):
+        with u.change_outline('clone-find-parents'):
             found = c.lastTopLevel().insertAfter()
             found.h = f"Found: parents of {p.h}"
             seen = []
@@ -1216,11 +1214,10 @@ class LeoFind:
         """Do the change-all command. Return the number of changes, or 0 for error."""
         # Caller has checked settings.
         c, _current, u = self.c, self.c.p, self.c.undoer
-        undoType = 'Replace All'
         t1 = time.process_time()
 
         saveData = self.save()
-        with u.change_outline(undoType):
+        with u.change_outline('change-all'):
             if not self.find_text:  # pragma: no cover
                 return 0
             if not self.search_headline and not self.search_body:  # pragma: no cover
@@ -1730,7 +1727,6 @@ class LeoFind:
         Return the list of Dicts describing each match.
         """
         c, u = self.c, self.c.undoer
-        undoType = 'Find All'
         saveData = self.save()
         if self.pattern_match:
             ok = self.compile_pattern()
@@ -1771,7 +1767,7 @@ class LeoFind:
             self.restore(saveData)
             return {}
         # Check first if need to make a 'group' undo bead
-        with u.change_outline(undoType):
+        with u.change_outline('find-all'):
             # Create the result dict.
             result_string = self.make_result_from_matches(matches_dict)
             # Create the summary node.

@@ -405,7 +405,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         if not g.app.globalKillBuffer and not clip_text:
             return
         undoType = 'yank-pop' if pop else 'yank'
-        self.beginCommand(w, undoType=undoType)
+        self.beginCommand(w, undoType)
         try:
             if not pop or self.lastYankP and self.lastYankP != current:
                 self.reset = 0

@@ -1133,7 +1133,7 @@ class LeoImportCommands:
         Split p.b into functions, methods or classes in sibling nodes.
         """
         c = self.c
-        u, undoType = c.undoer, 'parse-body'
+        u = c.undoer
         language = c.getLanguage(p)
 
         # Initial checks.
@@ -1150,7 +1150,7 @@ class LeoImportCommands:
             g.es_print(f"No importer class for @language {language}")
             return
         importer = importer_class(c)
-        with u.change_outline(undoType):
+        with u.change_outline('parrse-body'):
             try:
                 old_p = p.copy()
                 c.selectPosition(p)
