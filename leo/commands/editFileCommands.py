@@ -203,7 +203,8 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     def cleanAtCleanFiles(self, event: LeoKeyEvent | None = None) -> None:
         """Adjust whitespace in all @clean files."""
         c = self.c
-        with c.undoer.change_outline('clean-at-clean-files'):
+        u = c.undoer
+        with u.change_outline('clean-at-clean-files'):
             total = 0
             for p in c.all_unique_positions():
                 if p.isAtCleanNode():
@@ -213,10 +214,8 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                             n += 1
                             total += 1
                     g.es_print(f"{n} node{g.plural(n)} {p.h}")
-            # Call this only once, at end.
-            if total == 0:
-                g.es("Command did not find any whitespace to adjust")
             g.es_print(f"{total} total node{g.plural(total)}")
+            u.redraw(c.p)  ###
 
     # @+node:ekr.20170806094319.8: *4* efc.cleanAtCleanNode
     def cleanAtCleanNode(self, p: Position) -> bool:
@@ -1296,7 +1295,7 @@ class GitDiffController:
                     self.summary_diff_python_file(fn=fn, rev1=rev1, rev2=rev2)
                 if (i % 10) == 0:
                     g.es_print(f"diff: {i} files", color='blue')
-            c.selectPosition(self.root)
+            ### c.selectPosition(self.root)
             self.root.expand()
             u.redraw(self.root)
             print(f"done! diffed: {n} files")
@@ -1551,7 +1550,7 @@ class GitDiffController:
                 return p
         return None
 
-    # @+node:ekr.20170806094321.5: *4* gdc.finish
+    # @+node:ekr.20170806094321.5: *4* gdc.finish (*** revise)
     def finish(self) -> None:
         """Finish execution of this command."""
         c = self.c

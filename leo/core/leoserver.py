@@ -3191,7 +3191,6 @@ class LeoServer:
         c = self._check_c(param)
         p = self._get_p(param)
         oldPosition: Position | None = None if p == c.p else c.p
-
         newHeadline = param.get('name') or ''
         with c.undoer.change_outline('Insert Node'):
             newNode = p.insertAfter()

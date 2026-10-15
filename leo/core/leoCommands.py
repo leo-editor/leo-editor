@@ -5503,7 +5503,7 @@ class Commands:
             return
 
         def delete(p: Position) -> None:
-            with c.undoer.change_outline('Inner Undo Node'):
+            with u.change_outline('Inner Undo Node'):
                 if p in to_be_deleted:
                     # Remove all to-be-deleted positions in p's subtree from the to-be-deleted list.
                     for p2 in p.subtree():

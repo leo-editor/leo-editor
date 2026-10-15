@@ -892,7 +892,7 @@ def reformatBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     w = c.frame.body.wrapper
     old_ins = w.getInsertPoint()
     old_sel = w.getSelectionRange()
-    with c.undoer.change_outline(undoType):
+    with u.change_outline(undoType):
         w.setInsertPoint(0)
         while 1:
             progress = w.getInsertPoint()

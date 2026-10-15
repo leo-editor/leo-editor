@@ -1151,11 +1151,11 @@ def cloneToLastNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     Clone the selected node and move it to the last node.
     Do *not* change the selected node.
     """
-    c, p, _u = self, self.p, self.undoer
+    c, p, u = self, self.p, self.undoer
     if not p:
         return
     prev = p.copy()
-    with c.undoer.change_outline('Clone Node To Last'):
+    with u.change_outline('Clone Node To Last'):
         c.endEditing()  # Capture any changes to the headline.
         clone = p.clone()
         last = c.rootPosition()
@@ -1163,7 +1163,7 @@ def cloneToLastNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
             last.moveToNext()
         clone.moveAfter(last)
         clone.setDirty()
-        c.undoer.redraw(prev)
+        u.redraw(prev)
     # return clone # For mod_labels and chapters plugins.
 
 
@@ -1466,8 +1466,9 @@ def markChangedHeadlines(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
                 p.setDirty()
                 ### c.setChanged()
         u.redraw(c.p)  ###
-        if not g.unitTesting:
-            g.blue('done')
+        ###
+        # if not g.unitTesting:
+        #     g.blue('done')
 
 
 # @+node:ekr.20031218072017.2924: *3* c_oc.markChangedRoots

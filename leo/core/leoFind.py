@@ -319,6 +319,7 @@ class LeoFind:
                         p.b = new_b
             if not g.unitTesting:  # pragma: no cover
                 print(f"{count:3}: {find_text:>30} => {change_text}")
+            # No need for u.redraw: this is a helper.
             return count
 
     # @+node:ekr.20210108083003.1: *4* find._init_from_dict
@@ -2443,6 +2444,7 @@ class LeoFind:
             self.node_only = self.suboutline_only = False
             self.root = None
             g.es("found", count, "matches for", self.find_text)
+            u.redraw(c.p)  ###
             return count  # Might be useful for the gui update.
 
     # @+node:ekr.20210110073117.34: *5* find._cfa_create_nodes
@@ -2610,6 +2612,7 @@ class LeoFind:
                     if self.mark_finds and not p.isMarked():  # pragma: no cover
                         p.setMarked()
                         p.setDirty()
+                    # u.redraw(p)
                     return p, pos, newpos
                 # Searching the pane failed: switch to another pane or node.
                 if self._fnm_should_stay_in_node(p):

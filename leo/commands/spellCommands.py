@@ -697,6 +697,7 @@ class SpellTabHandler:
                     c.bodyWantsFocus()
                     return True
             # The focus must never leave the body pane.
+            u.redraw(c.p)  ###
             c.invalidateFocus()
             c.bodyWantsFocus()
             return False

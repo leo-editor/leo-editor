@@ -459,18 +459,19 @@ class EditCommandsClass(BaseEditCommandsClass):
         cursor.
         """
         c = self.c
+        u = c.undoer
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
 
         def callback(arg: str, w: QTextMixin = w) -> None:
             if g.app.gui.widget_name(w) == 'body':
-                with c.undoer.change_node(c.p, 'insert-file-name'):
+                with u.change_node(c.p, 'insert-file-name'):
                     i = w.getSelectionRange()[0]
                     w.deleteTextSelection()
                     w.insert(i, arg)
                     c.p.v.b = w.getAllText()
-                    c.undoer.redraw(c.p)
+                    u.redraw(c.p)
             else:
                 i = w.getSelectionRange()[0]
                 w.deleteTextSelection()
@@ -502,11 +503,12 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Insert a date/time stamp in the headline of the selected node."""
         frame = self
         c, p = frame.c, self.c.p
+        u = c.undoer
         if g.app.batchMode:
             c.notValidInBatchMode('insert-headline-time')
             return
         w = c.frame.tree.headline_wrapper(p)
-        with c.undoer.change_outline('insert-headline-time'):
+        with u.change_outline('insert-headline-time'):
             if w and not g.app.inBridge:
                 # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1185933
                 # insert-headline-time should insert at cursor.
@@ -523,14 +525,12 @@ class EditCommandsClass(BaseEditCommandsClass):
                     p.h = ' '.join([s, time])
                 else:
                     p.h = time
-
-                c.setChanged()
+                ### c.setChanged()
                 p.setDirty()
-                # For external clients
                 if g.app.inBridge:
-                    c.undoer.redraw()
+                    u.redraw()
                 else:
-                    c.undoer.redraw_and_edit(p, select_all=True)  # regular client
+                    u.redraw_and_edit(p, select_all=True)
 
     # @+node:tom.20210922140250.1: *3* ec.capitalizeHeadline
     @cmd('capitalize-headline')
@@ -1174,7 +1174,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             for p in c.all_unique_positions():
                 self.hn_delete(p)
                 self.hn_add(p)
-            u.redraw()
+            u.redraw(c.p)
 
     # @+node:ekr.20230328013256.1: *5* hn_add
     def hn_add(self, p: Position) -> None:
@@ -1221,7 +1221,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 self.hn_delete(p)
                 self.hn_add_relative(p, root)
             root.expand()
-            u.redraw()
+            u.redraw(c.p)
 
     # @+node:ekr.20230329031045.1: *5* hn_add_relative
     def hn_add_relative(self, p: Position, root: Position) -> None:
@@ -1512,7 +1512,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.setInsertPoint(i2 + len(ws))
                 p.v.b = w.getAllText()
             finally:
-                self.endCommand(changed=True, setLabel=True)
+                self.endCommand(changed=True, setLabel=True)  # Handles undo.
 
     # @+node:ekr.20150514063305.245: *3* ec: info
     # @+node:ekr.20210311154956.1: *4* ec.copyGnx
@@ -3495,23 +3495,24 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('fill-region')
     def fillRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Fill all paragraphs in the selected text."""
-        c, _p = self.c, self.c.p
-        undoType = 'fill-region'
+        c = self.c
+        u = c.undoer
         w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
         if not g.isTextWrapper(w):
             return
-        i, j = w.getSelectionRange()
-        with c.undoer.change_outline(undoType):
+        old_ins = w.getInsertPoint()
+        i, j = old_sel = w.getSelectionRange()
+        with u.change_outline('fill-region'):
             while 1:
                 progress = w.getInsertPoint()
-                c.reformatParagraph(event, undoType)
+                c.reformatParagraph(event, 'fill-region')
                 ins = w.getInsertPoint()
                 s = w.getAllText()
                 w.setInsertPoint(ins)
                 if progress >= ins or ins >= j or ins >= len(s):
                     break
+            u.set_selection_range(old_ins, old_sel)  ###
+            u.redraw(c.p)  ###
 
     # @+node:ekr.20150514063305.322: *4* ec.fillRegionAsParagraph
     @cmd('fill-region-as-paragraph')
@@ -4116,12 +4117,12 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
-        with u.change_outline('clear-node-uas'):
-            if p and p.v.u:
+        if p and p.v.u:
+            with u.change_outline('clear-node-uas'):
                 p.v.u = {}
                 # #1276.
                 p.setDirty()
-                c.setChanged()
+                ### c.setChanged()
                 u.redraw()
 
     @cmd('clear-all-uas')
@@ -4129,17 +4130,23 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Clear all uAs in the entire outline."""
         c, u = self.c, self.c.undoer
         # #1276.
-        changed = False
+        changed_v = [v for v in c.all_unique_nodes()]
+        if not changed_v:  ###
+            return
         with u.change_outline('clear-all-uas'):
-            for p in c.all_unique_positions():
-                if p.v.u:
-                    if not changed:  # #4443
-                        changed = True
-                    p.v.u = {}
-                    p.setDirty()
-            if changed:
-                c.setChanged()
-                u.redraw()
+            for v in changed_v:
+                v.u = {}
+                v.setDirty()
+            u.redraw(c.p)
+            # for p in c.all_unique_positions():
+            #     if p.v.u:
+            #         if not changed:  # #4443
+            #             changed = True
+            #         p.v.u = {}
+            #         p.setDirty()
+            # if changed:
+            #     c.setChanged()
+            #     u.redraw()
 
     # @+node:ekr.20150514063305.350: *4* ec.showUas & showAllUas
     @cmd('show-all-uas')

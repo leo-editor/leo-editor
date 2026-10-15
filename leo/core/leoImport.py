@@ -79,13 +79,15 @@ class FreeMindImporter:
     def create_outline(self, path: str) -> Position:
         """Create a tree of nodes from a FreeMind file."""
         c = self.c
+        u = c.undoer
         _, fileName = g.os_path_split(path)
-        with c.undoer.change_outline('Import'):
+        with u.change_outline('Import'):
             try:
                 self.import_file(path)
             except Exception:
                 g.es_print('Exception importing FreeMind file', g.shortFileName(path))
                 g.es_exception()
+            u.redraw(c.p)  ###
             return c.p
 
     # @+node:ekr.20160503191518.4: *3* freemind.import_file
@@ -791,6 +793,7 @@ class LeoImportCommands:
                     g.es_exception()
             c.checkOutline()
             parent.expand()
+            u.redraw(parent)  ###
 
     # @+node:ekr.20160503125237.1: *4* ic.importFreeMind
     def importFreeMind(self, files: list[str]) -> None:
@@ -861,6 +864,7 @@ class LeoImportCommands:
                 self.setBodyString(p, "@ignore\n@language cweb")
             # Scan the file, creating one section for each function definition.
             self.scanWebFile(path, p)
+            u.redraw(p)  ###
             return p
 
     # @+node:ekr.20031218072017.3227: *5* ic.findFunctionDef
@@ -1378,8 +1382,9 @@ class MindMapImporter:
     # @+node:ekr.20160503130209.1: *3* mindmap.create_outline
     def create_outline(self, path: str) -> Position:
         c = self.c
+        u = c.undoer
         _, fileName = g.os_path_split(path)
-        with c.undoer.change_outline('Import'):
+        with u.change_outline('Import'):
             # Create the top-level headline.
             p = c.lastTopLevel().insertAfter()
             fn = g.shortFileName(path).strip()
@@ -1390,7 +1395,7 @@ class MindMapImporter:
                 f = open(path)
                 self.scan(f, p)
                 f.close()
-                c.undoer.redraw()
+                u.redraw()
             except Exception:
                 g.es_print('Invalid MindJet file:', fn)
             return p

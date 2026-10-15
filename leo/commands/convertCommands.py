@@ -71,6 +71,7 @@ class To_Python:  # pragma: no cover
                 g.es("Command did not find content to convert")
             t2 = time.time()
             g.es_print(f"done! {n_files} files, {n_nodes} nodes, {t2 - t1:2.2f} sec")
+            u.redraw(c.p)
 
     # @+node:ekr.20150514063305.127: *3* To_Python.convertCodeList
     def convertCodeList(self, lines: list[str]) -> None:
@@ -1327,8 +1328,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     c.setBodyString(p, ''.join(result))  # Required.
             if n_changed:
                 g.es_print(
-                    f"Changed {n_changed} unl{g.plural(n_changed)} in {n_changed_nodes} node{g.plural(n_changed_nodes)}"
-                )
+                    f"Changed {n_changed} unl{g.plural(n_changed)} "
+                    f"in {n_changed_nodes} node{g.plural(n_changed_nodes)}"
+                )  # fmt: skip
             c.contractAllHeadlines()
             u.redraw(p1)
             g.es('convert-gnxs: done')
