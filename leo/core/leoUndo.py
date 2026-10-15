@@ -2770,13 +2770,256 @@ class Undoer:
         u.c.setChanged()
 
     # @+node:ekr.20261005135125.1: *3* u:New helpers
-    # @+node:vivainio.202610110004.1: *4* u.require_bead
-    def require_bead(self) -> UndoBead:
+    # @+node:ekr.20261015042013.1: *4* u: actions & helper
+    # @+node:vivainio.202610110004.1: *5* u._require_bead
+    def _require_bead(self) -> UndoBead:
         """Reject helper calls outside a context before any mutation occurs."""
         assert isinstance(self.undoBead, UndoBead), "Undo helper requires 'with c.undoer'"
         return self.undoBead
 
-    # @+node:vivainio.202610110001.1: *4* u.change_node
+    # @+node:ekr.20261006155509.1: *5* u.clone_node
+    def clone_node(self, p: Position) -> Position | None:
+        """Clone p, returning and selecting the new occurrence."""
+        c, b = self.c, self._require_bead()
+        old_p = p.copy()
+        clone = p.clone()
+        if c.checkOutline():
+            clone.doDelete()
+            c.p = old_p
+            return None
+        clone.setDirty()
+        c.p = clone
+        clone_p = clone.copy()
+
+        def redo():
+            clone_p._linkAfter(old_p)
+            clone_p.setDirty()
+            c.p = clone_p
+
+        def undo():
+            clone_p.doDelete(old_p)
+            c.p = old_p
+
+        b.add_helpers(redo, undo)
+        return clone
+
+    # @+node:ekr.20261005143707.1: *5* u.delete_node
+    def delete_node(self, p: Position) -> None:
+        """Delete p without scheduling a redraw; retain its original links."""
+        c, b = self.c, self._require_bead()
+        old_current = c.p.copy()
+        deleted = p.copy()
+        old_back, old_parent = p.back(), p.parent()
+        if p == c.p or p.isAncestorOf(c.p):
+            new_current = p.visBack(c) if p.hasVisBack(c) else p.next()
+            if not new_current:
+                return  # The last top-level node cannot be deleted.
+        else:
+            new_current = c.p.copy()
+        deleted.doDelete(new_current)
+        c.p = new_current
+        new_current.setDirty()
+        new_current = new_current.copy()
+
+        def redo():
+            target = old_current.copy()
+            if deleted == old_current or deleted.isAncestorOf(old_current):
+                target = deleted.visBack(c) if deleted.hasVisBack(c) else deleted.next()
+            deleted.doDelete(target)
+            c.p = target
+
+        def undo():
+            if old_back:
+                deleted._linkAfter(old_back)
+            elif old_parent:
+                deleted._linkAsNthChild(old_parent, 0)
+            else:
+                deleted._linkAsRoot()
+            deleted.setDirty()
+            c.p = old_current
+
+        b.add_helpers(redo, undo)
+
+    # @+node:ekr.20261006155622.1: *5* u.insert_node
+    def insert_node(
+        self,
+        p: Position,
+        *,
+        as_child: bool = False,
+        index: int | None = None,
+        before: bool = False,
+    ) -> Position:
+        """Insert a node once; redo relinks that same vnode, including its subtree."""
+        c, b = self.c, self._require_bead()
+        old_p = p.copy()
+        if before:
+            new_p = p.insertBefore()
+            # Inserting before p changes p's original index.
+        elif (
+            as_child
+            or p.hasChildren()
+            and p.isExpanded()
+            or c.hoistStack
+            and p == c.hoistStack[-1].p
+        ):
+            if index is None:
+                insert_at_end = c.config.getBool('insert-new-nodes-at-end')
+                index = p.numberOfChildren() if insert_at_end else 0
+            new_p = p.insertAsNthChild(index)
+        else:
+            new_p = p.insertAfter()
+        new_p.setDirty()
+        c.p = new_p
+        parent = new_p.parent()
+        back = new_p.back()
+        saved = new_p.copy()
+
+        def redo():
+            if back:
+                saved._linkAfter(back)
+            elif parent:
+                saved._linkAsNthChild(parent, 0)
+            else:
+                saved._linkAsRoot()
+            saved.setDirty()
+            c.p = saved
+
+        def undo():
+            saved.doDelete()
+            old_p.setAllAncestorAtFileNodesDirty()
+            c.p = old_p
+
+        b.add_helpers(redo, undo)
+        g.doHook('create-node', c=c, p=new_p)
+        return new_p
+
+    # @+node:ekr.20261005140833.1: *5* u.set_body
+    def set_body(self, new_p: Position, new_body: str, *, old_body: str | None = None) -> None:
+        """Change p.b"""
+        u = self
+        b = u._require_bead()
+        c = u.c
+        w = u.c.frame.body.wrapper
+        if not g.isTextWrapper(w):
+            g.error(f"Not a text wrapper: {w=} {g.callers()}")
+            return
+
+        new_p = new_p.copy()
+        if old_body is None:
+            old_body = new_p.b
+        if old_body == new_body:
+            return
+
+        def set_body_update(p: Position, body: str) -> None:
+            """Update p's data."""
+            # Set p.v.b, not p.b! The p.b setter clears the selection!
+            p.v.b = body
+            p.setDirty()
+            val = p.computeIcon()
+            if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
+                p.v.iconVal = val
+            c.recolor(p)  # Only for QScintilla.
+
+        # Do the action!
+        set_body_update(new_p, new_body)
+
+        if c.p == new_p and w.getAllText() != new_body:
+            sel, ins = w.getSelectionRange(), w.getInsertPoint()
+            w.setAllText(new_body)
+            w.setSelectionRange(*sel, insert=ins)
+
+        # Add helpers. Use distinct names for debugging.
+
+        def set_body_redoer() -> None:
+            set_body_update(new_p, new_body)
+
+        def set_body_undoer() -> None:
+            set_body_update(new_p, old_body)
+
+        b.add_helpers(set_body_redoer, set_body_undoer, vnode=new_p.v)
+
+    # @+node:ekr.20261005094529.2: *5* u.set_command_name
+    def set_command_name(self, command_name: str) -> None:
+        u = self
+        b = u._require_bead()
+        assert isinstance(b, UndoBead), repr(b)
+        if u.undoBeadLevel == 1:
+            b.command_name = command_name
+            b.undoType = command_name
+            # Menu labels are updated when the completed bead is pushed.
+
+    # @+node:ekr.20261005143752.1: *5* u.set_selection_range
+    def set_selection_range(
+        self,
+        old_ins: int,
+        old_sel: tuple[int, int],
+        *,
+        old_y_scroll: int | None = None,
+        new_y_scroll: int | None = None,
+    ) -> None:
+        u = self
+        b = u._require_bead()
+        c = u.c
+        w = c.frame.body.wrapper
+        if not w:
+            return
+        new_ins = w.getInsertPoint()
+        new_sel = w.getSelectionRange()
+
+        def set_selection_range_redoer() -> None:
+            i, j = new_sel
+            w.setSelectionRange(i, j, insert=new_ins)
+            if new_y_scroll is not None:
+                w.setYScrollPosition(new_y_scroll)
+
+        def set_selection_range_undoer() -> None:
+            i, j = old_sel
+            w.setSelectionRange(i, j, insert=old_ins)
+            if old_y_scroll is not None:
+                w.setYScrollPosition(old_y_scroll)
+
+        b.add_finishers(set_selection_range_redoer, set_selection_range_undoer)
+
+        # Do the action!
+        i, j = new_sel
+        w.setSelectionRange(i, j, insert=new_ins)
+
+    # @+node:ekr.20261015041533.1: *4* u: contexts & helpers
+    # @+node:ekr.20261015042249.1: *5* u: 5 contexts
+    # @+node:ekr.20261009185938.1: *6* u.change_headline
+    def change_headline(
+        self,
+        p: Position,
+        ch: str,
+        new_h: str,
+        *,
+        update_editor: bool = True,
+    ) -> None:
+        """Change a headline and preserve directives, dirty bits and editor state."""
+        c, b = self.c, self._require_bead()
+        p = p.copy() if c.positionExists(p) else c.vnode2position(p.v)
+        old_h = p.h
+        if old_h == new_h:
+            return
+
+        def update(head):
+            c.p = p
+            p.initHeadString(head)
+            p.setDirty()
+            c.frame.tree.setHeadline(p, head)
+
+        # Leave the live editor alone: it may contain multiline abbreviation text.
+        p.initHeadString(new_h)
+        p.setDirty()
+        if update_editor:
+            c.frame.tree.setHeadline(p, new_h)
+        b.add_helpers(lambda: update(new_h), lambda: update(old_h), vnode=p.v)
+        b.add_recolor(p, p)
+        c.frame.scanForTabWidth(p)
+        c.recolor(p)
+        g.doHook('headkey2', c=c, p=p, ch=ch, changed=True)
+
+    # @+node:vivainio.202610110001.1: *6* u.change_node
     @contextmanager
     def change_node(self, p: Position, command_name: str) -> Iterator[Undoer]:
         """Record arbitrary changes to one node, including mutable user attributes."""
@@ -2807,42 +3050,7 @@ class Undoer:
                         lambda: u.restore_ui(old_ui),
                     )
 
-    # @+node:vivainio.202610110003.1: *4* u.change_position
-    @contextmanager
-    def change_position(self, p: Position, command_name: str) -> Iterator[Undoer]:
-        """Record a move of p without scanning or retaining the rest of the outline."""
-        if self.undoing or self.redoing:
-            yield self
-            return
-        with self as u:
-            u.set_command_name(command_name)
-            if u.capture_level:
-                yield u
-                return
-            old_p, old_ui = p.copy(), u.capture_ui()
-            try:
-                yield u
-            finally:
-                new_p = p.copy()
-                if old_p != new_p:
-                    new_ui = u.capture_ui()
-
-                    def move(source, target):
-                        source.setAllAncestorAtFileNodesDirty()
-                        source.v._cutLink(source.childIndex(), source._parentVnode())
-                        target.v._addLink(target.childIndex(), target._parentVnode())
-                        target.setDirty()
-
-                    u.undoBead.add_helpers(
-                        lambda: move(old_p, new_p),
-                        lambda: move(new_p, old_p),
-                    )
-                    u.undoBead.add_finishers(
-                        lambda: u.restore_ui(new_ui),
-                        lambda: u.restore_ui(old_ui),
-                    )
-
-    # @+node:vivainio.202610110001.2: *4* u.change_outline
+    # @+node:vivainio.202610110001.2: *6* u.change_outline
     @contextmanager
     def change_outline(self, command_name: str, *, enabled: bool = True) -> Iterator[Undoer]:
         """
@@ -2889,66 +3097,42 @@ class Undoer:
                         lambda: u.restore_ui(old_ui),
                     )
 
-    # @+node:vivainio.202610110001.3: *4* u.snapshot helpers
-    def capture_node(self, v: VNode) -> tuple:
-        return v.h, v.b, v.isMarked(), deepcopy(v.u)
+    # @+node:vivainio.202610110003.1: *6* u.change_position
+    @contextmanager
+    def change_position(self, p: Position, command_name: str) -> Iterator[Undoer]:
+        """Record a move of p without scanning or retaining the rest of the outline."""
+        if self.undoing or self.redoing:
+            yield self
+            return
+        with self as u:
+            u.set_command_name(command_name)
+            if u.capture_level:
+                yield u
+                return
+            old_p, old_ui = p.copy(), u.capture_ui()
+            try:
+                yield u
+            finally:
+                new_p = p.copy()
+                if old_p != new_p:
+                    new_ui = u.capture_ui()
 
-    def restore_node(self, v: VNode, state: tuple) -> None:
-        head, body, marked, ua = state
-        head_changed = v.h != head
-        v.initHeadString(head)
-        v.setBodyString(body)
-        v.u = deepcopy(ua)
-        if marked:
-            v.setMarked()
-        else:
-            v.clearMarked()
-        v.setAllAncestorAtFileNodesDirty()
-        v.setDirty()
-        # Keep the headline editor from restoring stale text at the next redraw.
-        if head_changed:
-            for p in self.c.vnode2allPositions(v):
-                self.c.frame.tree.setHeadline(p, head)
+                    def move(source, target):
+                        source.setAllAncestorAtFileNodesDirty()
+                        source.v._cutLink(source.childIndex(), source._parentVnode())
+                        target.v._addLink(target.childIndex(), target._parentVnode())
+                        target.setDirty()
 
-    def capture_outline(self) -> dict:
-        result = {}
-        pending = [self.c.hiddenRootNode]
-        while pending:
-            v = pending.pop()
-            if v in result:
-                continue
-            result[v] = self.capture_node(v), tuple(v.children), tuple(v.parents)
-            pending.extend(v.children)
-        return result
+                    u.undoBead.add_helpers(
+                        lambda: move(old_p, new_p),
+                        lambda: move(new_p, old_p),
+                    )
+                    u.undoBead.add_finishers(
+                        lambda: u.restore_ui(new_ui),
+                        lambda: u.restore_ui(old_ui),
+                    )
 
-    def restore_outline(self, delta: dict) -> None:
-        # Restore every link before touching content or propagating dirty bits.
-        for v in delta:
-            v.setAllAncestorAtFileNodesDirty()
-        for v, (_, children, parents) in delta.items():
-            v.children = list(children)
-            v.parents = list(parents)
-        for v, (state, _, _) in delta.items():
-            self.restore_node(v, state)
-
-    def capture_ui(self) -> tuple:
-        c = self.c
-        w = c.frame.body.wrapper
-        return c.p.copy(), w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
-
-    def restore_ui(self, state: tuple) -> None:
-        c = self.c
-        p, sel, ins, scroll = state
-        p = p if c.positionExists(p) else c.rootPosition()
-        c.p = p
-        c.selectPosition(p)
-        c.frame.scanForTabWidth(c.p)
-        c.recolor(c.p)
-        w = c.frame.body.wrapper
-        w.setSelectionRange(*sel, insert=ins)
-        w.setYScrollPosition(scroll)
-
-    # @+node:vivainio.202610110001.4: *4* u.change_recent_files
+    # @+node:vivainio.202610110001.4: *6* u.change_recent_files
     @contextmanager
     def change_recent_files(self, command_name: str = 'Clear Recent Files') -> Iterator[Undoer]:
         rf = g.app.recentFilesManager
@@ -2973,156 +3157,73 @@ class Undoer:
                         force=True,
                     )
 
-    # @+node:ekr.20261009185938.1: *4* u.change_headline
-    def change_headline(
-        self,
-        p: Position,
-        ch: str,
-        new_h: str,
-        *,
-        update_editor: bool = True,
-    ) -> None:
-        """Change a headline and preserve directives, dirty bits and editor state."""
-        c, b = self.c, self.require_bead()
-        p = p.copy() if c.positionExists(p) else c.vnode2position(p.v)
-        old_h = p.h
-        if old_h == new_h:
-            return
+    # @+node:ekr.20261015042321.1: *5* u: context helpers
+    # @+node:vivainio.202610110001.3: *6* u.capture_node
+    def capture_node(self, v: VNode) -> tuple:
+        return v.h, v.b, v.isMarked(), deepcopy(v.u)
 
-        def update(head):
-            c.p = p
-            p.initHeadString(head)
-            p.setDirty()
-            c.frame.tree.setHeadline(p, head)
+    # @+node:ekr.20261015041620.2: *6* u.capture_outline
+    def capture_outline(self) -> dict:
+        result = {}
+        pending = [self.c.hiddenRootNode]
+        while pending:
+            v = pending.pop()
+            if v in result:
+                continue
+            result[v] = self.capture_node(v), tuple(v.children), tuple(v.parents)
+            pending.extend(v.children)
+        return result
 
-        # Leave the live editor alone: it may contain multiline abbreviation text.
-        p.initHeadString(new_h)
-        p.setDirty()
-        if update_editor:
-            c.frame.tree.setHeadline(p, new_h)
-        b.add_helpers(lambda: update(new_h), lambda: update(old_h), vnode=p.v)
-        b.add_recolor(p, p)
-        c.frame.scanForTabWidth(p)
-        c.recolor(p)
-        g.doHook('headkey2', c=c, p=p, ch=ch, changed=True)
+    # @+node:ekr.20261015041620.4: *6* u.capture_ui
+    def capture_ui(self) -> tuple:
+        c = self.c
+        w = c.frame.body.wrapper
+        return c.p.copy(), w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
 
-    # @+node:ekr.20261006155509.1: *4* u.clone_node
-    def clone_node(self, p: Position) -> Position | None:
-        """Clone p, returning and selecting the new occurrence."""
-        c, b = self.c, self.require_bead()
-        old_p = p.copy()
-        clone = p.clone()
-        if c.checkOutline():
-            clone.doDelete()
-            c.p = old_p
-            return None
-        clone.setDirty()
-        c.p = clone
-        clone_p = clone.copy()
-
-        def redo():
-            clone_p._linkAfter(old_p)
-            clone_p.setDirty()
-            c.p = clone_p
-
-        def undo():
-            clone_p.doDelete(old_p)
-            c.p = old_p
-
-        b.add_helpers(redo, undo)
-        return clone
-
-    # @+node:ekr.20261005143707.1: *4* u.delete_node
-    def delete_node(self, p: Position) -> None:
-        """Delete p without scheduling a redraw; retain its original links."""
-        c, b = self.c, self.require_bead()
-        old_current = c.p.copy()
-        deleted = p.copy()
-        old_back, old_parent = p.back(), p.parent()
-        if p == c.p or p.isAncestorOf(c.p):
-            new_current = p.visBack(c) if p.hasVisBack(c) else p.next()
-            if not new_current:
-                return  # The last top-level node cannot be deleted.
+    # @+node:ekr.20261015041620.1: *6* u.restore_node
+    def restore_node(self, v: VNode, state: tuple) -> None:
+        head, body, marked, ua = state
+        head_changed = v.h != head
+        v.initHeadString(head)
+        v.setBodyString(body)
+        v.u = deepcopy(ua)
+        if marked:
+            v.setMarked()
         else:
-            new_current = c.p.copy()
-        deleted.doDelete(new_current)
-        c.p = new_current
-        new_current.setDirty()
-        new_current = new_current.copy()
+            v.clearMarked()
+        v.setAllAncestorAtFileNodesDirty()
+        v.setDirty()
+        # Keep the headline editor from restoring stale text at the next redraw.
+        if head_changed:
+            for p in self.c.vnode2allPositions(v):
+                self.c.frame.tree.setHeadline(p, head)
 
-        def redo():
-            target = old_current.copy()
-            if deleted == old_current or deleted.isAncestorOf(old_current):
-                target = deleted.visBack(c) if deleted.hasVisBack(c) else deleted.next()
-            deleted.doDelete(target)
-            c.p = target
+    # @+node:ekr.20261015041620.3: *6* u.restore_outline
+    def restore_outline(self, delta: dict) -> None:
+        # Restore every link before touching content or propagating dirty bits.
+        for v in delta:
+            v.setAllAncestorAtFileNodesDirty()
+        for v, (_, children, parents) in delta.items():
+            v.children = list(children)
+            v.parents = list(parents)
+        for v, (state, _, _) in delta.items():
+            self.restore_node(v, state)
 
-        def undo():
-            if old_back:
-                deleted._linkAfter(old_back)
-            elif old_parent:
-                deleted._linkAsNthChild(old_parent, 0)
-            else:
-                deleted._linkAsRoot()
-            deleted.setDirty()
-            c.p = old_current
+    # @+node:ekr.20261015041620.5: *6* u.restore_ui
+    def restore_ui(self, state: tuple) -> None:
+        c = self.c
+        p, sel, ins, scroll = state
+        p = p if c.positionExists(p) else c.rootPosition()
+        c.p = p
+        c.selectPosition(p)
+        c.frame.scanForTabWidth(c.p)
+        c.recolor(c.p)
+        w = c.frame.body.wrapper
+        w.setSelectionRange(*sel, insert=ins)
+        w.setYScrollPosition(scroll)
 
-        b.add_helpers(redo, undo)
-
-    # @+node:ekr.20261006155622.1: *4* u.insert_node
-    def insert_node(
-        self,
-        p: Position,
-        *,
-        as_child: bool = False,
-        index: int | None = None,
-        before: bool = False,
-    ) -> Position:
-        """Insert a node once; redo relinks that same vnode, including its subtree."""
-        c, b = self.c, self.require_bead()
-        old_p = p.copy()
-        if before:
-            new_p = p.insertBefore()
-            # Inserting before p changes p's original index.
-        elif (
-            as_child
-            or p.hasChildren()
-            and p.isExpanded()
-            or c.hoistStack
-            and p == c.hoistStack[-1].p
-        ):
-            if index is None:
-                insert_at_end = c.config.getBool('insert-new-nodes-at-end')
-                index = p.numberOfChildren() if insert_at_end else 0
-            new_p = p.insertAsNthChild(index)
-        else:
-            new_p = p.insertAfter()
-        new_p.setDirty()
-        c.p = new_p
-        parent = new_p.parent()
-        back = new_p.back()
-        saved = new_p.copy()
-
-        def redo():
-            if back:
-                saved._linkAfter(back)
-            elif parent:
-                saved._linkAsNthChild(parent, 0)
-            else:
-                saved._linkAsRoot()
-            saved.setDirty()
-            c.p = saved
-
-        def undo():
-            saved.doDelete()
-            old_p.setAllAncestorAtFileNodesDirty()
-            c.p = old_p
-
-        b.add_helpers(redo, undo)
-        g.doHook('create-node', c=c, p=new_p)
-        return new_p
-
-    # @+node:ekr.20261005182243.1: *4* u.redraw
+    # @+node:ekr.20261015041852.1: *4* u: redrawers
+    # @+node:ekr.20261005182243.1: *5* u.redraw
     def redraw(self, new_p: Position | None = None, contract: bool = False) -> None:
         """Redraw now and choose the command's single undo/redo redraw."""
         c = self.c
@@ -3138,14 +3239,14 @@ class Undoer:
         if self.undoBead:
             self.undoBead.add_redraw(new_p, self.undoBead.old_p, contract=contract)
 
-    # @+node:ekr.20261011193020.1: *4* u.redraw_after_head_changed
+    # @+node:ekr.20261011193020.1: *5* u.redraw_after_head_changed
     def redraw_after_head_changed(self) -> None:
         """Refresh headlines now and after undo/redo."""
         self.c.redraw_after_head_changed()
         if self.undoBead:
             self.undoBead.add_redraw_after_head_changed()
 
-    # @+node:ekr.20261011190258.1: *4* u.redraw_and_edit
+    # @+node:ekr.20261011190258.1: *5* u.redraw_and_edit
     def redraw_and_edit(
         self,
         new_p: Position,
@@ -3161,97 +3262,6 @@ class Undoer:
                 contract=contract,
                 select_all=select_all,
             )
-
-    # @+node:ekr.20261005140833.1: *4* u.set_body
-    def set_body(self, new_p: Position, new_body: str, *, old_body: str | None = None) -> None:
-        """Change p.b"""
-        u = self
-        b = u.require_bead()
-        c = u.c
-        w = u.c.frame.body.wrapper
-        if not g.isTextWrapper(w):
-            g.error(f"Not a text wrapper: {w=} {g.callers()}")
-            return
-
-        new_p = new_p.copy()
-        if old_body is None:
-            old_body = new_p.b
-        if old_body == new_body:
-            return
-
-        def set_body_update(p: Position, body: str) -> None:
-            """Update p's data."""
-            # Set p.v.b, not p.b! The p.b setter clears the selection!
-            p.v.b = body
-            p.setDirty()
-            val = p.computeIcon()
-            if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
-                p.v.iconVal = val
-            c.recolor(p)  # Only for QScintilla.
-
-        # Do the action!
-        set_body_update(new_p, new_body)
-
-        if c.p == new_p and w.getAllText() != new_body:
-            sel, ins = w.getSelectionRange(), w.getInsertPoint()
-            w.setAllText(new_body)
-            w.setSelectionRange(*sel, insert=ins)
-
-        # Add helpers. Use distinct names for debugging.
-
-        def set_body_redoer() -> None:
-            set_body_update(new_p, new_body)
-
-        def set_body_undoer() -> None:
-            set_body_update(new_p, old_body)
-
-        b.add_helpers(set_body_redoer, set_body_undoer, vnode=new_p.v)
-
-    # @+node:ekr.20261005094529.2: *4* u.set_command_name
-    def set_command_name(self, command_name: str) -> None:
-        u = self
-        b = u.require_bead()
-        assert isinstance(b, UndoBead), repr(b)
-        if u.undoBeadLevel == 1:
-            b.command_name = command_name
-            b.undoType = command_name
-            # Menu labels are updated when the completed bead is pushed.
-
-    # @+node:ekr.20261005143752.1: *4* u.set_selection_range
-    def set_selection_range(
-        self,
-        old_ins: int,
-        old_sel: tuple[int, int],
-        *,
-        old_y_scroll: int | None = None,
-        new_y_scroll: int | None = None,
-    ) -> None:
-        u = self
-        b = u.require_bead()
-        c = u.c
-        w = c.frame.body.wrapper
-        if not w:
-            return
-        new_ins = w.getInsertPoint()
-        new_sel = w.getSelectionRange()
-
-        def set_selection_range_redoer() -> None:
-            i, j = new_sel
-            w.setSelectionRange(i, j, insert=new_ins)
-            if new_y_scroll is not None:
-                w.setYScrollPosition(new_y_scroll)
-
-        def set_selection_range_undoer() -> None:
-            i, j = old_sel
-            w.setSelectionRange(i, j, insert=old_ins)
-            if old_y_scroll is not None:
-                w.setYScrollPosition(old_y_scroll)
-
-        b.add_finishers(set_selection_range_redoer, set_selection_range_undoer)
-
-        # Do the action!
-        i, j = new_sel
-        w.setSelectionRange(i, j, insert=new_ins)
 
     # @-others
 
