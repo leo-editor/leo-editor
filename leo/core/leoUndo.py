@@ -2773,13 +2773,13 @@ class Undoer:
         u.c.setChanged()
 
     # @+node:ekr.20261005135125.1: *3* u:New helpers
-    # @+node:ekr.20261015042013.1: *4* u: actions & helper
-    # @+node:vivainio.202610110004.1: *5* u._require_bead
+    # @+node:vivainio.202610110004.1: *4* u._require_bead
     def _require_bead(self) -> UndoBead:
         """Reject helper calls outside a context before any mutation occurs."""
         assert isinstance(self.undoBead, UndoBead), "Undo helper requires 'with c.undoer'"
         return self.undoBead
 
+    # @+node:ekr.20261015042013.1: *4* u: actions
     # @+node:ekr.20261006155509.1: *5* u.clone_node
     def clone_node(self, p: Position) -> Position | None:
         """Clone p, returning and selecting the new occurrence."""
@@ -2950,45 +2950,6 @@ class Undoer:
             b.command_name = command_name
             b.undoType = command_name
             # Menu labels are updated when the completed bead is pushed.
-
-    # @+node:ekr.20261005143752.1: *5* u.set_selection_range
-    def set_selection_range(
-        self,
-        old_ins: int,
-        old_sel: tuple[int, int],
-        *,
-        old_y_scroll: int | None = None,
-        new_y_scroll: int | None = None,
-    ) -> None:
-        u = self
-        c = u.c
-        # Ignore redrawers in inner levels.
-        if u.undoBeadLevel > 1:
-            return
-        b = u._require_bead()
-        w = c.frame.body.wrapper
-        if not w:
-            return
-        new_ins = w.getInsertPoint()
-        new_sel = w.getSelectionRange()
-
-        def set_selection_range_redoer() -> None:
-            i, j = new_sel
-            w.setSelectionRange(i, j, insert=new_ins)
-            if new_y_scroll is not None:
-                w.setYScrollPosition(new_y_scroll)
-
-        def set_selection_range_undoer() -> None:
-            i, j = old_sel
-            w.setSelectionRange(i, j, insert=old_ins)
-            if old_y_scroll is not None:
-                w.setYScrollPosition(old_y_scroll)
-
-        b.add_finishers(set_selection_range_redoer, set_selection_range_undoer)
-
-        # Do the action!
-        i, j = new_sel
-        w.setSelectionRange(i, j, insert=new_ins)
 
     # @+node:ekr.20261015041533.1: *4* u: contexts & helpers
     # @+node:ekr.20261015042249.1: *5* u: 5 contexts
@@ -3228,7 +3189,7 @@ class Undoer:
         w.setSelectionRange(*sel, insert=ins)
         w.setYScrollPosition(scroll)
 
-    # @+node:ekr.20261015041852.1: *4* u: redrawers
+    # @+node:ekr.20261015041852.1: *4* u: redrawers & finishers
     # @+node:ekr.20261005182243.1: *5* u.redraw
     def redraw(self, new_p: Position | None = None, contract: bool = False) -> None:
         """Redraw now and choose the command's single undo/redo redraw."""
@@ -3277,6 +3238,45 @@ class Undoer:
         u.undoBead.add_redraw_and_edit(
             new_p, self.undoBead.old_p, contract=contract, select_all=select_all
         )
+
+    # @+node:ekr.20261005143752.1: *5* u.set_selection_range
+    def set_selection_range(
+        self,
+        old_ins: int,
+        old_sel: tuple[int, int],
+        *,
+        old_y_scroll: int | None = None,
+        new_y_scroll: int | None = None,
+    ) -> None:
+        u = self
+        c = u.c
+        # Ignore redrawers in inner levels.
+        if u.undoBeadLevel > 1:
+            return
+        b = u._require_bead()
+        w = c.frame.body.wrapper
+        if not w:
+            return
+        new_ins = w.getInsertPoint()
+        new_sel = w.getSelectionRange()
+
+        def set_selection_range_redoer() -> None:
+            i, j = new_sel
+            w.setSelectionRange(i, j, insert=new_ins)
+            if new_y_scroll is not None:
+                w.setYScrollPosition(new_y_scroll)
+
+        def set_selection_range_undoer() -> None:
+            i, j = old_sel
+            w.setSelectionRange(i, j, insert=old_ins)
+            if old_y_scroll is not None:
+                w.setYScrollPosition(old_y_scroll)
+
+        b.add_finishers(set_selection_range_redoer, set_selection_range_undoer)
+
+        # Do the action!
+        i, j = new_sel
+        w.setSelectionRange(i, j, insert=new_ins)
 
     # @-others
 

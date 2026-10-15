@@ -620,8 +620,9 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
-        ins = ins1 = w.getInsertPoint()
-        if 0 < ins < len(s) and not g.isWordChar(s[ins]):
+        old_ins = ins1 = w.getInsertPoint()
+        old_sel = w.getInsertionRange()
+        if 0 < old_ins < len(s) and not g.isWordChar(s[old_ins]):
             ins1 -= 1
         i, j = g.getWord(s, ins1)
         word = w.get(i, j)
@@ -634,12 +635,13 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         prefix = functools.reduce(g.longestCommonPrefix, aList)
         if not prefix.strip():
             return
+        yscroll = w.getYScrollPosition()
         with u.change_outline('dabbrev-completion'):
-            ypos = w.getYScrollPosition()
             s = s[:i] + prefix + s[j:]
             w.setAllText(s)
-            w.setInsertPoint(i + len(prefix))
-            w.setYScrollPosition(ypos)
+            ins = i + len(prefix)
+            w.setSelectionRange(ins, ins, insert=ins)
+            u.set_selection_range(old_ins, old_sel, old_y_scroll=yscroll)
             c.recolor()
             u.redraw(p)
 
@@ -683,9 +685,9 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     ) -> None:
         """State handler for dabbrev-expands command."""
         c, k = self.c, self.c.k
-        if not w:
-            return  # PR #4812
-        self.w = w
+        w = w or c.frame.body.wrapper
+        if not g.isTextWrapper(w):
+            return
         if prefix is None:
             prefix = ''
         prefix2 = 'dabbrev-expand: '
@@ -700,23 +702,26 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         """Finisher for dabbrev-expands."""
         c, k = self.c, self.c.k
         u = c.undoer
+        w = self.w
         c.frame.log.deleteTab('Completion')
         k.clearState()
         k.resetLabel()
         if not k.arg:
             return
+        old_ins = w.getInsertPoint()
+        old_sel = w.getSelectionRange()
+        old_y_scroll = w.getYScrollPosition()
         with u.change_outline('dabbrev-expand'):
-            w = self.w
             s = w.getAllText()
-            ypos = w.getYScrollPosition()
-            ins = ins1 = w.getInsertPoint()
+            ins = ins1 = old_ins
             if 0 < ins < len(s) and not g.isWordChar(s[ins]):
                 ins1 -= 1
             i, j = g.getWord(s, ins1)
             s = s[:i] + k.arg + s[j:]
             w.setAllText(s)
-            w.setInsertPoint(i + len(k.arg))
-            w.setYScrollPosition(ypos)
+            ins = i + len(k.arg)
+            w.setSelectionRange(ins, ins, insert=ins)
+            u.set_selection_range(old_ins, old_sel, old_y_scroll=old_y_scroll)
             c.recolor()
             u.redraw(c.p)
 
