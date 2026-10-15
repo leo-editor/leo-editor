@@ -861,9 +861,11 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
     # Compute the old insert point in the parent.
     i, m, parent = matches[0]
     indent = m.group(1)
-    ins = parent.b.find(m.group(0))
+    old_ins = parent.b.find(m.group(0))
 
     # Replace the section ref in parent.b with p.b, properly indented.
+    old_ins = w.getInsertPoint()
+    old_sel = w.getSelectionRange()
     with u.change_outline(command):
         lines = g.splitLines(parent.b)
         result = lines[:i]
@@ -875,7 +877,8 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
         p.doDelete()
         # Redraw.
         u.redraw(parent)
-        w.setInsertPoint(ins)
+        # w.setInsertPoint(ins)
+        u.set_selection_range(old_ins, old_sel)  ###
 
 
 # @+node:ekr.20171123135625.40: ** c_ec.reformatBody
@@ -887,6 +890,8 @@ def reformatBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     u = c.undoer
     undoType = 'reformat-body'
     w = c.frame.body.wrapper
+    old_ins = w.getInsertPoint()
+    old_sel = w.getSelectionRange()
     with c.undoer.change_outline(undoType):
         w.setInsertPoint(0)
         while 1:
@@ -898,6 +903,7 @@ def reformatBody(self: Self, event: LeoKeyEvent | None = None) -> None:
             if ins <= progress or ins >= len(s):
                 break
         u.redraw(p)
+        u.set_selection_range(old_ins, old_sel)  ###
 
 
 # @+node:ekr.20171123135625.41: ** c_ec.reformatParagraph & helpers

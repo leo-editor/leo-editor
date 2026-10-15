@@ -5397,10 +5397,11 @@ class Commands:
                 p2 = p.copy()
                 n = root.numberOfChildren()
                 p2._linkCopiedAsNthChild(root, n)
-            c.selectPosition(root)
+            ### c.selectPosition(root)
             c.setChanged()
             c.contractAllHeadlines()
             root.expand()
+            u.redraw(root)  ###
             return root
 
     # @+node:ekr.20160304054950.1: *5* c.setCloneFindByPredicateIcon

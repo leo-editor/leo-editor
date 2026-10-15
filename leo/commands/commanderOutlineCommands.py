@@ -77,6 +77,7 @@ def pasteOutline(
     Nodes do *not* retain their original identify.
     """
     c = self
+    u = c.undoer
     if s is None:
         s = g.app.gui.getTextFromClipboard()
     c.endEditing()
@@ -84,22 +85,22 @@ def pasteOutline(
         return None
     if not (s.lstrip().startswith("{") or g.match(s, 0, g.app.prolog_prefix_string)):
         return None
-    with c.undoer.change_outline('Paste Node', enabled=undoFlag):
+    with u.change_outline('Paste Node', enabled=undoFlag):
         pasted = c.fileCommands.getLeoOutlineFromClipboard(s)
         if not pasted:
             return None
-        if c.checkOutline():
+        if c.checkOutline():  # Error.
             pasted.doDelete()
-            c.undoer.redraw(c.rootPosition())
+            u.redraw(c.rootPosition())
             return None
-        c.selectPosition(pasted)
+        ### c.selectPosition(pasted)
         pasted.setDirty()
         c.setChanged()
         back = pasted.back()
         if back and back.hasChildren() and back.isExpanded():
             pasted.moveToNthChildOf(back, 0)
             pasted.setDirty()
-        c.undoer.redraw(pasted)
+        u.redraw(pasted)
         return pasted
 
 
@@ -115,6 +116,7 @@ def pasteOutlineRetainingClones(
     Nodes *retain* their original identify.
     """
     c = self
+    u = c.undoer
     if s is None:
         s = g.app.gui.getTextFromClipboard()
     c.endEditing()
@@ -122,15 +124,15 @@ def pasteOutlineRetainingClones(
         return None
     if not (s.lstrip().startswith("{") or g.match(s, 0, g.app.prolog_prefix_string)):
         return None
-    with c.undoer.change_outline('Paste As Clone'):
+    with u.change_outline('Paste As Clone'):
         pasted = c.fileCommands.getLeoOutlineFromClipboardRetainingClones(s)
         if not pasted:
             return None
-        if c.checkOutline():
+        if c.checkOutline():  # Error.
             pasted.doDelete()
-            c.undoer.redraw(c.rootPosition())
+            u.redraw(c.rootPosition())
             return None
-        c.selectPosition(pasted)
+        ### c.selectPosition(pasted)
         pasted.setDirty()
         back = pasted.back()
         if back and back.hasChildren() and back.isExpanded():
@@ -138,7 +140,7 @@ def pasteOutlineRetainingClones(
             pasted.setDirty()
         for p in pasted.self_and_subtree():
             p.setAllAncestorAtFileNodesDirty()
-        c.undoer.redraw(pasted)
+        u.redraw(pasted)
         return pasted
 
 
@@ -1135,7 +1137,7 @@ def cloneToAtSpot(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         if c.checkOutline() == 0:
             c.contractAllHeadlines()
             u.redraw(clone)
-        else:
+        else:  # Error.
             clone.doDelete()
             if created_last_spot:
                 last_spot.doDelete()
@@ -1303,15 +1305,17 @@ def cloneMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
             else:
                 p.moveToThreadNext()
         if n:
+            if not g.unitTesting:
+                g.blue(f"cloned {n} nodes")
             c.setChanged()
             parent.expand()
-            c.selectPosition(parent)
+            ### c.selectPosition(parent)
+            u.redraw(parent)  ###
         else:
             parent.doDelete()
-            c.selectPosition(p1)
-        if not g.unitTesting:
-            g.blue(f"cloned {n} nodes")
-        u.redraw()
+            ### c.selectPosition(p1)
+            u.redraw(p1)  ###
+        ### u.redraw(c.p)
 
 
 # @+node:ekr.20160502090456.1: *3* c_oc.copyMarked
@@ -1338,15 +1342,17 @@ def copyMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
             else:
                 p.moveToThreadNext()
         if n:
+            if not g.unitTesting:
+                g.blue(f"copied {n} nodes")
             c.setChanged()
             parent.expand()
-            c.selectPosition(parent)
+            ### c.selectPosition(parent)
+            u.redraw(parent)
         else:
             parent.doDelete()
-            c.selectPosition(p1)
-        if not g.unitTesting:
-            g.blue(f"copied {n} nodes")
-        u.redraw()
+            ### c.selectPosition(p1)
+            u.redraw(p1)
+        ### u.redraw(c.p)
 
 
 # @+node:ekr.20111005081134.15540: *3* c_oc.deleteMarked
@@ -1458,7 +1464,8 @@ def markChangedHeadlines(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
                 # c.setMarked calls a hook.
                 c.setMarked(p)
                 p.setDirty()
-                c.setChanged()
+                ### c.setChanged()
+        u.redraw(c.p)  ###
         if not g.unitTesting:
             g.blue('done')
 
@@ -1476,9 +1483,11 @@ def markChangedRoots(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
                 if flag:
                     c.setMarked(p)  # Calls a hook.
                     p.setDirty()
-                    c.setChanged()
-        if not g.unitTesting:
-            g.blue('done')
+                    ### c.setChanged()
+        u.redraw(c.p)  ###
+        ###
+        # if not g.unitTesting:
+        #     g.blue('done')
 
 
 # @+node:ekr.20031218072017.2928: *3* c_oc.markHeadline
@@ -1513,7 +1522,8 @@ def markSubheads(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
             if not p.isMarked():
                 c.setMarked(p)  # Calls a hook.
                 p.setDirty()
-                c.setChanged()
+                ### c.setChanged()
+        u.redraw(c.p)  ###
 
 
 # @+node:ekr.20031218072017.2930: *3* c_oc.unmarkAll
@@ -1535,7 +1545,7 @@ def unmarkAll(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
                 changed = True
         if changed:
             g.doHook("clear-all-marks", c=c, p=p)
-            c.setChanged()
+            ### c.setChanged()
 
 
 # @+node:ekr.20031218072017.1766: ** c_oc.Move commands
@@ -1903,7 +1913,6 @@ def sortSiblings(
     newChildren.sort(key=key, reverse=reverse)
     if oldChildren == newChildren:
         return
-    # 2010/01/20. Fix bug 510148.
     with u.change_outline(undoType):
         # A copy, so its not the undo bead's oldChildren. Fixes #3205
         parent_v.children = newChildren[:]
@@ -1913,10 +1922,8 @@ def sortSiblings(
             if v.gnx == oldP.v.gnx:
                 newP._childIndex = i
                 break
-
         if newP.parent():
             newP.parent().setDirty()
-
         if sortChildren:
             u.redraw(newP.parent())
         else:

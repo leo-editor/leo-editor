@@ -1295,11 +1295,11 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         """
         Convert all legacy (headline-based) unls to gnx-based unls.
         """
-        c, undo_type = self.c, 'convert-unls'
+        c = self.c
         p1 = c.p.copy()
         u = c.undoer
         n_changed, n_changed_nodes = 0, 0
-        with u.change_outline(undo_type):
+        with u.change_outline('convert-unls'):
             for p in c.all_unique_positions():
                 changed, node_changed, result = False, False, []
                 for line in g.splitLines(p.b):

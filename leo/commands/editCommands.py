@@ -1726,7 +1726,8 @@ class EditCommandsClass(BaseEditCommandsClass):
                         p.b = s2
                         p.setDirty()
                         n += 1
-            g.es(f"cleaned {n} nodes")
+            g.es(f"cleaned {n} node{g.plural(n)}")
+            u.redraw(c.p)  ###
 
     # @+node:ekr.20150514063305.256: *4* ec.cleanLines
     @cmd('clean-lines')
