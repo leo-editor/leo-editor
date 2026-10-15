@@ -614,7 +614,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         Insert the common prefix of all dynamic abbrev's matching the present word.
         This corresponds to C-M-/ in Emacs.
         """
-        c, _p = self.c, self.c.p
+        c, p = self.c, self.c.p
+        u = c.undoer
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
@@ -631,15 +632,16 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         if word in aList and len(aList) > 1:
             aList.remove(word)
         prefix = functools.reduce(g.longestCommonPrefix, aList)
-        ### To do: return if not prefix.strip()
-        with c.undoer.change_outline('dabbrev-completion'):
-            if prefix.strip():
-                ypos = w.getYScrollPosition()
-                s = s[:i] + prefix + s[j:]
-                w.setAllText(s)
-                w.setInsertPoint(i + len(prefix))
-                w.setYScrollPosition(ypos)
-                c.recolor()
+        if not prefix.strip():
+            return
+        with u.change_outline('dabbrev-completion'):
+            ypos = w.getYScrollPosition()
+            s = s[:i] + prefix + s[j:]
+            w.setAllText(s)
+            w.setInsertPoint(i + len(prefix))
+            w.setYScrollPosition(ypos)
+            c.recolor()
+            u.redraw(p)
 
     # @+node:ekr.20150514043850.21: *4* abbrev.dynamicExpansion M-/ & helper
     @cmd('dabbrev-expands')
@@ -697,24 +699,26 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     def dynamicExpandHelper1(self, event: LeoKeyEvent | None = None) -> None:
         """Finisher for dabbrev-expands."""
         c, k = self.c, self.c.k
+        u = c.undoer
         c.frame.log.deleteTab('Completion')
         k.clearState()
         k.resetLabel()
-        ### To do: return if not k.arg.
-        with c.undoer.change_outline('dabbrev-expand'):
-            if k.arg:
-                w = self.w
-                s = w.getAllText()
-                ypos = w.getYScrollPosition()
-                ins = ins1 = w.getInsertPoint()
-                if 0 < ins < len(s) and not g.isWordChar(s[ins]):
-                    ins1 -= 1
-                i, j = g.getWord(s, ins1)
-                s = s[:i] + k.arg + s[j:]
-                w.setAllText(s)
-                w.setInsertPoint(i + len(k.arg))
-                w.setYScrollPosition(ypos)
-                c.recolor()
+        if not k.arg:
+            return
+        with u.change_outline('dabbrev-expand'):
+            w = self.w
+            s = w.getAllText()
+            ypos = w.getYScrollPosition()
+            ins = ins1 = w.getInsertPoint()
+            if 0 < ins < len(s) and not g.isWordChar(s[ins]):
+                ins1 -= 1
+            i, j = g.getWord(s, ins1)
+            s = s[:i] + k.arg + s[j:]
+            w.setAllText(s)
+            w.setInsertPoint(i + len(k.arg))
+            w.setYScrollPosition(ypos)
+            c.recolor()
+            u.redraw(c.p)
 
     # @+node:ekr.20150514043850.28: *4* abbrev.killAllAbbrevs
     @cmd('abbrev-kill-all')
