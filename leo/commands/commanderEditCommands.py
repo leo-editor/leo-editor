@@ -100,8 +100,7 @@ def convertAllBlanks(self: Self, event: LeoKeyEvent | None = None) -> None:
         if not g.unitTesting:
             # Must come before c.redraw().
             g.es("blanks converted to tabs in", count, "nodes")
-
-        u.redraw(c.p)  ###
+        u.redraw(c.p)
 
 
 # @+node:ekr.20171123135625.17: ** c_ec.convertAllTabs
@@ -175,7 +174,7 @@ def convertBlanks(self: Self, event: LeoKeyEvent | None = None) -> bool:
         w.selectAllText()
         w.setYScrollPosition(oldYview)
         u.redraw(c.p)
-        return True  ###
+        return True
 
 
 # @+node:ekr.20171123135625.19: ** c_ec.convertTabs
@@ -211,7 +210,7 @@ def convertTabs(self: Self, event: LeoKeyEvent | None = None) -> bool:
         w.setSelectionRange(i, j, insert=j)
         w.setYScrollPosition(oldYview)
         u.redraw(c.p)
-        return True  ###
+        return True
 
 
 # @+node:ekr.20171123135625.21: ** c_ec.dedentBody (unindent-region)
@@ -898,7 +897,7 @@ def reformatBody(self: Self, event: LeoKeyEvent | None = None) -> None:
             w.setInsertPoint(ins)
             if ins <= progress or ins >= len(s):
                 break
-        u.redraw(p)  ###
+        u.redraw(p)
 
 
 # @+node:ekr.20171123135625.41: ** c_ec.reformatParagraph & helpers

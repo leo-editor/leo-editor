@@ -2547,7 +2547,7 @@ class LeoFind:
                 p.setMarked()
                 p.setDirty()
             u.redraw(c.p)
-            return True  ###
+            return True
 
     # @+node:ekr.20210110073117.31: *4* find.check_args
     def check_args(self, tag: str) -> bool:

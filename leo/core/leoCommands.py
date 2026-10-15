@@ -4363,7 +4363,7 @@ class Commands:
             clone.moveToNthChildOf(parent, n)
             clone.setDirty()
             c.updateSyntaxColorer(clone)  # Dragging can change syntax coloring.
-            u.redraw(clone)  ###
+            u.redraw(clone)
 
     # @+node:ekr.20031218072017.2948: *5* c.dragCloneAfter
     def dragCloneAfter(self, p: Position, after: Position) -> None:
@@ -4384,7 +4384,7 @@ class Commands:
             else:
                 clone.doDelete(newNode=p)
             c.updateSyntaxColorer(clone)  # Dragging can change syntax coloring.
-            u.redraw(p)  ###
+            u.redraw(p)
 
     # @+node:ekr.20031218072017.2949: *4* c.Drawing
     # @+node:ekr.20080514131122.8: *5* c.bringToFront
@@ -5521,12 +5521,10 @@ class Commands:
             while to_do:
                 p = to_do.pop()
                 delete(p)
-
             # Set c.p if necessary.
             if not c.positionExists(c.p):
                 c.selectPosition(c.rootPosition())
-
-            u.redraw(c.p)  ###
+            u.redraw(c.p)
 
     # For compatibility.
     undoableDeletePositions = deletePositionsInList
