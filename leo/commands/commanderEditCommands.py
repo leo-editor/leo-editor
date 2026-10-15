@@ -25,7 +25,6 @@ if TYPE_CHECKING:  # pragma: no cover
 def addComments(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Undoably add comments to the selected text."""
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
-    # "Before" snapshot.
     with u.change_node(p, 'Add Comments'):
         # Make sure there is a selection.
         head, lines, tail, oldSel, oldYview = self.getBodyLines()
@@ -64,7 +63,6 @@ def addComments(self: Self, event: LeoKeyEvent | None = None) -> None:
         w.setSelectionRange(i, j, insert=j)
         w.setYScrollPosition(oldYview)
         u.redraw(c.p)
-        # "after" snapshot.
 
 
 # @+node:ekr.20171123135625.16: ** c_ec.convertAllBlanks
@@ -90,9 +88,8 @@ def convertAllBlanks(self: Self, event: LeoKeyEvent | None = None) -> None:
                 lines = text.split('\n')
                 for line in lines:
                     i, w = g.skip_leading_ws_with_indent(line, 0, tabWidth)
-                    s = (
-                        g.computeLeadingWhitespace(w, abs(tabWidth)) + line[i:]
-                    )  # use positive width.
+                    # use positive width.
+                    s = g.computeLeadingWhitespace(w, abs(tabWidth)) + line[i:]
                     if s != line:
                         changed = True
                     result.append(s)
@@ -103,6 +100,8 @@ def convertAllBlanks(self: Self, event: LeoKeyEvent | None = None) -> None:
         if not g.unitTesting:
             # Must come before c.redraw().
             g.es("blanks converted to tabs in", count, "nodes")
+
+        u.redraw(c.p)  ###
 
 
 # @+node:ekr.20171123135625.17: ** c_ec.convertAllTabs
@@ -142,6 +141,8 @@ def convertAllTabs(self: Self, event: LeoKeyEvent | None = None) -> None:
         if not g.unitTesting:
             g.es("tabs converted to blanks in", count, "nodes")
 
+        u.redraw(c.p)
+
 
 # @+node:ekr.20171123135625.18: ** c_ec.convertBlanks
 @g.commander_command('convert-blanks')
@@ -151,7 +152,7 @@ def convertBlanks(self: Self, event: LeoKeyEvent | None = None) -> bool:
     Return True if the the p.b was changed.
     """
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
-    # "Before" snapshot.
+
     with u.change_node(p, 'Convert Blanks'):
         oldYview = w.getYScrollPosition()
         w.selectAllText()
@@ -173,9 +174,8 @@ def convertBlanks(self: Self, event: LeoKeyEvent | None = None) -> bool:
         # Select all text and set scroll position.
         w.selectAllText()
         w.setYScrollPosition(oldYview)
-        # "after" snapshot.
-        return True
         u.redraw(c.p)
+        return True  ###
 
 
 # @+node:ekr.20171123135625.19: ** c_ec.convertTabs
@@ -184,13 +184,10 @@ def convertTabs(self: Self, event: LeoKeyEvent | None = None) -> bool:
     """Convert all tabs to blanks in the selected node."""
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
 
-    # "Before" snapshot.
     with u.change_node(p, 'Convert Tabs'):
-        # Data...
         w.selectAllText()
         head, lines, tail, oldSel, oldYview = self.getBodyLines()
         tabWidth = c.getTabWidth(c.p)
-        # Calculate the result.
         changed, result = False, []
         for line in lines:
             i, width = g.skip_leading_ws_with_indent(line, 0, tabWidth)
@@ -213,10 +210,8 @@ def convertTabs(self: Self, event: LeoKeyEvent | None = None) -> bool:
         # Set the selection range and scroll position.
         w.setSelectionRange(i, j, insert=j)
         w.setYScrollPosition(oldYview)
-
-        # "after" snapshot.
-        return True
         u.redraw(c.p)
+        return True  ###
 
 
 # @+node:ekr.20171123135625.21: ** c_ec.dedentBody (unindent-region)
@@ -225,7 +220,6 @@ def dedentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Remove one tab's worth of indentation from all presently selected lines."""
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
 
-    # Initial data.
     sel_1, sel_2 = w.getSelectionRange()
     tab_width = c.getTabWidth(c.p)
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
@@ -284,7 +278,6 @@ def deleteComments(self: Self, event: LeoKeyEvent | None = None) -> None:
     # @-<< deleteComments docstring >>
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
 
-    # "Before" snapshot.
     with u.change_node(p, 'Delete Comments'):
         # Initial data.
         head, lines, tail, oldSel, oldYview = self.getBodyLines()
@@ -344,8 +337,6 @@ def deleteComments(self: Self, event: LeoKeyEvent | None = None) -> None:
         w.setSelectionRange(i, j, insert=ins)
         w.setYScrollPosition(oldYview)
         u.redraw(c.p)
-
-        # "after" snapshot.
 
 
 # @+node:ekr.20171123135625.54: ** c_ec.editHeadline (edit-headline)
@@ -420,11 +411,8 @@ def extract(self: Self, event: LeoKeyEvent | None = None) -> None:
     else:
         h, b, middle = lines[0].strip(), lines[1:], ''
 
-    # Start the outer undo group.
     with u.change_outline('extract'):
         p = createFirstChildNode(c, c.p, h, ''.join(b))
-
-        # Start inner undo.
         if oldSel:
             i, j = oldSel
             w.setSelectionRange(i, j, insert=j)
@@ -436,15 +424,13 @@ def extract(self: Self, event: LeoKeyEvent | None = None) -> None:
         j = max(i, len(head) + len(middle) - 1)
         w.setSelectionRange(i, j, insert=j)
 
-        # End the inner undo.
-
         # Scroll as necessary.
         if oldYview:
             w.setYScrollPosition(oldYview)
         else:
             w.seeInsertPoint()
 
-        # Add the changes to the outer undo group.
+        # Finish.
         p.parent().expand()
         u.redraw(p.parent())  # A bit more convenient than p.
         c.bodyWantsFocus()
@@ -553,6 +539,7 @@ def extractSectionNames(self: Self, event: LeoKeyEvent | None = None) -> None:
             u.redraw(p)
         else:
             g.warning("selected text should contain section names")
+
         # Restore the selection.
         if not oldSel:
             return  # PR #4812
@@ -613,7 +600,6 @@ def alwaysIndentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
         c.insertCharFromEvent(event)
         return
 
-    # "Before" snapshot.
     with u.change_node(p, 'Indent Region'):
         # Initial data.
         sel_1, sel_2 = w.getSelectionRange()
@@ -655,8 +641,6 @@ def alwaysIndentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
         w.setSelectionRange(i, j, insert=j)
         w.setYScrollPosition(oldYview)
         u.redraw(c.p)
-
-        # "after" snapshot.
 
 
 # @+node:ekr.20210104123442.1: ** c_ec.indentBody (indent-region)
@@ -740,18 +724,11 @@ def line_to_headline(self: Self, event: LeoKeyEvent | None = None) -> None:
     if not line:
         return
     with u.change_outline('line-to-headline'):
-        # Start outer undo.
         p2 = p.insertAsLastChild()
         p2.h = line
-
-        # "before" snapshot.
         p.b = s[:i] + s[j:]
         w.setInsertPoint(i)
         p2.setDirty()
-
-        # "after" snapshot.
-
-        # Finish outer undo.
         p.expand()
         u.redraw(p)
         c.bodyWantsFocus()
@@ -895,10 +872,8 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
         result.extend(lines[i + 1 :])
         result.append('\n' if lines[-1].endswith('\n') else '\n\n')
         parent.b = ''.join(result)
-
         # Delete the definition node.
         p.doDelete()
-
         # Redraw.
         u.redraw(parent)
         w.setInsertPoint(ins)
@@ -908,7 +883,9 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
 @g.commander_command('reformat-body')
 def reformatBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Reformat all paragraphs in the body."""
-    c, _p = self, self.p
+    c = self
+    p = self.p
+    u = c.undoer
     undoType = 'reformat-body'
     w = c.frame.body.wrapper
     with c.undoer.change_outline(undoType):
@@ -921,6 +898,7 @@ def reformatBody(self: Self, event: LeoKeyEvent | None = None) -> None:
             w.setInsertPoint(ins)
             if ins <= progress or ins >= len(s):
                 break
+        u.redraw(p)  ###
 
 
 # @+node:ekr.20171123135625.41: ** c_ec.reformatParagraph & helpers

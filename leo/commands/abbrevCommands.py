@@ -169,7 +169,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             g.es_print(f"bad copied outline: {expansion}")
             return
 
-        # Begin the undo.
         with u.change_outline('Expand Tree Abbreviation'):
             self.replace_selection(i, j, '')
 
@@ -185,13 +184,16 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             # Carefully replace the old node with the new node.
             if c.canDeleteHeadline():
                 if prevSiblingExpanded:
-                    prevSibling.contract()  # To prevent pasting as last child of prevSibling.
+                    # To prevent pasting as last child of prevSibling.
+                    prevSibling.contract()
                 c.deleteOutline(op_name="Cut Node")
                 c.pasteOutline(s=expansion)
                 if noSiblings:
-                    c.moveOutlineRight()  # Inserted below instead of as child, so move right.
+                    # Inserted below instead of as child, so move right.
+                    c.moveOutlineRight()
                 if isRoot:
-                    c.moveOutlineUp()  # Delete & paste made it second position, so move up.
+                    # Delete & paste made it second position, so move up.
+                    c.moveOutlineUp()
             else:
                 c.pasteOutline(s=expansion)
                 c.selectPosition(c.p.moveToBack())
@@ -273,8 +275,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         p = c.p
         u = c.undoer
         w = self.w
-
-        # Start the undo.
         with u.change_node(p, 'Abbreviation'):
             # Make the replacement.
             w.delete(i, j)
@@ -284,8 +284,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             if not self.in_head:
                 p.v.b = w.getAllText()
             u.redraw(c.p)
-
-            # Complete the undo.
 
     # @+node:ekr.20260516063743.1: *4* abbrev: script substitution
     # @+node:ekr.20260516063159.1: *5* abbrev.make_all_scripting_substitutions
@@ -633,6 +631,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         if word in aList and len(aList) > 1:
             aList.remove(word)
         prefix = functools.reduce(g.longestCommonPrefix, aList)
+        ### To do: return if not prefix.strip()
         with c.undoer.change_outline('dabbrev-completion'):
             if prefix.strip():
                 ypos = w.getYScrollPosition()
@@ -701,6 +700,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         c.frame.log.deleteTab('Completion')
         k.clearState()
         k.resetLabel()
+        ### To do: return if not k.arg.
         with c.undoer.change_outline('dabbrev-expand'):
             if k.arg:
                 w = self.w
@@ -710,7 +710,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 if 0 < ins < len(s) and not g.isWordChar(s[ins]):
                     ins1 -= 1
                 i, j = g.getWord(s, ins1)
-                # word = s[i: j]
                 s = s[:i] + k.arg + s[j:]
                 w.setAllText(s)
                 w.setInsertPoint(i + len(k.arg))

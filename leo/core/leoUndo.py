@@ -111,8 +111,11 @@ class UndoBead:
     ) -> None:
 
         if self.redraw_finishers is not None:
+            message = f"u.redraw_finishers already exist: {g.callers()=}\n"
+            if g.unitTesting:
+                assert False, message
             print()
-            g.trace(f"u.redraw_finishers already exist: {g.callers()=}\n")
+            g.trace()
 
         self.redraw_finishers = redo_redraw_finisher, undo_redraw_finisher
 
@@ -2958,8 +2961,11 @@ class Undoer:
         new_y_scroll: int | None = None,
     ) -> None:
         u = self
-        b = u._require_bead()
         c = u.c
+        # Ignore redrawers in inner levels.
+        if u.undoBeadLevel > 1:
+            return
+        b = u._require_bead()
         w = c.frame.body.wrapper
         if not w:
             return
@@ -3226,7 +3232,11 @@ class Undoer:
     # @+node:ekr.20261005182243.1: *5* u.redraw
     def redraw(self, new_p: Position | None = None, contract: bool = False) -> None:
         """Redraw now and choose the command's single undo/redo redraw."""
-        c = self.c
+        u = self
+        c = u.c
+        # Ignore redrawers in inner levels.
+        if u.undoBeadLevel > 1:
+            return
         new_p = new_p or c.p
         w = c.frame.body.wrapper
         preserve_body = new_p == c.p and w.getAllText() == new_p.b
@@ -3242,9 +3252,13 @@ class Undoer:
     # @+node:ekr.20261011193020.1: *5* u.redraw_after_head_changed
     def redraw_after_head_changed(self) -> None:
         """Refresh headlines now and after undo/redo."""
-        self.c.redraw_after_head_changed()
-        if self.undoBead:
-            self.undoBead.add_redraw_after_head_changed()
+        u = self
+        c = u.c
+        # Ignore redrawers in inner levels.
+        if u.undoBeadLevel > 1:
+            return
+        c.redraw_after_head_changed()
+        u.undoBead.add_redraw_after_head_changed()
 
     # @+node:ekr.20261011190258.1: *5* u.redraw_and_edit
     def redraw_and_edit(
@@ -3254,14 +3268,15 @@ class Undoer:
         select_all: bool = True,
     ) -> None:
         """Redraw and edit now and after undo/redo."""
-        self.c.redrawAndEdit(new_p, selectAll=select_all)
-        if self.undoBead:
-            self.undoBead.add_redraw_and_edit(
-                new_p,
-                self.undoBead.old_p,
-                contract=contract,
-                select_all=select_all,
-            )
+        u = self
+        c = u.c
+        # Ignore redrawers in inner levels.
+        if u.undoBeadLevel > 1:
+            return
+        c.redrawAndEdit(new_p, selectAll=select_all)
+        u.undoBead.add_redraw_and_edit(
+            new_p, self.undoBead.old_p, contract=contract, select_all=select_all
+        )
 
     # @-others
 

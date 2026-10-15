@@ -2546,8 +2546,8 @@ class LeoFind:
             if self.mark_changes and not p.isMarked():  # pragma: no cover
                 p.setMarked()
                 p.setDirty()
-            return True
             u.redraw(c.p)
+            return True  ###
 
     # @+node:ekr.20210110073117.31: *4* find.check_args
     def check_args(self, tag: str) -> bool:

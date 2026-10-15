@@ -716,6 +716,7 @@ def diffMarkedNodes(event: LeoKeyEvent | None = None) -> None:
     if len(aList) < 2:
         g.es_print('Please mark at least 2 nodes')
         return
+
     c.selectPosition(c.lastTopLevel())
     with u.change_outline('diff-marked-nodes'):
         root = c.lastTopLevel().insertAfter()

@@ -165,10 +165,8 @@ def promote_section_definition(event: LeoKeyEvent | None = None) -> None:
         g.es_print('Reference not found:', ref_s)
         return
 
-    # Start the undo group.
     ref_p = parent
     with u.change_outline('promote-section-definition'):
-        # Change ref_p.b.
         new_ref_lines = []
         for line in g.splitLines(ref_p.b):
             if line.strip() == ref_s:
@@ -176,11 +174,7 @@ def promote_section_definition(event: LeoKeyEvent | None = None) -> None:
             else:
                 new_ref_lines.append(line)
         ref_p.b = ''.join(new_ref_lines)
-
-        # Delete and select ref_p.
         c.p.doDelete(ref_p)
-
-        # Finish the group.
         u.redraw(ref_p)
 
 
@@ -199,14 +193,11 @@ def merge_node_with_next_node(event: LeoKeyEvent | None = None) -> None:
     next = p.next()
     if not next:
         return
-    # Outer undo.
+
     with u.change_outline('merge-node-with-next-node'):
-        # Inner undo 1: change next.b.
         next.b = p.b.rstrip() + '\n\n' + next.b
         w.setAllText(next.b)
-        # Inner undo 2: delete p.
         p.doDelete(next)  # This adjusts next._childIndex.
-        # End outer undo:
         u.redraw(next)
 
 
@@ -225,14 +216,10 @@ def merge_node_with_prev_node(event: LeoKeyEvent | None = None) -> None:
     prev = p.back()
     if not prev:
         return
-    # Outer undo.
     with u.change_outline('merge-node-with-prev-node'):
-        # Inner undo 1: change prev.b.
         prev.b = prev.b.rstrip() + '\n\n' + p.b
         w.setAllText(prev.b)
-        # Inner undo 2: delete p, select prev.
         p.doDelete()  # No need to adjust prev._childIndex.
-        # End outer undo.
         u.redraw(prev)
 
 
@@ -280,10 +267,11 @@ def promoteBodies(event: LeoKeyEvent | None = None) -> None:
     if not c:
         return
     p = c.p
-    with c.undoer.change_node(p, 'promote-bodies'):
+    u = c.u
+    with u.change_node(p, 'promote-bodies'):
         result = [child.b.rstrip() + '\n\n' for child in p.subtree()]
         p.b = ''.join(result).rstrip() + '\n\n'
-        c.undoer.redraw(c.p)
+        u.redraw(c.p)
 
 
 # @+node:ekr.20190323085410.1: *3* @g.command('promote-headlines')
@@ -294,10 +282,11 @@ def promoteHeadlines(event: LeoKeyEvent | None = None) -> None:
     if not c:
         return
     p = c.p
-    with c.undoer.change_node(p, 'promote-headlines'):
+    u = c.u
+    with u.change_node(p, 'promote-headlines'):
         if result := '\n'.join([p.h.rstrip() for p in p.subtree()]):
             p.b = p.b.lstrip() + '\n' + result
-        c.undoer.redraw(c.p)
+        u.redraw(c.p)
 
 
 # @+node:ekr.20180504180647.1: *3* @g.command('select-next-trace-statement')
@@ -1999,7 +1988,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = event.w if event else c.frame.body.wrapper
         if not w:
             return
-        # "Before" snapshot.
+
         with u.change_node(p, 'remove-blank-lines'):
             # Initial data.
             oldYview = w.getYScrollPosition()
@@ -2022,7 +2011,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             w.setSelectionRange(i, j, insert=j)
             w.setYScrollPosition(oldYview)
             u.redraw(c.p)
-            # "after" snapshot.
 
     # @+node:ekr.20150514063305.267: *4* ec.replaceCurrentCharacter
     @cmd('replace-current-character')
