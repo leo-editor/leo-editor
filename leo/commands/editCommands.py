@@ -136,7 +136,6 @@ def mark_node_and_parents(event: LeoKeyEvent | None = None) -> list[Position]:
                 parent.setDirty()
                 changed.append(parent.copy())
         if changed:
-            ### c.setChanged()
             u.redraw()
         return changed
 
@@ -382,7 +381,6 @@ def unmark_node_and_parents(event: LeoKeyEvent | None = None) -> list[Position]:
                 parent.setDirty()
                 changed.append(parent.copy())
         if changed:
-            ### c.setChanged()
             u.redraw()
         return changed
 
@@ -525,7 +523,6 @@ class EditCommandsClass(BaseEditCommandsClass):
                     p.h = ' '.join([s, time])
                 else:
                     p.h = time
-                ### c.setChanged()
                 p.setDirty()
                 if g.app.inBridge:
                     u.redraw()
@@ -1727,7 +1724,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                         p.setDirty()
                         n += 1
             g.es(f"cleaned {n} node{g.plural(n)}")
-            u.redraw(c.p)  ###
+            u.redraw(c.p)
 
     # @+node:ekr.20150514063305.256: *4* ec.cleanLines
     @cmd('clean-lines')
@@ -3511,8 +3508,8 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.setInsertPoint(ins)
                 if progress >= ins or ins >= j or ins >= len(s):
                     break
-            u.set_selection_range(old_ins, old_sel)  ###
-            u.redraw(c.p)  ###
+            u.redraw(c.p)
+            u.set_selection_range(old_ins, old_sel)
 
     # @+node:ekr.20150514063305.322: *4* ec.fillRegionAsParagraph
     @cmd('fill-region-as-paragraph')
@@ -4120,33 +4117,21 @@ class EditCommandsClass(BaseEditCommandsClass):
         if p and p.v.u:
             with u.change_outline('clear-node-uas'):
                 p.v.u = {}
-                # #1276.
                 p.setDirty()
-                ### c.setChanged()
                 u.redraw()
 
     @cmd('clear-all-uas')
     def clearAllUas(self, event: LeoKeyEvent | None = None) -> None:
         """Clear all uAs in the entire outline."""
         c, u = self.c, self.c.undoer
-        # #1276.
         changed_v = [v for v in c.all_unique_nodes()]
-        if not changed_v:  ###
+        if not changed_v:
             return
         with u.change_outline('clear-all-uas'):
             for v in changed_v:
                 v.u = {}
                 v.setDirty()
             u.redraw(c.p)
-            # for p in c.all_unique_positions():
-            #     if p.v.u:
-            #         if not changed:  # #4443
-            #             changed = True
-            #         p.v.u = {}
-            #         p.setDirty()
-            # if changed:
-            #     c.setChanged()
-            #     u.redraw()
 
     # @+node:ekr.20150514063305.350: *4* ec.showUas & showAllUas
     @cmd('show-all-uas')

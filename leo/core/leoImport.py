@@ -87,7 +87,7 @@ class FreeMindImporter:
             except Exception:
                 g.es_print('Exception importing FreeMind file', g.shortFileName(path))
                 g.es_exception()
-            u.redraw(c.p)  ###
+            u.redraw(c.p)
             return c.p
 
     # @+node:ekr.20160503191518.4: *3* freemind.import_file
@@ -787,13 +787,12 @@ class LeoImportCommands:
                     if p:  # createOutline may fail.
                         p.contract()
                         p.setDirty()
-                        ### c.setChanged()
                 except Exception:
                     g.es_print('Exception importing', fn)
                     g.es_exception()
             c.checkOutline()
             parent.expand()
-            u.redraw(parent)  ###
+            u.redraw(parent)
 
     # @+node:ekr.20160503125237.1: *4* ic.importFreeMind
     def importFreeMind(self, files: list[str]) -> None:
@@ -864,7 +863,7 @@ class LeoImportCommands:
                 self.setBodyString(p, "@ignore\n@language cweb")
             # Scan the file, creating one section for each function definition.
             self.scanWebFile(path, p)
-            u.redraw(p)  ###
+            u.redraw(p)
             return p
 
     # @+node:ekr.20031218072017.3227: *5* ic.findFunctionDef
@@ -1158,13 +1157,10 @@ class LeoImportCommands:
             try:
                 old_p = p.copy()
                 c.selectPosition(p)
-                changed = self.parse_body_helper(p, importer=importer)
-                c.selectPosition(old_p)
+                self.parse_body_helper(p, importer=importer)
                 if c.checkOutline():
                     return  # Error!
-                if changed:
-                    ### c.setChanged()
-                    u.redraw(old_p)
+                u.redraw(old_p)
             except Exception:
                 g.es_exception()
 
@@ -1548,7 +1544,6 @@ class MORE_Importer:
                     c.endEditing()
                     c.checkOutline()
                     p.setDirty()
-                    ### c.setChanged()
                     u.redraw(root)
                     return root
             if not g.unitTesting:
@@ -2077,9 +2072,7 @@ class TabImporter:
                     p.h = g.shortFileName(fn)
                     p.contract()
                     p.setDirty()
-                ### if p:
-                ### c.setChanged()
-            u.redraw(self.root)  ###
+            u.redraw(self.root)
 
     # @+node:ekr.20161006071801.4: *3* tabbed.lws
     def lws(self, s: str) -> str:

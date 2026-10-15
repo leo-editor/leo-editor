@@ -874,10 +874,8 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
         parent.b = ''.join(result)
         # Delete the definition node.
         p.doDelete()
-        # Redraw.
         u.redraw(parent)
-        # w.setInsertPoint(ins)
-        u.set_selection_range(old_ins, old_sel)  ###
+        u.set_selection_range(old_ins, old_sel)
 
 
 # @+node:ekr.20171123135625.40: ** c_ec.reformatBody
@@ -902,7 +900,7 @@ def reformatBody(self: Self, event: LeoKeyEvent | None = None) -> None:
             if ins <= progress or ins >= len(s):
                 break
         u.redraw(p)
-        u.set_selection_range(old_ins, old_sel)  ###
+        u.set_selection_range(old_ins, old_sel)
 
 
 # @+node:ekr.20171123135625.41: ** c_ec.reformatParagraph & helpers

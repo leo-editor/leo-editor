@@ -319,8 +319,7 @@ class LeoFind:
                         p.b = new_b
             if not g.unitTesting:  # pragma: no cover
                 print(f"{count:3}: {find_text:>30} => {change_text}")
-            #### No need for u.redraw: this is a helper.
-            u.redraw()  ###
+            u.redraw()
             return count
 
     # @+node:ekr.20210108083003.1: *4* find._init_from_dict
@@ -2435,9 +2434,7 @@ class LeoFind:
             if clones:
                 found_p = self._cfa_create_nodes(clones, flattened=False)
                 assert c.positionExists(found_p, trace=True), found_p
-                ### c.setChanged()
                 c.selectPosition(found_p)
-                # Put the count in found_p.h.
                 found_p.h = found_p.h.replace('Found:', f"Found {count}:")
             # Reset data after calculating results.
             self.ftm.set_radio_button('entire-outline')
@@ -2445,7 +2442,7 @@ class LeoFind:
             self.node_only = self.suboutline_only = False
             self.root = None
             g.es("found", count, "matches for", self.find_text)
-            u.redraw(c.p)  ###
+            u.redraw(c.p)
             return count  # Might be useful for the gui update.
 
     # @+node:ekr.20210110073117.34: *5* find._cfa_create_nodes

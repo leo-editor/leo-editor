@@ -93,9 +93,7 @@ def pasteOutline(
             pasted.doDelete()
             u.redraw(c.rootPosition())
             return None
-        ### c.selectPosition(pasted)
         pasted.setDirty()
-        ### c.setChanged()
         back = pasted.back()
         if back and back.hasChildren() and back.isExpanded():
             pasted.moveToNthChildOf(back, 0)
@@ -132,7 +130,6 @@ def pasteOutlineRetainingClones(
             pasted.doDelete()
             u.redraw(c.rootPosition())
             return None
-        ### c.selectPosition(pasted)
         pasted.setDirty()
         back = pasted.back()
         if back and back.hasChildren() and back.isExpanded():
@@ -1307,15 +1304,11 @@ def cloneMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         if n:
             if not g.unitTesting:
                 g.blue(f"cloned {n} nodes")
-            ### c.setChanged()
             parent.expand()
-            ### c.selectPosition(parent)
-            u.redraw(parent)  ###
+            u.redraw(parent)
         else:
             parent.doDelete()
-            ### c.selectPosition(p1)
-            u.redraw(p1)  ###
-        ### u.redraw(c.p)
+            u.redraw(p1)
 
 
 # @+node:ekr.20160502090456.1: *3* c_oc.copyMarked
@@ -1344,15 +1337,11 @@ def copyMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         if n:
             if not g.unitTesting:
                 g.blue(f"copied {n} nodes")
-            ### c.setChanged()
             parent.expand()
-            ### c.selectPosition(parent)
             u.redraw(parent)
         else:
             parent.doDelete()
-            ### c.selectPosition(p1)
             u.redraw(p1)
-        ### u.redraw(c.p)
 
 
 # @+node:ekr.20111005081134.15540: *3* c_oc.deleteMarked
@@ -1372,8 +1361,8 @@ def deleteMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
                 p.moveToThreadNext()
         if undo_data:
             if not g.unitTesting:
-                g.blue(f"deleted {len(undo_data)} nodes")
-            ### c.setChanged()
+                n = len(undo_data)
+                g.blue(f"deleted {n} node{g.plural(n)}")
         # Don't even *think* about restoring the old position.
         c.contractAllHeadlines()
         u.redraw(c.rootPosition())
@@ -1464,11 +1453,7 @@ def markChangedHeadlines(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
                 # c.setMarked calls a hook.
                 c.setMarked(p)
                 p.setDirty()
-                ### c.setChanged()
-        u.redraw(c.p)  ###
-        ###
-        # if not g.unitTesting:
-        #     g.blue('done')
+        u.redraw(c.p)
 
 
 # @+node:ekr.20031218072017.2924: *3* c_oc.markChangedRoots
@@ -1484,11 +1469,7 @@ def markChangedRoots(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
                 if flag:
                     c.setMarked(p)  # Calls a hook.
                     p.setDirty()
-                    ### c.setChanged()
-        u.redraw(c.p)  ###
-        ###
-        # if not g.unitTesting:
-        #     g.blue('done')
+        u.redraw(c.p)
 
 
 # @+node:ekr.20031218072017.2928: *3* c_oc.markHeadline
@@ -1523,8 +1504,7 @@ def markSubheads(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
             if not p.isMarked():
                 c.setMarked(p)  # Calls a hook.
                 p.setDirty()
-                ### c.setChanged()
-        u.redraw(c.p)  ###
+        u.redraw(c.p)
 
 
 # @+node:ekr.20031218072017.2930: *3* c_oc.unmarkAll
@@ -1830,8 +1810,7 @@ def promote(
     c.endEditing()
     with u.change_outline('Promote', enabled=undoFlag):
         p.promote()
-        ### c.setChanged()
-        if undoFlag:
+        if undoFlag:  ###
             p.setDirty()
         c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
         u.redraw(p)

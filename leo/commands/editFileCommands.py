@@ -215,7 +215,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                             total += 1
                     g.es_print(f"{n} node{g.plural(n)} {p.h}")
             g.es_print(f"{total} total node{g.plural(total)}")
-            u.redraw(c.p)  ###
+            u.redraw(c.p)
 
     # @+node:ekr.20170806094319.8: *4* efc.cleanAtCleanNode
     def cleanAtCleanNode(self, p: Position) -> bool:
@@ -1295,7 +1295,6 @@ class GitDiffController:
                     self.summary_diff_python_file(fn=fn, rev1=rev1, rev2=rev2)
                 if (i % 10) == 0:
                     g.es_print(f"diff: {i} files", color='blue')
-            ### c.selectPosition(self.root)
             self.root.expand()
             u.redraw(self.root)
             print(f"done! diffed: {n} file{g.plural(n)}")

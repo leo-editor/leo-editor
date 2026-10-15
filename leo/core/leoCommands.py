@@ -4379,7 +4379,6 @@ class Commands:
                 clone.setDirty()
                 clone.moveAfter(after)
                 clone.v.setDirty()
-                ### c.setChanged()
                 p = clone
             else:
                 clone.doDelete(newNode=p)
@@ -5397,11 +5396,9 @@ class Commands:
                 p2 = p.copy()
                 n = root.numberOfChildren()
                 p2._linkCopiedAsNthChild(root, n)
-            ### c.selectPosition(root)
-            ### c.setChanged()
             c.contractAllHeadlines()
-            root.expand()
-            u.redraw(root)  ###
+            root.contract()
+            u.redraw(root)
             return root
 
     # @+node:ekr.20160304054950.1: *5* c.setCloneFindByPredicateIcon
