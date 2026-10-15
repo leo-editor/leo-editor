@@ -3539,7 +3539,7 @@ class LeoServer:
             c.setHeadString(p, h)
             c.setChanged()
             p.setDirty()
-            u.redraw(c.p)
+            u.redraw()
             return self._make_response()
 
     # @+node:felix.20210621233316.63: *5* server.set_selection

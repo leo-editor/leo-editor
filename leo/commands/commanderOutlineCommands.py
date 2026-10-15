@@ -1182,7 +1182,7 @@ def deleteOutline(
     with c.undoer as u:
         u.set_command_name(op_name)
         u.delete_node(p)
-        u.redraw(c.p)
+        u.redraw()
         c.checkOutline()
 
 
@@ -1453,7 +1453,7 @@ def markChangedHeadlines(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
                 # c.setMarked calls a hook.
                 c.setMarked(p)
                 p.setDirty()
-        u.redraw(c.p)
+        u.redraw()
 
 
 # @+node:ekr.20031218072017.2924: *3* c_oc.markChangedRoots
@@ -1469,7 +1469,7 @@ def markChangedRoots(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
                 if flag:
                     c.setMarked(p)  # Calls a hook.
                     p.setDirty()
-        u.redraw(c.p)
+        u.redraw()
 
 
 # @+node:ekr.20031218072017.2928: *3* c_oc.markHeadline
@@ -1488,7 +1488,7 @@ def markHeadline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         else:
             c.setMarked(p)
         p.setDirty()
-        u.redraw(c.p)
+        u.redraw()
 
 
 # @+node:ekr.20031218072017.2929: *3* c_oc.markSubheads
@@ -1504,7 +1504,7 @@ def markSubheads(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
             if not p.isMarked():
                 c.setMarked(p)  # Calls a hook.
                 p.setDirty()
-        u.redraw(c.p)
+        u.redraw()
 
 
 # @+node:ekr.20031218072017.2930: *3* c_oc.unmarkAll

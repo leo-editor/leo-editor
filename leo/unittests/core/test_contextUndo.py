@@ -722,7 +722,7 @@ class TestContextUndo(LeoUnitTest):
                         p.setMarked() if not p.isMarked() else p.clearMarked()
                 else:
                     u.set_body(p, f'body {i}')
-                u.redraw(c.p)
+                u.redraw()
             self.assertEqual(c.checkOutline(), 0)
             snapshots.append(graph())
         self.assertEqual(len(u.beads), 40)

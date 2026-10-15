@@ -215,7 +215,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 prevSibling.expand()
 
             # End the undo.
-            u.redraw(c.p)
+            u.redraw()
 
     # @+node:ekr.20260515084054.1: *5* abbrev.init_place_holder_search
     def init_place_holder_search(self, *, node_only: bool) -> None:
@@ -283,7 +283,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             # Update only body text. Setting p.h here would be wrong.
             if not self.in_head:
                 p.v.b = w.getAllText()
-            u.redraw(c.p)
+            u.redraw()
 
     # @+node:ekr.20260516063743.1: *4* abbrev: script substitution
     # @+node:ekr.20260516063159.1: *5* abbrev.make_all_scripting_substitutions
@@ -723,7 +723,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             w.setSelectionRange(ins, ins, insert=ins)
             u.set_selection_range(old_ins, old_sel, old_y_scroll=old_y_scroll)
             c.recolor()
-            u.redraw(c.p)
+            u.redraw()
 
     # @+node:ekr.20150514043850.28: *4* abbrev.killAllAbbrevs
     @cmd('abbrev-kill-all')

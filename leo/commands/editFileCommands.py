@@ -215,7 +215,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                             total += 1
                     g.es_print(f"{n} node{g.plural(n)} {p.h}")
             g.es_print(f"{total} total node{g.plural(total)}")
-            u.redraw(c.p)
+            u.redraw()
 
     # @+node:ekr.20170806094319.8: *4* efc.cleanAtCleanNode
     def cleanAtCleanNode(self, p: Position) -> bool:

@@ -5522,7 +5522,7 @@ class Commands:
             # Set c.p if necessary.
             if not c.positionExists(c.p):
                 c.selectPosition(c.rootPosition())
-            u.redraw(c.p)
+            u.redraw()
 
     # For compatibility.
     undoableDeletePositions = deletePositionsInList

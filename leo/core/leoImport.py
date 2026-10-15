@@ -87,7 +87,7 @@ class FreeMindImporter:
             except Exception:
                 g.es_print('Exception importing FreeMind file', g.shortFileName(path))
                 g.es_exception()
-            u.redraw(c.p)
+            u.redraw()
             return c.p
 
     # @+node:ekr.20160503191518.4: *3* freemind.import_file

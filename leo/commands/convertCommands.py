@@ -71,7 +71,7 @@ class To_Python:  # pragma: no cover
                 g.es("Command did not find content to convert")
             t2 = time.time()
             g.es_print(f"done! {n_files} files, {n_nodes} nodes, {t2 - t1:2.2f} sec")
-            u.redraw(c.p)
+            u.redraw()
 
     # @+node:ekr.20150514063305.127: *3* To_Python.convertCodeList
     def convertCodeList(self, lines: list[str]) -> None:

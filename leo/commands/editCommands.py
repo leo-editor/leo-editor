@@ -270,7 +270,7 @@ def promoteBodies(event: LeoKeyEvent | None = None) -> None:
     with u.change_node(p, 'promote-bodies'):
         result = [child.b.rstrip() + '\n\n' for child in p.subtree()]
         p.b = ''.join(result).rstrip() + '\n\n'
-        u.redraw(c.p)
+        u.redraw()
 
 
 # @+node:ekr.20190323085410.1: *3* @g.command('promote-headlines')
@@ -285,7 +285,7 @@ def promoteHeadlines(event: LeoKeyEvent | None = None) -> None:
     with u.change_node(p, 'promote-headlines'):
         if result := '\n'.join([p.h.rstrip() for p in p.subtree()]):
             p.b = p.b.lstrip() + '\n' + result
-        u.redraw(c.p)
+        u.redraw()
 
 
 # @+node:ekr.20180504180647.1: *3* @g.command('select-next-trace-statement')
@@ -469,7 +469,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                     w.deleteTextSelection()
                     w.insert(i, arg)
                     c.p.v.b = w.getAllText()
-                    u.redraw(c.p)
+                    u.redraw()
             else:
                 i = w.getSelectionRange()[0]
                 w.deleteTextSelection()
@@ -1171,7 +1171,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             for p in c.all_unique_positions():
                 self.hn_delete(p)
                 self.hn_add(p)
-            u.redraw(c.p)
+            u.redraw()
 
     # @+node:ekr.20230328013256.1: *5* hn_add
     def hn_add(self, p: Position) -> None:
@@ -1218,7 +1218,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 self.hn_delete(p)
                 self.hn_add_relative(p, root)
             root.expand()
-            u.redraw(c.p)
+            u.redraw()
 
     # @+node:ekr.20230329031045.1: *5* hn_add_relative
     def hn_add_relative(self, p: Position, root: Position) -> None:
@@ -1724,7 +1724,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                         p.setDirty()
                         n += 1
             g.es(f"cleaned {n} node{g.plural(n)}")
-            u.redraw(c.p)
+            u.redraw()
 
     # @+node:ekr.20150514063305.256: *4* ec.cleanLines
     @cmd('clean-lines')
@@ -2008,7 +2008,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             i, j = 0, max(0, len(result) - 1)
             w.setSelectionRange(i, j, insert=j)
             w.setYScrollPosition(oldYview)
-            u.redraw(c.p)
+            u.redraw()
 
     # @+node:ekr.20150514063305.267: *4* ec.replaceCurrentCharacter
     @cmd('replace-current-character')
@@ -3508,7 +3508,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.setInsertPoint(ins)
                 if progress >= ins or ins >= j or ins >= len(s):
                     break
-            u.redraw(c.p)
+            u.redraw()
             u.set_selection_range(old_ins, old_sel)
 
     # @+node:ekr.20150514063305.322: *4* ec.fillRegionAsParagraph
@@ -4131,7 +4131,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             for v in changed_v:
                 v.u = {}
                 v.setDirty()
-            u.redraw(c.p)
+            u.redraw()
 
     # @+node:ekr.20150514063305.350: *4* ec.showUas & showAllUas
     @cmd('show-all-uas')
@@ -4183,7 +4183,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             k.clearState()
             k.resetLabel()
             k.showStateAndMode()
-            u.redraw(c.p)
+            u.redraw()
 
     # @-others
 

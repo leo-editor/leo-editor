@@ -2442,7 +2442,7 @@ class LeoFind:
             self.node_only = self.suboutline_only = False
             self.root = None
             g.es("found", count, "matches for", self.find_text)
-            u.redraw(c.p)
+            u.redraw()
             return count  # Might be useful for the gui update.
 
     # @+node:ekr.20210110073117.34: *5* find._cfa_create_nodes
@@ -2546,7 +2546,7 @@ class LeoFind:
             if self.mark_changes and not p.isMarked():  # pragma: no cover
                 p.setMarked()
                 p.setDirty()
-            u.redraw(c.p)
+            u.redraw()
             return True
 
     # @+node:ekr.20210110073117.31: *4* find.check_args

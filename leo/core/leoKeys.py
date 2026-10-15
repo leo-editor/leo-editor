@@ -355,7 +355,7 @@ class AutoCompleterClass:
             return
         with u.change_node(p, 'auto-completer'):
             p.v.b = newText  # p.b would cause a redraw.
-            u.redraw(c.p)
+            u.redraw()
 
     finish = exit
     abort = exit
