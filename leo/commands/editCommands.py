@@ -267,7 +267,7 @@ def promoteBodies(event: LeoKeyEvent | None = None) -> None:
     if not c:
         return
     p = c.p
-    u = c.u
+    u = c.undoer
     with u.change_node(p, 'promote-bodies'):
         result = [child.b.rstrip() + '\n\n' for child in p.subtree()]
         p.b = ''.join(result).rstrip() + '\n\n'
@@ -282,7 +282,7 @@ def promoteHeadlines(event: LeoKeyEvent | None = None) -> None:
     if not c:
         return
     p = c.p
-    u = c.u
+    u = c.undoer
     with u.change_node(p, 'promote-headlines'):
         if result := '\n'.join([p.h.rstrip() for p in p.subtree()]):
             p.b = p.b.lstrip() + '\n' + result
