@@ -2037,23 +2037,25 @@ class Undoer:
         if self.undoing or self.redoing or oldText == newText:
             return
         assert undo_type.capitalize() == 'Typing', undo_type
-        c, w = self.c, self.c.frame.body.wrapper
+        u = self
+        c = u.c
+        w = c.frame.body.wrapper
         newSel = newSel if newSel is not None else w.getSelectionRange()
         newInsert = newInsert if newInsert is not None else w.getInsertPoint()
         scroll = oldYview if oldYview is not None else w.getYScrollPosition()
-        bead = self.peekBead(self.bead)
+        bead = u.peekBead(u.bead)
         # A save, intervening command, selection change, or undo ends coalescing.
         merge = (
             isinstance(bead, TypingBead)
-            and self.bead == len(self.beads) - 1
+            and u.bead == len(u.beads) - 1
             and bead.p.v == p.v
             and c.changed
-            and self.granularity != 'char'
+            and u.granularity != 'char'
         )
-        if merge and self.granularity in ('line', 'word'):
+        if merge and u.granularity in ('line', 'word'):
             leading, trailing, _, _ = TypingBead.split_patch(oldText, newText)
             merge = (leading, trailing) == (bead.leading, bead.trailing)
-            if merge and self.granularity == 'word':
+            if merge and u.granularity == 'word':
                 merge = oldSel is not None and newSel is not None and bead.new_sel is not None
                 if merge:
                     old_start, old_end = oldSel
@@ -2065,7 +2067,7 @@ class Undoer:
                         prev_row, prev_col = g.convertPythonIndexToRowCol(oldText, bead.new_sel[0])
                         merge = old_row == new_row and abs(old_col - new_col) == 1
                         if merge and old_col and new_col:
-                            merge = not self.recognizeStartOfTypingWord(
+                            merge = not u.recognizeStartOfTypingWord(
                                 g.splitLines(oldText),
                                 old_row,
                                 old_col,
@@ -2077,22 +2079,22 @@ class Undoer:
                                 prev_row,
                                 prev_col,
                             )
-        if self.undoBead is not None:
+        if u.undoBead is not None:
             # Typing within an explicit command belongs to that command's bead.
-            self.set_body(p, newText, old_body=oldText)
-            self.set_selection_range(oldSel[1] if oldSel else 0, oldSel or (0, 0))
+            u.set_body(p, newText, old_body=oldText)
+            u.set_selection_range(oldSel[1] if oldSel else 0, oldSel or (0, 0))
             return
         if merge:
             original = bead.replace_middle(oldText, bead.old_lines)
             bead.update_patch(original, newText)
             bead.new_sel, bead.new_ins = newSel, newInsert
         else:
-            bead = TypingBead(self, p, oldText, newText, oldSel, newSel, newInsert, scroll)
-            self.pushBead(bead)
+            bead = TypingBead(u, p, oldText, newText, oldSel, newSel, newInsert, scroll)
+            u.pushBead(bead)
         p.v.b = newText
-        self.updateAfterTyping(p, w)
-        if self.per_node_undo:
-            self.putIvarsToVnode(p)
+        u.updateAfterTyping(p, w)
+        if u.per_node_undo:
+            u.putIvarsToVnode(p)
 
     # @+node:ekr.20031218072017.1490: *4* u.doTyping & helper
     def doTyping(
