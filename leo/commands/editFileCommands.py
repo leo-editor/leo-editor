@@ -1298,7 +1298,7 @@ class GitDiffController:
             ### c.selectPosition(self.root)
             self.root.expand()
             u.redraw(self.root)
-            print(f"done! diffed: {n} files")
+            print(f"done! diffed: {n} file{g.plural(n)}")
 
     # @+node:ekr.20260112115520.1: *4* gdc.summary_diff_python_file & helper
     def summary_diff_python_file(self, fn: str, rev1: str = 'HEAD', rev2: str = '') -> None:

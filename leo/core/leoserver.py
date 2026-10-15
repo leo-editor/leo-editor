@@ -3190,15 +3190,15 @@ class LeoServer:
         """
         c = self._check_c(param)
         p = self._get_p(param)
+        u = c.undoer
         oldPosition: Position | None = None if p == c.p else c.p
         newHeadline = param.get('name') or ''
-        with c.undoer.change_outline('Insert Node'):
+        with u.change_outline('Insert Node'):
             newNode = p.insertAfter()
             # Set this node's new headline
             newNode.h = newHeadline
             newNode.setDirty()
-            c.setChanged()
-
+            ### c.setChanged()
             c.selectPosition(newNode)
             if oldPosition:
                 if c.positionExists(oldPosition):
@@ -3229,7 +3229,7 @@ class LeoServer:
             # Set this node's new headline
             newNode.h = newHeadline
             newNode.setDirty()
-            c.setChanged()
+            ### c.setChanged()
             c.selectPosition(newNode)
             return self._make_response()
 

@@ -319,7 +319,8 @@ class LeoFind:
                         p.b = new_b
             if not g.unitTesting:  # pragma: no cover
                 print(f"{count:3}: {find_text:>30} => {change_text}")
-            # No need for u.redraw: this is a helper.
+            #### No need for u.redraw: this is a helper.
+            u.redraw()  ###
             return count
 
     # @+node:ekr.20210108083003.1: *4* find._init_from_dict
@@ -2434,7 +2435,7 @@ class LeoFind:
             if clones:
                 found_p = self._cfa_create_nodes(clones, flattened=False)
                 assert c.positionExists(found_p, trace=True), found_p
-                c.setChanged()
+                ### c.setChanged()
                 c.selectPosition(found_p)
                 # Put the count in found_p.h.
                 found_p.h = found_p.h.replace('Found:', f"Found {count}:")

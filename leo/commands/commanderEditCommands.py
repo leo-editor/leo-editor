@@ -139,7 +139,6 @@ def convertAllTabs(self: Self, event: LeoKeyEvent | None = None) -> None:
                     p.setBodyString('\n'.join(result))
         if not g.unitTesting:
             g.es("tabs converted to blanks in", count, "nodes")
-
         u.redraw(c.p)
 
 
@@ -834,7 +833,7 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
     """
     c = self
     p = c.p
-    u, command = c.undoer, 'promote-section-def'
+    u = c.undoer
     w = self.frame.body.wrapper
     c.endEditing()
 
@@ -866,7 +865,7 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
     # Replace the section ref in parent.b with p.b, properly indented.
     old_ins = w.getInsertPoint()
     old_sel = w.getSelectionRange()
-    with u.change_outline(command):
+    with u.change_outline('promote-section-def'):
         lines = g.splitLines(parent.b)
         result = lines[:i]
         result.extend([f"{indent}{z}" for z in g.splitLines(p.b)])

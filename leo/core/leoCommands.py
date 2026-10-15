@@ -4327,8 +4327,8 @@ class Commands:
             p.setDirty()
             p.moveToNthChildOf(parent, n)
             p.setDirty()
-            u.redraw(p)
             c.updateSyntaxColorer(p)  # Dragging can change syntax coloring.
+            u.redraw(p)
 
     # @+node:ekr.20031218072017.2353: *5* c.dragAfter (not used)
     def dragAfter(self, p: Position, after: Position) -> None:
@@ -4379,7 +4379,7 @@ class Commands:
                 clone.setDirty()
                 clone.moveAfter(after)
                 clone.v.setDirty()
-                c.setChanged()
+                ### c.setChanged()
                 p = clone
             else:
                 clone.doDelete(newNode=p)
@@ -5398,7 +5398,7 @@ class Commands:
                 n = root.numberOfChildren()
                 p2._linkCopiedAsNthChild(root, n)
             ### c.selectPosition(root)
-            c.setChanged()
+            ### c.setChanged()
             c.contractAllHeadlines()
             root.expand()
             u.redraw(root)  ###

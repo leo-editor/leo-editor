@@ -136,7 +136,7 @@ def mark_node_and_parents(event: LeoKeyEvent | None = None) -> list[Position]:
                 parent.setDirty()
                 changed.append(parent.copy())
         if changed:
-            c.setChanged()
+            ### c.setChanged()
             u.redraw()
         return changed
 
@@ -382,7 +382,7 @@ def unmark_node_and_parents(event: LeoKeyEvent | None = None) -> list[Position]:
                 parent.setDirty()
                 changed.append(parent.copy())
         if changed:
-            c.setChanged()
+            ### c.setChanged()
             u.redraw()
         return changed
 

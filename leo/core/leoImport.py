@@ -787,7 +787,7 @@ class LeoImportCommands:
                     if p:  # createOutline may fail.
                         p.contract()
                         p.setDirty()
-                        c.setChanged()
+                        ### c.setChanged()
                 except Exception:
                     g.es_print('Exception importing', fn)
                     g.es_exception()
@@ -1163,7 +1163,7 @@ class LeoImportCommands:
                 if c.checkOutline():
                     return  # Error!
                 if changed:
-                    c.setChanged()
+                    ### c.setChanged()
                     u.redraw(old_p)
             except Exception:
                 g.es_exception()
@@ -1548,7 +1548,7 @@ class MORE_Importer:
                     c.endEditing()
                     c.checkOutline()
                     p.setDirty()
-                    c.setChanged()
+                    ### c.setChanged()
                     u.redraw(root)
                     return root
             if not g.unitTesting:
@@ -2002,7 +2002,7 @@ class RecursiveImportController:
                 g.app.disable_redraw = False
                 for p2 in parent.self_and_subtree(copy=False):
                     p2.contract()
-                c.setChanged()  # Imported nodes must be saved.
+                ### c.setChanged()  # Imported nodes must be saved.
                 c.undoer.redraw(parent)
             if not g.unitTesting:
                 t2 = time.time()
@@ -2077,9 +2077,9 @@ class TabImporter:
                     p.h = g.shortFileName(fn)
                     p.contract()
                     p.setDirty()
-                if p:
-                    c.setChanged()
-                    u.redraw(p)
+                ### if p:
+                ### c.setChanged()
+            u.redraw(self.root)  ###
 
     # @+node:ekr.20161006071801.4: *3* tabbed.lws
     def lws(self, s: str) -> str:

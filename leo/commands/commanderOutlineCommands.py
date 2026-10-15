@@ -95,7 +95,7 @@ def pasteOutline(
             return None
         ### c.selectPosition(pasted)
         pasted.setDirty()
-        c.setChanged()
+        ### c.setChanged()
         back = pasted.back()
         if back and back.hasChildren() and back.isExpanded():
             pasted.moveToNthChildOf(back, 0)
@@ -1307,7 +1307,7 @@ def cloneMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         if n:
             if not g.unitTesting:
                 g.blue(f"cloned {n} nodes")
-            c.setChanged()
+            ### c.setChanged()
             parent.expand()
             ### c.selectPosition(parent)
             u.redraw(parent)  ###
@@ -1344,7 +1344,7 @@ def copyMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         if n:
             if not g.unitTesting:
                 g.blue(f"copied {n} nodes")
-            c.setChanged()
+            ### c.setChanged()
             parent.expand()
             ### c.selectPosition(parent)
             u.redraw(parent)
@@ -1373,7 +1373,7 @@ def deleteMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         if undo_data:
             if not g.unitTesting:
                 g.blue(f"deleted {len(undo_data)} nodes")
-            c.setChanged()
+            ### c.setChanged()
         # Don't even *think* about restoring the old position.
         c.contractAllHeadlines()
         u.redraw(c.rootPosition())
@@ -1581,8 +1581,8 @@ def demote(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
             child.parents.append(p.v)
         p.expand()
         p.setDirty()
-        u.redraw(p)
         c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
+        u.redraw(p)
 
 
 # @+node:ekr.20031218072017.1768: *3* c_oc.moveOutlineDown
@@ -1638,8 +1638,8 @@ def moveOutlineDown(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         if moved:
             p.setDirty()
             c.setChanged()
-        u.redraw(p)
-        c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
+            c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
+            u.redraw(p)
 
 
 # @+node:ekr.20031218072017.1770: *3* c_oc.moveOutlineLeft
@@ -1666,6 +1666,7 @@ def moveOutlineLeft(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
         if c.collapse_nodes_after_move and c.sparse_move:  # New in Leo 4.4.2
             parent.contract()
+        c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
         u.redraw(p)
 
 
@@ -1694,6 +1695,7 @@ def moveOutlineRight(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         n = back.numberOfChildren()
         p.moveToNthChildOf(back, n)
         p.setDirty()
+        c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
         u.redraw(p)
 
 
@@ -1757,8 +1759,8 @@ def moveOutlineUp(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         if moved:
             p.setDirty()
             c.setChanged()
-        u.redraw(p)
-        c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
+            c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
+            u.redraw(p)
 
 
 # @+node:ekr.20230902051130.1: *3* c_oc.moveOutlineToFirstChild
@@ -1783,6 +1785,7 @@ def moveOutlineToFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Non
     with u.change_position(p, 'Move To First Child'):
         p.moveToNthChildOf(p.parent(), 0)
         p.setDirty()
+        c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
         u.redraw(p)
 
 
@@ -1808,10 +1811,11 @@ def moveOutlineToLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> None
     with u.change_position(p, 'Move To Last Child'):
         p.moveToNthChildOf(parent, len(parent.v.children) - 1)
         p.setDirty()
+        c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
         u.redraw(p)
 
 
-# @+node:ekr.20031218072017.1774: *3* c_oc.promote
+# @+node:ekr.20031218072017.1774: *3* c_oc.promote (undo flag???)
 @g.commander_command('promote')
 def promote(
     self: Cmdr,
@@ -1826,11 +1830,11 @@ def promote(
     c.endEditing()
     with u.change_outline('Promote', enabled=undoFlag):
         p.promote()
-        c.setChanged()
+        ### c.setChanged()
         if undoFlag:
             p.setDirty()
-        u.redraw(p)
         c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
+        u.redraw(p)
 
 
 # @+node:ekr.20071213185710: *3* c_oc.toggleSparseMove
