@@ -220,8 +220,8 @@ def convertTabs(self: Self, event: LeoKeyEvent | None = None) -> bool:
 def dedentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Remove one tab's worth of indentation from all presently selected lines."""
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
-
-    sel_1, sel_2 = w.getSelectionRange()
+    old_ins = w.getInsertPoint()
+    sel_1, sel_2 = old_sel = w.getSelectionRange()
     tab_width = c.getTabWidth(c.p)
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
     with u.change_node(p, 'Unindent Region'):
@@ -256,6 +256,7 @@ def dedentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
         # Set the selection range and scroll position.
         w.setSelectionRange(i, j, insert=j)
         w.setYScrollPosition(oldYview)
+        u.set_selection(old_ins, old_sel)
         u.redraw()
 
 
