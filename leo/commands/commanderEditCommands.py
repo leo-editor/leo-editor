@@ -26,35 +26,36 @@ def addComments(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Undoably add comments to the selected text."""
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
     old_ins = w.getInsertPoint()
-    old_sel = w.getSelectionRange()
-    with u.change_node(p, 'Add Comments'):
-        # Make sure there is a selection.
-        head, lines, tail, oldSel, oldYview = self.getBodyLines()
-        if not lines:
-            g.warning('no text selected')
-            return
-        # The default language in effect at p.
-        language = c.frame.body.colorizer.scanLanguageDirectives(p)
-        if c.hasAmbiguousLanguage(p):
-            language = c.getLanguageAtCursor(p, language)
-        d1, d2, d3 = g.set_delims_from_language(language)
-        d2 = d2 or ''
-        d3 = d3 or ''
-        if d1:
-            openDelim, closeDelim = d1 + ' ', ''
+    head, lines, tail, old_sel, old_y_scroll = self.getBodyLines()
+    if not lines:
+        g.warning('no text selected')
+        return
+
+    # Get the language in effect at p.
+    language = c.frame.body.colorizer.scanLanguageDirectives(p)
+    if c.hasAmbiguousLanguage(p):
+        language = c.getLanguageAtCursor(p, language)
+    d1, d2, d3 = g.set_delims_from_language(language)
+    d2 = d2 or ''
+    d3 = d3 or ''
+    if d1:
+        openDelim, closeDelim = d1 + ' ', ''
+    else:
+        openDelim, closeDelim = d2 + ' ', ' ' + d3
+
+    # Calculate the result.
+    result = []
+    i: int | None = None
+    for line in lines:
+        if line.strip():
+            if i is None:
+                i = g.skip_ws(line, 0)
+            s = line[i:].replace('\n', '')
+            result.append(line[0:i] + openDelim + s + closeDelim + '\n')
         else:
-            openDelim, closeDelim = d2 + ' ', ' ' + d3
-        # Calculate the result.
-        result = []
-        i: int | None = None
-        for line in lines:
-            if line.strip():
-                if i is None:
-                    i = g.skip_ws(line, 0)
-                s = line[i:].replace('\n', '')
-                result.append(line[0:i] + openDelim + s + closeDelim + '\n')
-            else:
-                result.append(line)
+            result.append(line)
+
+    with u.change_node(p, 'Add Comments'):
         # Set p.b and w's text first.
         middle = ''.join(result)
         p.b = head + middle + tail  # Sets dirty and changed bits.
@@ -63,8 +64,8 @@ def addComments(self: Self, event: LeoKeyEvent | None = None) -> None:
         i = len(head)
         j = max(i, len(head) + len(middle) - 1)
         w.setSelectionRange(i, j, insert=j)
-        u.set_selection(old_ins, old_sel)
-        w.setYScrollPosition(oldYview)
+        w.setYScrollPosition(old_y_scroll)
+        u.set_selection(old_ins, old_sel, old_y_scroll=old_y_scroll)
         u.redraw()
 
 
