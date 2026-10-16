@@ -935,10 +935,11 @@ def reformatParagraph(
     head, lines, tail = find_bound_paragraph(c)
     if not lines:
         return
-    oldSel, oldYview, original, pageWidth, tabWidth = rp_get_args(c)
+    old_ins = w.getInsertPoint()
+    old_sel, old_y_scroll, old_s, pageWidth, tabWidth = rp_get_args(c)
     indents, leading_ws = rp_get_leading_ws(c, lines, tabWidth)
     result = rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth)
-    rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType)
+    rp_reformat(c, head, old_ins, old_sel, old_y_scroll, old_s, result, tail, undoType)
 
 
 # @+node:ekr.20171123135625.43: *3* function: ends_paragraph & single_line_paragraph
@@ -1005,7 +1006,7 @@ def find_bound_paragraph(c: Cmdr) -> tuple[str, list[str], str]:
 
 
 # @+node:ekr.20171123135625.45: *3* function: rp_get_args
-def rp_get_args(c: Cmdr) -> tuple[int, int, str, int, int]:
+def rp_get_args(c: Cmdr) -> tuple[tuple[int, int], int, str, int, int]:
     """Compute and return oldSel,oldYview,original,pageWidth,tabWidth."""
     body = c.frame.body
     w = body.wrapper
@@ -1041,8 +1042,9 @@ def rp_get_leading_ws(c: Cmdr, lines: list[str], tabWidth: int) -> tuple[list[in
 def rp_reformat(
     c: Cmdr,
     head: str,
-    oldSel: int,  # Not used.
-    oldYview: int,  # Not used.
+    old_ins: int,
+    old_sel: tuple[int, int],
+    old_y_scroll: int,
     original: str,
     result: str,
     tail: str,
@@ -1082,6 +1084,7 @@ def rp_reformat(
         # Finish.
         p.v.b = s  # p.b would cause a redraw.
         w.setXScrollPosition(0)  # Never scroll horizontally.
+        u.set_selection(old_ins, old_sel, old_y_scroll=old_y_scroll)
         u.redraw()
 
 
@@ -1168,18 +1171,18 @@ def reformatSelection(
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
         return
+    head, middle, tail = c.frame.body.getSelectionLines()
+    lines = g.splitLines(middle)
+    if not lines:
+        return
+    old_ins = w.getInsertPoint()
+    old_sel, old_y_scroll, old_s, pageWidth, tabWidth = rp_get_args(c)
+    indents, leading_ws = rp_get_leading_ws(c, lines, tabWidth)
+    result = rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth)
+    s = head + result + tail
+    if s == old_s:
+        return
     with u.change_node(p, undoType):
-        oldSel, oldYview, original, pageWidth, tabWidth = rp_get_args(c)
-        head, middle, tail = c.frame.body.getSelectionLines()
-        lines = g.splitLines(middle)
-        if not lines:
-            return
-        indents, leading_ws = rp_get_leading_ws(c, lines, tabWidth)
-        result = rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth)
-        s = head + result + tail
-        if s == original:
-            return
-
         # Update the text and the selection.
         w.setAllText(s)  # Destroys coloring.
         i = len(head)
@@ -1190,6 +1193,7 @@ def reformatSelection(
         # Finish.
         p.v.b = s  # p.b would cause a redraw.
         w.setXScrollPosition(0)  # Never scroll horizontally.
+        u.set_selection(old_ins, old_sel, old_y_scroll=old_y_scroll)
         u.redraw()
 
 
