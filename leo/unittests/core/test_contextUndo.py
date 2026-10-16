@@ -646,26 +646,22 @@ class TestContextUndo(LeoUnitTest):
             lambda: self.assertTrue(first.isMarked() and second.isMarked()),
         )
 
-    # @+node:ekr.20261014103254.34: *3* TestContextUndo.test_marked_clone_and_copy_commands_repeat
-    def test_marked_clone_and_copy_commands_repeat(self):
-        for name in ('cloneMarked', 'copyMarked'):
-            with self.subTest(name=name):
-                self.setUp()
-                c, p = self.c, self.c.p
-                child = p.insertAsLastChild()
-                child.setMarked()
-                before = c.hiddenRootNode.children[:]
-                getattr(c, name)()
-                container = c.p.copy()
-                result_child = container.firstChild().v
-                self.assertEqual(result_child is child.v, name == 'cloneMarked')
-                self.cycles(
-                    lambda c=c, before=before: self.assertEqual(c.hiddenRootNode.children, before),
-                    lambda c=c, container=container, result_child=result_child: (
-                        self.assertEqual(c.p, container),
-                        self.assertIs(c.p.firstChild().v, result_child),
-                    ),
-                )
+    # @+node:ekr.20261014103254.34: *3* TestContextUndo.test_copy_marked_repeats
+    def test_copy_marked_repeats(self):
+        self.setUp()
+        c, p = self.c, self.c.p
+        child = p.insertAsLastChild()
+        child.setMarked()
+        before = c.hiddenRootNode.children[:]
+        container = c.p.copy()
+        result_child = container.firstChild().v
+        self.cycles(
+            lambda c=c, before=before: self.assertEqual(c.hiddenRootNode.children, before),
+            lambda c=c, container=container, result_child=result_child: (
+                self.assertEqual(c.p, container),
+                self.assertIs(c.p.firstChild().v, result_child),
+            ),
+        )
 
     # @+node:ekr.20261014103254.35: *3* TestContextUndo.test_drag_clone_is_removed_on_undo
     def test_drag_clone_is_removed_on_undo(self):

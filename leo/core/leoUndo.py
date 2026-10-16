@@ -566,47 +566,6 @@ class Undoer:
         rf.setRecentFiles(u.newRecentFiles[:])
         rf.createRecentFilesMenuItems(c)
 
-    # @+node:ekr.20111005152227.15558: *5* u.redoCloneMarkedNodes (converted)
-    def redoCloneMarkedNodes(self) -> None:
-        c, u = self.c, self
-
-        # PR #4996: Remove dependency on c.deleteOutline.
-
-        # c.selectPosition(u.p)
-        p = u.p
-
-        # c.cloneMarked()
-        # Create a new node to hold clones.
-        p1 = p.copy()
-        parent = p1.insertAfter()
-        parent.h = 'Clones of marked nodes'
-        cloned, n, p = [], 0, c.rootPosition()  # Does not use c.p!
-        while p:
-            # Careful: don't clone already-cloned nodes.
-            if p == parent:
-                p.moveToNodeAfterTree()
-            elif p.isMarked() and p.v not in cloned:
-                cloned.append(p.v)
-                # Create the clone directly as a child of parent.
-                p2 = p.copy()
-                n = parent.numberOfChildren()
-                p2._linkAsNthChild(parent, n)
-                p.moveToNodeAfterTree()
-                n += 1
-            else:
-                p.moveToThreadNext()
-        if n:
-            c.setChanged()
-            parent.expand()
-            c.selectPosition(parent)
-            u.afterCloneMarkedNodes(p1)
-        else:
-            parent.doDelete()
-            c.selectPosition(p1)
-
-        # Legacy.
-        u.newP = c.p
-
     # @+node:ekr.20160502175557.1: *5* u.redoCopyMarkedNodes
     def redoCopyMarkedNodes(self) -> None:
         c, u = self.c, self
@@ -1003,15 +962,6 @@ class Undoer:
         rf = g.app.recentFilesManager
         rf.setRecentFiles(u.oldRecentFiles[:])
         rf.createRecentFilesMenuItems(c)
-
-    # @+node:ekr.20111005152227.15560: *5* u.undoCloneMarkedNodes (calls p.next)
-    def undoCloneMarkedNodes(self) -> None:
-        u = self
-        next = u.p.next()
-        assert next.h == 'Clones of marked nodes', (u.p, next.h)
-        next.doDelete()
-        u.p.setAllAncestorAtFileNodesDirty()
-        u.c.selectPosition(u.p)
 
     # @+node:ekr.20050412083057.1: *5* u.undoCloneNode (converted)
     def undoCloneNode(self) -> None:
@@ -1580,28 +1530,6 @@ class Undoer:
         bunch.redoHelper = u.redoClearRecentFiles
         u.pushBead(bunch)
         return bunch
-
-    # @+node:ekr.20111006060936.15639: *5* u.afterCloneMarkedNodes
-    def afterCloneMarkedNodes(self, p: Position) -> None:
-        u = self
-        u.deprecated()
-        if u.redoing or u.undoing:
-            return
-        # createCommonBunch sets:
-        #   oldDirty = p.isDirty()
-        #   oldMarked = p.isMarked()
-        #   oldSel = w and w.getSelectionRange() or None
-        #   p = p.copy()
-        bunch = u.createCommonBunch(p)
-        # Set types.
-        bunch.kind = 'clone-marked-nodes'
-        bunch.undoType = 'clone-marked-nodes'
-        # Set helpers.
-        bunch.undoHelper = u.undoCloneMarkedNodes
-        bunch.redoHelper = u.redoCloneMarkedNodes
-        bunch.newP = p.next()
-        bunch.newMarked = p.isMarked()
-        u.pushBead(bunch)
 
     # @+node:ekr.20160502175451.1: *5* u.afterCopyMarkedNodes
     def afterCopyMarkedNodes(self, p: Position) -> None:

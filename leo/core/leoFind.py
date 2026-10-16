@@ -468,6 +468,7 @@ class LeoFind:
         """
         self.do_find_marked(flatten=False)
 
+    @g.commander_command('clone-marked-nodes')  # Now equivalent to cffm.
     @cmd('clone-find-all-flattened-marked')
     @cmd('cffm')
     def cloneFindAllFlattenedMarked(self, event: LeoKeyEvent | None = None) -> None:

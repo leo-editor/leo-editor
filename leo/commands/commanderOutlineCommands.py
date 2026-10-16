@@ -1269,45 +1269,6 @@ def insertHeadlineBefore(self: Cmdr, event: LeoKeyEvent | None = None) -> Positi
 
 
 # @+node:ekr.20031218072017.2922: ** c_oc.Mark commands
-# @+node:ekr.20090905110447.6098: *3* c_oc.cloneMarked
-@g.commander_command('clone-marked-nodes')
-def cloneMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
-    """Clone all marked nodes as children of a new node."""
-    c, u = self, self.undoer
-    p1 = c.p.copy()
-    # Create a new node to hold clones.
-    with u.change_outline('clone-marked-nodes'):
-        parent = p1.insertAfter()
-        parent.h = 'Clones of marked nodes'
-        cloned, n, p = [], 0, c.rootPosition()
-        while p:
-            # Careful: don't clone already-cloned nodes.
-            if p == parent:
-                p.moveToNodeAfterTree()
-            elif p.isMarked() and p.v not in cloned:
-                cloned.append(p.v)
-                if 0:  # old code
-                    # Calling p.clone would cause problems
-                    p.clone().moveToLastChildOf(parent)
-                else:  # New code.
-                    # Create the clone directly as a child of parent.
-                    p2 = p.copy()
-                    n = parent.numberOfChildren()
-                    p2._linkAsNthChild(parent, n)
-                p.moveToNodeAfterTree()
-                n += 1
-            else:
-                p.moveToThreadNext()
-        if n:
-            if not g.unitTesting:
-                g.blue(f"cloned {n} nodes")
-            parent.expand()
-            u.redraw(parent)
-        else:
-            parent.doDelete()
-            u.redraw(p1)
-
-
 # @+node:ekr.20160502090456.1: *3* c_oc.copyMarked
 @g.commander_command('copy-marked-nodes')
 def copyMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
