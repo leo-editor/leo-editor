@@ -3493,22 +3493,20 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Fill all paragraphs in the selected text."""
         c = self.c
         u = c.undoer
-        w = event.w if event else c.frame.body.wrapper
+        w = c.frame.body.wrapper  # Only valid in body pane.
         if not g.isTextWrapper(w):
             return
-        old_ins = w.getInsertPoint()
-        i, j = old_sel = w.getSelectionRange()
         with u.change_outline('fill-region'):
+            _i, j = w.getSelectionRange()
             while 1:
                 progress = w.getInsertPoint()
                 c.reformatParagraph(event, 'fill-region')
                 ins = w.getInsertPoint()
                 s = w.getAllText()
-                w.setInsertPoint(ins)
                 if progress >= ins or ins >= j or ins >= len(s):
                     break
             u.redraw()
-            u.set_selection(old_ins, old_sel)
+            # u.set_selection(old_ins, old_sel)
 
     # @+node:ekr.20150514063305.322: *4* ec.fillRegionAsParagraph
     @cmd('fill-region-as-paragraph')
