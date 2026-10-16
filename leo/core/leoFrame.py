@@ -541,7 +541,7 @@ class LeoFrame:
             with c.undoer as u:
                 u.set_command_name('cut-text')
                 u.set_body(p, new_body=w.getAllText())
-                u.set_selection_range(old_ins, old_sel)
+                u.set_selection(old_ins, old_sel)
                 u.redraw(p)
 
         # Otherwise, the headline has not yet offcially changed.
@@ -587,7 +587,7 @@ class LeoFrame:
                 u.set_command_name('paste-text')
                 u.set_body(p, new_body=w.getAllText())
                 u.redraw(p)
-                u.set_selection_range(old_ins, old_sel)
+                u.set_selection(old_ins, old_sel)
 
         if hasattr(w, 'getXScrollPosition'):
             w.setXScrollPosition(x_pos)

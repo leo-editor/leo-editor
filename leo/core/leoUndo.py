@@ -2087,7 +2087,7 @@ class Undoer:
         if u.undoBead is not None:
             # Typing within an explicit command belongs to that command's bead.
             u.set_body(p, newText, old_body=oldText)
-            u.set_selection_range(oldSel[1] if oldSel else 0, oldSel or (0, 0))
+            u.set_selection(oldSel[1] if oldSel else 0, oldSel or (0, 0))
             return
         if merge:
             original = bead.replace_middle(oldText, bead.old_lines)
@@ -3255,8 +3255,8 @@ class Undoer:
         if not c.changed:
             c.setChanged()
 
-    # @+node:ekr.20261005143752.1: *5* u.set_selection_range
-    def set_selection_range(
+    # @+node:ekr.20261005143752.1: *5* u.set_selection
+    def set_selection(
         self,
         old_ins: int,
         old_sel: tuple[int, int],

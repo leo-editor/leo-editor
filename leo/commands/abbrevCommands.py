@@ -641,7 +641,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             w.setAllText(s)
             ins = i + len(prefix)
             w.setSelectionRange(ins, ins, insert=ins)
-            u.set_selection_range(old_ins, old_sel, old_y_scroll=yscroll)
+            u.set_selection(old_ins, old_sel, old_y_scroll=yscroll)
             c.recolor()
             u.redraw(p)
 
@@ -721,7 +721,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             w.setAllText(s)
             ins = i + len(k.arg)
             w.setSelectionRange(ins, ins, insert=ins)
-            u.set_selection_range(old_ins, old_sel, old_y_scroll=old_y_scroll)
+            u.set_selection(old_ins, old_sel, old_y_scroll=old_y_scroll)
             c.recolor()
             u.redraw()
 

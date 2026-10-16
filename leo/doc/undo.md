@@ -80,7 +80,7 @@ Action helpers require an active context before mutating anything:
   non-current node. Supply `old_body` when the widget has already changed.
 - `change_headline(p, ch, text, update_editor=True)` updates headline state,
   directives, and hooks. Live headline editors can use `update_editor=False`.
-- `set_selection_range(old_ins, old_sel, old_y_scroll=None,
+- `set_selection(old_ins, old_sel, old_y_scroll=None,
   new_y_scroll=None)` records widget state after editing.
 
 Inserts and clones replay by relinking the original vnode instead of creating

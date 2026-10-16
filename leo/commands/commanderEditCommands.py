@@ -25,6 +25,8 @@ if TYPE_CHECKING:  # pragma: no cover
 def addComments(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Undoably add comments to the selected text."""
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
+    old_ins = w.getInsertPoint()
+    old_sel = w.getSelectionRange()
     with u.change_node(p, 'Add Comments'):
         # Make sure there is a selection.
         head, lines, tail, oldSel, oldYview = self.getBodyLines()
@@ -61,6 +63,7 @@ def addComments(self: Self, event: LeoKeyEvent | None = None) -> None:
         i = len(head)
         j = max(i, len(head) + len(middle) - 1)
         w.setSelectionRange(i, j, insert=j)
+        u.set_selection(old_ins, old_sel)
         w.setYScrollPosition(oldYview)
         u.redraw()
 
@@ -816,7 +819,7 @@ def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
         for child in reversed(children):
             u.delete_node(child)
         u.redraw(old_p)
-        u.set_selection_range(old_ins, old_sel)
+        u.set_selection(old_ins, old_sel)
         c.bodyWantsFocusNow()
 
 
@@ -875,7 +878,7 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
         # Delete the definition node.
         p.doDelete()
         u.redraw(parent)
-        u.set_selection_range(old_ins, old_sel)
+        u.set_selection(old_ins, old_sel)
 
 
 # @+node:ekr.20171123135625.40: ** c_ec.reformatBody
@@ -900,7 +903,7 @@ def reformatBody(self: Self, event: LeoKeyEvent | None = None) -> None:
             if ins <= progress or ins >= len(s):
                 break
         u.redraw(p)
-        u.set_selection_range(old_ins, old_sel)
+        u.set_selection(old_ins, old_sel)
 
 
 # @+node:ekr.20171123135625.41: ** c_ec.reformatParagraph & helpers

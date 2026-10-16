@@ -84,7 +84,7 @@ class BaseEditCommandsClass:
                 with u:
                     u.set_command_name(bunch.undoType)
                     u.set_body(p, newText, old_body=bunch.oldText)
-                    u.set_selection_range(
+                    u.set_selection(
                         bunch.oldIns,
                         bunch.oldSel,
                         old_y_scroll=bunch.oldYScroll,
