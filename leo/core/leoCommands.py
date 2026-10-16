@@ -4323,7 +4323,7 @@ class Commands:
         if not c.checkMoveWithParentWithWarning(p, parent, True):
             return
         c.endEditing()
-        with u.change_position(p, 'Drag'):
+        with u.move_position(p, 'Drag'):
             p.setDirty()
             p.moveToNthChildOf(parent, n)
             p.setDirty()
@@ -4339,12 +4339,12 @@ class Commands:
             return
         assert p.v
         c.endEditing()
-        with u.change_position(p, 'Drag'):
-            p.setDirty()
+        with u.move_position(p, 'Drag'):
+            ### p.setDirty()
             p.moveAfter(after)
             p.setDirty()
-            u.redraw(p)
             c.updateSyntaxColorer(p)  # Dragging can change syntax coloring.
+            u.redraw(p)
 
     # @+node:ekr.20031218072017.2946: *5* c.dragCloneToNthChildOf
     def dragCloneToNthChildOf(self, p: Position, parent: Position, n: int) -> None:

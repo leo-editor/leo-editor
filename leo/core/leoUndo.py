@@ -3017,13 +3017,14 @@ class Undoer:
                         lambda: u.restore_ui(old_ui),
                     )
 
-    # @+node:vivainio.202610110003.1: *6* u.change_position
+    # @+node:vivainio.202610110003.1: *6* u.move_position
     @contextmanager
-    def change_position(self, p: Position, command_name: str) -> Iterator[Undoer]:
+    def move_position(self, p: Position, command_name: str) -> Iterator[Undoer]:
         """Record a move of p without scanning or retaining the rest of the outline."""
         if self.undoing or self.redoing:
             yield self
             return
+        ### c = self.c
         with self as u:
             u.set_command_name(command_name)
             if u.capture_level:
@@ -3042,15 +3043,40 @@ class Undoer:
                         source.v._cutLink(source.childIndex(), source._parentVnode())
                         target.v._addLink(target.childIndex(), target._parentVnode())
                         target.setDirty()
+                        ###
+                        # if c.positionExists(source):
+                        #     c.updateSyntaxColorer(source)  # Dragging can change syntax coloring.
+                        #     u.redraw(source)
+                        # else:
+                        #     c.updateSyntaxColorer(target)  # Dragging can change syntax coloring.
+                        #     u.redraw(target)
 
-                    u.undoBead.add_helpers(
-                        lambda: move(old_p, new_p),
-                        lambda: move(new_p, old_p),
-                    )
-                    u.undoBead.add_finishers(
-                        lambda: u.restore_ui(new_ui),
-                        lambda: u.restore_ui(old_ui),
-                    )
+                    def move_position_redoer():
+                        move(old_p, new_p)
+
+                    def move_position_undoer():
+                        move(new_p, old_p)
+
+                    u.undoBead.add_helpers(move_position_redoer, move_position_undoer)
+
+                    ###
+                    # u.undoBead.add_helpers(
+                    #     lambda: move(old_p, new_p),
+                    #     lambda: move(new_p, old_p),
+                    # )
+
+                    def restore_ui_redoer():
+                        u.restore_ui(new_ui)
+
+                    def restore_ui_undoer():
+                        u.restore_ui(old_ui)
+
+                    u.undoBead.add_finishers(restore_ui_redoer, restore_ui_undoer)
+
+                    # u.undoBead.add_finishers(
+                    #     lambda: u.restore_ui(new_ui),
+                    #     lambda: u.restore_ui(old_ui),
+                    # )
 
     # @+node:vivainio.202610110001.4: *6* u.change_recent_files
     @contextmanager

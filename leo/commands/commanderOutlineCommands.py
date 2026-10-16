@@ -1551,18 +1551,18 @@ def moveOutlineDown(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         c.treeFocusHelper()
         return
     c.endEditing()
-    with u.change_position(p, 'Move Outline Down'):
+    with u.move_position(p, 'Move Outline Down'):
         # @+<< Move p down & set moved if successful >>
         # @+node:ekr.20031218072017.1769: *4* << Move p down & set moved if successful >>
         if next.hasChildren() and next.isExpanded():
             # Attempt to move p to the first child of next.
             if moved := c.checkMoveWithParentWithWarning(p, next, True):
-                p.setDirty()
+                ### p.setDirty()
                 p.moveToNthChildOf(next, 0)
         else:
             # Attempt to move p after next.
             if moved := c.checkMoveWithParentWithWarning(p, next.parent(), True):
-                p.setDirty()
+                ### p.setDirty()
                 p.moveAfter(next)
         # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
         if (
@@ -1575,7 +1575,7 @@ def moveOutlineDown(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         # @-<< Move p down & set moved if successful >>
         if moved:
             p.setDirty()
-            c.setChanged()
+            ### c.setChanged()
             c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
             u.redraw(p)
 
@@ -1597,7 +1597,7 @@ def moveOutlineLeft(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         return
     parent = p.parent()
     c.endEditing()
-    with u.change_position(p, 'Move Left'):
+    with u.move_position(p, 'Move Left'):
         p.setDirty()
         p.moveAfter(parent)
         p.setDirty()
@@ -1628,7 +1628,7 @@ def moveOutlineRight(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         c.treeFocusHelper()
         return
     c.endEditing()
-    with u.change_position(p, 'Move Right'):
+    with u.move_position(p, 'Move Right'):
         p.setDirty()
         n = back.numberOfChildren()
         p.moveToNthChildOf(back, n)
@@ -1654,7 +1654,7 @@ def moveOutlineUp(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         return
     back2 = back.visBack(c)
     c.endEditing()
-    with u.change_position(p, 'Move Up'):
+    with u.move_position(p, 'Move Up'):
         moved = False
         # @+<< Move p up >>
         # @+node:ekr.20031218072017.1773: *4* << Move p up >>
@@ -1696,7 +1696,7 @@ def moveOutlineUp(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         # @-<< Move p up >>
         if moved:
             p.setDirty()
-            c.setChanged()
+            ### c.setChanged()
             c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
             u.redraw(p)
 
@@ -1720,7 +1720,7 @@ def moveOutlineToFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Non
     if not parent:
         return
     c.endEditing()
-    with u.change_position(p, 'Move To First Child'):
+    with u.move_position(p, 'Move To First Child'):
         p.moveToNthChildOf(p.parent(), 0)
         p.setDirty()
         c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
@@ -1746,7 +1746,7 @@ def moveOutlineToLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> None
     if not parent:
         return
     c.endEditing()
-    with u.change_position(p, 'Move To Last Child'):
+    with u.move_position(p, 'Move To Last Child'):
         p.moveToNthChildOf(parent, len(parent.v.children) - 1)
         p.setDirty()
         c.updateSyntaxColorer(p)  # Moving can change syntax coloring.

@@ -623,7 +623,7 @@ def alwaysIndentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
             result.append('\n')  # #2418
     if not changed:
         return
-    old_ins = w.getInsertionPoint()
+    old_ins = w.getInsertPoint()
     with u.change_node(p, 'Indent Region'):
         # Set p.b and w's text first.
         middle = ''.join(result)
