@@ -524,30 +524,30 @@ def extractSectionNames(self: Self, event: LeoKeyEvent | None = None) -> None:
     c = self
     current = c.p
     u = c.undoer
-    body = c.frame.body
-    head, lines, tail, oldSel, oldYview = c.getBodyLines()
+    w = c.frame.body.wrapper
+    if not g.isTextWrapper(w):
+        return
+    head, lines, tail, old_sel, _old_y_view = c.getBodyLines()
     if not lines:
         g.warning('No lines selected')
         return
+    old_ins = w.getInsertPoint()
     found = False
+    for s in lines:
+        if name := findSectionName(c, s):
+            p = createFirstChildNode(c, current, name, '')
+            found = True
+    if not found:
+        g.warning("selected text should contain section names")
+        return
+    c.checkOutline()
     with u.change_outline('Extract Section Names'):
-        for s in lines:
-            if name := findSectionName(c, s):
-                p = createFirstChildNode(c, current, name, '')
-                found = True
-        c.checkOutline()
-        if found:
-            u.redraw(p)
-        else:
-            g.warning("selected text should contain section names")
-
         # Restore the selection.
-        if not oldSel:
-            return  # PR #4812
-        i, j = oldSel
-        if w := body.wrapper:
-            w.setSelectionRange(i, j)
-            w.setFocus()
+        i, j = old_sel
+        w.setSelectionRange(i, j)
+        w.setFocus()
+        u.redraw(p)
+        u.set_selection(old_ins, old_sel)
 
 
 # @+node:ekr.20171123135625.28: *3* function: findSectionName
