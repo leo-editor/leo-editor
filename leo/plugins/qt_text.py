@@ -36,6 +36,41 @@ QFontMetrics = QtGui.QFontMetrics
 # @-<< qt_text imports & annotations>>
 
 
+def pythonIndexToQt(s: str, i: int) -> int:
+    """
+    Convert a Python code-point index into a Qt UTF-16 code-unit offset.
+
+    QTextCursor.position()/setPosition() measure positions in UTF-16 code
+    units, but Leo's core uses Python code-point indices everywhere.
+    Astral-plane characters (e.g. emoji) occupy 2 code units but 1 code
+    point, so indices must be translated at the Qt boundary.
+    """
+    if i <= 0:
+        return 0
+    n = len(s)
+    if i >= n:
+        return len(s.encode('utf-16-le')) // 2
+    return len(s[:i].encode('utf-16-le')) // 2
+
+
+def qtIndexToPython(s: str, i: int) -> int:
+    """
+    Convert a Qt UTF-16 code-unit offset into a Python code-point index.
+
+    Offsets that fall inside a surrogate pair snap to the start of the
+    corresponding code point.
+    """
+    if i <= 0:
+        return 0
+    utf16 = 0
+    for idx, ch in enumerate(s):
+        width = 2 if ord(ch) > 0xFFFF else 1
+        if utf16 + width > i:
+            return idx
+        utf16 += width
+    return len(s)
+
+
 # @+others
 # @+node:ekr.20191001084541.1: **  zoom commands
 # @+node:tbrown.20130411145310.18857: *3* @g.command('zoom-in')
@@ -1709,6 +1744,10 @@ class QTextEditWrapper(QTextMixin):
             j = i + 1
         if i > j:
             i, j = j, i
+        # i, j are Python code-point indices; convert them to Qt offsets.
+        s = self.getAllText()
+        i_qt = pythonIndexToQt(s, i)
+        j_qt = pythonIndexToQt(s, j)
         sb = w.verticalScrollBar()
         pos = sb.sliderPosition()
         cursor = w.textCursor()
@@ -1721,8 +1760,8 @@ class QTextEditWrapper(QTextMixin):
             elif i == j:
                 pass
             else:
-                cursor.setPosition(i)
-                moveCount = abs(j - i)
+                cursor.setPosition(i_qt)
+                moveCount = j_qt - i_qt
                 cursor.movePosition(MoveOperation.Right, MoveMode.KeepAnchor, moveCount)
                 w.setTextCursor(cursor)  # Bug fix: 2010/01/27
                 cursor.removeSelectedText()
@@ -1759,8 +1798,11 @@ class QTextEditWrapper(QTextMixin):
         def addFlashCallback(self: QTextEditWrapper = self, w: Any = w) -> None:
             i = self.flashIndex
             cursor = w.textCursor()  # Must be the widget's cursor.
-            cursor.setPosition(i)
-            cursor.movePosition(MoveOperation.Right, MoveMode.KeepAnchor, 1)
+            s = self.getAllText()
+            i_qt = pythonIndexToQt(s, i)
+            width = 2 if i < len(s) and ord(s[i]) > 0xFFFF else 1
+            cursor.setPosition(i_qt)
+            cursor.movePosition(MoveOperation.Right, MoveMode.KeepAnchor, width)
             extra = w.ExtraSelection()
             extra.cursor = cursor
             if self.flashBg:
@@ -1795,7 +1837,8 @@ class QTextEditWrapper(QTextMixin):
     # @+node:ekr.20110605121601.18082: *4* QTextEditWrapper.getInsertPoint
     def getInsertPoint(self) -> int:
         """QTextEditWrapper."""
-        return self.widget.textCursor().position()
+        i = self.widget.textCursor().position()
+        return qtIndexToPython(self.getAllText(), i)
 
     # @+node:ekr.20110605121601.18083: *4* QTextEditWrapper.getSelectionRange
     def getSelectionRange(self, sort: bool = True) -> tuple[int, int]:
@@ -1803,6 +1846,10 @@ class QTextEditWrapper(QTextMixin):
         w = self.widget
         tc = w.textCursor()
         i, j = tc.selectionStart(), tc.selectionEnd()
+        s = self.getAllText()
+        i, j = qtIndexToPython(s, i), qtIndexToPython(s, j)
+        if sort and i > j:
+            i, j = j, i
         return i, j
 
     # @+node:ekr.20110605121601.18084: *4* QTextEditWrapper.getX/YScrollPosition
@@ -1833,6 +1880,8 @@ class QTextEditWrapper(QTextMixin):
     def insert(self, i: int, s: str) -> None:
         """QTextEditWrapper."""
         w = self.widget
+        # i is a Python code-point index; convert it to a Qt offset.
+        i = pythonIndexToQt(self.getAllText(), i)
         cursor = w.textCursor()
         try:
             self.changingText = True  # Disable onTextChanged.
@@ -1979,9 +2028,10 @@ class QTextEditWrapper(QTextMixin):
         """Scroll so that position see_i is visible."""
         w = self.widget
         tc = w.textCursor()
-        # Put see_i in range.
+        # Put see_i in range (Python code-point indices).
         s = self.getAllText()
         see_i = max(0, min(see_i, len(s)))
+        see_i = pythonIndexToQt(s, see_i)
         # Remember the old cursor
         old_cursor = QtGui.QTextCursor(tc)
         # Scroll so that see_i is visible.
@@ -2032,21 +2082,24 @@ class QTextEditWrapper(QTextMixin):
             ins = max(0, min(ins, n))
 
         # Part 2: Use tc.setPosition. tc.movePosition doesn't work.
+        # Convert Python code-point indices to Qt UTF-16 code-unit offsets.
+        i_qt = pythonIndexToQt(s, i)
+        j_qt = pythonIndexToQt(s, j)
         tc = w.textCursor()
         if i == j:
-            tc.setPosition(i)
+            tc.setPosition(i_qt)
         elif ins == j:
             # Put the insert point at j
-            tc.setPosition(i)
-            tc.setPosition(j, MoveMode.KeepAnchor)
+            tc.setPosition(i_qt)
+            tc.setPosition(j_qt, MoveMode.KeepAnchor)
         elif ins == i:
             # Put the insert point at i
-            tc.setPosition(j)
-            tc.setPosition(i, MoveMode.KeepAnchor)
+            tc.setPosition(j_qt)
+            tc.setPosition(i_qt, MoveMode.KeepAnchor)
         else:
             # 2014/08/21: It doesn't seem possible to put the insert point somewhere else!
-            tc.setPosition(j)
-            tc.setPosition(i, MoveMode.KeepAnchor)
+            tc.setPosition(j_qt)
+            tc.setPosition(i_qt, MoveMode.KeepAnchor)
         w.setTextCursor(tc)
         # #218.
         if hasattr(g.app.gui, 'setClipboardSelection'):
@@ -2086,9 +2139,10 @@ class QTextEditWrapper(QTextMixin):
     def toPythonIndexRowCol(self, index: int) -> tuple[int, int]:
         te = self.widget
         doc = te.document()
-        bl = doc.findBlock(index)
+        s = self.getAllText()
+        bl = doc.findBlock(pythonIndexToQt(s, index))
         row = bl.blockNumber()
-        col = index - bl.position()
+        col = index - qtIndexToPython(s, bl.position())
         return row, col
 
     # @-others
