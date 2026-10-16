@@ -3039,13 +3039,13 @@ class Undoer:
 
     # @+node:vivainio.202610110001.2: *6* u.change_outline
     @contextmanager
-    def change_outline(self, command_name: str, *, enabled: bool = True) -> Iterator[Undoer]:
+    def change_outline(self, command_name: str) -> Iterator[Undoer]:
         """
         Record a bulk graph operation, preserving vnode identity and clone links.
         Only changed vnodes are retained in the bead. Prefer change_node and the
         action helpers for small edits; this context scans the whole outline.
         """
-        if not enabled or self.undoing or self.redoing:
+        if self.undoing or self.redoing:
             yield self
             return
         with self as u:

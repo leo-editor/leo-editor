@@ -67,10 +67,7 @@ def cutOutline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 # @+node:ekr.20031218072017.1551: *3* c_oc.pasteOutline
 @g.commander_command('paste-node')
 def pasteOutline(
-    self: Cmdr,
-    event: LeoKeyEvent | None = None,
-    s: str | None = None,
-    undoFlag: bool = True,  # A hack for abbrev.paste_tree.
+    self: Cmdr, event: LeoKeyEvent | None = None, s: str | None = None
 ) -> Position | None:
     """
     Paste an outline into the present outline from the clipboard.
@@ -85,7 +82,7 @@ def pasteOutline(
         return None
     if not (s.lstrip().startswith("{") or g.match(s, 0, g.app.prolog_prefix_string)):
         return None
-    with u.change_outline('Paste Node', enabled=undoFlag):
+    with u.change_outline('Paste Node'):  ###, enabled=undoFlag):
         pasted = c.fileCommands.getLeoOutlineFromClipboard(s)
         if not pasted:
             return None
