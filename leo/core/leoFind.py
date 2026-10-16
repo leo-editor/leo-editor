@@ -2535,14 +2535,17 @@ class LeoFind:
                 # #2220: Let onHeadChanged handle undo, etc.
                 c.frame.tree.onHeadChanged(p, 'change-headline')
                 # w will change after a redraw.
+                u.redraw_after_head_changed()  # Required
                 w = c.headline_wrapper(p)
                 if g.isTextWrapper(w):
                     # find-next and find-prev work regardless of insert point.
                     assert w
                     w.setSelectionRange(start, start + len(change_text))
-            else:
-                p.v.b = w.getAllText()
-
+                if self.mark_changes and not p.isMarked():  # pragma: no cover
+                    p.setMarked()
+                    p.setDirty()
+                return True
+            p.v.b = w.getAllText()
             if self.mark_changes and not p.isMarked():  # pragma: no cover
                 p.setMarked()
                 p.setDirty()
