@@ -2730,16 +2730,16 @@ class Undoer:
         clone_p = clone.copy()
         clone_p.setAllAncestorAtFileNodesDirty()
 
-        def redo():
+        def clone_redoer():
             clone_p._linkAfter(old_p)
             clone_p.setDirty()
             c.p = clone_p
 
-        def undo():
+        def clone_undoer():
             clone_p.doDelete(old_p)
             c.p = old_p
 
-        b.add_helpers(redo, undo)
+        b.add_helpers(clone_redoer, clone_undoer)
         return clone
 
     # @+node:ekr.20261005143707.1: *5* u.delete_node
@@ -2929,7 +2929,14 @@ class Undoer:
         g.doHook('headkey2', c=c, p=p, ch=ch, changed=True)
 
         # Add helpers
-        b.add_helpers(lambda: update(new_h), lambda: update(old_h), vnode=p.v)
+
+        def change_headline_redoer():
+            update(new_h)
+
+        def change_headline_undoer():
+            update(old_h)
+
+        b.add_helpers(change_headline_redoer, change_headline_undoer)
         b.add_recolor(p, p)
 
     # @+node:vivainio.202610110001.1: *6* u.change_node
