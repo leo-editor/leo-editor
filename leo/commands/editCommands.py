@@ -3506,7 +3506,6 @@ class EditCommandsClass(BaseEditCommandsClass):
                 if progress >= ins or ins >= j or ins >= len(s):
                     break
             u.redraw()
-            # u.set_selection(old_ins, old_sel)
 
     # @+node:ekr.20150514063305.322: *4* ec.fillRegionAsParagraph
     @cmd('fill-region-as-paragraph')

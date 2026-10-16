@@ -761,7 +761,8 @@ def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
     # @-<< promote-to-at-others: docstring >>
     c = self
     old_p = c.p
-    w = self.frame.body.wrapper
+    u = c.undoer
+    w = self.frame.body.wrapper  # Only valid in body pane.
     c.endEditing()
 
     # @+others
@@ -812,17 +813,13 @@ def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
         g.error('No promotable children')
         return
     new_body = compute_new_body(i, old_p, children)
-    old_sel = w.getSelectionRange()
-    old_ins = w.getInsertPoint()
     j = old_p.b.find('@others') - len(indent)
-    w.setSelectionRange(j, j, insert=j)
-    with c.undoer as u:
-        u.set_command_name('promote-to-at-others')
+    with u.change_outline('promote-to-at-others'):
+        w.setSelectionRange(j, j, insert=j)
         u.set_body(old_p, new_body)
         for child in reversed(children):
             u.delete_node(child)
         u.redraw(old_p)
-        u.set_selection(old_ins, old_sel)
         c.bodyWantsFocusNow()
 
 
