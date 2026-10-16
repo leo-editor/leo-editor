@@ -527,7 +527,7 @@ class LeoFrame:
         w = event.w
         if not g.isTextWrapper(w):
             return
-        # Update the widget and set the clipboard text.
+        # Set the clipboard text.
         i, j = w.getSelectionRange()
         if i == j:
             oldText = w.getAllText()
@@ -536,6 +536,7 @@ class LeoFrame:
         s = w.get(i, j)
         s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
         g.app.gui.replaceClipboardWith(s)
+        # Update the widget.
         if c.widget_name(w).startswith('body'):
             with u.change_node(p, 'cut-text'):
                 w.delete(i, j)
