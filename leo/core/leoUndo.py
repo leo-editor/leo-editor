@@ -2974,9 +2974,9 @@ class Undoer:
     def change_headline(
         self,
         p: Position,
-        ch: str,
         new_h: str,
         *,
+        ch: str = '',
         update_editor: bool = True,
     ) -> None:
         """Change a headline and preserve directives, dirty bits and editor state."""

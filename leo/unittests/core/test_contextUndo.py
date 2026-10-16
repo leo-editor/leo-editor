@@ -97,7 +97,7 @@ class TestContextUndo(LeoUnitTest):
             with u:
                 u.set_command_name('composed actions')
                 inserted = u.insert_node(p)
-                u.change_headline(inserted, '', 'inserted')
+                u.change_headline(inserted, 'inserted')
                 clone = u.clone_node(inserted)
                 u.delete_node(clone)
                 redraw.assert_not_called()
@@ -160,7 +160,7 @@ class TestContextUndo(LeoUnitTest):
         ):
             with u:
                 u.set_command_name('headline')
-                u.change_headline(p, '', 'new headline')
+                u.change_headline(p, 'new headline')
                 u.redraw_after_head_changed()
             headline.assert_called_once()
             headline.reset_mock()
@@ -712,7 +712,7 @@ class TestContextUndo(LeoUnitTest):
                 action = rng.choice(('insert', 'clone', 'delete', 'body', 'mark'))
                 if action == 'insert':
                     inserted = u.insert_node(p, as_child=True)
-                    u.change_headline(inserted, '', f'inserted {i}')
+                    u.change_headline(inserted, f'inserted {i}')
                 elif action == 'clone':
                     u.clone_node(p)
                 elif action == 'delete' and (p.hasParent() or p.hasNext() or p.hasBack()):
