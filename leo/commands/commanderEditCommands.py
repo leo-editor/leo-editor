@@ -541,7 +541,7 @@ def extractSectionNames(self: Self, event: LeoKeyEvent | None = None) -> None:
         g.warning("selected text should contain section names")
         return
     c.checkOutline()
-    with u.change_outline('Extract Section Names'):
+    with u.change_outline('extract-section-names'):
         # Restore the selection.
         i, j = old_sel
         w.setSelectionRange(i, j)
