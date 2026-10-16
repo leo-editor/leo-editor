@@ -2600,40 +2600,45 @@ class LeoFind:
         if not self.find_text:  # pragma: no cover
             return fail
         attempts = 0
-        u = self.c.undoer
         if self.pattern_match:
             ok = self.compile_pattern()
             if not ok:
                 return fail
-        with u.change_outline('find-next-match'):
-            while p:
-                pos, newpos = self._fnm_search(p)
-                if pos is not None:
-                    # Success.
-                    if self.mark_finds and not p.isMarked():  # pragma: no cover
-                        p.setMarked()
-                        p.setDirty()
-                    # u.redraw(p)
-                    return p, pos, newpos
-                # Searching the pane failed: switch to another pane or node.
-                if self._fnm_should_stay_in_node(p):
-                    # Switching panes is possible.  Do so.
-                    self.in_headline = not self.in_headline
+        while p:
+            pos, newpos = self._fnm_search(p)
+            if pos is not None:  # success
+                ###
+                # if self.in_headline:
+                #     with u.change_headline('find-next-match'):
+                #         if self.mark_finds and not p.isMarked():  # pragma: no cover
+                #             p.setMarked()
+                #             p.setDirty()
+                # else:
+                #     with u.change_outline('find-next-match'):
+                #         if self.mark_finds and not p.isMarked():  # pragma: no cover
+                #             p.setMarked()
+                #             p.setDirty()
+                #         # u.redraw(p)
+                return p, pos, newpos
+            # Searching the pane failed: switch to another pane or node.
+            if self._fnm_should_stay_in_node(p):
+                # Switching panes is possible.  Do so.
+                self.in_headline = not self.in_headline
+                s = p.h if self.in_headline else p.b
+                ins = len(s) if self.reverse else 0
+                self.work_s = s
+                self.work_sel = (ins, ins, ins)
+            else:
+                # Switch to the next/prev node, if possible.
+                attempts += 1
+                if p := self._fnm_next_after_fail(p):  # type:ignore
+                    # Found another node: select the proper pane.
+                    self.in_headline = self._fnm_first_search_pane()
                     s = p.h if self.in_headline else p.b
                     ins = len(s) if self.reverse else 0
                     self.work_s = s
                     self.work_sel = (ins, ins, ins)
-                else:
-                    # Switch to the next/prev node, if possible.
-                    attempts += 1
-                    if p := self._fnm_next_after_fail(p):  # type:ignore
-                        # Found another node: select the proper pane.
-                        self.in_headline = self._fnm_first_search_pane()
-                        s = p.h if self.in_headline else p.b
-                        ins = len(s) if self.reverse else 0
-                        self.work_s = s
-                        self.work_sel = (ins, ins, ins)
-            return fail
+        return fail
 
     # @+node:ekr.20131123132043.16476: *5* find._fnm_next_after_fail & helper
     def _fnm_next_after_fail(self, p: Position) -> Position | None:
@@ -3030,7 +3035,6 @@ class LeoFind:
             c.frame.tree.editLabel(p)
             w = c.headline_wrapper(p)  # #2220
             if g.isTextWrapper(w):
-                assert w
                 w.setSelectionRange(pos, newpos, insert)  # #2220
         else:
             # Tricky code.  Do not change without careful thought.
