@@ -2992,16 +2992,19 @@ class Undoer:
             p.setDirty()
             c.frame.tree.setHeadline(p, head)
 
+        # Do the action.
         # Leave the live editor alone: it may contain multiline abbreviation text.
         p.initHeadString(new_h)
         p.setDirty()
-        if update_editor:
+        if update_editor:  # This test is required.
             c.frame.tree.setHeadline(p, new_h)
-        b.add_helpers(lambda: update(new_h), lambda: update(old_h), vnode=p.v)
-        b.add_recolor(p, p)
         c.frame.scanForTabWidth(p)
         c.recolor(p)
         g.doHook('headkey2', c=c, p=p, ch=ch, changed=True)
+
+        # Add helpers
+        b.add_helpers(lambda: update(new_h), lambda: update(old_h), vnode=p.v)
+        b.add_recolor(p, p)
 
     # @+node:vivainio.202610110001.1: *6* u.change_node
     @contextmanager
