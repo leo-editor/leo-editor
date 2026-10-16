@@ -4340,7 +4340,7 @@ class Commands:
         assert p.v
         c.endEditing()
         with u.move_position(p, 'Drag'):
-            ### p.setDirty()
+            p.setDirty()
             p.moveAfter(after)
             p.setDirty()
             c.updateSyntaxColorer(p)  # Dragging can change syntax coloring.

@@ -1557,12 +1557,12 @@ def moveOutlineDown(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         if next.hasChildren() and next.isExpanded():
             # Attempt to move p to the first child of next.
             if moved := c.checkMoveWithParentWithWarning(p, next, True):
-                ### p.setDirty()
+                p.setDirty()
                 p.moveToNthChildOf(next, 0)
         else:
             # Attempt to move p after next.
             if moved := c.checkMoveWithParentWithWarning(p, next.parent(), True):
-                ### p.setDirty()
+                p.setDirty()
                 p.moveAfter(next)
         # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
         if (
@@ -1721,6 +1721,7 @@ def moveOutlineToFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Non
         return
     c.endEditing()
     with u.move_position(p, 'Move To First Child'):
+        p.setDirty()
         p.moveToNthChildOf(p.parent(), 0)
         p.setDirty()
         c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
@@ -1747,6 +1748,7 @@ def moveOutlineToLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> None
         return
     c.endEditing()
     with u.move_position(p, 'Move To Last Child'):
+        p.setDirty()
         p.moveToNthChildOf(parent, len(parent.v.children) - 1)
         p.setDirty()
         c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
