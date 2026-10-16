@@ -3065,17 +3065,17 @@ class Undoer:
                 new_files = rf.recentFiles[:]
                 if old_files != new_files:
 
-                    def restore(files):
+                    def restore_recent_files(files):
                         rf.recentFiles = files[:]
                         for frame in g.app.windowList:
                             rf.createRecentFilesMenuItems(frame.c)
                         rf.writeRecentFilesFile(u.c)
 
                     def change_recent_files_redoer():
-                        restore(new_files)
+                        restore_recent_files(new_files)
 
                     def change_recent_files_undoer():
-                        restore(new_files)
+                        restore_recent_files(old_files)
 
                     u.undoBead.add_helpers(change_recent_files_redoer, change_recent_files_undoer)
 
