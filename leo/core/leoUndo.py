@@ -233,16 +233,9 @@ class UndoBead:
         c.setChanged()  # Elegant!
 
     # @+node:ekr.20261006040137.2: *3* UndoBead.add_helpers & add_finishers
-    def add_helpers(
-        self,
-        redo_function: Callable,
-        undo_function: Callable,
-        *,
-        force: bool = False,
-        vnode: VNode | None = None,
-    ) -> None:
+    def add_helpers(self, redo_function: Callable, undo_function: Callable) -> None:
         """Append the helpers (in correct order!) to the undo/redo lists."""
-        if (self.undoer.capture_level or vnode in self.undoer.node_captures) and not force:
+        if self.undoer.capture_level:
             return  # The enclosing snapshot records the complete operation.
         c = self.c
         u = c.undoer
@@ -2749,7 +2742,8 @@ class Undoer:
     # @+node:ekr.20261005143707.1: *5* u.delete_node
     def delete_node(self, p: Position) -> None:
         """Delete p without scheduling a redraw; retain its original links."""
-        c, b = self.c, self._require_bead()
+        u = self
+        c, b = u.c, u._require_bead()
         old_current = c.p.copy()
         deleted = p.copy()
         old_back, old_parent = p.back(), p.parent()
@@ -2784,7 +2778,8 @@ class Undoer:
             deleted.setDirty()
             c.p = old_current
 
-        b.add_helpers(delete_node_redoer, delete_node_undoer, vnode=deleted.v)
+        if deleted.v not in u.node_captures:
+            b.add_helpers(delete_node_redoer, delete_node_undoer)
 
     # @+node:ekr.20261006155622.1: *5* u.insert_node
     def insert_node(
@@ -2886,7 +2881,8 @@ class Undoer:
         def set_body_undoer() -> None:
             set_body_update(new_p, old_body)
 
-        b.add_helpers(set_body_redoer, set_body_undoer, vnode=new_p.v)
+        if new_p.v not in u.node_captures:
+            b.add_helpers(set_body_redoer, set_body_undoer)
 
     # @+node:ekr.20261005094529.2: *5* u.set_command_name
     def set_command_name(self, command_name: str) -> None:
@@ -3081,11 +3077,7 @@ class Undoer:
                     def change_recent_files_undoer():
                         restore(new_files)
 
-                    u.undoBead.add_helpers(
-                        change_recent_files_redoer,
-                        change_recent_files_undoer,
-                        force=True,
-                    )
+                    u.undoBead.add_helpers(change_recent_files_redoer, change_recent_files_undoer)
 
     # @+node:ekr.20261015042321.1: *5* u: context helpers
     # @+node:vivainio.202610110001.3: *6* u.capture_node
