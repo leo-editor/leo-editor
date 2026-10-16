@@ -3075,9 +3075,15 @@ class Undoer:
                             rf.createRecentFilesMenuItems(frame.c)
                         rf.writeRecentFilesFile(u.c)
 
+                    def change_recent_files_redoer():
+                        restore(new_files)
+
+                    def change_recent_files_undoer():
+                        restore(new_files)
+
                     u.undoBead.add_helpers(
-                        lambda: restore(new_files),
-                        lambda: restore(old_files),
+                        change_recent_files_redoer,
+                        change_recent_files_undoer,
                         force=True,
                     )
 
