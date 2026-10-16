@@ -1175,8 +1175,7 @@ def reformatSelection(
     lines = g.splitLines(middle)
     if not lines:
         return
-    old_ins = w.getInsertPoint()
-    old_sel, old_y_scroll, old_s, pageWidth, tabWidth = rp_get_args(c)
+    _old_sel, _old_y_scroll, old_s, pageWidth, tabWidth = rp_get_args(c)
     indents, leading_ws = rp_get_leading_ws(c, lines, tabWidth)
     result = rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth)
     s = head + result + tail
@@ -1189,11 +1188,8 @@ def reformatSelection(
         j = max(i, len(head) + len(result) - 1)
         j = min(j, len(s))
         w.setSelectionRange(i, j, insert=j)
-
-        # Finish.
         p.v.b = s  # p.b would cause a redraw.
         w.setXScrollPosition(0)  # Never scroll horizontally.
-        u.set_selection(old_ins, old_sel, old_y_scroll=old_y_scroll)
         u.redraw()
 
 
