@@ -4327,8 +4327,7 @@ class Commands:
             p.setDirty()
             p.moveToNthChildOf(parent, n)
             p.setDirty()
-            c.updateSyntaxColorer(p)  # Dragging can change syntax coloring.
-            u.redraw(p)
+            u.redraw(p, update_syntax_coloring=True)
 
     # @+node:ekr.20031218072017.2353: *5* c.dragAfter (not used)
     def dragAfter(self, p: Position, after: Position) -> None:
@@ -4343,8 +4342,7 @@ class Commands:
             p.setDirty()
             p.moveAfter(after)
             p.setDirty()
-            c.updateSyntaxColorer(p)  # Dragging can change syntax coloring.
-            u.redraw(p)
+            u.redraw(p, update_syntax_coloring=True)
 
     # @+node:ekr.20031218072017.2946: *5* c.dragCloneToNthChildOf
     def dragCloneToNthChildOf(self, p: Position, parent: Position, n: int) -> None:

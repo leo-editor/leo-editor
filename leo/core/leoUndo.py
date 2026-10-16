@@ -135,7 +135,7 @@ class UndoBead:
         self.add_finishers(recolor_redoer, recolor_undoer)
 
     # @+node:ekr.20261010150247.9: *3* undoBead.add_redraw
-    def add_redraw(self, new_p: Position, old_p: Position, contract: bool = False) -> None:
+    def add_redraw(self, new_p: Position, old_p: Position) -> None:
         """
         Add finishers that will call c.redraw.
         The caller chooses the final redraw for the entire command.
@@ -148,8 +148,6 @@ class UndoBead:
             c.redraw(new_p if c.positionExists(new_p) else c.p)
 
         def redraw_undoer() -> None:
-            if contract:
-                old_p.contract()
             c.redraw(old_p if c.positionExists(old_p) else self.old_p)
 
         self.add_redraw_finishers(redraw_redoer, redraw_undoer)
@@ -3024,7 +3022,6 @@ class Undoer:
         if self.undoing or self.redoing:
             yield self
             return
-        ### c = self.c
         with self as u:
             u.set_command_name(command_name)
             if u.capture_level:
@@ -3154,7 +3151,12 @@ class Undoer:
 
     # @+node:ekr.20261015041852.1: *4* u: redrawers & finishers
     # @+node:ekr.20261005182243.1: *5* u.redraw
-    def redraw(self, new_p: Position | None = None, contract: bool = False) -> None:
+    def redraw(
+        self,
+        new_p: Position | None = None,
+        *,
+        update_syntax_coloring: bool = False,
+    ) -> None:
         """Redraw now and choose the command's single undo/redo redraw."""
         u = self
         c = u.c
@@ -3167,12 +3169,14 @@ class Undoer:
         preserve_body = new_p == c.p and w.getAllText() == new_p.b
         if preserve_body:
             sel, ins, scroll = w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
+        if update_syntax_coloring:
+            c.updateSyntaxColorer(new_p)
         c.redraw(new_p)
         if preserve_body:
             w.setSelectionRange(*sel, insert=ins)
             w.setYScrollPosition(scroll)
         if u.undoBead:
-            u.undoBead.add_redraw(new_p, u.undoBead.old_p, contract=contract)
+            u.undoBead.add_redraw(new_p, u.undoBead.old_p)
 
     # @+node:ekr.20261011193020.1: *5* u.redraw_after_head_changed
     def redraw_after_head_changed(self) -> None:

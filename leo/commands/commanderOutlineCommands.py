@@ -1575,9 +1575,7 @@ def moveOutlineDown(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         # @-<< Move p down & set moved if successful >>
         if moved:
             p.setDirty()
-            ### c.setChanged()
-            c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
-            u.redraw(p)
+            u.redraw(p, update_syntax_coloring=True)
 
 
 # @+node:ekr.20031218072017.1770: *3* c_oc.moveOutlineLeft
@@ -1604,8 +1602,7 @@ def moveOutlineLeft(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
         if c.collapse_nodes_after_move and c.sparse_move:  # New in Leo 4.4.2
             parent.contract()
-        c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
-        u.redraw(p)
+        u.redraw(p, update_syntax_coloring=True)
 
 
 # @+node:ekr.20031218072017.1771: *3* c_oc.moveOutlineRight
@@ -1633,8 +1630,7 @@ def moveOutlineRight(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         n = back.numberOfChildren()
         p.moveToNthChildOf(back, n)
         p.setDirty()
-        c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
-        u.redraw(p)
+        u.redraw(p, update_syntax_coloring=True)
 
 
 # @+node:ekr.20031218072017.1772: *3* c_oc.moveOutlineUp
@@ -1696,9 +1692,7 @@ def moveOutlineUp(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         # @-<< Move p up >>
         if moved:
             p.setDirty()
-            ### c.setChanged()
-            c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
-            u.redraw(p)
+            u.redraw(p, update_syntax_coloring=True)
 
 
 # @+node:ekr.20230902051130.1: *3* c_oc.moveOutlineToFirstChild
@@ -1724,8 +1718,7 @@ def moveOutlineToFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Non
         p.setDirty()
         p.moveToNthChildOf(p.parent(), 0)
         p.setDirty()
-        c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
-        u.redraw(p)
+        u.redraw(p, update_syntax_coloring=True)
 
 
 # @+node:ekr.20230902051833.1: *3* c_oc.moveOutlineToLastChild
@@ -1751,8 +1744,7 @@ def moveOutlineToLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> None
         p.setDirty()
         p.moveToNthChildOf(parent, len(parent.v.children) - 1)
         p.setDirty()
-        c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
-        u.redraw(p)
+        u.redraw(p, update_syntax_coloring=True)
 
 
 # @+node:ekr.20031218072017.1774: *3* c_oc.promote
