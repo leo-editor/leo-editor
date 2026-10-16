@@ -523,6 +523,7 @@ class LeoFrame:
         if not event:
             return
         c, p = self.c, self.c.p
+        u = c.undoer
         w = event.w
         if not g.isTextWrapper(w):
             return
@@ -536,12 +537,14 @@ class LeoFrame:
         s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
         g.app.gui.replaceClipboardWith(s)
         if c.widget_name(w).startswith('body'):
-            u = c.undoer
             with u.change_node(p, 'cut-text'):
                 w.delete(i, j)
                 w.see(i)
                 u.set_body(p, new_body=w.getAllText())
                 u.redraw(p)
+        else:
+            w.delete(i, j)
+            w.see(i)
 
         # Otherwise, the headline has not yet offcially changed.
 
