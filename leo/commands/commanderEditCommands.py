@@ -594,39 +594,35 @@ def alwaysIndentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
     if not event:
         return
-
     # #1801: Don't rely on bindings to ensure that we are editing the body.
     event_w = event and event.w
     if event_w != w:
         c.insertCharFromEvent(event)
         return
-
+    # Initial data.
+    sel_1, sel_2 = w.getSelectionRange()
+    tab_width = c.getTabWidth(p)
+    head, lines, tail, old_sel, old_y_scroll = self.getBodyLines()
+    # Calculate the result.
+    changed, result = False, []
+    for line in lines:
+        if line.strip():
+            i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
+            s = g.computeLeadingWhitespace(width + abs(tab_width), tab_width) + line[i:]
+            result.append(s)
+            if s != line:
+                changed = True
+        else:
+            result.append('\n')  # #2418
+    if not changed:
+        return
+    old_ins = w.getInsertionPoint()
     with u.change_node(p, 'Indent Region'):
-        # Initial data.
-        sel_1, sel_2 = w.getSelectionRange()
-        tab_width = c.getTabWidth(p)
-        head, lines, tail, oldSel, oldYview = self.getBodyLines()
-
-        # Calculate the result.
-        changed, result = False, []
-        for line in lines:
-            if line.strip():
-                i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
-                s = g.computeLeadingWhitespace(width + abs(tab_width), tab_width) + line[i:]
-                result.append(s)
-                if s != line:
-                    changed = True
-            else:
-                result.append('\n')  # #2418
-        if not changed:
-            return
-
         # Set p.b and w's text first.
         middle = ''.join(result)
         all = head + middle + tail
         p.b = all  # Sets dirty and changed bits.
         w.setAllText(all)
-
         # Calculate the proper selection range (i, j, ins).
         if sel_1 == sel_2:
             line = result[0]
@@ -637,10 +633,10 @@ def alwaysIndentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
             j = len(head) + len(middle)
             if middle.endswith('\n'):  # #1742.
                 j -= 1
-
         # Set the selection range and scroll position.
         w.setSelectionRange(i, j, insert=j)
-        w.setYScrollPosition(oldYview)
+        w.setYScrollPosition(old_y_scroll)
+        u.set_selection(old_ins, old_sel, old_y_scroll=old_y_scroll)
         u.redraw()
 
 

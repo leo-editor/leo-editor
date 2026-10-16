@@ -1706,7 +1706,7 @@ class Commands:
     # @+node:ekr.20171123135625.29: *5* c.getBodyLines
     def getBodyLines(
         self,
-    ) -> tuple[str, list[str], str, tuple | None, tuple | None]:
+    ) -> tuple[str, list[str], str, tuple[int, int], int]:
         """
         Return (head, lines, tail, oldSel, oldYview).
 
@@ -1730,7 +1730,7 @@ class Commands:
         i = len(head)
         j = len(head) + len(s)
         oldSel = i, j
-        return head, lines, tail, oldSel, oldYview  # string,list,string,tuple,int.
+        return head, lines, tail, oldSel, oldYview
 
     # @+node:ekr.20250405040620.1: *5* c.getDelims
     # Use a regex to avoid allocating temp strings.
