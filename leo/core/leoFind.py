@@ -1767,24 +1767,17 @@ class LeoFind:
             # Not even one match found!
             self.restore(saveData)
             return {}
-        # Check first if need to make a 'group' undo bead
         with u.change_outline('find-all'):
-            # Create the result dict.
             result_string = self.make_result_from_matches(matches_dict)
             # Create the summary node.
             found_p = self.create_summary_node('find-all', result_string)
-            c.selectPosition(found_p)
-
             if self.mark_finds:
                 for match in matches_dict:
                     if p := c.vnode2position(match['v']):
                         if not p.isMarked():
                             p.setMarked()
                             p.setDirty()
-                # Finish undo group only if mark_finds is true
-
-            u.redraw()
-            # Return a dict containing the actual results and statistics.
+            u.redraw(found_p)
             return {
                 'distinct_body_lines': distinct_body_lines,
                 'match_dict': matches_dict,
