@@ -503,15 +503,14 @@ class LeoFind:
         def isMarked(p: Position) -> bool:
             return p.isMarked()
 
-        with u.change_outline(undoType):
-            root = c.cloneFindByPredicate(
-                generator=c.all_unique_positions,
-                predicate=isMarked,
-                failMsg=failMsg,
-                flatten=flatten,
-                undoType=undoType,
-            )
-            if root:
+        if root := c.cloneFindByPredicate(
+            generator=c.all_unique_positions,
+            predicate=isMarked,
+            failMsg=failMsg,
+            flatten=flatten,
+            undoType=undoType,
+        ):
+            with u.change_outline(undoType):
                 # Unmarking all nodes is convenient.
                 for p in c.all_unique_positions():
                     if p.isMarked():
@@ -519,7 +518,7 @@ class LeoFind:
                 n = root.numberOfChildren()
                 root.b = f"# Found {n} marked node{g.plural(n)}"
                 u.redraw(root)
-            return bool(root)
+        return bool(root)
 
     # @+node:ekr.20140828080010.18532: *4* find.clone-find-parents
     @cmd('clone-find-parents')
