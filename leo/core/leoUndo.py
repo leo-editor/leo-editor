@@ -2763,14 +2763,14 @@ class Undoer:
         new_current = new_current.copy()
         c.p.setAllAncestorAtFileNodesDirty()
 
-        def redo():
+        def delete_node_redoer():
             target = old_current.copy()
             if deleted == old_current or deleted.isAncestorOf(old_current):
                 target = deleted.visBack(c) if deleted.hasVisBack(c) else deleted.next()
             deleted.doDelete(target)
             c.p = target
 
-        def undo():
+        def delete_node_undoer():
             if old_back:
                 deleted._linkAfter(old_back)
             elif old_parent:
@@ -2780,7 +2780,7 @@ class Undoer:
             deleted.setDirty()
             c.p = old_current
 
-        b.add_helpers(redo, undo)
+        b.add_helpers(delete_node_redoer, delete_node_undoer)
 
     # @+node:ekr.20261006155622.1: *5* u.insert_node
     def insert_node(
