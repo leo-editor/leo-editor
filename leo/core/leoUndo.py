@@ -2780,7 +2780,7 @@ class Undoer:
             deleted.setDirty()
             c.p = old_current
 
-        b.add_helpers(delete_node_redoer, delete_node_undoer)
+        b.add_helpers(delete_node_redoer, delete_node_undoer, vnode=deleted.v)
 
     # @+node:ekr.20261006155622.1: *5* u.insert_node
     def insert_node(
