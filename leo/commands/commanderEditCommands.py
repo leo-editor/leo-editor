@@ -279,54 +279,56 @@ def deleteComments(self: Self, event: LeoKeyEvent | None = None) -> None:
     # @-<< deleteComments docstring >>
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
 
+    # Initial data.
+    old_ins = w.getInsertPoint()
+    head, lines, tail, old_sel, old_y_scroll = self.getBodyLines()
+    if not lines:
+        g.warning('no text selected')
+        return
+
+    # The default language in effect at p.
+    language = c.frame.body.colorizer.scanLanguageDirectives(p)
+    if c.hasAmbiguousLanguage(p):
+        language = c.getLanguageAtCursor(p, language)
+    d1, d2, d3 = g.set_delims_from_language(language)
+
+    # Calculate the result.
+    changed, result = False, []
+    if d1:
+        # Remove the single-line comment delim in front of each line
+        d1b = d1 + ' '
+        n1, n1b = len(d1), len(d1b)
+        for s in lines:
+            i = g.skip_ws(s, 0)
+            if g.match(s, i, d1b):
+                result.append(s[:i] + s[i + n1b :])
+                changed = True
+            elif g.match(s, i, d1):
+                result.append(s[:i] + s[i + n1 :])
+                changed = True
+            else:
+                result.append(s)
+    else:
+        # Remove the block comment delimiters from each line.
+        n2, n3 = len(d2), len(d3)
+        for s in lines:
+            i = g.skip_ws(s, 0)
+            j = s.find(d3, i + n2)
+            if g.match(s, i, d2) and j > -1:
+                first = i + n2
+                if g.match(s, first, ' '):
+                    first += 1
+                last = j
+                if g.match(s, last - 1, ' '):
+                    last -= 1
+                result.append(s[:i] + s[first:last] + s[j + n3 :])
+                changed = True
+            else:
+                result.append(s)
+    if not changed:
+        return
+
     with u.change_node(p, 'Delete Comments'):
-        # Initial data.
-        head, lines, tail, oldSel, oldYview = self.getBodyLines()
-        if not lines:
-            g.warning('no text selected')
-            return
-        # The default language in effect at p.
-        language = c.frame.body.colorizer.scanLanguageDirectives(p)
-        if c.hasAmbiguousLanguage(p):
-            language = c.getLanguageAtCursor(p, language)
-        d1, d2, d3 = g.set_delims_from_language(language)
-
-        # Calculate the result.
-        changed, result = False, []
-        if d1:
-            # Remove the single-line comment delim in front of each line
-            d1b = d1 + ' '
-            n1, n1b = len(d1), len(d1b)
-            for s in lines:
-                i = g.skip_ws(s, 0)
-                if g.match(s, i, d1b):
-                    result.append(s[:i] + s[i + n1b :])
-                    changed = True
-                elif g.match(s, i, d1):
-                    result.append(s[:i] + s[i + n1 :])
-                    changed = True
-                else:
-                    result.append(s)
-        else:
-            # Remove the block comment delimiters from each line.
-            n2, n3 = len(d2), len(d3)
-            for s in lines:
-                i = g.skip_ws(s, 0)
-                j = s.find(d3, i + n2)
-                if g.match(s, i, d2) and j > -1:
-                    first = i + n2
-                    if g.match(s, first, ' '):
-                        first += 1
-                    last = j
-                    if g.match(s, last - 1, ' '):
-                        last -= 1
-                    result.append(s[:i] + s[first:last] + s[j + n3 :])
-                    changed = True
-                else:
-                    result.append(s)
-        if not changed:
-            return
-
         # Set p.b and w's text first.
         middle = ''.join(result)
         p.b = head + middle + tail  # Sets dirty and changed bits.
@@ -336,7 +338,8 @@ def deleteComments(self: Self, event: LeoKeyEvent | None = None) -> None:
         i = len(head)
         j = ins = max(i, len(head) + len(middle) - 1)
         w.setSelectionRange(i, j, insert=ins)
-        w.setYScrollPosition(oldYview)
+        w.setYScrollPosition(old_y_scroll)
+        u.set_selection(old_ins, old_sel, old_y_scroll=old_y_scroll)
         u.redraw()
 
 
