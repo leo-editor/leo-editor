@@ -154,27 +154,28 @@ def convertBlanks(self: Self, event: LeoKeyEvent | None = None) -> bool:
     """
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
 
-    with u.change_node(p, 'Convert Blanks'):
-        oldYview = w.getYScrollPosition()
-        w.selectAllText()
-        head, lines, tail, oldSel, oldYview = c.getBodyLines()
-        tabWidth = c.getTabWidth(c.p)
-        # Calculate the result.
-        changed, result = False, []
-        for line in lines:
-            s = g.optimizeLeadingWhitespace(line, abs(tabWidth))  # Use positive width.
-            if s != line:
-                changed = True
-            result.append(s)
-        if not changed:
-            return False
+    old_ins = w.getInsertPoint()
+    old_sel = (old_ins, old_ins)  # PR #5001
+    w.selectAllText()
+    head, lines, tail, _old_sel, old_y_scroll = self.getBodyLines()
+    tabWidth = c.getTabWidth(c.p)
+    changed, result = False, []
+    for line in lines:
+        s = g.optimizeLeadingWhitespace(line, abs(tabWidth))  # Use positive width.
+        if s != line:
+            changed = True
+        result.append(s)
+    if not changed:
+        return False
+    with u.change_node(p, 'convert-blanks'):
         # Set p.b and w's text first.
         middle = ''.join(result)
         p.b = head + middle + tail  # Sets dirty and changed bits.
         w.setAllText(head + middle + tail)
         # Select all text and set scroll position.
         w.selectAllText()
-        w.setYScrollPosition(oldYview)
+        w.setYScrollPosition(old_y_scroll)
+        u.set_selection(old_ins, old_sel, old_y_scroll=old_y_scroll)
         u.redraw()
         return True
 
