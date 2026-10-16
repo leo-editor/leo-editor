@@ -1795,23 +1795,18 @@ def moveOutlineToLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> None
         u.redraw(p)
 
 
-# @+node:ekr.20031218072017.1774: *3* c_oc.promote (undo flag???)
+# @+node:ekr.20031218072017.1774: *3* c_oc.promote
 @g.commander_command('promote')
-def promote(
-    self: Cmdr,
-    event: LeoKeyEvent | None = None,
-    undoFlag: bool = True,
-) -> None:
+def promote(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Make all children of the selected nodes siblings of the selected node."""
     c, p, u = self, self.p, self.undoer
     if not p or not p.hasChildren():
         c.treeFocusHelper()
         return
     c.endEditing()
-    with u.change_outline('Promote', enabled=undoFlag):
+    with u.change_outline('Promote'):
         p.promote()
-        if undoFlag:  ###
-            p.setDirty()
+        p.setDirty()
         c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
         u.redraw(p)
 
