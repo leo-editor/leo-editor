@@ -2569,12 +2569,16 @@ class Undoer:
                 u.setIvarsFromBunch(bunch)
                 helper()
 
-            u.undoBead.add_helpers(
-                lambda: replay(bunch.redoHelper),
-                lambda: replay(bunch.undoHelper),
-            )
+            def push_bead_redoer():
+                replay(bunch.redoHelper)
+
+            def push_bead_undoer():
+                replay(bunch.undoHelper)
+
+            u.undoBead.add_helpers(push_bead_redoer, push_bead_undoer)
             return
-        # New in 4.4b2:  Add this to the group if it is being accumulated.
+
+        # Add the bunch to the group if it is being accumulated.
         bunch2 = u.bead >= 0 and u.bead < len(u.beads) and u.beads[u.bead]
         if bunch2 and hasattr(bunch2, 'kind') and bunch2.kind == 'beforeGroup':
             # Just append the new bunch the group's items.
