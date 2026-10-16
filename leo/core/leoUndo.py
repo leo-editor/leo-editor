@@ -2797,9 +2797,12 @@ class Undoer:
             clone.doDelete()
             c.p = old_p
             return None
+
+        # Do the action.
         clone.setDirty()
         c.p = clone
         clone_p = clone.copy()
+        clone_p.setAllAncestorAtFileNodesDirty()
 
         def redo():
             clone_p._linkAfter(old_p)
@@ -2826,10 +2829,13 @@ class Undoer:
                 return  # The last top-level node cannot be deleted.
         else:
             new_current = c.p.copy()
+
+        # Do the action.
         deleted.doDelete(new_current)
         c.p = new_current
         new_current.setDirty()
         new_current = new_current.copy()
+        c.p.setAllAncestorAtFileNodesDirty()
 
         def redo():
             target = old_current.copy()
@@ -2878,11 +2884,14 @@ class Undoer:
             new_p = p.insertAsNthChild(index)
         else:
             new_p = p.insertAfter()
+
+        # Do the action.
         new_p.setDirty()
         c.p = new_p
         parent = new_p.parent()
         back = new_p.back()
         saved = new_p.copy()
+        new_p.setAllAncestorAtFileNodesDirty()
 
         def redo():
             if back:
@@ -2929,6 +2938,7 @@ class Undoer:
             if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
                 p.v.iconVal = val
             c.recolor(p)  # Only for QScintilla.
+            p.setAllAncestorAtFileNodesDirty()
 
         # Do the action!
         set_body_update(new_p, new_body)
@@ -3250,7 +3260,7 @@ class Undoer:
         )
 
     # @+node:ekr.20261015183213.1: *5* u.set_changed
-    def set_changed(self):
+    def set_changed(self) -> None:
         c = self.c
         if not c.changed:
             c.setChanged()
