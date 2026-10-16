@@ -671,26 +671,25 @@ class EditCommandsClass(BaseEditCommandsClass):
         s = w.getAllText()
         if not s:
             return
-        with u.change_node(p, 'capitalize-body-words'):
-            i, j = w.getSelectionRange()
-            if i == j:
-                sel = ''
-            else:
-                sel = s[i:j]
-            text = sel or s
-            if sel:
-                prefix = s[:i]
-                suffix = s[j:]
+        i, j = w.getSelectionRange()
+        if i == j:
+            sel = ''
+        else:
+            sel = s[i:j]
+        text = sel or s
+        if sel:
+            prefix = s[:i]
+            suffix = s[j:]
 
-            # Thanks to
-            # https://thispointer.com/python-capitalize-the-first-letter-of-each-word-in-a-string/
-            def convert_to_uppercase(m: re.Match) -> str:
-                """Convert the second group to uppercase and join both group 1 & group 2"""
-                return m.group(1) + m.group(2).upper()
+        # https://thispointer.com/python-capitalize-the-first-letter-of-each-word-in-a-string/
+        def convert_to_uppercase(m: re.Match) -> str:
+            """Convert the second group to uppercase and join both group 1 & group 2"""
+            return m.group(1) + m.group(2).upper()
 
-            capitalized = re.sub(r"(^|\s)(\S)", convert_to_uppercase, text)
+        capitalized = re.sub(r"(^|\s)(\S)", convert_to_uppercase, text)
 
-            if capitalized != text:
+        if capitalized != text:
+            with u.change_node(p, 'capitalize-body-words'):
                 p.b = prefix + capitalized + suffix if sel else capitalized
                 c.setChanged()
                 p.setDirty()
