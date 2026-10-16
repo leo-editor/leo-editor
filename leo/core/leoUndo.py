@@ -2823,7 +2823,7 @@ class Undoer:
         saved = new_p.copy()
         new_p.setAllAncestorAtFileNodesDirty()
 
-        def redo():
+        def insert_node_redoer():
             if back:
                 saved._linkAfter(back)
             elif parent:
@@ -2833,12 +2833,12 @@ class Undoer:
             saved.setDirty()
             c.p = saved
 
-        def undo():
+        def insert_node_undoer():
             saved.doDelete()
             old_p.setAllAncestorAtFileNodesDirty()
             c.p = old_p
 
-        b.add_helpers(redo, undo)
+        b.add_helpers(insert_node_redoer, insert_node_undoer)
         g.doHook('create-node', c=c, p=new_p)
         return new_p
 
