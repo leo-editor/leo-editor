@@ -70,7 +70,6 @@ class UndoBead:
     __slots__ = (
         'c',
         'command_name',
-        'old_changed',
         'old_p',
         'redo_finishers',
         'redo_functions',
@@ -93,7 +92,6 @@ class UndoBead:
         c = undoer.c
         self.c = c
         self.command_name = None
-        self.old_changed = c.changed
         self.old_p = c.p.copy()
         self.redo_finishers: list[Callable] = []
         self.redo_functions: list[Callable] = []

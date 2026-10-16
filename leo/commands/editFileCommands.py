@@ -1549,7 +1549,7 @@ class GitDiffController:
                 return p
         return None
 
-    # @+node:ekr.20170806094321.5: *4* gdc.finish (*** revise)
+    # @+node:ekr.20170806094321.5: *4* gdc.finish
     def finish(self) -> None:
         """Finish execution of this command."""
         c = self.c
