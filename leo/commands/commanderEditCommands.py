@@ -889,9 +889,7 @@ def reformatBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     p = self.p
     u = c.undoer
     undoType = 'reformat-body'
-    w = c.frame.body.wrapper
-    old_ins = w.getInsertPoint()
-    old_sel = w.getSelectionRange()
+    w = c.frame.body.wrapper  # Only valid in bod.
     with u.change_outline(undoType):
         w.setInsertPoint(0)
         while 1:
@@ -899,11 +897,9 @@ def reformatBody(self: Self, event: LeoKeyEvent | None = None) -> None:
             c.reformatParagraph(event, undoType=undoType)
             ins = w.getInsertPoint()
             s = w.getAllText()
-            w.setInsertPoint(ins)
             if ins <= progress or ins >= len(s):
                 break
         u.redraw(p)
-        u.set_selection(old_ins, old_sel)
 
 
 # @+node:ekr.20171123135625.41: ** c_ec.reformatParagraph & helpers
