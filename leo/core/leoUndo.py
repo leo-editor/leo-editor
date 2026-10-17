@@ -2944,7 +2944,7 @@ class Undoer:
             return
         with self as u:
             u.set_command_name(command_name)
-            if u.capture_level or p.v in u.node_captures:
+            if u.capture_level > 0 or p.v in u.node_captures:
                 yield u
                 return
             old_state = u.capture_node(p.v)
@@ -2979,7 +2979,7 @@ class Undoer:
             return
         with self as u:
             u.set_command_name(command_name)
-            if u.capture_level:
+            if u.capture_level > 0:
                 yield u
                 return
             assert not u.node_captures, "Use change_outline outside change_node for bulk edits"
@@ -3021,11 +3021,6 @@ class Undoer:
 
                     u.undoBead.add_finishers(change_outline_ui_redoer, change_outline_ui_undoer)
 
-                    # u.undoBead.add_finishers(
-                    #     lambda: u.restore_ui(new_ui),
-                    #     lambda: u.restore_ui(old_ui),
-                    # )
-
     # @+node:vivainio.202610110003.1: *5* u.move_position
     @contextmanager
     def move_position(self, p: Position, command_name: str) -> Iterator[Undoer]:
@@ -3035,7 +3030,7 @@ class Undoer:
             return
         with self as u:
             u.set_command_name(command_name)
-            if u.capture_level:
+            if u.capture_level > 0:
                 yield u
                 return
             old_p, old_ui = p.copy(), u.capture_ui()
