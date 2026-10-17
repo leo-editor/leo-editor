@@ -837,7 +837,6 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
     c = self
     p = c.p
     u = c.undoer
-    w = self.frame.body.wrapper
     c.endEditing()
 
     # Find the section ref, ignoring the possibility that
@@ -859,16 +858,10 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
     if len(matches) != 1:
         g.error(f"No unique ref to {lb} {section_name} {rb}")
         return
-
-    # Compute the old insert point in the parent.
     i, m, parent = matches[0]
     indent = m.group(1)
-    old_ins = parent.b.find(m.group(0))
-
-    # Replace the section ref in parent.b with p.b, properly indented.
-    old_ins = w.getInsertPoint()
-    old_sel = w.getSelectionRange()
     with u.change_outline('promote-section-def'):
+        # Set parent.b.
         lines = g.splitLines(parent.b)
         result = lines[:i]
         result.extend([f"{indent}{z}" for z in g.splitLines(p.b)])
@@ -878,7 +871,6 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
         # Delete the definition node.
         p.doDelete()
         u.redraw(parent)
-        u.set_selection(old_ins, old_sel)
 
 
 # @+node:ekr.20171123135625.40: ** c_ec.reformatBody
