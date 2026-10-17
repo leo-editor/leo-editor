@@ -221,10 +221,10 @@ class backlinkController:
             return
         our_unl = c.p.get_UNL()
 
-        ### This is too early.
-        # new_c = g.handleUnl(url, c)
-        # if not new_c or not hasattr(new_c, 'backlinkController'):
-        # return
+        # This would be too early.
+        #   new_c = g.handleUnl(url, c)
+        #   if not new_c or not hasattr(new_c, 'backlinkController'):
+        #   return
 
         new_p = g.findAnyUnl(our_unl, c)
         if not new_p:

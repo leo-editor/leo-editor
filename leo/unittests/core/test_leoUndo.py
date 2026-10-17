@@ -409,7 +409,6 @@ class TestUndo(LeoUnitTest):
     def test_undo_group_after_move(self):
         # Test a group of moves.
         c, p, u = self.c, self.c.p, self.c.undoer
-        undoType = 'test-undo-group-after-move'
         p1 = p.insertAfter()
         p1.h = 'p1'
         p2 = p1.insertAfter()
@@ -421,7 +420,6 @@ class TestUndo(LeoUnitTest):
         u.clearUndoState()
         # Do moves that invalidate nodes.
         c.selectPosition(p2)
-        u.beforeChangeGroup(c.p, undoType)
         c.moveOutlineRight()  # Invalidates p2, p3, p4
         # Re-establish p3 and p4.
         p3 = p1.next()
@@ -430,7 +428,6 @@ class TestUndo(LeoUnitTest):
         assert p4.h == 'p4', p4.h
         c.selectPosition(p3)
         c.moveOutlineDown()
-        u.afterChangeGroup(c.p, undoType)
         # Undo and redo thrice.
         for i in range(3):
             u.undo()

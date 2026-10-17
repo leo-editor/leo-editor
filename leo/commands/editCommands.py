@@ -124,20 +124,18 @@ def delete_trace_statements(event: LeoKeyEvent | None = None) -> None:
 def mark_node_and_parents(event: LeoKeyEvent | None = None) -> list[Position]:
     """Mark the node and all its parents."""
     changed: list[Position] = []
-    tag = 'mark-node-and-parents'
     c = event.get('c') if event else None
     if not c:
         return changed
     c.endEditing()
     u = c.undoer
-    with u.change_outline(tag):
+    with u.change_outline('mark-node-and-parents'):
         for parent in c.p.self_and_parents():
             if not parent.isMarked():
                 parent.setMarked()
                 parent.setDirty()
                 changed.append(parent.copy())
         if changed:
-            c.setChanged()
             u.redraw()
         return changed
 
@@ -151,7 +149,6 @@ def promote_section_definition(event: LeoKeyEvent | None = None) -> None:
     Replace a section reference in an ancestor by c.p.b and delete c.p.
     """
     c = event.get('c') if event else None
-    tag = 'promote-section-definition'
     if not c:
         return
     c.endEditing()
@@ -167,10 +164,8 @@ def promote_section_definition(event: LeoKeyEvent | None = None) -> None:
         g.es_print('Reference not found:', ref_s)
         return
 
-    # Start the undo group.
     ref_p = parent
-    with u.change_outline(tag):
-        # Change ref_p.b.
+    with u.change_outline('promote-section-definition'):
         new_ref_lines = []
         for line in g.splitLines(ref_p.b):
             if line.strip() == ref_s:
@@ -178,11 +173,7 @@ def promote_section_definition(event: LeoKeyEvent | None = None) -> None:
             else:
                 new_ref_lines.append(line)
         ref_p.b = ''.join(new_ref_lines)
-
-        # Delete and select ref_p.
         c.p.doDelete(ref_p)
-
-        # Finish the group.
         u.redraw(ref_p)
 
 
@@ -195,20 +186,17 @@ def merge_node_with_next_node(event: LeoKeyEvent | None = None) -> None:
     c = event.get('c') if event else None
     if not c:
         return
-    command, p, u, w = 'merge-node-with-next-node', c.p, c.undoer, c.frame.body.wrapper
+    p, u, w = c.p, c.undoer, c.frame.body.wrapper
     if not p or not p.b.strip() or p.hasChildren():
         return
     next = p.next()
     if not next:
         return
-    # Outer undo.
-    with u.change_outline(command):
-        # Inner undo 1: change next.b.
+
+    with u.change_outline('merge-node-with-next-node'):
         next.b = p.b.rstrip() + '\n\n' + next.b
         w.setAllText(next.b)
-        # Inner undo 2: delete p.
         p.doDelete(next)  # This adjusts next._childIndex.
-        # End outer undo:
         u.redraw(next)
 
 
@@ -221,20 +209,16 @@ def merge_node_with_prev_node(event: LeoKeyEvent | None = None) -> None:
     c = event.get('c') if event else None
     if not c:
         return
-    command, p, u, w = 'merge-node-with-prev-node', c.p, c.undoer, c.frame.body.wrapper
+    p, u, w = c.p, c.undoer, c.frame.body.wrapper
     if not p or not p.b.strip() or p.hasChildren():
         return
     prev = p.back()
     if not prev:
         return
-    # Outer undo.
-    with u.change_outline(command):
-        # Inner undo 1: change prev.b.
+    with u.change_outline('merge-node-with-prev-node'):
         prev.b = prev.b.rstrip() + '\n\n' + p.b
         w.setAllText(prev.b)
-        # Inner undo 2: delete p, select prev.
         p.doDelete()  # No need to adjust prev._childIndex.
-        # End outer undo.
         u.redraw(prev)
 
 
@@ -282,10 +266,11 @@ def promoteBodies(event: LeoKeyEvent | None = None) -> None:
     if not c:
         return
     p = c.p
-    with c.undoer.change_node(p, 'promote-bodies'):
+    u = c.undoer
+    with u.change_node(p, 'promote-bodies'):
         result = [child.b.rstrip() + '\n\n' for child in p.subtree()]
         p.b = ''.join(result).rstrip() + '\n\n'
-        c.undoer.redraw(c.p)
+        u.redraw()
 
 
 # @+node:ekr.20190323085410.1: *3* @g.command('promote-headlines')
@@ -296,10 +281,11 @@ def promoteHeadlines(event: LeoKeyEvent | None = None) -> None:
     if not c:
         return
     p = c.p
-    with c.undoer.change_node(p, 'promote-headlines'):
+    u = c.undoer
+    with u.change_node(p, 'promote-headlines'):
         if result := '\n'.join([p.h.rstrip() for p in p.subtree()]):
             p.b = p.b.lstrip() + '\n' + result
-        c.undoer.redraw(c.p)
+        u.redraw()
 
 
 # @+node:ekr.20180504180647.1: *3* @g.command('select-next-trace-statement')
@@ -395,7 +381,6 @@ def unmark_node_and_parents(event: LeoKeyEvent | None = None) -> list[Position]:
                 parent.setDirty()
                 changed.append(parent.copy())
         if changed:
-            c.setChanged()
             u.redraw()
         return changed
 
@@ -472,18 +457,19 @@ class EditCommandsClass(BaseEditCommandsClass):
         cursor.
         """
         c = self.c
+        u = c.undoer
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
 
         def callback(arg: str, w: QTextMixin = w) -> None:
             if g.app.gui.widget_name(w) == 'body':
-                with c.undoer.change_node(c.p, 'insert-file-name'):
+                with u.change_node(c.p, 'insert-file-name'):
                     i = w.getSelectionRange()[0]
                     w.deleteTextSelection()
                     w.insert(i, arg)
                     c.p.v.b = w.getAllText()
-                    c.undoer.redraw(c.p)
+                    u.redraw()
             else:
                 i = w.getSelectionRange()[0]
                 w.deleteTextSelection()
@@ -515,11 +501,12 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Insert a date/time stamp in the headline of the selected node."""
         frame = self
         c, p = frame.c, self.c.p
+        u = c.undoer
         if g.app.batchMode:
-            c.notValidInBatchMode("Insert Headline Time")
+            c.notValidInBatchMode('insert-headline-time')
             return
         w = c.frame.tree.headline_wrapper(p)
-        with c.undoer.change_outline('insertHeadlineTime'):
+        with u.change_outline('insert-headline-time'):
             if w and not g.app.inBridge:
                 # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1185933
                 # insert-headline-time should insert at cursor.
@@ -536,14 +523,11 @@ class EditCommandsClass(BaseEditCommandsClass):
                     p.h = ' '.join([s, time])
                 else:
                     p.h = time
-
-                c.setChanged()
                 p.setDirty()
-                # For external clients
                 if g.app.inBridge:
-                    c.undoer.redraw()
+                    u.redraw()
                 else:
-                    c.undoer.redraw_and_edit(p, select_all=True)  # regular client
+                    u.redraw_and_edit(p, select_all=True)
 
     # @+node:tom.20210922140250.1: *3* ec.capitalizeHeadline
     @cmd('capitalize-headline')
@@ -553,12 +537,11 @@ class EditCommandsClass(BaseEditCommandsClass):
         c, p, u = frame.c, self.c.p, self.c.undoer
 
         if g.app.batchMode:
-            c.notValidInBatchMode("Capitalize Headline")
+            c.notValidInBatchMode('capitalize-headline')
             return
 
         h = p.h
-        undoType = 'capitalize-headline'
-        with u.change_node(p, undoType):
+        with u.change_node(p, 'capitalize-headline'):
             words = [w.capitalize() for w in h.split()]
             capitalized = ' '.join(words)
             if capitalized != h:
@@ -688,28 +671,25 @@ class EditCommandsClass(BaseEditCommandsClass):
         s = w.getAllText()
         if not s:
             return
+        i, j = w.getSelectionRange()
+        if i == j:
+            sel = ''
+        else:
+            sel = s[i:j]
+        text = sel or s
+        if sel:
+            prefix = s[:i]
+            suffix = s[j:]
 
-        undoType = 'capitalize-body-words'
-        with u.change_node(p, undoType):
-            i, j = w.getSelectionRange()
-            if i == j:
-                sel = ''
-            else:
-                sel = s[i:j]
-            text = sel or s
-            if sel:
-                prefix = s[:i]
-                suffix = s[j:]
+        # https://thispointer.com/python-capitalize-the-first-letter-of-each-word-in-a-string/
+        def convert_to_uppercase(m: re.Match) -> str:
+            """Convert the second group to uppercase and join both group 1 & group 2"""
+            return m.group(1) + m.group(2).upper()
 
-            # Thanks to
-            # https://thispointer.com/python-capitalize-the-first-letter-of-each-word-in-a-string/
-            def convert_to_uppercase(m: re.Match) -> str:
-                """Convert the second group to uppercase and join both group 1 & group 2"""
-                return m.group(1) + m.group(2).upper()
+        capitalized = re.sub(r"(^|\s)(\S)", convert_to_uppercase, text)
 
-            capitalized = re.sub(r"(^|\s)(\S)", convert_to_uppercase, text)
-
-            if capitalized != text:
+        if capitalized != text:
+            with u.change_node(p, 'capitalize-body-words'):
                 p.b = prefix + capitalized + suffix if sel else capitalized
                 c.setChanged()
                 p.setDirty()
@@ -844,7 +824,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, undoType='indent-to-comment-column')
+        self.beginCommand(w, 'indent-to-comment-column')
         s = w.getAllText()
         ins = w.getInsertPoint()
         i, j = g.getLine(s, ins)
@@ -894,7 +874,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         line = s[i:j].strip()
         if not line or len(line) >= fillColumn:
             return
-        self.beginCommand(w, undoType='center-line')
+        self.beginCommand(w, 'center-line')
         n = (fillColumn - len(line)) / 2
         ws = ' ' * int(n)  # mypy.
         k = g.skip_ws(s, i)
@@ -941,7 +921,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             fillColumn = self.fillColumn
         else:
             fillColumn = c.getPageWidth(c.p)
-        self.beginCommand(w, undoType='center-region')
+        self.beginCommand(w, 'center-region')
         inserted = 0
         while ind < end:
             s = w.getAllText()
@@ -1477,7 +1457,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         line = s[i:j]
         line2 = s[i:j].lstrip()
         if delta := len(line) - len(line2):
-            self.beginCommand(w, undoType='delete-indentation')
+            self.beginCommand(w, 'delete-indentation')
             w.delete(i, j)
             w.insert(i, line2)
             ins -= delta
@@ -1528,7 +1508,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.setInsertPoint(i2 + len(ws))
                 p.v.b = w.getAllText()
             finally:
-                self.endCommand(changed=True, setLabel=True)
+                self.endCommand(changed=True, setLabel=True)  # Handles undo.
 
     # @+node:ekr.20150514063305.245: *3* ec: info
     # @+node:ekr.20210311154956.1: *4* ec.copyGnx
@@ -1662,7 +1642,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         ins = w.getInsertPoint()
         i, j = w.getSelectionRange()
         if wname.startswith('body'):
-            self.beginCommand(w, undoType='Typing')
+            self.beginCommand(w, 'Typing')
             changed = True
             try:
                 tab_width = c.getTabWidth(c.p)
@@ -1742,7 +1722,8 @@ class EditCommandsClass(BaseEditCommandsClass):
                         p.b = s2
                         p.setDirty()
                         n += 1
-            g.es(f"cleaned {n} nodes")
+            g.es(f"cleaned {n} node{g.plural(n)}")
+            u.redraw()
 
     # @+node:ekr.20150514063305.256: *4* ec.cleanLines
     @cmd('clean-lines')
@@ -1765,7 +1746,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 lines.append('\n')
         result = ''.join(lines)
         if s != result:
-            self.beginCommand(w, undoType='clean-lines')
+            self.beginCommand(w, 'clean-lines')
             w.delete(0, w.getLastIndex())
             w.insert(0, result)
             w.setInsertPoint(0)
@@ -1782,7 +1763,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         i, j = w.getSelectionRange()
         if i == j:
             return
-        self.beginCommand(w, undoType='clear-selected-text')
+        self.beginCommand(w, 'clear-selected-text')
         w.delete(i, j)
         w.setInsertPoint(i)
         self.endCommand(changed=True, setLabel=True)
@@ -1817,7 +1798,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, undoType="delete-word")
+        self.beginCommand(w, "delete-word")
         if w.hasSelection():
             from_pos, to_pos = w.getSelectionRange()
         else:
@@ -1842,7 +1823,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if wname.startswith('body'):
             s = w.getAllText()
             i, j = w.getSelectionRange()
-            self.beginCommand(w, undoType='delete-char')
+            self.beginCommand(w, 'delete-char')
             changed = True
             if i != j:
                 w.delete(i, j)
@@ -1873,7 +1854,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        undoType = 'insert-space' if insertspace else 'delete-spaces'
         s = w.getAllText()
         ins = w.getInsertPoint()
         i, j = g.getLine(s, ins)
@@ -1885,7 +1865,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         while w2 <= j and s[w2].isspace():
             w2 += 1
         if s[w1:w2]:  # spaces.
-            self.beginCommand(w, undoType=undoType)
+            self.beginCommand(w, 'insert-space' if insertspace else 'delete-spaces')
             if insertspace:
                 s = s[:w1] + ' ' + s[w2:]
             else:
@@ -1906,7 +1886,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if name.startswith('head'):
             return
         ins = w.getInsertPoint()
-        self.beginCommand(w, undoType='insert-hard-tab')
+        self.beginCommand(w, 'insert-hard-tab')
         w.insert(ins, '\t')
         ins += 1
         w.setSelectionRange(ins, ins, insert=ins)
@@ -1931,7 +1911,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if name.startswith('head'):
             return
         oldSel = w.getSelectionRange()
-        self.beginCommand(w, undoType='newline')
+        self.beginCommand(w, 'insert-newline')
         self.insertNewlineHelper(w=w, oldSel=oldSel, undoType='')
         k.setInputState('insert')
         k.showStateAndMode()
@@ -1952,7 +1932,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         if trace:
             g.trace('(newline-and-indent)')
-        self.beginCommand(w, undoType='insert-newline-and-indent')
+        self.beginCommand(w, 'insert-newline-and-indent')
         oldSel = w.getSelectionRange()
         self.insertNewlineHelper(w=w, oldSel=oldSel, undoType='')
         self.updateTab(event, p, w, smartTab=False)
@@ -1968,7 +1948,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, undoType='insert-parenthesis')
+        self.beginCommand(w, 'insert-parenthesis')
         i = w.getInsertPoint()
         w.insert(i, '()')
         w.setInsertPoint(i + 1)
@@ -1987,7 +1967,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         tab_width = abs(c.getTabWidth(c.p))
         ins = w.getInsertPoint()
-        self.beginCommand(w, undoType='insert-soft-tab')
+        self.beginCommand(w, 'insert-soft-tab')
         w.insert(ins, ' ' * tab_width)
         ins += tab_width
         w.setSelectionRange(ins, ins, insert=ins)
@@ -2005,7 +1985,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = event.w if event else c.frame.body.wrapper
         if not w:
             return
-        # "Before" snapshot.
+
         with u.change_node(p, 'remove-blank-lines'):
             # Initial data.
             oldYview = w.getYScrollPosition()
@@ -2027,8 +2007,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             i, j = 0, max(0, len(result) - 1)
             w.setSelectionRange(i, j, insert=j)
             w.setYScrollPosition(oldYview)
-            u.redraw(c.p)
-            # "after" snapshot.
+            u.redraw()
 
     # @+node:ekr.20150514063305.267: *4* ec.replaceCurrentCharacter
     @cmd('replace-current-character')
@@ -2423,7 +2402,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         lines = s[i:j]
         if not lines.strip():
             return
-        self.beginCommand(w, undoType='move-lines-to-next-node')
+        self.beginCommand(w, 'move-lines-to-next-node')
         try:
             next_i, next_j = g.getLine(s, j)
             w.delete(i, next_j)
@@ -2442,7 +2421,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, undoType='split-line')
+        self.beginCommand(w, 'split-line')
         s = w.getAllText()
         ins = w.getInsertPoint()
         w.setAllText(s[:ins] + '\n' + s[ins:])
@@ -3497,7 +3476,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, undoType='backward-kill-paragraph')
+        self.beginCommand(w, 'backward-kill-paragraph')
         try:
             self.backwardParagraphHelper(event, extend=True)
             i, j = w.getSelectionRange()
@@ -3512,23 +3491,21 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('fill-region')
     def fillRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Fill all paragraphs in the selected text."""
-        c, _p = self.c, self.c.p
-        undoType = 'fill-region'
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        c = self.c
+        u = c.undoer
+        w = c.frame.body.wrapper  # Only valid in body pane.
         if not g.isTextWrapper(w):
             return
-        i, j = w.getSelectionRange()
-        with c.undoer.change_outline(undoType):
+        with u.change_outline('fill-region'):
+            _i, j = w.getSelectionRange()
             while 1:
                 progress = w.getInsertPoint()
-                c.reformatParagraph(event, undoType='reformat-paragraph')
+                c.reformatParagraph(event, 'fill-region')
                 ins = w.getInsertPoint()
                 s = w.getAllText()
-                w.setInsertPoint(ins)
                 if progress >= ins or ins >= j or ins >= len(s):
                     break
+            u.redraw()
 
     # @+node:ekr.20150514063305.322: *4* ec.fillRegionAsParagraph
     @cmd('fill-region-as-paragraph')
@@ -3542,7 +3519,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         if not self._checkSelection(event):
             return
-        self.beginCommand(w, undoType='fill-region-as-paragraph')
+        self.beginCommand(w, 'fill-region-as-paragraph')
         self.endCommand(changed=True, setLabel=True)
 
     # @+node:ekr.20150514063305.323: *4* ec.fillParagraph
@@ -3570,7 +3547,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, undoType='kill-paragraph')
+        self.beginCommand(w, 'kill-paragraph')
         try:
             self.extendToParagraph(event)
             i, j = w.getSelectionRange()
@@ -3641,7 +3618,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         if not self._checkSelection(event):
             return  # pragma: no cover (defensive)
-        self.beginCommand(w, undoType='indent-rigidly')
+        self.beginCommand(w, 'indent-rigidly')
         s = w.getAllText()
         i1, j1 = w.getSelectionRange()
         i, junk = g.getLine(s, i1)
@@ -3696,7 +3673,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         lines = s[i:j]
         # Select from start of the first line to the *start* of the last line.
         # This prevents selection creep.
-        self.beginCommand(w, undoType='move-lines-down')
+        self.beginCommand(w, 'move-lines-down')
         try:
             next_i, next_j = g.getLine(s, j)  # 2011/04/01: was j+1
             next_line = s[next_i:next_j]
@@ -3740,7 +3717,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         i, junk = g.getLine(s, sel_1)
         i2, j = g.getLine(s, sel_2)
         lines = s[i:j]
-        self.beginCommand(w, undoType='move-lines-up')
+        self.beginCommand(w, 'move-lines-up')
         try:
             prev_i, prev_j = g.getLine(s, i - 1)
             prev_line = s[prev_i:prev_j]
@@ -3772,7 +3749,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = event.w if event else None
         if not w or not self._checkSelection(event):
             return  # pragma: no cover (defensive)
-        self.beginCommand(w, undoType='reverse-region')
+        self.beginCommand(w, 'reverse-region')
         s = w.getAllText()
         i1, j1 = w.getSelectionRange()
         i, junk = g.getLine(s, i1)
@@ -3957,7 +3934,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         def toInt(index: str) -> int:
             return g.toPythonIndex(s, index)
 
-        self.beginCommand(w, undoType='sort-columns')
+        self.beginCommand(w, 'sort-columns')
         try:
             sel_1, sel_2 = w.getSelectionRange()
             sint1, sint2 = g.convertPythonIndexToRowCol(s, sel_1)
@@ -4056,7 +4033,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         i, j = g.getLine(s, ins)
         line1 = s[i:j]
-        self.beginCommand(w, undoType='transpose-lines')
+        self.beginCommand(w, 'transpose-lines')
         if i == 0:  # Transpose the next line.
             i2, j2 = g.getLine(s, j + 1)
             line2 = s[i2:j2]
@@ -4085,7 +4062,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, undoType='transpose-words')
+        self.beginCommand(w, 'transpose-words')
         s = w.getAllText()
         i1, j1 = self.extendToWord(event, select=False)
         s1 = s[i1:j1]
@@ -4115,7 +4092,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, undoType='swap-characters')
+        self.beginCommand(w, 'swap-characters')
         s = w.getAllText()
         i = w.getInsertPoint()
         if 0 < i < len(s):
@@ -4133,30 +4110,24 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
-        with u.change_outline('clear-node-uas'):
-            if p and p.v.u:
+        if p and p.v.u:
+            with u.change_outline('clear-node-uas'):
                 p.v.u = {}
-                # #1276.
                 p.setDirty()
-                c.setChanged()
                 u.redraw()
 
     @cmd('clear-all-uas')
     def clearAllUas(self, event: LeoKeyEvent | None = None) -> None:
         """Clear all uAs in the entire outline."""
-        c, u, undoType = self.c, self.c.undoer, 'clear-all-uas'
-        # #1276.
-        changed = False
-        with u.change_outline(undoType):
-            for p in c.all_unique_positions():
-                if p.v.u:
-                    if not changed:  # #4443
-                        changed = True
-                    p.v.u = {}
-                    p.setDirty()
-            if changed:
-                c.setChanged()
-                u.redraw()
+        c, u = self.c, self.c.undoer
+        changed_v = [v for v in c.all_unique_nodes()]
+        if not changed_v:
+            return
+        with u.change_outline('clear-all-uas'):
+            for v in changed_v:
+                v.u = {}
+                v.setDirty()
+            u.redraw()
 
     # @+node:ekr.20150514063305.350: *4* ec.showUas & showAllUas
     @cmd('show-all-uas')
@@ -4208,7 +4179,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             k.clearState()
             k.resetLabel()
             k.showStateAndMode()
-            u.redraw(c.p)
+            u.redraw()
 
     # @-others
 

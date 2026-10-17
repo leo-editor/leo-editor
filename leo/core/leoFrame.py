@@ -516,39 +516,42 @@ class LeoFrame:
 
     OnCopyFromMenu = copyText
 
-    # @+node:ekr.20070130115927.6: *5* LeoFrame.cutText (always uses new undoers)
+    # @+node:ekr.20070130115927.6: *5* LeoFrame.cutText
     @frame_cmd('cut-text')
     def cutText(self, event: LeoKeyEvent | None = None) -> None:
         """Invoked from the mini-buffer and from shortcuts."""
         if not event:
             return
         c, p = self.c, self.c.p
+        u = c.undoer
         w = event.w
         if not g.isTextWrapper(w):
             return
-        # Update the widget and set the clipboard text.
-        i, j = old_sel = w.getSelectionRange()
-        old_ins = w.getInsertPoint()
+        # Set the clipboard text.
+        i, j = w.getSelectionRange()
         if i == j:
             oldText = w.getAllText()
+            old_ins = w.getInsertPoint()
             i, j = g.getLine(oldText, old_ins)
         s = w.get(i, j)
-        w.delete(i, j)
-        w.see(i)
-        ### new_sel = (i, i)  ###
         s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
         g.app.gui.replaceClipboardWith(s)
+        # Update the widget.
         if c.widget_name(w).startswith('body'):
-            with c.undoer as u:
-                u.set_command_name('cut-text')
+            with u.change_node(p, 'cut-text'):
+                w.delete(i, j)
+                w.see(i)
                 u.set_body(p, new_body=w.getAllText())
-                u.set_selection_range(old_ins, old_sel)
+                u.redraw(p)
+        else:
+            w.delete(i, j)
+            w.see(i)
 
         # Otherwise, the headline has not yet offcially changed.
 
     OnCutFromMenu = cutText
 
-    # @+node:ekr.20070130115927.7: *5* LeoFrame.pasteText (always uses new undoers)
+    # @+node:ekr.20070130115927.7: *5* LeoFrame.pasteText
     @frame_cmd('paste-text')
     def pasteText(self, event: LeoKeyEvent | None = None, middleButton: bool = False) -> None:
         """
@@ -558,38 +561,42 @@ class LeoFrame:
         if not event:
             return
         c, p = self.c, self.c.p
+        u = c.undoer
         w = event.w
         if not g.isTextWrapper(w):
             return
-
         wname = c.widget_name(w)
-        i, j = old_sel = w.getSelectionRange()
-        old_ins = w.getInsertPoint()
+
+        # Compute the required data.
+        i, j = w.getSelectionRange()
         s = g.app.gui.getTextFromClipboard()
         s = g.checkUnicode(s)
         s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
-        # Save the horizontal scroll position.
-        if hasattr(w, 'getXScrollPosition'):
-            x_pos = w.getXScrollPosition()
-        # Update the widget.
-        if i != j:
-            w.delete(i, j)
+        new_ins = i + len(s)
+
         # #2593: Replace link patterns with html links.
         if wname.startswith('log'):
             if c.frame.log.put_html_links(s):
                 return  # create_html_links has done all the work.
-        w.insert(i, s)
-        new_ins = i + len(s)
-        w.see(new_ins + 2)
-        w.setSelectionRange(new_ins, new_ins, insert=new_ins)
-        if wname.startswith('body'):
-            with c.undoer as u:
-                u.set_command_name('paste-text')
-                u.set_body(p, new_body=w.getAllText())
-                u.set_selection_range(old_ins, old_sel)
 
-        if hasattr(w, 'getXScrollPosition'):
-            w.setXScrollPosition(x_pos)
+        def update_w() -> None:
+            if i != j:
+                w.delete(i, j)
+            w.insert(i, s)
+            w.see(new_ins + 2)
+            w.setSelectionRange(new_ins, new_ins, insert=new_ins)
+
+        if wname.startswith('body'):
+            with u.change_node(p, 'paste-text'):
+                update_w()
+                u.set_body(p, new_body=w.getAllText())
+                u.redraw(p)
+        else:
+            if hasattr(w, 'getXScrollPosition'):
+                x_pos = w.getXScrollPosition()
+            update_w()
+            if hasattr(w, 'getXScrollPosition'):
+                w.setXScrollPosition(x_pos)
 
     OnPasteFromMenu = pasteText
 
@@ -608,7 +615,7 @@ class LeoFrame:
         c = frame.c
         k = c.k
         if g.app.batchMode:
-            c.notValidInBatchMode("End Edit Headline")
+            c.notValidInBatchMode('end-edit-headline')
             return
         w = event and event.w or c.get_focus()  # #1413.
         w_name = g.app.gui.widget_name(w)
@@ -1079,7 +1086,7 @@ class LeoTree:
         # Handle undo.
         with c.undoer as u:
             u.set_command_name(undoType)
-            u.change_headline(p, ch, s, update_editor=False)
+            u.change_headline(p, s, ch=ch, update_editor=False)
             u.redraw_after_head_changed()
 
     # @+node:ekr.20061109165848: *3* LeoTree: Must be defined in base class

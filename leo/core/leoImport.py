@@ -79,13 +79,15 @@ class FreeMindImporter:
     def create_outline(self, path: str) -> Position:
         """Create a tree of nodes from a FreeMind file."""
         c = self.c
+        u = c.undoer
         _, fileName = g.os_path_split(path)
-        with c.undoer.change_outline('Import'):
+        with u.change_outline('Import'):
             try:
                 self.import_file(path)
             except Exception:
                 g.es_print('Exception importing FreeMind file', g.shortFileName(path))
                 g.es_exception()
+            u.redraw()
             return c.p
 
     # @+node:ekr.20160503191518.4: *3* freemind.import_file
@@ -785,12 +787,12 @@ class LeoImportCommands:
                     if p:  # createOutline may fail.
                         p.contract()
                         p.setDirty()
-                        c.setChanged()
                 except Exception:
                     g.es_print('Exception importing', fn)
                     g.es_exception()
             c.checkOutline()
             parent.expand()
+            u.redraw(parent)
 
     # @+node:ekr.20160503125237.1: *4* ic.importFreeMind
     def importFreeMind(self, files: list[str]) -> None:
@@ -861,6 +863,7 @@ class LeoImportCommands:
                 self.setBodyString(p, "@ignore\n@language cweb")
             # Scan the file, creating one section for each function definition.
             self.scanWebFile(path, p)
+            u.redraw(p)
             return p
 
     # @+node:ekr.20031218072017.3227: *5* ic.findFunctionDef
@@ -1133,7 +1136,7 @@ class LeoImportCommands:
         Split p.b into functions, methods or classes in sibling nodes.
         """
         c = self.c
-        u, undoType = c.undoer, 'parse-body'
+        u = c.undoer
         language = c.getLanguage(p)
 
         # Initial checks.
@@ -1150,17 +1153,14 @@ class LeoImportCommands:
             g.es_print(f"No importer class for @language {language}")
             return
         importer = importer_class(c)
-        with u.change_outline(undoType):
+        with u.change_outline('parrse-body'):
             try:
                 old_p = p.copy()
                 c.selectPosition(p)
-                changed = self.parse_body_helper(p, importer=importer)
-                c.selectPosition(old_p)
+                self.parse_body_helper(p, importer=importer)
                 if c.checkOutline():
                     return  # Error!
-                if changed:
-                    c.setChanged()
-                    u.redraw(old_p)
+                u.redraw(old_p)
             except Exception:
                 g.es_exception()
 
@@ -1378,8 +1378,9 @@ class MindMapImporter:
     # @+node:ekr.20160503130209.1: *3* mindmap.create_outline
     def create_outline(self, path: str) -> Position:
         c = self.c
+        u = c.undoer
         _, fileName = g.os_path_split(path)
-        with c.undoer.change_outline('Import'):
+        with u.change_outline('Import'):
             # Create the top-level headline.
             p = c.lastTopLevel().insertAfter()
             fn = g.shortFileName(path).strip()
@@ -1390,7 +1391,7 @@ class MindMapImporter:
                 f = open(path)
                 self.scan(f, p)
                 f.close()
-                c.undoer.redraw()
+                u.redraw()
             except Exception:
                 g.es_print('Invalid MindJet file:', fn)
             return p
@@ -1543,7 +1544,6 @@ class MORE_Importer:
                     c.endEditing()
                     c.checkOutline()
                     p.setDirty()
-                    c.setChanged()
                     u.redraw(root)
                     return root
             if not g.unitTesting:
@@ -1997,7 +1997,7 @@ class RecursiveImportController:
                 g.app.disable_redraw = False
                 for p2 in parent.self_and_subtree(copy=False):
                     p2.contract()
-                c.setChanged()  # Imported nodes must be saved.
+                ### c.setChanged()  # Imported nodes must be saved.
                 c.undoer.redraw(parent)
             if not g.unitTesting:
                 t2 = time.time()
@@ -2054,26 +2054,25 @@ class TabImporter:
     def import_files(self, files: list[str]) -> None:
         """Import a list of tab-delimited files."""
         c, u = self.c, self.c.undoer
+        if not files:
+            return
         with u.change_outline('Import Tabbed File'):
-            if files:
-                p = None
-                for fn in files:
-                    try:
-                        g.setGlobalOpenDir(fn)
-                        s = open(fn).read()
-                        s = s.replace('\r', '')
-                    except Exception:
-                        continue
-                    if s.strip() and self.check(g.splitLines(s)):
-                        last = c.lastTopLevel()
-                        self.root = p = last.insertAfter()
-                        self.scan(s)
-                        p.h = g.shortFileName(fn)
-                        p.contract()
-                        p.setDirty()
-                    if p:
-                        c.setChanged()
-                        u.redraw(p)
+            p = None
+            for fn in files:
+                try:
+                    g.setGlobalOpenDir(fn)
+                    s = open(fn).read()
+                    s = s.replace('\r', '')
+                except Exception:
+                    continue
+                if s.strip() and self.check(g.splitLines(s)):
+                    last = c.lastTopLevel()
+                    self.root = p = last.insertAfter()
+                    self.scan(s)
+                    p.h = g.shortFileName(fn)
+                    p.contract()
+                    p.setDirty()
+            u.redraw(self.root)
 
     # @+node:ekr.20161006071801.4: *3* tabbed.lws
     def lws(self, s: str) -> str:

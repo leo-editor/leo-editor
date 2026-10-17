@@ -1706,7 +1706,7 @@ class Commands:
     # @+node:ekr.20171123135625.29: *5* c.getBodyLines
     def getBodyLines(
         self,
-    ) -> tuple[str, list[str], str, tuple | None, tuple | None]:
+    ) -> tuple[str, list[str], str, tuple[int, int], int]:
         """
         Return (head, lines, tail, oldSel, oldYview).
 
@@ -1730,7 +1730,7 @@ class Commands:
         i = len(head)
         j = len(head) + len(s)
         oldSel = i, j
-        return head, lines, tail, oldSel, oldYview  # string,list,string,tuple,int.
+        return head, lines, tail, oldSel, oldYview
 
     # @+node:ekr.20250405040620.1: *5* c.getDelims
     # Use a regex to avoid allocating temp strings.
@@ -4323,12 +4323,11 @@ class Commands:
         if not c.checkMoveWithParentWithWarning(p, parent, True):
             return
         c.endEditing()
-        with u.change_position(p, 'Drag'):
+        with u.move_position(p, 'Drag'):
             p.setDirty()
             p.moveToNthChildOf(parent, n)
             p.setDirty()
-            u.redraw(p)
-            c.updateSyntaxColorer(p)  # Dragging can change syntax coloring.
+            u.redraw(p, update_syntax_coloring=True)
 
     # @+node:ekr.20031218072017.2353: *5* c.dragAfter (not used)
     def dragAfter(self, p: Position, after: Position) -> None:
@@ -4339,19 +4338,17 @@ class Commands:
             return
         assert p.v
         c.endEditing()
-        with u.change_position(p, 'Drag'):
+        with u.move_position(p, 'Drag'):
             p.setDirty()
             p.moveAfter(after)
             p.setDirty()
-            u.redraw(p)
-            c.updateSyntaxColorer(p)  # Dragging can change syntax coloring.
+            u.redraw(p, update_syntax_coloring=True)
 
     # @+node:ekr.20031218072017.2946: *5* c.dragCloneToNthChildOf
     def dragCloneToNthChildOf(self, p: Position, parent: Position, n: int) -> None:
         c = self
         u = c.undoer
-        undoType = 'Clone Drag'
-        with u.change_outline(undoType):
+        with u.change_outline('Clone Drag'):
             clone = p.clone()  # Creates clone & dependents, does not set undo.
             if not c.checkDrag(p, parent) or not c.checkMoveWithParentWithWarning(
                 clone, parent, True
@@ -4363,15 +4360,14 @@ class Commands:
             clone.setDirty()
             clone.moveToNthChildOf(parent, n)
             clone.setDirty()
-            u.redraw(clone)
             c.updateSyntaxColorer(clone)  # Dragging can change syntax coloring.
+            u.redraw(clone)
 
     # @+node:ekr.20031218072017.2948: *5* c.dragCloneAfter
     def dragCloneAfter(self, p: Position, after: Position) -> None:
         c = self
         u = c.undoer
-        undoType = 'Clone Drag'
-        with u.change_outline(undoType):
+        with u.change_outline('Clone Drag'):
             clone = p.clone()  # Creates clone.  Does not set undo.
             assert clone.v
             if c.checkDrag(p, after) and c.checkMoveWithParentWithWarning(
@@ -4381,12 +4377,11 @@ class Commands:
                 clone.setDirty()
                 clone.moveAfter(after)
                 clone.v.setDirty()
-                c.setChanged()
                 p = clone
             else:
                 clone.doDelete(newNode=p)
-            u.redraw(p)
             c.updateSyntaxColorer(clone)  # Dragging can change syntax coloring.
+            u.redraw(p)
 
     # @+node:ekr.20031218072017.2949: *4* c.Drawing
     # @+node:ekr.20080514131122.8: *5* c.bringToFront
@@ -5388,20 +5383,20 @@ class Commands:
                     for p2 in p.self_and_subtree(copy=False):
                         seen.add(p2.v)
                 clones.append(p.copy())
-        with u.change_outline(undoType):
-            if clones:
-                root = c.createCloneFindPredicateRoot(flatten, undoType)
-                for p in clones:
-                    # Create the clone directly as a child of found.
-                    p2 = p.copy()
-                    n = root.numberOfChildren()
-                    p2._linkCopiedAsNthChild(root, n)
-                c.selectPosition(root)
-                c.setChanged()
-                c.contractAllHeadlines()
-                root.expand()
-            elif failMsg:
+        if not clones:
+            if failMsg:
                 g.es(failMsg, color='red')
+            return None
+        with u.change_outline(undoType):
+            root = c.createCloneFindPredicateRoot(flatten, undoType)
+            for p in clones:
+                # Create the clone directly as a child of found.
+                p2 = p.copy()
+                n = root.numberOfChildren()
+                p2._linkCopiedAsNthChild(root, n)
+            c.contractAllHeadlines()
+            root.contract()
+            u.redraw(root)
             return root
 
     # @+node:ekr.20160304054950.1: *5* c.setCloneFindByPredicateIcon
@@ -5456,9 +5451,8 @@ class Commands:
         returns the final position ('baz' in the above example)
         """
         u = self.undoer
-        undoType = 'Create Node Hierarchy'
         parent or self.rootPosition()
-        with u.change_outline(undoType):
+        with u.change_outline('Create Node Hierarchy'):
             changed_node = False
             for idx, head in enumerate(heads):
                 # if parent = None, create top level node for first head
@@ -5492,7 +5486,7 @@ class Commands:
         *Undoably* delete all vnodes corresponding to the positions in aList.
         """
         c = self
-        u, undoType = c.undoer, 'c.deletePositionsInList'
+        u = c.undoer
         root = c.rootPosition()
 
         # Ensure all positions are valid.
@@ -5504,7 +5498,7 @@ class Commands:
             return
 
         def delete(p: Position) -> None:
-            with c.undoer.change_outline('Inner Undo Node'):
+            with u.change_outline('Inner Undo Node'):
                 if p in to_be_deleted:
                     # Remove all to-be-deleted positions in p's subtree from the to-be-deleted list.
                     for p2 in p.subtree():
@@ -5518,15 +5512,15 @@ class Commands:
                         delete(child)
 
         # The main line. Start the recursion with the top-level nodes.
-        with u.change_outline(undoType):
+        with u.change_outline('c.deletePositionsInList'):
             to_do: list[Position] = list(reversed(list(root.self_and_siblings())))
             while to_do:
                 p = to_do.pop()
                 delete(p)
-
             # Set c.p if necessary.
             if not c.positionExists(c.p):
                 c.selectPosition(c.rootPosition())
+            u.redraw()
 
     # For compatibility.
     undoableDeletePositions = deletePositionsInList

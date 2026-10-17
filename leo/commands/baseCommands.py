@@ -56,6 +56,7 @@ class BaseEditCommandsClass:
     # @+node:ekr.20150514043714.6: *3* BaseEdit.endCommand
     def endCommand(
         self,
+        *,
         label: str | None = None,
         changed: bool = True,
         setLabel: bool = True,
@@ -66,6 +67,7 @@ class BaseEditCommandsClass:
         """
         c = self.c
         k, p, u = c.k, c.p, c.undoer
+
         w = c.frame.body and c.frame.body.wrapper
         if not w:
             return
@@ -81,21 +83,15 @@ class BaseEditCommandsClass:
                     oldSel=bunch.oldSel,
                 )
             else:
-                with u:
-                    u.set_command_name(bunch.undoType)
+                with u.change_node(p, bunch.undoType):
                     u.set_body(p, newText, old_body=bunch.oldText)
-                    u.set_selection_range(
-                        bunch.oldIns,
-                        bunch.oldSel,
-                        old_y_scroll=bunch.oldYScroll,
-                        new_y_scroll=w.getYScrollPosition(),
-                    )
+                    u.redraw(p)
         self.undoData = None
         k.clearState()
         # Warning: basic editing commands **must not** set the label.
         if setLabel:
             if label:
-                k.setLabelGrey(label)  # pragma: no cover
+                k.setLabelGrey(label)
             else:
                 k.resetLabel()
 

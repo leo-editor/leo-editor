@@ -1749,7 +1749,6 @@ class LeoServer:
         Read a file into a single node.
         """
         tag = 'read_file_into_node'
-        undoType = 'Read File Into Node'
         c = self._check_c(param)
         if c and "name" in param:
             try:
@@ -1760,7 +1759,7 @@ class LeoServer:
                         return None
                     g.chdir(fileName)
                     s = '@nocolor\n' + s
-                    p = c.insertHeadline(op_name=undoType)
+                    p = c.insertHeadline(op_name='Read File Into Node')
                     # New node does not need c.setHeadString. p.setHeadString is ok.
                     p.setHeadString('@read-file-into-node ' + fileName)
                     p.setBodyString(s)
@@ -3191,16 +3190,15 @@ class LeoServer:
         """
         c = self._check_c(param)
         p = self._get_p(param)
+        u = c.undoer
         oldPosition: Position | None = None if p == c.p else c.p
-
         newHeadline = param.get('name') or ''
-        with c.undoer.change_outline('Insert Node'):
+        with u.change_outline('Insert Node'):
             newNode = p.insertAfter()
             # Set this node's new headline
             newNode.h = newHeadline
             newNode.setDirty()
-            c.setChanged()
-
+            ### c.setChanged()
             c.selectPosition(newNode)
             if oldPosition:
                 if c.positionExists(oldPosition):
@@ -3231,7 +3229,7 @@ class LeoServer:
             # Set this node's new headline
             newNode.h = newHeadline
             newNode.setDirty()
-            c.setChanged()
+            ### c.setChanged()
             c.selectPosition(newNode)
             return self._make_response()
 
@@ -3537,13 +3535,12 @@ class LeoServer:
         if h == oldH:
             return self._make_response()
         with u.change_node(p, 'Change Headline'):
-            c.setHeadString(
-                p, h
-            )  # c.setHeadString fixes the headline revert bug of p.initHeadString(h)
+            # c.setHeadString fixes the headline revert bug of p.initHeadString(h)
+            c.setHeadString(p, h)
             c.setChanged()
             p.setDirty()
+            u.redraw()
             return self._make_response()
-            u.redraw(c.p)
 
     # @+node:felix.20210621233316.63: *5* server.set_selection
     def set_selection(self, param: Param) -> Response:

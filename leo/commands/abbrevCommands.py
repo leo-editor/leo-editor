@@ -161,7 +161,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         This happens *before* any substitutions are made.
         """
         c = self.c
-        u, undoType = c.undoer, 'Expand Tree Abbreviation'
+        u = c.undoer
         if c.p.hasChildren():
             g.es_print('tree abbreviations must not have children', color='blue')
             return
@@ -169,8 +169,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             g.es_print(f"bad copied outline: {expansion}")
             return
 
-        # Begin the undo.
-        with u.change_outline(undoType):
+        with u.change_outline('Expand Tree Abbreviation'):
             self.replace_selection(i, j, '')
 
             # Set status flags.
@@ -185,13 +184,16 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             # Carefully replace the old node with the new node.
             if c.canDeleteHeadline():
                 if prevSiblingExpanded:
-                    prevSibling.contract()  # To prevent pasting as last child of prevSibling.
+                    # To prevent pasting as last child of prevSibling.
+                    prevSibling.contract()
                 c.deleteOutline(op_name="Cut Node")
                 c.pasteOutline(s=expansion)
                 if noSiblings:
-                    c.moveOutlineRight()  # Inserted below instead of as child, so move right.
+                    # Inserted below instead of as child, so move right.
+                    c.moveOutlineRight()
                 if isRoot:
-                    c.moveOutlineUp()  # Delete & paste made it second position, so move up.
+                    # Delete & paste made it second position, so move up.
+                    c.moveOutlineUp()
             else:
                 c.pasteOutline(s=expansion)
                 c.selectPosition(c.p.moveToBack())
@@ -213,7 +215,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 prevSibling.expand()
 
             # End the undo.
-            u.redraw(c.p)
+            u.redraw()
 
     # @+node:ekr.20260515084054.1: *5* abbrev.init_place_holder_search
     def init_place_holder_search(self, *, node_only: bool) -> None:
@@ -273,8 +275,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         p = c.p
         u = c.undoer
         w = self.w
-
-        # Start the undo.
         with u.change_node(p, 'Abbreviation'):
             # Make the replacement.
             w.delete(i, j)
@@ -283,9 +283,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             # Update only body text. Setting p.h here would be wrong.
             if not self.in_head:
                 p.v.b = w.getAllText()
-            u.redraw(c.p)
-
-            # Complete the undo.
+            u.redraw()
 
     # @+node:ekr.20260516063743.1: *4* abbrev: script substitution
     # @+node:ekr.20260516063159.1: *5* abbrev.make_all_scripting_substitutions
@@ -616,15 +614,16 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         Insert the common prefix of all dynamic abbrev's matching the present word.
         This corresponds to C-M-/ in Emacs.
         """
-        c, _p = self.c, self.c.p
+        c, p = self.c, self.c.p
+        u = c.undoer
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
-        ins = ins1 = w.getInsertPoint()
+        ins = w.getInsertPoint()
         if 0 < ins < len(s) and not g.isWordChar(s[ins]):
-            ins1 -= 1
-        i, j = g.getWord(s, ins1)
+            ins -= 1
+        i, j = g.getWord(s, ins)
         word = w.get(i, j)
         aList = self._getDynamicList(w, word)
         if not aList:
@@ -633,14 +632,16 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         if word in aList and len(aList) > 1:
             aList.remove(word)
         prefix = functools.reduce(g.longestCommonPrefix, aList)
-        with c.undoer.change_outline('dabbrev-completion'):
-            if prefix.strip():
-                ypos = w.getYScrollPosition()
-                s = s[:i] + prefix + s[j:]
-                w.setAllText(s)
-                w.setInsertPoint(i + len(prefix))
-                w.setYScrollPosition(ypos)
-                c.recolor()
+        if not prefix.strip():
+            return
+        # yscroll = w.getYScrollPosition()
+        s = s[:i] + prefix + s[j:]
+        ins = i + len(prefix)
+        with u.change_outline('dabbrev-completion'):
+            w.setAllText(s)
+            w.setSelectionRange(ins, ins, insert=ins)
+            c.recolor()
+            u.redraw(p)
 
     # @+node:ekr.20150514043850.21: *4* abbrev.dynamicExpansion M-/ & helper
     @cmd('dabbrev-expands')
@@ -682,9 +683,9 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     ) -> None:
         """State handler for dabbrev-expands command."""
         c, k = self.c, self.c.k
-        if not w:
-            return  # PR #4812
-        self.w = w
+        w = w or c.frame.body.wrapper
+        if not g.isTextWrapper(w):
+            return
         if prefix is None:
             prefix = ''
         prefix2 = 'dabbrev-expand: '
@@ -698,24 +699,25 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     def dynamicExpandHelper1(self, event: LeoKeyEvent | None = None) -> None:
         """Finisher for dabbrev-expands."""
         c, k = self.c, self.c.k
+        u = c.undoer
+        w = self.w
         c.frame.log.deleteTab('Completion')
         k.clearState()
         k.resetLabel()
-        with c.undoer.change_outline('dabbrev-expand'):
-            if k.arg:
-                w = self.w
-                s = w.getAllText()
-                ypos = w.getYScrollPosition()
-                ins = ins1 = w.getInsertPoint()
-                if 0 < ins < len(s) and not g.isWordChar(s[ins]):
-                    ins1 -= 1
-                i, j = g.getWord(s, ins1)
-                # word = s[i: j]
-                s = s[:i] + k.arg + s[j:]
-                w.setAllText(s)
-                w.setInsertPoint(i + len(k.arg))
-                w.setYScrollPosition(ypos)
-                c.recolor()
+        if not k.arg:
+            return
+        ins = ins1 = w.getInsertPoint()
+        s = w.getAllText()
+        if 0 < ins < len(s) and not g.isWordChar(s[ins]):
+            ins1 -= 1
+        i, j = g.getWord(s, ins1)
+        s = s[:i] + k.arg + s[j:]
+        ins = i + len(k.arg)
+        with u.change_outline('dabbrev-expand'):
+            w.setAllText(s)
+            w.setSelectionRange(ins, ins, insert=ins)
+            c.recolor()
+            u.redraw()
 
     # @+node:ekr.20150514043850.28: *4* abbrev.killAllAbbrevs
     @cmd('abbrev-kill-all')
