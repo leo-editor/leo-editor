@@ -25,8 +25,7 @@ if TYPE_CHECKING:  # pragma: no cover
 def addComments(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Undoably add comments to the selected text."""
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
-    old_ins = w.getInsertPoint()
-    head, lines, tail, old_sel, old_y_scroll = self.getBodyLines()
+    head, lines, tail, _old_sel, old_y_scroll = self.getBodyLines()
     if not lines:
         g.warning('no text selected')
         return
@@ -43,7 +42,7 @@ def addComments(self: Self, event: LeoKeyEvent | None = None) -> None:
     else:
         openDelim, closeDelim = d2 + ' ', ' ' + d3
 
-    # Calculate the result.
+    # Calculate the results.
     result = []
     i: int | None = None
     for line in lines:
@@ -54,18 +53,14 @@ def addComments(self: Self, event: LeoKeyEvent | None = None) -> None:
             result.append(line[0:i] + openDelim + s + closeDelim + '\n')
         else:
             result.append(line)
-
-    with u.change_node(p, 'Add Comments'):
-        # Set p.b and w's text first.
-        middle = ''.join(result)
-        p.b = head + middle + tail  # Sets dirty and changed bits.
+    middle = ''.join(result)
+    i = len(head)
+    j = max(i, len(head) + len(middle) - 1)
+    with u.change_node(p, 'add-comments'):
+        p.v.b = head + middle + tail
         w.setAllText(head + middle + tail)
-        # Set the selection range and scroll position.
-        i = len(head)
-        j = max(i, len(head) + len(middle) - 1)
         w.setSelectionRange(i, j, insert=j)
         w.setYScrollPosition(old_y_scroll)
-        u.set_selection(old_ins, old_sel, old_y_scroll=old_y_scroll)
         u.redraw()
 
 
