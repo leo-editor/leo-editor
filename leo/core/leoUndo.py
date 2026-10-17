@@ -2957,14 +2957,22 @@ class Undoer:
                 new_state = u.capture_node(p.v)
                 if old_state != new_state:
                     new_ui = u.capture_ui()
-                    u.undoBead.add_helpers(
-                        lambda: u.restore_node(p.v, new_state),
-                        lambda: u.restore_node(p.v, old_state),
-                    )
-                    u.undoBead.add_finishers(
-                        lambda: u.restore_ui(new_ui),
-                        lambda: u.restore_ui(old_ui),
-                    )
+
+                    def change_node_redoer() -> None:
+                        u.restore_node(p.v, new_state)
+
+                    def change_node_undoer() -> None:
+                        u.restore_node(p.v, old_state)
+
+                    u.undoBead.add_helpers(change_node_redoer, change_node_undoer)
+
+                    def change_node_ui_redoer() -> None:
+                        u.restore_ui(new_ui)
+
+                    def change_node_ui_undoer() -> None:
+                        u.restore_ui(old_ui)
+
+                    u.undoBead.add_finishers(change_node_ui_redoer, change_node_ui_undoer)
 
     # @+node:vivainio.202610110001.2: *5* u.change_outline
     @contextmanager
