@@ -3159,13 +3159,15 @@ class Undoer:
     ) -> None:
         """Redraw now and choose the command's single undo/redo redraw."""
         u = self
-        c = u.c
+        u._require_bead()
         # Ignore redrawers in inner levels.
         if u.undoBeadLevel > 1:
             return
+        c = u.c
+        w = c.frame.body.wrapper
         u.set_changed()
         new_p = new_p or c.p
-        w = c.frame.body.wrapper
+        new_p.setDirty()  # p.setDirty() calls p.v.setAllAncestorAtFileNodesDirty()
         preserve_body = new_p == c.p and w.getAllText() == new_p.b
         if preserve_body:
             sel, ins, scroll = w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
@@ -3175,18 +3177,19 @@ class Undoer:
         if preserve_body:
             w.setSelectionRange(*sel, insert=ins)
             w.setYScrollPosition(scroll)
-        if u.undoBead:
-            u.undoBead.add_redraw(new_p, u.undoBead.old_p)
+        u.undoBead.add_redraw(new_p, u.undoBead.old_p)
 
     # @+node:ekr.20261011193020.1: *5* u.redraw_after_head_changed
     def redraw_after_head_changed(self) -> None:
         """Refresh headlines now and after undo/redo."""
         u = self
+        u._require_bead()
         c = u.c
         # Ignore redrawers in inner levels.
         if u.undoBeadLevel > 1:
             return
         u.set_changed()
+        c.p.setDirty()  # p.setDirty() calls p.v.setAllAncestorAtFileNodesDirty()
         c.redraw_after_head_changed()
         u.undoBead.add_redraw_after_head_changed()
 
@@ -3200,10 +3203,12 @@ class Undoer:
         """Redraw and edit now and after undo/redo."""
         u = self
         c = u.c
+        u._require_bead()
         # Ignore redrawers in inner levels.
         if u.undoBeadLevel > 1:
             return
         u.set_changed()
+        c.p.setDirty()  # p.setDirty() calls p.v.setAllAncestorAtFileNodesDirty()
         c.redrawAndEdit(new_p, selectAll=select_all)
         u.undoBead.add_redraw_and_edit(
             new_p, self.undoBead.old_p, contract=contract, select_all=select_all
@@ -3215,7 +3220,7 @@ class Undoer:
         if not c.changed:
             c.setChanged()
 
-    # @+node:ekr.20261005143752.1: *5* u.set_selection
+    # @+node:ekr.20261005143752.1: *5* u.set_selection (to be deleted)
     def set_selection(
         self,
         old_ins: int,
@@ -3225,6 +3230,7 @@ class Undoer:
         new_y_scroll: int | None = None,
     ) -> None:
         u = self
+        u._require_bead()
         c = u.c
         # Ignore redrawers in inner levels.
         if u.undoBeadLevel > 1:
