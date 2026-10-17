@@ -2892,7 +2892,7 @@ class Undoer:
             # Menu labels are updated when the completed bead is pushed.
 
     # @+node:ekr.20261015042249.1: *4* u: contexts
-    # @+node:ekr.20261009185938.1: *5* u.change_headline
+    # @+node:ekr.20261009185938.1: *5* u.old_change_headline
     def change_headline(
         self,
         p: Position,
@@ -2902,7 +2902,8 @@ class Undoer:
         update_editor: bool = True,
     ) -> None:
         """Change a headline and preserve directives, dirty bits and editor state."""
-        c, b = self.c, self._require_bead()
+        c = self.c
+        b = self._require_bead()
         p = p.copy() if c.positionExists(p) else c.vnode2position(p.v)
         old_h = p.h
         if old_h == new_h:
@@ -2935,7 +2936,59 @@ class Undoer:
         b.add_helpers(change_headline_redoer, change_headline_undoer)
         b.add_recolor(p, p)
 
-    # @+node:vivainio.202610110001.1: *5* u.change_node
+    # @+node:ekr.20261017115557.1: *5* u.new_change_headline
+    @contextmanager  ### Experimental
+    def new_change_headline(self, p: Position, command_name: str) -> Iterator[Undoer]:
+        """Record changes to one headline."""
+        c = self.c
+        set_headline = c.frame.tree.setHeadline
+
+        # def update(head_s):
+        #     c.p = p
+        #     p.initHeadString(head)
+        #     p.setDirty()
+        #     c.frame.tree.setHeadline(p, head_s)
+
+        if self.undoing or self.redoing:
+            yield self
+            return
+        with self as u:
+            u.set_command_name(command_name)
+            if u.capture_level > 0 or p.v in u.node_captures:
+                yield u
+                return
+            old_state = u.capture_node(p.v)
+            old_ui = u.capture_ui()
+            u.node_captures.add(p.v)
+            try:
+                yield u
+            finally:
+                u.node_captures.remove(p.v)
+                new_state = u.capture_node(p.v)
+                if old_state != new_state:
+                    new_ui = u.capture_ui()
+
+                    def change_head_redoer() -> None:
+                        u.restore_node(p.v, new_state)
+                        set_headline(p, p.h)
+
+                    def change_head_undoer() -> None:
+                        u.restore_node(p.v, old_state)
+                        set_headline(p, p.h)
+
+                    u.undoBead.add_helpers(change_head_redoer, change_head_undoer)
+
+                    def change_head_ui_redoer() -> None:
+                        u.restore_ui(new_ui)
+                        set_headline(p, p.h)
+
+                    def change_head_ui_undoer() -> None:
+                        u.restore_ui(old_ui)
+                        set_headline(p, p.h)
+
+                    u.undoBead.add_finishers(change_head_ui_redoer, change_head_ui_undoer)
+
+    # @+node:vivainio.202610110001.1: *5* u.change_node & helpers
     @contextmanager
     def change_node(self, p: Position, command_name: str) -> Iterator[Undoer]:
         """Record arbitrary changes to one node, including mutable user attributes."""
@@ -2974,7 +3027,29 @@ class Undoer:
 
                     u.undoBead.add_finishers(change_node_ui_redoer, change_node_ui_undoer)
 
-    # @+node:vivainio.202610110001.2: *5* u.change_outline
+    # @+node:vivainio.202610110001.3: *6* u.capture_node
+    def capture_node(self, v: VNode) -> tuple:
+        return v.h, v.b, v.isMarked(), deepcopy(v.u)
+
+    # @+node:ekr.20261015041620.1: *6* u.restore_node
+    def restore_node(self, v: VNode, state: tuple) -> None:
+        head, body, marked, ua = state
+        head_changed = v.h != head
+        v.initHeadString(head)
+        v.setBodyString(body)
+        v.u = deepcopy(ua)
+        if marked:
+            v.setMarked()
+        else:
+            v.clearMarked()
+        v.setAllAncestorAtFileNodesDirty()
+        v.setDirty()
+        # Keep the headline editor from restoring stale text at the next redraw.
+        if head_changed:
+            for p in self.c.vnode2allPositions(v):
+                self.c.frame.tree.setHeadline(p, head)
+
+    # @+node:vivainio.202610110001.2: *5* u.change_outline & helpers
     @contextmanager
     def change_outline(self, command_name: str) -> Iterator[Undoer]:
         """
@@ -3028,6 +3103,48 @@ class Undoer:
                         u.restore_ui(old_ui)
 
                     u.undoBead.add_finishers(change_outline_ui_redoer, change_outline_ui_undoer)
+
+    # @+node:ekr.20261015041620.2: *6* u.capture_outline
+    def capture_outline(self) -> dict:
+        result = {}
+        pending = [self.c.hiddenRootNode]
+        while pending:
+            v = pending.pop()
+            if v in result:
+                continue
+            result[v] = self.capture_node(v), tuple(v.children), tuple(v.parents)
+            pending.extend(v.children)
+        return result
+
+    # @+node:ekr.20261015041620.4: *6* u.capture_ui
+    def capture_ui(self) -> tuple:
+        c = self.c
+        w = c.frame.body.wrapper
+        return c.p.copy(), w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
+
+    # @+node:ekr.20261015041620.3: *6* u.restore_outline
+    def restore_outline(self, delta: dict) -> None:
+        # Restore every link before touching content or propagating dirty bits.
+        for v in delta:
+            v.setAllAncestorAtFileNodesDirty()
+        for v, (_, children, parents) in delta.items():
+            v.children = list(children)
+            v.parents = list(parents)
+        for v, (state, _, _) in delta.items():
+            self.restore_node(v, state)
+
+    # @+node:ekr.20261015041620.5: *6* u.restore_ui
+    def restore_ui(self, state: tuple) -> None:
+        c = self.c
+        p, sel, ins, scroll = state
+        p = p if c.positionExists(p) else c.rootPosition()
+        c.p = p
+        c.selectPosition(p)
+        c.frame.scanForTabWidth(c.p)
+        c.recolor(c.p)
+        w = c.frame.body.wrapper
+        w.setSelectionRange(*sel, insert=ins)
+        w.setYScrollPosition(scroll)
 
     # @+node:vivainio.202610110003.1: *5* u.move_position
     @contextmanager
@@ -3097,71 +3214,6 @@ class Undoer:
                         restore_recent_files(old_files)
 
                     u.undoBead.add_helpers(change_recent_files_redoer, change_recent_files_undoer)
-
-    # @+node:ekr.20261015042321.1: *4* u: context helpers
-    # @+node:vivainio.202610110001.3: *5* u.capture_node
-    def capture_node(self, v: VNode) -> tuple:
-        return v.h, v.b, v.isMarked(), deepcopy(v.u)
-
-    # @+node:ekr.20261015041620.2: *5* u.capture_outline
-    def capture_outline(self) -> dict:
-        result = {}
-        pending = [self.c.hiddenRootNode]
-        while pending:
-            v = pending.pop()
-            if v in result:
-                continue
-            result[v] = self.capture_node(v), tuple(v.children), tuple(v.parents)
-            pending.extend(v.children)
-        return result
-
-    # @+node:ekr.20261015041620.4: *5* u.capture_ui
-    def capture_ui(self) -> tuple:
-        c = self.c
-        w = c.frame.body.wrapper
-        return c.p.copy(), w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
-
-    # @+node:ekr.20261015041620.1: *5* u.restore_node
-    def restore_node(self, v: VNode, state: tuple) -> None:
-        head, body, marked, ua = state
-        head_changed = v.h != head
-        v.initHeadString(head)
-        v.setBodyString(body)
-        v.u = deepcopy(ua)
-        if marked:
-            v.setMarked()
-        else:
-            v.clearMarked()
-        v.setAllAncestorAtFileNodesDirty()
-        v.setDirty()
-        # Keep the headline editor from restoring stale text at the next redraw.
-        if head_changed:
-            for p in self.c.vnode2allPositions(v):
-                self.c.frame.tree.setHeadline(p, head)
-
-    # @+node:ekr.20261015041620.3: *5* u.restore_outline
-    def restore_outline(self, delta: dict) -> None:
-        # Restore every link before touching content or propagating dirty bits.
-        for v in delta:
-            v.setAllAncestorAtFileNodesDirty()
-        for v, (_, children, parents) in delta.items():
-            v.children = list(children)
-            v.parents = list(parents)
-        for v, (state, _, _) in delta.items():
-            self.restore_node(v, state)
-
-    # @+node:ekr.20261015041620.5: *5* u.restore_ui
-    def restore_ui(self, state: tuple) -> None:
-        c = self.c
-        p, sel, ins, scroll = state
-        p = p if c.positionExists(p) else c.rootPosition()
-        c.p = p
-        c.selectPosition(p)
-        c.frame.scanForTabWidth(c.p)
-        c.recolor(c.p)
-        w = c.frame.body.wrapper
-        w.setSelectionRange(*sel, insert=ins)
-        w.setYScrollPosition(scroll)
 
     # @+node:ekr.20261015041852.1: *4* u: redrawers & finishers
     # @+node:ekr.20261005182243.1: *5* u.redraw

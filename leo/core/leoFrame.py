@@ -1060,7 +1060,9 @@ class LeoTree:
         Officially change a headline.
         Set the old undo text to the previous revert point.
         """
-        c, w = self.c, self.headline_wrapper(p)
+        c = self.c
+        u = c.undoer
+        w = self.headline_wrapper(p)
         if not w:
             g.trace('no w')
             return
@@ -1084,10 +1086,15 @@ class LeoTree:
         if g.doHook("headkey1", c=c, p=p, ch=ch, changed=changed):
             return  # The hook claims to have handled the event.
         # Handle undo.
-        with c.undoer as u:
-            u.set_command_name(undoType)
-            u.change_headline(p, s, ch=ch, update_editor=False)
-            u.redraw_after_head_changed()
+        if 0:  ### Experimental.
+            with u.change_headline(p, undoType):
+                u.redraw_after_head_changed()
+
+        else:
+            with u:  ### c.undoer as u:
+                u.set_command_name(undoType)
+                u.change_headline(p, s, ch=ch, update_editor=False)
+                u.redraw_after_head_changed()
 
     # @+node:ekr.20061109165848: *3* LeoTree: Must be defined in base class
     # @+node:ekr.20040803072955.126: *4* LeoTree.endEditLabel
