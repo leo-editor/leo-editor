@@ -587,7 +587,7 @@ def alwaysIndentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     # Initial data.
     sel_1, sel_2 = w.getSelectionRange()
     tab_width = c.getTabWidth(p)
-    head, lines, tail, old_sel, old_y_scroll = self.getBodyLines()
+    head, lines, tail, _old_sel, old_y_scroll = self.getBodyLines()
     # Calculate the result.
     changed, result = False, []
     for line in lines:
@@ -601,28 +601,23 @@ def alwaysIndentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
             result.append('\n')  # #2418
     if not changed:
         return
-    old_ins = w.getInsertPoint()
-    with u.change_node(p, 'Indent Region'):
-        # Set p.b and w's text first.
-        middle = ''.join(result)
-        all = head + middle + tail
-        p.b = all  # Sets dirty and changed bits.
-        w.setAllText(all)
-        # Calculate the proper selection range (i, j, ins).
-        if sel_1 == sel_2:
-            line = result[0]
-            i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
-            i = j = len(head) + i
-        else:
-            i = len(head)
-            j = len(head) + len(middle)
-            if middle.endswith('\n'):  # #1742.
-                j -= 1
-        # Set the selection range and scroll position.
+    middle = ''.join(result)
+    new_s = head + middle + tail
+    if sel_1 == sel_2:
+        line = result[0]
+        i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
+        i = j = len(head) + i
+    else:
+        i = len(head)
+        j = len(head) + len(middle)
+        if middle.endswith('\n'):  # #1742.
+            j -= 1
+    with u.change_node(p, 'always-indent-region'):
+        p.v.b = new_s
+        w.setAllText(new_s)
         w.setSelectionRange(i, j, insert=j)
         w.setYScrollPosition(old_y_scroll)
-        u.set_selection(old_ins, old_sel, old_y_scroll=old_y_scroll)
-        u.redraw()
+        u.redraw(p)
 
 
 # @+node:ekr.20210104123442.1: ** c_ec.indentBody (indent-region)
