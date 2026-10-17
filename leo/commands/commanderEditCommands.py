@@ -284,7 +284,6 @@ def deleteComments(self: Self, event: LeoKeyEvent | None = None) -> None:
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
 
     # Initial data.
-    old_ins = w.getInsertPoint()
     head, lines, tail, old_sel, old_y_scroll = self.getBodyLines()
     if not lines:
         g.warning('no text selected')
@@ -343,7 +342,6 @@ def deleteComments(self: Self, event: LeoKeyEvent | None = None) -> None:
         j = ins = max(i, len(head) + len(middle) - 1)
         w.setSelectionRange(i, j, insert=ins)
         w.setYScrollPosition(old_y_scroll)
-        u.set_selection(old_ins, old_sel, old_y_scroll=old_y_scroll)
         u.redraw()
 
 
