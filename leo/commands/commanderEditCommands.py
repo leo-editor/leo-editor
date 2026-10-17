@@ -547,7 +547,7 @@ def extractSectionNames(self: Self, event: LeoKeyEvent | None = None) -> None:
                 p = createFirstChildNode(c, current, name, '')
                 found = True
         if not found:
-            g.warning("selected text should contain section names")
+            g.warning('Found no section names')
             return
         c.checkOutline()
         w.setSelectionRange(i, j)
