@@ -708,20 +708,16 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         k.resetLabel()
         if not k.arg:
             return
-        old_ins = w.getInsertPoint()
-        old_sel = w.getSelectionRange()
-        old_y_scroll = w.getYScrollPosition()
+        ins = ins1 = w.getInsertPoint()
+        s = w.getAllText()
+        if 0 < ins < len(s) and not g.isWordChar(s[ins]):
+            ins1 -= 1
+        i, j = g.getWord(s, ins1)
+        s = s[:i] + k.arg + s[j:]
+        ins = i + len(k.arg)
         with u.change_outline('dabbrev-expand'):
-            s = w.getAllText()
-            ins = ins1 = old_ins
-            if 0 < ins < len(s) and not g.isWordChar(s[ins]):
-                ins1 -= 1
-            i, j = g.getWord(s, ins1)
-            s = s[:i] + k.arg + s[j:]
             w.setAllText(s)
-            ins = i + len(k.arg)
             w.setSelectionRange(ins, ins, insert=ins)
-            u.set_selection(old_ins, old_sel, old_y_scroll=old_y_scroll)
             c.recolor()
             u.redraw()
 
