@@ -3004,14 +3004,27 @@ class Undoer:
                         old_delta[v], new_delta[v] = old, new
                 if old_delta:
                     new_ui = u.capture_ui()
-                    u.undoBead.add_helpers(
-                        lambda: u.restore_outline(new_delta),
-                        lambda: u.restore_outline(old_delta),
-                    )
-                    u.undoBead.add_finishers(
-                        lambda: u.restore_ui(new_ui),
-                        lambda: u.restore_ui(old_ui),
-                    )
+
+                    def change_outline_redoer() -> None:
+                        u.restore_outline(new_delta)
+
+                    def change_outline_undoer() -> None:
+                        u.restore_outline(old_delta)
+
+                    u.undoBead.add_helpers(change_outline_redoer, change_outline_undoer)
+
+                    def change_outline_ui_redoer() -> None:
+                        u.restore_ui(new_ui)
+
+                    def change_outline_ui_undoer() -> None:
+                        u.restore_ui(old_ui)
+
+                    u.undoBead.add_finishers(change_outline_ui_redoer, change_outline_ui_undoer)
+
+                    # u.undoBead.add_finishers(
+                    #     lambda: u.restore_ui(new_ui),
+                    #     lambda: u.restore_ui(old_ui),
+                    # )
 
     # @+node:vivainio.202610110003.1: *5* u.move_position
     @contextmanager
