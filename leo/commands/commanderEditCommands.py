@@ -222,45 +222,41 @@ def convertTabs(self: Self, event: LeoKeyEvent | None = None) -> bool:
 @g.commander_command('unindent-region')
 def dedentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Remove one tab's worth of indentation from all presently selected lines."""
-    c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
-    old_ins = w.getInsertPoint()
-    sel_1, sel_2 = old_sel = w.getSelectionRange()
+    c, p, u = self, self.p, self.undoer
+    w = c.frame.body.wrapper  # Only valid in body.
+    sel_1, sel_2 = w.getSelectionRange()
     tab_width = c.getTabWidth(c.p)
-    head, lines, tail, oldSel, oldYview = self.getBodyLines()
-    with u.change_node(p, 'Unindent Region'):
-        # Calculate the result.
-        changed, result = False, []
-        for line in lines:
-            i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
-            s = g.computeLeadingWhitespace(width - abs(tab_width), tab_width) + line[i:]
-            if s != line:
-                changed = True
-            result.append(s)
-        if not changed:
-            return
+    head, lines, tail, _old_sel, old_y_scroll = self.getBodyLines()
 
-        # Set p.b and w's text first.
-        middle = ''.join(result)
-        all = head + middle + tail
-        p.b = all  # Sets dirty and changed bits.
-        w.setAllText(all)
+    # Calculate the result.
+    changed, result = False, []
+    for line in lines:
+        i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
+        s = g.computeLeadingWhitespace(width - abs(tab_width), tab_width) + line[i:]
+        if s != line:
+            changed = True
+        result.append(s)
+    if not changed:
+        return
 
-        # Calculate the proper selection range (i, j, ins).
-        if sel_1 == sel_2:
-            line = result[0]
-            ins, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
-            i = j = len(head) + ins
-        else:
-            i = len(head)
-            j = len(head) + len(middle)
-            if middle.endswith('\n'):  # #1742.
-                j -= 1
+    middle = ''.join(result)
+    new_s = head + middle + tail
+    if sel_1 == sel_2:
+        line = result[0]
+        ins, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
+        i = j = len(head) + ins
+    else:
+        i = len(head)
+        j = len(head) + len(middle)
+        if middle.endswith('\n'):  # #1742.
+            j -= 1
 
-        # Set the selection range and scroll position.
+    with u.change_node(p, 'unindent-region'):
+        p.v.b = new_s
+        w.setAllText(new_s)
         w.setSelectionRange(i, j, insert=j)
-        w.setYScrollPosition(oldYview)
-        u.set_selection(old_ins, old_sel)
-        u.redraw()
+        w.setYScrollPosition(old_y_scroll)
+        u.redraw(p)
 
 
 # @+node:ekr.20171123135625.36: ** c_ec.deleteComments
