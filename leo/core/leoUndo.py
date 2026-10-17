@@ -2004,7 +2004,6 @@ class Undoer:
         if u.undoBead is not None:
             # Typing within an explicit command belongs to that command's bead.
             u.set_body(p, newText, old_body=oldText)
-            u.set_selection(oldSel[1] if oldSel else 0, oldSel or (0, 0))
             return
         if merge:
             original = bead.replace_middle(oldText, bead.old_lines)
@@ -3218,47 +3217,6 @@ class Undoer:
         c = self.c
         if not c.changed:
             c.setChanged()
-
-    # @+node:ekr.20261005143752.1: *5* u.set_selection (to be deleted)
-    def set_selection(
-        self,
-        old_ins: int,
-        old_sel: tuple[int, int],
-        *,
-        old_y_scroll: int | None = None,
-        new_y_scroll: int | None = None,
-    ) -> None:
-        u = self
-        u._require_bead()
-        c = u.c
-        # Ignore redrawers in inner levels.
-        if u.undoBeadLevel > 1:
-            return
-        b = u._require_bead()
-        w = c.frame.body.wrapper
-        if not w:
-            return
-        u.set_changed()
-        new_ins = w.getInsertPoint()
-        new_sel = w.getSelectionRange()
-
-        def set_selection_range_redoer() -> None:
-            i, j = new_sel
-            w.setSelectionRange(i, j, insert=new_ins)
-            if new_y_scroll is not None:
-                w.setYScrollPosition(new_y_scroll)
-
-        def set_selection_range_undoer() -> None:
-            i, j = old_sel
-            w.setSelectionRange(i, j, insert=old_ins)
-            if old_y_scroll is not None:
-                w.setYScrollPosition(old_y_scroll)
-
-        b.add_finishers(set_selection_range_redoer, set_selection_range_undoer)
-
-        # Do the action!
-        i, j = new_sel
-        w.setSelectionRange(i, j, insert=new_ins)
 
     # @-others
 
