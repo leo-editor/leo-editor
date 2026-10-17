@@ -521,6 +521,7 @@ def extractRef(c: Cmdr, s: str) -> str:
 
 
 # @+node:ekr.20171123135625.27: ** c_ec.extractSectionNames
+@g.commander_command('extract-section-names')
 @g.commander_command('extract-names')
 def extractSectionNames(self: Self, event: LeoKeyEvent | None = None) -> None:
     """
@@ -535,26 +536,23 @@ def extractSectionNames(self: Self, event: LeoKeyEvent | None = None) -> None:
     if not g.isTextWrapper(w):
         return
     head, lines, tail, old_sel, _old_y_view = c.getBodyLines()
+    i, j = old_sel
     if not lines:
         g.warning('No lines selected')
         return
-    old_ins = w.getInsertPoint()
     found = False
-    for s in lines:
-        if name := findSectionName(c, s):
-            p = createFirstChildNode(c, current, name, '')
-            found = True
-    if not found:
-        g.warning("selected text should contain section names")
-        return
-    c.checkOutline()
     with u.change_outline('extract-section-names'):
-        # Restore the selection.
-        i, j = old_sel
+        for s in lines:
+            if name := findSectionName(c, s):
+                p = createFirstChildNode(c, current, name, '')
+                found = True
+        if not found:
+            g.warning("selected text should contain section names")
+            return
+        c.checkOutline()
         w.setSelectionRange(i, j)
         w.setFocus()
         u.redraw(p)
-        u.set_selection(old_ins, old_sel)
 
 
 # @+node:ekr.20171123135625.28: *3* function: findSectionName
