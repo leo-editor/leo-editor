@@ -620,11 +620,10 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
-        old_ins = ins1 = w.getInsertPoint()
-        old_sel = w.getInsertionRange()
-        if 0 < old_ins < len(s) and not g.isWordChar(s[old_ins]):
-            ins1 -= 1
-        i, j = g.getWord(s, ins1)
+        ins = w.getInsertPoint()
+        if 0 < ins < len(s) and not g.isWordChar(s[ins]):
+            ins -= 1
+        i, j = g.getWord(s, ins)
         word = w.get(i, j)
         aList = self._getDynamicList(w, word)
         if not aList:
@@ -635,13 +634,12 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         prefix = functools.reduce(g.longestCommonPrefix, aList)
         if not prefix.strip():
             return
-        yscroll = w.getYScrollPosition()
+        # yscroll = w.getYScrollPosition()
+        s = s[:i] + prefix + s[j:]
+        ins = i + len(prefix)
         with u.change_outline('dabbrev-completion'):
-            s = s[:i] + prefix + s[j:]
             w.setAllText(s)
-            ins = i + len(prefix)
             w.setSelectionRange(ins, ins, insert=ins)
-            u.set_selection(old_ins, old_sel, old_y_scroll=yscroll)
             c.recolor()
             u.redraw(p)
 
