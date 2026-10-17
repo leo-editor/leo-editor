@@ -1041,7 +1041,7 @@ def rp_reformat(
     old_ins: int,
     old_sel: tuple[int, int],
     old_y_scroll: int,
-    original: str,
+    old_s: str,
     result: str,
     tail: str,
     undoType: str,
@@ -1049,10 +1049,10 @@ def rp_reformat(
     """Reformat the body and update the selection."""
     p, u, w = c.p, c.undoer, c.frame.body.wrapper
     s = head + result + tail
-    changed = original != s
+    if old_s == s:
+        return
     with u.change_node(p, undoType):
-        if changed:
-            w.setAllText(s)  # Destroys coloring.
+        w.setAllText(s)  # Destroys coloring.
 
         # #1748: Always advance to the next paragraph.
         i = len(head)
@@ -1074,13 +1074,10 @@ def rp_reformat(
         k = g.see_more_lines(s, ins, 4)
         p.v.insertSpot = ins
         w.see(k)  # New in 6.4. w.see works!
-        if not changed:
-            return
 
         # Finish.
         p.v.b = s  # p.b would cause a redraw.
         w.setXScrollPosition(0)  # Never scroll horizontally.
-        u.set_selection(old_ins, old_sel, old_y_scroll=old_y_scroll)
         u.redraw()
 
 
