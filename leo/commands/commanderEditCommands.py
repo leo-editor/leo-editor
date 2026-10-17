@@ -154,9 +154,6 @@ def convertBlanks(self: Self, event: LeoKeyEvent | None = None) -> bool:
     Return True if the the p.b was changed.
     """
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
-
-    old_ins = w.getInsertPoint()
-    old_sel = (old_ins, old_ins)  # PR #5001
     w.selectAllText()
     head, lines, tail, _old_sel, old_y_scroll = self.getBodyLines()
     tabWidth = c.getTabWidth(c.p)
@@ -168,16 +165,12 @@ def convertBlanks(self: Self, event: LeoKeyEvent | None = None) -> bool:
         result.append(s)
     if not changed:
         return False
+    middle = ''.join(result)
     with u.change_node(p, 'convert-blanks'):
-        # Set p.b and w's text first.
-        middle = ''.join(result)
-        p.b = head + middle + tail  # Sets dirty and changed bits.
+        p.v.b = head + middle + tail
         w.setAllText(head + middle + tail)
-        # Select all text and set scroll position.
-        w.selectAllText()
         w.setYScrollPosition(old_y_scroll)
-        u.set_selection(old_ins, old_sel, old_y_scroll=old_y_scroll)
-        u.redraw()
+        u.redraw(p)
         return True
 
 
