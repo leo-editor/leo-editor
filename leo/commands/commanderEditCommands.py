@@ -186,8 +186,6 @@ def convertBlanks(self: Self, event: LeoKeyEvent | None = None) -> bool:
 def convertTabs(self: Self, event: LeoKeyEvent | None = None) -> bool:
     """Convert all tabs to blanks in the selected node."""
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
-    old_ins = w.getInsertPoint()
-    old_sel = (old_ins, old_ins)  # PR #5001
     w.selectAllText()
     head, lines, tail, _old_sel, old_y_scroll = self.getBodyLines()
     tabWidth = c.getTabWidth(c.p)
@@ -200,21 +198,16 @@ def convertTabs(self: Self, event: LeoKeyEvent | None = None) -> bool:
         result.append(s)
     if not changed:
         return False
+    # Calculate the proper selection range (i, j, ins).
+    middle = ''.join(result)
+    i = len(head)
+    j = max(i, len(head) + len(middle) - 1)
     with u.change_node(p, 'convert-tabs'):
-        # Set p.b and w's text first.
-        middle = ''.join(result)
-        p.b = head + middle + tail  # Sets dirty and changed bits.
+        p.v.b = head + middle + tail
         w.setAllText(head + middle + tail)
-
-        # Calculate the proper selection range (i, j, ins).
-        i = len(head)
-        j = max(i, len(head) + len(middle) - 1)
-
-        # Set the selection range and scroll position.
         w.setSelectionRange(i, j, insert=j)
         w.setYScrollPosition(old_y_scroll)
-        u.set_selection(old_ins, old_sel, old_y_scroll=old_y_scroll)
-        u.redraw()
+        u.redraw(p)
         return True
 
 
