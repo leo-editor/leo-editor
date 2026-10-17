@@ -2892,9 +2892,8 @@ class Undoer:
             b.undoType = command_name
             # Menu labels are updated when the completed bead is pushed.
 
-    # @+node:ekr.20261015041533.1: *4* u: contexts & helpers
-    # @+node:ekr.20261015042249.1: *5* u: 5 contexts
-    # @+node:ekr.20261009185938.1: *6* u.change_headline
+    # @+node:ekr.20261015042249.1: *4* u: contexts
+    # @+node:ekr.20261009185938.1: *5* u.change_headline
     def change_headline(
         self,
         p: Position,
@@ -2937,7 +2936,7 @@ class Undoer:
         b.add_helpers(change_headline_redoer, change_headline_undoer)
         b.add_recolor(p, p)
 
-    # @+node:vivainio.202610110001.1: *6* u.change_node
+    # @+node:vivainio.202610110001.1: *5* u.change_node
     @contextmanager
     def change_node(self, p: Position, command_name: str) -> Iterator[Undoer]:
         """Record arbitrary changes to one node, including mutable user attributes."""
@@ -2968,7 +2967,7 @@ class Undoer:
                         lambda: u.restore_ui(old_ui),
                     )
 
-    # @+node:vivainio.202610110001.2: *6* u.change_outline
+    # @+node:vivainio.202610110001.2: *5* u.change_outline
     @contextmanager
     def change_outline(self, command_name: str) -> Iterator[Undoer]:
         """
@@ -3015,7 +3014,7 @@ class Undoer:
                         lambda: u.restore_ui(old_ui),
                     )
 
-    # @+node:vivainio.202610110003.1: *6* u.move_position
+    # @+node:vivainio.202610110003.1: *5* u.move_position
     @contextmanager
     def move_position(self, p: Position, command_name: str) -> Iterator[Undoer]:
         """Record a move of p without scanning or retaining the rest of the outline."""
@@ -3057,7 +3056,7 @@ class Undoer:
 
                     u.undoBead.add_finishers(restore_ui_redoer, restore_ui_undoer)
 
-    # @+node:vivainio.202610110001.4: *6* u.change_recent_files
+    # @+node:vivainio.202610110001.4: *5* u.change_recent_files
     @contextmanager
     def change_recent_files(self, command_name: str = 'Clear Recent Files') -> Iterator[Undoer]:
         rf = g.app.recentFilesManager
@@ -3084,12 +3083,12 @@ class Undoer:
 
                     u.undoBead.add_helpers(change_recent_files_redoer, change_recent_files_undoer)
 
-    # @+node:ekr.20261015042321.1: *5* u: context helpers
-    # @+node:vivainio.202610110001.3: *6* u.capture_node
+    # @+node:ekr.20261015042321.1: *4* u: context helpers
+    # @+node:vivainio.202610110001.3: *5* u.capture_node
     def capture_node(self, v: VNode) -> tuple:
         return v.h, v.b, v.isMarked(), deepcopy(v.u)
 
-    # @+node:ekr.20261015041620.2: *6* u.capture_outline
+    # @+node:ekr.20261015041620.2: *5* u.capture_outline
     def capture_outline(self) -> dict:
         result = {}
         pending = [self.c.hiddenRootNode]
@@ -3101,13 +3100,13 @@ class Undoer:
             pending.extend(v.children)
         return result
 
-    # @+node:ekr.20261015041620.4: *6* u.capture_ui
+    # @+node:ekr.20261015041620.4: *5* u.capture_ui
     def capture_ui(self) -> tuple:
         c = self.c
         w = c.frame.body.wrapper
         return c.p.copy(), w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
 
-    # @+node:ekr.20261015041620.1: *6* u.restore_node
+    # @+node:ekr.20261015041620.1: *5* u.restore_node
     def restore_node(self, v: VNode, state: tuple) -> None:
         head, body, marked, ua = state
         head_changed = v.h != head
@@ -3125,7 +3124,7 @@ class Undoer:
             for p in self.c.vnode2allPositions(v):
                 self.c.frame.tree.setHeadline(p, head)
 
-    # @+node:ekr.20261015041620.3: *6* u.restore_outline
+    # @+node:ekr.20261015041620.3: *5* u.restore_outline
     def restore_outline(self, delta: dict) -> None:
         # Restore every link before touching content or propagating dirty bits.
         for v in delta:
@@ -3136,7 +3135,7 @@ class Undoer:
         for v, (state, _, _) in delta.items():
             self.restore_node(v, state)
 
-    # @+node:ekr.20261015041620.5: *6* u.restore_ui
+    # @+node:ekr.20261015041620.5: *5* u.restore_ui
     def restore_ui(self, state: tuple) -> None:
         c = self.c
         p, sel, ins, scroll = state
