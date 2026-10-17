@@ -435,7 +435,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         """Kill characters from the insertion point to a given character."""
         c, k = self.c, self.c.k
         w = event.w if event else c.frame.body.wrapper
-        if not w:
+        if not g.isTextWrapper(w):  # #4998.
             return
         state = k.getState('zap-to-char')
         if state == 0:
