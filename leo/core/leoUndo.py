@@ -2947,7 +2947,11 @@ class Undoer:
     # @+node:vivainio.202610110001.1: *5* u.change_node & helpers
     @contextmanager
     def change_node(self, p: Position, command_name: str) -> Iterator[Undoer]:
-        """Record arbitrary changes to one node, including mutable user attributes."""
+        """
+        Handle doing, undoing, and redoing changes to one node.
+
+        u.restore_node does the heavy lifting.
+        """
         if self.undoing or self.redoing:
             yield self
             return
@@ -2985,10 +2989,21 @@ class Undoer:
 
     # @+node:vivainio.202610110001.3: *6* u.capture_node
     def capture_node(self, v: VNode) -> tuple:
+        """
+        Record everything needed by u.restore_node.
+        """
         return v.h, v.b, v.isMarked(), deepcopy(v.u)
 
     # @+node:ekr.20261015041620.1: *6* u.restore_node
     def restore_node(self, v: VNode, state: tuple) -> None:
+        """
+        Restore everything related to the given VNode:
+        - dirty bits, including calling setAllAncestorAtFileNodesDirty.
+        - marked bits.
+        - uAs.
+        - v.b
+        - v.h
+        """
         head, body, marked, ua = state
         head_changed = v.h != head
         v.initHeadString(head)
@@ -3009,9 +3024,12 @@ class Undoer:
     @contextmanager
     def change_outline(self, command_name: str) -> Iterator[Undoer]:
         """
-        Record a bulk graph operation, preserving vnode identity and clone links.
-        Only changed vnodes are retained in the bead. Prefer change_node and the
-        action helpers for small edits; this context scans the whole outline.
+        Handle doing, undoing, and redoing changes throughout an outline.
+
+        Prefer u.change_node for actions affecting only a single node:
+        This method scans (and captures data) for the entire outline!
+
+        u.restore_node does the heavy lifting of restoring all data.
         """
         if self.undoing or self.redoing:
             yield self
@@ -3105,7 +3123,11 @@ class Undoer:
     # @+node:vivainio.202610110003.1: *5* u.move_position
     @contextmanager
     def move_position(self, p: Position, command_name: str) -> Iterator[Undoer]:
-        """Record a move of p without scanning or retaining the rest of the outline."""
+        """
+        Handle doing, undoing, and redoing moving a node.
+
+        The internal move function does the heavy lifting.
+        """
         if self.undoing or self.redoing:
             yield self
             return
@@ -3148,6 +3170,8 @@ class Undoer:
     # @+node:vivainio.202610110001.4: *5* u.change_recent_files
     @contextmanager
     def change_recent_files(self, command_name: str = 'Clear Recent Files') -> Iterator[Undoer]:
+        """
+        Handling doing, undoing and redoing for the 'Clear Recent Files' menu item."""
         rf = g.app.recentFilesManager
         old_files = rf.recentFiles[:]
         with self as u:
