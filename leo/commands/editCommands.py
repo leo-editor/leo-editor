@@ -1985,25 +1985,25 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not w:
             return
 
+        # Initial data.
+        oldYview = w.getYScrollPosition()
+        lines = g.splitLines(w.getAllText())
+        # Calculate the result.
+        result_list = []
+        changed = False
+        for line in lines:
+            if line.strip():
+                result_list.append(line)
+            else:
+                changed = True
+        if not changed:
+            return  # pragma: no cover (defensive)
+        # Set p.b and w's text first.
+        result = ''.join(result_list)
+        i, j = 0, max(0, len(result) - 1)
         with u.change_node(p, 'remove-blank-lines'):
-            # Initial data.
-            oldYview = w.getYScrollPosition()
-            lines = g.splitLines(w.getAllText())
-            # Calculate the result.
-            result_list = []
-            changed = False
-            for line in lines:
-                if line.strip():
-                    result_list.append(line)
-                else:
-                    changed = True
-            if not changed:
-                return  # pragma: no cover (defensive)
-            # Set p.b and w's text first.
-            result = ''.join(result_list)
             p.b = result
             w.setAllText(result)
-            i, j = 0, max(0, len(result) - 1)
             w.setSelectionRange(i, j, insert=j)
             w.setYScrollPosition(oldYview)
             u.redraw()
@@ -4171,13 +4171,12 @@ class EditCommandsClass(BaseEditCommandsClass):
         p = c.p
         val = k.arg
         d = p.v.u
+        d[self.uaName] = val
+        self.showNodeUas()
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
         with u.change_node(p, 'set-ua'):
-            d[self.uaName] = val
-            p.setDirty()
-            self.showNodeUas()
-            k.clearState()
-            k.resetLabel()
-            k.showStateAndMode()
             u.redraw()
 
     # @-others
