@@ -3214,7 +3214,7 @@ class KeyHandlerClass:
             k.showStateAndMode(setFocus=setFocus)
         k.resetCommandHistory()
 
-    # @+node:ekr.20061031131434.126: *4* k.manufactureKeyPressForCommandName (only for unit tests!)
+    # @+node:ekr.20061031131434.126: *4* k.manufactureKeyPressForCommandName (no longer used)
     def manufactureKeyPressForCommandName(self, w: QTextMixin, commandName: str) -> None:
         """
         Implement a command by passing a keypress to the gui.

@@ -4363,7 +4363,8 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20210905064816.21: *4* test_paste_and_undo_in_headline__at_end
     def test_paste_and_undo_in_headline__at_end(self):
-        c, k = self.c, self.c.k
+        c = self.c
+        u = c.undoer
         h = 'Test headline abc'
         p = c.rootPosition().insertAfter()
         p.h = h
@@ -4378,13 +4379,18 @@ class TestEditCommands(LeoUnitTest):
         w.setSelectionRange(end, end)
         c.frame.pasteText(event=g.app.gui.create_key_event(c, w=w))
         g.app.gui.event_generate(c, '\n', 'Return', w)
-        self.assertEqual(p.h, h + paste)
-        k.manufactureKeyPressForCommandName(w, 'undo')
-        self.assertEqual(p.h, h)
+        expected = h + paste
+        for i in range(3):
+            self.assertEqual(p.h, expected)
+            self.assertEqual(c.undoer.undoMenuLabel, 'Undo Typing')
+            u.undo()
+            self.assertEqual(p.h, h)
+            u.redo()
 
     # @+node:ekr.20210905064816.22: *4* test_paste_and_undo_in_headline__with_selection
     def test_paste_and_undo_in_headline__with_selection(self):
-        c, k = self.c, self.c.k
+        c = self.c
+        u = c.undoer
         h = 'Test headline abc'
         p = c.rootPosition().insertAfter()
         p.h = h
@@ -4397,9 +4403,13 @@ class TestEditCommands(LeoUnitTest):
         w.setSelectionRange(1, 2)
         c.frame.pasteText(event=g.app.gui.create_key_event(c, w=w))
         g.app.gui.event_generate(c, '\n', 'Return', w)
-        self.assertEqual(p.h, h[0] + paste + h[2:])
-        k.manufactureKeyPressForCommandName(w, 'undo')
-        self.assertEqual(p.h, h)
+        expected = h[0] + paste + h[2:]
+        for i in range(3):
+            self.assertEqual(p.h, expected)
+            self.assertEqual(c.undoer.undoMenuLabel, 'Undo Typing')
+            u.undo()
+            self.assertEqual(p.h, h)
+            u.redo()
 
     # @+node:ekr.20210905064816.23: *4* test_paste_at_end_of_headline
     def test_paste_at_end_of_headline(self):
@@ -4498,8 +4508,8 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20210905064816.27: *4* test_selecting_new_node_retains_typing_in_headline
     def test_selecting_new_node_retains_typing_in_headline(self):
-        c, k = self.c, self.c.k
-        k.defaultUnboundKeyAction = 'insert'
+        c = self.c
+        u = c.undoer
         h = 'Test headline abc'
         p = c.rootPosition().insertAfter()
         p.h = h
@@ -4515,9 +4525,14 @@ class TestEditCommands(LeoUnitTest):
         g.app.gui.event_generate(c, 'Z', 'Shift+Z', w)
         g.app.gui.event_generate(c, '\n', 'Return', w)
         expected = h + 'XYZ'
-        self.assertEqual(p.h, expected)
-        k.manufactureKeyPressForCommandName(w, 'undo')
-        self.assertEqual(p.h, h)
+        for i in range(3):
+            self.assertEqual(p.h, expected)
+            self.assertEqual(c.undoer.undoMenuLabel, 'Undo Typing')
+            u.undo()
+            self.assertEqual(p.h, h)
+            self.assertEqual(u.redoMenuLabel, 'Redo Typing')
+            u.redo()
+            self.assertEqual(u.redoMenuLabel, "Can't Redo")
 
     # @+node:ekr.20210905064816.13: *4* test_setMoveCol
     def test_setMoveCol(self):
@@ -4589,8 +4604,8 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20210905064816.28: *4* test_typing_and_undo_in_headline_at_end
     def test_typing_and_undo_in_headline_at_end(self):
-        c, k = self.c, self.c.k
-        k.defaultUnboundKeyAction = 'insert'
+        c = self.c
+        u = c.undoer
         h = 'Test headline abc'
         p = c.rootPosition().insertAfter()
         p.h = h
@@ -4605,11 +4620,15 @@ class TestEditCommands(LeoUnitTest):
         g.app.gui.event_generate(c, 'Y', 'Shift+Y', w)
         g.app.gui.event_generate(c, 'Z', 'Shift+Z', w)
         g.app.gui.event_generate(c, '\n', 'Return', w)
-        self.assertEqual(p.h, h + 'XYZ')
-        self.assertEqual(c.undoer.undoMenuLabel, 'Undo Typing')
-        k.manufactureKeyPressForCommandName(w, 'undo')
-        self.assertEqual(c.undoer.redoMenuLabel, 'Redo Typing')
-        self.assertEqual(p.h, h)
+        expected = h + 'XYZ'
+        for i in range(3):
+            self.assertEqual(p.h, expected)
+            self.assertEqual(c.undoer.undoMenuLabel, 'Undo Typing')
+            u.undo()
+            self.assertEqual(p.h, h)
+            self.assertEqual(u.redoMenuLabel, 'Redo Typing')
+            u.redo()
+            self.assertEqual(u.redoMenuLabel, "Can't Redo")
 
     # @+node:ekr.20210905064816.29: *4* test_typing_in_non_empty_body_text_does_not_redraw_the_screen
     def test_typing_in_non_empty_body_text_does_not_redraw_the_screen(self):
