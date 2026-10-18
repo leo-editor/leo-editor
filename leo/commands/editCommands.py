@@ -120,7 +120,7 @@ def delete_trace_statements(event: LeoKeyEvent | None = None) -> None:
 
 
 # @+node:ekr.20180210160930.1: *3* @g.command('mark-node-and-parents')
-@g.command('mark-node-and-parents')  # Was mark-first-parents.
+@g.command('mark-node-and-parents')
 def mark_node_and_parents(event: LeoKeyEvent | None = None) -> list[Position]:
     """Mark the node and all its parents."""
     changed: list[Position] = []
@@ -129,15 +129,13 @@ def mark_node_and_parents(event: LeoKeyEvent | None = None) -> list[Position]:
         return changed
     c.endEditing()
     u = c.undoer
-    with u.change_outline('mark-node-and-parents'):
-        for parent in c.p.self_and_parents():
-            if not parent.isMarked():
-                parent.setMarked()
-                parent.setDirty()
-                changed.append(parent.copy())
-        if changed:
+    changed = [z for z in c.p.self_and_parents() if not z.isMarked()]
+    if changed:
+        with u.change_outline('mark-node-and-parents'):
+            for z in changed:
+                z.setMarked()
             u.redraw()
-        return changed
+    return changed
 
 
 # @+node:ekr.20230901111715.1: *3* @g.command('promote-section-definition')
@@ -165,14 +163,14 @@ def promote_section_definition(event: LeoKeyEvent | None = None) -> None:
         return
 
     ref_p = parent
+    new_ref_lines = []
+    for line in g.splitLines(ref_p.b):
+        if line.strip() == ref_s:
+            new_ref_lines.extend(g.splitLines(c.p.b))
+        else:
+            new_ref_lines.append(line)
     with u.change_outline('promote-section-definition'):
-        new_ref_lines = []
-        for line in g.splitLines(ref_p.b):
-            if line.strip() == ref_s:
-                new_ref_lines.extend(g.splitLines(c.p.b))
-            else:
-                new_ref_lines.append(line)
-        ref_p.b = ''.join(new_ref_lines)
+        ref_p.v.b = ''.join(new_ref_lines)
         c.p.doDelete(ref_p)
         u.redraw(ref_p)
 
@@ -194,7 +192,7 @@ def merge_node_with_next_node(event: LeoKeyEvent | None = None) -> None:
         return
 
     with u.change_outline('merge-node-with-next-node'):
-        next.b = p.b.rstrip() + '\n\n' + next.b
+        next.v.b = p.v.b.rstrip() + '\n\n' + next.v.b
         w.setAllText(next.b)
         p.doDelete(next)  # This adjusts next._childIndex.
         u.redraw(next)
@@ -216,7 +214,7 @@ def merge_node_with_prev_node(event: LeoKeyEvent | None = None) -> None:
     if not prev:
         return
     with u.change_outline('merge-node-with-prev-node'):
-        prev.b = prev.b.rstrip() + '\n\n' + p.b
+        prev.v.b = prev.v.b.rstrip() + '\n\n' + p.v.b
         w.setAllText(prev.b)
         p.doDelete()  # No need to adjust prev._childIndex.
         u.redraw(prev)
