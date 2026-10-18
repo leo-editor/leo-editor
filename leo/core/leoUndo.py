@@ -2919,6 +2919,7 @@ class Undoer:
         def update(head):
             c.p = p
             p.initHeadString(head)
+            # p.setDirty() calls p.v.setAllAncestorAtFileNodesDirty()
             p.setDirty()
             c.frame.tree.setHeadline(p, head)
 
@@ -3122,9 +3123,10 @@ class Undoer:
                     new_ui = u.capture_ui()
 
                     def move(source, target):
-                        source.setAllAncestorAtFileNodesDirty()
                         source.v._cutLink(source.childIndex(), source._parentVnode())
                         target.v._addLink(target.childIndex(), target._parentVnode())
+                        # These call p.v.setAllAncestorAtFileNodesDirty()
+                        source.setDirty()
                         target.setDirty()
 
                     def move_position_redoer():
