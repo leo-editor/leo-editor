@@ -373,15 +373,13 @@ def unmark_node_and_parents(event: LeoKeyEvent | None = None) -> list[Position]:
     if not c:
         return changed
     u = c.undoer
-    with u.change_outline(tag):
-        for parent in c.p.self_and_parents():
-            if parent.isMarked():
-                parent.clearMarked()
-                parent.setDirty()
-                changed.append(parent.copy())
-        if changed:
+    changed = [z for z in c.p.self_and_parents() if z.isMarked()]
+    if changed:
+        with u.change_outline(tag):
+            for z in changed:
+                z.clearMarked()
             u.redraw()
-        return changed
+    return changed
 
 
 # @+node:ekr.20160514100029.1: ** class EditCommandsClass
