@@ -267,8 +267,8 @@ def promoteBodies(event: LeoKeyEvent | None = None) -> None:
         return
     p = c.p
     u = c.undoer
+    result = [child.b.rstrip() + '\n\n' for child in p.subtree()]
     with u.change_node(p, 'promote-bodies'):
-        result = [child.b.rstrip() + '\n\n' for child in p.subtree()]
         p.b = ''.join(result).rstrip() + '\n\n'
         u.redraw()
 
@@ -282,10 +282,11 @@ def promoteHeadlines(event: LeoKeyEvent | None = None) -> None:
         return
     p = c.p
     u = c.undoer
-    with u.change_node(p, 'promote-headlines'):
-        if result := '\n'.join([p.h.rstrip() for p in p.subtree()]):
+    result = '\n'.join([p.h.rstrip() for p in p.subtree()])
+    if result:
+        with u.change_node(p, 'promote-headlines'):
             p.b = p.b.lstrip() + '\n' + result
-        u.redraw()
+            u.redraw()
 
 
 # @+node:ekr.20180504180647.1: *3* @g.command('select-next-trace-statement')

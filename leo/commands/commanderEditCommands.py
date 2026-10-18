@@ -308,15 +308,12 @@ def deleteComments(self: Self, event: LeoKeyEvent | None = None) -> None:
     if not changed:
         return
 
+    middle = ''.join(result)
+    i = len(head)
+    j = ins = max(i, len(head) + len(middle) - 1)
     with u.change_node(p, 'Delete Comments'):
-        # Set p.b and w's text first.
-        middle = ''.join(result)
         p.b = head + middle + tail  # Sets dirty and changed bits.
         w.setAllText(head + middle + tail)
-
-        # Set the selection range and scroll position.
-        i = len(head)
-        j = ins = max(i, len(head) + len(middle) - 1)
         w.setSelectionRange(i, j, insert=ins)
         w.setYScrollPosition(old_y_scroll)
         u.redraw()
@@ -1310,9 +1307,9 @@ def insert_toc(c: Cmdr, kind: str) -> None:
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
         return
+    s = make_toc(c, kind=kind, root=c.p)
     with u.change_node(p, undoType):
         w.deleteTextSelection()
-        s = make_toc(c, kind=kind, root=c.p)
         i = w.getInsertPoint()
         w.insert(i, s)
         p.v.b = w.getAllText()
