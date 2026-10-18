@@ -2944,7 +2944,7 @@ class Undoer:
         b.add_helpers(change_headline_redoer, change_headline_undoer)
         b.add_recolor(p, p)
 
-    # @+node:vivainio.202610110001.1: *5* u.change_node & helpers
+    # @+node:vivainio.202610110001.1: *5* u.change_node
     @contextmanager
     def change_node(self, p: Position, command_name: str) -> Iterator[Undoer]:
         """
@@ -2986,39 +2986,6 @@ class Undoer:
                         u.restore_ui(old_ui)
 
                     u.undoBead.add_finishers(change_node_ui_redoer, change_node_ui_undoer)
-
-    # @+node:vivainio.202610110001.3: *6* u.capture_node
-    def capture_node(self, v: VNode) -> tuple:
-        """
-        Record everything needed by u.restore_node.
-        """
-        return v.h, v.b, v.isMarked(), deepcopy(v.u)
-
-    # @+node:ekr.20261015041620.1: *6* u.restore_node
-    def restore_node(self, v: VNode, state: tuple) -> None:
-        """
-        Restore everything related to the given VNode:
-        - dirty bits, including calling setAllAncestorAtFileNodesDirty.
-        - marked bits.
-        - uAs.
-        - v.b
-        - v.h
-        """
-        head, body, marked, ua = state
-        head_changed = v.h != head
-        v.initHeadString(head)
-        v.setBodyString(body)
-        v.u = deepcopy(ua)
-        if marked:
-            v.setMarked()
-        else:
-            v.clearMarked()
-        v.setAllAncestorAtFileNodesDirty()
-        v.setDirty()
-        # Keep the headline editor from restoring stale text at the next redraw.
-        if head_changed:
-            for p in self.c.vnode2allPositions(v):
-                self.c.frame.tree.setHeadline(p, head)
 
     # @+node:vivainio.202610110001.2: *5* u.change_outline & helpers
     @contextmanager
@@ -3090,12 +3057,6 @@ class Undoer:
             pending.extend(v.children)
         return result
 
-    # @+node:ekr.20261015041620.4: *6* u.capture_ui
-    def capture_ui(self) -> tuple:
-        c = self.c
-        w = c.frame.body.wrapper
-        return c.p.copy(), w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
-
     # @+node:ekr.20261015041620.3: *6* u.restore_outline
     def restore_outline(self, delta: dict) -> None:
         # Restore every link before touching content or propagating dirty bits.
@@ -3107,18 +3068,34 @@ class Undoer:
         for v, (state, _, _) in delta.items():
             self.restore_node(v, state)
 
-    # @+node:ekr.20261015041620.5: *6* u.restore_ui
-    def restore_ui(self, state: tuple) -> None:
-        c = self.c
-        p, sel, ins, scroll = state
-        p = p if c.positionExists(p) else c.rootPosition()
-        c.p = p
-        c.selectPosition(p)
-        c.frame.scanForTabWidth(c.p)
-        c.recolor(c.p)
-        w = c.frame.body.wrapper
-        w.setSelectionRange(*sel, insert=ins)
-        w.setYScrollPosition(scroll)
+    # @+node:vivainio.202610110001.4: *5* u.change_recent_files
+    @contextmanager
+    def change_recent_files(self, command_name: str = 'Clear Recent Files') -> Iterator[Undoer]:
+        """
+        Handling doing, undoing and redoing for the 'Clear Recent Files' menu item."""
+        rf = g.app.recentFilesManager
+        old_files = rf.recentFiles[:]
+        with self as u:
+            u.set_command_name(command_name)
+            try:
+                yield u
+            finally:
+                new_files = rf.recentFiles[:]
+                if old_files != new_files:
+
+                    def restore_recent_files(files):
+                        rf.recentFiles = files[:]
+                        for frame in g.app.windowList:
+                            rf.createRecentFilesMenuItems(frame.c)
+                        rf.writeRecentFilesFile(u.c)
+
+                    def change_recent_files_redoer():
+                        restore_recent_files(new_files)
+
+                    def change_recent_files_undoer():
+                        restore_recent_files(old_files)
+
+                    u.undoBead.add_helpers(change_recent_files_redoer, change_recent_files_undoer)
 
     # @+node:vivainio.202610110003.1: *5* u.move_position
     @contextmanager
@@ -3167,34 +3144,58 @@ class Undoer:
 
                     u.undoBead.add_finishers(restore_ui_redoer, restore_ui_undoer)
 
-    # @+node:vivainio.202610110001.4: *5* u.change_recent_files
-    @contextmanager
-    def change_recent_files(self, command_name: str = 'Clear Recent Files') -> Iterator[Undoer]:
+    # @+node:ekr.20261018041400.1: *5* u:common context helpers
+    # @+node:vivainio.202610110001.3: *6* u.capture_node
+    def capture_node(self, v: VNode) -> tuple:
         """
-        Handling doing, undoing and redoing for the 'Clear Recent Files' menu item."""
-        rf = g.app.recentFilesManager
-        old_files = rf.recentFiles[:]
-        with self as u:
-            u.set_command_name(command_name)
-            try:
-                yield u
-            finally:
-                new_files = rf.recentFiles[:]
-                if old_files != new_files:
+        Record everything needed by u.restore_node.
+        """
+        return v.h, v.b, v.isMarked(), deepcopy(v.u)
 
-                    def restore_recent_files(files):
-                        rf.recentFiles = files[:]
-                        for frame in g.app.windowList:
-                            rf.createRecentFilesMenuItems(frame.c)
-                        rf.writeRecentFilesFile(u.c)
+    # @+node:ekr.20261015041620.4: *6* u.capture_ui
+    def capture_ui(self) -> tuple:
+        c = self.c
+        w = c.frame.body.wrapper
+        return c.p.copy(), w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
 
-                    def change_recent_files_redoer():
-                        restore_recent_files(new_files)
+    # @+node:ekr.20261015041620.1: *6* u.restore_node
+    def restore_node(self, v: VNode, state: tuple) -> None:
+        """
+        Restore everything related to the given VNode:
+        - dirty bits, including calling setAllAncestorAtFileNodesDirty.
+        - marked bits.
+        - uAs.
+        - v.b
+        - v.h
+        """
+        head, body, marked, ua = state
+        head_changed = v.h != head
+        v.initHeadString(head)
+        v.setBodyString(body)
+        v.u = deepcopy(ua)
+        if marked:
+            v.setMarked()
+        else:
+            v.clearMarked()
+        v.setAllAncestorAtFileNodesDirty()
+        v.setDirty()
+        # Keep the headline editor from restoring stale text at the next redraw.
+        if head_changed:
+            for p in self.c.vnode2allPositions(v):
+                self.c.frame.tree.setHeadline(p, head)
 
-                    def change_recent_files_undoer():
-                        restore_recent_files(old_files)
-
-                    u.undoBead.add_helpers(change_recent_files_redoer, change_recent_files_undoer)
+    # @+node:ekr.20261015041620.5: *6* u.restore_ui
+    def restore_ui(self, state: tuple) -> None:
+        c = self.c
+        p, sel, ins, scroll = state
+        p = p if c.positionExists(p) else c.rootPosition()
+        c.p = p
+        c.selectPosition(p)
+        c.frame.scanForTabWidth(c.p)
+        c.recolor(c.p)
+        w = c.frame.body.wrapper
+        w.setSelectionRange(*sel, insert=ins)
+        w.setYScrollPosition(scroll)
 
     # @+node:ekr.20261015041852.1: *4* u: redrawers & finishers
     # @+node:ekr.20261005182243.1: *5* u.redraw
