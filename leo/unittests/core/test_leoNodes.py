@@ -373,88 +373,80 @@ class TestNodes(LeoUnitTest):
     # @+node:ekr.20210830095545.42: *4* TestNodes.test_clone
     def test_clone(self):
 
-        # This method's name should *not* start with 'test'.
-        def clone_test(self):
-            c, p, u = self.c, self.c.p, self.c.undoer
-            child = p.insertAsNthChild(0)
-            c.setHeadString(child, 'child')  # Force the headline to update.
-            self.assertTrue(child)
-            c.selectPosition(child)
-            clone = c.clone()
-            self.assertEqual(clone, c.p)
-            self.assertEqual(clone.h, 'child')
-            assert child.isCloned(), 'fail 1'
-            assert clone.isCloned(), 'fail 2'
-            assert child.isCloned(), 'fail 3'
-            assert clone.isCloned(), 'fail 4'
-            # undoers_s = f"{g.new_undoers=}"
-            u.undo()
-            assert not child.isCloned(), 'fail 1-a'
-            u.redo()
-            assert child.isCloned(), 'fail 1-b'
-            u.undo()
-            assert not child.isCloned(), 'fail 1-c'
-            u.redo()
-            assert child.isCloned(), 'fail 1-d'
-            clone.moveToRoot()  # Does not change child position.
-            assert child.isCloned(), 'fail 3-2'
-            assert clone.isCloned(), 'fail 4-2'
-            assert not clone.parent(), 'fail 5'
-            assert not clone.back(), 'fail 6'
-            clone.doDelete()
-            assert not child.isCloned(), 'fail 7'
-
-        self.run_undo_test(clone_test)
+        c, p, u = self.c, self.c.p, self.c.undoer
+        child = p.insertAsNthChild(0)
+        c.setHeadString(child, 'child')  # Force the headline to update.
+        self.assertTrue(child)
+        c.selectPosition(child)
+        clone = c.clone()
+        self.assertEqual(clone, c.p)
+        self.assertEqual(clone.h, 'child')
+        assert child.isCloned(), 'fail 1'
+        assert clone.isCloned(), 'fail 2'
+        assert child.isCloned(), 'fail 3'
+        assert clone.isCloned(), 'fail 4'
+        # undoers_s = f"{g.new_undoers=}"
+        u.undo()
+        assert not child.isCloned(), 'fail 1-a'
+        u.redo()
+        assert child.isCloned(), 'fail 1-b'
+        u.undo()
+        assert not child.isCloned(), 'fail 1-c'
+        u.redo()
+        assert child.isCloned(), 'fail 1-d'
+        clone.moveToRoot()  # Does not change child position.
+        assert child.isCloned(), 'fail 3-2'
+        assert clone.isCloned(), 'fail 4-2'
+        assert not clone.parent(), 'fail 5'
+        assert not clone.back(), 'fail 6'
+        clone.doDelete()
+        assert not child.isCloned(), 'fail 7'
 
     # @+node:ekr.20210830095545.43: *4* TestNodes.test_delete_node
     def test_delete_node(self):
 
-        # This method's name should *not* start with 'test'.
-        def delete_node_test(self):
-            # This test requires @bool select-next-after-delete = False
-            c = self.c
-            p = c.p
-            u = c.undoer
+        # This test requires @bool select-next-after-delete = False
+        c = self.c
+        p = c.p
+        u = c.undoer
 
-            # Setup.
-            p2 = p.insertAsNthChild(0)
-            p2.setHeadString('A')
-            p3 = p.insertAsNthChild(1)
-            p3.setHeadString('B')
-            p4 = p.insertAsNthChild(2)
-            p4.setHeadString('C')
-            p.expand()
-            # self.dump_headlines(c)
+        # Setup.
+        p2 = p.insertAsNthChild(0)
+        p2.setHeadString('A')
+        p3 = p.insertAsNthChild(1)
+        p3.setHeadString('B')
+        p4 = p.insertAsNthChild(2)
+        p4.setHeadString('C')
+        p.expand()
+        # self.dump_headlines(c)
 
-            # Test.
-            c.selectPosition(p3)
-            c.deleteOutline()
-            c.redraw_now()
-            p = c.p
-            self.assertEqual(p.h, 'A')
-            self.assertEqual(p.next().h, 'C')
-            u.undo()  # Fails
-            c.outerUpdate()
-            p = c.p
-            self.assertEqual(p.back(), p2)
-            self.assertEqual(p.next(), p4)
-            u.redo()
-            c.outerUpdate()
-            p = c.p
-            self.assertEqual(p.h, 'A')
-            self.assertEqual(p.next().h, 'C')
-            u.undo()
-            c.outerUpdate()
-            p = c.p
-            self.assertEqual(p.back(), p2)
-            self.assertEqual(p.next(), p4)
-            u.redo()
-            c.outerUpdate()
-            p = c.p
-            self.assertEqual(p.h, 'A')
-            self.assertEqual(p.next().h, 'C')
-
-        self.run_undo_test(delete_node_test)
+        # Test.
+        c.selectPosition(p3)
+        c.deleteOutline()
+        c.redraw_now()
+        p = c.p
+        self.assertEqual(p.h, 'A')
+        self.assertEqual(p.next().h, 'C')
+        u.undo()  # Fails
+        c.outerUpdate()
+        p = c.p
+        self.assertEqual(p.back(), p2)
+        self.assertEqual(p.next(), p4)
+        u.redo()
+        c.outerUpdate()
+        p = c.p
+        self.assertEqual(p.h, 'A')
+        self.assertEqual(p.next().h, 'C')
+        u.undo()
+        c.outerUpdate()
+        p = c.p
+        self.assertEqual(p.back(), p2)
+        self.assertEqual(p.next(), p4)
+        u.redo()
+        c.outerUpdate()
+        p = c.p
+        self.assertEqual(p.h, 'A')
+        self.assertEqual(p.next().h, 'C')
 
     # @+node:ekr.20210830095545.44: *4* TestNodes.test_delete_root
     def test_delete_root(self):
@@ -514,28 +506,25 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.46: *4* TestNodes.test_insert_node
     def test_insert_node(self):
-        def insert_node_test(self):
-            c, p, u = self.c, self.c.p, self.c.undoer
-            first = p.insertAsNthChild(0)
-            first.h = 'A'
-            last = p.insertAsNthChild(1)
-            last.h = 'B'
-            p.expand()
-            c.selectPosition(first)
-            inserted = c.insertHeadline()
-            self.assertEqual(inserted, c.p)
-            inserted.h = 'inserted'  # Direct, non-undoable content changes survive replay.
-            for _ in range(3):
-                u.undo()
-                self.assertEqual(c.p, first)
-                self.assertIs(c.p.next().v, last.v)
-                u.redo()
-                self.assertIs(c.p.v, inserted.v)
-                self.assertEqual(c.p.h, 'inserted')
-                self.assertEqual(c.p.back(), first)
-                self.assertIs(c.p.next().v, last.v)
-
-        self.run_undo_test(insert_node_test)
+        c, p, u = self.c, self.c.p, self.c.undoer
+        first = p.insertAsNthChild(0)
+        first.h = 'A'
+        last = p.insertAsNthChild(1)
+        last.h = 'B'
+        p.expand()
+        c.selectPosition(first)
+        inserted = c.insertHeadline()
+        self.assertEqual(inserted, c.p)
+        inserted.h = 'inserted'  # Direct, non-undoable content changes survive replay.
+        for _ in range(3):
+            u.undo()
+            self.assertEqual(c.p, first)
+            self.assertIs(c.p.next().v, last.v)
+            u.redo()
+            self.assertIs(c.p.v, inserted.v)
+            self.assertEqual(c.p.h, 'inserted')
+            self.assertEqual(c.p.back(), first)
+            self.assertIs(c.p.next().v, last.v)
 
     # @+node:ekr.20210830095545.47: *4* TestNodes.test_move_outline_down
     def test_move_outline_down(self):

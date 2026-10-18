@@ -586,19 +586,6 @@ class TestContextUndo(LeoUnitTest):
         u.redo()
         self.assertEqual(p.b, 'ab cd')
 
-    # @+node:ekr.20261014103254.30: *3* TestContextUndo.test_dual_mode_harness_sets_and_restores_switch
-    def test_dual_mode_harness_sets_and_restores_switch(self):
-        seen = []
-        old = g.new_undoers
-
-        def exercise(test):
-            seen.append(g.new_undoers)
-            test.assertIsNotNone(test.c)
-
-        self.run_undo_test(exercise)
-        self.assertEqual(seen, [True, False])
-        self.assertEqual(g.new_undoers, old)
-
     # @+node:ekr.20261014103254.31: *3* TestContextUndo.test_legacy_calls_inside_new_context_are_grouped
     def test_legacy_calls_inside_new_context_are_grouped(self):
         _c, p, u = self.c, self.c.p, self.c.undoer

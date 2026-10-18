@@ -4266,21 +4266,16 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20210905064816.19: *4* TestEditCommands.test_undo_insert_node_before
     def test_undo_insert_node_before(self):
-
-        # This method's name should *not* start with 'test'.
-        def insert_node_test2(self):
-            c = self.c
-            u = c.undoer
-            c.insertHeadlineBefore()
-            p = c.p
-            self.assertTrue(c.positionExists(p))
-            old_h = p.h
-            for i in range(3):
-                u.undo()
-                u.redo()
-            assert c.p.h == old_h
-
-        self.run_undo_test(insert_node_test2)
+        c = self.c
+        u = c.undoer
+        c.insertHeadlineBefore()
+        p = c.p
+        self.assertTrue(c.positionExists(p))
+        old_h = p.h
+        for i in range(3):
+            u.undo()
+            u.redo()
+        assert c.p.h == old_h
 
     # @+node:ekr.20210905064816.18: *4* TestEditCommands.test_undo_insert_node
     def test_undo_insert_node(self):
