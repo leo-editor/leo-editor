@@ -2916,15 +2916,6 @@ class Undoer:
         if old_h == new_h:
             return
 
-        if not g.unitTesting:
-            if 1:
-                g.print_unique_message(f"\n{g.my_name()}: {g.callers()}")
-            else:
-                callers = g.callers(10)
-                i = callers.find('test_')
-                if i > -1:
-                    g.print_unique_message(f"\n{g.my_name()}: {callers[i:]}")
-
         def update(head):
             c.p = p
             p.initHeadString(head)
