@@ -2496,29 +2496,29 @@ class LeoFind:
         if not w:  # pragma: no cover
             return False
         assert w
-        oldSel = sel = w.getSelectionRange()
-        start, end = sel
+        start, end = old_sel = w.getSelectionRange()
         if start > end:  # pragma: no cover
             start, end = end, start
         if start == end:  # pragma: no cover
             g.es("no text selected")
             return False
+        start, end = old_sel
+        change_text = self.change_text
+        # Perform regex substitutions of \1, \2, ...\9 in the change text.
+        if self.pattern_match and self.match_obj:
+            groups = self.match_obj.groups()
+            if groups:
+                change_text = self.make_regex_subs(change_text, groups)
+        change_text = self.replace_back_slashes(change_text)
+        # Update both the gui widget and the work "widget"
+        new_ins = start if self.reverse else start + len(change_text)
+        if start != end:
+            w.delete(start, end)
+        w.insert(start, change_text)
+        w.setInsertPoint(new_ins)
+        self.work_s = w.getAllText()  # #2220.
+
         with u.change_node(p, 'change-selection'):
-            start, end = oldSel
-            change_text = self.change_text
-            # Perform regex substitutions of \1, \2, ...\9 in the change text.
-            if self.pattern_match and self.match_obj:
-                groups = self.match_obj.groups()
-                if groups:
-                    change_text = self.make_regex_subs(change_text, groups)
-            change_text = self.replace_back_slashes(change_text)
-            # Update both the gui widget and the work "widget"
-            new_ins = start if self.reverse else start + len(change_text)
-            if start != end:
-                w.delete(start, end)
-            w.insert(start, change_text)
-            w.setInsertPoint(new_ins)
-            self.work_s = w.getAllText()  # #2220.
             self.work_sel = (new_ins, new_ins, new_ins)
             # Update the selection for the next match.
             w.setSelectionRange(start, start + len(change_text))
