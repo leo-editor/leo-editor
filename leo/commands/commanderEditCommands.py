@@ -311,8 +311,8 @@ def deleteComments(self: Self, event: LeoKeyEvent | None = None) -> None:
     middle = ''.join(result)
     i = len(head)
     j = ins = max(i, len(head) + len(middle) - 1)
-    with u.change_node(p, 'Delete Comments'):
-        p.b = head + middle + tail  # Sets dirty and changed bits.
+    with u.change_node(p, 'delete-comments'):
+        p.v.b = head + middle + tail
         w.setAllText(head + middle + tail)
         w.setSelectionRange(i, j, insert=ins)
         w.setYScrollPosition(old_y_scroll)
@@ -652,9 +652,9 @@ def insertBodyTime(self: Self, event: LeoKeyEvent | None = None) -> None:
     if g.app.batchMode:
         c.notValidInBatchMode('insert-body-time')
         return
+    s = self.getTime(body=True)
     with u.change_node(p, 'insert-body-time'):
         w.deleteTextSelection()
-        s = self.getTime(body=True)
         i = w.getInsertPoint()
         w.insert(i, s)
         p.v.b = w.getAllText()
@@ -1131,12 +1131,11 @@ def reformatSelection(
     s = head + result + tail
     if s == old_s:
         return
+    i = len(head)
+    j = max(i, len(head) + len(result) - 1)
+    j = min(j, len(s))
     with u.change_node(p, undoType):
-        # Update the text and the selection.
         w.setAllText(s)  # Destroys coloring.
-        i = len(head)
-        j = max(i, len(head) + len(result) - 1)
-        j = min(j, len(s))
         w.setSelectionRange(i, j, insert=j)
         p.v.b = s  # p.b would cause a redraw.
         w.setXScrollPosition(0)  # Never scroll horizontally.
@@ -1194,21 +1193,20 @@ def toggleAngleBrackets(self: Self, event: LeoKeyEvent | None = None) -> None:
         c.notValidInBatchMode('toggle-angle-brackets')
         return
     c.endEditing()
+    s = p.h.strip()
+    # 2019/09/12: Guard against black.
+    lt = "<<"
+    rt = ">>"
+    if s[0:2] == lt or s[-2:] == rt:
+        if s[0:2] == "<<":
+            s = s[2:]
+        if s[-2:] == ">>":
+            s = s[:-2]
+        s = s.strip()
+    else:
+        s = g.angleBrackets(' ' + s + ' ')
     with u.change_node(p, 'toggle-angle-brackets'):
-        s = p.h.strip()
-        # 2019/09/12: Guard against black.
-        lt = "<<"
-        rt = ">>"
-        if s[0:2] == lt or s[-2:] == rt:
-            if s[0:2] == "<<":
-                s = s[2:]
-            if s[-2:] == ">>":
-                s = s[:-2]
-            s = s.strip()
-        else:
-            s = g.angleBrackets(' ' + s + ' ')
         p.setHeadString(s)
-        p.setDirty()  # #1449.
         u.redraw_and_edit(p, select_all=True)
 
 

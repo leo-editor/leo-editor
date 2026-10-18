@@ -542,13 +542,11 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
 
         h = p.h
-        with u.change_node(p, 'capitalize-headline'):
-            words = [w.capitalize() for w in h.split()]
-            capitalized = ' '.join(words)
-            if capitalized != h:
+        words = [w.capitalize() for w in h.split()]
+        capitalized = ' '.join(words)
+        if capitalized != h:
+            with u.change_node(p, 'capitalize-headline'):
                 p.h = capitalized
-                c.setChanged()
-                p.setDirty()
                 u.redraw()
 
     # @+node:tbrown.20151118134307.1: *3* ec.path_for_p
