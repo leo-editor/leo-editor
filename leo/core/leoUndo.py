@@ -209,11 +209,8 @@ class UndoBead:
         # Called infequently, but u.undoTyping *does* sometimes call it.
         d = {
             'kind':     self.undoType.lower(),
-            'leading':  0,
             'p':        self.old_p,
-            'trailing': 0,
             'undoType': self.undoType,
-            'v':        self.old_p.v,
         }  # fmt: skip
         return d.get(key, default)
 
