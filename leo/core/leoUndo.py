@@ -2892,7 +2892,7 @@ class Undoer:
             # Menu labels are updated when the completed bead is pushed.
 
     # @+node:ekr.20261015042249.1: *4* u: contexts
-    # @+node:ekr.20261009185938.1: *5* u.old_change_headline
+    # @+node:ekr.20261009185938.1: *5* u.change_headline
     def change_headline(
         self,
         p: Position,
@@ -2901,13 +2901,29 @@ class Undoer:
         ch: str = '',
         update_editor: bool = True,
     ) -> None:
-        """Change a headline and preserve directives, dirty bits and editor state."""
+        """
+        Change a headline and preserve directives, dirty bits and editor state.
+
+        Called *only* from LeoTree.onHeadChanged (except for unit tests).
+
+        This method should *not* have an @contextmanager decorator:
+        it is never called from within other @contextmanager methods.
+        """
         c = self.c
         b = self._require_bead()
         p = p.copy() if c.positionExists(p) else c.vnode2position(p.v)
         old_h = p.h
         if old_h == new_h:
             return
+
+        if not g.unitTesting:
+            if 1:
+                g.print_unique_message(f"\n{g.my_name()}: {g.callers()}")
+            else:
+                callers = g.callers(10)
+                i = callers.find('test_')
+                if i > -1:
+                    g.print_unique_message(f"\n{g.my_name()}: {callers[i:]}")
 
         def update(head):
             c.p = p
@@ -2935,58 +2951,6 @@ class Undoer:
 
         b.add_helpers(change_headline_redoer, change_headline_undoer)
         b.add_recolor(p, p)
-
-    # @+node:ekr.20261017115557.1: *5* u.new_change_headline
-    @contextmanager  ### Experimental
-    def new_change_headline(self, p: Position, command_name: str) -> Iterator[Undoer]:
-        """Record changes to one headline."""
-        c = self.c
-        set_headline = c.frame.tree.setHeadline
-
-        # def update(head_s):
-        #     c.p = p
-        #     p.initHeadString(head)
-        #     p.setDirty()
-        #     c.frame.tree.setHeadline(p, head_s)
-
-        if self.undoing or self.redoing:
-            yield self
-            return
-        with self as u:
-            u.set_command_name(command_name)
-            if u.capture_level > 0 or p.v in u.node_captures:
-                yield u
-                return
-            old_state = u.capture_node(p.v)
-            old_ui = u.capture_ui()
-            u.node_captures.add(p.v)
-            try:
-                yield u
-            finally:
-                u.node_captures.remove(p.v)
-                new_state = u.capture_node(p.v)
-                if old_state != new_state:
-                    new_ui = u.capture_ui()
-
-                    def change_head_redoer() -> None:
-                        u.restore_node(p.v, new_state)
-                        set_headline(p, p.h)
-
-                    def change_head_undoer() -> None:
-                        u.restore_node(p.v, old_state)
-                        set_headline(p, p.h)
-
-                    u.undoBead.add_helpers(change_head_redoer, change_head_undoer)
-
-                    def change_head_ui_redoer() -> None:
-                        u.restore_ui(new_ui)
-                        set_headline(p, p.h)
-
-                    def change_head_ui_undoer() -> None:
-                        u.restore_ui(old_ui)
-                        set_headline(p, p.h)
-
-                    u.undoBead.add_finishers(change_head_ui_redoer, change_head_ui_undoer)
 
     # @+node:vivainio.202610110001.1: *5* u.change_node & helpers
     @contextmanager
