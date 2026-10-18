@@ -2993,8 +2993,9 @@ class Undoer:
         """
         Handle doing, undoing, and redoing changes throughout an outline.
 
-        Prefer u.change_node for actions affecting only a single node:
-        This method scans (and captures data) for the entire outline!
+        Prefer u.change_node for actions affecting only a single node.
+
+        This method scans the entire outline, but creates minimal undo/redo data.
 
         u.restore_node does the heavy lifting of restoring all data.
         """
