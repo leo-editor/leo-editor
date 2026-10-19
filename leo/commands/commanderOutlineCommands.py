@@ -1175,7 +1175,6 @@ def deleteOutline(
     if not p:
         return
     c.endEditing()
-    breakpoint()  ###
     new_p = p.visBack(c) if p.hasVisBack(c) else p.next()
     if not new_p:
         # The only top-level node cannot be deleted.
