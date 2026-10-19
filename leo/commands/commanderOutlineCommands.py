@@ -1175,17 +1175,17 @@ def deleteOutline(
     if not p:
         return
     c.endEditing()
-    new_p = p.visBack(c) if p.hasVisBack(c) else p.next()
-    if not new_p:
-        # The only top-level node cannot be deleted.
-        return
     if 1:  # Legacy
-        with c.undoer as u:
+        with u:
             u.set_command_name(op_name)
             u.delete_node(p)
-            u.redraw(new_p)
+            u.redraw()
             c.checkOutline()
     else:
+        new_p = p.visBack(c) if p.hasVisBack(c) else p.next()
+        if not new_p:
+            # The only top-level node cannot be deleted.
+            return
         with u.change_outline(op_name):
             p.doDelete()
             u.redraw(new_p)
