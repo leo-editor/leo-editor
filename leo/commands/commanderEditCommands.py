@@ -781,9 +781,11 @@ def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
     j = old_p.b.find('@others') - len(indent)
     with u.change_outline('promote-to-at-others'):
         w.setSelectionRange(j, j, insert=j)
-        u.set_body(old_p, new_body)
+        ### u.set_body(old_p, new_body)
+        old_p.b = new_body
+        old_p.setDirty()
         for child in reversed(children):
-            u.delete_node(child)
+            u.delete_node(child)  ###
         u.redraw(old_p)
         c.bodyWantsFocusNow()
 

@@ -1171,16 +1171,26 @@ def deleteOutline(
     """Deletes the selected outline."""
     c = self
     p = c.p
+    u = c.undoer
     if not p:
         return
     c.endEditing()
-    if not (p.hasVisBack(c) or p.hasNext()):
+    breakpoint()  ###
+    new_p = p.visBack(c) if p.hasVisBack(c) else p.next()
+    if not new_p:
+        # The only top-level node cannot be deleted.
         return
-    with c.undoer as u:
-        u.set_command_name(op_name)
-        u.delete_node(p)
-        u.redraw()
-        c.checkOutline()
+    if 1:  # Legacy
+        with c.undoer as u:
+            u.set_command_name(op_name)
+            u.delete_node(p)
+            u.redraw(new_p)
+            c.checkOutline()
+    else:
+        with u.change_outline(op_name):
+            p.doDelete()
+            u.redraw(new_p)
+            c.checkOutline()
 
 
 # @+node:ekr.20071005173203.1: *3* c_oc:insert-child

@@ -2495,7 +2495,7 @@ class Undoer:
         if p == c.p or p.isAncestorOf(c.p):
             new_current = p.visBack(c) if p.hasVisBack(c) else p.next()
             if not new_current:
-                return  # The last top-level node cannot be deleted.
+                return  # The only top-level node cannot be deleted.
         else:
             new_current = c.p.copy()
 
