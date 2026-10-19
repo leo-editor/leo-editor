@@ -2489,41 +2489,38 @@ class Undoer:
         """Delete p without scheduling a redraw; retain its original links."""
         u = self
         c, b = u.c, u._require_bead()
-        old_current = c.p.copy()
-        deleted = p.copy()
+        old_p = p.copy()
         old_back, old_parent = p.back(), p.parent()
         if p == c.p or p.isAncestorOf(c.p):
-            new_current = p.visBack(c) if p.hasVisBack(c) else p.next()
-            if not new_current:
-                return  # The only top-level node cannot be deleted.
+            new_p = p.visBack(c) if p.hasVisBack(c) else p.next()
+            if not new_p:
+                g.trace("Can not delete the outline's only node")
+                return
         else:
-            new_current = c.p.copy()
+            new_p = c.p.copy()
 
         # Do the action.
-        deleted.doDelete(new_current)
-        c.p = new_current
-        new_current.setDirty()
-        new_current = new_current.copy()
+        old_p.doDelete(new_p)
+        c.p = new_p
+        new_p.setDirty()
         c.p.setAllAncestorAtFileNodesDirty()
+        c.checkOutline()
 
         def delete_node_redoer():
-            target = old_current.copy()
-            if deleted == old_current or deleted.isAncestorOf(old_current):
-                target = deleted.visBack(c) if deleted.hasVisBack(c) else deleted.next()
-            deleted.doDelete(target)
-            c.p = target
+            old_p.doDelete()
+            c.p = new_p
 
         def delete_node_undoer():
             if old_back:
-                deleted._linkAfter(old_back)
+                old_p._linkAfter(old_back)
             elif old_parent:
-                deleted._linkAsNthChild(old_parent, 0)
+                old_p._linkAsNthChild(old_parent, 0)
             else:
-                deleted._linkAsRoot()
-            deleted.setDirty()
-            c.p = old_current
+                old_p._linkAsRoot()
+            old_p.setDirty()
+            c.p = old_p
 
-        if deleted.v not in u.node_captures:
+        if old_p.v not in u.node_captures:
             b.add_helpers(delete_node_redoer, delete_node_undoer)
 
     # @+node:ekr.20261006155622.1: *6* u.insert_node

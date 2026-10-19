@@ -1176,9 +1176,8 @@ def deleteOutline(
         return
     c.endEditing()
     with u.change_outline(op_name):
-        u.delete_node(p)
+        u.delete_node(p)  # Calculates new c.p.
         u.redraw()
-        c.checkOutline()
 
 
 # @+node:ekr.20071005173203.1: *3* c_oc:insert-child
