@@ -206,7 +206,7 @@ class CPrettyPrinter:
             # Call this only once, at end.
             if not changed:
                 g.es("Command did not find any content to beautify")
-            c.redraw(c.p)  ###
+            c.redraw(c.p)
             c.bodyWantsFocus()
 
     # @+node:ekr.20110917174948.6911: *3* cpp.indent & helpers

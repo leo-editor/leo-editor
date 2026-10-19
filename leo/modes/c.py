@@ -115,8 +115,6 @@ c_main_keywords_dict = {
 
 # Dictionary of keywords dictionaries for c mode.
 keywordsDictDict = {
-    ### "c_cpp": c_cpp_keywords_dict,
-    ### "c_include": c_include_keywords_dict,
     "c_main": c_main_keywords_dict,
 }
 # @-<< c: keywords dict >>

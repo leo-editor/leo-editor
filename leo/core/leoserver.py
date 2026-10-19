@@ -3198,7 +3198,6 @@ class LeoServer:
             # Set this node's new headline
             newNode.h = newHeadline
             newNode.setDirty()
-            ### c.setChanged()
             c.selectPosition(newNode)
             if oldPosition:
                 if c.positionExists(oldPosition):
@@ -3226,11 +3225,9 @@ class LeoServer:
                 newNode = p.insertAsLastChild()
             else:
                 newNode = p.insertAsNthChild(0)
-            # Set this node's new headline
             newNode.h = newHeadline
             newNode.setDirty()
-            ### c.setChanged()
-            c.selectPosition(newNode)
+            c.redraw(newNode)
             return self._make_response()
 
     # @+node:felix.20250606213729.1: *5* server.insert_file_node

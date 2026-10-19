@@ -82,7 +82,7 @@ def pasteOutline(
         return None
     if not (s.lstrip().startswith("{") or g.match(s, 0, g.app.prolog_prefix_string)):
         return None
-    with u.change_outline('Paste Node'):  ###, enabled=undoFlag):
+    with u.change_outline('Paste Node'):
         pasted = c.fileCommands.getLeoOutlineFromClipboard(s)
         if not pasted:
             return None
@@ -1484,7 +1484,6 @@ def unmarkAll(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
                 changed = True
         if changed:
             g.doHook("clear-all-marks", c=c, p=p)
-            ### c.setChanged()
 
 
 # @+node:ekr.20031218072017.1766: ** c_oc.Move commands

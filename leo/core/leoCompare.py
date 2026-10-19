@@ -514,7 +514,7 @@ class CompareLeoOutlines:
                 aList = aList[1:]
                 for path2 in aList:
                     self.diff_two_files(path1, path2)  # adds to self.root
-            self.finish()  ### Does not call u:redraw  ###
+            self.finish()  ### Does not call u:redraw
 
     # @+node:ekr.20180211170333.3: *3* CompareLeoOutlines.diff_two_files
     def diff_two_files(self, fn1: str, fn2: str) -> None:

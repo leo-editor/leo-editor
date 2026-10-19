@@ -2600,12 +2600,6 @@ class LeoFind:
         while p:
             pos, newpos = self._fnm_search(p)
             if pos is not None:  # success
-                ###
-                # with u.change_outline('find-next-match'):
-                #     if self.mark_finds and not p.isMarked():  # pragma: no cover
-                #         p.setMarked()
-                #         p.setDirty()
-                #     # u.redraw(p)
                 return p, pos, newpos
             # Searching the pane failed: switch to another pane or node.
             if self._fnm_should_stay_in_node(p):

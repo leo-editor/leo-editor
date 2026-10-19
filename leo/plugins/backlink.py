@@ -235,11 +235,6 @@ class backlinkController:
             g.es('No controller. not creating backlink')
             return
 
-        ### To do: should this code switch outlines???
-        # new_c = new_p.v.context
-        # if new_c != c:
-        # g.app.selectLeoWindow(new_c)  # Switch outlines.
-
         new_c.backlinkController.initBacklink(new_p.v)
         if our_unl not in [i.rsplit('##', 1)[0] for i in new_p.v.u['_bklnk']['urls']]:
             new_p.v.u['_bklnk']['urls'].append("%s##%s" % (our_unl, self.c.p.h))
