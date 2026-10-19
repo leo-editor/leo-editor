@@ -126,22 +126,17 @@ class UndoBead:
         self.add_redraw_finishers(redraw_redoer, redraw_undoer)
 
     # @+node:ekr.20261010150247.10: *3* undoBead.add_redraw_and_edit
-    def add_redraw_and_edit(
-        self,
-        new_p: Position,
-        old_p: Position,
-        select_all: bool = True,
-    ) -> None:
+    def add_redraw_and_edit(self, new_p: Position, old_p: Position) -> None:
 
         c = self.c
         new_p = new_p.copy()
         old_p = old_p.copy()
 
         def redraw_and_edit_redoer_finisher() -> None:
-            c.redrawAndEdit(new_p, selectAll=select_all)
+            c.redrawAndEdit(new_p, selectAll=True)
 
         def redraw_and_edit_undoer_finisher() -> None:
-            c.redrawAndEdit(old_p, selectAll=select_all)
+            c.redrawAndEdit(old_p, selectAll=True)
 
         self.add_redraw_finishers(
             redraw_and_edit_redoer_finisher,
