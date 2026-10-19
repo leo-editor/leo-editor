@@ -2422,13 +2422,6 @@ class Undoer:
         if self.undoBeadLevel == 0:
             self.undoBead = UndoBead(self)
         self.undoBeadLevel += 1
-        if 0:  # For traces.
-            lead_in = '\n' if self.undoBeadLevel == 1 else ''
-            s = g.callers(20)
-            i = s.find(',test_')
-            if i > -1:
-                callers_s = s[i + 1 :]
-                g.print_unique_message(f"{lead_in}{self.undoBeadLevel} {callers_s}")
         return self
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:
