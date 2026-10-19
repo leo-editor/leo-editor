@@ -512,15 +512,15 @@ def extractSectionNames(self: Self, event: LeoKeyEvent | None = None) -> None:
     if not lines:
         g.warning('No lines selected')
         return
-    found = False
+    name = None
+    for s in lines:
+        if name := findSectionName(c, s):
+            break
+    else:
+        g.warning('Found no section names')
+        return
     with u.change_outline('extract-section-names'):
-        for s in lines:
-            if name := findSectionName(c, s):
-                p = createFirstChildNode(c, current, name, '')
-                found = True
-        if not found:
-            g.warning('Found no section names')
-            return
+        p = createFirstChildNode(c, current, name, '')
         c.checkOutline()
         w.setSelectionRange(i, j)
         w.setFocus()

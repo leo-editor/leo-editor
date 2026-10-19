@@ -4350,7 +4350,7 @@ class Commands:
         u = c.undoer
         c.endEditing()
         with u.change_outline('Clone Drag'):
-            clone = p.clone()  # Creates clone & dependents, does not set undo.
+            clone = p.clone()
             if (
                 c.checkDrag(p, parent) and
                 c.checkMoveWithParentWithWarning(clone, parent, True)
@@ -4369,7 +4369,7 @@ class Commands:
         u = c.undoer
         c.endEditing()
         with u.change_outline('Clone Drag'):
-            clone = p.clone()  # Creates clone.  Does not set undo.
+            clone = p.clone()
             if (
                 c.checkDrag(p, after) and
                 c.checkMoveWithParentWithWarning(clone, after.parent(), True)
