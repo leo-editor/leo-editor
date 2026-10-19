@@ -130,7 +130,6 @@ class UndoBead:
         self,
         new_p: Position,
         old_p: Position,
-        ### contract: bool = False,
         select_all: bool = True,
     ) -> None:
 
@@ -2998,11 +2997,7 @@ class Undoer:
         u.undoBead.add_redraw_after_head_changed()
 
     # @+node:ekr.20261011190258.1: *6* u.redraw_and_edit
-    def redraw_and_edit(
-        self,
-        new_p: Position,
-        select_all: bool = True,
-    ) -> None:
+    def redraw_and_edit(self, new_p: Position) -> None:
         """Redraw and edit now and after undo/redo."""
         u = self
         c = u.c
@@ -3012,7 +3007,7 @@ class Undoer:
             return
         u.set_changed()
         c.p.setDirty()  # p.setDirty() calls p.v.setAllAncestorAtFileNodesDirty()
-        c.redrawAndEdit(new_p, selectAll=select_all)
+        c.redrawAndEdit(new_p, selectAll=True)
         u.undoBead.add_redraw_and_edit(new_p, self.undoBead.old_p)
 
     # @+node:ekr.20261015183213.1: *6* u.set_changed

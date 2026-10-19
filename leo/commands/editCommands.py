@@ -524,7 +524,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 if g.app.inBridge:
                     u.redraw()
                 else:
-                    u.redraw_and_edit(p, select_all=True)
+                    u.redraw_and_edit(p)
 
     # @+node:tom.20210922140250.1: *3* ec.capitalizeHeadline
     @cmd('capitalize-headline')
