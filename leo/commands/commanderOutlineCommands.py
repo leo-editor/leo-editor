@@ -1756,7 +1756,7 @@ def promote(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     c.endEditing()
     with u.change_outline('Promote'):
         p.promote()
-        ### p.setDirty()
+        p.setDirty()
         u.redraw(p, update_syntax_coloring=True)
 
 
