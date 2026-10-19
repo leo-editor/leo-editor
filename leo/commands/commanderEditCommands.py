@@ -730,7 +730,7 @@ def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
     w = self.frame.body.wrapper  # Only valid in body pane.
     c.endEditing()
 
-    # @+others
+    # @+others  # Define helper functions.
     # @+node:ekr.20261004172902.1: *3* function: find_at_others
     at_others_pat = re.compile(r'(\s*)@others\n')
 
@@ -784,7 +784,7 @@ def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
         old_p.b = new_body
         old_p.setDirty()
         for child in reversed(children):
-            u.delete_node(child)
+            child.doDelete()
         u.redraw(old_p)
         c.bodyWantsFocusNow()
 
