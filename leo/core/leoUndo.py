@@ -2583,7 +2583,13 @@ class Undoer:
         return new_p
 
     # @+node:ekr.20261005140833.1: *6* u.set_body
-    def set_body(self, new_p: Position, new_body: str, *, old_body: str | None = None) -> None:
+    def set_body(
+        self,
+        new_p: Position,
+        new_body: str,
+        *,
+        old_body: str | None = None,
+    ) -> None:
         """Change p.b"""
         u = self
         b = u._require_bead()
@@ -2926,8 +2932,12 @@ class Undoer:
             v.setMarked()
         else:
             v.clearMarked()
+        val = v.computeIcon()
+        if not hasattr(v, "iconVal") or val != v.iconVal:
+            v.iconVal = val
         v.setAllAncestorAtFileNodesDirty()
         v.setDirty()
+
         # Keep the headline editor from restoring stale text at the next redraw.
         if head_changed:
             for p in self.c.vnode2allPositions(v):
