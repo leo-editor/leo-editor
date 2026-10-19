@@ -2704,7 +2704,7 @@ class AtFile:
         with u.change_outline('ruff-format'):
             g.es(f"beautified: {g.shortFileName(filename)}", color='blue')
             c.refreshFromDisk(root)
-            c.contractAllOtherNodes()
+            c.contractAllHeadlines()
             u.redraw(old_p)
         return True
 
