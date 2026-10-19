@@ -1208,7 +1208,7 @@ def toggleAngleBrackets(self: Self, event: LeoKeyEvent | None = None) -> None:
         s = g.angleBrackets(' ' + s + ' ')
     with u.change_node(p, 'toggle-angle-brackets'):
         p.setHeadString(s)
-        u.redraw_and_edit(p, select_all=True)
+        u.redraw_and_edit(p)
 
 
 # @+node:ekr.20171123135625.49: ** c_ec.unformatParagraph & helper

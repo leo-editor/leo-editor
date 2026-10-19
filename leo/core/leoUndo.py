@@ -118,10 +118,10 @@ class UndoBead:
         old_p = old_p.copy()
 
         def redraw_redoer() -> None:
-            c.redraw(new_p if c.positionExists(new_p) else c.p)
+            c.redraw(new_p)
 
         def redraw_undoer() -> None:
-            c.redraw(old_p if c.positionExists(old_p) else self.old_p)
+            c.redraw(old_p)
 
         self.add_redraw_finishers(redraw_redoer, redraw_undoer)
 
@@ -130,7 +130,7 @@ class UndoBead:
         self,
         new_p: Position,
         old_p: Position,
-        contract: bool = False,
+        ### contract: bool = False,
         select_all: bool = True,
     ) -> None:
 
@@ -138,15 +138,16 @@ class UndoBead:
         new_p = new_p.copy()
         old_p = old_p.copy()
 
-        def redraw_and_edit_redoer_finiser() -> None:
-            c.redrawAndEdit(new_p if c.positionExists(new_p) else c.p, selectAll=select_all)
+        def redraw_and_edit_redoer_finisher() -> None:
+            c.redrawAndEdit(new_p, selectAll=select_all)
 
         def redraw_and_edit_undoer_finisher() -> None:
-            if contract:
-                old_p.contract()
-            c.redrawAndEdit(old_p if c.positionExists(old_p) else self.old_p, selectAll=select_all)
+            c.redrawAndEdit(old_p, selectAll=select_all)
 
-        self.add_redraw_finishers(redraw_and_edit_redoer_finiser, redraw_and_edit_undoer_finisher)
+        self.add_redraw_finishers(
+            redraw_and_edit_redoer_finisher,
+            redraw_and_edit_undoer_finisher,
+        )
 
     # @+node:ekr.20261011192651.1: *3* undoBead.add_redraw_after_head_changed
     def add_redraw_after_head_changed(self) -> None:
@@ -2662,10 +2663,10 @@ class Undoer:
         """
         c = self.c
         b = self._require_bead()
-        p = p.copy() if c.positionExists(p) else c.vnode2position(p.v)
         old_h = p.h
         if old_h == new_h:
             return
+        p = p.copy()
 
         def update(head):
             c.p = p
@@ -2944,7 +2945,6 @@ class Undoer:
     def restore_ui(self, state: tuple) -> None:
         c = self.c
         p, sel, ins, scroll = state
-        p = p if c.positionExists(p) else c.rootPosition()
         c.p = p
         c.selectPosition(p)
         c.frame.scanForTabWidth(c.p)
@@ -3001,7 +3001,6 @@ class Undoer:
     def redraw_and_edit(
         self,
         new_p: Position,
-        contract: bool = True,
         select_all: bool = True,
     ) -> None:
         """Redraw and edit now and after undo/redo."""
@@ -3014,9 +3013,7 @@ class Undoer:
         u.set_changed()
         c.p.setDirty()  # p.setDirty() calls p.v.setAllAncestorAtFileNodesDirty()
         c.redrawAndEdit(new_p, selectAll=select_all)
-        u.undoBead.add_redraw_and_edit(
-            new_p, self.undoBead.old_p, contract=contract, select_all=select_all
-        )
+        u.undoBead.add_redraw_and_edit(new_p, self.undoBead.old_p)
 
     # @+node:ekr.20261015183213.1: *6* u.set_changed
     def set_changed(self) -> None:
