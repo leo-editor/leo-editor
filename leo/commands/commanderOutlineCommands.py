@@ -1518,8 +1518,7 @@ def demote(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
             child.parents.append(p.v)
         p.expand()
         p.setDirty()
-        c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
-        u.redraw(p)
+        u.redraw(p, update_syntax_coloring=True)
 
 
 # @+node:ekr.20031218072017.1768: *3* c_oc.moveOutlineDown
@@ -1757,9 +1756,8 @@ def promote(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     c.endEditing()
     with u.change_outline('Promote'):
         p.promote()
-        p.setDirty()
-        c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
-        u.redraw(p)
+        ### p.setDirty()
+        u.redraw(p, update_syntax_coloring=True)
 
 
 # @+node:ekr.20071213185710: *3* c_oc.toggleSparseMove

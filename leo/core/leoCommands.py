@@ -4348,40 +4348,40 @@ class Commands:
     def dragCloneToNthChildOf(self, p: Position, parent: Position, n: int) -> None:
         c = self
         u = c.undoer
+        c.endEditing()
         with u.change_outline('Clone Drag'):
             clone = p.clone()  # Creates clone & dependents, does not set undo.
-            if not c.checkDrag(p, parent) or not c.checkMoveWithParentWithWarning(
-                clone, parent, True
-            ):
-                clone.doDelete(newNode=p)  # Destroys clone and makes p the current node.
-                c.selectPosition(p)  # Also sets root position.
-                return
-            c.endEditing()
-            clone.setDirty()
-            clone.moveToNthChildOf(parent, n)
-            clone.setDirty()
-            c.updateSyntaxColorer(clone)  # Dragging can change syntax coloring.
-            u.redraw(clone)
+            if (
+                c.checkDrag(p, parent) and
+                c.checkMoveWithParentWithWarning(clone, parent, True)
+            ):  # fmt: skip
+                clone.setDirty()
+                clone.moveToNthChildOf(parent, n)
+                clone.setDirty()
+                p = clone
+            else:
+                clone.doDelete(newNode=p)
+            u.redraw(clone, update_syntax_coloring=True)
 
     # @+node:ekr.20031218072017.2948: *5* c.dragCloneAfter
     def dragCloneAfter(self, p: Position, after: Position) -> None:
         c = self
         u = c.undoer
+        c.endEditing()
         with u.change_outline('Clone Drag'):
             clone = p.clone()  # Creates clone.  Does not set undo.
-            assert clone.v
-            if c.checkDrag(p, after) and c.checkMoveWithParentWithWarning(
-                clone, after.parent(), True
-            ):
-                c.endEditing()
+            if (
+                c.checkDrag(p, after) and
+                c.checkMoveWithParentWithWarning(clone, after.parent(), True)
+            ):  # fmt: skip
                 clone.setDirty()
                 clone.moveAfter(after)
-                clone.v.setDirty()
+                clone.setDirty()
                 p = clone
             else:
+                # Destroys clone and makes p the current node.
                 clone.doDelete(newNode=p)
-            c.updateSyntaxColorer(clone)  # Dragging can change syntax coloring.
-            u.redraw(p)
+            u.redraw(p, update_syntax_coloring=True)
 
     # @+node:ekr.20031218072017.2949: *4* c.Drawing
     # @+node:ekr.20080514131122.8: *5* c.bringToFront
@@ -5512,8 +5512,8 @@ class Commands:
                         delete(child)
 
         # The main line. Start the recursion with the top-level nodes.
+        to_do: list[Position] = list(reversed(list(root.self_and_siblings())))
         with u.change_outline('c.deletePositionsInList'):
-            to_do: list[Position] = list(reversed(list(root.self_and_siblings())))
             while to_do:
                 p = to_do.pop()
                 delete(p)

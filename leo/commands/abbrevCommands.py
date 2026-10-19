@@ -169,17 +169,17 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             g.es_print(f"bad copied outline: {expansion}")
             return
 
+        # Set status flags.
+        isRoot = c.p.isRoot()
+        wasHoisted = len(c.hoistStack) > 0
+        parent = c.p.getParent()
+        noSiblings = parent and parent.numberOfChildren() == 1
+        isFirstChild = parent and parent.firstChild() == c.p
+        prevSibling = c.p.moveToBack()
+        prevSiblingExpanded = prevSibling and prevSibling.isExpanded()
+
         with u.change_outline('Expand Tree Abbreviation'):
             self.replace_selection(i, j, '')
-
-            # Set status flags.
-            isRoot = c.p.isRoot()
-            wasHoisted = len(c.hoistStack) > 0
-            parent = c.p.getParent()
-            noSiblings = parent and parent.numberOfChildren() == 1
-            isFirstChild = parent and parent.firstChild() == c.p
-            prevSibling = c.p.moveToBack()
-            prevSiblingExpanded = prevSibling and prevSibling.isExpanded()
 
             # Carefully replace the old node with the new node.
             if c.canDeleteHeadline():
