@@ -1175,21 +1175,10 @@ def deleteOutline(
     if not p:
         return
     c.endEditing()
-    if 1:  # Legacy
-        with u:
-            u.set_command_name(op_name)
-            u.delete_node(p)
-            u.redraw()
-            c.checkOutline()
-    else:
-        new_p = p.visBack(c) if p.hasVisBack(c) else p.next()
-        if not new_p:
-            # The only top-level node cannot be deleted.
-            return
-        with u.change_outline(op_name):
-            p.doDelete()
-            u.redraw(new_p)
-            c.checkOutline()
+    with u.change_outline(op_name):
+        u.delete_node(p)
+        u.redraw()
+        c.checkOutline()
 
 
 # @+node:ekr.20071005173203.1: *3* c_oc:insert-child
