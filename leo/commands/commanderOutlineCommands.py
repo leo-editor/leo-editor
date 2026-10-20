@@ -1148,8 +1148,8 @@ def cloneToLastNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     if not p:
         return
     prev = p.copy()
+    c.endEditing()  # Capture any changes to the headline.
     with u.change_outline('Clone Node To Last'):
-        c.endEditing()  # Capture any changes to the headline.
         clone = p.clone()
         last = c.rootPosition()
         while last and last.hasNext():
