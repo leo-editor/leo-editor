@@ -1767,8 +1767,8 @@ class LeoFind:
             # Not even one match found!
             self.restore(saveData)
             return {}
+        result_string = self.make_result_from_matches(matches_dict)
         with u.change_outline('find-all'):
-            result_string = self.make_result_from_matches(matches_dict)
             # Create the summary node.
             found_p = self.create_summary_node('find-all', result_string)
             if self.mark_finds:

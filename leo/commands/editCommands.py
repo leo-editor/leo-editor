@@ -505,10 +505,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = c.frame.tree.headline_wrapper(p)
         with u.change_outline('insert-headline-time'):
             if w and not g.app.inBridge:
-                # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1185933
-                # insert-headline-time should insert at cursor.
-                # Note: The command must be bound to a key for this to work.
-
                 ins = w.getInsertPoint()
                 s = c.getTime(body=False)
                 w.insert(ins, s)
