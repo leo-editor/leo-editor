@@ -1,7 +1,7 @@
 # @+leo-ver=5-thin
 # @+node:ekr.20031218072017.3603: * @file leoUndo.py
 # Suppress all ruff linter errors: it doesn't like g.Bunch.
-# type: ignore
+# ty-pe: ignore
 """
 Leo's undo/redo manager.
 
@@ -166,7 +166,7 @@ class UndoBead:
             message = f"{tag}: Bad c.p\n  {c.p.h=}\n{old_p.h=}\n{g.callers()=}\n"
             print()
             g.trace(message)
-        if len(self.redraw_finishers) != 2:
+        if self.redraw_finsishers is None:
             message = f"{tag}: Bad redraw_finishers. {g.callers()=}\n"
             print()
             g.trace(message)
