@@ -1,7 +1,5 @@
 # @+leo-ver=5-thin
 # @+node:ekr.20031218072017.3603: * @file leoUndo.py
-# Suppress all ruff linter errors: it doesn't like g.Bunch.
-# ty-pe: ignore
 """
 Leo's undo/redo manager.
 
@@ -1947,7 +1945,7 @@ class Undoer:
         if merge:
             original = bead.replace_middle(oldText, bead.old_lines)
             bead.update_patch(original, newText)
-            bead.new_sel, bead.new_ins = newSel, newInsert
+            bead.new_sel, bead.new_ins = newSel, newInsert  # type:ignore
         else:
             bead = TypingBead(u, p, oldText, newText, oldSel, newSel, newInsert, scroll)
             u.pushBead(bead)
@@ -2189,14 +2187,14 @@ class Undoer:
             u.pushBead(bunch)
         else:
             bunch = old_d
-        bunch.leading = u.leading
-        bunch.trailing = u.trailing
-        bunch.newMarked = p.isMarked()  # #1694
-        bunch.newNewlines = u.newNewlines
-        bunch.newMiddleLines = u.newMiddleLines
-        bunch.newSel = u.newSel
-        bunch.newText = u.newText
-        bunch.yview = u.yview
+        bunch.leading = u.leading  # type:ignore
+        bunch.trailing = u.trailing  # type:ignore
+        bunch.newMarked = p.isMarked()  # type:ignore # #1694
+        bunch.newNewlines = u.newNewlines  # type:ignore
+        bunch.newMiddleLines = u.newMiddleLines  # type:ignore
+        bunch.newSel = u.newSel  # type:ignore
+        bunch.newText = u.newText  # type:ignore
+        bunch.yview = u.yview  # type:ignore
         # @-<< adjust the undo stack, clearing all forward entries >>
         if 'undo' in g.app.debug and 'verbose' in g.app.debug:
             print(f"u.doTyping: {len(oldText)} => {len(newText)}")
@@ -2758,7 +2756,7 @@ class Undoer:
                     new = new_state.get(v)
                     if old is None:
                         # Preserve the detached subtree's internal links on undo.
-                        old = (*new[:2], tuple(p for p in new[2] if p not in old_state))
+                        old = (*new[:2], tuple(p for p in new[2] if p not in old_state))  # type:ignore
                     if new is None:
                         new = (*old[:2], tuple(p for p in old[2] if p not in new_state))
                     if old != new:
@@ -3005,7 +3003,7 @@ class Undoer:
     # @+node:ekr.20031218072017.3607: *4* u.clearOptionalIvars
     def clearOptionalIvars(self) -> None:
         u = self
-        u.p = None  # The position/node being operated upon for undo and redo.
+        u.p = None  # type:ignore
         for ivar in u.optionalIvars:
             setattr(u, ivar, None)
 
