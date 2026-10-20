@@ -2449,10 +2449,6 @@ class Undoer:
         c, b = self.c, self._require_bead()
         old_p = p.copy()
         clone = p.clone()
-        if c.checkOutline():
-            clone.doDelete()
-            c.p = old_p
-            return None
 
         # Do the action.
         clone.setDirty()

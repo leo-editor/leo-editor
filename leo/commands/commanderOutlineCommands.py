@@ -1087,10 +1087,9 @@ def clone(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     c.endEditing()
     with c.undoer as u:
         u.set_command_name('Clone Node')
-        clone = u.clone_node(c.p)  # Tests whether clone is valid.
-        if clone:
-            u.redraw(clone)
-            c.treeWantsFocus()
+        clone = u.clone_node(c.p)  # Cloning a node is *always* valid.
+        u.redraw(clone)
+        c.treeWantsFocus()
         return clone
 
 
