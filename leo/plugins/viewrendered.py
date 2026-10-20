@@ -643,6 +643,7 @@ class ViewRenderedController(QtWidgets.QWidget):
             'markdown': self.update_md,
             'mathjax': self.update_mathjax,
             'md': self.update_md,
+            'mermaid': self.update_mermaid,
             'movie': self.update_movie,
             'networkx': self.update_networkx,
             # 'pandoc': self.update_pandoc,
@@ -1175,6 +1176,22 @@ class ViewRenderedController(QtWidgets.QWidget):
             if 'SEVERE' in msg or 'FATAL' in msg:
                 s = 'MD error:\n%s\n\n%s' % (msg, s)
         return s
+
+    # @+node:ekr.20260921094128.1: *4* vr.update_mermaid
+    def update_mermaid(self, s: str, keywords: Any) -> None:
+        """Display the markdown text in `s` in the VR pane."""
+        g.trace(f"{s=}")
+
+        try:
+            import mermaidx
+        except Exception:
+            g.es_print_unique_message('pip install mermaidx')
+
+        d = mermaidx.render(s)
+        # d.save("diagram.svg", embed_font=True)
+        d.save("diagram.png", scale=2.0)
+        # d.save("diagram.pdf")  ### pdf_format="A4")
+        # print(d.ascii())
 
     # @+node:ekr.20110320120020.14481: *4* vr.update_movie
     movie_warning = False
