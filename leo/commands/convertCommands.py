@@ -45,11 +45,11 @@ class To_Python:  # pragma: no cover
         c = self.c
         u = c.undoer
         pp = leoBeautify.CPrettyPrinter(c)
+        changed = False
+        n_files, n_nodes = 0, 0
+        special = ('class ', 'module ', '@file ', '@@file ')
+        files = ('@file ', '@@file ')
         with u.change_outline('typescript-to-python'):
-            changed = False
-            n_files, n_nodes = 0, 0
-            special = ('class ', 'module ', '@file ', '@@file ')
-            files = ('@file ', '@@file ')
             for p in self.p.self_and_subtree(copy=False):
                 if p.b:
                     n_nodes += 1

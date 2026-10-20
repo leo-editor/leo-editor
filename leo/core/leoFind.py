@@ -515,7 +515,7 @@ class LeoFind:
                 # Unmarking all nodes is convenient.
                 for p in c.all_unique_positions():
                     if p.isMarked():
-                        c.clearMarked(p)
+                        c.clearMarked(p)  # Calls a hook.
                 n = root.numberOfChildren()
                 root.b = f"# Found {n} marked node{g.plural(n)}"
                 u.redraw(root)
