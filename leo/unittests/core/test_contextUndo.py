@@ -34,9 +34,10 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.2: *3* TestContextUndo.test_nested_context_composes_helpers_after_inner_exit
     def test_nested_context_composes_helpers_after_inner_exit(self):
-        _c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
         p.b = 'original'
-        with u:
+        with c.undoer as u:
             u.set_command_name('outer')
             with u:
                 u.set_command_name('inner')
@@ -72,10 +73,10 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.4: *3* TestContextUndo.test_multiple_insert_helpers_share_one_bead
     def test_multiple_insert_helpers_share_one_bead(self):
-        c, u = self.c, self.c.undoer
-        p = c.p.copy()
+        c = self.c
+        p = c.p
         before = tuple(v for v in c.all_unique_nodes())
-        with u:
+        with c.undoer as u:
             u.set_command_name('two inserts')
             first = u.insert_node(p)
             second = u.insert_node(first)
@@ -88,13 +89,14 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.5: *3* TestContextUndo.test_action_helpers_leave_redraw_to_caller
     def test_action_helpers_leave_redraw_to_caller(self):
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
         with (
             patch.object(c, 'redraw') as redraw,
             patch.object(c, 'redrawAndEdit') as edit,
             patch.object(c, 'redraw_after_head_changed') as headline,
         ):
-            with u:
+            with c.undoer as u:
                 u.set_command_name('composed actions')
                 inserted = u.insert_node(p)
                 u.change_headline(inserted, 'inserted')
@@ -152,13 +154,14 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.8: *3* TestContextUndo.test_headline_refresh_replays_without_full_redraw
     def test_headline_refresh_replays_without_full_redraw(self):
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
         old_head = p.h
         with (
             patch.object(c, 'redraw_after_head_changed') as headline,
             patch.object(c, 'redraw') as redraw,
         ):
-            with u:
+            with c.undoer as u:
                 u.set_command_name('headline')
                 u.change_headline(p, 'new headline')
                 u.redraw_after_head_changed()
@@ -175,14 +178,15 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.9: *3* TestContextUndo.test_noop_context_preserves_redo
     def test_noop_context_preserves_redo(self):
-        _c, p, u = self.c, self.c.p, self.c.undoer
-        with u:
+        c = self.c
+        p = c.p
+        with c.undoer as u:
             u.set_command_name('edit')
             u.set_body(p, 'changed')
             u.redraw(p)
         u.undo()
         history = u.beads[:]
-        with u:
+        with c.undoer as u:
             u.set_command_name('noop')
             u.set_body(p, p.b)
             u.redraw(p)
@@ -195,14 +199,15 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.10: *3* TestContextUndo.test_new_edit_discards_redo
     def test_new_edit_discards_redo(self):
-        _c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
         for text in ('one', 'two'):
-            with u:
+            with c.undoer as u:
                 u.set_command_name('edit')
                 u.set_body(p, text)
                 u.redraw(p)
         u.undo()
-        with u:
+        with c.undoer as u:
             u.set_command_name('branch')
             u.set_body(p, 'three')
             u.redraw(p)
@@ -240,7 +245,9 @@ class TestContextUndo(LeoUnitTest):
 
         for initially_changed in (False, True):
             with self.subTest(initially_changed=initially_changed):
-                c, p, u = self.c, self.c.p, self.c.undoer
+                c = self.c
+                p = c.p
+                u = c.undoer
                 p.b = 'before'
                 u.clearUndoState()
                 c.changed = initially_changed
@@ -261,7 +268,7 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.13: *3* TestContextUndo.test_set_body_snapshots_target_and_redirties_ancestors
     def test_set_body_snapshots_target_and_redirties_ancestors(self):
-        c, u = self.c, self.c.undoer
+        c = self.c
         parent = c.p
         parent.h = '@file example.py'
         child = parent.insertAsLastChild()
@@ -269,7 +276,7 @@ class TestContextUndo(LeoUnitTest):
         parent.b = 'parent'
         child.setDirty()
         parent.v.clearDirty()
-        with u:
+        with c.undoer as u:
             u.set_command_name('edit child')
             u.set_body(child, 'child after')
             u.redraw(child)
@@ -399,10 +406,12 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.20: *3* TestContextUndo.test_nested_bulk_and_action_helpers_make_one_record
     def test_nested_bulk_and_action_helpers_make_one_record(self):
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         p.b = 'before'
         with u.change_outline('bulk'):
-            with u:
+            with c.undoer as u:
                 u.set_command_name('inner')
                 u.set_body(p, 'after')
                 clone = u.clone_node(p)
@@ -465,12 +474,13 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.24: *3* TestContextUndo.test_replay_exception_resets_flags_and_keeps_pointer
     def test_replay_exception_resets_flags_and_keeps_pointer(self):
-        u, p = self.c.undoer, self.c.p
+        c = self.c
+        p = c.p
 
         def fail():
             raise RuntimeError('replay')
 
-        with u:
+        with c.undoer as u:
             u.set_command_name('failure')
             u.set_body(p, 'changed')
             u.redraw(p)
@@ -588,8 +598,9 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.31: *3* TestContextUndo.test_legacy_calls_inside_new_context_are_grouped
     def test_legacy_calls_inside_new_context_are_grouped(self):
-        _c, p, u = self.c, self.c.p, self.c.undoer
-        with u:
+        c = self.c
+        p = c.p
+        with c.undoer as u:
             u.set_command_name('new group')
             u.beforeChangeGroup(p, 'legacy subgroup')
             bunch = u.beforeChangeBody(p)
@@ -603,8 +614,9 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.32: *3* TestContextUndo.test_new_context_with_legacy_group_and_only_new_children
     def test_new_context_with_legacy_group_and_only_new_children(self):
-        _c, p, u = self.c, self.c.p, self.c.undoer
-        with u:
+        c = self.c
+        p = c.p
+        with c.undoer as u:
             u.set_command_name('outer')
             u.beforeChangeGroup(p, 'inner')
             u.set_body(p, 'inner')
@@ -670,7 +682,7 @@ class TestContextUndo(LeoUnitTest):
     def test_randomized_composite_operations_restore_graph(self):
         import random
 
-        c, u = self.c, self.c.undoer
+        c = self.c
         rng = random.Random(4996)
 
         def graph():
@@ -690,7 +702,7 @@ class TestContextUndo(LeoUnitTest):
             positions = list(c.all_positions())
             p = rng.choice(positions)
             c.selectPosition(p)
-            with u:
+            with c.undoer as u:
                 u.set_command_name(f'composite {i}')
                 action = rng.choice(('insert', 'clone', 'delete', 'body', 'mark'))
                 if action == 'insert':
