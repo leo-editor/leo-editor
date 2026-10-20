@@ -3076,12 +3076,12 @@ class Undoer:
         return u.beads[n]
 
     # @+node:ekr.20060127113243: *4* u.pushBead
-    def pushBead(self, bunch: g.Bunch) -> None:
+    def pushBead(self, bunch: g.Bunch | UndoBead | None) -> None:
         u = self
         if u.undoBead is not None and not isinstance(bunch, UndoBead):
 
             def replay(helper):
-                u.setIvarsFromBunch(bunch)
+                u.setIvarsFromBunch(bunch)  # type:ignore
                 helper()
 
             def push_bead_redoer():
