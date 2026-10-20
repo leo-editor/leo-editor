@@ -1759,8 +1759,8 @@ class Undoer:
         trailing: int,  # Number of matching leading & trailing lines.
         oldMidLines: list[str],
         newMidLines: list[str],  # Lists of unmatched lines.
-        oldNewlines: list[str],
-        newNewlines: list[str],  # Number of trailing newlines.
+        oldNewlines: int,
+        newNewlines: int,
         tag: str = "undo",  # "undo" or "redo"
         undoType: str | None = None,
     ) -> None:
