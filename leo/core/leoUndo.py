@@ -2731,6 +2731,7 @@ class Undoer:
         Prefer u.change_node for actions affecting only a single node.
 
         This method scans the entire outline, but creates minimal undo/redo data.
+        Despite the scan, this method is fast, taking about 0.04 sec. to scan LeoPyRef.leo.
 
         u.restore_node does the heavy lifting of restoring all data.
         """
