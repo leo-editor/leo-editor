@@ -3709,7 +3709,7 @@ class KeyHandlerClass:
                 c.bodyWantsFocus()
         return 'found'
 
-    # @+node:vitalije.20170708161511.1: *6* k.handleInputShortcut ???
+    # @+node:vitalije.20170708161511.1: *6* k.handleInputShortcut
     def handleInputShortcut(self, event: LeoKeyEvent, stroke: Stroke) -> None:
         c, k, p, u = self.c, self, self.c.p, self.c.undoer
         k.clearState()
