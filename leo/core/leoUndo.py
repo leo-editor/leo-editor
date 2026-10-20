@@ -16,7 +16,7 @@ from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from copy import deepcopy
 import warnings
-from typing import Any, Self, TYPE_CHECKING
+from typing import cast, Any, Self, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoFileCommands import FastRead
 from leo.core.leoNodes import Position, VNode
@@ -328,7 +328,7 @@ class Undoer:
     # @+node:ekr.20031218072017.3606: *3* u.__init__
     def __init__(self, c: Cmdr) -> None:
         self.c = c
-        self.p: Position | None = None  # The position/node being operated upon for undo and redo.
+        self.p = cast(Position, None)  # The position/node being operated upon for undo and redo.
         self.granularity = None  # Set in reloadSettings.
         self.max_undo_stack_size = c.config.getInt('max-undo-stack-size') or 0
         # State ivars...
@@ -629,7 +629,7 @@ class Undoer:
         u.pushBead(bunch)
 
     # @+node:ekr.20050424161505: *5* u.afterClearRecentFiles
-    def afterClearRecentFiles(self, bunch: g.Bunch) -> None:
+    def afterClearRecentFiles(self, bunch: g.Bunch) -> g.Bunch:
         u = self
         u.deprecated()
         bunch.newRecentFiles = g.app.config.recentFiles[:]
@@ -901,7 +901,7 @@ class Undoer:
         return bunch
 
     # @+node:ekr.20230721130319.1: *5* u.beforeChangeTree
-    def beforeChangeTree(self, p: Position) -> None:
+    def beforeChangeTree(self, p: Position) -> g.Bunch:
         u = self
         u.deprecated()
         c = u.c
