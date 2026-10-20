@@ -872,6 +872,7 @@ class GitDiffController:
                 self.make_diff_outlines(c1, c2, fn, rev1=branch1, rev2=branch2)
                 self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
             self.finish()
+            u.redraw()
 
     # @+node:ekr.20180507212821.1: *4* gdc.diff_two_revs
     def diff_two_revs(self, rev1: str = 'HEAD', rev2: str = '', path: str | None = None) -> None:
@@ -911,6 +912,7 @@ class GitDiffController:
                     g.es_print(f"diff: {i} files", color='blue')
 
             self.finish()
+            u.redraw()
             g.es_print(f"done! diffed: {n} files")
 
     # @+node:ekr.20170806094320.12: *4* gdc.git_diff & helper
@@ -952,6 +954,7 @@ class GitDiffController:
             for fn in files:
                 self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
             self.finish()
+            u.redraw()
             return True
 
     # @+node:ekr.20230705082614.1: *4* gdc.node_history & helpers
@@ -1883,6 +1886,7 @@ class GitDiffController:
                     g.es_print(f"diff: {i} files", color='blue')
 
             self.finish()
+            u.redraw()
             g.es_print(f"done! diffed: {n} files")
 
     # @-others
