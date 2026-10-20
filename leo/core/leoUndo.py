@@ -3039,7 +3039,7 @@ class Undoer:
     def dumpBead(self, n: int) -> str:  # pragma: no cover
         u = self
         if n < 0 or n >= len(u.beads):
-            return 'no bead: n = ', n
+            return f"no bead: {n=}"
         # bunch = u.beads[n]
         result = []
         result.append('-' * 10)
