@@ -453,7 +453,6 @@ class Demo:
         c = self.c
         p = c.p
         u = c.undoer
-        # undoType = 'Typing'
         tree = c.frame.tree
         p.h = ''
         c.editHeadline()
