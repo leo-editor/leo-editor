@@ -380,7 +380,10 @@ class Undoer:
         # Init status.
         u.redoing = True
         u.groupCount = 0
+
+        # Dispatch.
         try:
+            # Leo *must* support both old and new beads "forever"!
             if isinstance(obj, UndoBead):
                 obj.redo()
             elif u.redoHelper:
@@ -418,6 +421,7 @@ class Undoer:
 
         # Dispatch.
         try:
+            # Leo *must* support both old and new beads "forever"!
             if isinstance(obj, UndoBead):
                 obj.undo()
             elif u.undoHelper:
