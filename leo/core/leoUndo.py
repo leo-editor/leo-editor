@@ -1010,18 +1010,6 @@ class Undoer:
         u.pushBead(bunch)
         return bunch
 
-    # @+node:ekr.20050318085432.2: *5* u.createCommonBunch
-    def createCommonBunch(self, p: Position) -> g.Bunch:
-        """Return a bunch containing all common undo info.
-        This is mostly the info for recreating an empty node at position p."""
-        c = self.c
-        w = c.frame.body.wrapper
-        return g.Bunch(
-            oldMarked=p and p.isMarked(),
-            oldSel=w.getSelectionRange() if w else None,
-            p=p.copy() if p else None,
-        )
-
     # @+node:ekr.20110519074734.6092: *4* u.redo helpers (deprecated)
     # @+node:ekr.20191213085226.1: *5*  u.reloadHelper (do nothing)
     def redoHelper(self) -> None:
@@ -1843,6 +1831,21 @@ class Undoer:
             w.setYScrollPosition(u.yview)
 
     # @+node:ekr.20031218072017.3608: *3* u: Externally visible entries
+    # @+node:ekr.20050318085432.2: *4* u.createCommonBunch
+    def createCommonBunch(self, p: Position) -> g.Bunch:
+        """
+        Return a bunch containing all common undo info.
+
+        This method is *not* deprecated.
+        """
+        c = self.c
+        w = c.frame.body.wrapper
+        return g.Bunch(
+            oldMarked=p and p.isMarked(),
+            oldSel=w.getSelectionRange() if w else None,
+            p=p.copy() if p else None,
+        )
+
     # @+node:ekr.20261018092627.1: *4* u: Legacy entries
     # @+node:ekr.20031218072017.3610: *5* u.canRedo & canUndo
     # Translation does not affect these routines.
