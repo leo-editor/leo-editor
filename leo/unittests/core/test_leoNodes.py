@@ -575,10 +575,9 @@ class TestNodes(LeoUnitTest):
         moved = c.p
         self.assertEqual(moved.h, 'A')
         self.assertEqual(moved.back(), p)
-        c.undoer.undo()
-        c.undoer.redo()
-        c.undoer.undo()
-        c.undoer.redo()
+        for _i in range(3):
+            c.undoer.undo()
+            c.undoer.redo()
         moved.doDelete(newNode=p)
 
     # @+node:ekr.20210830095545.49: *4* TestNodes.test_move_outline_right
