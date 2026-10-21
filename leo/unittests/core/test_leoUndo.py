@@ -300,11 +300,13 @@ class TestUndo(LeoUnitTest):
         self.assertEqual([p.h for p in p.subtree()], ['changed - node 1', 'node 2', 'node 3'])
         # Move the selection and undo the headline change
         c.selectPosition(node1.copy().moveToNext())
-        c.undoer.undo()
-        # The undo should restore the 'node 1' headline string
-        self.assertEqual([p.h for p in p.subtree()], ['node 1', 'node 2', 'node 3'])
-        # The undo should select the edited headline.
-        self.assertEqual(c.p, node1)
+        for _i in range(3):
+            c.undoer.undo()
+            # The undo should restore the 'node 1' headline string
+            self.assertEqual([p.h for p in p.subtree()], ['node 1', 'node 2', 'node 3'])
+            # The undo should select the edited headline.
+            self.assertEqual(c.p, node1)
+            c.undoer.redo()
 
     # @+node:ekr.20210906172626.10: *3* TestUndo.test_extract_test
     def test_extract_test(self):
@@ -367,12 +369,13 @@ class TestUndo(LeoUnitTest):
             oldMarked = p.isMarked()
             w.setAllText(newText)  # For the new assert in w.updateAfterTyping.
             u.doTyping(p, undo_type='typing', oldText=oldText, newText=newText)
-            u.undo()
-            self.assertEqual(p.b, oldText)
-            self.assertEqual(p.isMarked(), oldMarked)
-            u.redo()
-            self.assertEqual(p.b, newText)
-            self.assertEqual(p.isMarked(), oldMarked)
+            for _i in range(3):
+                u.undo()
+                self.assertEqual(p.b, oldText)
+                self.assertEqual(p.isMarked(), oldMarked)
+                u.redo()
+                self.assertEqual(p.b, newText)
+                self.assertEqual(p.isMarked(), oldMarked)
 
     # @+node:ekr.20210906172626.17: *3* TestUndo.test_undo_group
     def test_undo_group(self):
@@ -401,9 +404,10 @@ class TestUndo(LeoUnitTest):
         c.convertAllBlanks()
         c.pasteOutline()
         c.convertAllBlanks()
-        c.undoer.undo()
-        c.undoer.redo()
-        self.assertEqual(original.b, original_s)
+        for _i in range(3):
+            c.undoer.undo()
+            c.undoer.redo()
+            self.assertEqual(original.b, original_s)
 
     # @+node:ekr.20250625044932.1: *3* TestUndo.test_undo_group_after_move
     def test_undo_group_after_move(self):

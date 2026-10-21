@@ -647,10 +647,9 @@ class TestNodes(LeoUnitTest):
         newVnodes = [p2.v for p2 in c.p.self_and_subtree()]
         for v in newVnodes:
             assert v not in oldVnodes
-        c.undoer.undo()
-        c.undoer.redo()
-        c.undoer.undo()
-        c.undoer.redo()
+        for _i in range(3):
+            c.undoer.undo()
+            c.undoer.redo()
 
     # @+node:ekr.20210830095545.53: *4* TestNodes.test_promote
     def test_promote(self):
@@ -688,20 +687,21 @@ class TestNodes(LeoUnitTest):
         self.assertEqual(p.next().h, 'child 1')
         self.assertEqual(p.next().next().h, 'child 2')
         self.assertEqual(p.next().next().next().h, 'C')
-        c.undoer.undo()
-        p = c.p
-        self.assertEqual(p, p3)
-        self.assertEqual(p.back(), p2)
-        self.assertEqual(p.next(), p6)
-        self.assertEqual(p.firstChild().h, 'child 1')
-        self.assertEqual(p.firstChild().next().h, 'child 2')
-        c.undoer.redo()
-        p = c.p
-        self.assertEqual(p, p3)
-        self.assertEqual(p.h, 'B')
-        self.assertEqual(p.next().h, 'child 1')
-        self.assertEqual(p.next().next().h, 'child 2')
-        self.assertEqual(p.next().next().next().h, 'C')
+        for _i in range(3):
+            c.undoer.undo()
+            p = c.p
+            self.assertEqual(p, p3)
+            self.assertEqual(p.back(), p2)
+            self.assertEqual(p.next(), p6)
+            self.assertEqual(p.firstChild().h, 'child 1')
+            self.assertEqual(p.firstChild().next().h, 'child 2')
+            c.undoer.redo()
+            p = c.p
+            self.assertEqual(p, p3)
+            self.assertEqual(p.h, 'B')
+            self.assertEqual(p.next().h, 'child 1')
+            self.assertEqual(p.next().next().h, 'child 2')
+            self.assertEqual(p.next().next().next().h, 'C')
 
     # @+node:ekr.20220708131426.1: *3* TestNodes: Getters
     # @+node:ekr.20220307043449.1: *4* TestNodes.test_p_getters
