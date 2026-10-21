@@ -3118,6 +3118,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         isLeo = g.match(s, 0, g.app.prolog_prefix_string)
         if not isLeo:
             return
+        ### Not covered by unit test.
+        g.trace(g.callers())
         c.selectPosition(p)
         # Paste the node after the presently selected node.
         pasted = c.fileCommands.getLeoOutlineFromClipboard(s)
@@ -3223,6 +3225,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         urls = md.urls()
         if not urls:
             return
+        ### Not covered by unit test.
+        g.trace(g.callers())
         u.beforeChangeGroup(c.p, undoType)
         changed = False
         for url in urls:
@@ -3271,6 +3275,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         Insert s in an @file, @auto or @edit node after p.
         If fn is a .leo file, insert a node containing its top-level nodes as children.
         """
+        ### Not covered by unit test.
+        g.trace(g.callers())
         c = self.c
         if self.isLeoFile(fn, s) and not self.was_control_drag:
             g.openWithFileName(fn, old_c=c)
@@ -3458,6 +3464,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         """Insert fn as an @path node after p."""
         c = self.c
         u, undoType = c.undoer, 'Drag Directory'
+        ### Not covered by unit test.
+        g.trace(g.callers())
         undoData = u.beforeInsertNode(p, pasteAsClone=False, copiedBunchList=[])
         if p.hasChildren() and p.isExpanded():
             p2 = p.insertAsNthChild(0)
@@ -3476,6 +3484,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         s = path.strip()
         if not s:
             return False
+        ### Not covered by unit test.
+        g.trace(g.callers())
         undoData = u.beforeInsertNode(p, pasteAsClone=False, copiedBunchList=[])
         if p.hasChildren() and p.isExpanded():
             p2 = p.insertAsNthChild(0)

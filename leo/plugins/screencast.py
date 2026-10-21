@@ -441,6 +441,8 @@ class ScreenCastController:
         """Simulate typing in the headline.
         n1 and n2 indicate the range of delays between keystrokes.
         """
+        ### Not covered by unit test.
+        g.trace(g.callers())
         m = self
         c = m.c
         p = c.p
