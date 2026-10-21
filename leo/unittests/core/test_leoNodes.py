@@ -595,10 +595,9 @@ class TestNodes(LeoUnitTest):
         moved = c.p
         self.assertEqual(moved.h, 'B')
         self.assertEqual(moved.parent(), p2)
-        c.undoer.undo()
-        c.undoer.redo()
-        c.undoer.undo()
-        c.undoer.redo()
+        for _i in range(3):
+            c.undoer.undo()
+            c.undoer.redo()
 
     # @+node:ekr.20210830095545.50: *4* TestNodes.test_move_outline_up
     def test_move_outline_up(self):
@@ -619,10 +618,9 @@ class TestNodes(LeoUnitTest):
         self.assertEqual(moved.back().h, 'A')
         self.assertEqual(moved.next().h, 'B')
         self.assertEqual(moved.back(), p2)
-        c.undoer.undo()
-        c.undoer.redo()
-        c.undoer.undo()
-        c.undoer.redo()
+        for i in range(3):
+            c.undoer.undo()
+            c.undoer.redo()
 
     # @+node:ekr.20210830095545.51: *4* TestNodes.test_paste_node
     def test_paste_node(self):
@@ -950,11 +948,13 @@ class TestNodes(LeoUnitTest):
 
         # Change the tree.
         child_c._relinkAsCloneOf(child_b)
-        # self.dump_tree('Before...')
-        u.undo()
-        # self.dump_tree('After...')
-        self.assertTrue(child_b.isCloned())
-        self.assertFalse(child_c.isCloned())
+        for i_ in range(3):
+            # self.dump_tree('Before...')
+            u.undo()
+            # self.dump_tree('After...')
+            self.assertTrue(child_b.isCloned())
+            self.assertFalse(child_c.isCloned())
+            u.redo()
 
     # @+node:ekr.20210830095545.36: *4* TestNodes.test_p_setBodyString
     def test_p_setBodyString(self):
