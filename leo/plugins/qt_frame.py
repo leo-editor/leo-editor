@@ -3052,19 +3052,20 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
     # @+node:ekr.20110605121601.18365: *4* LeoQTreeWidget.dropEvent & helpers
     def dropEvent(self, ev: QEvent) -> None:
         """Handle a drop event in the QTreeWidget."""
+        g.app.dragging = False
         if not ev:
             return
         md = ev.mimeData()
         if not md:
             g.trace('no mimeData!')
             return
+        g.trace(f"{md.urls()=}")  ###
         try:
             mods = ev.modifiers()
             self.was_alt_drag = bool(mods & KeyboardModifier.AltModifier)
             self.was_control_drag = bool(mods & KeyboardModifier.ControlModifier)
         except Exception:  # Defensive.
             g.es_exception()
-            g.app.dragging = False
             return
         c, tree = self.c, self.c.frame.tree
         p = None
@@ -3081,14 +3082,11 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         ev.setDropAction(DropAction.IgnoreAction)
         ev.accept()
         if g.doHook("outlinedrop", c=c, p=p, dropevent=ev, formats=formats):
-            # A plugin handled the drop.
-            pass
+            return  # A plugin handled the drop.
+        if md.hasUrls():
+            self.urlDrop(md, p)
         else:
-            if md.hasUrls():
-                self.urlDrop(md, p)
-            else:
-                self.nodeDrop(md, p)
-        g.app.dragging = False
+            self.nodeDrop(md, p)
 
     # @+node:ekr.20110605121601.18366: *5* LeoQTreeWidget.nodeDrop & helpers
     def nodeDrop(self, md: QWidget, p: Position) -> None:
@@ -3160,50 +3158,25 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         c = self.c
         u = c.undoer
         c.selectPosition(p1)
-        if as_child or p2.hasChildren() and p2.isExpanded():
-            # Attempt to move p1 to the first child of p2.
-            # parent = p2
-
-            def move(p1: Position, p2: Position) -> Position:
-                if cloneDrag:
-                    p1 = p1.clone()
-                p1.moveToNthChildOf(p2, 0)
-                p1.setDirty()
-                return p1
-
-        else:
-            # Attempt to move p1 after p2.
-            # parent = p2.parent()
-
-            def move(p1: Position, p2: Position) -> Position:
-                if cloneDrag:
-                    p1 = p1.clone()
-                p1.moveAfter(p2)
-                p1.setDirty()
-                return p1
-
-        ok = (
-            # 2011/10/03: Major bug fix.
-            c.checkDrag(p1, p2) and c.checkMoveWithParentWithWarning(p1, p2, True)
-        )
-        if ok:
-            undoData = u.beforeMoveNode(p1)
+        ok = c.checkDrag(p1, p2) and c.checkMoveWithParentWithWarning(p1, p2, True)
+        g.trace()  ###
+        if not ok:
+            return
+        move_to_child = as_child or p2.hasChildren() and p2.isExpanded()
+        with u.change_outline('Drag'):
             p1.setDirty()
-            p1 = move(p1, p2)
+            if cloneDrag:
+                p1 = p1.clone()
+            if move_to_child:
+                p1.moveToNthChildOf(p2, 0)
+            else:
+                p1.moveAfter(p2)
+            p1.setDirty()
             if cloneDrag:
                 # Set dirty bits for ancestors of *all* cloned nodes.
                 for z in p1.self_and_subtree():
                     z.setDirty()
-            c.setChanged()
-            u.afterMoveNode(p1, 'Drag', undoData)
-            if (
-                not as_child
-                or p2.isExpanded()
-                or c.config.getBool("drag-alt-drag-expands") is not False
-            ):
-                c.redraw(p1)
-            else:
-                c.redraw(p2)
+            u.redraw(p1)
 
     # @+node:ekr.20110605121601.18383: *6* LeoQTreeWidget.parseText
     def parseText(self, md: QWidget) -> tuple[str, str]:
