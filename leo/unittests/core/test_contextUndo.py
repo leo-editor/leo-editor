@@ -24,13 +24,15 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.1: *3* TestContextUndo.cycles
     def cycles(self, before, after):
+        c = self.c
+        u = c.undoer
         for _ in range(3):
-            self.c.undoer.undo()
+            u.undo()
             before()
-            self.assertEqual(self.c.checkOutline(), 0)
-            self.c.undoer.redo()
+            self.assertEqual(c.checkOutline(), 0)
+            u.redo()
             after()
-            self.assertEqual(self.c.checkOutline(), 0)
+            self.assertEqual(c.checkOutline(), 0)
 
     # @+node:ekr.20261014103254.2: *3* TestContextUndo.test_nested_context_composes_helpers_after_inner_exit
     def test_nested_context_composes_helpers_after_inner_exit(self):

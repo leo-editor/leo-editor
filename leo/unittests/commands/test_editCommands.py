@@ -4289,9 +4289,9 @@ class TestEditCommands(LeoUnitTest):
         c.insertHeadline()
         for _i in range(3):
             self.assertEqual(u.undoMenuLabel, 'Undo Insert Node')
-            c.undoer.undo()
+            u.undo()
             self.assertEqual(u.redoMenuLabel, 'Redo Insert Node')
-            c.undoer.redo()
+            u.redo()
 
     # @+node:ekr.20210905064816.20: *4* test_inserting_a_new_node_draws_the_screen_exactly_once
     def test_inserting_a_new_node_draws_the_screen_exactly_once(self):
@@ -4383,7 +4383,7 @@ class TestEditCommands(LeoUnitTest):
         expected = h + paste
         for i in range(3):
             self.assertEqual(p.h, expected)
-            self.assertEqual(c.undoer.undoMenuLabel, 'Undo Typing')
+            self.assertEqual(u.undoMenuLabel, 'Undo Typing')
             u.undo()
             self.assertEqual(p.h, h)
             u.redo()
@@ -4407,7 +4407,7 @@ class TestEditCommands(LeoUnitTest):
         expected = h[0] + paste + h[2:]
         for i in range(3):
             self.assertEqual(p.h, expected)
-            self.assertEqual(c.undoer.undoMenuLabel, 'Undo Typing')
+            self.assertEqual(u.undoMenuLabel, 'Undo Typing')
             u.undo()
             self.assertEqual(p.h, h)
             u.redo()
@@ -4489,6 +4489,7 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20210905064816.26: *4* test_selecting_new_node_retains_paste_in_headline
     def test_selecting_new_node_retains_paste_in_headline(self):
         c = self.c
+        u = c.undoer
         h = 'Test headline abc'
         p = c.rootPosition().insertAfter()
         p.h = h
@@ -4505,9 +4506,9 @@ class TestEditCommands(LeoUnitTest):
         c.selectPosition(p.visBack(c))
         self.assertEqual(p.h, h + paste)
         for i in range(3):
-            c.undoer.undo()
+            u.undo()
             self.assertEqual(p.h, h)
-            c.undoer.redo()
+            u.redo()
             self.assertEqual(p.h, h + paste)
 
     # @+node:ekr.20210905064816.27: *4* test_selecting_new_node_retains_typing_in_headline
@@ -4531,7 +4532,7 @@ class TestEditCommands(LeoUnitTest):
         expected = h + 'XYZ'
         for _i in range(3):
             self.assertEqual(p.h, expected)
-            self.assertEqual(c.undoer.undoMenuLabel, 'Undo Typing')
+            self.assertEqual(u.undoMenuLabel, 'Undo Typing')
             u.undo()
             self.assertEqual(p.h, h)
             self.assertEqual(u.redoMenuLabel, 'Redo Typing')
@@ -4627,7 +4628,7 @@ class TestEditCommands(LeoUnitTest):
         expected = h + 'XYZ'
         for i in range(3):
             self.assertEqual(p.h, expected)
-            self.assertEqual(c.undoer.undoMenuLabel, 'Undo Typing')
+            self.assertEqual(u.undoMenuLabel, 'Undo Typing')
             u.undo()
             self.assertEqual(p.h, h)
             self.assertEqual(u.redoMenuLabel, 'Redo Typing')
@@ -4653,6 +4654,7 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20210905064816.30: *4* test_undoing_insert_node_restores_previous_node_s_body_text
     def test_undoing_insert_node_restores_previous_node_s_body_text(self):
         c = self.c
+        u = c.undoer
         h = 'Test headline abc'
         p = c.rootPosition().insertAfter()
         p.h = h
@@ -4662,9 +4664,9 @@ class TestEditCommands(LeoUnitTest):
         self.assertEqual(p.b, body)
         c.insertHeadline()
         for _i in range(3):
-            c.undoer.undo()
+            u.undo()
             self.assertEqual(p.b, body)
-            c.undoer.redo()
+            u.redo()
 
     # @-others
 

@@ -465,6 +465,7 @@ class TestNodes(LeoUnitTest):
     # @+node:ekr.20210830095545.45: *4* TestNodes.test_demote
     def test_demote(self):
         c, p = self.c, self.c.p
+        u = c.undoer
         p2 = p.insertAsNthChild(0)
         p2.setHeadString('A')
         p3 = p.insertAsNthChild(1)
@@ -482,22 +483,22 @@ class TestNodes(LeoUnitTest):
         assert not p.next()
         self.assertEqual(p.firstChild().h, 'C')
         self.assertEqual(p.firstChild().next().h, 'D')
-        c.undoer.undo()
+        u.undo()
         p = c.p
         self.assertEqual(p, p3)
         self.assertEqual(p.back(), p2)
         self.assertEqual(p.next(), p4)
-        c.undoer.redo()
+        u.redo()
         self.assertEqual(p, p3)
         self.assertEqual(p.h, 'B')
         assert not p.next()
         self.assertEqual(p.firstChild().h, 'C')
         self.assertEqual(p.firstChild().next().h, 'D')
-        c.undoer.undo()
+        u.undo()
         p = c.p
         self.assertEqual(p.back(), p2)
         self.assertEqual(p.next(), p4)
-        c.undoer.redo()
+        u.redo()
         self.assertEqual(p, p3)
         self.assertEqual(p.h, 'B')
         assert not p.next()
@@ -529,6 +530,7 @@ class TestNodes(LeoUnitTest):
     # @+node:ekr.20210830095545.47: *4* TestNodes.test_move_outline_down
     def test_move_outline_down(self):
         c, p = self.c, self.c.p
+        u = c.undoer
         p2 = p.insertAsNthChild(0)
         p2.setHeadString('A')
         p3 = p.insertAsNthChild(1)
@@ -545,28 +547,21 @@ class TestNodes(LeoUnitTest):
         self.assertEqual(moved.back().h, 'C')
         self.assertEqual(moved.next().h, 'D')
         self.assertEqual(moved.next(), p5)
-        c.undoer.undo()
-        moved = c.p
-        self.assertEqual(moved.back(), p2)
-        self.assertEqual(moved.next(), p4)
-        c.undoer.redo()
-        moved = c.p
-        self.assertEqual(moved.h, 'B')
-        self.assertEqual(moved.back().h, 'C')
-        self.assertEqual(moved.next().h, 'D')
-        c.undoer.undo()
-        moved = c.p
-        self.assertEqual(moved.back(), p2)
-        self.assertEqual(moved.next(), p4)
-        c.undoer.redo()
-        moved = c.p
-        self.assertEqual(moved.h, 'B')
-        self.assertEqual(moved.back().h, 'C')
-        self.assertEqual(moved.next().h, 'D')
+        for _i in range(3):
+            u.undo()
+            moved = c.p
+            self.assertEqual(moved.back(), p2)
+            self.assertEqual(moved.next(), p4)
+            u.redo()
+            moved = c.p
+            self.assertEqual(moved.h, 'B')
+            self.assertEqual(moved.back().h, 'C')
+            self.assertEqual(moved.next().h, 'D')
 
     # @+node:ekr.20210830095545.48: *4* TestNodes.test_move_outline_left
     def test_move_outline_left(self):
         c, p = self.c, self.c.p
+        u = c.undoer
         p2 = p.insertAsNthChild(0)
         p2.setHeadString('A')
         p.expand()
@@ -576,13 +571,14 @@ class TestNodes(LeoUnitTest):
         self.assertEqual(moved.h, 'A')
         self.assertEqual(moved.back(), p)
         for _i in range(3):
-            c.undoer.undo()
-            c.undoer.redo()
+            u.undo()
+            u.redo()
         moved.doDelete(newNode=p)
 
     # @+node:ekr.20210830095545.49: *4* TestNodes.test_move_outline_right
     def test_move_outline_right(self):
         c, p = self.c, self.c.p
+        u = c.undoer
         p2 = p.insertAsNthChild(0)
         p2.setHeadString('A')
         p3 = p.insertAsNthChild(1)
@@ -596,12 +592,13 @@ class TestNodes(LeoUnitTest):
         self.assertEqual(moved.h, 'B')
         self.assertEqual(moved.parent(), p2)
         for _i in range(3):
-            c.undoer.undo()
-            c.undoer.redo()
+            u.undo()
+            u.redo()
 
     # @+node:ekr.20210830095545.50: *4* TestNodes.test_move_outline_up
     def test_move_outline_up(self):
         c, p = self.c, self.c.p
+        u = c.undoer
         p2 = p.insertAsNthChild(0)
         p2.setHeadString('A')
         p3 = p.insertAsNthChild(1)
@@ -619,12 +616,13 @@ class TestNodes(LeoUnitTest):
         self.assertEqual(moved.next().h, 'B')
         self.assertEqual(moved.back(), p2)
         for i in range(3):
-            c.undoer.undo()
-            c.undoer.redo()
+            u.undo()
+            u.redo()
 
     # @+node:ekr.20210830095545.51: *4* TestNodes.test_paste_node
     def test_paste_node(self):
         c, p = self.c, self.c.p
+        u = c.undoer
         child = p.insertAsNthChild(0)
         child.setHeadString('child')
         child2 = p.insertAsNthChild(1)
@@ -648,12 +646,13 @@ class TestNodes(LeoUnitTest):
         for v in newVnodes:
             assert v not in oldVnodes
         for _i in range(3):
-            c.undoer.undo()
-            c.undoer.redo()
+            u.undo()
+            u.redo()
 
     # @+node:ekr.20210830095545.53: *4* TestNodes.test_promote
     def test_promote(self):
         c, p = self.c, self.c.p
+        u = c.undoer
         p2 = p.insertAsNthChild(0)
         p2.setHeadString('A')
         p3 = p.insertAsNthChild(1)
@@ -673,14 +672,14 @@ class TestNodes(LeoUnitTest):
         self.assertEqual(p.next().h, 'child 1')
         self.assertEqual(p.next().next().h, 'child 2')
         self.assertEqual(p.next().next().next().h, 'C')
-        c.undoer.undo()
+        u.undo()
         p = c.p
         self.assertEqual(p, p3)
         self.assertEqual(p.back(), p2)
         self.assertEqual(p.next(), p6)
         self.assertEqual(p.firstChild().h, 'child 1')
         self.assertEqual(p.firstChild().next().h, 'child 2')
-        c.undoer.redo()
+        u.redo()
         p = c.p
         self.assertEqual(p, p3)
         self.assertEqual(p.h, 'B')
@@ -688,14 +687,14 @@ class TestNodes(LeoUnitTest):
         self.assertEqual(p.next().next().h, 'child 2')
         self.assertEqual(p.next().next().next().h, 'C')
         for _i in range(3):
-            c.undoer.undo()
+            u.undo()
             p = c.p
             self.assertEqual(p, p3)
             self.assertEqual(p.back(), p2)
             self.assertEqual(p.next(), p6)
             self.assertEqual(p.firstChild().h, 'child 1')
             self.assertEqual(p.firstChild().next().h, 'child 2')
-            c.undoer.redo()
+            u.redo()
             p = c.p
             self.assertEqual(p, p3)
             self.assertEqual(p.h, 'B')
