@@ -62,7 +62,12 @@ class TestEditCommands(LeoUnitTest):
         # Run the command!
         event = LeoKeyEvent(c, w=w)  # Leo 6.8.9.
         c.doCommandByName(command_name, event)
-        self.assertEqual(self.tempNode.b, self.after_p.b, msg=command_name)
+        if 0:  # Good for debugging.
+            print(self.tempNode.b == self.after_p.b)
+            g.printObj(self.tempNode.b)
+            g.printObj(self.after_p.b)
+        else:
+            self.assertEqual(self.tempNode.b, self.after_p.b, msg=command_name)
 
     # @+node:ekr.20201201084621.1: *3* TestEditCommands.setUp
     def setUp(self):
