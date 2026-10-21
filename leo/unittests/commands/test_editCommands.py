@@ -1,7 +1,6 @@
 # @+leo-ver=5-thin
 # @+node:ekr.20201202144422.1: * @file ../unittests/commands/test_editCommands.py
 """Tests of leo.commands.editCommands."""
-# pylint: disable=no-member
 
 import textwrap
 from leo.core import leoGlobals as g
