@@ -35,22 +35,26 @@ class BaseEditCommandsClass:
 
     # @+node:ekr.20150514043714.4: *3* BaseEdit.beginCommand
     def beginCommand(self, w: QTextMixin, undoType: str = 'Typing') -> QTextMixin:
-        """Do the common processing at the start of each command."""
-        c, p, _u = self.c, self.c.p, self.c.undoer
+        """
+        Do the common processing at the start of each command.
+
+        This method *is* compatible with the new undo code.
+        """
+        c = self.c
+        p = c.p
+        self.undoData = None
         name = c.widget_name(w)
-        if name.startswith('body'):
-            self.undoData = b = g.Bunch()
-            # To keep pylint happy.
-            b.ch = ''
-            b.name = name
-            b.oldSel = w.getSelectionRange()
-            b.oldText = p.b
-            b.w = w
-            b.undoType = undoType
-            b.oldIns = w.getInsertPoint()
-            b.oldYScroll = w.getYScrollPosition()
-        else:
-            self.undoData = None  # pragma: no cover
+        if not name.startswith('body'):
+            return w
+        self.undoData = b = g.Bunch()
+        b.ch = ''
+        b.name = name
+        b.oldSel = w.getSelectionRange()
+        b.oldText = p.b
+        b.w = w
+        b.undoType = undoType
+        b.oldIns = w.getInsertPoint()
+        b.oldYScroll = w.getYScrollPosition()
         return w
 
     # @+node:ekr.20150514043714.6: *3* BaseEdit.endCommand
