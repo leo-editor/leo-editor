@@ -863,7 +863,7 @@ class TestNodes(LeoUnitTest):
                 aList.append(p.copy())
         self.assertEqual(len(aList), 6)
         c.deletePositionsInList(aList)
-        for i in range(3):
+        for _i in range(3):
             u.undo()
             u.redo()
         c.redraw()

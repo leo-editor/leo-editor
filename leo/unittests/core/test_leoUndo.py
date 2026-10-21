@@ -429,7 +429,7 @@ class TestUndo(LeoUnitTest):
         c.selectPosition(p3)
         c.moveOutlineDown()
         # Undo and redo thrice.
-        for i in range(3):
+        for _i in range(3):
             u.undo()
             u.redo()
 

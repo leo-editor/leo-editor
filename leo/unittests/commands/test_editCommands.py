@@ -2447,7 +2447,7 @@ class TestEditCommands(LeoUnitTest):
         self.assertEqual(c.p.h, 'after')
         self.assertEqual(c.p.b, result_b)
         self.assertFalse(c.p.next())
-        for i in range(3):
+        for _i in range(3):
             u.undo()
             self.assertEqual(c.p.h, 'before')
             self.assertEqual(c.p.b, prev_b)
@@ -2490,7 +2490,7 @@ class TestEditCommands(LeoUnitTest):
         self.assertEqual(c.p.h, 'before')
         self.assertEqual(c.p.b, result_b)
         self.assertFalse(c.p.next())
-        for i in range(3):
+        for _i in range(3):
             u.undo()
             self.assertEqual(c.p.h, 'after')
             self.assertEqual(c.p.b, next_b)
@@ -4276,7 +4276,7 @@ class TestEditCommands(LeoUnitTest):
         p = c.p
         self.assertTrue(c.positionExists(p))
         old_h = p.h
-        for i in range(3):
+        for _i in range(3):
             u.undo()
             u.redo()
         assert c.p.h == old_h
@@ -4287,9 +4287,11 @@ class TestEditCommands(LeoUnitTest):
         u = c.undoer
         assert u
         c.insertHeadline()
-        self.assertEqual(u.undoMenuLabel, 'Undo Insert Node')
-        c.undoer.undo()
-        self.assertEqual(u.redoMenuLabel, 'Redo Insert Node')
+        for _i in range(3):
+            self.assertEqual(u.undoMenuLabel, 'Undo Insert Node')
+            c.undoer.undo()
+            self.assertEqual(u.redoMenuLabel, 'Redo Insert Node')
+            c.undoer.redo()
 
     # @+node:ekr.20210905064816.20: *4* test_inserting_a_new_node_draws_the_screen_exactly_once
     def test_inserting_a_new_node_draws_the_screen_exactly_once(self):
@@ -4527,7 +4529,7 @@ class TestEditCommands(LeoUnitTest):
         g.app.gui.event_generate(c, 'Z', 'Shift+Z', w)
         g.app.gui.event_generate(c, '\n', 'Return', w)
         expected = h + 'XYZ'
-        for i in range(3):
+        for _i in range(3):
             self.assertEqual(p.h, expected)
             self.assertEqual(c.undoer.undoMenuLabel, 'Undo Typing')
             u.undo()
@@ -4659,8 +4661,10 @@ class TestEditCommands(LeoUnitTest):
         c.setBodyString(p, body)
         self.assertEqual(p.b, body)
         c.insertHeadline()
-        c.undoer.undo()
-        self.assertEqual(p.b, body)
+        for _i in range(3):
+            c.undoer.undo()
+            self.assertEqual(p.b, body)
+            c.undoer.redo()
 
     # @-others
 

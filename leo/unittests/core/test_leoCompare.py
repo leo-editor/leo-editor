@@ -120,10 +120,11 @@ class TestCompare(LeoUnitTest):
         self.assertEqual(c.lastTopLevel().h, expected_last_headline)
 
         # Test undo and redo.
-        u.undo()
-        self.assertEqual(c.lastTopLevel(), root)
-        u.redo()
-        self.assertEqual(c.lastTopLevel().h, expected_last_headline)
+        for _i in range(3):
+            u.undo()
+            self.assertEqual(c.lastTopLevel(), root)
+            u.redo()
+            self.assertEqual(c.lastTopLevel().h, expected_last_headline)
 
         # Remove temporary files.
         for path in paths:

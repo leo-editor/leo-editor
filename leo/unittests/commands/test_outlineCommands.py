@@ -768,7 +768,7 @@ class TestOutlineCommands(LeoUnitTest):
         # self.dump_headlines(c, tag='1')
         c.p = promote_p
         c.promoteToAtOthers()
-        for i in range(3):
+        for _i in range(3):
             u.undo()
             u.redo()
 
