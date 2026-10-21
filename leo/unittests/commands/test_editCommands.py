@@ -2448,16 +2448,16 @@ class TestEditCommands(LeoUnitTest):
         self.assertEqual(c.p.h, 'after')
         self.assertEqual(c.p.b, result_b)
         self.assertFalse(c.p.next())
-        # Restore 'before', select, 'before'.
-        u.undo()
-        self.assertEqual(c.p.h, 'before')
-        self.assertEqual(c.p.b, prev_b)
-        self.assertEqual(c.p.next().h, 'after')
-        self.assertEqual(c.p.next().b, next_b)
-        u.redo()
-        self.assertEqual(c.p.h, 'after')
-        self.assertEqual(c.p.b, result_b)
-        self.assertFalse(c.p.next())
+        for i in range(3):
+            u.undo()
+            self.assertEqual(c.p.h, 'before')
+            self.assertEqual(c.p.b, prev_b)
+            self.assertEqual(c.p.next().h, 'after')
+            self.assertEqual(c.p.next().b, next_b)
+            u.redo()
+            self.assertEqual(c.p.h, 'after')
+            self.assertEqual(c.p.b, result_b)
+            self.assertFalse(c.p.next())
 
     # @+node:ekr.20220517064507.1: *5* test_merge-node-with-prev-node
     def test_merge_node_with_prev_node(self):
@@ -2491,16 +2491,16 @@ class TestEditCommands(LeoUnitTest):
         self.assertEqual(c.p.h, 'before')
         self.assertEqual(c.p.b, result_b)
         self.assertFalse(c.p.next())
-        # Restore 'after', select, 'after'.
-        u.undo()
-        self.assertEqual(c.p.h, 'after')
-        self.assertEqual(c.p.b, next_b)
-        self.assertEqual(c.p.back().h, 'before')
-        self.assertEqual(c.p.back().b, prev_b)
-        u.redo()
-        self.assertEqual(c.p.h, 'before')
-        self.assertEqual(c.p.b, result_b)
-        self.assertFalse(c.p.next())
+        for i in range(3):
+            u.undo()
+            self.assertEqual(c.p.h, 'after')
+            self.assertEqual(c.p.b, next_b)
+            self.assertEqual(c.p.back().h, 'before')
+            self.assertEqual(c.p.back().b, prev_b)
+            u.redo()
+            self.assertEqual(c.p.h, 'before')
+            self.assertEqual(c.p.b, result_b)
+            self.assertFalse(c.p.next())
 
     # @+node:ekr.20201130090918.86: *5* test_move-lines-down
     def test_move_lines_down(self):
@@ -4503,8 +4503,11 @@ class TestEditCommands(LeoUnitTest):
         c.frame.pasteText(event=g.app.gui.create_key_event(c, w=w))
         c.selectPosition(p.visBack(c))
         self.assertEqual(p.h, h + paste)
-        c.undoer.undo()
-        self.assertEqual(p.h, h)
+        for i in range(3):
+            c.undoer.undo()
+            self.assertEqual(p.h, h)
+            c.undoer.redo()
+            self.assertEqual(p.h, h + paste)
 
     # @+node:ekr.20210905064816.27: *4* test_selecting_new_node_retains_typing_in_headline
     def test_selecting_new_node_retains_typing_in_headline(self):
