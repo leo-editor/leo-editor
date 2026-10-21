@@ -2293,7 +2293,7 @@ class Undoer:
         assert self.per_node_undo
         u.clearUndoState()
         if hasattr(v, 'undo_info'):
-            u.setIvarsFromBunch(v.undo_info)
+            u.setIvarsFromBunch(v.undo_info)  # type:ignore
 
     # @+node:ekr.20230722062645.1: *5* u.restoreFromCopiedTree
     def restoreFromCopiedTree(self, v: VNode, s: str) -> None:
