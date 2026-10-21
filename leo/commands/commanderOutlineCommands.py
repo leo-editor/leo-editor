@@ -179,6 +179,7 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Paste as template clones only nodes that were already clones"""
     c = self
     p = c.p
+    u = c.undoer
     s = g.app.gui.getTextFromClipboard()
     if not s or not c.canPasteOutline(s):
         return  # This should never happen.
@@ -362,7 +363,8 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 
     heads: dict[str, str] = {}
 
-    bunch = c.undoer.createCommonBunch(p)
+    # This code *is* compatible with the new undoers.
+    bunch = u.createCommonBunch(p)
     # @+<< prepare destination data >>
     # @+node:vitalije.20200529111500.1: *4* << prepare destination data >>
     # destination data consists of
