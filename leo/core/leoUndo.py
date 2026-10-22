@@ -2480,13 +2480,10 @@ class Undoer:
         c, b = u.c, u._require_bead()
         old_p = p.copy()
         old_back, old_parent = p.back(), p.parent()
-        if p == c.p or p.isAncestorOf(c.p):
-            new_p = p.visBack(c) if p.hasVisBack(c) else p.next()
-            if not new_p:
-                g.trace("Can not delete the outline's only node")
-                return
-        else:
-            new_p = c.p.copy()
+        new_p = p.visBack(c) if p.hasVisBack(c) else p.next()
+        if not new_p:
+            g.trace("Can not delete the outline's only node")
+            return
 
         # Do the action.
         old_p.doDelete(new_p)
