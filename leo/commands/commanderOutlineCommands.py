@@ -82,7 +82,7 @@ def pasteOutline(
         return None
     if not (s.lstrip().startswith("{") or g.match(s, 0, g.app.prolog_prefix_string)):
         return None
-    with u.change_outline('Paste Node'):
+    with u.change_outline('paste-node'):
         pasted = c.fileCommands.getLeoOutlineFromClipboard(s)
         if not pasted:
             return None
@@ -119,7 +119,7 @@ def pasteOutlineRetainingClones(
         return None
     if not (s.lstrip().startswith("{") or g.match(s, 0, g.app.prolog_prefix_string)):
         return None
-    with u.change_outline('Paste As Clone'):
+    with u.change_outline('paste-retaining-clones'):
         pasted = c.fileCommands.getLeoOutlineFromClipboardRetainingClones(s)
         if not pasted:
             return None
@@ -1151,7 +1151,7 @@ def cloneToLastNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         return
     prev = p.copy()
     c.endEditing()  # Capture any changes to the headline.
-    with u.change_outline('Clone Node To Last'):
+    with u.change_outline('clone-node-to-last-node'):
         clone = p.clone()
         last = c.rootPosition()
         while last and last.hasNext():
@@ -1167,7 +1167,7 @@ def cloneToLastNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 def deleteOutline(
     self: Cmdr,
     event: LeoKeyEvent | None = None,
-    op_name: str = "Delete Node",
+    op_name: str = 'delete-node',
 ) -> None:
     """Deletes the selected outline."""
     c = self
@@ -1403,7 +1403,7 @@ def markChangedHeadlines(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Mark all nodes that have been changed."""
     c, _current, u = self, self.p, self.undoer
     c.endEditing()
-    with u.change_outline('Mark Changed'):
+    with u.change_outline('mark-changed-nodes'):
         for p in c.all_unique_positions():
             if p.isDirty() and not p.isMarked():
                 # c.setMarked calls a hook.
@@ -1417,7 +1417,7 @@ def markChangedRoots(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Mark all changed @root nodes."""
     c, _current, u = self, self.p, self.undoer
     c.endEditing()
-    with u.change_outline('Mark Changed'):
+    with u.change_outline('c.markChangedRoots'):
         for p in c.all_unique_positions():
             if p.isDirty() and not p.isMarked():
                 s = p.b
@@ -1455,7 +1455,7 @@ def markSubheads(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     if not current:
         return
     c.endEditing()
-    with u.change_outline('Mark Subheads'):
+    with u.change_outline('mark-subheads'):
         for p in current.children():
             if not p.isMarked():
                 c.setMarked(p)  # Calls a hook.
@@ -1473,7 +1473,7 @@ def unmarkAll(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     c.endEditing()
     changed = False
     p = None  # To keep pylint happy.
-    with u.change_outline('Unmark All'):
+    with u.change_outline('unmark-all'):
         for p in c.all_unique_positions():
             if p.isMarked():
                 # c.clearMarked(p) # Very slow: calls a hook.
@@ -1501,7 +1501,7 @@ def demote(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
             return
         next.moveToNext()
     c.endEditing()
-    with u.change_outline('Demote'):
+    with u.change_outline('demote'):
         parent_v = p._parentVnode()
         n = p.childIndex()
         followingSibs = parent_v.children[n + 1 :]
@@ -1752,7 +1752,7 @@ def promote(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         c.treeFocusHelper()
         return
     c.endEditing()
-    with u.change_outline('Promote'):
+    with u.change_outline('promote'):
         p.promote()
         p.setDirty()
         u.redraw(p, update_syntax_coloring=True)
@@ -1825,7 +1825,7 @@ def sortSiblings(
 
     oldP, newP = p.copy(), p.copy()
     c.endEditing()
-    undoType = 'Sort Children' if sortChildren else 'Sort Siblings'
+    undoType = 'sort-children' if sortChildren else 'sort-siblings'
     if reverse:
         undoType = 'Reverse ' + undoType
     parent_v = p._parentVnode()

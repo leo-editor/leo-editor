@@ -338,7 +338,7 @@ class CheckNodes:
         c = self.c
         u = c.undoer
         # Create the top-level node.
-        with u.change_outline('check-nodes'):
+        with u.change_outline('CheckNodes.create_dubious_nodes'):
             dubious = c.lastTopLevel().insertAfter()
             dubious.h = f"{self.count} dubious nodes{g.plural(self.count)}"
             # Clone nodes as children of the top-level node.

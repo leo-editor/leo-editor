@@ -81,7 +81,7 @@ class FreeMindImporter:
         c = self.c
         u = c.undoer
         _, fileName = g.os_path_split(path)
-        with u.change_outline('Import'):
+        with u.change_outline('freemind.create_outline'):
             try:
                 self.import_file(path)
             except Exception:
@@ -725,7 +725,7 @@ class LeoImportCommands:
         self,
         parent: Position,
         paths: list[str] | None = None,
-        command: str = 'Import',
+        command: str = 'import',
     ) -> Position | None:
         """
         Import one or more external files.
@@ -774,7 +774,7 @@ class LeoImportCommands:
         if not parent:
             g.trace('===== no parent', g.callers())
             return
-        with u.change_outline('Import'):
+        with u.change_outline('ic.importFilesCommand'):
             for fn in files or []:
                 # Report exceptions here, not in the caller.
                 try:
@@ -809,11 +809,10 @@ class LeoImportCommands:
         This is not a command.  It must *not* have an event arg.
         """
         at, c, u = self.c.atFileCommands, self.c, self.c.undoer
-        command = 'Import Jupyter Notebook'
         parent = c.p
         if not parent or not paths:
             return None
-        with u.change_outline(command):
+        with u.change_outline('ic.importJupytextFiles'):
             for fileName in paths:
                 fileName = fileName.replace('\\', '/')
                 g.setGlobalOpenDir(fileName)
@@ -855,7 +854,7 @@ class LeoImportCommands:
         c = self.c
         u = c.undoer
         _, fileName = g.os_path_split(path)
-        with u.change_outline('Import'):
+        with u.change_outline('ic.createOutlineFromWeb'):
             # Create the top-level headline.
             p = parent.insertAfter()
             p.initHeadString(fileName)
@@ -1153,7 +1152,7 @@ class LeoImportCommands:
             g.es_print(f"No importer class for @language {language}")
             return
         importer = importer_class(c)
-        with u.change_outline('parrse-body'):
+        with u.change_outline('parse-body'):
             try:
                 old_p = p.copy()
                 c.selectPosition(p)
@@ -1380,7 +1379,7 @@ class MindMapImporter:
         c = self.c
         u = c.undoer
         _, fileName = g.os_path_split(path)
-        with u.change_outline('Import'):
+        with u.change_outline('mindmap.create_outline'):
             # Create the top-level headline.
             p = c.lastTopLevel().insertAfter()
             fn = g.shortFileName(path).strip()
@@ -1535,7 +1534,7 @@ class MORE_Importer:
         s = s.replace('\r', '')  # Fixes bug 626101.
         lines = g.splitLines(s)
         # Convert the string to an outline and insert it after the current node.
-        with u.change_outline('Import MORE File'):
+        with u.change_outline('more.import_file'):
             if self.check_lines(lines):
                 last = c.lastTopLevel()
                 root = last.insertAfter()
@@ -2055,7 +2054,7 @@ class TabImporter:
         c, u = self.c, self.c.undoer
         if not files:
             return
-        with u.change_outline('Import Tabbed File'):
+        with u.change_outline('import-tabbed-files'):
             p = None
             for fn in files:
                 try:

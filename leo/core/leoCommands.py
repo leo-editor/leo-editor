@@ -4349,7 +4349,7 @@ class Commands:
         c = self
         u = c.undoer
         c.endEditing()
-        with u.change_outline('Clone Drag'):
+        with u.change_outline('c.dragCloneToNthChildOf'):
             clone = p.clone()
             if (
                 c.checkDrag(p, parent) and
@@ -4368,7 +4368,7 @@ class Commands:
         c = self
         u = c.undoer
         c.endEditing()
-        with u.change_outline('Clone Drag'):
+        with u.change_outline('c.dragCloneAfter'):
             clone = p.clone()
             if (
                 c.checkDrag(p, after) and
@@ -5452,7 +5452,7 @@ class Commands:
         """
         u = self.undoer
         parent or self.rootPosition()
-        with u.change_outline('Create Node Hierarchy'):
+        with u.change_outline('c.createNodeHierarchy'):
             changed_node = False
             for idx, head in enumerate(heads):
                 # if parent = None, create top level node for first head
@@ -5498,7 +5498,7 @@ class Commands:
             return
 
         def delete(p: Position) -> None:
-            with u.change_outline('Inner Undo Node'):
+            with u.change_outline('function:delete'):
                 if p in to_be_deleted:
                     # Remove all to-be-deleted positions in p's subtree from the to-be-deleted list.
                     for p2 in p.subtree():

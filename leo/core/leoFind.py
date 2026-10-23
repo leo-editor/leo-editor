@@ -490,7 +490,6 @@ class LeoFind:
         This is a stand-alone method for unit testing.
         """
         c, u = self.c, self.c.undoer
-        undoType = 'clone-find-marked'
         failMsg = 'No marked nodes'
 
         count = 0
@@ -509,9 +508,9 @@ class LeoFind:
             predicate=isMarked,
             failMsg=failMsg,
             flatten=flatten,
-            undoType=undoType,
+            undoType='clone-find-marked',
         ):
-            with u.change_outline(undoType):
+            with u.change_outline('clone-find-marked'):
                 # Unmarking all nodes is convenient.
                 for p in c.all_unique_positions():
                     if p.isMarked():
@@ -1594,7 +1593,7 @@ class LeoFind:
                 g.es_print(f"tag not found: {tag}")
             tc.show_all_tags()
             return 0, c.p
-        with u.change_outline('Clone Find Tag'):
+        with u.change_outline('clone-find-tag'):
             found = self._create_clone_tag_nodes(clones)
             assert c.positionExists(found, trace=True), found
             u.redraw(found)
@@ -2423,7 +2422,7 @@ class LeoFind:
             else:
                 p.moveToThreadNext()
             assert p != progress
-        with u.change_outline('Clone Find All'):
+        with u.change_outline('clone-find-all'):
             if clones:
                 found_p = self._cfa_create_nodes(clones, flattened=False)
                 assert c.positionExists(found_p, trace=True), found_p

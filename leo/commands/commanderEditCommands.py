@@ -846,13 +846,12 @@ def reformatBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     c = self
     p = self.p
     u = c.undoer
-    command_name = 'reformat-body'
     w = c.frame.body.wrapper  # Only valid in bod.
-    with u.change_outline(command_name):
+    with u.change_outline('reformat-body'):
         w.setInsertPoint(0)
         while 1:
             progress = w.getInsertPoint()
-            c.reformatParagraph(event, undoType=command_name)
+            c.reformatParagraph(event, undoType='reformat-body')
             ins = w.getInsertPoint()
             s = w.getAllText()
             if ins <= progress or ins >= len(s):

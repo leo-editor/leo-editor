@@ -368,14 +368,13 @@ def show_clones(event: LeoKeyEvent | None = None) -> None:
 def unmark_node_and_parents(event: LeoKeyEvent | None = None) -> list[Position]:
     """Unmark the node and all its parents."""
     changed: list[Position] = []
-    tag = 'unmark-node-and-parents'
     c = event.get('c') if event else None
     if not c:
         return changed
     u = c.undoer
     changed = [z for z in c.p.self_and_parents() if z.isMarked()]
     if changed:
-        with u.change_outline(tag):
+        with u.change_outline('unmark-node-and-parents'):
             for z in changed:
                 z.clearMarked()
             u.redraw()
@@ -1155,9 +1154,9 @@ class EditCommandsClass(BaseEditCommandsClass):
 
         Use the *first* clone's position for all clones.
         """
-        c, command = self.c, 'add-all-headline-numbers'
+        c = self.c
         u = c.undoer
-        with u.change_outline(command):
+        with u.change_outline('add-all-headline-numbers'):
             for p in c.all_unique_positions():
                 self.hn_delete(p)
                 self.hn_add(p)
@@ -1200,10 +1199,10 @@ class EditCommandsClass(BaseEditCommandsClass):
 
         Use the *last* clone's position for all clones.
         """
-        c, command = self.c, 'add-subtree-headline-numbers'
+        c = self.c
         u = c.undoer
         root = c.p
-        with u.change_outline(command):
+        with u.change_outline('add-subtree-headline-numbers'):
             for p in c.p.subtree():
                 self.hn_delete(p)
                 self.hn_add_relative(p, root)
@@ -1232,9 +1231,9 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('delete-all-headline-numbers')
     def hn_delete_all(self, event: LeoKeyEvent | None = None) -> None:
         """Delete all headline numbers in the entire outline."""
-        c, command = self.c, 'delete-all-headline-numbers'
+        c = self.c
         u = c.undoer
-        with u.change_outline(command):
+        with u.change_outline('delete-all-headline-numbers'):
             for p in c.all_unique_positions():
                 self.hn_delete(p)
             u.redraw()
@@ -1245,9 +1244,9 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('delete-subtree-headline-numbers')
     def hn_delete_tree(self, event: LeoKeyEvent | None = None) -> None:
         """Delete all headline numbers in c.p's subtree."""
-        c, command = self.c, 'delete-subtree-headline-numbers'
+        c = self.c
         u = c.undoer
-        with u.change_outline(command):
+        with u.change_outline('delete-subtree-headline-numbers'):
             for p in c.p.subtree():
                 self.hn_delete(p)
             u.redraw()
@@ -1471,7 +1470,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         applicable even then whitespace equivalent to a single tab is inserted.
         """
         c, p, u = self.c, self.c.p, self.c.undoer
-        undoType = 'indent-relative'
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
@@ -1486,8 +1484,8 @@ class EditCommandsClass(BaseEditCommandsClass):
             line = s[i:j]
             if line.strip():
                 break
-        self.beginCommand(w, undoType=undoType)
-        with u.change_outline(undoType):
+        self.beginCommand(w, undoType='indent-relative')
+        with u.change_outline('indent-relative'):
             try:
                 k = g.skip_ws(s, i)
                 ws = s[i:k]
@@ -1696,9 +1694,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        tag = 'clean-all-lines'
         roots = g.findRootsWithPredicate(c, c.p)
-        with u.change_outline(tag):
+        with u.change_outline('clean-all-lines'):
             n = 0
             for root in roots:
                 for p in root.self_and_subtree():

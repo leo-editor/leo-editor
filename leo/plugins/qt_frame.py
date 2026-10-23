@@ -3155,7 +3155,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         if not ok:
             return
         move_to_child = as_child or p2.hasChildren() and p2.isExpanded()
-        with u.change_outline('Drag'):
+        with u.change_outline('tree.intraFileDrop'):
             p1.setDirty()
             if cloneDrag:
                 p1 = p1.clone()
@@ -3192,7 +3192,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         if not urls:
             return
         changed = False
-        with u.change_outline('Drag Urls'):
+        with u.change_outline('tree.urlDrop'):
             for url in urls:
                 scheme = url.scheme()
                 path = url.path()

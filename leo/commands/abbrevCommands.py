@@ -178,7 +178,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         prevSibling = c.p.moveToBack()
         prevSiblingExpanded = prevSibling and prevSibling.isExpanded()
 
-        with u.change_outline('Expand Tree Abbreviation'):
+        with u.change_outline('abbrev.expand_tree'):
             self.replace_selection(i, j, '')
 
             # Carefully replace the old node with the new node.

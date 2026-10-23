@@ -512,7 +512,7 @@ class AtFile:
             return None
 
         # Undoably create the top-level node.
-        with u.change_outline('Clone Updated Nodes'):
+        with u.change_outline('at.clone_all_changed_vnodes'):
             update_p = c.lastTopLevel().insertAfter()
             update_p.h = 'Updated @clean/@auto nodes'
 

@@ -3713,7 +3713,7 @@ class KeyHandlerClass:
     def handleInputShortcut(self, event: LeoKeyEvent, stroke: Stroke) -> None:
         c, k, p, u = self.c, self, self.c.p, self.c.undoer
         k.clearState()
-        with u.change_outline('change shortcut'):
+        with u.change_outline('k.handleInputShortcut'):
             if p.h.startswith(('@shortcuts', '@mode')):
                 # line of text in body
                 w = c.frame.body.wrapper

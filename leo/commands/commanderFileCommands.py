@@ -348,7 +348,7 @@ def import_txt_file(self: Self, fn: str) -> None:
     c = self
     u = c.undoer
     g.setGlobalOpenDir(fn)
-    with u.change_outline('Import'):
+    with u.change_outline('import-text-file'):
         p = c.p.insertAfter()
         p.h = f"@edit {c.relativeDirectory(fn)}"
         s, e = g.readFileIntoString(fn, kind='@edit')
