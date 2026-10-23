@@ -22433,7 +22433,7 @@ The body text of an ``@data history-list`` *setting node* preloads commands into
     contract-log-pane</t>
 <t tx="ekr.20190101093224.1">Here is everything script writers need to know to make their code undoable.
 
-The patterns below will all assume the following definitions:
+The patterns below all assume the following definitions:
 
 .. code-block:: python
 
@@ -22471,10 +22471,7 @@ Finally, use `u.change_outline` for all other (more complex) changes:
         u.redraw()   # &lt;-- u.redraw, not c.redraw
         &lt;&lt; call w.setInsertPoint() or w.setSelectionRange() as desired &gt;&gt;
 
-​That's all! The clever implementation of u.change_outline does the following:
-
-- Undo executes the code in  `&lt;&lt; make *arbitrary* changes to the outline &gt;&gt;` in reverse order.
-- Redo executes that same code in normal order.
+​That's all!
 
 Finally, note that u.redraw() is equivalent to u.redraw(c.p).</t>
 <t tx="ekr.20190117143933.1">Leo 5.9 final, https://leo-editor.github.io/leo-editor/ is now available on
