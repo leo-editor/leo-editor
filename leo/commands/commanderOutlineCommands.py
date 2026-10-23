@@ -1547,7 +1547,7 @@ def moveOutlineDown(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         c.treeFocusHelper()
         return
     c.endEditing()
-    with u.move_position(p, 'Move Outline Down'):
+    with u.move_node(p, 'Move Outline Down'):
         # @+<< Move p down & set moved if successful >>
         # @+node:ekr.20031218072017.1769: *4* << Move p down & set moved if successful >>
         if next.hasChildren() and next.isExpanded():
@@ -1591,7 +1591,7 @@ def moveOutlineLeft(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         return
     parent = p.parent()
     c.endEditing()
-    with u.move_position(p, 'Move Left'):
+    with u.move_node(p, 'Move Left'):
         p.setDirty()
         p.moveAfter(parent)
         p.setDirty()
@@ -1621,7 +1621,7 @@ def moveOutlineRight(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         c.treeFocusHelper()
         return
     c.endEditing()
-    with u.move_position(p, 'Move Right'):
+    with u.move_node(p, 'Move Right'):
         p.setDirty()
         n = back.numberOfChildren()
         p.moveToNthChildOf(back, n)
@@ -1646,7 +1646,7 @@ def moveOutlineUp(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         return
     back2 = back.visBack(c)
     c.endEditing()
-    with u.move_position(p, 'Move Up'):
+    with u.move_node(p, 'Move Up'):
         moved = False
         # @+<< Move p up >>
         # @+node:ekr.20031218072017.1773: *4* << Move p up >>
@@ -1710,7 +1710,7 @@ def moveOutlineToFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Non
     if not parent:
         return
     c.endEditing()
-    with u.move_position(p, 'Move To First Child'):
+    with u.move_node(p, 'Move To First Child'):
         p.setDirty()
         p.moveToNthChildOf(p.parent(), 0)
         p.setDirty()
@@ -1736,7 +1736,7 @@ def moveOutlineToLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> None
     if not parent:
         return
     c.endEditing()
-    with u.move_position(p, 'Move To Last Child'):
+    with u.move_node(p, 'Move To Last Child'):
         p.setDirty()
         p.moveToNthChildOf(parent, len(parent.v.children) - 1)
         p.setDirty()

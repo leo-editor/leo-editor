@@ -4323,7 +4323,7 @@ class Commands:
         if not c.checkMoveWithParentWithWarning(p, parent, True):
             return
         c.endEditing()
-        with u.move_position(p, 'Drag'):
+        with u.move_node(p, 'Drag'):
             p.setDirty()
             p.moveToNthChildOf(parent, n)
             p.setDirty()
@@ -4338,7 +4338,7 @@ class Commands:
             return
         assert p.v
         c.endEditing()
-        with u.move_position(p, 'Drag'):
+        with u.move_node(p, 'Drag'):
             p.setDirty()
             p.moveAfter(after)
             p.setDirty()

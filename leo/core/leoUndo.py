@@ -2836,9 +2836,9 @@ class Undoer:
 
                     u.undoBead.add_helpers(change_recent_files_redoer, change_recent_files_undoer)
 
-    # @+node:vivainio.202610110003.1: *6* u.move_position
+    # @+node:vivainio.202610110003.1: *6* u.move_node
     @contextmanager
-    def move_position(self, p: Position, command_name: str) -> Iterator[Undoer]:
+    def move_node(self, p: Position, command_name: str) -> Iterator[Undoer]:
         """
         Handle doing, undoing, and redoing moving a node.
 
