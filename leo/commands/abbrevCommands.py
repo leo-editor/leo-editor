@@ -275,7 +275,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         p = c.p
         u = c.undoer
         w = self.w
-        with u.change_node(p, 'Abbreviation'):
+        with u.change_node(p, 'replace-selection'):
             # Make the replacement.
             w.delete(i, j)
             w.insert(i, s)

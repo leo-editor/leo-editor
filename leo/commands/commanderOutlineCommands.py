@@ -1437,7 +1437,7 @@ def markHeadline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     if not p:
         return
     c.endEditing()
-    with u.change_node(p, 'Unmark' if p.isMarked() else 'Mark'):
+    with u.change_node(p, 'toggle-marked'):
         # c.set/clearMarked call a hook.
         if p.isMarked():
             c.clearMarked(p)
