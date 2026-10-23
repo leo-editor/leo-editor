@@ -1749,7 +1749,6 @@ class LeoServer:
         Read a file into a single node.
         """
         tag = 'read_file_into_node'
-        undoType = 'Read File Into Node'
         c = self._check_c(param)
         if c and "name" in param:
             try:
@@ -1760,7 +1759,7 @@ class LeoServer:
                         return None
                     g.chdir(fileName)
                     s = '@nocolor\n' + s
-                    p = c.insertHeadline(op_name=undoType)
+                    p = c.insertHeadline(op_name='Read File Into Node')
                     # New node does not need c.setHeadString. p.setHeadString is ok.
                     p.setHeadString('@read-file-into-node ' + fileName)
                     p.setBodyString(s)
@@ -3191,16 +3190,14 @@ class LeoServer:
         """
         c = self._check_c(param)
         p = self._get_p(param)
+        u = c.undoer
         oldPosition: Position | None = None if p == c.p else c.p
-
         newHeadline = param.get('name') or ''
-        with c.undoer.change_outline('Insert Node'):
+        with u.change_outline('servers.insert_named_node'):
             newNode = p.insertAfter()
             # Set this node's new headline
             newNode.h = newHeadline
             newNode.setDirty()
-            c.setChanged()
-
             c.selectPosition(newNode)
             if oldPosition:
                 if c.positionExists(oldPosition):
@@ -3223,16 +3220,14 @@ class LeoServer:
         c = self._check_c(param)
         p = self._get_p(param)
         newHeadline = param.get('name') or ''
-        with c.undoer.change_outline('Insert Node'):
+        with c.undoer.change_outline('server.insert_child_named_node'):
             if c.config.getBool('insert-new-nodes-at-end'):
                 newNode = p.insertAsLastChild()
             else:
                 newNode = p.insertAsNthChild(0)
-            # Set this node's new headline
             newNode.h = newHeadline
             newNode.setDirty()
-            c.setChanged()
-            c.selectPosition(newNode)
+            c.redraw(newNode)
             return self._make_response()
 
     # @+node:felix.20250606213729.1: *5* server.insert_file_node
@@ -3271,7 +3266,7 @@ class LeoServer:
                 commonPath += '/'  # not empty so add a slash
             filePath = commonPath + g.os_path_basename(filePath)
 
-        with u.change_outline('Insert Node'):
+        with u.change_outline('server.insert_file_node'):
             newNode = None
             if (p.hasChildren() and p.isExpanded()) or (c.hoistStack and p == c.hoistStack[-1].p):
                 # Make sure the new node is visible when hoisting.
@@ -3482,7 +3477,7 @@ class LeoServer:
         u, wrapper = c.undoer, c.frame.body.wrapper
         if body is None:  # pragma: no cover
             raise ServerError(f"{tag}: no body given")
-        with u.change_outline('Body Text'):
+        with u.change_outline('server.set_body'):
             for p in c.all_positions():
                 if p.v.gnx == gnx:
                     if body == p.v.b:
@@ -3537,13 +3532,12 @@ class LeoServer:
         if h == oldH:
             return self._make_response()
         with u.change_node(p, 'Change Headline'):
-            c.setHeadString(
-                p, h
-            )  # c.setHeadString fixes the headline revert bug of p.initHeadString(h)
+            # c.setHeadString fixes the headline revert bug of p.initHeadString(h)
+            c.setHeadString(p, h)
             c.setChanged()
             p.setDirty()
+            u.redraw()
             return self._make_response()
-            u.redraw(c.p)
 
     # @+node:felix.20210621233316.63: *5* server.set_selection
     def set_selection(self, param: Param) -> Response:

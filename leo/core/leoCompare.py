@@ -5,6 +5,7 @@
 # @+<< leoCompare imports & annotations >>
 # @+node:ekr.20220901161941.1: ** << leoCompare imports & annotations >>
 from __future__ import annotations
+from collections.abc import Iterator
 import difflib
 import filecmp
 import os
@@ -505,9 +506,8 @@ class CompareLeoOutlines:
         if len(aList) < 2:
             g.trace('Not enough files in', repr(aList))
             return
-        undoType = 'diff-files'
         c.selectPosition(c.lastTopLevel())
-        with u.change_outline(undoType):
+        with u.change_outline('diff-files'):
             self.root = self.create_root(aList)
             self.visible = visible
             while len(aList) > 1:
@@ -516,6 +516,7 @@ class CompareLeoOutlines:
                 for path2 in aList:
                     self.diff_two_files(path1, path2)  # adds to self.root
             self.finish()
+            u.redraw()
 
     # @+node:ekr.20180211170333.3: *3* CompareLeoOutlines.diff_two_files
     def diff_two_files(self, fn1: str, fn2: str) -> None:
@@ -713,13 +714,19 @@ def diffMarkedNodes(event: LeoKeyEvent | None = None) -> None:
     if not c:
         return
     u = c.undoer
-    undoType = 'diff-marked-nodes'
     aList = [z for z in c.all_unique_positions() if z.isMarked()]
     if len(aList) < 2:
         g.es_print('Please mark at least 2 nodes')
         return
+
+    def _diff(p1: Position, p2: Position) -> Iterator[str]:
+        return difflib.Differ().compare(
+            g.splitLines(p1.b.rstrip() + '\n'),
+            g.splitLines(p2.b.rstrip() + '\n')
+        )  # fmt: skip
+
     c.selectPosition(c.lastTopLevel())
-    with u.change_outline(undoType):
+    with u.change_outline('diff-marked-nodes'):
         root = c.lastTopLevel().insertAfter()
         root.h = 'diff marked nodes'
         root.b = '\n'.join([z.h for z in aList]) + '\n'
@@ -728,10 +735,7 @@ def diffMarkedNodes(event: LeoKeyEvent | None = None) -> None:
             n += 1
             p1, p2 = aList[0], aList[1]
             aList = aList[1:]
-            lines = difflib.Differ().compare(
-                g.splitLines(p1.b.rstrip() + '\n'),
-                g.splitLines(p2.b.rstrip() + '\n')
-            )  # fmt: skip
+            lines = _diff(p1, p2)
             p = root.insertAsLastChild()
             p.h = f"diff {n}"
             p.b = f"1: {p1.h}\n2: {p2.h}\n{''.join(list(lines))}"

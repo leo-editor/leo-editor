@@ -444,7 +444,6 @@ class ScreenCastController:
         m = self
         c = m.c
         p = c.p
-        undoType = 'Typing'
         tree = c.frame.tree
         if n1 is None:
             n1 = 0.02
@@ -453,10 +452,7 @@ class ScreenCastController:
         p.h = ''
         c.editHeadline()
         w = tree.headline_wrapper(p)
-        # Support undo.
-        undoData = c.undoer.beforeChangeNodeContents(p)
         p.setDirty()
-        c.undoer.afterChangeNodeContents(p, undoType, undoData)
         # Lock out key handling in m.state_handler.
         m.ignore_keys = True
         try:

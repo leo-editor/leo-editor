@@ -450,16 +450,17 @@ class Demo:
     # @+node:ekr.20170128213103.20: *4* demo.head_keys
     def head_keys(self, s, speed=None, undo=False):
         """Undoably simulates typing in the headline."""
-        c, p = self.c, self.c.p
-        undoType = 'Typing'
+        c = self.c
+        p = c.p
+        u = c.undoer
         tree = c.frame.tree
         p.h = ''
         c.editHeadline()
         w = tree.headline_wrapper(p)
         if undo:
-            undoData = c.undoer.beforeChangeNodeContents(p)
-            p.setDirty()
-            c.undoer.afterChangeNodeContents(p, undoType, undoData)
+            with u.change_node('Typing'):
+                p.setDirty()
+                u.redraw()
         for ch in s:
             p.h = p.h + ch
             tree.repaint()  # *not* tree.update.

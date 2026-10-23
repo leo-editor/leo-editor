@@ -109,7 +109,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
         p = self.findBuffer(name)
         if s and p:
             c.selectPosition(p)
-            self.beginCommand(w, undoType=f"insert-to-buffer: {p.h}")
+            self.beginCommand(w, f"insert-to-buffer: {p.h}")
             i = w.getInsertPoint()
             w.insert(i, s)
             w.seeInsertPoint()

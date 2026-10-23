@@ -221,10 +221,10 @@ class backlinkController:
             return
         our_unl = c.p.get_UNL()
 
-        ### This is too early.
-        # new_c = g.handleUnl(url, c)
-        # if not new_c or not hasattr(new_c, 'backlinkController'):
-        # return
+        # This would be too early.
+        #   new_c = g.handleUnl(url, c)
+        #   if not new_c or not hasattr(new_c, 'backlinkController'):
+        #   return
 
         new_p = g.findAnyUnl(our_unl, c)
         if not new_p:
@@ -234,11 +234,6 @@ class backlinkController:
         if not hasattr(new_c, 'backlinkController'):
             g.es('No controller. not creating backlink')
             return
-
-        ### To do: should this code switch outlines???
-        # new_c = new_p.v.context
-        # if new_c != c:
-        # g.app.selectLeoWindow(new_c)  # Switch outlines.
 
         new_c.backlinkController.initBacklink(new_p.v)
         if our_unl not in [i.rsplit('##', 1)[0] for i in new_p.v.u['_bklnk']['urls']]:

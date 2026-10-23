@@ -58,10 +58,11 @@ class TestEditFileCommands(LeoUnitTest):
             sys.stdout = sys.__stdout__
         self.assertTrue(c.lastTopLevel().h.startswith(expected_last_headline))
         # Test undo/redo.
-        u.undo()
-        self.assertEqual(c.lastTopLevel(), root)
-        u.redo()
-        self.assertTrue(c.lastTopLevel().h.startswith(expected_last_headline))
+        for _i in range(3):
+            u.undo()
+            self.assertEqual(c.lastTopLevel(), root)
+            u.redo()
+            self.assertTrue(c.lastTopLevel().h.startswith(expected_last_headline))
 
     # @+node:ekr.20230714160049.1: *3* TestEditFileCommands.test_diff_two_revs
     def slow_test_diff_two_revs(self):
@@ -87,10 +88,11 @@ class TestEditFileCommands(LeoUnitTest):
             return
         self.assertEqual(c.lastTopLevel().h.strip(), expected_last_headline)
         # Test undo/redo.
-        u.undo()
-        self.assertEqual(c.lastTopLevel(), root)
-        u.redo()
-        self.assertEqual(c.lastTopLevel().h.strip(), expected_last_headline)
+        for _i in range(3):
+            u.undo()
+            self.assertEqual(c.lastTopLevel(), root)
+            u.redo()
+            self.assertEqual(c.lastTopLevel().h.strip(), expected_last_headline)
 
     # @-others
 

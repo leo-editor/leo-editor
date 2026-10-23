@@ -512,7 +512,7 @@ class AtFile:
             return None
 
         # Undoably create the top-level node.
-        with u.change_outline('Clone Updated Nodes'):
+        with u.change_outline('at.clone_all_changed_vnodes'):
             update_p = c.lastTopLevel().insertAfter()
             update_p.h = 'Updated @clean/@auto nodes'
 
@@ -548,6 +548,7 @@ class AtFile:
             update_p.v.children.sort(key=lambda v: v.h.lower())
             c.contractAllHeadlinesCommand()
             update_p.expand()
+            u.redraw(update_p)
             return update_p
 
     # @+node:ekr.20190108054317.1: *6* at.findFilesToRead
@@ -2703,8 +2704,7 @@ class AtFile:
         with u.change_outline('ruff-format'):
             g.es(f"beautified: {g.shortFileName(filename)}", color='blue')
             c.refreshFromDisk(root)
-            c.selectPosition(old_p)
-            c.contractAllOtherNodes()
+            c.contractAllHeadlines()
             u.redraw(old_p)
         return True
 

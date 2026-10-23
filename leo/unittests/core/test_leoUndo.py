@@ -17,6 +17,7 @@ class TestUndo(LeoUnitTest):
     def runTest(self, before, after, i, j, func):
         """TestUndo.runTest."""
         c, p, w = self.c, self.c.p, self.c.frame.body.wrapper
+        u = c.undoer
         # Restore section references.
         before = before.replace('> >', '>>').replace('< <', '<<')
         after = after.replace('> >', '>>').replace('< <', '<<')
@@ -32,15 +33,13 @@ class TestUndo(LeoUnitTest):
         func()
         result = p.b
         self.assertEqual(result, after, msg='before undo1')
-        c.undoer.undo()
-        result = w.getAllText()
-        self.assertEqual(result, before, msg='after undo1')
-        c.undoer.redo()
-        result = w.getAllText()
-        self.assertEqual(result, after, msg='after redo1')
-        c.undoer.undo()
-        result = w.getAllText()
-        self.assertEqual(result, before, msg='after undo2')
+        for _i in range(3):
+            u.undo()
+            result = w.getAllText()
+            self.assertEqual(result, before, msg='after undo1')
+            u.redo()
+            result = w.getAllText()
+            self.assertEqual(result, after, msg='after redo1')
 
     # @+node:ekr.20210906172626.2: *3* TestUndo.test_addComments
     def test_addComments(self):
@@ -282,6 +281,7 @@ class TestUndo(LeoUnitTest):
     def test_edit_headline(self):
         # Brian Theado.
         c, p = self.c, self.c.p
+        u = c.undoer
         node1 = p.insertAsLastChild()
         node2 = node1.insertAfter()
         node3 = node2.insertAfter()
@@ -290,7 +290,7 @@ class TestUndo(LeoUnitTest):
         node3.h = 'node 3'
         self.assertEqual([p.h for p in p.subtree()], ['node 1', 'node 2', 'node 3'])
         # Select 'node 1' and modify the headline as if a user did it
-        c.undoer.clearUndoState()
+        u.clearUndoState()
         node1 = p.copy().moveToFirstChild()
         c.selectPosition(node1)
         c.editHeadline()
@@ -300,11 +300,13 @@ class TestUndo(LeoUnitTest):
         self.assertEqual([p.h for p in p.subtree()], ['changed - node 1', 'node 2', 'node 3'])
         # Move the selection and undo the headline change
         c.selectPosition(node1.copy().moveToNext())
-        c.undoer.undo()
-        # The undo should restore the 'node 1' headline string
-        self.assertEqual([p.h for p in p.subtree()], ['node 1', 'node 2', 'node 3'])
-        # The undo should select the edited headline.
-        self.assertEqual(c.p, node1)
+        for _i in range(3):
+            u.undo()
+            # The undo should restore the 'node 1' headline string
+            self.assertEqual([p.h for p in p.subtree()], ['node 1', 'node 2', 'node 3'])
+            # The undo should select the edited headline.
+            self.assertEqual(c.p, node1)
+            u.redo()
 
     # @+node:ekr.20210906172626.10: *3* TestUndo.test_extract_test
     def test_extract_test(self):
@@ -359,7 +361,7 @@ class TestUndo(LeoUnitTest):
         oldText = p.b
         newText = p.b + '\n#changed'
         for marked in (True, False):
-            c.undoer.clearUndoState()  # Required.
+            u.clearUndoState()  # Required.
             if marked:
                 p.setMarked()
             else:
@@ -367,18 +369,20 @@ class TestUndo(LeoUnitTest):
             oldMarked = p.isMarked()
             w.setAllText(newText)  # For the new assert in w.updateAfterTyping.
             u.doTyping(p, undo_type='typing', oldText=oldText, newText=newText)
-            u.undo()
-            self.assertEqual(p.b, oldText)
-            self.assertEqual(p.isMarked(), oldMarked)
-            u.redo()
-            self.assertEqual(p.b, newText)
-            self.assertEqual(p.isMarked(), oldMarked)
+            for _i in range(3):
+                u.undo()
+                self.assertEqual(p.b, oldText)
+                self.assertEqual(p.isMarked(), oldMarked)
+                u.redo()
+                self.assertEqual(p.b, newText)
+                self.assertEqual(p.isMarked(), oldMarked)
 
     # @+node:ekr.20210906172626.17: *3* TestUndo.test_undo_group
     def test_undo_group(self):
         # Test an off-by-one error in c.undoer.bead.
         # The buggy redoGroup code worked if the undo group was the first item on the undo stack.
         c, p = self.c, self.c.p
+        u = c.undoer
         original = p.insertAfter()
         original_s = original.b = self.prep(
             """
@@ -390,26 +394,26 @@ class TestUndo(LeoUnitTest):
             line4
         """
         )
-        c.undoer.clearUndoState()
+        u.clearUndoState()
         c.selectPosition(original)
         c.copyOutline()  # Add state to the undo stack!
         c.pasteOutline()
         c.convertAllBlanks()  # Uses undoGroup.
-        c.undoer.undo()
+        u.undo()
         self.assertEqual(original.b, original_s)
         c.pasteOutline()
         c.convertAllBlanks()
         c.pasteOutline()
         c.convertAllBlanks()
-        c.undoer.undo()
-        c.undoer.redo()
-        self.assertEqual(original.b, original_s)
+        for _i in range(3):
+            u.undo()
+            u.redo()
+            self.assertEqual(original.b, original_s)
 
     # @+node:ekr.20250625044932.1: *3* TestUndo.test_undo_group_after_move
     def test_undo_group_after_move(self):
         # Test a group of moves.
         c, p, u = self.c, self.c.p, self.c.undoer
-        undoType = 'test-undo-group-after-move'
         p1 = p.insertAfter()
         p1.h = 'p1'
         p2 = p1.insertAfter()
@@ -421,7 +425,6 @@ class TestUndo(LeoUnitTest):
         u.clearUndoState()
         # Do moves that invalidate nodes.
         c.selectPosition(p2)
-        u.beforeChangeGroup(c.p, undoType)
         c.moveOutlineRight()  # Invalidates p2, p3, p4
         # Re-establish p3 and p4.
         p3 = p1.next()
@@ -430,9 +433,8 @@ class TestUndo(LeoUnitTest):
         assert p4.h == 'p4', p4.h
         c.selectPosition(p3)
         c.moveOutlineDown()
-        u.afterChangeGroup(c.p, undoType)
         # Undo and redo thrice.
-        for i in range(3):
+        for _i in range(3):
             u.undo()
             u.redo()
 

@@ -3052,6 +3052,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
     # @+node:ekr.20110605121601.18365: *4* LeoQTreeWidget.dropEvent & helpers
     def dropEvent(self, ev: QEvent) -> None:
         """Handle a drop event in the QTreeWidget."""
+        g.app.dragging = False
         if not ev:
             return
         md = ev.mimeData()
@@ -3064,7 +3065,6 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             self.was_control_drag = bool(mods & KeyboardModifier.ControlModifier)
         except Exception:  # Defensive.
             g.es_exception()
-            g.app.dragging = False
             return
         c, tree = self.c, self.c.frame.tree
         p = None
@@ -3081,14 +3081,11 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         ev.setDropAction(DropAction.IgnoreAction)
         ev.accept()
         if g.doHook("outlinedrop", c=c, p=p, dropevent=ev, formats=formats):
-            # A plugin handled the drop.
-            pass
+            return  # A plugin handled the drop.
+        if md.hasUrls():
+            self.urlDrop(md, p)
         else:
-            if md.hasUrls():
-                self.urlDrop(md, p)
-            else:
-                self.nodeDrop(md, p)
-        g.app.dragging = False
+            self.nodeDrop(md, p)
 
     # @+node:ekr.20110605121601.18366: *5* LeoQTreeWidget.nodeDrop & helpers
     def nodeDrop(self, md: QWidget, p: Position) -> None:
@@ -3113,8 +3110,6 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
     def interFileDrop(self, fn: str, p: Position, s: str) -> None:
         """Paste the mime data after (or as the first child of) p."""
         c = self.c
-        u = c.undoer
-        undoType = 'Drag Outline'
         isLeo = g.match(s, 0, g.app.prolog_prefix_string)
         if not isLeo:
             return
@@ -3138,16 +3133,14 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 src_c.redraw()
             else:
                 g.es("Can't move last node out of outline")
-        undoData = u.beforeInsertNode(p, pasteAsClone=False, copiedBunchList=[])
         c.checkOutline()
         c.selectPosition(pasted)
-        pasted.setDirty()  # 2011/02/27: Fix bug 690467.
+        pasted.setDirty()
         c.setChanged()
         back = pasted.back()
         if back and back.isExpanded():
             pasted.moveToNthChildOf(back, 0)
-        # c.setRootPosition(c.findRootPosition(pasted))
-        u.afterInsertNode(pasted, undoType, undoData)
+        c.setRootPosition(c.findRootPosition())
         c.redraw(pasted)
 
     # @+node:ekr.20110605121601.18368: *6* LeoQTreeWidget.intraFileDrop
@@ -3158,50 +3151,24 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         c = self.c
         u = c.undoer
         c.selectPosition(p1)
-        if as_child or p2.hasChildren() and p2.isExpanded():
-            # Attempt to move p1 to the first child of p2.
-            # parent = p2
-
-            def move(p1: Position, p2: Position) -> Position:
-                if cloneDrag:
-                    p1 = p1.clone()
-                p1.moveToNthChildOf(p2, 0)
-                p1.setDirty()
-                return p1
-
-        else:
-            # Attempt to move p1 after p2.
-            # parent = p2.parent()
-
-            def move(p1: Position, p2: Position) -> Position:
-                if cloneDrag:
-                    p1 = p1.clone()
-                p1.moveAfter(p2)
-                p1.setDirty()
-                return p1
-
-        ok = (
-            # 2011/10/03: Major bug fix.
-            c.checkDrag(p1, p2) and c.checkMoveWithParentWithWarning(p1, p2, True)
-        )
-        if ok:
-            undoData = u.beforeMoveNode(p1)
+        ok = c.checkDrag(p1, p2) and c.checkMoveWithParentWithWarning(p1, p2, True)
+        if not ok:
+            return
+        move_to_child = as_child or p2.hasChildren() and p2.isExpanded()
+        with u.change_outline('tree.intraFileDrop'):
             p1.setDirty()
-            p1 = move(p1, p2)
+            if cloneDrag:
+                p1 = p1.clone()
+            if move_to_child:
+                p1.moveToNthChildOf(p2, 0)
+            else:
+                p1.moveAfter(p2)
+            p1.setDirty()
             if cloneDrag:
                 # Set dirty bits for ancestors of *all* cloned nodes.
                 for z in p1.self_and_subtree():
                     z.setDirty()
-            c.setChanged()
-            u.afterMoveNode(p1, 'Drag', undoData)
-            if (
-                not as_child
-                or p2.isExpanded()
-                or c.config.getBool("drag-alt-drag-expands") is not False
-            ):
-                c.redraw(p1)
-            else:
-                c.redraw(p2)
+            u.redraw(p1)
 
     # @+node:ekr.20110605121601.18383: *6* LeoQTreeWidget.parseText
     def parseText(self, md: QWidget) -> tuple[str, str]:
@@ -3219,25 +3186,22 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
     # @+node:ekr.20110605121601.18369: *5* LeoQTreeWidget.urlDrop & helpers
     def urlDrop(self, md: QWidget, p: Position) -> None:
         """Handle a drop when md.urls()."""
-        c, u, undoType = self.c, self.c.undoer, 'Drag Urls'
+        c = self.c
+        u = c.undoer
         urls = md.urls()
         if not urls:
             return
-        u.beforeChangeGroup(c.p, undoType)
         changed = False
-        for url in urls:
-            scheme = url.scheme()
-            path = url.path()
-            if scheme == 'file':
-                changed |= self.doFileUrl(p, path)
-            elif scheme in ('http', 'https'):  # 'ftp','mailto',
-                changed |= self.doHttpUrl(p, path)
-        # Call this only once, at end.
-        u.afterChangeGroup(c.p, undoType)
-        if changed:
-            c.setChanged()
-            c.redraw()
-        else:
+        with u.change_outline('tree.urlDrop'):
+            for url in urls:
+                scheme = url.scheme()
+                path = url.path()
+                if scheme == 'file':
+                    changed |= self.doFileUrl(p, path)
+                elif scheme in ('http', 'https'):  # 'ftp','mailto',
+                    changed |= self.doHttpUrl(p, path)
+            u.redraw()
+        if not changed:
             g.es("Command did not find any affected Urls")
 
     # @+node:ekr.20110605121601.18370: *6* LeoQTreeWidget.doFileUrl & helper
@@ -3275,8 +3239,6 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         if self.isLeoFile(fn, s) and not self.was_control_drag:
             g.openWithFileName(fn, old_c=c)
             return False  # Don't set the changed marker in the original file.
-        u, undoType = c.undoer, 'Drag File'
-        undoData = u.beforeInsertNode(p, pasteAsClone=False, copiedBunchList=[])
         if p.hasChildren() and p.isExpanded():
             p2 = p.insertAsNthChild(0)
             parent = p
@@ -3292,7 +3254,6 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         if path := c.getPath(parent):
             fn = os.path.relpath(fn, path)
         self.createAtFileNode(fn, p2, s)
-        u.afterInsertNode(p2, undoType, undoData)
         c.selectPosition(p2)
         return True  # The original .leo file has changed.
 
@@ -3457,34 +3418,25 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
     def doPathUrlHelper(self, fn: str, p: Position) -> None:
         """Insert fn as an @path node after p."""
         c = self.c
-        u, undoType = c.undoer, 'Drag Directory'
-        undoData = u.beforeInsertNode(p, pasteAsClone=False, copiedBunchList=[])
         if p.hasChildren() and p.isExpanded():
             p2 = p.insertAsNthChild(0)
         else:
             p2 = p.insertAfter()
         p2.h = '@path ' + fn
-        u.afterInsertNode(p2, undoType, undoData)
         c.selectPosition(p2)
 
     # @+node:ekr.20110605121601.18380: *6* LeoQTreeWidget.doHttpUrl
     def doHttpUrl(self, p: Position, path: str) -> bool:
         """Insert the path in an @url node after p."""
-        c = self.c
-        u = c.undoer
-        undoType = 'Drag Url'
         s = path.strip()
         if not s:
             return False
-        undoData = u.beforeInsertNode(p, pasteAsClone=False, copiedBunchList=[])
         if p.hasChildren() and p.isExpanded():
             p2 = p.insertAsNthChild(0)
         else:
             p2 = p.insertAfter()
         p2.h = '@url'
         p2.b = s
-        p2.clearDirty()  # Don't automatically rewrite this node.
-        u.afterInsertNode(p2, undoType, undoData)
         return True
 
     # @+node:ekr.20110605121601.18381: *3* LeoQTreeWidget: utils

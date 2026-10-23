@@ -35,27 +35,32 @@ class BaseEditCommandsClass:
 
     # @+node:ekr.20150514043714.4: *3* BaseEdit.beginCommand
     def beginCommand(self, w: QTextMixin, undoType: str = 'Typing') -> QTextMixin:
-        """Do the common processing at the start of each command."""
-        c, p, _u = self.c, self.c.p, self.c.undoer
+        """
+        Do the common processing at the start of each command.
+
+        This method *is* compatible with the new undo code.
+        """
+        c = self.c
+        p = c.p
+        self.undoData = None
         name = c.widget_name(w)
-        if name.startswith('body'):
-            self.undoData = b = g.Bunch()
-            # To keep pylint happy.
-            b.ch = ''
-            b.name = name
-            b.oldSel = w.getSelectionRange()
-            b.oldText = p.b
-            b.w = w
-            b.undoType = undoType
-            b.oldIns = w.getInsertPoint()
-            b.oldYScroll = w.getYScrollPosition()
-        else:
-            self.undoData = None  # pragma: no cover
+        if not name.startswith('body'):
+            return w
+        self.undoData = b = g.Bunch()
+        b.ch = ''
+        b.name = name
+        b.oldSel = w.getSelectionRange()
+        b.oldText = p.b
+        b.w = w
+        b.undoType = undoType
+        b.oldIns = w.getInsertPoint()
+        b.oldYScroll = w.getYScrollPosition()
         return w
 
     # @+node:ekr.20150514043714.6: *3* BaseEdit.endCommand
     def endCommand(
         self,
+        *,
         label: str | None = None,
         changed: bool = True,
         setLabel: bool = True,
@@ -66,6 +71,7 @@ class BaseEditCommandsClass:
         """
         c = self.c
         k, p, u = c.k, c.p, c.undoer
+
         w = c.frame.body and c.frame.body.wrapper
         if not w:
             return
@@ -81,21 +87,15 @@ class BaseEditCommandsClass:
                     oldSel=bunch.oldSel,
                 )
             else:
-                with u:
-                    u.set_command_name(bunch.undoType)
+                with u.change_node(p, bunch.undoType):
                     u.set_body(p, newText, old_body=bunch.oldText)
-                    u.set_selection_range(
-                        bunch.oldIns,
-                        bunch.oldSel,
-                        old_y_scroll=bunch.oldYScroll,
-                        new_y_scroll=w.getYScrollPosition(),
-                    )
+                    u.redraw(p)
         self.undoData = None
         k.clearState()
         # Warning: basic editing commands **must not** set the label.
         if setLabel:
             if label:
-                k.setLabelGrey(label)  # pragma: no cover
+                k.setLabelGrey(label)
             else:
                 k.resetLabel()
 

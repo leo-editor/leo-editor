@@ -17,7 +17,9 @@
 <v t="ekr.20260820160722.1"><vh>@bool run-ty-on-write = False</vh></v>
 <v t="ekr.20210530065000.2"><vh>@data exec-script-commands</vh></v>
 <v t="ekr.20210530065000.3"><vh>@data exec-script-patterns</vh></v>
+<v t="ekr.20261011041619.1"><vh>--- @data history list</vh>
 <v t="ekr.20150425145248.1"><vh>@data history-list</vh></v>
+</v>
 <v t="ekr.20240107154430.1"><vh>@int max-find-long-lines-length = 100</vh></v>
 <v t="ekr.20140916101314.19538"><vh>@string target_language = python</vh></v>
 <v t="ekr.20260111055821.1"><vh>Beautifying files</vh>
@@ -34,10 +36,20 @@
 <v t="ekr.20231107062256.1"><vh>@button check-leoPy.leo</vh></v>
 <v t="ekr.20230508145335.1"><vh>@command slow-tests</vh></v>
 <v t="ekr.20240714075119.1"><vh>@command sync-reqs</vh></v>
-<v t="ekr.20220306092217.1"><vh>@command test-one</vh>
+<v t="ekr.20220306092217.1"><vh>@command t1</vh>
 <v t="ekr.20240608035218.1"><vh>&lt;&lt; test-one: test kind &gt;&gt;</vh></v>
 <v t="ekr.20240528034319.1"><vh>&lt;&lt; test the beautifier &gt;&gt;</vh></v>
 <v t="ekr.20230511074046.1"><vh>&lt;&lt; prefixes &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20261011041507.1"><vh>@command test-leo</vh>
+<v t="ekr.20261011041507.2"><vh>&lt;&lt; test-one: test kind &gt;&gt;</vh></v>
+<v t="ekr.20261011041507.3"><vh>&lt;&lt; test the beautifier &gt;&gt;</vh></v>
+<v t="ekr.20261011041507.4"><vh>&lt;&lt; prefixes &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20261011040837.1"><vh>@command ed-test-one</vh>
+<v t="ekr.20261011040837.2"><vh>&lt;&lt; test-one: test kind &gt;&gt;</vh></v>
+<v t="ekr.20261011040837.3"><vh>&lt;&lt; test the beautifier &gt;&gt;</vh></v>
+<v t="ekr.20261011040837.4"><vh>&lt;&lt; prefixes &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20260802055601.1"><vh>@command cover-todo</vh></v>
 </v>
@@ -96,8 +108,8 @@
 <v t="ekr.20200222151754.1"><vh>script: yoton "other end"</vh></v>
 </v>
 </v>
+<v t="ekr.20150425145248.1"></v>
 </v>
-<v t="ekr.20220904210247.1"></v>
 <v t="EKR.20040430162943"><vh>The attic</vh>
 <v t="ekr.20170302123956.1"><vh>@file ../doc/leoAttic.txt</vh></v>
 </v>
@@ -576,6 +588,7 @@
 <v t="ekr.20210902164946.1"><vh>@file ../unittests/core/test_leoGlobals.py</vh></v>
 <v t="ekr.20220822082042.1"><vh>@file ../unittests/core/test_leoImport.py</vh></v>
 <v t="ekr.20210903155556.1"><vh>@file ../unittests/core/test_leoKeys.py</vh></v>
+<v t="ekr.20260915043529.1"><vh>@file ../unittests/core/test_leoMarkdown.py</vh></v>
 <v t="ekr.20201203042030.1"><vh>@file ../unittests/core/test_leoNodes.py</vh></v>
 <v t="ekr.20210908171733.1"><vh>@file ../unittests/core/test_leoPersistence.py</vh></v>
 <v t="ekr.20220911163718.1"><vh>@file ../unittests/core/test_leoQt6.py</vh></v>
@@ -585,6 +598,7 @@
 <v t="ekr.20230722095455.1"><vh>@file ../unittests/core/test_leoTest2.py</vh></v>
 <v t="ekr.20210906141410.1"><vh>@file ../unittests/core/test_leoUndo.py</vh></v>
 <v t="ekr.20210910072917.1"><vh>@file ../unittests/core/test_leoVim.py</vh></v>
+<v t="ekr.20261012161544.1"><vh>@file ../unittests/core/test_contextUndo.py</vh></v>
 </v>
 <v t="ekr.20240204082420.1"><vh>in unittests/misc_tests</vh>
 <v t="ekr.20210926044012.1"><vh>@file ../unittests/misc_tests/test_doctests.py</vh></v>
@@ -804,8 +818,7 @@ and how to use it.
 <t tx="ekr.20051031040240"></t>
 <t tx="ekr.20071113084440"># These plugins are for testing Leo's own plugin loading logic.
 # There is no reason ever to enable these plugins.</t>
-<t tx="ekr.20080412053100.5">
-</t>
+<t tx="ekr.20080412053100.5">@language rest</t>
 <t tx="ekr.20080730161153.8"></t>
 <t tx="ekr.20090802181029.5988"></t>
 <t tx="ekr.20100103093121.5365"># These are experimental plugins.
@@ -956,16 +969,18 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
 
 &lt;/xsl:stylesheet&gt;
 </t>
-<t tx="ekr.20150425145248.1">show-node-files
+<t tx="ekr.20150425145248.1">rl
+promote-to-at-others
+execute-script
+show-node-files
 dump-last-colorizer-trace
 pylint
-execute-script
 
-# test-one
 # clone-diff-pr
 # ctrl-click-at-cursor
 # show-commands
 # show-bindings
+
 </t>
 <t tx="ekr.20150502050609.1">"""
 Back up this .leo file.
@@ -1004,7 +1019,8 @@ prefix_lines:
 
 [General Patterns]
 </t>
-<t tx="ekr.20170427114412.1"></t>
+<t tx="ekr.20170427114412.1">@language rest
+</t>
 <t tx="ekr.20170428084123.1">@language python
 """Recursively import all python files in a directory and clean the result."""
 @tabwidth - 4  # For a better match.
@@ -1626,6 +1642,8 @@ def do_sec(i, m, s):
 </t>
 <t tx="ekr.20220306092217.1">"""Invoke EKR's private test-one.cmd script."""
 
+g.cls()
+
 import os
 
 if c.isChanged():
@@ -1980,7 +1998,9 @@ mod_scripting.py    # Support for @button and @command.
 nav_qt.py           # Forward/back buttons &amp; goto-next/prev-history-node
 qt_layout.py        # Creates qt_layout menu in the Plugins menu.
 
-# viewrendered.py     # (Or viewrendered3.py) Plugins menu support.
+# Testing.
+
+viewrendered.py     # (Or viewrendered3.py) Plugins menu support.
 
 # Disabled standard menus...
 
@@ -2046,7 +2066,7 @@ def norm(path):
     return os.path.normpath(path).lower()
 
 # Compute the directories.
-leo_dir = norm(join(g.app.loadDir, '..'))  ### '..'))
+leo_dir = norm(join(g.app.loadDir, '..'))
 core_dir = join(leo_dir, 'core')
 commands_dir = join(leo_dir, 'commands')
 external_dir = join(leo_dir, 'external')
@@ -3144,7 +3164,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.11", "3.12", "3.13", "3.14", "3.15"]
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
@@ -3160,7 +3180,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.11", "3.12", "3.13", "3.14", "3.15"]
     env:
       # No display in CI; run Qt headless instead of pulling in xvfb.
       QT_QPA_PLATFORM: offscreen
@@ -3217,7 +3237,7 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
         with:
-          python-version: "3.14"
+          python-version: "3.15"
           cache: pip
       # Install optional packages that Leo's devs should have installed,
       # so ty resolves their imports the same way it does on devs' machines.
@@ -3480,18 +3500,18 @@ strict-equality-semantics = true
 
 [rules]
 
+
 &lt;&lt; ty.toml: rules &gt;&gt;
 </t>
-<t tx="ekr.20260902044553.1">
-# Like `disable_error_code=attr-defined` in .mypy.ini.
+<t tx="ekr.20260902044553.1"># Like `disable_error_code=attr-defined` in .mypy.ini.
 unresolved-attribute = "ignore"
 
 # Like `ignore_missing_imports = True` in .mypy.ini.
 unresolved-import = "ignore"
 
 # Warn about unused suppressions.
-unused-ignore-comment = "ignore"  # Python 3.14 and 3.150rc2 differ.
-unused-type-ignore-comment = "ignore"  # Python 3.14 and 3.150rc2 differ.
+unused-ignore-comment = "ignore"  # Python 3.14 and 3.15 differ.
+unused-type-ignore-comment = "ignore"  # Python 3.14 and 3.15 differ.
 
 # Ignore warnings about overridden methods.
 invalid-method-override = "ignore"
@@ -3523,6 +3543,98 @@ invalid-method-override = "ignore"
     "leo/plugins/stickynotes_plus*",
     "leo/plugins/qt_main*",
 ]
+</t>
+<t tx="ekr.20261011040837.1">"""Invoke EKR's private ed-s test-one.cmd script."""
+
+import os
+
+os.system('ed-s test-one.cmd')
+</t>
+<t tx="ekr.20261011040837.2"># Last one wins.
+kind = 'beautify'
+kind = 'test'  # Run unit test.
+</t>
+<t tx="ekr.20261011040837.3"># Can be run from the command line as follows:
+# python -c "import leo.core.leoTokens" --all --report --write leo/core/leoAst.py
+args = '--all --report --write'  # --beautified --diff --write'
+for command in (
+    # f'python -c "import leo.core.leoTokens" {args} leoAst.py',
+    f'python -c "import leo.core.leoTokens" {args} leo/core',
+    'echo done!',
+):
+    print(command)
+    g.execute_shell_commands(command)
+</t>
+<t tx="ekr.20261011040837.4">commands = 'leo.unittests.commands'
+core = 'leo.unittests.core'
+gui = 'leo.unittests.test_gui'
+importers = 'leo.unittests.plugins.test_importers'
+misc = 'leo.unittests.misc_tests'
+plugins = 'leo.unittests.plugins'
+syntax = 'leo.unittests.plugins.test_syntax'
+writers = 'leo.unittests.plugins.test_writers'
+
+# f"{core}.test_leoGlobals",
+# f"{core}.test_leoTokens",
+
+# f"{misc}.test_design",
+# f"{misc}.test_doctests",
+# f"{misc}.test_syntax",
+
+# f"{plugins}.test_gui",
+# f"{plugins}.test_importers",
+# f"{plugins}.test_plugins",
+# f"{plugins}.test_writers",
+</t>
+<t tx="ekr.20261011041507.1">"""Invoke EKR's private test-one.cmd script."""
+
+import os
+
+if c.isChanged():
+    print('Saved!')
+    c.save()
+
+os.system('test-leo.cmd')
+</t>
+<t tx="ekr.20261011041507.2"># Last one wins.
+kind = 'beautify'
+kind = 'test'  # Run unit test.
+</t>
+<t tx="ekr.20261011041507.3"># Can be run from the command line as follows:
+# python -c "import leo.core.leoTokens" --all --report --write leo/core/leoAst.py
+args = '--all --report --write'  # --beautified --diff --write'
+for command in (
+    # f'python -c "import leo.core.leoTokens" {args} leoAst.py',
+    f'python -c "import leo.core.leoTokens" {args} leo/core',
+    'echo done!',
+):
+    print(command)
+    g.execute_shell_commands(command)
+</t>
+<t tx="ekr.20261011041507.4">commands = 'leo.unittests.commands'
+core = 'leo.unittests.core'
+gui = 'leo.unittests.test_gui'
+importers = 'leo.unittests.plugins.test_importers'
+misc = 'leo.unittests.misc_tests'
+plugins = 'leo.unittests.plugins'
+syntax = 'leo.unittests.plugins.test_syntax'
+writers = 'leo.unittests.plugins.test_writers'
+
+# f"{core}.test_leoGlobals",
+# f"{core}.test_leoTokens",
+
+# f"{misc}.test_design",
+# f"{misc}.test_doctests",
+# f"{misc}.test_syntax",
+
+# f"{plugins}.test_gui",
+# f"{plugins}.test_importers",
+# f"{plugins}.test_plugins",
+# f"{plugins}.test_writers",
+</t>
+<t tx="ekr.20261011041619.1">@language rest
+
+.. Use @language rest to suppress ruff format
 </t>
 </tnodes>
 </leo_file>

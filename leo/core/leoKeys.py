@@ -355,7 +355,7 @@ class AutoCompleterClass:
             return
         with u.change_node(p, 'auto-completer'):
             p.v.b = newText  # p.b would cause a redraw.
-            u.redraw(c.p)
+            u.redraw()
 
     finish = exit
     abort = exit
@@ -3214,7 +3214,7 @@ class KeyHandlerClass:
             k.showStateAndMode(setFocus=setFocus)
         k.resetCommandHistory()
 
-    # @+node:ekr.20061031131434.126: *4* k.manufactureKeyPressForCommandName (only for unit tests!)
+    # @+node:ekr.20061031131434.126: *4* k.manufactureKeyPressForCommandName (no longer used)
     def manufactureKeyPressForCommandName(self, w: QTextMixin, commandName: str) -> None:
         """
         Implement a command by passing a keypress to the gui.
@@ -3713,7 +3713,7 @@ class KeyHandlerClass:
     def handleInputShortcut(self, event: LeoKeyEvent, stroke: Stroke) -> None:
         c, k, p, u = self.c, self, self.c.p, self.c.undoer
         k.clearState()
-        with u.change_outline('change shortcut'):
+        with u.change_outline('k.handleInputShortcut'):
             if p.h.startswith(('@shortcuts', '@mode')):
                 # line of text in body
                 w = c.frame.body.wrapper

@@ -2777,7 +2777,7 @@ class VNode:
         g.contentModifiedSet.add(self)
 
     # @+node:ekr.20260622103203.1: *4* v.findAllAncestorAtFileNodes
-    def findAllAncestorAtFileNodes(self, *, to_do_set: set[VNode] | None = None) -> list[VNode]:
+    def findAllAncestorAtFileNodes(self) -> list[VNode]:
         """
         Return a list of all @<file> nodes containing this VNode.
 
@@ -2788,15 +2788,16 @@ class VNode:
 
         PR #4747: Create this helper function.
         https://github.com/leo-editor/leo-editor/pull/4747
+
+        PR #5001: Remove the to_do_set kwarg.
         """
         v = self
 
         # Init seen and to_do_list.
         seen: set[VNode] = set([v.context.hiddenRootNode])
-        to_do_list: list[VNode] = list(to_do_set) if to_do_set else [v]
-        if to_do_set:
-            for v2 in to_do_set:
-                to_do_list.extend(v2.parents)
+        to_do_list: list[VNode] = [v]
+        for v2 in to_do_list:
+            to_do_list.extend(v2.parents)
         to_do_list = list(set(to_do_list))
 
         # The main loop.
@@ -2852,10 +2853,10 @@ class VNode:
             pass
 
     # @+node:ekr.20191213161023.1: *4* v.setAllAncestorAtFileNodesDirty
-    def setAllAncestorAtFileNodesDirty(self, *, to_do_set: set[VNode] | None = None) -> None:
+    def setAllAncestorAtFileNodesDirty(self) -> None:
         """Set all ancestor @<file> nodes dirty."""
         v = self
-        for v2 in v.findAllAncestorAtFileNodes(to_do_set=to_do_set):
+        for v2 in v.findAllAncestorAtFileNodes():
             v2.setDirty()
 
     # @+node:ekr.20040315032144: *4* v.setBodyString & v.setHeadString

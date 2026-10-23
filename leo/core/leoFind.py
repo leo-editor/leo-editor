@@ -279,7 +279,6 @@ class LeoFind:
     # @+node:ekr.20210108070948.1: *4* find._batch_change_helper
     def _batch_change_helper(self, p: Position, find_text: str, change_text: str) -> int:
         c, p1, u = self.c, p.copy(), self.c.undoer
-        undoType = 'Batch Change All'
         # Check...
         if not find_text:  # pragma: no cover
             return 0
@@ -304,7 +303,7 @@ class LeoFind:
         self.work_s = s
         self.work_sel = (0, 0, 0)
         # The main loop.
-        with u.change_outline(undoType):
+        with u.change_outline('batch-change-all'):
             count = 0
             for p in positions:
                 count_h, count_b = 0, 0
@@ -320,6 +319,7 @@ class LeoFind:
                         p.b = new_b
             if not g.unitTesting:  # pragma: no cover
                 print(f"{count:3}: {find_text:>30} => {change_text}")
+            u.redraw()
             return count
 
     # @+node:ekr.20210108083003.1: *4* find._init_from_dict
@@ -468,6 +468,7 @@ class LeoFind:
         """
         self.do_find_marked(flatten=False)
 
+    @g.commander_command('clone-marked-nodes')  # Now equivalent to cffm.
     @cmd('clone-find-all-flattened-marked')
     @cmd('cffm')
     def cloneFindAllFlattenedMarked(self, event: LeoKeyEvent | None = None) -> None:
@@ -489,7 +490,6 @@ class LeoFind:
         This is a stand-alone method for unit testing.
         """
         c, u = self.c, self.c.undoer
-        undoType = 'clone-find-marked'
         failMsg = 'No marked nodes'
 
         count = 0
@@ -503,23 +503,22 @@ class LeoFind:
         def isMarked(p: Position) -> bool:
             return p.isMarked()
 
-        with u.change_outline(undoType):
-            root = c.cloneFindByPredicate(
-                generator=c.all_unique_positions,
-                predicate=isMarked,
-                failMsg=failMsg,
-                flatten=flatten,
-                undoType=undoType,
-            )
-            if root:
+        if root := c.cloneFindByPredicate(
+            generator=c.all_unique_positions,
+            predicate=isMarked,
+            failMsg=failMsg,
+            flatten=flatten,
+            undoType='clone-find-marked',
+        ):
+            with u.change_outline('clone-find-marked'):
                 # Unmarking all nodes is convenient.
                 for p in c.all_unique_positions():
                     if p.isMarked():
-                        c.clearMarked(p)
+                        c.clearMarked(p)  # Calls a hook.
                 n = root.numberOfChildren()
                 root.b = f"# Found {n} marked node{g.plural(n)}"
                 u.redraw(root)
-            return bool(root)
+        return bool(root)
 
     # @+node:ekr.20140828080010.18532: *4* find.clone-find-parents
     @cmd('clone-find-parents')
@@ -536,14 +535,13 @@ class LeoFind:
             g.es(f"not a clone: {p.h}")
             return False
         p.copy()
-        undoType = 'Find Clone Parents'
         aList = c.vnode2allPositions(p.v)
         if not aList:  # pragma: no cover
             g.trace('can not happen: no parents')
             return False
         # Create the node as the last top-level node.
         # All existing positions remain valid.
-        with u.change_outline(undoType):
+        with u.change_outline('clone-find-parents'):
             found = c.lastTopLevel().insertAfter()
             found.h = f"Found: parents of {p.h}"
             seen = []
@@ -1216,11 +1214,10 @@ class LeoFind:
         """Do the change-all command. Return the number of changes, or 0 for error."""
         # Caller has checked settings.
         c, _current, u = self.c, self.c.p, self.c.undoer
-        undoType = 'Replace All'
         t1 = time.process_time()
 
         saveData = self.save()
-        with u.change_outline(undoType):
+        with u.change_outline('change-all'):
             if not self.find_text:  # pragma: no cover
                 return 0
             if not self.search_headline and not self.search_body:  # pragma: no cover
@@ -1596,7 +1593,7 @@ class LeoFind:
                 g.es_print(f"tag not found: {tag}")
             tc.show_all_tags()
             return 0, c.p
-        with u.change_outline('Clone Find Tag'):
+        with u.change_outline('clone-find-tag'):
             found = self._create_clone_tag_nodes(clones)
             assert c.positionExists(found, trace=True), found
             u.redraw(found)
@@ -1730,7 +1727,6 @@ class LeoFind:
         Return the list of Dicts describing each match.
         """
         c, u = self.c, self.c.undoer
-        undoType = 'Find All'
         saveData = self.save()
         if self.pattern_match:
             ok = self.compile_pattern()
@@ -1770,24 +1766,17 @@ class LeoFind:
             # Not even one match found!
             self.restore(saveData)
             return {}
-        # Check first if need to make a 'group' undo bead
-        with u.change_outline(undoType):
-            # Create the result dict.
-            result_string = self.make_result_from_matches(matches_dict)
+        result_string = self.make_result_from_matches(matches_dict)
+        with u.change_outline('find-all'):
             # Create the summary node.
             found_p = self.create_summary_node('find-all', result_string)
-            c.selectPosition(found_p)
-
             if self.mark_finds:
                 for match in matches_dict:
                     if p := c.vnode2position(match['v']):
                         if not p.isMarked():
                             p.setMarked()
                             p.setDirty()
-                # Finish undo group only if mark_finds is true
-
-            u.redraw()
-            # Return a dict containing the actual results and statistics.
+            u.redraw(found_p)
             return {
                 'distinct_body_lines': distinct_body_lines,
                 'match_dict': matches_dict,
@@ -2433,13 +2422,11 @@ class LeoFind:
             else:
                 p.moveToThreadNext()
             assert p != progress
-        with u.change_outline('Clone Find All'):
+        with u.change_outline('clone-find-all'):
             if clones:
                 found_p = self._cfa_create_nodes(clones, flattened=False)
                 assert c.positionExists(found_p, trace=True), found_p
-                c.setChanged()
                 c.selectPosition(found_p)
-                # Put the count in found_p.h.
                 found_p.h = found_p.h.replace('Found:', f"Found {count}:")
             # Reset data after calculating results.
             self.ftm.set_radio_button('entire-outline')
@@ -2447,6 +2434,7 @@ class LeoFind:
             self.node_only = self.suboutline_only = False
             self.root = None
             g.es("found", count, "matches for", self.find_text)
+            u.redraw()
             return count  # Might be useful for the gui update.
 
     # @+node:ekr.20210110073117.34: *5* find._cfa_create_nodes
@@ -2507,22 +2495,22 @@ class LeoFind:
         if not w:  # pragma: no cover
             return False
         assert w
-        oldSel = sel = w.getSelectionRange()
-        start, end = sel
+        start, end = old_sel = w.getSelectionRange()
         if start > end:  # pragma: no cover
             start, end = end, start
         if start == end:  # pragma: no cover
             g.es("no text selected")
             return False
+        start, end = old_sel
+        change_text = self.change_text
+        # Perform regex substitutions of \1, \2, ...\9 in the change text.
+        if self.pattern_match and self.match_obj:
+            groups = self.match_obj.groups()
+            if groups:
+                change_text = self.make_regex_subs(change_text, groups)
+        change_text = self.replace_back_slashes(change_text)
+
         with u.change_node(p, 'change-selection'):
-            start, end = oldSel
-            change_text = self.change_text
-            # Perform regex substitutions of \1, \2, ...\9 in the change text.
-            if self.pattern_match and self.match_obj:
-                groups = self.match_obj.groups()
-                if groups:
-                    change_text = self.make_regex_subs(change_text, groups)
-            change_text = self.replace_back_slashes(change_text)
             # Update both the gui widget and the work "widget"
             new_ins = start if self.reverse else start + len(change_text)
             if start != end:
@@ -2537,21 +2525,24 @@ class LeoFind:
             # No redraws here: they would destroy the headline selection.
             if self.in_headline:
                 # #2220: Let onHeadChanged handle undo, etc.
-                c.frame.tree.onHeadChanged(p, undoType='Change Headline')
+                c.frame.tree.onHeadChanged(p, 'change-headline')
                 # w will change after a redraw.
+                u.redraw_after_head_changed()  # Required
                 w = c.headline_wrapper(p)
                 if g.isTextWrapper(w):
                     # find-next and find-prev work regardless of insert point.
                     assert w
                     w.setSelectionRange(start, start + len(change_text))
-            else:
-                p.v.b = w.getAllText()
-
+                if self.mark_changes and not p.isMarked():  # pragma: no cover
+                    p.setMarked()
+                    p.setDirty()
+                return True
+            p.v.b = w.getAllText()
             if self.mark_changes and not p.isMarked():  # pragma: no cover
                 p.setMarked()
                 p.setDirty()
+            u.redraw()
             return True
-            u.redraw(c.p)
 
     # @+node:ekr.20210110073117.31: *4* find.check_args
     def check_args(self, tag: str) -> bool:
@@ -2601,39 +2592,33 @@ class LeoFind:
         if not self.find_text:  # pragma: no cover
             return fail
         attempts = 0
-        u = self.c.undoer
         if self.pattern_match:
             ok = self.compile_pattern()
             if not ok:
                 return fail
-        with u.change_outline('find-next-match'):
-            while p:
-                pos, newpos = self._fnm_search(p)
-                if pos is not None:
-                    # Success.
-                    if self.mark_finds and not p.isMarked():  # pragma: no cover
-                        p.setMarked()
-                        p.setDirty()
-                    return p, pos, newpos
-                # Searching the pane failed: switch to another pane or node.
-                if self._fnm_should_stay_in_node(p):
-                    # Switching panes is possible.  Do so.
-                    self.in_headline = not self.in_headline
+        while p:
+            pos, newpos = self._fnm_search(p)
+            if pos is not None:  # success
+                return p, pos, newpos
+            # Searching the pane failed: switch to another pane or node.
+            if self._fnm_should_stay_in_node(p):
+                # Switching panes is possible.  Do so.
+                self.in_headline = not self.in_headline
+                s = p.h if self.in_headline else p.b
+                ins = len(s) if self.reverse else 0
+                self.work_s = s
+                self.work_sel = (ins, ins, ins)
+            else:
+                # Switch to the next/prev node, if possible.
+                attempts += 1
+                if p := self._fnm_next_after_fail(p):  # type:ignore
+                    # Found another node: select the proper pane.
+                    self.in_headline = self._fnm_first_search_pane()
                     s = p.h if self.in_headline else p.b
                     ins = len(s) if self.reverse else 0
                     self.work_s = s
                     self.work_sel = (ins, ins, ins)
-                else:
-                    # Switch to the next/prev node, if possible.
-                    attempts += 1
-                    if p := self._fnm_next_after_fail(p):  # type:ignore
-                        # Found another node: select the proper pane.
-                        self.in_headline = self._fnm_first_search_pane()
-                        s = p.h if self.in_headline else p.b
-                        ins = len(s) if self.reverse else 0
-                        self.work_s = s
-                        self.work_sel = (ins, ins, ins)
-            return fail
+        return fail
 
     # @+node:ekr.20131123132043.16476: *5* find._fnm_next_after_fail & helper
     def _fnm_next_after_fail(self, p: Position) -> Position | None:
@@ -3030,7 +3015,6 @@ class LeoFind:
             c.frame.tree.editLabel(p)
             w = c.headline_wrapper(p)  # #2220
             if g.isTextWrapper(w):
-                assert w
                 w.setSelectionRange(pos, newpos, insert)  # #2220
         else:
             # Tricky code.  Do not change without careful thought.

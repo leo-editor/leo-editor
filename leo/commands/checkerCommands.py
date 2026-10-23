@@ -338,7 +338,7 @@ class CheckNodes:
         c = self.c
         u = c.undoer
         # Create the top-level node.
-        with u.change_outline('check-nodes'):
+        with u.change_outline('CheckNodes.create_dubious_nodes'):
             dubious = c.lastTopLevel().insertAfter()
             dubious.h = f"{self.count} dubious nodes{g.plural(self.count)}"
             # Clone nodes as children of the top-level node.
@@ -621,9 +621,7 @@ class TyCommand:
         result = subprocess.run(command, capture_output=True, text=True, check=False)
         raw_s = (result.stdout + result.stderr).replace('All checks passed!', '').strip()
         # Strip out cruft.
-        s = ''.join(
-            z for z in g.splitLines(raw_s)
-        ).strip()  ### if not z.startswith('Found')).strip()
+        s = ''.join(z for z in g.splitLines(raw_s)).strip()
         s = s.replace(fn, c.p.h)  # A hack.
         if s:
             c.frame.log.put_html_links(s, script_p=script_p)

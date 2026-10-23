@@ -43,13 +43,13 @@ class To_Python:  # pragma: no cover
     def go(self) -> None:
         t1 = time.time()
         c = self.c
-        u, undoType = c.undoer, 'typescript-to-python'
+        u = c.undoer
         pp = leoBeautify.CPrettyPrinter(c)
-        with u.change_outline(undoType):
-            changed = False
-            n_files, n_nodes = 0, 0
-            special = ('class ', 'module ', '@file ', '@@file ')
-            files = ('@file ', '@@file ')
+        changed = False
+        n_files, n_nodes = 0, 0
+        special = ('class ', 'module ', '@file ', '@@file ')
+        files = ('@file ', '@@file ')
+        with u.change_outline('typescript-to-python'):
             for p in self.p.self_and_subtree(copy=False):
                 if p.b:
                     n_nodes += 1
@@ -71,6 +71,7 @@ class To_Python:  # pragma: no cover
                 g.es("Command did not find content to convert")
             t2 = time.time()
             g.es_print(f"done! {n_files} files, {n_nodes} nodes, {t2 - t1:2.2f} sec")
+            u.redraw()
 
     # @+node:ekr.20150514063305.127: *3* To_Python.convertCodeList
     def convertCodeList(self, lines: list[str]) -> None:
@@ -1295,11 +1296,11 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         """
         Convert all legacy (headline-based) unls to gnx-based unls.
         """
-        c, undo_type = self.c, 'convert-unls'
+        c = self.c
         p1 = c.p.copy()
         u = c.undoer
         n_changed, n_changed_nodes = 0, 0
-        with u.change_outline(undo_type):
+        with u.change_outline('convert-unls'):
             for p in c.all_unique_positions():
                 changed, node_changed, result = False, False, []
                 for line in g.splitLines(p.b):
@@ -1327,8 +1328,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     c.setBodyString(p, ''.join(result))  # Required.
             if n_changed:
                 g.es_print(
-                    f"Changed {n_changed} unl{g.plural(n_changed)} in {n_changed_nodes} node{g.plural(n_changed_nodes)}"
-                )
+                    f"Changed {n_changed} unl{g.plural(n_changed)} "
+                    f"in {n_changed_nodes} node{g.plural(n_changed_nodes)}"
+                )  # fmt: skip
             c.contractAllHeadlines()
             u.redraw(p1)
             g.es('convert-gnxs: done')

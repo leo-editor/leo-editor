@@ -1568,7 +1568,7 @@ class TestJava(BaseTestImporter):
     # @+node:ekr.20210904065459.30: *3* TestJava.test_from_AdminPermission_java
     def test_from_AdminPermission_java(self):
 
-        ### To do: allow '{' on following line.
+        # To do: allow '{' on following line.
         s = """
             /**
              * Indicates the caller's authority to perform lifecycle operations on

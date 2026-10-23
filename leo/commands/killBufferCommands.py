@@ -265,7 +265,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         else:
             i = j
         if i < j:
-            self.killHelper(event, i, j, w, undoType='kill-to-end-of-line')
+            self.killHelper(event, i, j, w, 'kill-to-end-of-line')
 
     # @+node:ekr.20150514063305.421: *3* ec.killLine
     @cmd('kill-line')
@@ -289,7 +289,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             j -= 1
         else:
             pass  # Kill the newline in the present line.
-        self.killHelper(event, i, j, w, undoType='kill-line')
+        self.killHelper(event, i, j, w, 'kill-line')
 
     # @+node:ekr.20150514063305.422: *3* killRegion & killRegionSave
     @cmd('kill-region')
@@ -305,7 +305,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         if i == j:
             return
         s = w.getSelectedText()
-        self.beginCommand(w, undoType='kill-region')
+        self.beginCommand(w, 'kill-region')
         w.delete(i, j)
         self.endCommand(changed=True, setLabel=True)
         self.addToKillBuffer(s)
@@ -339,7 +339,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         if i == -1:
             return
         undoType = 'kill-sentence'
-        self.beginCommand(w, undoType=undoType)
+        self.beginCommand(w, undoType)
         i2 = s.rfind('.', 0, ins) + 1
         self.killHelper(event, i2, i + 1, w, undoType=undoType)
         w.setInsertPoint(i2)
@@ -405,7 +405,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         if not g.app.globalKillBuffer and not clip_text:
             return
         undoType = 'yank-pop' if pop else 'yank'
-        self.beginCommand(w, undoType=undoType)
+        self.beginCommand(w, undoType)
         try:
             if not pop or self.lastYankP and self.lastYankP != current:
                 self.reset = 0

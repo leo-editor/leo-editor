@@ -11,9 +11,11 @@ import tempfile
 from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
+### Changed. 7
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoNodes import Position, VNode
+    from leo.core.leoNodes import Position
 
     Value = Any
     Widget = Any  # 'Any' is the correct annotation for base class widgets.
@@ -186,6 +188,7 @@ class ExternalFilesController:
         changed = False
         state = 'no'
         changed_roots: set[str] = set()
+        old_p = c.p
         for p in c.all_unique_positions():
             if not p.isAnyAtFileNode():
                 continue
@@ -213,21 +216,17 @@ class ExternalFilesController:
                 for p2 in p.subtree():
                     if p2.v.isCloned():
                         p2.v.setDirty()
-                # #4565: set all ancestor file nodes dirty and redraw.
-                p.v.setDirty()
+                # #4565 and PR #5001: set all ancestor file nodes dirty and redraw.
+                p.setDirty()  # Calls p.v.setAllAncestorAtFileNodesDirty().
                 changed_roots.add(p.h)
-                to_do_set: set[VNode] = set()
-                for p2 in c.all_positions():
-                    if p2.v.isDirty():
-                        to_do_set.add(p2.v)
-                p.v.setAllAncestorAtFileNodesDirty(to_do_set=to_do_set)
         if not changed:
             return
         # #4570: Write all update messages here, and only here.
         if not g.unitTesting:
             for s in sorted(list(changed_roots)):
                 g.es_print('update:', s, color='blue')
-        c.redraw()
+        new_p = old_p if c.positionExists(old_p) else c.p  # PR #5001
+        c.redraw(new_p)
 
     # @+node:ekr.20201207055713.1: *5* efc.idle_check_leo_file
     def idle_check_leo_file(self, c: Cmdr) -> None:
