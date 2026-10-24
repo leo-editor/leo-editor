@@ -165,10 +165,6 @@
 <v t="ekr.20100122073254.11655"><vh>Writing new importers</vh></v>
 </v>
 <v t="matt.20200331213038.1"><vh>PyPi install caveat</vh></v>
-<v t="ekr.20230121110345.1"><vh>Script files</vh>
-<v t="ekr.20230121110340.1"><vh>@clean ../scripts/make-clean.cmd</vh></v>
-<v t="ekr.20230121110533.1"><vh>@clean ../scripts/make-html.cmd</vh></v>
-</v>
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ekr.20090428133936.2"><vh>@edit html/conf.py</vh></v>
 <v t="ekr.20241124083101.1"><vh>@edit _static/custom.css</vh></v>
@@ -1129,10 +1125,7 @@
 <v t="ekr.20131019061259.16686"><vh>Pre-defined symbols</vh></v>
 <v t="ekr.20170315020214.1"><vh>LeoApp class</vh></v>
 <v t="ekr.20131019061259.16688"><vh>Commands class</vh></v>
-<v t="ekr.20190101093224.1"><vh>Undoing commands</vh>
-<v t="ekr.20190101093224.2"><vh>Undoably changing body text</vh></v>
-<v t="ekr.20190101093224.3"><vh>Undoably changing multiple nodes</vh></v>
-</v>
+<v t="ekr.20190101093224.1"><vh>Undoing commands</vh></v>
 <v t="ekr.20131019061259.16690"><vh>VNode class</vh></v>
 <v t="ekr.20131019061259.16691"><vh>Position class</vh></v>
 <v t="ekr.20131019061259.16692"><vh>leo.core.leoGlobals module</vh></v>
@@ -2172,6 +2165,9 @@
 </v>
 <v t="ekr.20260810021658.1"></v>
 <v t="ekr.20260716061125.1"></v>
+<v t="ekr.20261018090533.1"></v>
+<v t="ekr.20131008041326.16091"></v>
+<v t="ekr.20190101093224.1"></v>
 <v t="ekr.20261018090533.1"></v>
 </vnodes>
 <tnodes>
@@ -22435,37 +22431,49 @@ The body text of an ``@data history-list`` *setting node* preloads commands into
     check-clones
     expand-log-pane
     contract-log-pane</t>
-<t tx="ekr.20190101093224.1">If you want to make a command undoable, you must create "before" and "after" snapshots of the parts of the outline that may change. Here are some examples.  Leo's source code contains many other examples.
-</t>
-<t tx="ekr.20190101093224.2">To undo a single change to body text:
+<t tx="ekr.20190101093224.1">Here is everything script writers need to know to make their code undoable.
+
+The patterns below all assume the following definitions:
 
 .. code-block:: python
 
-    command = 'my-command-name'
-    b = c.undoer.beforeChangeNodeContents(p, oldYScroll=ypos)
-    # Change p's body text.
-    c.undoer.afterChangeNodeContents(p,
-        command=command, bunch=b, dirtyVnodeList=[])
-</t>
-<t tx="ekr.20190101093224.3">If your command changes multiple nodes, the pattern is:
+    p = c.p
+    u = c.undoer
+    w = c.frame.body.wrapper
+
+Use `u.move_node` if your script only moves a single node p:
 
 .. code-block:: python
 
-    u, undoType = c.undoer, 'command-name'
-    u.beforeChangeGroup(c.p, undoType)
-    dirtyVnodeList = []
-    changed = False
-    # For each change, do something like the following:
-    for p in to_be_changed_nodes:
-        # Change p.
-        dirtyVnodeList.append(p.v)
-        u.afterChangeNodeContents(p, undoType, bunch)
-        changed = True
-    if changed:
-        u.afterChangeGroup(c.p, undoType,
-            reportFlag=False,
-            dirtyVnodeList=dirtyVnodeList)
-</t>
+    with u.move_node(p, 'command-name'):
+        p.setDirty()  # Calls p.v.setAllAncestorAtFileNodesDirty()
+        &lt;&lt; move the node &gt;&gt;
+        p.setDirty()  # p.v.setAllAncestorAtFileNodesDirty() again
+        u.redraw(p, update_syntax_coloring = True)  # &lt;-- u.redraw, not c.redraw
+        &lt;&lt; call w.setInsertPoint() or w.setSelectionRange() as desired &gt;&gt;
+
+Use `u.change_node` if your script only changes a single node p:
+
+.. code-block:: python
+
+    with u.change_node(p, 'command-name'):
+        &lt;&lt; change p.b or p.h or both &gt;&gt;
+        &lt;&lt; call p.setDirty(), p.setMarked() or p.clearMarked() as desired &gt;&gt;
+        u.redraw(p)   # &lt;-- u.redraw, not c.redraw
+        &lt;&lt; call w.setInsertPoint() or w.setSelectionRange() as desired &gt;&gt;
+
+Finally, use `u.change_outline` for all other (more complex) changes:
+
+.. code-block:: python
+
+    with u.change_outline('command-name'):
+        &lt;&lt; make *arbitrary* changes to the outline &gt;&gt;
+        u.redraw()   # &lt;-- u.redraw, not c.redraw
+        &lt;&lt; call w.setInsertPoint() or w.setSelectionRange() as desired &gt;&gt;
+
+​That's all!
+
+Finally, note that u.redraw() is equivalent to u.redraw(c.p).</t>
 <t tx="ekr.20190117143933.1">Leo 5.9 final, https://leo-editor.github.io/leo-editor/ is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
@@ -25516,20 +25524,6 @@ any change to one clone inevitably affects all other clones.
 <t tx="ekr.20230121061309.1"></t>
 <t tx="ekr.20230121061335.1"></t>
 <t tx="ekr.20230121061433.1"></t>
-<t tx="ekr.20230121110340.1">@language batch
-echo off
-echo off
-cd C:\Repos\leo-editor\leo\doc\html
-echo make clean
-call make clean
-</t>
-<t tx="ekr.20230121110345.1"></t>
-<t tx="ekr.20230121110533.1">@language batch
-echo off
-echo off
-cd C:\Repos\leo-editor\leo\doc\html
-echo make html
-call make html</t>
 <t tx="ekr.20230121135204.1">The workbook file
 =================
 
