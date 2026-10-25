@@ -108,7 +108,7 @@ class TestContextUndo(LeoUnitTest):
                 edit.assert_not_called()
                 headline.assert_not_called()
                 c.p = inserted
-                u.new_redraw(c.p)
+                u._redraw(c.p)
             redraw.assert_called_once()
             redraw.reset_mock()
             u.undo()
