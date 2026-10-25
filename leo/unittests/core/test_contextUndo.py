@@ -226,7 +226,7 @@ class TestContextUndo(LeoUnitTest):
                 getattr(c.frame, command)(LeoKeyEvent(c, w=w))
                 after = 'aef' if command == 'cutText' else 'aXYZef'
                 self.assertEqual(p.b, after)
-                self.assertTrue(c.changed)  ###
+                self.assertTrue(c.changed)
 
                 def before(p=p, w=w):
                     self.assertEqual(p.b, 'abcdef')

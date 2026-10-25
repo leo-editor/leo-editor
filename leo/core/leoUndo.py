@@ -2645,6 +2645,7 @@ class Undoer:
         old_h = p.h
         if old_h == new_h:
             return
+
         p = p.copy()
 
         def update(head):
@@ -2683,14 +2684,18 @@ class Undoer:
 
         u.restore_node does the heavy lifting.
         """
+        c = self.c
         if self.undoing or self.redoing:
             yield self
             return
+        if not c.changed:
+            c.setChanged()
         with self as u:
             u.set_command_name(command_name)
             if u.capture_level > 0 or p.v in u.node_captures:
                 yield u
                 return
+            old_p = c.p
             old_state = u.capture_node(p.v)
             old_ui = u.capture_ui()
             u.node_captures.add(p.v)
@@ -2698,6 +2703,8 @@ class Undoer:
                 yield u
             finally:
                 u.node_captures.remove(p.v)
+                new_p = c.p
+                u.new_redraw(new_p)  # PR #5005.
                 new_state = u.capture_node(p.v)
                 if old_state != new_state:
                     new_ui = u.capture_ui()
@@ -2712,11 +2719,11 @@ class Undoer:
 
                     def change_node_ui_redoer() -> None:
                         u.restore_ui(new_ui)
-                        ### u.new_redraw()
+                        u.new_redraw(new_p)
 
                     def change_node_ui_undoer() -> None:
                         u.restore_ui(old_ui)
-                        ### u.new_redraw()
+                        u.new_redraw(old_p)
 
                     u.undoBead.add_finishers(change_node_ui_redoer, change_node_ui_undoer)
 
@@ -2736,12 +2743,16 @@ class Undoer:
         if self.undoing or self.redoing:
             yield self
             return
+        c = self.c
+        if not c.changed:
+            c.setChanged()
         with self as u:
             u.set_command_name(command_name)
             if u.capture_level > 0:
                 yield u
                 return
             assert not u.node_captures, "Use change_outline outside change_node for bulk edits"
+            old_p = c.p
             old_state = u.capture_outline()
             old_ui = u.capture_ui()
             u.capture_level += 1
@@ -2749,6 +2760,8 @@ class Undoer:
                 yield u
             finally:
                 u.capture_level -= 1
+                new_p = c.p  # PR #5005
+                u.new_redraw(new_p)  # PR #5005
                 new_state = u.capture_outline()
                 old_delta, new_delta = {}, {}
                 for v in old_state.keys() | new_state.keys():
@@ -2774,11 +2787,11 @@ class Undoer:
 
                     def change_outline_ui_redoer() -> None:
                         u.restore_ui(new_ui)
-                        ### u.new_redraw()
+                        u.new_redraw(new_p)
 
                     def change_outline_ui_undoer() -> None:
                         u.restore_ui(old_ui)
-                        ### u.new_redraw()
+                        u.new_redraw(old_p)
 
                     u.undoBead.add_finishers(change_outline_ui_redoer, change_outline_ui_undoer)
 
@@ -2845,6 +2858,9 @@ class Undoer:
         if self.undoing or self.redoing:
             yield self
             return
+        c = self.c
+        if not c.changed:
+            c.setChanged()
         with self as u:
             u.set_command_name(command_name)
             if u.capture_level > 0:
@@ -2857,6 +2873,7 @@ class Undoer:
                 new_p = p.copy()
                 if old_p != new_p:
                     new_ui = u.capture_ui()
+                    u.new_redraw(new_p)  # PR #5005
 
                     def move(source, target):
                         source.v._cutLink(source.childIndex(), source._parentVnode())
@@ -2875,11 +2892,11 @@ class Undoer:
 
                     def restore_ui_redoer():
                         u.restore_ui(new_ui)
-                        ### u.new_redraw()
+                        u.new_redraw(new_p)
 
                     def restore_ui_undoer():
                         u.restore_ui(old_ui)
-                        ### u.new_redraw()
+                        u.new_redraw(old_p)
 
                     u.undoBead.add_finishers(restore_ui_redoer, restore_ui_undoer)
 
@@ -2940,56 +2957,54 @@ class Undoer:
         w.setYScrollPosition(scroll)
 
     # @+node:ekr.20261015041852.1: *5* u: redrawers & finishers
-    # @+node:ekr.20261005182243.1: *6* u.redraw (to be no op!)
+    # @+node:ekr.20261005182243.1: *6* u.redraw (a no-op! To be deleted)
     def redraw(self, *, update_syntax_coloring: bool = False) -> None:
         """Redraw now and choose the command's single undo/redo redraw."""
-        ### return
-        u = self
-        u._require_bead()
-        # Ignore redrawers in inner levels.
-        if u.undoBeadLevel > 1:
-            return
-        c = u.c
-        new_p = c.p
-        w = c.frame.body.wrapper
-        if not c.changed:
-            c.setChanged()
-        new_p.setDirty()  # p.setDirty() calls p.v.setAllAncestorAtFileNodesDirty()
-        preserve_body = new_p == c.p and w.getAllText() == new_p.b
-        if preserve_body:
-            sel, ins, scroll = w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
-        if update_syntax_coloring:
-            c.updateSyntaxColorer(new_p)
-        c.redraw(new_p)
-        if preserve_body:
-            w.setSelectionRange(*sel, insert=ins)
-            w.setYScrollPosition(scroll)
-        u.undoBead.add_redraw(new_p, u.undoBead.old_p)
+        c = self.c
+        if not g.unitTesting and 'leoPy.leo' not in c.shortFileName():
+            g.trace(c.p.h, g.callers())
+        ###
+        # u = self
+        # u._require_bead()
+        # # Ignore redrawers in inner levels.
+        # if u.undoBeadLevel > 1:
+        #     return
+        # c = u.c
+        # new_p = c.p
+        # w = c.frame.body.wrapper
+        # if not c.changed:
+        #     c.setChanged()
+        # new_p.setDirty()  # p.setDirty() calls p.v.setAllAncestorAtFileNodesDirty()
+        # preserve_body = new_p == c.p and w.getAllText() == new_p.b
+        # if preserve_body:
+        #     sel, ins, scroll = w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
+        # if update_syntax_coloring:
+        #     c.updateSyntaxColorer(new_p)
+        # c.redraw(new_p)
+        # if preserve_body:
+        #     w.setSelectionRange(*sel, insert=ins)
+        #     w.setYScrollPosition(scroll)
+        # u.undoBead.add_redraw(new_p, u.undoBead.old_p)
 
     # @+node:ekr.20261025152930.1: *6* u.new_redraw (experimental)
-    def new_redraw(self, *, update_syntax_coloring: bool = False) -> None:
+    def new_redraw(self, p: Position) -> None:
         """Redraw now and choose the command's single undo/redo redraw."""
         u = self
-        ### u._require_bead()
+        c = u.c
+        w = c.frame.body.wrapper
+        ### ???
         # Ignore redrawers in inner levels.
         if u.undoBeadLevel > 1:
             return
-        c = u.c
-        new_p = c.p
-        w = c.frame.body.wrapper
-        if not c.changed:
-            c.setChanged()
-        new_p.setDirty()  # p.setDirty() calls p.v.setAllAncestorAtFileNodesDirty()
-        preserve_body = new_p == c.p and w.getAllText() == new_p.b
+        p.setDirty()  # Call p.v.setAllAncestorAtFileNodesDirty()
+        preserve_body = p == c.p and w.getAllText() == p.b
         if preserve_body:
             sel, ins, scroll = w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
-        if update_syntax_coloring:
-            c.updateSyntaxColorer(new_p)
-        c.redraw(new_p)
+        c.updateSyntaxColorer(p)
+        c.redraw(p)
         if preserve_body:
             w.setSelectionRange(*sel, insert=ins)
             w.setYScrollPosition(scroll)
-        ### u.undoBead.add_redraw(new_p, u.undoBead.old_p)
 
     # @+node:ekr.20261011193020.1: *6* u.redraw_after_head_changed
     def redraw_after_head_changed(self) -> None:
