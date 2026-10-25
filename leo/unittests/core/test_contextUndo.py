@@ -109,6 +109,7 @@ class TestContextUndo(LeoUnitTest):
                 headline.assert_not_called()
                 c.p = inserted
                 u.redraw()
+                ### u.new_redraw()  ###
             redraw.assert_called_once()
             redraw.reset_mock()
             u.undo()
@@ -143,6 +144,7 @@ class TestContextUndo(LeoUnitTest):
                 p.b = 'after'
                 w.setSelectionRange(2, 4, insert=4)
                 u.redraw()
+                ### u.new_redraw()
             redraw.assert_called_once()
             redraw.reset_mock()
             u.undo()
@@ -232,7 +234,7 @@ class TestContextUndo(LeoUnitTest):
                 getattr(c.frame, command)(LeoKeyEvent(c, w=w))
                 after = 'aef' if command == 'cutText' else 'aXYZef'
                 self.assertEqual(p.b, after)
-                self.assertTrue(c.changed)
+                self.assertTrue(c.changed)  ###
 
                 def before(p=p, w=w):
                     self.assertEqual(p.b, 'abcdef')

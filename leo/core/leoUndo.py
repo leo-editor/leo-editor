@@ -2675,7 +2675,7 @@ class Undoer:
         b.add_helpers(change_headline_redoer, change_headline_undoer)
         b.add_recolor(p, p)
 
-    # @+node:vivainio.202610110001.1: *6* u.change_node
+    # @+node:vivainio.202610110001.1: *6* u.change_node  ***
     @contextmanager
     def change_node(self, p: Position, command_name: str) -> Iterator[Undoer]:
         """
@@ -2712,13 +2712,15 @@ class Undoer:
 
                     def change_node_ui_redoer() -> None:
                         u.restore_ui(new_ui)
+                        ### u.new_redraw()
 
                     def change_node_ui_undoer() -> None:
                         u.restore_ui(old_ui)
+                        ### u.new_redraw()
 
                     u.undoBead.add_finishers(change_node_ui_redoer, change_node_ui_undoer)
 
-    # @+node:vivainio.202610110001.2: *6* u.change_outline & helpers
+    # @+node:vivainio.202610110001.2: *6* u.change_outline & helpers ***
     @contextmanager
     def change_outline(self, command_name: str) -> Iterator[Undoer]:
         """
@@ -2772,9 +2774,11 @@ class Undoer:
 
                     def change_outline_ui_redoer() -> None:
                         u.restore_ui(new_ui)
+                        ### u.new_redraw()
 
                     def change_outline_ui_undoer() -> None:
                         u.restore_ui(old_ui)
+                        ### u.new_redraw()
 
                     u.undoBead.add_finishers(change_outline_ui_redoer, change_outline_ui_undoer)
 
@@ -2830,7 +2834,7 @@ class Undoer:
 
                     u.undoBead.add_helpers(change_recent_files_redoer, change_recent_files_undoer)
 
-    # @+node:vivainio.202610110003.1: *6* u.move_node
+    # @+node:vivainio.202610110003.1: *6* u.move_node ***
     @contextmanager
     def move_node(self, p: Position, command_name: str) -> Iterator[Undoer]:
         """
@@ -2871,9 +2875,11 @@ class Undoer:
 
                     def restore_ui_redoer():
                         u.restore_ui(new_ui)
+                        ### u.new_redraw()
 
                     def restore_ui_undoer():
                         u.restore_ui(old_ui)
+                        ### u.new_redraw()
 
                     u.undoBead.add_finishers(restore_ui_redoer, restore_ui_undoer)
 
@@ -2934,9 +2940,10 @@ class Undoer:
         w.setYScrollPosition(scroll)
 
     # @+node:ekr.20261015041852.1: *5* u: redrawers & finishers
-    # @+node:ekr.20261005182243.1: *6* u.redraw
+    # @+node:ekr.20261005182243.1: *6* u.redraw (to be no op!)
     def redraw(self, *, update_syntax_coloring: bool = False) -> None:
         """Redraw now and choose the command's single undo/redo redraw."""
+        ### return
         u = self
         u._require_bead()
         # Ignore redrawers in inner levels.
@@ -2958,6 +2965,31 @@ class Undoer:
             w.setSelectionRange(*sel, insert=ins)
             w.setYScrollPosition(scroll)
         u.undoBead.add_redraw(new_p, u.undoBead.old_p)
+
+    # @+node:ekr.20261025152930.1: *6* u.new_redraw (experimental)
+    def new_redraw(self, *, update_syntax_coloring: bool = False) -> None:
+        """Redraw now and choose the command's single undo/redo redraw."""
+        u = self
+        ### u._require_bead()
+        # Ignore redrawers in inner levels.
+        if u.undoBeadLevel > 1:
+            return
+        c = u.c
+        new_p = c.p
+        w = c.frame.body.wrapper
+        if not c.changed:
+            c.setChanged()
+        new_p.setDirty()  # p.setDirty() calls p.v.setAllAncestorAtFileNodesDirty()
+        preserve_body = new_p == c.p and w.getAllText() == new_p.b
+        if preserve_body:
+            sel, ins, scroll = w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
+        if update_syntax_coloring:
+            c.updateSyntaxColorer(new_p)
+        c.redraw(new_p)
+        if preserve_body:
+            w.setSelectionRange(*sel, insert=ins)
+            w.setYScrollPosition(scroll)
+        ### u.undoBead.add_redraw(new_p, u.undoBead.old_p)
 
     # @+node:ekr.20261011193020.1: *6* u.redraw_after_head_changed
     def redraw_after_head_changed(self) -> None:
