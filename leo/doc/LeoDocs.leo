@@ -22449,7 +22449,8 @@ Use `u.move_node` if your script only moves a single node p:
         p.setDirty()  # Calls p.v.setAllAncestorAtFileNodesDirty()
         &lt;&lt; move the node &gt;&gt;
         p.setDirty()  # p.v.setAllAncestorAtFileNodesDirty() again
-        u.redraw(p, update_syntax_coloring = True)  # &lt;-- u.redraw, not c.redraw
+        c.p = p  # Essential: u.redraw may not be called.
+        u.redraw(update_syntax_coloring = True)  # &lt;-- u.redraw, not c.redraw
         &lt;&lt; call w.setInsertPoint() or w.setSelectionRange() as desired &gt;&gt;
 
 Use `u.change_node` if your script only changes a single node p:
@@ -22459,7 +22460,7 @@ Use `u.change_node` if your script only changes a single node p:
     with u.change_node(p, 'command-name'):
         &lt;&lt; change p.b or p.h or both &gt;&gt;
         &lt;&lt; call p.setDirty(), p.setMarked() or p.clearMarked() as desired &gt;&gt;
-        u.redraw(p)   # &lt;-- u.redraw, not c.redraw
+        u.redraw()   # &lt;-- u.redraw, not c.redraw
         &lt;&lt; call w.setInsertPoint() or w.setSelectionRange() as desired &gt;&gt;
 
 Finally, use `u.change_outline` for all other (more complex) changes:
@@ -22468,6 +22469,7 @@ Finally, use `u.change_outline` for all other (more complex) changes:
 
     with u.change_outline('command-name'):
         &lt;&lt; make *arbitrary* changes to the outline &gt;&gt;
+        &lt;&lt; set c.p if it has changed &gt;&gt;
         u.redraw()   # &lt;-- u.redraw, not c.redraw
         &lt;&lt; call w.setInsertPoint() or w.setSelectionRange() as desired &gt;&gt;
 
