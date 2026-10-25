@@ -2963,19 +2963,15 @@ class Undoer:
         u = self
         c = u.c
         w = c.frame.body.wrapper
-        ### ???
         # Ignore redrawers in inner levels.
         if u.undoBeadLevel > 1:
             return
         p.setDirty()  # Call p.v.setAllAncestorAtFileNodesDirty()
-        preserve_body = p == c.p and w.getAllText() == p.b
-        if preserve_body:
-            sel, ins, scroll = w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
+        sel, ins, scroll = w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
         c.updateSyntaxColorer(p)
         c.redraw(p)
-        if preserve_body:
-            w.setSelectionRange(*sel, insert=ins)
-            w.setYScrollPosition(scroll)
+        w.setSelectionRange(*sel, insert=ins)
+        w.setYScrollPosition(scroll)
 
     # @+node:ekr.20261011193020.1: *6* u.redraw_after_head_changed
     def redraw_after_head_changed(self) -> None:
