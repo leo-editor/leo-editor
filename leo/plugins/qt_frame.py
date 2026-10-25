@@ -3169,7 +3169,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 for z in p1.self_and_subtree():
                     z.setDirty()
             c.p = p1
-            u.redraw()
+            ### u.redraw()
 
     # @+node:ekr.20110605121601.18383: *6* LeoQTreeWidget.parseText
     def parseText(self, md: QWidget) -> tuple[str, str]:
@@ -3201,7 +3201,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                     changed |= self.doFileUrl(p, path)
                 elif scheme in ('http', 'https'):  # 'ftp','mailto',
                     changed |= self.doHttpUrl(p, path)
-            u.redraw()
+            ### u.redraw()
         if not changed:
             g.es("Command did not find any affected Urls")
 

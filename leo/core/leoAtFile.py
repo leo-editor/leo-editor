@@ -549,7 +549,7 @@ class AtFile:
             c.contractAllHeadlinesCommand()
             update_p.expand()
             c.p = update_p
-            u.redraw()
+            ### u.redraw()
             return update_p
 
     # @+node:ekr.20190108054317.1: *6* at.findFilesToRead
@@ -2703,7 +2703,7 @@ class AtFile:
             c.refreshFromDisk(root)
             c.contractAllHeadlines()
             c.p = old_p
-            u.redraw()
+            ### u.redraw()
         return True
 
     # @+node:vv.20260807130000.1: *6* at.runRuff
