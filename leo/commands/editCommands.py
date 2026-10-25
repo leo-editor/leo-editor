@@ -172,7 +172,8 @@ def promote_section_definition(event: LeoKeyEvent | None = None) -> None:
     with u.change_outline('promote-section-definition'):
         ref_p.v.b = ''.join(new_ref_lines)
         c.p.doDelete(ref_p)
-        u.redraw(ref_p)
+        c.p = ref_p
+        u.redraw()
 
 
 # @+node:ekr.20220515193048.1: *3* @g.command('merge-node-with-next-node')
@@ -195,7 +196,8 @@ def merge_node_with_next_node(event: LeoKeyEvent | None = None) -> None:
         next.v.b = p.v.b.rstrip() + '\n\n' + next.v.b
         w.setAllText(next.b)
         p.doDelete(next)  # This adjusts next._childIndex.
-        u.redraw(next)
+        c.p = next
+        u.redraw()
 
 
 # @+node:ekr.20220515193124.1: *3* @g.command('merge-node-with-prev-node')
@@ -217,7 +219,8 @@ def merge_node_with_prev_node(event: LeoKeyEvent | None = None) -> None:
         prev.v.b = prev.v.b.rstrip() + '\n\n' + p.v.b
         w.setAllText(prev.b)
         p.doDelete()  # No need to adjust prev._childIndex.
-        u.redraw(prev)
+        c.p = prev
+        u.redraw()
 
 
 # @+node:ekr.20190926103245.1: *3* @g.command('next-or-end-of-line')

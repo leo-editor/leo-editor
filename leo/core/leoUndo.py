@@ -2941,12 +2941,7 @@ class Undoer:
 
     # @+node:ekr.20261015041852.1: *5* u: redrawers & finishers
     # @+node:ekr.20261005182243.1: *6* u.redraw
-    def redraw(
-        self,
-        new_p: Position | None = None,
-        *,
-        update_syntax_coloring: bool = False,
-    ) -> None:
+    def redraw(self, *, update_syntax_coloring: bool = False) -> None:
         """Redraw now and choose the command's single undo/redo redraw."""
         u = self
         u._require_bead()
@@ -2954,9 +2949,9 @@ class Undoer:
         if u.undoBeadLevel > 1:
             return
         c = u.c
+        new_p = c.p
         w = c.frame.body.wrapper
         u.set_changed()
-        new_p = new_p or c.p
         new_p.setDirty()  # p.setDirty() calls p.v.setAllAncestorAtFileNodesDirty()
         preserve_body = new_p == c.p and w.getAllText() == new_p.b
         if preserve_body:

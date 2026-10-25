@@ -517,7 +517,8 @@ class LeoFind:
                         c.clearMarked(p)  # Calls a hook.
                 n = root.numberOfChildren()
                 root.b = f"# Found {n} marked node{g.plural(n)}"
-                u.redraw(root)
+                c.p = root
+                u.redraw()
         return bool(root)
 
     # @+node:ekr.20140828080010.18532: *4* find.clone-find-parents
@@ -553,7 +554,8 @@ class LeoFind:
                     clone = parent.copy()
                     n = found.numberOfChildren()
                     clone._linkCopiedAsNthChild(found, n)
-            u.redraw(found)
+            c.p = found
+            u.redraw()
             return True
 
     # @+node:ekr.20150629084204.1: *4* find.find-def/var & helper
@@ -748,7 +750,8 @@ class LeoFind:
 
             # Set the undo data.
             found.expand()
-            u.redraw(found)
+            c.p = found
+            u.redraw()
 
     # @+node:ekr.20240525172445.1: *6* find._make_patterns
     bad_regex_patterns: list[str] = []
@@ -1278,7 +1281,8 @@ class LeoFind:
             t2 = time.process_time()
             if not g.unitTesting:  # pragma: no cover
                 g.es_print(f"changed {count} instances{g.plural(count)} in {t2 - t1:4.2f} sec.")
-            u.redraw(new_p)
+            c.p = new_p
+            u.redraw()
             self.restore(saveData)
             return count
 
@@ -1596,7 +1600,8 @@ class LeoFind:
         with u.change_outline('clone-find-tag'):
             found = self._create_clone_tag_nodes(clones)
             assert c.positionExists(found, trace=True), found
-            u.redraw(found)
+            c.p = found
+            u.redraw()
             return len(clones), found
 
     # @+node:ekr.20210110073117.12: *6* find._create_clone_tag_nodes
@@ -1776,7 +1781,8 @@ class LeoFind:
                         if not p.isMarked():
                             p.setMarked()
                             p.setDirty()
-            u.redraw(found_p)
+            c.p = found_p
+            u.redraw()
             return {
                 'distinct_body_lines': distinct_body_lines,
                 'match_dict': matches_dict,

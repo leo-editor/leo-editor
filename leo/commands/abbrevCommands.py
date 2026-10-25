@@ -614,7 +614,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         Insert the common prefix of all dynamic abbrev's matching the present word.
         This corresponds to C-M-/ in Emacs.
         """
-        c, p = self.c, self.c.p
+        c = self.c
         u = c.undoer
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
@@ -641,7 +641,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             w.setAllText(s)
             w.setSelectionRange(ins, ins, insert=ins)
             c.recolor()
-            u.redraw(p)
+            u.redraw()
 
     # @+node:ekr.20150514043850.21: *4* abbrev.dynamicExpansion M-/ & helper
     @cmd('dabbrev-expands')

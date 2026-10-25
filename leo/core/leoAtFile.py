@@ -548,7 +548,8 @@ class AtFile:
             update_p.v.children.sort(key=lambda v: v.h.lower())
             c.contractAllHeadlinesCommand()
             update_p.expand()
-            u.redraw(update_p)
+            c.p = update_p
+            u.redraw()
             return update_p
 
     # @+node:ekr.20190108054317.1: *6* at.findFilesToRead
@@ -2674,19 +2675,15 @@ class AtFile:
         Run ruff format on the selected position.
         Return True if all went well.
         """
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        old_p = c.p
+        u = c.undoer
         efc = g.app.externalFilesController
         if not os.path.exists(filename):
             return False
 
-        # Copy the old p.b. c.refresh_from_disk clears the undo stack.
-        old_p = p.copy()
         results = c.beautify_with_ruff(contents, root, filename)
-
-        # Always suppress the reload prompt.
-        efc.set_time(filename)
-
-        # Do nothing else if there has been no change.
+        efc.set_time(filename)  # Always suppress the reload prompt.
         if contents == results:
             return True
 
@@ -2705,7 +2702,8 @@ class AtFile:
             g.es(f"beautified: {g.shortFileName(filename)}", color='blue')
             c.refreshFromDisk(root)
             c.contractAllHeadlines()
-            u.redraw(old_p)
+            c.p = old_p
+            u.redraw()
         return True
 
     # @+node:vv.20260807130000.1: *6* at.runRuff

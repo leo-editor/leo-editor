@@ -165,7 +165,7 @@ def convertBlanks(self: Self, event: LeoKeyEvent | None = None) -> bool:
         p.v.b = head + middle + tail
         w.setAllText(head + middle + tail)
         w.setYScrollPosition(old_y_scroll)
-        u.redraw(p)
+        u.redraw()
         return True
 
 
@@ -195,7 +195,7 @@ def convertTabs(self: Self, event: LeoKeyEvent | None = None) -> bool:
         w.setAllText(head + middle + tail)
         w.setSelectionRange(i, j, insert=j)
         w.setYScrollPosition(old_y_scroll)
-        u.redraw(p)
+        u.redraw()
         return True
 
 
@@ -237,7 +237,7 @@ def dedentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
         w.setAllText(new_s)
         w.setSelectionRange(i, j, insert=j)
         w.setYScrollPosition(old_y_scroll)
-        u.redraw(p)
+        u.redraw()
 
 
 # @+node:ekr.20171123135625.36: ** c_ec.deleteComments
@@ -412,7 +412,8 @@ def extract(self: Self, event: LeoKeyEvent | None = None) -> None:
 
         # Finish.
         p.parent().expand()
-        u.redraw(p.parent())  # A bit more convenient than p.
+        c.p = p.parent()  # A bit more convenient than p.
+        u.redraw()
         c.bodyWantsFocus()
 
 
@@ -520,11 +521,11 @@ def extractSectionNames(self: Self, event: LeoKeyEvent | None = None) -> None:
         g.warning('Found no section names')
         return
     with u.change_outline('extract-section-names'):
-        p = createFirstChildNode(c, current, name, '')
+        c.p = createFirstChildNode(c, current, name, '')
         c.checkOutline()
         w.setSelectionRange(i, j)
         w.setFocus()
-        u.redraw(p)
+        u.redraw()
 
 
 # @+node:ekr.20171123135625.28: *3* function: findSectionName
@@ -609,7 +610,7 @@ def alwaysIndentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
         w.setAllText(new_s)
         w.setSelectionRange(i, j, insert=j)
         w.setYScrollPosition(old_y_scroll)
-        u.redraw(p)
+        u.redraw()
 
 
 # @+node:ekr.20210104123442.1: ** c_ec.indentBody (indent-region)
@@ -699,7 +700,8 @@ def line_to_headline(self: Self, event: LeoKeyEvent | None = None) -> None:
         w.setInsertPoint(i)
         p2.setDirty()
         p.expand()
-        u.redraw(p)
+        c.p = p
+        u.redraw()
         c.bodyWantsFocus()
 
 
@@ -785,7 +787,8 @@ def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
         old_p.setDirty()
         for child in reversed(children):
             child.doDelete()
-        u.redraw(old_p)
+        c.p = old_p
+        u.redraw()
         c.bodyWantsFocusNow()
 
 
@@ -836,7 +839,8 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
         parent.b = ''.join(result)
         # Delete the definition node.
         p.doDelete()
-        u.redraw(parent)
+        c.p = parent
+        u.redraw()
 
 
 # @+node:ekr.20171123135625.40: ** c_ec.reformatBody
@@ -844,7 +848,6 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
 def reformatBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Reformat all paragraphs in the body."""
     c = self
-    p = self.p
     u = c.undoer
     w = c.frame.body.wrapper  # Only valid in bod.
     with u.change_outline('reformat-body'):
@@ -856,7 +859,7 @@ def reformatBody(self: Self, event: LeoKeyEvent | None = None) -> None:
             s = w.getAllText()
             if ins <= progress or ins >= len(s):
                 break
-        u.redraw(p)
+        u.redraw()
 
 
 # @+node:ekr.20171123135625.41: ** c_ec.reformatParagraph & helpers

@@ -3168,7 +3168,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 # Set dirty bits for ancestors of *all* cloned nodes.
                 for z in p1.self_and_subtree():
                     z.setDirty()
-            u.redraw(p1)
+            c.p = p1
+            u.redraw()
 
     # @+node:ekr.20110605121601.18383: *6* LeoQTreeWidget.parseText
     def parseText(self, md: QWidget) -> tuple[str, str]:

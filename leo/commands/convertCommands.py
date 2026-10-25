@@ -1332,7 +1332,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     f"in {n_changed_nodes} node{g.plural(n_changed_nodes)}"
                 )  # fmt: skip
             c.contractAllHeadlines()
-            u.redraw(p1)
+            c.p = p1
+            u.redraw()
             g.es('convert-gnxs: done')
 
     # @+node:ekr.20160111190632.1: *3* ccc.make-stub_files
