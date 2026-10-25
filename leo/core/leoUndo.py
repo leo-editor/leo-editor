@@ -198,9 +198,6 @@ class UndoBead:
         """Append the helpers (in correct order!) to the undo/redo lists."""
         if self.undoer.capture_level:
             return  # The enclosing snapshot records the complete operation.
-        c = self.c
-        u = c.undoer
-        u.set_changed()
         self.redo_functions.append(redo_function)
         self.undo_functions.insert(0, undo_function)  # Execute in reverse order.
 
@@ -208,9 +205,6 @@ class UndoBead:
         """Append the helpers (in correct order!) to the undo/redo lists."""
         if self.undoer.capture_level:
             return
-        c = self.c
-        u = c.undoer
-        u.set_changed()
         self.redo_finishers.append(redo_finisher)
         self.undo_finishers.append(undo_finisher)  # Execute in given order.
 
@@ -2951,7 +2945,8 @@ class Undoer:
         c = u.c
         new_p = c.p
         w = c.frame.body.wrapper
-        u.set_changed()
+        if not c.changed:
+            c.setChanged()
         new_p.setDirty()  # p.setDirty() calls p.v.setAllAncestorAtFileNodesDirty()
         preserve_body = new_p == c.p and w.getAllText() == new_p.b
         if preserve_body:
@@ -2973,7 +2968,8 @@ class Undoer:
         # Ignore redrawers in inner levels.
         if u.undoBeadLevel > 1:
             return
-        u.set_changed()
+        if not c.changed:
+            c.setChanged()
         c.p.setDirty()  # p.setDirty() calls p.v.setAllAncestorAtFileNodesDirty()
         c.redraw_after_head_changed()
         u.undoBead.add_redraw_after_head_changed()
@@ -2987,16 +2983,11 @@ class Undoer:
         # Ignore redrawers in inner levels.
         if u.undoBeadLevel > 1:
             return
-        u.set_changed()
+        if not c.changed:
+            c.setChanged()
         c.p.setDirty()  # p.setDirty() calls p.v.setAllAncestorAtFileNodesDirty()
         c.redrawAndEdit(new_p, selectAll=True)
         u.undoBead.add_redraw_and_edit(new_p, self.undoBead.old_p)
-
-    # @+node:ekr.20261015183213.1: *6* u.set_changed
-    def set_changed(self) -> None:
-        c = self.c
-        if not c.changed:
-            c.setChanged()
 
     # @+node:ekr.20050416092908.1: *3* u: Internal helpers
     # @+node:ekr.20031218072017.3607: *4* u.clearOptionalIvars
