@@ -2969,6 +2969,7 @@ class Undoer:
         p.setDirty()  # Call p.v.setAllAncestorAtFileNodesDirty()
         sel, ins, scroll = w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
         c.updateSyntaxColorer(p)
+        c.recolor()
         c.redraw(p)
         w.setSelectionRange(*sel, insert=ins)
         w.setYScrollPosition(scroll)
