@@ -22475,7 +22475,27 @@ Finally, use `u.change_outline` for all other (more complex) changes:
 
 ​That's all!
 
-Finally, note that u.redraw() is equivalent to u.redraw(c.p).</t>
+Nested with blocks (possibly in separate methods) work as expected.
+
+For example the following ``button`` script works:
+
+.. code-block:: python
+
+    """Move c.p up two nodes if possible"""
+    g.cls()
+    u = c.undoer
+    with u.change_outline('up-two'):
+        p1 = c.p
+        c.moveOutlineUp()
+        if c.p == p1:
+            print("Can't do first move")
+        else:
+            p2 = c.p
+            c.moveOutlineUp()
+            if c.p == p2:
+                print("Can't do second move")
+        u.redraw()
+</t>
 <t tx="ekr.20190117143933.1">Leo 5.9 final, https://leo-editor.github.io/leo-editor/ is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
