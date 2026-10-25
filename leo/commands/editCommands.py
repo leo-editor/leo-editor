@@ -134,7 +134,6 @@ def mark_node_and_parents(event: LeoKeyEvent | None = None) -> list[Position]:
         with u.change_outline('mark-node-and-parents'):
             for z in changed:
                 z.setMarked()
-            ### u.redraw()
     return changed
 
 
@@ -161,7 +160,6 @@ def promote_section_definition(event: LeoKeyEvent | None = None) -> None:
     else:
         g.es_print('Reference not found:', ref_s)
         return
-
     ref_p = parent
     new_ref_lines = []
     for line in g.splitLines(ref_p.b):
@@ -173,7 +171,6 @@ def promote_section_definition(event: LeoKeyEvent | None = None) -> None:
         ref_p.v.b = ''.join(new_ref_lines)
         c.p.doDelete(ref_p)
         c.p = ref_p
-        ### u.redraw()
 
 
 # @+node:ekr.20220515193048.1: *3* @g.command('merge-node-with-next-node')
@@ -191,13 +188,11 @@ def merge_node_with_next_node(event: LeoKeyEvent | None = None) -> None:
     next = p.next()
     if not next:
         return
-
     with u.change_outline('merge-node-with-next-node'):
         next.v.b = p.v.b.rstrip() + '\n\n' + next.v.b
         w.setAllText(next.b)
         p.doDelete(next)  # This adjusts next._childIndex.
         c.p = next
-        ### u.redraw()
 
 
 # @+node:ekr.20220515193124.1: *3* @g.command('merge-node-with-prev-node')
@@ -220,7 +215,6 @@ def merge_node_with_prev_node(event: LeoKeyEvent | None = None) -> None:
         w.setAllText(prev.b)
         p.doDelete()  # No need to adjust prev._childIndex.
         c.p = prev
-        ### u.redraw()
 
 
 # @+node:ekr.20190926103245.1: *3* @g.command('next-or-end-of-line')
@@ -271,7 +265,6 @@ def promoteBodies(event: LeoKeyEvent | None = None) -> None:
     result = [child.b.rstrip() + '\n\n' for child in p.subtree()]
     with u.change_node(p, 'promote-bodies'):
         p.b = ''.join(result).rstrip() + '\n\n'
-        ### u.redraw()
 
 
 # @+node:ekr.20190323085410.1: *3* @g.command('promote-headlines')
@@ -287,7 +280,6 @@ def promoteHeadlines(event: LeoKeyEvent | None = None) -> None:
     if result:
         with u.change_node(p, 'promote-headlines'):
             p.b = p.b.lstrip() + '\n' + result
-            ### u.redraw()
 
 
 # @+node:ekr.20180504180647.1: *3* @g.command('select-next-trace-statement')
@@ -380,7 +372,6 @@ def unmark_node_and_parents(event: LeoKeyEvent | None = None) -> list[Position]:
         with u.change_outline('unmark-node-and-parents'):
             for z in changed:
                 z.clearMarked()
-            ### u.redraw()
     return changed
 
 
@@ -468,7 +459,6 @@ class EditCommandsClass(BaseEditCommandsClass):
                     w.deleteTextSelection()
                     w.insert(i, arg)
                     c.p.v.b = w.getAllText()
-                    ### u.redraw()
             else:
                 i = w.getSelectionRange()[0]
                 w.deleteTextSelection()
@@ -519,9 +509,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 else:
                     p.h = time
                 p.setDirty()
-                if g.app.inBridge:
-                    pass  ### u.redraw()
-                else:
+                if not g.app.inBridge:
                     u.redraw_and_edit(p)
 
     # @+node:tom.20210922140250.1: *3* ec.capitalizeHeadline
@@ -541,7 +529,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         if capitalized != h:
             with u.change_node(p, 'capitalize-headline'):
                 p.h = capitalized
-                ### u.redraw()
 
     # @+node:tbrown.20151118134307.1: *3* ec.path_for_p
     def path_for_p(self, c: Cmdr, p: Position) -> str:
@@ -686,7 +673,6 @@ class EditCommandsClass(BaseEditCommandsClass):
                 p.b = prefix + capitalized + suffix if sel else capitalized
                 c.setChanged()
                 p.setDirty()
-                ### u.redraw()
 
     # @+node:ekr.20150514063305.195: *3* ec: clicks and focus
     # @+node:ekr.20150514063305.196: *4* ec.activate-x-menu & activateMenu
@@ -1163,7 +1149,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             for p in c.all_unique_positions():
                 self.hn_delete(p)
                 self.hn_add(p)
-            ### u.redraw()
 
     # @+node:ekr.20230328013256.1: *5* hn_add
     def hn_add(self, p: Position) -> None:
@@ -1210,7 +1195,6 @@ class EditCommandsClass(BaseEditCommandsClass):
                 self.hn_delete(p)
                 self.hn_add_relative(p, root)
             root.expand()
-            ### u.redraw()
 
     # @+node:ekr.20230329031045.1: *5* hn_add_relative
     def hn_add_relative(self, p: Position, root: Position) -> None:
@@ -1239,7 +1223,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         with u.change_outline('delete-all-headline-numbers'):
             for p in c.all_unique_positions():
                 self.hn_delete(p)
-            ### u.redraw()
 
     # @+node:ekr.20230328015118.1: *4* hn-delete-subtree
     @cmd('hn-delete-subtree')
@@ -1252,7 +1235,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         with u.change_outline('delete-subtree-headline-numbers'):
             for p in c.p.subtree():
                 self.hn_delete(p)
-            ### u.redraw()
 
     # @+node:ekr.20230328014223.1: *4* hn_delete
     # Match exactly one trailing blank.
@@ -1714,7 +1696,6 @@ class EditCommandsClass(BaseEditCommandsClass):
                         p.setDirty()
                         n += 1
             g.es(f"cleaned {n} node{g.plural(n)}")
-            ### u.redraw()
 
     # @+node:ekr.20150514063305.256: *4* ec.cleanLines
     @cmd('clean-lines')
@@ -1998,7 +1979,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             w.setAllText(result)
             w.setSelectionRange(i, j, insert=j)
             w.setYScrollPosition(oldYview)
-            ### u.redraw()
 
     # @+node:ekr.20150514063305.267: *4* ec.replaceCurrentCharacter
     @cmd('replace-current-character')
@@ -3496,7 +3476,6 @@ class EditCommandsClass(BaseEditCommandsClass):
                 s = w.getAllText()
                 if progress >= ins or ins >= j or ins >= len(s):
                     break
-            ### u.redraw()
 
     # @+node:ekr.20150514063305.322: *4* ec.fillRegionAsParagraph
     @cmd('fill-region-as-paragraph')
@@ -4105,20 +4084,17 @@ class EditCommandsClass(BaseEditCommandsClass):
             with u.change_outline('clear-node-uas'):
                 p.v.u = {}
                 p.setDirty()
-                ### u.redraw()
 
     @cmd('clear-all-uas')
     def clearAllUas(self, event: LeoKeyEvent | None = None) -> None:
         """Clear all uAs in the entire outline."""
         c, u = self.c, self.c.undoer
         changed_v = [v for v in c.all_unique_nodes()]
-        if not changed_v:
-            return
-        with u.change_outline('clear-all-uas'):
-            for v in changed_v:
-                v.u = {}
-                v.setDirty()
-            ### u.redraw()
+        if changed_v:
+            with u.change_outline('clear-all-uas'):
+                for v in changed_v:
+                    v.u = {}
+                    v.setDirty()
 
     # @+node:ekr.20150514063305.350: *4* ec.showUas & showAllUas
     @cmd('show-all-uas')
@@ -4169,7 +4145,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.resetLabel()
         k.showStateAndMode()
         with u.change_node(p, 'set-ua'):
-            pass  ### u.redraw()
+            pass
 
     # @-others
 

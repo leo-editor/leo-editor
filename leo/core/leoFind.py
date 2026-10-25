@@ -319,7 +319,6 @@ class LeoFind:
                         p.b = new_b
             if not g.unitTesting:  # pragma: no cover
                 print(f"{count:3}: {find_text:>30} => {change_text}")
-            ### u.redraw()
             return count
 
     # @+node:ekr.20210108083003.1: *4* find._init_from_dict
@@ -518,7 +517,6 @@ class LeoFind:
                 n = root.numberOfChildren()
                 root.b = f"# Found {n} marked node{g.plural(n)}"
                 c.p = root
-                ### u.redraw()
         return bool(root)
 
     # @+node:ekr.20140828080010.18532: *4* find.clone-find-parents
@@ -555,7 +553,6 @@ class LeoFind:
                     n = found.numberOfChildren()
                     clone._linkCopiedAsNthChild(found, n)
             c.p = found
-            ### u.redraw()
             return True
 
     # @+node:ekr.20150629084204.1: *4* find.find-def/var & helper
@@ -751,7 +748,6 @@ class LeoFind:
             # Set the undo data.
             found.expand()
             c.p = found
-            ### u.redraw()
 
     # @+node:ekr.20240525172445.1: *6* find._make_patterns
     bad_regex_patterns: list[str] = []
@@ -1282,7 +1278,6 @@ class LeoFind:
             if not g.unitTesting:  # pragma: no cover
                 g.es_print(f"changed {count} instances{g.plural(count)} in {t2 - t1:4.2f} sec.")
             c.p = new_p
-            ### u.redraw()
             self.restore(saveData)
             return count
 
@@ -1601,7 +1596,6 @@ class LeoFind:
             found = self._create_clone_tag_nodes(clones)
             assert c.positionExists(found, trace=True), found
             c.p = found
-            ### u.redraw()
             return len(clones), found
 
     # @+node:ekr.20210110073117.12: *6* find._create_clone_tag_nodes
@@ -1782,7 +1776,6 @@ class LeoFind:
                             p.setMarked()
                             p.setDirty()
             c.p = found_p
-            ### u.redraw()
             return {
                 'distinct_body_lines': distinct_body_lines,
                 'match_dict': matches_dict,
@@ -2440,7 +2433,6 @@ class LeoFind:
             self.node_only = self.suboutline_only = False
             self.root = None
             g.es("found", count, "matches for", self.find_text)
-            ### u.redraw()
             return count  # Might be useful for the gui update.
 
     # @+node:ekr.20210110073117.34: *5* find._cfa_create_nodes
@@ -2547,7 +2539,6 @@ class LeoFind:
             if self.mark_changes and not p.isMarked():  # pragma: no cover
                 p.setMarked()
                 p.setDirty()
-            ### u.redraw()
             return True
 
     # @+node:ekr.20210110073117.31: *4* find.check_args

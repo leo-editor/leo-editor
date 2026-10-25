@@ -213,9 +213,10 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                         if self.cleanAtCleanNode(p2):
                             n += 1
                             total += 1
-                    g.es_print(f"{n} node{g.plural(n)} {p.h}")
-            g.es_print(f"{total} total node{g.plural(total)}")
-            ### u.redraw()
+                    if not g.unitTesting:
+                        g.es_print(f"{n} node{g.plural(n)} {p.h}")
+            if not g.unitTesting:
+                g.es_print(f"{total} total node{g.plural(total)}")
 
     # @+node:ekr.20170806094319.8: *4* efc.cleanAtCleanNode
     def cleanAtCleanNode(self, p: Position) -> bool:
@@ -353,7 +354,6 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             ):
                 self.createCompareClones(d, kind, parent)
             c.p = parent
-            ### u.redraw()
 
     # @+node:ekr.20170806094317.12: *5* efc.createCompareClones
     def createCompareClones(self, d: dict[str, Position], kind: str, parent: Position) -> None:
@@ -518,7 +518,6 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             p = c.p.insertAfter()
             p.h = 'diff'
             p.b = ''.join(aList)
-            ### u.redraw()
 
     # @+node:ekr.20170806094318.6: *3* efc.getReadableTextFile
     def getReadableTextFile(self) -> str:
@@ -873,7 +872,6 @@ class GitDiffController:
                 self.make_diff_outlines(c1, c2, fn, rev1=branch1, rev2=branch2)
                 self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
             self.finish()
-            ### u.redraw()
 
     # @+node:ekr.20180507212821.1: *4* gdc.diff_two_revs
     def diff_two_revs(self, rev1: str = 'HEAD', rev2: str = '', path: str | None = None) -> None:
@@ -913,7 +911,6 @@ class GitDiffController:
                     g.es_print(f"diff: {i} files", color='blue')
 
             self.finish()
-            ### u.redraw()
             g.es_print(f"done! diffed: {n} files")
 
     # @+node:ekr.20170806094320.12: *4* gdc.git_diff & helper
@@ -955,7 +952,6 @@ class GitDiffController:
             for fn in files:
                 self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
             self.finish()
-            ### u.redraw()
             return True
 
     # @+node:ekr.20230705082614.1: *4* gdc.node_history & helpers
@@ -1301,7 +1297,6 @@ class GitDiffController:
                     g.es_print(f"diff: {i} files", color='blue')
             self.root.expand()
             c.p = self.root
-            ### u.redraw()
             print(f"done! diffed: {n} file{g.plural(n)}")
 
     # @+node:ekr.20260112115520.1: *4* gdc.summary_diff_python_file & helper
@@ -1888,7 +1883,6 @@ class GitDiffController:
                     g.es_print(f"diff: {i} files", color='blue')
 
             self.finish()
-            ### u.redraw()
             g.es_print(f"done! diffed: {n} files")
 
     # @-others

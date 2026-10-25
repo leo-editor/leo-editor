@@ -2505,7 +2505,6 @@ class VimCommands:
                 newText = w.getAllText()
                 if c.p.b != newText:
                     p.v.b = newText
-            ### u.redraw()
 
     # @+node:ekr.20140804123147.18929: *4* vc.set_border & helper
     def set_border(

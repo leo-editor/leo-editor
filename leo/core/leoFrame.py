@@ -543,7 +543,6 @@ class LeoFrame:
                 w.see(i)
                 u.set_body(p, new_body=w.getAllText())
                 c.p = p
-                ### u.redraw()
         else:
             w.delete(i, j)
             w.see(i)
@@ -592,7 +591,6 @@ class LeoFrame:
                 update_w()
                 u.set_body(p, new_body=w.getAllText())
                 c.p = p
-                ### u.redraw()
         else:
             if hasattr(w, 'getXScrollPosition'):
                 x_pos = w.getXScrollPosition()

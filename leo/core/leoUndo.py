@@ -2977,35 +2977,6 @@ class Undoer:
             w.setSelectionRange(*sel, insert=ins)
             w.setYScrollPosition(scroll)
 
-    # @+node:ekr.20261005182243.1: *6* u.redraw (a no-op! To be deleted)
-    def redraw(self, *, update_syntax_coloring: bool = False) -> None:
-        """Redraw now and choose the command's single undo/redo redraw."""
-        c = self.c
-        if not g.unitTesting and 'leoPy.leo' not in c.shortFileName():
-            g.trace(c.p.h, g.callers())
-        ###
-        # u = self
-        # u._require_bead()
-        # # Ignore redrawers in inner levels.
-        # if u.undoBeadLevel > 1:
-        #     return
-        # c = u.c
-        # new_p = c.p
-        # w = c.frame.body.wrapper
-        # if not c.changed:
-        #     c.setChanged()
-        # new_p.setDirty()  # p.setDirty() calls p.v.setAllAncestorAtFileNodesDirty()
-        # preserve_body = new_p == c.p and w.getAllText() == new_p.b
-        # if preserve_body:
-        #     sel, ins, scroll = w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
-        # if update_syntax_coloring:
-        #     c.updateSyntaxColorer(new_p)
-        # c.redraw(new_p)
-        # if preserve_body:
-        #     w.setSelectionRange(*sel, insert=ins)
-        #     w.setYScrollPosition(scroll)
-        # u.undoBead.add_redraw(new_p, u.undoBead.old_p)
-
     # @+node:ekr.20261011193020.1: *6* u.redraw_after_head_changed
     def redraw_after_head_changed(self) -> None:
         """Refresh headlines now and after undo/redo."""
