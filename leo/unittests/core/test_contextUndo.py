@@ -462,7 +462,9 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.23: *3* TestContextUndo.test_bulk_context_releases_state_after_exception_and_can_undo_partial_work
     def test_bulk_context_releases_state_after_exception_and_can_undo_partial_work(self):
-        _c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         with self.assertRaisesRegex(RuntimeError, 'partial'):
             with u.change_outline('partial bulk'):
                 p.b = 'partial edit'
@@ -505,7 +507,9 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.25: *3* TestContextUndo.test_legacy_node_edit_and_new_node_edit_share_history
     def test_legacy_node_edit_and_new_node_edit_share_history(self):
-        _c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         with u.change_node(p, 'new edit'):
             p.b = 'one'
         bunch = u.beforeChangeBody(p)
@@ -522,7 +526,9 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.26: *3* TestContextUndo.test_legacy_group_can_contain_new_and_old_commands
     def test_legacy_group_can_contain_new_and_old_commands(self):
-        _c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         u.beforeChangeGroup(p, 'mixed')
         with u.change_node(p, 'new edit'):
             p.b = 'one'
