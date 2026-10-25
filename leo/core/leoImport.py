@@ -1969,8 +1969,6 @@ class RecursiveImportController:
         u = c.undoer
         with u.change_outline('recursive-import'):
             try:
-                ### c = self.c
-                ### u = c.undoer
                 t1 = time.time()
                 g.app.disable_redraw = True
                 last = c.lastTopLevel()

@@ -636,7 +636,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         with u.change_outline('dabbrev-completion'):
             w.setAllText(s)
             w.setSelectionRange(ins, ins, insert=ins)
-            ### c.recolor()
 
     # @+node:ekr.20150514043850.21: *4* abbrev.dynamicExpansion M-/ & helper
     @cmd('dabbrev-expands')
@@ -711,7 +710,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         with u.change_outline('dabbrev-expand'):
             w.setAllText(s)
             w.setSelectionRange(ins, ins, insert=ins)
-            ### c.recolor()
 
     # @+node:ekr.20150514043850.28: *4* abbrev.killAllAbbrevs
     @cmd('abbrev-kill-all')

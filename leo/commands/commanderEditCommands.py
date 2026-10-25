@@ -1254,7 +1254,6 @@ def unreformat(
             else:
                 ins = i
                 break
-        ### c.recolor()  # Required.
         w.setSelectionRange(ins, ins, insert=ins)
         # More useful than for reformat-paragraph.
         w.see(ins)
