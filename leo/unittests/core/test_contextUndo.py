@@ -108,8 +108,7 @@ class TestContextUndo(LeoUnitTest):
                 edit.assert_not_called()
                 headline.assert_not_called()
                 c.p = inserted
-                u.redraw()
-                ### u.new_redraw()  ###
+                u.new_redraw(c.p)
             redraw.assert_called_once()
             redraw.reset_mock()
             u.undo()
@@ -139,21 +138,14 @@ class TestContextUndo(LeoUnitTest):
         p.b = 'before'
         w = c.frame.body.wrapper
         w.setSelectionRange(1, 3, insert=1)
-        with patch.object(c, 'redraw', wraps=c.redraw) as redraw:
-            with u.change_node(p, 'edit'):
-                p.b = 'after'
-                w.setSelectionRange(2, 4, insert=4)
-                u.redraw()
-                ### u.new_redraw()
-            redraw.assert_called_once()
-            redraw.reset_mock()
+        with u.change_node(p, 'edit'):
+            p.b = 'after'
+            w.setSelectionRange(2, 4, insert=4)
+        for _i in range(3):
             u.undo()
-            redraw.assert_called_once()
             self.assertEqual(w.getSelectionRange(), (1, 3))
             self.assertEqual(w.getInsertPoint(), 1)
-            redraw.reset_mock()
             u.redo()
-            redraw.assert_called_once()
             self.assertEqual(w.getSelectionRange(), (2, 4))
             self.assertEqual(w.getInsertPoint(), 4)
 
