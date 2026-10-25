@@ -1688,7 +1688,8 @@ def moveOutlineUp(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         # @-<< Move p up >>
         if moved:
             p.setDirty()
-            u.redraw(p, update_syntax_coloring=True)
+            c.p = p  # PR #5005
+            u.redraw(update_syntax_coloring=True)
 
 
 # @+node:ekr.20230902051130.1: *3* c_oc.moveOutlineToFirstChild
