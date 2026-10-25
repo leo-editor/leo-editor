@@ -22477,7 +22477,7 @@ Finally, use `u.change_outline` for all other (more complex) changes:
 
 Nested with blocks (possibly in separate methods) work as expected.
 
-For example the following ``button`` script works:
+For example the following ``@ button`` script works:
 
 .. code-block:: python
 
