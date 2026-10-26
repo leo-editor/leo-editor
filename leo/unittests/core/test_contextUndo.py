@@ -91,12 +91,13 @@ class TestContextUndo(LeoUnitTest):
     def test_action_helpers_leave_redraw_to_caller(self):
         c = self.c
         p = c.p
+        u = c.undoer
         with (
             patch.object(c, 'redraw') as redraw,
             patch.object(c, 'redrawAndEdit') as edit,
             patch.object(c, 'redraw_after_head_changed') as headline,
         ):
-            with c.undoer as u:
+            with u:
                 u.set_command_name('composed actions')
                 inserted = u.insert_node(p)
                 u.change_headline(inserted, 'inserted')
@@ -151,12 +152,13 @@ class TestContextUndo(LeoUnitTest):
     def test_headline_refresh_replays_without_full_redraw(self):
         c = self.c
         p = c.p
+        u = c.undoer
         old_head = p.h
         with (
             patch.object(c, 'redraw_after_head_changed') as headline,
             patch.object(c, 'redraw') as redraw,
         ):
-            with c.undoer as u:
+            with u:
                 u.set_command_name('headline')
                 u.change_headline(p, 'new headline')
                 u.redraw_after_head_changed()
