@@ -117,7 +117,9 @@ def insertOKcmd(self, event=None):
 # @+node:ekr.20040205071616.9: ** insertUser
 def insertUser(self, event=None):
     """Handle the Insert User command."""
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     w = c.frame.body.wrapper
     bunch = u.beforeChangeBody(p)
     w.deleteTextSelection()  # Works if nothing is selected.

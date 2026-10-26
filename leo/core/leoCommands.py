@@ -4320,7 +4320,9 @@ class Commands:
     # @+node:ekr.20031218072017.2945: *4* c.Dragging
     # @+node:ekr.20031218072017.2947: *5* c.dragToNthChildOf
     def dragToNthChildOf(self, p: Position, parent: Position, n: int) -> None:
-        c, p, u = self, self.p, self.undoer
+        c = self
+        p = c.p
+        u = c.undoer
         if not c.checkDrag(p, parent):
             return
         if not c.checkMoveWithParentWithWarning(p, parent, True):
@@ -4334,7 +4336,9 @@ class Commands:
 
     # @+node:ekr.20031218072017.2353: *5* c.dragAfter (not used)
     def dragAfter(self, p: Position, after: Position) -> None:
-        c, p, u = self, self.p, self.undoer
+        c = self
+        p = c.p
+        u = c.undoer
         if not c.checkDrag(p, after):
             return
         if not c.checkMoveWithParentWithWarning(p, after.parent(), True):

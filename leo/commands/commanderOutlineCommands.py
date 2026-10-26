@@ -1121,7 +1121,9 @@ def cloneToAtSpot(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     Create a clone of the selected node and move it to the last @spot node
     of the outline. Create the @spot node if necessary.
     """
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     if not p:
         return
     # 2015/12/27: fix bug 220: do not allow clone-to-at-spot on @spot node.
@@ -1165,7 +1167,9 @@ def cloneToLastNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     Clone the selected node and move it to the last node.
     Do *not* change the selected node.
     """
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     if not p:
         return
     prev = p.copy()
@@ -1448,7 +1452,9 @@ def markChangedRoots(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('toggle-mark')
 def markHeadline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Toggle the mark of the selected node."""
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     if not p:
         return
     c.endEditing()
@@ -1502,7 +1508,9 @@ def unmarkAll(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('demote')
 def demote(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Make all following siblings children of the selected node."""
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     if not p or not p.hasNext():
         c.treeFocusHelper()
         return
@@ -1542,7 +1550,9 @@ def moveOutlineDown(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     # An important optimization:
     # we don't have to call checkMoveWithParentWithWarning() if the parent of
     # the moved node remains the same.
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     if not p:
         return
     if not c.canMoveOutlineDown():
@@ -1591,7 +1601,9 @@ def moveOutlineDown(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('move-outline-left')
 def moveOutlineLeft(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Move the selected node left if possible."""
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     if not p:
         return
     if not c.canMoveOutlineLeft():
@@ -1618,7 +1630,9 @@ def moveOutlineLeft(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('move-outline-right')
 def moveOutlineRight(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Move the selected node right if possible."""
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     if not p:
         return
     if not c.canMoveOutlineRight():  # 11/4/03: Support for hoist.
@@ -1646,7 +1660,9 @@ def moveOutlineRight(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('move-outline-up')
 def moveOutlineUp(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Move the selected node up if possible."""
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     if not p:
         return
     if not c.canMoveOutlineUp():  # Support for hoist.
@@ -1712,7 +1728,9 @@ def moveOutlineToFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Non
 
     Do nothing if a hoist is in effect.
     """
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     if not p:
         return
     if c.hoistStack:
@@ -1738,7 +1756,9 @@ def moveOutlineToLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> None
 
     Do nothing if a hoist is in effect.
     """
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     if not p:
         return
     if c.hoistStack:
@@ -1760,7 +1780,9 @@ def moveOutlineToLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> None
 @g.commander_command('promote')
 def promote(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Make all children of the selected nodes siblings of the selected node."""
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     if not p or not p.hasChildren():
         c.treeFocusHelper()
         return

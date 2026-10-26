@@ -198,7 +198,9 @@ def convertTabs(self: Self, event: LeoKeyEvent | None = None) -> bool:
 @g.commander_command('unindent-region')
 def dedentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Remove one tab's worth of indentation from all presently selected lines."""
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     w = c.frame.body.wrapper  # Only valid in body.
     sel_1, sel_2 = w.getSelectionRange()
     tab_width = c.getTabWidth(c.p)
@@ -638,7 +640,9 @@ def indentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('insert-body-time')
 def insertBodyTime(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Insert a time/date stamp at the cursor."""
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     w = c.frame.body.wrapper
     if g.app.batchMode:
         c.notValidInBatchMode('insert-body-time')
@@ -1175,7 +1179,9 @@ def showInvisiblesHelper(c: Cmdr, val: Value) -> None:
 @g.commander_command('toggle-angle-brackets')
 def toggleAngleBrackets(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Add or remove double angle brackets from the headline of the selected node."""
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     if g.app.batchMode:
         c.notValidInBatchMode('toggle-angle-brackets')
         return
