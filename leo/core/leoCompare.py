@@ -516,7 +516,6 @@ class CompareLeoOutlines:
                 for path2 in aList:
                     self.diff_two_files(path1, path2)  # adds to self.root
             self.finish()
-            u.redraw()
 
     # @+node:ekr.20180211170333.3: *3* CompareLeoOutlines.diff_two_files
     def diff_two_files(self, fn1: str, fn2: str) -> None:
@@ -743,7 +742,7 @@ def diffMarkedNodes(event: LeoKeyEvent | None = None) -> None:
                 clone = p3.clone()
                 clone.moveToLastChildOf(p)
         root.expand()
-        u.redraw(root)
+        c.p = root  # type:ignore
 
 
 # @+node:ekr.20180213104627.1: *3* diff_leo_files_helper

@@ -89,7 +89,7 @@ class BaseEditCommandsClass:
             else:
                 with u.change_node(p, bunch.undoType):
                     u.set_body(p, newText, old_body=bunch.oldText)
-                    u.redraw(p)
+                    c.p = p
         self.undoData = None
         k.clearState()
         # Warning: basic editing commands **must not** set the label.

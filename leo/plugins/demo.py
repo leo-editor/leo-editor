@@ -460,7 +460,6 @@ class Demo:
         if undo:
             with u.change_node('Typing'):
                 p.setDirty()
-                u.redraw()
         for ch in s:
             p.h = p.h + ch
             tree.repaint()  # *not* tree.update.

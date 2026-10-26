@@ -4327,7 +4327,7 @@ class Commands:
             p.setDirty()
             p.moveToNthChildOf(parent, n)
             p.setDirty()
-            u.redraw(p, update_syntax_coloring=True)
+            c.p = p
 
     # @+node:ekr.20031218072017.2353: *5* c.dragAfter (not used)
     def dragAfter(self, p: Position, after: Position) -> None:
@@ -4342,7 +4342,7 @@ class Commands:
             p.setDirty()
             p.moveAfter(after)
             p.setDirty()
-            u.redraw(p, update_syntax_coloring=True)
+            c.p = p
 
     # @+node:ekr.20031218072017.2946: *5* c.dragCloneToNthChildOf
     def dragCloneToNthChildOf(self, p: Position, parent: Position, n: int) -> None:
@@ -4361,7 +4361,7 @@ class Commands:
                 p = clone
             else:
                 clone.doDelete(newNode=p)
-            u.redraw(clone, update_syntax_coloring=True)
+            c.p = clone
 
     # @+node:ekr.20031218072017.2948: *5* c.dragCloneAfter
     def dragCloneAfter(self, p: Position, after: Position) -> None:
@@ -4381,7 +4381,7 @@ class Commands:
             else:
                 # Destroys clone and makes p the current node.
                 clone.doDelete(newNode=p)
-            u.redraw(p, update_syntax_coloring=True)
+            c.p = p
 
     # @+node:ekr.20031218072017.2949: *4* c.Drawing
     # @+node:ekr.20080514131122.8: *5* c.bringToFront
@@ -5396,7 +5396,7 @@ class Commands:
                 p2._linkCopiedAsNthChild(root, n)
             c.contractAllHeadlines()
             root.contract()
-            u.redraw(root)
+            c.p = root
             return root
 
     # @+node:ekr.20160304054950.1: *5* c.setCloneFindByPredicateIcon
@@ -5519,8 +5519,7 @@ class Commands:
                 delete(p)
             # Set c.p if necessary.
             if not c.positionExists(c.p):
-                c.selectPosition(c.rootPosition())
-            u.redraw()
+                c.p = c.rootPosition()
 
     # For compatibility.
     undoableDeletePositions = deletePositionsInList

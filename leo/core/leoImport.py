@@ -87,7 +87,6 @@ class FreeMindImporter:
             except Exception:
                 g.es_print('Exception importing FreeMind file', g.shortFileName(path))
                 g.es_exception()
-            u.redraw()
             return c.p
 
     # @+node:ekr.20160503191518.4: *3* freemind.import_file
@@ -753,7 +752,7 @@ class LeoImportCommands:
                 p.contract()
                 p.setDirty()  # 2011/10/09: tell why the file is dirty!
             current.expand()
-            u.redraw(current)
+            c.p = current
             return p
 
     # @+node:ekr.20031218072017.3212: *4* ic.importFilesCommand
@@ -792,7 +791,7 @@ class LeoImportCommands:
                     g.es_exception()
             c.checkOutline()
             parent.expand()
-            u.redraw(parent)
+            c.p = parent
 
     # @+node:ekr.20160503125237.1: *4* ic.importFreeMind
     def importFreeMind(self, files: list[str]) -> None:
@@ -822,7 +821,7 @@ class LeoImportCommands:
                 p.contract()
                 p.setDirty()
             parent.expand()
-            u.redraw(parent)
+            c.p = parent
             return parent
 
     # @+node:ekr.20160503125219.1: *4* ic.importMindMap
@@ -862,7 +861,7 @@ class LeoImportCommands:
                 self.setBodyString(p, "@ignore\n@language cweb")
             # Scan the file, creating one section for each function definition.
             self.scanWebFile(path, p)
-            u.redraw(p)
+            c.p = p
             return p
 
     # @+node:ekr.20031218072017.3227: *5* ic.findFunctionDef
@@ -1159,7 +1158,7 @@ class LeoImportCommands:
                 self.parse_body_helper(p, importer=importer)
                 if c.checkOutline():
                     return  # Error!
-                u.redraw(old_p)
+                c.p = old_p
             except Exception:
                 g.es_exception()
 
@@ -1390,7 +1389,6 @@ class MindMapImporter:
                 f = open(path)
                 self.scan(f, p)
                 f.close()
-                u.redraw()
             except Exception:
                 g.es_print('Invalid MindJet file:', fn)
             return p
@@ -1543,7 +1541,7 @@ class MORE_Importer:
                     c.endEditing()
                     c.checkOutline()
                     p.setDirty()
-                    u.redraw(root)
+                    c.p = root
                     return root
             if not g.unitTesting:
                 g.es("not a valid MORE file", fileName)
@@ -1967,9 +1965,10 @@ class RecursiveImportController:
             return
 
         # Import all requested files.
-        with self.c.undoer.change_outline('recursive-import'):
+        c = self.c
+        u = c.undoer
+        with u.change_outline('recursive-import'):
             try:
-                c, _u = self.c, self.c.undoer
                 t1 = time.time()
                 g.app.disable_redraw = True
                 last = c.lastTopLevel()
@@ -1996,7 +1995,7 @@ class RecursiveImportController:
                 g.app.disable_redraw = False
                 for p2 in parent.self_and_subtree(copy=False):
                     p2.contract()
-                c.undoer.redraw(parent)
+                c.p = parent
             if not g.unitTesting:
                 t2 = time.time()
                 n = len(list(parent.subtree()))
@@ -2070,7 +2069,7 @@ class TabImporter:
                     p.h = g.shortFileName(fn)
                     p.contract()
                     p.setDirty()
-            u.redraw(self.root)
+            c.p = self.root  # type:ignore
 
     # @+node:ekr.20161006071801.4: *3* tabbed.lws
     def lws(self, s: str) -> str:

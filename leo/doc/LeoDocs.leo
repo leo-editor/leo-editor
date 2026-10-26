@@ -165,10 +165,6 @@
 <v t="ekr.20100122073254.11655"><vh>Writing new importers</vh></v>
 </v>
 <v t="matt.20200331213038.1"><vh>PyPi install caveat</vh></v>
-<v t="ekr.20230121110345.1"><vh>Script files</vh>
-<v t="ekr.20230121110340.1"><vh>@clean ../scripts/make-clean.cmd</vh></v>
-<v t="ekr.20230121110533.1"><vh>@clean ../scripts/make-html.cmd</vh></v>
-</v>
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ekr.20090428133936.2"><vh>@edit html/conf.py</vh></v>
 <v t="ekr.20241124083101.1"><vh>@edit _static/custom.css</vh></v>
@@ -1129,10 +1125,7 @@
 <v t="ekr.20131019061259.16686"><vh>Pre-defined symbols</vh></v>
 <v t="ekr.20170315020214.1"><vh>LeoApp class</vh></v>
 <v t="ekr.20131019061259.16688"><vh>Commands class</vh></v>
-<v t="ekr.20190101093224.1"><vh>Undoing commands</vh>
-<v t="ekr.20190101093224.2"><vh>Undoably changing body text</vh></v>
-<v t="ekr.20190101093224.3"><vh>Undoably changing multiple nodes</vh></v>
-</v>
+<v t="ekr.20190101093224.1"><vh>Undoing commands</vh></v>
 <v t="ekr.20131019061259.16690"><vh>VNode class</vh></v>
 <v t="ekr.20131019061259.16691"><vh>Position class</vh></v>
 <v t="ekr.20131019061259.16692"><vh>leo.core.leoGlobals module</vh></v>
@@ -1221,7 +1214,14 @@
 <v t="ekr.20241112111533.1"><vh>About states and restarters</vh></v>
 <v t="ekr.20060430220749"><vh>Mode files</vh></v>
 </v>
-<v t="ekr.20261018090533.1"><vh>Leo's Undoer: Theory of Operation</vh></v>
+<v t="ekr.20261018090533.1"><vh>Leo's Undoer: Theory of Operation</vh>
+<v t="ekr.20261026060107.1"><vh>The new undo API</vh>
+<v t="ekr.20261026060246.1"><vh>with u.move_node(p, 'command-name'):</vh></v>
+<v t="ekr.20261026060249.1"><vh>with u.change_node(p, 'command-name'):</vh></v>
+<v t="ekr.20261026060249.2"><vh>with u.change_outline('command-name'):</vh></v>
+</v>
+<v t="ekr.20261026060054.1"><vh>Compatibility and migration</vh></v>
+</v>
 <v t="ekr.20200807105709.1"><vh>leoAst.py</vh>
 <v t="ekr.20200807111156.1"><vh>Running leoAst.py</vh>
 <v t="ekr.20200807110628.1"><vh>Running leoAst.py from the command line</vh></v>
@@ -2172,6 +2172,8 @@
 </v>
 <v t="ekr.20260810021658.1"></v>
 <v t="ekr.20260716061125.1"></v>
+<v t="ekr.20131008041326.16091"></v>
+<v t="ekr.20190101093224.1"></v>
 <v t="ekr.20261018090533.1"></v>
 </vnodes>
 <tnodes>
@@ -22435,37 +22437,69 @@ The body text of an ``@data history-list`` *setting node* preloads commands into
     check-clones
     expand-log-pane
     contract-log-pane</t>
-<t tx="ekr.20190101093224.1">If you want to make a command undoable, you must create "before" and "after" snapshots of the parts of the outline that may change. Here are some examples.  Leo's source code contains many other examples.
-</t>
-<t tx="ekr.20190101093224.2">To undo a single change to body text:
+<t tx="ekr.20190101093224.1">Here is everything script writers need to know to make their code undoable.
+
+The patterns below all assume the following definitions:
 
 .. code-block:: python
 
-    command = 'my-command-name'
-    b = c.undoer.beforeChangeNodeContents(p, oldYScroll=ypos)
-    # Change p's body text.
-    c.undoer.afterChangeNodeContents(p,
-        command=command, bunch=b, dirtyVnodeList=[])
-</t>
-<t tx="ekr.20190101093224.3">If your command changes multiple nodes, the pattern is:
+    p = c.p
+    u = c.undoer
+    w = c.frame.body.wrapper
+
+Use `u.move_node` if your script only moves a single node p:
 
 .. code-block:: python
 
-    u, undoType = c.undoer, 'command-name'
-    u.beforeChangeGroup(c.p, undoType)
-    dirtyVnodeList = []
-    changed = False
-    # For each change, do something like the following:
-    for p in to_be_changed_nodes:
-        # Change p.
-        dirtyVnodeList.append(p.v)
-        u.afterChangeNodeContents(p, undoType, bunch)
-        changed = True
-    if changed:
-        u.afterChangeGroup(c.p, undoType,
-            reportFlag=False,
-            dirtyVnodeList=dirtyVnodeList)
-</t>
+    with u.move_node(p, 'command-name'):
+        p.setDirty()  # Calls p.v.setAllAncestorAtFileNodesDirty().
+        # move the node
+        p.setDirty()  # p.v.setAllAncestorAtFileNodesDirty() again.
+        # call w.setInsertPoint() or w.setSelectionRange() as desired.
+        c.p = p
+        # Do *not* call c.redraw!
+
+Use `u.change_node` if your script only changes a single node p:
+
+.. code-block:: python
+
+    with u.change_node(p, 'command-name'):
+        # change p.b or p.h or both.
+        # call p.setDirty(), p.setMarked() or p.clearMarked() as desired.
+        # call w.setInsertPoint() or w.setSelectionRange() as desired.
+        # Do *not* call c.redraw!
+
+Finally, use `u.change_outline` for all other (more complex) changes:
+
+.. code-block:: python
+
+    with u.change_outline('command-name'):
+        # make *arbitrary* changes to the outline.
+        # set c.p if it changes.
+        # call w.setInsertPoint() or w.setSelectionRange() as desired.
+        # Do *not* call c.redraw!
+
+​That's all!
+
+Nested with blocks (possibly in separate methods) work as expected.
+
+For example the following ``@ button`` script works:
+
+.. code-block:: python
+
+    """Move c.p up two nodes if possible"""
+    g.cls()
+    u = c.undoer
+    with u.change_outline('up-two'):
+        p1 = c.p
+        c.moveOutlineUp()
+        if c.p == p1:
+            print("Can't do first move")
+        else:
+            p2 = c.p
+            c.moveOutlineUp()
+            if c.p == p2:
+                print("Can't do second move")</t>
 <t tx="ekr.20190117143933.1">Leo 5.9 final, https://leo-editor.github.io/leo-editor/ is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
@@ -25516,20 +25550,6 @@ any change to one clone inevitably affects all other clones.
 <t tx="ekr.20230121061309.1"></t>
 <t tx="ekr.20230121061335.1"></t>
 <t tx="ekr.20230121061433.1"></t>
-<t tx="ekr.20230121110340.1">@language batch
-echo off
-echo off
-cd C:\Repos\leo-editor\leo\doc\html
-echo make clean
-call make clean
-</t>
-<t tx="ekr.20230121110345.1"></t>
-<t tx="ekr.20230121110533.1">@language batch
-echo off
-echo off
-cd C:\Repos\leo-editor\leo\doc\html
-echo make html
-call make html</t>
 <t tx="ekr.20230121135204.1">The workbook file
 =================
 
@@ -28254,169 +28274,74 @@ Release Notes
     :depth: 2
     :local:
 </t>
-<t tx="ekr.20261018090533.1">@language rest
+<t tx="ekr.20261018090533.1">Undo history is a list of **beads**, with a pointer to the last applied
+bead. Undo executes that bead's undo functions and moves the pointer
+backwards; redo executes the next bead's redo functions and moves the
+pointer forwards. A new, nonempty command discards the redo tail. I first
+saw this history model in Apple's Yellow Box documentation.
 
-Undo history is a list of **beads**, with a pointer to the last applied bead.
-Undo executes that bead's undo functions and moves the pointer backwards;
-redo executes the next bead's redo functions and moves the pointer forwards.
-A new, nonempty command discards the redo tail.
+Leo 6.8.11 introduced a new API for client code.
 
-The following describes only the undoer's new API, first introduced in Leo 6.8.11.
+</t>
+<t tx="ekr.20261026060054.1">Legacy ``u.before*`` and ``u.after*`` methods (and ``u.doTyping``) will
+remain for use by scripts and plugins. All such methods are *deprecated*
+and may be removed in later versions of Leo.
 
-The new API puts all undoable code within `with` statements.  Some examples:
+Leo's existing bead architecture will remain as it is:
 
-@language python
+- Legacy undoer beads are instances of ``g.Bunch``.
+- New undoer beads are instances of ``UndoBead``.
+</t>
+<t tx="ekr.20261026060107.1">All undoable code exists within contexts created by ``with`` statements.
+Contexts handle *all* the details of doing, undoing and redoing an
+operation. See the source code for details.
 
-u = c.undoer
+There are three main contexts. Use the most specific context possible.
 
-# Using u.change_node, from toggle-angle-brackets.
+The examples below all assume the following definitions:
 
-&lt;&lt; calculate s, the new headline &gt;&gt;
-with u.change_node(p, 'toggle-angle-brackets'):
-    p.setHeadString(s)
-    u.redraw_and_edit(p, select_all=True)
+.. code-block:: python
 
-# Using u.change_outline, from mark-node-and-parents.
-changed = [z for z in c.p.self_and_parents() if not z.isMarked()]
-if changed:
-    with u.change_outline('mark-node-and-parents'):
-        for z in changed:
-            z.setMarked()
-        u.redraw()
-return changed
-
-@language rest
-
-Core commands use `with c.undoer as u` and set a command name. Action helpers
-perform the edit immediately and capture only the data needed to undo/redo it.
-Nested contexts share one UndoBead, published only on outermost exit. Helpers
-execute in forward order on redo and reverse order on undo; UI finishers run
-after all mutations. Saving may occur between creation and replay, so both
-undo and redo mark the document changed rather than restore a stale clean bit.
-
-change_node records content/marks/user attributes for one vnode;
-change_position records the old and new links of a moved position;
-change_outline captures a bulk graph mutation and retains only changed
-vnodes. All three contexts preserve object identity, so clones and
-subsequent commands keep referring to the same vnodes. A bulk snapshot
-absorbs nested outline helpers; external state (such as recent files) uses
-its own captured functions. TypingBead stores incremental line patches with
-configurable coalescing. I first saw this history model in Apple's Yellow
-Box documentation.
+    p = c.p
+    u = c.undoer
+    w = c.frame.body.wrapper
 
 
-Leo's built-in commands use `c.undoer` contexts. Each outer context
-publishes one undo bead. Nested contexts share that bead and keep the outer
-command name.
+</t>
+<t tx="ekr.20261026060246.1">Use the ``u.move_node`` context if your command only moves a single node p:
 
-Callbacks replay changes in forward order for redo and reverse order for undo.
+.. code-block:: python
 
-## Choosing a context
+    with u.move_node(p, 'command-name'):
+        p.setDirty()  # Calls p.v.setAllAncestorAtFileNodesDirty().
+        # move the node
+        p.setDirty()  # p.v.setAllAncestorAtFileNodesDirty() again.
+        # call w.setInsertPoint() or w.setSelectionRange() as desired.
+        c.p = p
+        # Do *not* call c.redraw!
+        
+</t>
+<t tx="ekr.20261026060249.1">Use the ``u.change_node`` context if your command only changes a single node p:
 
-Use the smallest context that captures the operation:
+.. code-block:: python
 
-@language python
+    with u.change_node(p, 'command-name'):
+        # change p.b or p.h or both.
+        # call p.setDirty(), p.setMarked() or p.clearMarked() as desired.
+        # call w.setInsertPoint() or w.setSelectionRange() as desired.
+        # Do *not* call c.redraw!
+        
+        
+</t>
+<t tx="ekr.20261026060249.2">Finally, use the ``u.change_outline`` context for all other (more complex) changes:
 
-u = c.undoer
+.. code-block:: python
 
-# From toggle-angle-brackets
-&lt;&lt; calculate s, the new headline &gt;&gt;
-with u.change_node(p, 'toggle-angle-brackets'):
-    p.setHeadString(s)
-    u.redraw_and_edit(p, select_all=True)
-
-# From mark-node-and-parents
-changed = [z for z in c.p.self_and_parents() if not z.isMarked()]
-if changed:
-    with u.change_outline('mark-node-and-parents'):
-        for z in changed:
-            z.setMarked()
-        u.redraw()
-return changed
-
-
-@language rest
-
-`change_node` captures headline, body, marked state, and a deep copy of user
-attributes. Nested node contexts can edit distinct nodes; nested contexts for
-one vnode are absorbed into its outer capture. This context does not capture
-structural changes. Put a bulk context outside node contexts, rather than
-starting `change_outline` inside `change_node`; the latter is rejected before
-its body runs.
-
-`change_position` records an existing position's move without scanning the
-outline. Use it for a single move, rather than a sequence of unrelated moves.
-
-`change_outline` captures the reachable vnode graph before and after the
-operation. It retains only changed nodes in the bead, preserving vnode identity,
-child order, clone parents, content, marks, and user attributes. Capture takes
-linear time and temporary memory in the outline size. Nested outline, node,
-and action helpers are absorbed by the outer bulk capture. Enter the context
-before a reader, paste operation, or import starts mutating the outline.
-`enabled=False` supports callers explicitly requesting a non-undoable operation.
-
-Contexts restore the selected position, body selection, insertion point, scroll,
-and relevant editor state. If a command raises after making changes, those
-changes remain undoable; contexts do not roll back the command automatically.
-Undo and redo clear replay flags even if a callback fails, and advance the
-history pointer only after successful replay.
-
-
-The outer caller requests one redraw per context, after all edits, using
-`u.redraw(p)`, `u.redraw_and_edit(p, select_all=True)`, or
-`u.redraw_after_head_changed()`. Action helpers and snapshot restoration do
-not redraw. The redraw helpers perform the initial refresh and register one
-final refresh for undo/redo, before restoring body selection and scroll.
-Nested contexts share the final redraw callback. Redraw helpers also work
-with `change_outline(enabled=False)` without recording undo callbacks.
-
-Action helpers require an active context before mutating anything:
-
-- `insert_node(p, as_child=False, index=None, before=False)` returns the inserted
-  position. It respects expanded parents, hoists, and insertion configuration.
-- `clone_node(p)` returns the clone position, or `None` if validation fails.
-- `delete_node(p)` removes an occurrence and updates selection.
-- `set_body(p, text, old_body=None)` edits the target vnode, including a
-  non-current node. Supply `old_body` when the widget has already changed.
-- `change_headline(p, ch, text, update_editor=True)` updates headline state,
-  directives, and hooks. Live headline editors can use `update_editor=False`.
-- `set_selection(old_ins, old_sel, old_y_scroll=None,
-  new_y_scroll=None)` records widget state after editing.
-
-Inserts and clones replay by relinking the original vnode instead of creating
-new identities. Deletions retain the detached subtree. Changes dirty affected
-nodes and their external-file ancestors. Undo and redo mark the document
-changed, including replay after a save; an old bead cannot safely restore a
-historical clean flag.
-
-`change_recent_files()` captures the recent-files list separately from the
-outline, updating menus and the recent-files file during replay.
-
-## Typing
-
-`type_text(p, 'Typing', oldText, newText, newInsert=None, oldSel=None,
-newSel=None, oldYview=None)` records text already changed by the body editor.
-It stores an incremental line patch and respects character, line, word, and
-node undo granularity. Saving, branching history, or an intervening command
-ends coalescing. New typing beads do not use the legacy Undoer's shared scratch
-state. Qt body editors and core editing commands use this entry point.
-
-## Compatibility and migration
-
-Legacy `before*`/`after*` APIs and `doTyping` remain available for scripts and
-plugins. Deprecated snapshot APIs emit `DeprecationWarning`. Legacy and new
-beads can share history and legacy groups; legacy calls inside a new context
-join the outer command. Prefer the contexts above for new code.
-
-The removed
-`insertHeadline(as_child=...)` interface is replaced by the dedicated
-`insertChild()` command, or `u.insert_node(p, as_child=True)` for helpers.
-
-Do not rely on the Undoer's legacy snapshot ivars while replaying new beads.
-The callbacks capture their own state. Keep external effects outside outline
-snapshots, and provide separate callbacks or a dedicated context when those
-effects must be reversible.
-
+    with u.change_outline('command-name'):
+        # make *arbitrary* changes to the outline.
+        # set c.p if it changes.
+        # call w.setInsertPoint() or w.setSelectionRange() as desired.
+        # Do *not* call c.redraw!
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py

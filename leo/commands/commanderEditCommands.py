@@ -61,7 +61,6 @@ def addComments(self: Self, event: LeoKeyEvent | None = None) -> None:
         w.setAllText(head + middle + tail)
         w.setSelectionRange(i, j, insert=j)
         w.setYScrollPosition(old_y_scroll)
-        u.redraw()
 
 
 # @+node:ekr.20171123135625.16: ** c_ec.convertAllBlanks
@@ -99,7 +98,6 @@ def convertAllBlanks(self: Self, event: LeoKeyEvent | None = None) -> None:
         if not g.unitTesting:
             # Must come before c.redraw().
             g.es("blanks converted to tabs in", count, "nodes")
-        u.redraw()
 
 
 # @+node:ekr.20171123135625.17: ** c_ec.convertAllTabs
@@ -138,7 +136,6 @@ def convertAllTabs(self: Self, event: LeoKeyEvent | None = None) -> None:
                     p.setBodyString('\n'.join(result))
         if not g.unitTesting:
             g.es("tabs converted to blanks in", count, "nodes")
-        u.redraw()
 
 
 # @+node:ekr.20171123135625.18: ** c_ec.convertBlanks
@@ -165,7 +162,6 @@ def convertBlanks(self: Self, event: LeoKeyEvent | None = None) -> bool:
         p.v.b = head + middle + tail
         w.setAllText(head + middle + tail)
         w.setYScrollPosition(old_y_scroll)
-        u.redraw(p)
         return True
 
 
@@ -195,7 +191,6 @@ def convertTabs(self: Self, event: LeoKeyEvent | None = None) -> bool:
         w.setAllText(head + middle + tail)
         w.setSelectionRange(i, j, insert=j)
         w.setYScrollPosition(old_y_scroll)
-        u.redraw(p)
         return True
 
 
@@ -237,7 +232,6 @@ def dedentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
         w.setAllText(new_s)
         w.setSelectionRange(i, j, insert=j)
         w.setYScrollPosition(old_y_scroll)
-        u.redraw(p)
 
 
 # @+node:ekr.20171123135625.36: ** c_ec.deleteComments
@@ -316,7 +310,6 @@ def deleteComments(self: Self, event: LeoKeyEvent | None = None) -> None:
         w.setAllText(head + middle + tail)
         w.setSelectionRange(i, j, insert=ins)
         w.setYScrollPosition(old_y_scroll)
-        u.redraw()
 
 
 # @+node:ekr.20171123135625.54: ** c_ec.editHeadline (edit-headline)
@@ -412,12 +405,11 @@ def extract(self: Self, event: LeoKeyEvent | None = None) -> None:
 
         # Finish.
         p.parent().expand()
-        u.redraw(p.parent())  # A bit more convenient than p.
+        c.p = p.parent()  # A bit more convenient than p.
         c.bodyWantsFocus()
 
 
 # Compatibility
-
 g.command_alias('extractSection', extract)
 g.command_alias('extractPythonMethod', extract)
 
@@ -520,11 +512,10 @@ def extractSectionNames(self: Self, event: LeoKeyEvent | None = None) -> None:
         g.warning('Found no section names')
         return
     with u.change_outline('extract-section-names'):
-        p = createFirstChildNode(c, current, name, '')
+        c.p = createFirstChildNode(c, current, name, '')
         c.checkOutline()
         w.setSelectionRange(i, j)
         w.setFocus()
-        u.redraw(p)
 
 
 # @+node:ekr.20171123135625.28: *3* function: findSectionName
@@ -609,7 +600,6 @@ def alwaysIndentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
         w.setAllText(new_s)
         w.setSelectionRange(i, j, insert=j)
         w.setYScrollPosition(old_y_scroll)
-        u.redraw(p)
 
 
 # @+node:ekr.20210104123442.1: ** c_ec.indentBody (indent-region)
@@ -658,7 +648,6 @@ def insertBodyTime(self: Self, event: LeoKeyEvent | None = None) -> None:
         i = w.getInsertPoint()
         w.insert(i, s)
         p.v.b = w.getAllText()
-        u.redraw()
 
 
 # @+node:ekr.20171123135625.52: ** c_ec.justify-toggle-auto
@@ -699,7 +688,7 @@ def line_to_headline(self: Self, event: LeoKeyEvent | None = None) -> None:
         w.setInsertPoint(i)
         p2.setDirty()
         p.expand()
-        u.redraw(p)
+        c.p = p
         c.bodyWantsFocus()
 
 
@@ -785,7 +774,7 @@ def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
         old_p.setDirty()
         for child in reversed(children):
             child.doDelete()
-        u.redraw(old_p)
+        c.p = old_p
         c.bodyWantsFocusNow()
 
 
@@ -836,7 +825,7 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
         parent.b = ''.join(result)
         # Delete the definition node.
         p.doDelete()
-        u.redraw(parent)
+        c.p = parent
 
 
 # @+node:ekr.20171123135625.40: ** c_ec.reformatBody
@@ -844,10 +833,10 @@ def promoteSectionDefinition(self: Self, event: LeoKeyEvent | None = None) -> No
 def reformatBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Reformat all paragraphs in the body."""
     c = self
-    p = self.p
+    p = c.p
     u = c.undoer
-    w = c.frame.body.wrapper  # Only valid in bod.
-    with u.change_outline('reformat-body'):
+    w = c.frame.body.wrapper  # Only valid in body.
+    with u.change_node(p, 'reformat-body'):
         w.setInsertPoint(0)
         while 1:
             progress = w.getInsertPoint()
@@ -856,7 +845,6 @@ def reformatBody(self: Self, event: LeoKeyEvent | None = None) -> None:
             s = w.getAllText()
             if ins <= progress or ins >= len(s):
                 break
-        u.redraw(p)
 
 
 # @+node:ekr.20171123135625.41: ** c_ec.reformatParagraph & helpers
@@ -1035,7 +1023,6 @@ def rp_reformat(
         # Finish.
         p.v.b = s  # p.b would cause a redraw.
         w.setXScrollPosition(0)  # Never scroll horizontally.
-        u.redraw()
 
 
 # @+node:ekr.20171123135625.48: *3* function: rp_wrap_all_lines
@@ -1139,7 +1126,6 @@ def reformatSelection(
         w.setSelectionRange(i, j, insert=j)
         p.v.b = s  # p.b would cause a redraw.
         w.setXScrollPosition(0)  # Never scroll horizontally.
-        u.redraw()
 
 
 # @+node:ekr.20171123135625.12: ** c_ec.show/hide/toggleInvisibles
@@ -1268,13 +1254,11 @@ def unreformat(
             else:
                 ins = i
                 break
-        c.recolor()  # Required.
         w.setSelectionRange(ins, ins, insert=ins)
         # More useful than for reformat-paragraph.
         w.see(ins)
         # Make sure we never scroll horizontally.
         w.setXScrollPosition(0)
-        u.redraw()
 
 
 # @+node:ekr.20180410054716.1: ** c_ec: insert-jupyter-toc & insert-markdown-toc
@@ -1311,7 +1295,6 @@ def insert_toc(c: Cmdr, kind: str) -> None:
         i = w.getInsertPoint()
         w.insert(i, s)
         p.v.b = w.getAllText()
-        u.redraw()
 
 
 # @+node:ekr.20180410054926.1: *3* make_toc
