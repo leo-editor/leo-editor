@@ -1146,7 +1146,8 @@ class ScriptingController:
         tag: str = '',
     ) -> None:
         """Register @button <name> and @rclick <name> and <name>"""
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
         trace = False and not g.unitTesting
         shortcut = self.getShortcut(h) or ''
         commandName = self.cleanButtonText(h)

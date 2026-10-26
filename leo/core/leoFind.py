@@ -3341,7 +3341,8 @@ class LeoFind:
 
     # @+node:ekr.20131117164142.16993: *4* find.add_find_string_to_label
     def add_find_string_to_label(self, protect: bool = True) -> None:
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
         ftm = c.findCommands.ftm
         s = ftm.get_find_text()
         c.minibufferWantsFocus()

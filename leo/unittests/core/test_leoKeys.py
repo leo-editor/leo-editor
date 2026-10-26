@@ -175,7 +175,8 @@ class TestKeys(LeoUnitTest):
     callback_was_called = False
 
     def test_k_registerCommand(self):
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
 
         def callback(event=None, c=c):
             self.callback_was_called = True

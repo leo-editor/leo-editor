@@ -4263,7 +4263,8 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20210914154830.1: *4* test_helpForPython
     def test_helpForPthon(self):
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
         k.arg = 'os'
         s = c.helpCommands.pythonHelp1(event=None)
         self.assertTrue('Help on module os' in s)
@@ -4304,7 +4305,8 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20210905064816.15: *4* test_most_toggle_commands
     def test_most_toggle_commands(self):
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
         ed = c.editCommands
         # These don't set ivars
         # 'toggle-active-pane'),

@@ -2215,7 +2215,8 @@ class VimCommands:
     @cmd(':!')
     def shell_command(self, event: LeoKeyEvent | None = None) -> None:
         """Execute a shell command."""
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
         if k.functionTail:
             command = k.functionTail
             c.controlCommands.executeSubprocess(event, command)

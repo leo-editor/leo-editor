@@ -4039,7 +4039,8 @@ class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):  # ty-pe:ignore[misc,override]
 
     # @+node:ekr.20120120095156.10260: *4* QtMenuWrapper.leo_update_shortcut
     def leo_update_shortcut(self, action: QAction, commandName: str) -> None:
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
         if action:
             s = action.text()
             parts = s.split('\t')

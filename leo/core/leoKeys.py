@@ -291,7 +291,8 @@ class AutoCompleterClass:
     @ac_cmd('show-calltips')
     def showCalltips(self, event: LeoKeyEvent | None = None) -> None:
         """Show the calltips at the cursor."""
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
         w = event.w if event else None
         if not g.isTextWrapper(w):
             return
@@ -1209,7 +1210,8 @@ class FileNameChooser:
         tabName: str = '',
     ) -> None:
         """Get a file name, supporting file completion."""
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
         tag = 'get-file-name'
         state = k.getState(tag)
         char = event.char if event else ''
@@ -4676,7 +4678,8 @@ class ModeInfo:
 
     # @+node:ekr.20120208064440.10158: *3* mode_i.initMode
     def initMode(self) -> None:
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
         k.inputModeName = self.name
         k.silentMode = False
         for bi in self.entryCommands:

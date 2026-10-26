@@ -1370,7 +1370,8 @@ class QMinibufferWrapper(QLineEditWrapper):
             """
             assert isinstance(self, QMinibufferWrapper), self
             assert isinstance(self.widget, QtWidgets.QLineEdit), self.widget
-            c, k = self.c, self.c.k
+            c = self.c
+            k = c.k
             if not k.state.kind:
                 # c.widgetWantsFocusNow(w) # Doesn't work.
                 event2 = g.app.gui.create_key_event(c, w=c.frame.body.wrapper)

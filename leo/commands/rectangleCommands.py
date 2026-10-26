@@ -193,7 +193,8 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         Prompt for a string, then replace the contents of a rectangle
         with a string on each line.
         """
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
         if g.unitTesting:
             k.arg = 's...s'  # This string is known to the unit test.
             self.w = event.w if event else c.frame.body.wrapper
@@ -207,7 +208,8 @@ class RectangleCommandsClass(BaseEditCommandsClass):
             k.get1Arg(event, handler=self.stringRectangle1)
 
     def stringRectangle1(self, event: LeoKeyEvent | None = None) -> None:
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
         k.clearState()
         k.resetLabel()
         c.bodyWantsFocus()
@@ -232,7 +234,8 @@ class RectangleCommandsClass(BaseEditCommandsClass):
     @cmd('rectangle-yank')
     def yankRectangle(self, event: LeoKeyEvent | None = None) -> None:
         """Yank into the rectangle defined by the start and end of selected text."""
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
