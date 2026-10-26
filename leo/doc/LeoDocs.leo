@@ -22446,32 +22446,32 @@ Use `u.move_node` if your script only moves a single node p:
 .. code-block:: python
 
     with u.move_node(p, 'command-name'):
-        p.setDirty()  # Calls p.v.setAllAncestorAtFileNodesDirty()
-        &lt;&lt; move the node &gt;&gt;
-        p.setDirty()  # p.v.setAllAncestorAtFileNodesDirty() again
-        c.p = p  # Essential: u.redraw may not be called.
-        u.redraw(update_syntax_coloring = True)  # &lt;-- u.redraw, not c.redraw
-        &lt;&lt; call w.setInsertPoint() or w.setSelectionRange() as desired &gt;&gt;
+        p.setDirty()  # Calls p.v.setAllAncestorAtFileNodesDirty().
+        # move the node
+        p.setDirty()  # p.v.setAllAncestorAtFileNodesDirty() again.
+        # call w.setInsertPoint() or w.setSelectionRange() as desired.
+        c.p = p
+        # Do *not* call c.redraw!
 
 Use `u.change_node` if your script only changes a single node p:
 
 .. code-block:: python
 
     with u.change_node(p, 'command-name'):
-        &lt;&lt; change p.b or p.h or both &gt;&gt;
-        &lt;&lt; call p.setDirty(), p.setMarked() or p.clearMarked() as desired &gt;&gt;
-        u.redraw()   # &lt;-- u.redraw, not c.redraw
-        &lt;&lt; call w.setInsertPoint() or w.setSelectionRange() as desired &gt;&gt;
+        # change p.b or p.h or both.
+        # call p.setDirty(), p.setMarked() or p.clearMarked() as desired.
+        # call w.setInsertPoint() or w.setSelectionRange() as desired.
+        # Do *not* call c.redraw!
 
 Finally, use `u.change_outline` for all other (more complex) changes:
 
 .. code-block:: python
 
     with u.change_outline('command-name'):
-        &lt;&lt; make *arbitrary* changes to the outline &gt;&gt;
-        &lt;&lt; set c.p if it has changed &gt;&gt;
-        u.redraw()   # &lt;-- u.redraw, not c.redraw
-        &lt;&lt; call w.setInsertPoint() or w.setSelectionRange() as desired &gt;&gt;
+        # make *arbitrary* changes to the outline.
+        # set c.p if it changes.
+        # call w.setInsertPoint() or w.setSelectionRange() as desired.
+        # Do *not* call c.redraw!
 
 ​That's all!
 
@@ -22493,9 +22493,7 @@ For example the following ``@ button`` script works:
             p2 = c.p
             c.moveOutlineUp()
             if c.p == p2:
-                print("Can't do second move")
-        u.redraw()
-</t>
+                print("Can't do second move")</t>
 <t tx="ekr.20190117143933.1">Leo 5.9 final, https://leo-editor.github.io/leo-editor/ is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
