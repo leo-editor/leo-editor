@@ -204,7 +204,8 @@ class TestFind(LeoUnitTest):
 
     # @+node:ekr.20210617072622.1: *4* TestFind.test_clone-find-marked
     def test_clone_find_marked(self):
-        c, x = self.c, self.x
+        c = self.c
+        x = self.x
         root = c.rootPosition()
         root.setMarked()
         x.cloneFindAllMarked()
@@ -213,7 +214,8 @@ class TestFind(LeoUnitTest):
 
     # @+node:ekr.20210615084049.1: *4* TestFind.test_clone-find-parents
     def test_clone_find_parents(self):
-        c, x = self.c, self.x
+        c = self.c
+        x = self.x
         root = c.rootPosition()
         p = root.next().firstChild()
         p.clone()  # c.p must be a clone.
@@ -222,7 +224,8 @@ class TestFind(LeoUnitTest):
 
     # @+node:ekr.20210110073117.62: *4* TestFind.test_clone-find-tag
     def test_clone_find_tag(self):
-        c, x = self.c, self.x
+        c = self.c
+        x = self.x
 
         class DummyTagController:
             def __init__(self, clones):
@@ -452,7 +455,8 @@ class TestFind(LeoUnitTest):
 
     # @+node:ekr.20210110073117.69: *4* TestFind.test_tag-children
     def test_tag_children(self):
-        c, x = self.c, self.x
+        c = self.c
+        x = self.x
 
         class DummyTagController:
             def add_tag(self, p, tag):
@@ -466,7 +470,8 @@ class TestFind(LeoUnitTest):
 
     # @+node:ekr.20210219181001.1: *4* testFind.test_batch_change_regex
     def test_batch_change_regex(self):
-        c, x = self.c, self.x
+        c = self.c
+        x = self.x
         # self.dump_tree()
         # Test 1: Match in body.
         settings = dict(
@@ -505,7 +510,8 @@ class TestFind(LeoUnitTest):
     # @+node:ekr.20210219175850.1: *4* testFind.test_batch_change_word
     def test_batch_change_word(self):
         # settings, x = self.settings, self.x
-        c, x = self.c, self.x
+        c = self.c
+        x = self.x
         settings = dict(
             ignore_case=False,
             node_only=False,

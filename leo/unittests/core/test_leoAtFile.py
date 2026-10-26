@@ -622,7 +622,8 @@ class TestFastAtRead(LeoUnitTest):
     # @+others
     # @+node:ekr.20211104162514.1: *3* TestFastAtRead.test_afterref
     def test_afterref(self):
-        c, x = self.c, self.x
+        c = self.c
+        x = self.x
         h = '@file /test/test_afterLastRef.py'
         root = c.rootPosition()
         root.h = h  # To match contents.
@@ -710,7 +711,8 @@ class TestFastAtRead(LeoUnitTest):
 
     # @+node:ekr.20211103093332.1: *3* TestFastAtRead.test_at_all
     def test_at_all(self):
-        c, x = self.c, self.x
+        c = self.c
+        x = self.x
         h = '@file /test/test_at_all.txt'
         root = c.rootPosition()
         root.h = h  # To match contents.
@@ -760,7 +762,8 @@ class TestFastAtRead(LeoUnitTest):
 
     # @+node:ekr.20211101085019.1: *3* TestFastAtRead.test_at_comment (and @first)
     def test_at_comment(self):
-        c, x = self.c, self.x
+        c = self.c
+        x = self.x
         h = '@file /test/test_at_comment.txt'
         root = c.rootPosition()
         root.h = h  # To match contents.
@@ -827,7 +830,8 @@ class TestFastAtRead(LeoUnitTest):
 
     # @+node:ekr.20211101111636.1: *3* TestFastAtRead.test_at_delims
     def test_at_delims(self):
-        c, x = self.c, self.x
+        c = self.c
+        x = self.x
         h = '@file /test/test_at_delims.txt'
         root = c.rootPosition()
         root.h = h  # To match contents.
@@ -895,7 +899,8 @@ class TestFastAtRead(LeoUnitTest):
 
     # @+node:ekr.20211103095616.1: *3* TestFastAtRead.test_at_last
     def test_at_last(self):
-        c, x = self.c, self.x
+        c = self.c
+        x = self.x
         h = '@file /test/test_at_last.py'
         root = c.rootPosition()
         root.h = h  # To match contents.
@@ -950,7 +955,8 @@ class TestFastAtRead(LeoUnitTest):
     # @+node:ekr.20211103092228.1: *3* TestFastAtRead.test_at_others
     def test_at_others(self):
         # In particular, we want to test indented @others.
-        c, x = self.c, self.x
+        c = self.c
+        x = self.x
         h = '@file /test/test_at_others'
         root = c.rootPosition()
         root.h = h  # To match contents.
@@ -991,8 +997,8 @@ class TestFastAtRead(LeoUnitTest):
     # @+node:ekr.20211031093209.1: *3* TestFastAtRead.test_at_section_delim
     def test_at_section_delim(self):
         # Test the contents of personal test file, slightly altered.
-
-        c, x = self.c, self.x
+        c = self.c
+        x = self.x
         h = '@file /test/at_section_delim.py'
         root = c.rootPosition()
         root.h = h  # To match contents.
@@ -1058,7 +1064,8 @@ class TestFastAtRead(LeoUnitTest):
 
     # @+node:ekr.20211101155930.1: *3* TestFastAtRead.test_clones
     def test_clones(self):
-        c, x = self.c, self.x
+        c = self.c
+        x = self.x
         h = '@file /test/test_clones.py'
         root = c.rootPosition()
         root.h = h  # To match contents.
@@ -1126,7 +1133,8 @@ class TestFastAtRead(LeoUnitTest):
     # @@language python
 
     def test_cweb(self):
-        c, x = self.c, self.x
+        c = self.c
+        x = self.x
         h = '@file /test/test_cweb.w'
         root = c.rootPosition()
         root.h = h  # To match contents.
@@ -1187,7 +1195,8 @@ class TestFastAtRead(LeoUnitTest):
 
     # @+node:ekr.20211101152817.1: *3* TestFastAtRead.test_doc_parts
     def test_doc_parts(self):
-        c, x = self.c, self.x
+        c = self.c
+        x = self.x
         h = '@file /test/test_directives.py'
         root = c.rootPosition()
         root.h = h  # To match contents.
@@ -1236,7 +1245,8 @@ class TestFastAtRead(LeoUnitTest):
 
     # @+node:ekr.20231207083858.1: *3* TestFastAtRead.test_doc_parts_html
     def test_doc_parts_html(self):
-        c, x = self.c, self.x
+        c = self.c
+        x = self.x
         h = '@file /test/test_directives.html'
         root = c.rootPosition()
         root.h = h  # To match contents.
@@ -1326,7 +1336,8 @@ class TestFastAtRead(LeoUnitTest):
 
     # @+node:ekr.20211101154632.1: *3* TestFastAtRead.test_html_doc_part
     def test_html_doc_part(self):
-        c, x = self.c, self.x
+        c = self.c
+        x = self.x
         h = '@file /test/test_html_doc_part.html'
         root = c.rootPosition()
         root.h = h  # To match contents.
@@ -1398,7 +1409,8 @@ class TestFastAtRead(LeoUnitTest):
     # @@language python
 
     def test_minimal_cweb(self):
-        c, x = self.c, self.x
+        c = self.c
+        x = self.x
         h = '@file /test/test_cweb.w'
         root = c.rootPosition()
         root.h = h  # To match contents.
@@ -1444,7 +1456,8 @@ class TestFastAtRead(LeoUnitTest):
 
     # @+node:ekr.20211101180354.1: *3* TestFastAtRead.test_verbatim
     def test_verbatim(self):
-        c, x = self.c, self.x
+        c = self.c
+        x = self.x
         h = '@file /test/test_verbatim.py'
         root = c.rootPosition()
         root.h = h  # To match contents.
@@ -1496,7 +1509,8 @@ class TestFastAtRead(LeoUnitTest):
 
     # @+node:ekr.20231207080536.1: *3* TestFastAtRead.test_verbatim_html
     def test_verbatim_html(self):
-        c, x = self.c, self.x
+        c = self.c
+        x = self.x
         h = '@file /test/test_verbatim.html'
         root = c.rootPosition()
         root.h = h  # To match contents.
