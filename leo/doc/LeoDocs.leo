@@ -1214,7 +1214,14 @@
 <v t="ekr.20241112111533.1"><vh>About states and restarters</vh></v>
 <v t="ekr.20060430220749"><vh>Mode files</vh></v>
 </v>
-<v t="ekr.20261018090533.1"><vh>Leo's Undoer: Theory of Operation</vh></v>
+<v t="ekr.20261018090533.1"><vh>Leo's Undoer: Theory of Operation</vh>
+<v t="ekr.20261026060107.1"><vh>The new undo API</vh>
+<v t="ekr.20261026060246.1"><vh>with u.move_node(p, 'command-name'):</vh></v>
+<v t="ekr.20261026060249.1"><vh>with u.change_node(p, 'command-name'):</vh></v>
+<v t="ekr.20261026060249.2"><vh>with u.change_outline('command-name'):</vh></v>
+</v>
+<v t="ekr.20261026060054.1"><vh>Compatibility and migration</vh></v>
+</v>
 <v t="ekr.20200807105709.1"><vh>leoAst.py</vh>
 <v t="ekr.20200807111156.1"><vh>Running leoAst.py</vh>
 <v t="ekr.20200807110628.1"><vh>Running leoAst.py from the command line</vh></v>
@@ -2165,7 +2172,6 @@
 </v>
 <v t="ekr.20260810021658.1"></v>
 <v t="ekr.20260716061125.1"></v>
-<v t="ekr.20261018090533.1"></v>
 <v t="ekr.20131008041326.16091"></v>
 <v t="ekr.20190101093224.1"></v>
 <v t="ekr.20261018090533.1"></v>
@@ -28268,25 +28274,33 @@ Release Notes
     :depth: 2
     :local:
 </t>
-<t tx="ekr.20261018090533.1">@language rest
-
-Undo history is a list of **beads**, with a pointer to the last applied
+<t tx="ekr.20261018090533.1">Undo history is a list of **beads**, with a pointer to the last applied
 bead. Undo executes that bead's undo functions and moves the pointer
 backwards; redo executes the next bead's redo functions and moves the
 pointer forwards. A new, nonempty command discards the redo tail. I first
 saw this history model in Apple's Yellow Box documentation.
 
-## The new undo API
+Leo 6.8.11 introduced a new API for client code.
 
-Leo 6.8.11 introduced the API.
+</t>
+<t tx="ekr.20261026060054.1">## 
 
-All undoable code exists within contexts created by ``with`` statements.
+Legacy ``u.before*`` and ``u.after*`` methods (and ``u.doTyping``) method
+remain for use by scripts and plugins. All such methods are *deprecated*
+and may be removed in later versions of Leo.
+
+Leo's existing bead architecture will remain as it is:
+
+- Legacy undoer beads are instances of g.Bunch.
+- New undoer beads are instances of UndoBead.
+</t>
+<t tx="ekr.20261026060107.1">All undoable code exists within contexts created by ``with`` statements.
 Contexts handle *all* the details of doing, undoing and redoing an
 operation. See the source code for details.
 
 There are three main contexts. Use the most specific context possible.
 
-Let's assume the following definitions:
+The examples below all assume the following definitions:
 
 .. code-block:: python
 
@@ -28294,9 +28308,9 @@ Let's assume the following definitions:
     u = c.undoer
     w = c.frame.body.wrapper
 
-### with u.move_node(p, 'command-name'):
 
-Use the ``u.move_node`` context if your command only moves a single node p:
+</t>
+<t tx="ekr.20261026060246.1">Use the ``u.move_node`` context if your command only moves a single node p:
 
 .. code-block:: python
 
@@ -28308,9 +28322,8 @@ Use the ``u.move_node`` context if your command only moves a single node p:
         c.p = p
         # Do *not* call c.redraw!
         
-### with u.change_node(p, 'command-name'):
-
-Use the ``u.change_node`` context if your command only changes a single node p:
+</t>
+<t tx="ekr.20261026060249.1">Use the ``u.change_node`` context if your command only changes a single node p:
 
 .. code-block:: python
 
@@ -28321,9 +28334,8 @@ Use the ``u.change_node`` context if your command only changes a single node p:
         # Do *not* call c.redraw!
         
         
-### with u.change_outline('command-name'):
-
-Finally, use the ``u.change_outline`` context for all other (more complex) changes:
+</t>
+<t tx="ekr.20261026060249.2">Finally, use the ``u.change_outline`` context for all other (more complex) changes:
 
 .. code-block:: python
 
@@ -28332,17 +28344,6 @@ Finally, use the ``u.change_outline`` context for all other (more complex) chang
         # set c.p if it changes.
         # call w.setInsertPoint() or w.setSelectionRange() as desired.
         # Do *not* call c.redraw!
-
-## Compatibility and migration
-
-Legacy ``u.before*`` and ``u.after*`` methods (and ``u.doTyping``) method
-remain for use by scripts and plugins. All such methods are *deprecated*
-and may be removed in later versions of Leo.
-
-Leo's existing bead architecture will remain as it is:
-
-- Legacy undoer beads are instances of g.Bunch.
-- New undoer beads are instances of UndoBead.
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
