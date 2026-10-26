@@ -1564,7 +1564,8 @@ class LeoFind:
     def interactive_clone_find_tag1(
         self, event: LeoKeyEvent
     ) -> None:  # pragma: no cover (interactive)
-        c, k = self.c, self.k
+        c = self.c
+        k = self.k
         # Settings...
         self.find_text = tag = k.arg
         # Gui...
@@ -3137,7 +3138,8 @@ class LeoFind:
     # @+node:ekr.20131117164142.16947: *5* find.abort_search (incremental)
     def abort_search(self) -> None:
         """Restore the original position and selection."""
-        c, k = self.c, self.k
+        c = self.c
+        k = self.k
         w = c.frame.body.wrapper
         k.clearState()
         k.resetLabel()
@@ -3149,7 +3151,8 @@ class LeoFind:
 
     # @+node:ekr.20131117164142.16948: *5* find.end_search
     def end_search(self) -> None:
-        c, k = self.c, self.k
+        c = self.c
+        k = self.k
         k.clearState()
         k.resetLabel()
         c.bodyWantsFocus()
@@ -3304,7 +3307,8 @@ class LeoFind:
         ignoreCase: bool | None,
         regexp: bool | None,
     ) -> None:
-        c, k = self.c, self.k
+        c = self.c
+        k = self.k
         # None is a signal to get the option from the find tab.
         self.event = event
         self.isearch_forward_flag = not self.reverse if forward is None else forward
@@ -3467,7 +3471,8 @@ class LeoFind:
         """
         Initialize and start the state machine used to get user arguments.
         """
-        c, k = self.c, self.k
+        c = self.c
+        k = self.k
         w = c.frame.body.wrapper
         if not w:
             return

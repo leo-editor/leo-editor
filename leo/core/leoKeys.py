@@ -216,7 +216,8 @@ class AutoCompleterClass:
     @ac_cmd('auto-complete')
     def autoComplete(self, event: LeoKeyEvent | None = None) -> None:
         """An event handler for autocompletion."""
-        c, k = self.c, self.k
+        c = self.c
+        k = self.k
         w = event.w if event else c.get_focus()
         if k.unboundKeyAction not in ('insert', 'overwrite'):
             return
@@ -236,7 +237,8 @@ class AutoCompleterClass:
     @ac_cmd('auto-complete-force')
     def autoCompleteForce(self, event: LeoKeyEvent | None = None) -> None:
         """Show autocompletion, even if autocompletion is not presently enabled."""
-        c, k = self.c, self.k
+        c = self.c
+        k = self.k
         w = event.w if event else c.get_focus()
         if k.unboundKeyAction not in ('insert', 'overwrite'):
             return
@@ -1413,7 +1415,8 @@ class GetArg:
         If the command-name handler has a tab_callback,
         call handler.tab_callback() and return True.
         """
-        c, k = self.c, self.k
+        c = self.c
+        k = self.k
         commandName, tail = k.getMinibufferCommandName()
         handler = c.commandsDict.get(commandName)
         if hasattr(handler, 'tab_callback'):
@@ -1527,7 +1530,8 @@ class GetArg:
         # @-<< ga.get_arg docstring >>
         if tabList is None:
             tabList = []
-        c, k = self.c, self.k
+        c = self.c
+        k = self.k
         state = k.getState('getArg')
         c.check_event(event)
         c.minibufferWantsFocusNow()
@@ -1614,7 +1618,8 @@ class GetArg:
         useMinibuffer: bool,
     ) -> None:
         """Do state 0 processing."""
-        c, k = self.c, self.k
+        c = self.c
+        k = self.k
 
         # Set the ga globals...
         k.getArgEscapeFlag = False
@@ -4651,7 +4656,8 @@ class ModeInfo:
 
     # @+node:ekr.20120208064440.10180: *3* mode_i.enterMode
     def enterMode(self) -> None:
-        c, k = self.c, self.k
+        c = self.c
+        k = self.k
         c.inCommand = False  # Allow inner commands in the mode.
         event = None
         k.generalModeHandler(event, modeName=self.name)
