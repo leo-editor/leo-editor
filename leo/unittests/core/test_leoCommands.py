@@ -16,7 +16,9 @@ class TestCommands(LeoUnitTest):
     # @+others
     # @+node:ekr.20210906075242.28: *3* TestCommands.test_add_comments_with_multiple_language_directives
     def test_add_comments_with_multiple_language_directives(self):
-        c, p, w = self.c, self.c.p, self.c.frame.body.wrapper
+        c = self.c
+        p = c.p
+        w = c.frame.body.wrapper
         p.b = self.prep(
             """
             @language rest
@@ -45,7 +47,9 @@ class TestCommands(LeoUnitTest):
 
     # @+node:ekr.20210906075242.30: *3* TestCommands.test_add_html_comments
     def test_add_html_comments(self):
-        c, p, w = self.c, self.c.p, self.c.frame.body.wrapper
+        c = self.c
+        p = c.p
+        w = c.frame.body.wrapper
         p.b = self.prep(
             """
             @language html
@@ -69,7 +73,9 @@ class TestCommands(LeoUnitTest):
 
     # @+node:ekr.20210906075242.32: *3* TestCommands.test_add_python_comments
     def test_add_python_comments(self):
-        c, p, w = self.c, self.c.p, self.c.frame.body.wrapper
+        c = self.c
+        p = c.p
+        w = c.frame.body.wrapper
         p.b = self.prep(
             """
             @language python
@@ -492,7 +498,9 @@ class TestCommands(LeoUnitTest):
 
     # @+node:ekr.20210906075242.29: *3* TestCommands.test_delete_comments_with_multiple_at_language_directives
     def test_delete_comments_with_multiple_at_language_directives(self):
-        c, p, w = self.c, self.c.p, self.c.frame.body.wrapper
+        c = self.c
+        p = c.p
+        w = c.frame.body.wrapper
         p.b = self.prep(
             """
             @language rest
@@ -520,7 +528,9 @@ class TestCommands(LeoUnitTest):
 
     # @+node:ekr.20210906075242.31: *3* TestCommands.test_delete_html_comments
     def test_delete_html_comments(self):
-        c, p, w = self.c, self.c.p, self.c.frame.body.wrapper
+        c = self.c
+        p = c.p
+        w = c.frame.body.wrapper
         p.b = self.prep(
             """
             @language html
@@ -544,7 +554,9 @@ class TestCommands(LeoUnitTest):
 
     # @+node:ekr.20210906075242.33: *3* TestCommands.test_delete_python_comments
     def test_delete_python_comments(self):
-        c, p, w = self.c, self.c.p, self.c.frame.body.wrapper
+        c = self.c
+        p = c.p
+        w = c.frame.body.wrapper
         p.b = self.prep(
             """
             @language python

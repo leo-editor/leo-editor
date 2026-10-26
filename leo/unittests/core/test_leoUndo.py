@@ -16,8 +16,10 @@ class TestUndo(LeoUnitTest):
     # @+node:ekr.20210906141410.9: *3* TestUndo.runTest (Test)
     def runTest(self, before, after, i, j, func):
         """TestUndo.runTest."""
-        c, p, w = self.c, self.c.p, self.c.frame.body.wrapper
+        c = self.c
+        p = c.p
         u = c.undoer
+        w = c.frame.body.wrapper
         # Restore section references.
         before = before.replace('> >', '>>').replace('< <', '<<')
         after = after.replace('> >', '>>').replace('< <', '<<')
