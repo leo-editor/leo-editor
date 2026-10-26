@@ -24,7 +24,10 @@ if TYPE_CHECKING:  # pragma: no cover
 @g.commander_command('add-comments')
 def addComments(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Undoably add comments to the selected text."""
-    c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
+    c = self
+    p = c.p
+    u = c.undoer
+    w = c.frame.body.wrapper
     head, lines, tail, _old_sel, old_y_scroll = self.getBodyLines()
     if not lines:
         g.warning('no text selected')
@@ -145,7 +148,10 @@ def convertBlanks(self: Self, event: LeoKeyEvent | None = None) -> bool:
     Convert *all* blanks to tabs in the selected node.
     Return True if the the p.b was changed.
     """
-    c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
+    c = self
+    p = c.p
+    u = c.undoer
+    w = c.frame.body.wrapper
     w.selectAllText()
     head, lines, tail, _old_sel, old_y_scroll = self.getBodyLines()
     tabWidth = c.getTabWidth(c.p)
@@ -169,7 +175,10 @@ def convertBlanks(self: Self, event: LeoKeyEvent | None = None) -> bool:
 @g.commander_command('convert-tabs')
 def convertTabs(self: Self, event: LeoKeyEvent | None = None) -> bool:
     """Convert all tabs to blanks in the selected node."""
-    c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
+    c = self
+    p = c.p
+    u = c.undoer
+    w = c.frame.body.wrapper
     w.selectAllText()
     head, lines, tail, _old_sel, old_y_scroll = self.getBodyLines()
     tabWidth = c.getTabWidth(c.p)
@@ -254,7 +263,10 @@ def deleteComments(self: Self, event: LeoKeyEvent | None = None) -> None:
     *See also*: add-comments.
     """
     # @-<< deleteComments docstring >>
-    c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
+    c = self
+    p = c.p
+    u = c.undoer
+    w = c.frame.body.wrapper
 
     # Initial data.
     head, lines, tail, old_sel, old_y_scroll = self.getBodyLines()
@@ -562,7 +574,10 @@ def alwaysIndentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     text. The @tabwidth directive in effect determines amount of
     indentation.
     """
-    c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
+    c = self
+    p = c.p
+    u = c.undoer
+    w = c.frame.body.wrapper
     if not event:
         return
     # #1801: Don't rely on bindings to ensure that we are editing the body.
@@ -679,7 +694,10 @@ def line_to_headline(self: Self, event: LeoKeyEvent | None = None) -> None:
 
     Cut the selected line and make it the new node's headline
     """
-    c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
+    c = self
+    p = c.p
+    u = c.undoer
+    w = c.frame.body.wrapper
     ins, s = w.getInsertPoint(), p.b
     i = g.find_line_start(s, ins)
     j = g.skip_line(s, i)
