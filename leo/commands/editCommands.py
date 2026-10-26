@@ -4145,7 +4145,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.resetLabel()
         k.showStateAndMode()
         with u.change_node(p, 'set-ua'):
-            pass
+            pass  # handles redraw.
 
     # @-others
 
