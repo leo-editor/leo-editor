@@ -343,7 +343,9 @@ class AutoCompleterClass:
         trace = all(z in g.app.debug for z in ('abbrev', 'verbose'))
         if trace:
             g.trace('(AutoCompleterClass)')
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         w = self.w or c.frame.body.wrapper
         c.k.keyboardQuit()  # #2927: Deletes completer tabs.
         if self.use_qcompleter and self.qw:

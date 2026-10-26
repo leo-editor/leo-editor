@@ -1469,7 +1469,9 @@ class EditCommandsClass(BaseEditCommandsClass):
         indentation point then applicable is used. If no indentation point is
         applicable even then whitespace equivalent to a single tab is inserted.
         """
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
@@ -1972,7 +1974,9 @@ class EditCommandsClass(BaseEditCommandsClass):
 
         Select all lines if there is no existing selection.
         """
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         w = event.w if event else c.frame.body.wrapper
         if not w:
             return
@@ -2041,7 +2045,9 @@ class EditCommandsClass(BaseEditCommandsClass):
         It handles undo, bodykey events, tabs, back-spaces and bracket matching.
         """
         trace = 'keys' in g.app.debug
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         undoType = 'Typing'
         if not event:
             return  # PR #4812

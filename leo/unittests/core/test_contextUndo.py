@@ -120,7 +120,9 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.6: *3* TestContextUndo.test_insert_command_redraw_and_edit_replays_once
     def test_insert_command_redraw_and_edit_replays_once(self):
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         with patch.object(c, 'redrawAndEdit', wraps=c.redrawAndEdit) as edit:
             inserted = c.insertHeadline()
             edit.assert_called_once_with(inserted, selectAll=True)
@@ -133,7 +135,9 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.7: *3* TestContextUndo.test_snapshot_redraw_restores_body_selection_after_refresh
     def test_snapshot_redraw_restores_body_selection_after_refresh(self):
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         p.b = 'before'
         w = c.frame.body.wrapper
         w.setSelectionRange(1, 3, insert=1)
@@ -376,7 +380,9 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.19: *3* TestContextUndo.test_outline_context_preserves_clones_and_nested_user_attributes
     def test_outline_context_preserves_clones_and_nested_user_attributes(self):
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         child = p.insertAsLastChild()
         clone = child.clone()
         child.v.u = {'nested': {'items': [1]}}
@@ -441,7 +447,9 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.22: *3* TestContextUndo.test_move_context_does_not_scan_outline
     def test_move_context_does_not_scan_outline(self):
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         sibling = p.next()
         c.selectPosition(sibling)
         with patch.object(u, 'capture_outline', side_effect=AssertionError('whole outline scan')):
@@ -530,7 +538,9 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.27: *3* TestContextUndo.test_typing_preserves_text_mark_and_newlines
     def test_typing_preserves_text_mark_and_newlines(self):
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         for marked in (False, True):
             for old, new in (('', '\n'), ('a\n\n', 'a\nb\n\n'), ('a\n', ''), ('a\nb', 'a\nb\n')):
                 with self.subTest(marked=marked, old=old, new=new):
@@ -550,7 +560,9 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.28: *3* TestContextUndo.test_typing_granularity_and_save_boundary
     def test_typing_granularity_and_save_boundary(self):
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         for granularity in ('char', 'line', 'word', 'node'):
             with self.subTest(granularity=granularity):
                 p.b = ''
@@ -577,7 +589,9 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.29: *3* TestContextUndo.test_typing_word_boundary
     def test_typing_word_boundary(self):
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         u.granularity = 'word'
         p.b = ''
         for new in ('a', 'ab', 'ab ', 'ab c', 'ab cd'):
@@ -625,7 +639,9 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.33: *3* TestContextUndo.test_bulk_marks_and_sort_keep_vnode_identity
     def test_bulk_marks_and_sort_keep_vnode_identity(self):
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         first = p.insertAsLastChild()
         first.h = 'Z'
         second = first.insertAfter()
@@ -730,7 +746,9 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.37: *3* TestContextUndo.test_per_node_undo_keeps_new_beads
     def test_per_node_undo_keeps_new_beads(self):
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         u.per_node_undo = True
         with u.change_node(p, 'edit first'):
             p.b = 'first'

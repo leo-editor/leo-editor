@@ -387,7 +387,9 @@ class TestNodes(LeoUnitTest):
     # @+node:ekr.20210830095545.42: *4* TestNodes.test_clone
     def test_clone(self):
 
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         child = p.insertAsNthChild(0)
         c.setHeadString(child, 'child')  # Force the headline to update.
         self.assertTrue(child)
@@ -523,7 +525,9 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.46: *4* TestNodes.test_insert_node
     def test_insert_node(self):
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         first = p.insertAsNthChild(0)
         first.h = 'A'
         last = p.insertAsNthChild(1)
@@ -858,7 +862,9 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.25: *4* TestNodes.test_p_deletePositionsInList
     def test_p_deletePositionsInList(self):
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         root = p.insertAsLastChild()
         root.h = 'root'
         # Top level

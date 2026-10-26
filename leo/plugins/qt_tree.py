@@ -911,7 +911,9 @@ class LeoQtTree(leoFrame.LeoTree):
 
         New in Leo 6.4: The callback handles all updates w/o calling onHeadChanged.
         """
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
 
         # @+others  # define the callback.
         # @+node:ekr.20201109043641.1: *5* function: editingFinished_callback

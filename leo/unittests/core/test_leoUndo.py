@@ -416,7 +416,9 @@ class TestUndo(LeoUnitTest):
     # @+node:ekr.20250625044932.1: *3* TestUndo.test_undo_group_after_move
     def test_undo_group_after_move(self):
         # Test a group of moves.
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         p1 = p.insertAfter()
         p1.h = 'p1'
         p2 = p1.insertAfter()

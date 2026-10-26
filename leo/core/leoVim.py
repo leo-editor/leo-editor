@@ -2497,7 +2497,9 @@ class VimCommands:
     # @+node:ekr.20140802120757.18001: *4* vc.save_body (handles undo)
     def save_body(self) -> None:
         """Undoably preserve any changes to body text."""
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         w = self.command_w or self.w
         name = c.widget_name(w)
         with u.change_outline('vc-save-body'):
