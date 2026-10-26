@@ -362,6 +362,8 @@ def extract(self: Self, event: LeoKeyEvent | None = None) -> None:
 
     3. Otherwise, the first line becomes the child's headline, and all
        selected lines become the child's body text.
+
+    If the selected text is blank, the command does nothing.
     """
     # @-<< docstring for extract command >>
     c, u, w = self, self.undoer, self.frame.body.wrapper
@@ -390,6 +392,12 @@ def extract(self: Self, event: LeoKeyEvent | None = None) -> None:
         h, b, middle = def_h, lines, ''
     else:
         h, b, middle = lines[0].strip(), lines[1:], ''
+
+    # Do nothing if the selected text is blank.
+    # Without this guard, extract would create a node with an empty headline.
+    if not h:
+        g.warning('extract: nothing to extract')
+        return
 
     with u.change_outline('extract'):
         p = createFirstChildNode(c, c.p, h, ''.join(b))
