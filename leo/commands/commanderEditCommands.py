@@ -539,7 +539,8 @@ def findSectionName(self: Self, s: str) -> str:
 @g.commander_command('select-to-matching-bracket')
 def findMatchingBracket(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Select the text between matching brackets."""
-    c, p = self, self.p
+    c = self
+    p = c.p
     if g.app.batchMode:
         c.notValidInBatchMode('match-brackets')
         return

@@ -47,7 +47,8 @@ def editOneSetting(self: Self, event: LeoKeyEvent | None = None) -> None:
     """
     Opens dialog for editing @button, @command, @color, @font, or @shortcuts nodes.
     """
-    c, p = self, self.p
+    c = self
+    p = c.p
     func = None
     if p.h.startswith(('@font', '@string font-')):
         func = c.commandsDict.get('show-fonts')

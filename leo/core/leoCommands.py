@@ -1694,7 +1694,8 @@ class Commands:
     # @+node:ekr.20070615070925.1: *5* c.firstVisible
     def firstVisible(self) -> Position:
         """Move to the first visible node of the present chapter or hoist."""
-        c, p = self, self.p
+        c = self
+        p = c.p
         while 1:
             back = p.visBack(c)
             if back and back.isVisible(c):
@@ -2041,7 +2042,8 @@ class Commands:
     # @+node:ekr.20031218072017.4146: *5* c.lastVisible
     def lastVisible(self) -> Position:
         """Move to the last visible node of the present chapter or hoist."""
-        c, p = self, self.p
+        c = self
+        p = c.p
         while 1:
             next = p.visNext(c)
             if next and next.isVisible(c):
@@ -3270,7 +3272,8 @@ class Commands:
         command func if g.doHook("command1") returns False. This provides a
         simple mechanism for overriding commands.
         """
-        c, p = self, self.p
+        c = self
+        p = c.p
         c.setLog()
         self.command_count += 1
         # New in Leo 6.2. Set command_function and command_name ivars.
@@ -4551,7 +4554,8 @@ class Commands:
         """
         if not event or not event.char or not event.char.isalnum():
             return
-        c, p = self, self.p
+        c = self
+        p = c.p
         p1 = p.copy()
         invisible = c.config.getBool('invisible-outline-navigation')
         ch = event.char if event else ''
@@ -4880,7 +4884,8 @@ class Commands:
 
     # @+node:ekr.20031218072017.2960: *6* c.canCutOutline & canDeleteHeadline
     def canDeleteHeadline(self) -> bool:
-        c, p = self, self.p
+        c = self
+        p = c.p
         if c.hoistStack:
             bunch = c.hoistStack[0]
             if p == bunch.p:
@@ -4976,12 +4981,14 @@ class Commands:
 
     # @+node:ekr.20031218072017.2970: *6* c.canMoveOutlineDown
     def canMoveOutlineDown(self) -> bool:
-        c, p = self, self.p
+        c = self
+        p = c.p
         return bool(p and p.visNext(c))
 
     # @+node:ekr.20031218072017.2971: *6* c.canMoveOutlineLeft
     def canMoveOutlineLeft(self) -> bool:
-        c, p = self, self.p
+        c = self
+        p = c.p
         if c.hoistStack:
             bunch = c.hoistStack[-1]
             if p and p.hasParent():
@@ -4992,7 +4999,8 @@ class Commands:
 
     # @+node:ekr.20031218072017.2972: *6* c.canMoveOutlineRight
     def canMoveOutlineRight(self) -> bool:
-        c, p = self, self.p
+        c = self
+        p = c.p
         if c.hoistStack:
             bunch = c.hoistStack[-1]
             return bool(p and p.hasBack() and p != bunch.p)
@@ -5048,11 +5056,13 @@ class Commands:
         return p.hasThreadNext()
 
     def canSelectVisBack(self) -> bool:
-        c, p = self, self.p
+        c = self
+        p = c.p
         return bool(p.visBack(c))
 
     def canSelectVisNext(self) -> bool:
-        c, p = self, self.p
+        c = self
+        p = c.p
         return bool(p.visNext(c))
 
     # @+node:ekr.20031218072017.2978: *6* c.canShiftBodyLeft/Right
