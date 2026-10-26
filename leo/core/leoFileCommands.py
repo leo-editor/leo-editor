@@ -1070,7 +1070,8 @@ class FileCommands:
     # @+node:ekr.20120212220616.10537: *5* fc.readExternalFiles & helper
     def readExternalFiles(self) -> Position | None:
         """Read all external files in the outline."""
-        c, fc = self.c, self
+        fc = self
+        c = fc.c
         c.atFileCommands.readAll(c.rootPosition())
         recoveryNode = fc.handleNodeConflicts()
 
@@ -1141,7 +1142,8 @@ class FileCommands:
 
         This method follows behavior of readSaxFile.
         """
-        c, fc = self.c, self
+        fc = self
+        c = fc.c
         sql = '''select gnx, head,
              body,
              children,
@@ -1196,7 +1198,8 @@ class FileCommands:
     # @+node:vitalije.20170815162307.1: *6* fc.initNewDb
     def initNewDb(self, conn: Conn, path: str | None = None) -> VNode:
         """Initializes tables and returns None"""
-        c, fc = self.c, self
+        fc = self
+        c = fc.c
         v = leoNodes.VNode(context=c)
         c.hiddenRootNode.children = [v]
         (w, h, x, y, r1, r2, encp) = fc.getWindowGeometryFromDb(conn)
@@ -1461,7 +1464,8 @@ class FileCommands:
     # @+node:vitalije.20170630172118.1: *5* fc.exportToSqlite & helpers
     def exportToSqlite(self, fileName: str) -> bool:
         """Dump all vnodes to sqlite database. Returns True on success."""
-        c, fc = self.c, self
+        fc = self
+        c = fc.c
         conn = sqlite3.connect(fileName, isolation_level='DEFERRED')
 
         def dump_u(v: VNode) -> bytes:
@@ -1677,7 +1681,8 @@ class FileCommands:
     # @+node:ekr.20031218072017.3046: *5* fc.write_Leo_file
     def write_Leo_file(self, fileName: str) -> bool:
         """Write all external files and the .leo file itself."""
-        c, fc = self.c, self
+        fc = self
+        c = fc.c
         g.app.recentFilesManager.writeRecentFilesFile(c)
         fc.writeAllAtFileNodes()
         return fc.writeOutline(fileName)  # Calls c.checkOutline.
