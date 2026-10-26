@@ -2036,7 +2036,8 @@ class KeyHandlerClass:
         Complete the construction of the keyHandler class.
         c.commandsDict has been created when this is called.
         """
-        c, k = self.c, self
+        k = self
+        c = k.c
         k.w = c.frame.miniBufferWidget  # Will be None for NullGui.
         k.fnc = FileNameChooser(c)  # A singleton. Defined here so that c.k will exist.
         k.getArgInstance = GetArg(c)  # A singleton. Defined here so that c.k will exist.
@@ -2090,7 +2091,8 @@ class KeyHandlerClass:
 
     # @+node:ekr.20061031131434.82: *4* k.setDefaultUnboundKeyAction
     def setDefaultUnboundKeyAction(self, allowCommandState: bool = True) -> None:
-        c, k = self.c, self
+        k = self
+        c = k.c
         defaultAction = c.config.getString('top-level-unbound-key-action') or 'insert'
         defaultAction.lower()
         if defaultAction == 'command' and not allowCommandState:
@@ -2235,7 +2237,8 @@ class KeyHandlerClass:
     # @+node:ekr.20061031131434.94: *5* k.bindOpenWith
     def bindOpenWith(self, d: dict[str, Any]) -> None:
         """Register an open-with command."""
-        c, k = self.c, self
+        k = self
+        c = k.c
         shortcut = d.get('shortcut') or ''
         name = d.get('name', '')
         # The first parameter must be event, and it must default to None.
@@ -2258,7 +2261,8 @@ class KeyHandlerClass:
         """
         Print warnings if commands do not have any @shortcut entry.
         The entry may be `None`, of course."""
-        c, k = self.c, self
+        k = self
+        c = k.c
         if not c.config.getBool('warn-about-missing-settings'):
             return
         for name in sorted(c.commandsDict):
@@ -2331,7 +2335,8 @@ class KeyHandlerClass:
     # @+node:ekr.20061031131434.101: *4* k.initSpecialIvars
     def initSpecialIvars(self) -> None:
         """Set ivars for special keystrokes from previously-existing bindings."""
-        c, k = self.c, self
+        k = self
+        c = k.c
         warn = c.config.getBool('warn-about-missing-settings')
         for ivar, commandName in (
             ('abortAllModesKey', 'keyboard-quit'),
@@ -2371,7 +2376,8 @@ class KeyHandlerClass:
     # @+node:ekr.20061031131434.103: *4* k.makeMasterGuiBinding
     def makeMasterGuiBinding(self, stroke: Stroke, w: QTextMixin | None = None) -> None:
         """Make a master gui binding for stroke in pane w, or in all the standard widgets."""
-        c, k = self.c, self
+        k = self
+        c = k.c
         if not c.frame:
             return
         if w:
@@ -2460,7 +2466,8 @@ class KeyHandlerClass:
     # @+node:ekr.20061031131434.102: *3* k.makeBindingsFromCommandsDict
     def makeBindingsFromCommandsDict(self) -> None:
         """Add bindings for all entries in c.commandsDict."""
-        c, k = self.c, self
+        k = self
+        c = k.c
         d = c.commandsDict
         # Step 1: Create d2.
         # Keys are strokes. Values are lists of bi with bi.stroke == stroke.
@@ -2566,7 +2573,8 @@ class KeyHandlerClass:
     # @+node:ekr.20061031131434.112: *5* k.callAltXFunction
     def callAltXFunction(self, event: LeoKeyEvent) -> bool:
         """Call the function whose name is in the minibuffer."""
-        c, k = self.c, self
+        k = self
+        c = k.c
         k.mb_tabList = []
         commandName, tail = k.getMinibufferCommandName()
         k.functionTail = tail
@@ -2612,7 +2620,8 @@ class KeyHandlerClass:
     @cmd('show-bindings')
     def showBindings(self, event: LeoKeyEvent | None = None) -> list[str]:
         """Print all the bindings presently in effect."""
-        c, k = self.c, self
+        k = self
+        c = k.c
         d = k.masterBindingsDict
         tabName = 'Bindings'
         c.frame.log.clearTab(tabName)
@@ -2884,7 +2893,8 @@ class KeyHandlerClass:
     @cmd('show-commands')
     def printCommands(self, event: LeoKeyEvent | None = None) -> None:
         """Print all the known commands and their bindings, if any."""
-        c, k = self.c, self
+        k = self
+        c = k.c
         tabName = 'Commands'
         c.frame.log.clearTab(tabName)
         inverseBindingDict = k.computeInverseBindingDict()
@@ -2914,7 +2924,8 @@ class KeyHandlerClass:
     @cmd('show-commands-with-docs')
     def printCommandsWithDocs(self, event: LeoKeyEvent | None = None) -> None:
         """Show all the known commands and their bindings, if any."""
-        c, k = self.c, self
+        k = self
+        c = k.c
         tabName = 'List'
         c.frame.log.clearTab(tabName)
         inverseBindingDict = k.computeInverseBindingDict()
@@ -3001,7 +3012,8 @@ class KeyHandlerClass:
     @cmd('toggle-input-state')
     def toggleInputState(self, event: LeoKeyEvent | None = None) -> None:
         """The toggle-input-state command."""
-        c, k = self.c, self
+        k = self
+        c = k.c
         default = c.config.getString('top-level-unbound-key-action') or 'insert'
         state = k.unboundKeyAction
         if default == 'insert':
@@ -3184,7 +3196,8 @@ class KeyHandlerClass:
     @cmd('keyboard-quit')
     def keyboardQuit(self, event: LeoKeyEvent | None = None, setFocus: bool = True) -> None:
         """Clears the state and the minibuffer label."""
-        c, k = self.c, self
+        k = self
+        c = k.c
         ac = k.autoCompleter
         if g.app.quitting:
             return
@@ -3220,7 +3233,8 @@ class KeyHandlerClass:
 
         **Only unit tests use this method.**
         """
-        c, k = self.c, self
+        k = self
+        c = k.c
         # Unit tests do not ordinarily read settings files.
         stroke = k.getStrokeForCommandName(commandName)
         if stroke is None:
@@ -3289,7 +3303,8 @@ class KeyHandlerClass:
         Only k.bindOpenWith and the mod_scripting.py plugin should set
         allowBinding.
         """
-        c, k = self.c, self
+        k = self
+        c = k.c
         if func is None:
             g.es_print('Null func passed to k.registerCommand\n', commandName)
             return
@@ -3332,7 +3347,8 @@ class KeyHandlerClass:
         **Important**: Bindings created here from plugins can not be overridden.
         This includes @command and @button bindings created by mod_scripting.py.
         """
-        c, k = self.c, self
+        k = self
+        c = k.c
         is_local = c.shortFileName() not in ('myLeoSettings.leo', 'leoSettings.leo')
         assert not g.isStroke(shortcut)
         stroke: Stroke
@@ -3396,7 +3412,8 @@ class KeyHandlerClass:
     def masterKeyHandler(self, event: LeoKeyEvent) -> None:
         """The master key handler for almost all key bindings."""
         trace = 'keys' in g.app.debug
-        c, k = self.c, self
+        k = self
+        c = k.c
         # Setup...
         if trace:
             handler_s = f"{k.state.handler.__name__}" if k.state.handler else 'No handler'
@@ -3476,7 +3493,8 @@ class KeyHandlerClass:
 
         return True if k.masterKeyHandler should return.
         """
-        c, k = self.c, self
+        k = self
+        c = k.c
         stroke = getattr(event, 'stroke', None)
         if k.abortAllModesKey and stroke and stroke == k.abortAllModesKey:
             if getattr(c, 'screenCastController', None):
@@ -3682,7 +3700,8 @@ class KeyHandlerClass:
         Execute a pane binding in the minibuffer.
         Return 'continue', 'ignore', 'found'
         """
-        c, k = self.c, self
+        k = self
+        c = k.c
         d = k.masterBindingsDict.get(pane)
         if not d:
             return 'continue'
@@ -3745,7 +3764,8 @@ class KeyHandlerClass:
     _cmd_handle_input_pattern = re.compile(r'[A-Za-z0-9_\-]+\s*=')
 
     def isInShortcutBodyLine(self) -> bool:
-        c, k = self.c, self
+        k = self
+        c = k.c
         p = c.p
         if p.h.startswith(('@shortcuts', '@mode')):
             # line of text in body
@@ -3757,13 +3777,15 @@ class KeyHandlerClass:
 
     # @+node:vitalije.20170709151658.1: *7* k.isEditShortcutSensible
     def isEditShortcutSensible(self) -> bool:
-        c, k = self.c, self
+        k = self
+        c = k.c
         p = c.p
         return p.h.startswith(('@command', '@button')) or k.isInShortcutBodyLine()
 
     # @+node:vitalije.20170709202924.1: *7* k.editShortcut_do_bind_helper
     def editShortcut_do_bind_helper(self, stroke: Stroke, cmdname: str) -> None:
-        c, k = self.c, self
+        k = self
+        c = k.c
         cmdfunc = c.commandsDict.get(cmdname)
         if cmdfunc:
             k.bindKey('all', stroke, cmdfunc, cmdname)
@@ -3795,7 +3817,8 @@ class KeyHandlerClass:
         Otherwise, return False
         """
         trace = 'keys' in g.app.debug
-        c, k = self.c, self
+        k = self
+        c = k.c
         stroke = event.stroke
         if (
             stroke
@@ -3863,7 +3886,8 @@ class KeyHandlerClass:
         w: QTextMixin | None,
     ) -> g.BindingInfo | None:
         """Find a binding for the widget with the given name."""
-        c, k = self.c, self
+        k = self
+        c = k.c
         trace = 'keys' in g.app.debug
         # Return if the pane's name doesn't match the event's widget.
         state = k.unboundKeyAction
@@ -4105,7 +4129,8 @@ class KeyHandlerClass:
     # @+node:ekr.20061031131434.100: *4* k.addModeCommands (enterModeCallback)
     def addModeCommands(self) -> None:
         """Add commands created by @mode settings to c.commandsDict."""
-        c, k = self.c, self
+        k = self
+        c = k.c
         d = g.app.config.modeCommandsDict  # Keys are command names: enter-x-mode.
         # Create the callback functions and update c.commandsDict.
         for key in d.keys():
@@ -4126,7 +4151,8 @@ class KeyHandlerClass:
     # @+node:ekr.20061031131434.158: *4* k.createModeBindings
     def createModeBindings(self, modeName: str, d: dict[str, list], w: QTextMixin | None) -> None:
         """Create mode bindings for the named mode using dictionary d for w, a text widget."""
-        c, k = self.c, self
+        k = self
+        c = k.c
         assert d.name().endswith('-mode')
         for commandName in d.keys():
             if commandName in ('*entry-commands*', '*command-prompt*'):
@@ -4159,7 +4185,8 @@ class KeyHandlerClass:
 
     # @+node:ekr.20120208064440.10179: *4* k.endMode
     def endMode(self) -> None:
-        c, k = self.c, self
+        k = self
+        c = k.c
         w = g.app.gui.get_focus(c)
         if w:
             c.frame.log.deleteTab('Mode')  # Changes focus to the body pane
@@ -4172,7 +4199,8 @@ class KeyHandlerClass:
 
     # @+node:ekr.20061031131434.160: *4* k.enterNamedMode
     def enterNamedMode(self, event: LeoKeyEvent | None, commandName: str) -> None:
-        c, k = self.c, self
+        k = self
+        c = k.c
         modeName = commandName[6:]
         c.inCommand = False  # Allow inner commands in the mode.
         k.generalModeHandler(event, modeName=modeName)
@@ -4197,7 +4225,8 @@ class KeyHandlerClass:
         prompt: str = '',
     ) -> None:
         """Handle a mode defined by an @mode node in leoSettings.leo."""
-        c, k = self.c, self
+        k = self
+        c = k.c
         state = k.getState(modeName)
         if state == 0:
             k.inputModeName = modeName
@@ -4243,7 +4272,8 @@ class KeyHandlerClass:
 
     # @+node:ekr.20061031131434.163: *4* k.initMode
     def initMode(self, event: LeoKeyEvent | None, modeName: str) -> None:
-        c, k = self.c, self
+        k = self
+        c = k.c
         if not modeName:
             g.trace('oops: no modeName')
             return
@@ -4281,7 +4311,8 @@ class KeyHandlerClass:
         A possible convention would be to bind <Tab> to this command in most modes,
         by analogy with tab completion.
         """
-        c, k = self.c, self
+        k = self
+        c = k.c
         c.endEditing()
         if k.inputModeName:
             d = g.app.config.modeCommandsDict.get('enter-' + k.inputModeName)
@@ -4291,7 +4322,8 @@ class KeyHandlerClass:
 
     # @+node:ekr.20061031131434.166: *5* modeHelpHelper
     def modeHelpHelper(self, d: g.SettingsDict | None) -> None:
-        c, k = self.c, self
+        k = self
+        c = k.c
         tabName = 'Mode'
         c.frame.log.clearTab(tabName)
         data, n = [], 0
@@ -4364,7 +4396,8 @@ class KeyHandlerClass:
 
     # @+node:ekr.20061031131434.179: *4* k.getShortcutForCommandName
     def getStrokeForCommandName(self, commandName: str) -> Stroke | None:
-        c, k = self.c, self
+        k = self
+        c = k.c
         command = c.commandsDict.get(commandName)
         if command:
             for stroke, aList in k.bindingsDict.items():
@@ -4483,7 +4516,8 @@ class KeyHandlerClass:
     # @+node:ekr.20061031131434.192: *4* k.showStateAndMode
     def showStateAndMode(self, *, prompt: str = '', setFocus: bool = True) -> None:
         """Show the state and mode at the start of the minibuffer."""
-        c, k = self.c, self
+        k = self
+        c = k.c
         state = k.unboundKeyAction
         mode = k.getStateKind()
         if not g.app.gui:
