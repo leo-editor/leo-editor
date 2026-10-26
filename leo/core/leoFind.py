@@ -1173,7 +1173,9 @@ class LeoFind:
     def interactive_replace_all2(
         self, event: LeoKeyEvent
     ) -> None:  # pragma: no cover (interactive)
-        c, k, w = self.c, self.k, self.c.frame.body.wrapper
+        c = self.c
+        k = c.k
+        w = c.frame.body.wrapper
 
         # Update settings data.
         find_pattern = self._sString
@@ -1215,7 +1217,8 @@ class LeoFind:
     def _change_all_helper(self, settings: g.Bunch) -> int:
         """Do the change-all command. Return the number of changes, or 0 for error."""
         # Caller has checked settings.
-        c, _current, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        u = c.undoer
         t1 = time.process_time()
 
         saveData = self.save()
@@ -1441,7 +1444,9 @@ class LeoFind:
     def interactive_clone_find_all1(
         self, event: LeoKeyEvent
     ) -> int:  # pragma: no cover (interactive)
-        c, k, w = self.c, self.k, self.c.frame.body.wrapper
+        c = self.c
+        k = c.k
+        w = c.frame.body.wrapper
         # Settings...
         pattern = k.arg
         self.ftm.set_find_text(pattern)
@@ -1505,7 +1510,9 @@ class LeoFind:
     def interactive_cff1(
         self, event: LeoKeyEvent | None = None
     ) -> int:  # pragma: no cover (interactive)
-        c, k, w = self.c, self.k, self.c.frame.body.wrapper
+        c = self.c
+        k = c.k
+        w = c.frame.body.wrapper
         # Settings...
         pattern = k.arg
         self.ftm.set_find_text(pattern)
@@ -1678,7 +1685,9 @@ class LeoFind:
     def find_all_escape_handler2(
         self, event: LeoKeyEvent
     ) -> None:  # pragma: no cover (interactive)
-        c, k, w = self.c, self.k, self.c.frame.body.wrapper
+        c = self.c
+        k = c.k
+        w = c.frame.body.wrapper
         find_pattern = self._sString
         change_pattern = k.arg
         self.update_change_list(change_pattern)
@@ -2163,7 +2172,9 @@ class LeoFind:
     # @+node:ekr.20210117143611.1: *5* find.start_search1
     def start_search1(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """Common handler for use by vim commands and other find commands."""
-        c, k, w = self.c, self.k, self.c.frame.body.wrapper
+        c = self.c
+        k = c.k
+        w = c.frame.body.wrapper
         # Settings...
         find_pattern = k.arg
         self.ftm.set_find_text(find_pattern)
@@ -2204,7 +2215,9 @@ class LeoFind:
 
     # @+node:ekr.20210117143615.1: *5* find._start_search_escape2
     def _start_search_escape2(self, event: LeoKeyEvent | None = None) -> None:
-        c, k, w = self.c, self.k, self.c.frame.body.wrapper
+        c = self.c
+        k = c.k
+        w = c.frame.body.wrapper
         # Compute settings...
         find_pattern = self._sString
         change_pattern = k.arg
