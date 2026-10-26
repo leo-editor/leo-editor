@@ -1424,7 +1424,8 @@ def createMoveMarkedNode(c: Cmdr) -> Position:
 @g.commander_command('mark-changed-nodes')
 def markChangedHeadlines(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Mark all nodes that have been changed."""
-    c, _current, u = self, self.p, self.undoer
+    c = self
+    u = c.undoer
     c.endEditing()
     with u.change_outline('mark-changed-nodes'):
         for p in c.all_unique_positions():
@@ -1437,7 +1438,8 @@ def markChangedHeadlines(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 # @+node:ekr.20031218072017.2924: *3* c_oc.markChangedRoots
 def markChangedRoots(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Mark all changed @root nodes."""
-    c, _current, u = self, self.p, self.undoer
+    c = self
+    u = c.undoer
     c.endEditing()
     with u.change_outline('c.markChangedRoots'):
         for p in c.all_unique_positions():
