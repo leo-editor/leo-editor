@@ -28283,9 +28283,7 @@ saw this history model in Apple's Yellow Box documentation.
 Leo 6.8.11 introduced a new API for client code.
 
 </t>
-<t tx="ekr.20261026060054.1">## 
-
-Legacy ``u.before*`` and ``u.after*`` methods (and ``u.doTyping``) method
+<t tx="ekr.20261026060054.1">Legacy ``u.before*`` and ``u.after*`` methods (and ``u.doTyping``) method
 remain for use by scripts and plugins. All such methods are *deprecated*
 and may be removed in later versions of Leo.
 
