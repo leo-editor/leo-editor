@@ -543,7 +543,8 @@ class Commands:
         Finish creating the commander and all sub-objects.
         This is the last step in the startup process.
         """
-        c, k = self, self.k
+        c = self
+        k = c.k
         assert c.gui
         assert k
         t1 = time.process_time()
@@ -3051,7 +3052,8 @@ class Commands:
         event: LeoKeyEvent | None,  # Used in the callback.
         prompts: Sequence,
     ) -> None:
-        c, k = self, self.k
+        c = self
+        k = c.k
         prompt = prompts[0]
 
         def state1(event: LeoKeyEvent | None = None) -> None:
@@ -3070,7 +3072,8 @@ class Commands:
         event: LeoKeyEvent | None,
         prompts: Sequence,
     ) -> None:
-        c, k = self, self.k
+        c = self
+        k = c.k
         d: dict[str, str] = {}
         prompt1, prompt2 = prompts
 
@@ -5162,7 +5165,8 @@ class Commands:
         keepMinibuffer: bool = False,
     ) -> None:
         """Redraw the screen and edit p's headline."""
-        c, k = self, self.k
+        c = self
+        k = c.k
         c.redraw(p)  # This *must* be done now.
         if p:
             # This should request focus.
