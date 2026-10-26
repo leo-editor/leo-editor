@@ -286,7 +286,7 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.14: *3* TestContextUndo.test_insert_reuses_vnode_and_preserves_later_contents
     def test_insert_reuses_vnode_and_preserves_later_contents(self):
-        c, _u = self.c, self.c.undoer
+        c = self.c
         original = c.p.copy()
         inserted = c.insertHeadline()
         vnode = inserted.v
@@ -348,7 +348,7 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.17: *3* TestContextUndo.test_delete_first_root_adjusts_following_selection
     def test_delete_first_root_adjusts_following_selection(self):
-        c, _u = self.c, self.c.undoer
+        c = self.c
         first = c.p.copy()
         second = first.next().copy()
         c.deleteOutline()
