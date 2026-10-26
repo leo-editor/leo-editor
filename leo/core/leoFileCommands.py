@@ -208,7 +208,8 @@ class FastRead:
     # @+node:ekr.20180624125321.1: *4* fast.handleBits (reads c.db)
     def handleBits(self) -> None:
         """Restore the expanded and marked bits from c.db."""
-        c, fc = self.c, self.c.fileCommands
+        c = self.c
+        fc = c.fileCommands
         expanded = c.db.get('expanded')
         marked = c.db.get('marked')
         expanded = expanded.split(',') if expanded else []
@@ -350,7 +351,8 @@ class FastRead:
         gnx2ua: dict[str, Value],
         v_elements: Element,
     ) -> VNode:
-        c, fc = self.c, self.c.fileCommands
+        c = self.c
+        fc = c.fileCommands
 
         # @+<< define v_element_visitor >>
         # @+node:ekr.20180605102822.1: *5* << define v_element_visitor >>
@@ -543,7 +545,8 @@ class FastRead:
         gnx2ua: dict[str, Value],
         v_elements: Element,
     ) -> VNode | None:
-        c, fc = self.c, self.c.fileCommands
+        c = self.c
+        fc = c.fileCommands
 
         def v_element_visitor(parent_e: Element, parent_v: VNode) -> None:
             """Visit the given element, creating or updating the parent vnode."""

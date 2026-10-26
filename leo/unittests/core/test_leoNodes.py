@@ -24,7 +24,8 @@ class TestNodes(LeoUnitTest):
     # @+node:ekr.20220708123656.1: *3* TestNodes:  Special methods
     # @+node:ekr.20220708123731.1: *4* TestNodes.test_archivedPosition
     def test_archivedPosition(self):
-        c, fc = self.c, self.c.fileCommands
+        c = self.c
+        fc = c.fileCommands
         root_p, root_v = c.rootPosition(), c.rootPosition().v
         for p in c.all_positions():
             # ap1 and ap2 are lists of ints.
