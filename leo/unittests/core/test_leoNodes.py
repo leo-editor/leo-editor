@@ -972,7 +972,8 @@ class TestNodes(LeoUnitTest):
         #   child b
         #     child clone a
         #       node clone 1
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         child_b = g.findNodeAnywhere(c, 'child b')
         self.assertTrue(child_b)
         self.assertTrue(child_b.isCloned())

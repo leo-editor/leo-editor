@@ -2421,7 +2421,8 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20210829062149.1: *4* Commands M-R
     # @+node:ekr.20220517064432.1: *5* test_merge-node-with-next-node
     def test_merge_node_with_next_node(self):
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         prev_b = self.prep(
             """
             def spam():
@@ -2460,7 +2461,8 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20220517064507.1: *5* test_merge-node-with-prev-node
     def test_merge_node_with_prev_node(self):
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         prev_b = self.prep(
             """
             def spam():

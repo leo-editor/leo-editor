@@ -56,7 +56,8 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.3: *3* TestContextUndo.test_nested_node_contexts_capture_distinct_nodes_and_same_node_once
     def test_nested_node_contexts_capture_distinct_nodes_and_same_node_once(self):
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         p = c.p.copy()
         q = p.insertAfter()
         p.b, q.b = 'p original', 'q original'

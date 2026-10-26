@@ -608,7 +608,8 @@ class TestOutlineCommands(LeoUnitTest):
 
     # @+node:ekr.20221112051634.1: *3* TestOutlineCommands.test_sort_children
     def test_sort_children(self):
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         assert self.root_p.h == 'root'
         self.create_test_sort_outline()
         original_children = [z.h for z in self.root_p.v.children]
@@ -626,7 +627,8 @@ class TestOutlineCommands(LeoUnitTest):
 
     # @+node:ekr.20221112051650.1: *3* TestOutlineCommands.test_sort_siblings
     def test_sort_siblings(self):
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         assert self.root_p.h == 'root'
         self.create_test_sort_outline()
         original_children = [z.h for z in self.root_p.v.children]
@@ -646,7 +648,8 @@ class TestOutlineCommands(LeoUnitTest):
     # @+node:ekr.20230902053728.1: *3* TestOutlineCommands.test_move_outline_to_first_child
     def test_move_outline_to_first_child(self):
         # Setup.
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         root = self.root_p
         assert root.h == 'root'
         self.create_test_outline()
@@ -673,7 +676,8 @@ class TestOutlineCommands(LeoUnitTest):
     # @+node:ekr.20230902053751.1: *3* TestOutlineCommands.test_move_outline_to_last_child
     def test_move_outline_to_last_child(self):
         # Setup.
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         root = self.root_p
         assert root.h == 'root'
         self.create_test_outline()

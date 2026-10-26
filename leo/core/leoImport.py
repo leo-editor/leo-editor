@@ -768,7 +768,8 @@ class LeoImportCommands:
         verbose: bool = True,  # Legacy value.
     ) -> None:
         # Not a command.  It must *not* have an event arg.
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         if not c or not c.p or not files:
             return
         self.treeType = treeType
@@ -2053,7 +2054,8 @@ class TabImporter:
     # @+node:ekr.20161006073129.1: *3* tabbed.import_files
     def import_files(self, files: list[str]) -> None:
         """Import a list of tab-delimited files."""
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         if not files:
             return
         with u.change_outline('import-tabbed-files'):

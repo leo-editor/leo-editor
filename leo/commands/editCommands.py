@@ -4118,7 +4118,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('clear-all-uas')
     def clearAllUas(self, event: LeoKeyEvent | None = None) -> None:
         """Clear all uAs in the entire outline."""
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         changed_v = [v for v in c.all_unique_nodes()]
         if changed_v:
             with u.change_outline('clear-all-uas'):

@@ -488,7 +488,8 @@ class LeoFind:
 
         This is a stand-alone method for unit testing.
         """
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         failMsg = 'No marked nodes'
 
         count = 0
@@ -526,7 +527,8 @@ class LeoFind:
         Create an organizer node whose direct children are clones of all
         parents of the selected node, which must be a clone.
         """
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         p = c.p
         if not p:  # pragma: no cover
             return False
@@ -1582,7 +1584,8 @@ class LeoFind:
         Do the clone-all-find commands from settings.
         Return (len(clones), found) for unit tests.
         """
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         tc = getattr(c, 'theTagController', None)
         if not tc:
             if not g.unitTesting:  # pragma: no cover (skip)
@@ -1728,7 +1731,8 @@ class LeoFind:
 
         Return the list of Dicts describing each match.
         """
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         saveData = self.save()
         if self.pattern_match:
             ok = self.compile_pattern()
@@ -2394,7 +2398,8 @@ class LeoFind:
 
         Return the number of found nodes.
         """
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         if self.pattern_match:
             ok = self.compile_pattern()
             if not ok:
@@ -2487,7 +2492,8 @@ class LeoFind:
     # @+node:ekr.20031218072017.3070: *4* find.change_selection
     def change_selection(self, p: Position) -> bool:
         """Replace selection with self.change_text."""
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         wrapper = c.frame.body and c.frame.body.wrapper
         w = c.headline_wrapper(p) if self.in_headline else wrapper
         if not w:  # pragma: no cover
