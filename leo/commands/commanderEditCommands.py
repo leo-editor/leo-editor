@@ -70,7 +70,8 @@ def addComments(self: Self, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('convert-all-blanks')
 def convertAllBlanks(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Convert all blanks to tabs in the selected outline."""
-    c, u = self, self.undoer
+    c = self
+    u = c.undoer
     current = c.p
     if g.app.batchMode:
         c.notValidInBatchMode('convert-all-blanks')

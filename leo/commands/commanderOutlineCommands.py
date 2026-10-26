@@ -1292,7 +1292,8 @@ def insertHeadlineBefore(self: Cmdr, event: LeoKeyEvent | None = None) -> Positi
 @g.commander_command('copy-marked-nodes')
 def copyMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Copy all marked nodes as children of a new node."""
-    c, u = self, self.undoer
+    c = self
+    u = c.undoer
     p1 = c.p
     # Create a new node to hold clones.
     with u.change_outline('copy-marked-nodes'):
@@ -1325,7 +1326,8 @@ def copyMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('delete-marked-nodes')
 def deleteMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Delete all marked nodes."""
-    c, u = self, self.undoer
+    c = self
+    u = c.undoer
     with u.change_outline('delete-marked-nodes'):
         undo_data, p = [], c.rootPosition()
         while p:
@@ -1853,7 +1855,8 @@ def sortSiblings(
     reverse: bool = False,
 ) -> None:
     """Sort the siblings of a node."""
-    c, u = self, self.undoer
+    c = self
+    u = c.undoer
     if not p:
         p = c.p
     if not p:
