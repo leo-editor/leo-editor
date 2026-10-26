@@ -874,7 +874,8 @@ class LeoFind:
         Return True (for vim-mode) if a match was found.
 
         """
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
 
         # The gui widget may not exist for headlines.
         w = c.headline_wrapper(p) if self.in_headline else c.frame.body.wrapper
@@ -1604,7 +1605,8 @@ class LeoFind:
         Create a "Found Tag" node as the last node of the outline.
         Clone all positions in the clones set as children of found.
         """
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         # Create the found node.
         assert c.positionExists(c.lastTopLevel()), c.lastTopLevel()
         found = c.lastTopLevel().insertAfter()
@@ -3273,7 +3275,8 @@ class LeoFind:
 
     # @+node:ekr.20131117164142.16954: *5* find.set_widget
     def set_widget(self) -> QTextMixin:
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         wrapper = c.frame.body.wrapper
         if self.in_headline:
             w = c.headline_wrapper(p)

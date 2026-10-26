@@ -326,7 +326,8 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.16: *3* TestContextUndo.test_clone_returns_position_and_selects_it_on_redo
     def test_clone_returns_position_and_selects_it_on_redo(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         clone = c.clone()
         self.assertEqual(clone, c.p)
 
@@ -360,7 +361,8 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.18: *3* TestContextUndo.test_delete_selected_subtree_preserves_children
     def test_delete_selected_subtree_preserves_children(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         child = p.insertAsLastChild()
         grandchild = child.insertAsLastChild()
         grandchild.h = 'grandchild'
@@ -418,7 +420,8 @@ class TestContextUndo(LeoUnitTest):
         for retain in (False, True):
             with self.subTest(retain=retain):
                 self.setUp()
-                c, p = self.c, self.c.p
+                c = self.c
+                p = c.p
                 child = p.insertAsLastChild()
                 child.h, child.b = 'child', 'child body'
                 c.copyOutline()
@@ -642,7 +645,8 @@ class TestContextUndo(LeoUnitTest):
     # @+node:ekr.20261014103254.34: *3* TestContextUndo.test_copy_marked_repeats
     def test_copy_marked_repeats(self):
         self.setUp()
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         child = p.insertAsLastChild()
         child.setMarked()
         before = c.hiddenRootNode.children[:]
@@ -658,7 +662,8 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.35: *3* TestContextUndo.test_drag_clone_is_removed_on_undo
     def test_drag_clone_is_removed_on_undo(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         target = p.next()
         before = c.hiddenRootNode.children[:]
         c.dragCloneToNthChildOf(p, target, 0)

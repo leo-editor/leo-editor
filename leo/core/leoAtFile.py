@@ -316,7 +316,8 @@ class AtFile:
     @cmd('check-external-file')
     def checkExternalFile(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """Make sure an external file written by Leo may be read properly."""
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         if not p.isAtFileNode() and not p.isAtThinFileNode():
             g.red('Please select an @thin or @file node')
             return
@@ -343,7 +344,8 @@ class AtFile:
 
         Scripts should use c.makeLinkLeoFiles helper to make @leo files.
         """
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         if not p.isAtLeoNode():
             g.red('Please select an @leo node')
             return

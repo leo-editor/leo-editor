@@ -239,7 +239,8 @@ class QTextMixin:
         """
         # #4785: Do not delete this method. It is essential!
         w = self
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         tree = c.frame.tree
         if w.changingText:
             return

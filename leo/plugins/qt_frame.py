@@ -4229,7 +4229,8 @@ class QtStatusLineClass:
         Return the line of the first line of c.p in its external file.
         Return None if c.p is not part of an external file.
         """
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         if p:
             goto = gotoCommands.GoToCommands(c)
             return goto.find_node_start(p)

@@ -1267,7 +1267,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('delete-first-icon')
     def deleteFirstIcon(self, event: LeoKeyEvent | None = None) -> None:
         """Delete the first icon in the selected node's icon list."""
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         if aList := self.getIconList(c.p.v):
             self.setIconList(p, aList[1:])
             p.setDirty()
@@ -1277,7 +1278,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('delete-last-icon')
     def deleteLastIcon(self, event: LeoKeyEvent | None = None) -> None:
         """Delete the first icon in the selected node's icon list."""
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         if aList := self.getIconList(p.v):
             self.setIconList(c.p, aList[:-1])
             p.setDirty()
@@ -1299,7 +1301,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('insert-icon')
     def insertIcon(self, event: LeoKeyEvent | None = None) -> None:
         """Prompt for an icon, and insert it into the node's icon list."""
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         iconDir = g.finalize_join(g.app.loadDir, "..", "Icons")
         paths = g.app.gui.runOpenFilesDialog(
             c,
@@ -1329,7 +1332,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514063305.237: *6* ec.deleteIconByName (not used)
     def deleteIconByName(self, t: object, name: str, relPath: str) -> None:  # t not used.
         """for use by the right-click remove icon callback"""
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         aList = self.getIconList(p.v)
         if not aList:
             return
@@ -2103,7 +2107,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         stroke: g.KeyStroke,
         w: QTextMixin,
     ) -> None:
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         isPlain = stroke.find('Alt') == -1 and stroke.find('Ctrl') == -1
         if not isPlain:
             g.trace(f"Not plain: {stroke!r} {g.callers()}")
@@ -2208,7 +2213,8 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.274: *5* ec.insertNewlineHelper
     def insertNewlineHelper(self, w: QTextMixin, oldSel: tuple[int, int], undoType: str) -> None:
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         i, j = oldSel
         ch = '\n'
         if i != j:
@@ -2416,7 +2422,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         extend: Clear the selection unless this is True.
         spot:   The *new* insert point.
         """
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         extend = extend or self.extendMode
         ins = w.getInsertPoint()
         i, j = w.getSelectionRange()

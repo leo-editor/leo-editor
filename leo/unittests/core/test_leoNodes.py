@@ -43,7 +43,8 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.21: *4* TestNodes.test_p__eq_
     def test_p__eq_(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         # These must not return NotImplemented!
         root = c.rootPosition()
         self.assertFalse(p.__eq__(None))
@@ -83,7 +84,8 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.24: *4* TestNodes.test_p_comparisons
     def test_p_comparisons(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         root = c.rootPosition()
         self.assertEqual(root, p)
         child = p.firstChild()
@@ -109,7 +111,8 @@ class TestNodes(LeoUnitTest):
     # @+node:ekr.20220306073015.1: *3* TestNodes: Commander methods
     # @+node:ekr.20210830095545.6: *4* TestNodes.test_c_positionExists
     def test_c_positionExists(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         child = p.insertAsLastChild()
         self.assertTrue(c.positionExists(child))
         child.doDelete()
@@ -122,7 +125,8 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.7: *4* TestNodes.test_c_positionExists_for_all_nodes
     def test_c_positionExists_for_all_nodes(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         for p in c.all_positions():
             self.assertTrue(c.positionExists(p))
             # 2012/03/08: If a root is given, the search is confined to that root only.
@@ -183,7 +187,8 @@ class TestNodes(LeoUnitTest):
     # @+node:ekr.20210830095545.3: *4* TestNodes.test_all_generators_return_unique_positions
     def test_all_generators_return_unique_positions(self):
         # This tests a major bug in *all* generators returning positions.
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         root = p.next()
         table = (
             ('all_positions',        c.all_positions),
@@ -214,7 +219,8 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.9: *4* TestNodes.test_check_all_gnx_s_exist_and_are_unique
     def test_check_all_gnx_s_exist_and_are_unique(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         d = {}  # Keys are gnx's, values are lists of vnodes with that gnx.
         for p in c.all_positions():
             gnx = p.v.fileIndex
@@ -228,7 +234,8 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.2: *4* TestNodes.test_consistency_between_parents_iter_and_v_parents
     def test_consistency_between_parents_iter_and_v_parents(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         for p in c.all_positions():
             parents1 = p.v.parents
             parents2 = p.v.directParents()
@@ -240,7 +247,8 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.10: *4* TestNodes.test_consistency_of_back_next_links
     def test_consistency_of_back_next_links(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         for p in c.all_positions():
             back = p.back()
             next = p.next()
@@ -251,7 +259,8 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.11: *4* TestNodes.test_consistency_of_c_all_positions__and_p_ThreadNext_
     def test_consistency_of_c_all_positions__and_p_ThreadNext_(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         p2 = c.rootPosition()
         for p in c.all_positions():
             self.assertEqual(p, p2)
@@ -260,7 +269,8 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.12: *4* TestNodes.test_consistency_of_firstChild__children_iter_
     def test_consistency_of_firstChild__children_iter_(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         for p in c.all_positions():
             p2 = p.firstChild()
             for p3 in p.children_iter():
@@ -270,7 +280,8 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.13: *4* TestNodes.test_consistency_of_level
     def test_consistency_of_level(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         for p in c.all_positions():
             if p.hasParent():
                 self.assertEqual(p.parent().level(), p.level() - 1)
@@ -283,7 +294,8 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.14: *4* TestNodes.test_consistency_of_parent__parents_iter_
     def test_consistency_of_parent__parents_iter_(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         for p in c.all_positions():
             p2 = p.parent()
             for p3 in p.parents_iter():
@@ -294,7 +306,8 @@ class TestNodes(LeoUnitTest):
     # @+node:ekr.20210830095545.15: *4* TestNodes.test_consistency_of_parent_child_links
     def test_consistency_of_parent_child_links(self):
         # Test consistency of p.parent, p.next, p.back and p.firstChild.
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         for p in c.all_positions():
             if p.hasParent():
                 n = p.childIndex()
@@ -308,7 +321,8 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.16: *4* TestNodes.test_consistency_of_threadBack_Next_links
     def test_consistency_of_threadBack_Next_links(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         for p in c.all_positions():
             threadBack = p.threadBack()
             threadNext = p.threadNext()
@@ -450,7 +464,8 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.44: *4* TestNodes.test_delete_root
     def test_delete_root(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         root_h = p.h
         child = p.next()
         child.moveToRoot()  # Does not change child position.
@@ -464,7 +479,8 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.45: *4* TestNodes.test_demote
     def test_demote(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         u = c.undoer
         p2 = p.insertAsNthChild(0)
         p2.setHeadString('A')
@@ -529,7 +545,8 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.47: *4* TestNodes.test_move_outline_down
     def test_move_outline_down(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         u = c.undoer
         p2 = p.insertAsNthChild(0)
         p2.setHeadString('A')
@@ -560,7 +577,8 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.48: *4* TestNodes.test_move_outline_left
     def test_move_outline_left(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         u = c.undoer
         p2 = p.insertAsNthChild(0)
         p2.setHeadString('A')
@@ -577,7 +595,8 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.49: *4* TestNodes.test_move_outline_right
     def test_move_outline_right(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         u = c.undoer
         p2 = p.insertAsNthChild(0)
         p2.setHeadString('A')
@@ -597,7 +616,8 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.50: *4* TestNodes.test_move_outline_up
     def test_move_outline_up(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         u = c.undoer
         p2 = p.insertAsNthChild(0)
         p2.setHeadString('A')
@@ -621,7 +641,8 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.51: *4* TestNodes.test_paste_node
     def test_paste_node(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         u = c.undoer
         child = p.insertAsNthChild(0)
         child.setHeadString('child')
@@ -651,7 +672,8 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.53: *4* TestNodes.test_promote
     def test_promote(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         u = c.undoer
         p2 = p.insertAsNthChild(0)
         p2.setHeadString('A')
@@ -705,7 +727,8 @@ class TestNodes(LeoUnitTest):
     # @+node:ekr.20220708131426.1: *3* TestNodes: Getters
     # @+node:ekr.20220307043449.1: *4* TestNodes.test_p_getters
     def test_p_getters(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         table1 = (
             p.anyAtFileNodeName,
             p.atAutoNodeName,
@@ -756,7 +779,8 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.26: *4* TestNodes.test_p_hasNextBack
     def test_p_hasNextBack(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         for p in c.all_positions():
             back = p.back()
             next = p.next()
@@ -767,7 +791,8 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.27: *4* TestNodes.test_p_hasParentChild
     def test_p_hasParentChild(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         for p in c.all_positions():
             child = p.firstChild()
             parent = p.parent()
@@ -776,7 +801,8 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.28: *4* TestNodes.test_p_hasThreadNextBack
     def test_p_hasThreadNextBack(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         for p in c.all_positions():
             threadBack = p.getThreadBack()
             threadNext = p.getThreadNext()
@@ -785,7 +811,8 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.29: *4* TestNodes.test_p_isAncestorOf
     def test_p_isAncestorOf(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         for p in c.all_positions():
             child = p.firstChild()
             while child:
@@ -797,7 +824,8 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.30: *4* TestNodes.test_p_isCurrentPosition
     def test_p_isCurrentPosition(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         self.assertFalse(c.isCurrentPosition(None))
         self.assertTrue(c.isCurrentPosition(p))
 
@@ -866,13 +894,15 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.31: *4* TestNodes.test_p_isRootPosition
     def test_p_isRootPosition(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         self.assertFalse(c.isRootPosition(None))
         self.assertTrue(c.isRootPosition(p))
 
     # @+node:ekr.20210830095545.33: *4* TestNodes.test_p_moveToFirst_LastChild
     def test_p_moveToFirst_LastChild(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         root2 = p.next()
         self.assertTrue(root2)
         p2 = root2.insertAfter()
@@ -888,7 +918,8 @@ class TestNodes(LeoUnitTest):
         # Verify a fix for bug https://bugs.launchpad.net/leo-editor/+bug/1264350
         from leo.core import leoChapters
 
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         cc = c.chapterController
         settings_p = p.insertAsNthChild(0)
         settings_p.h = '@settings'
@@ -991,7 +1022,8 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.18: *4* TestNodes.test_p_properties
     def test_leoNodes_properties(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         v = p.v
         b = p.b
         p.b = b
@@ -1038,7 +1070,8 @@ class TestNodes(LeoUnitTest):
 
     # @+node:ekr.20210830095545.19: *4* TestNodes.test_new_vnodes_methods
     def test_new_vnodes_methods(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         parent_v = p.parent().v or c.hiddenRootNode
         p.v.cloneAsNthChild(parent_v, p.childIndex())
         v2 = p.v.insertAsFirstChild()

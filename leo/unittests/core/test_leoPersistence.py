@@ -45,7 +45,8 @@ class TestPersistence(LeoUnitTest):
 
     # @+node:ekr.20210908172651.2: *3* TestPersistence.test_p_sort_key
     def test_p_sort_key(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         aList = [z.copy() for z in c.all_positions()]
         aList2 = sorted(aList, key=p.sort_key)
         for i, p in enumerate(aList2):

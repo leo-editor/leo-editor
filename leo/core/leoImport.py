@@ -392,7 +392,8 @@ class LeoImportCommands:
     # @+node:ekr.20031218072017.1462: *4* ic.exportHeadlines
     def exportHeadlines(self, fileName: str) -> None:
         """Export headlines for c.p and its subtree to the file with the given name."""
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         nl = self.output_newline
         if not p:
             return
@@ -534,7 +535,8 @@ class LeoImportCommands:
 
     # @+node:ekr.20031218072017.1464: *4* ic.weave
     def weave(self, filename: str) -> None:
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         nl = self.output_newline
         if not p:
             return
@@ -700,7 +702,8 @@ class LeoImportCommands:
 
     # @+node:ekr.20070806111212: *4* ic.readAtAutoNodes
     def readAtAutoNodes(self) -> None:
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         after = p.nodeAfterTree()
         found = False
         while p and p != after:

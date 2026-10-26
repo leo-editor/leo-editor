@@ -165,8 +165,9 @@ class TestQtGui(LeoUnitTest):
 
     # @+node:ekr.20220411165627.1: *3* TestQtGui.test_put_html_links
     def test_put_html_links(self):
-        c, p = self.c, self.c.p
         # Create a test outline.
+        c = self.c
+        p = c.p
         assert p == self.root_p
         assert p.h == 'root'
         p2 = p.insertAsLastChild()

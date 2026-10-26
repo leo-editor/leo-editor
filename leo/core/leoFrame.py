@@ -522,7 +522,8 @@ class LeoFrame:
         """Invoked from the mini-buffer and from shortcuts."""
         if not event:
             return
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         u = c.undoer
         w = event.w
         if not g.isTextWrapper(w):
@@ -560,7 +561,8 @@ class LeoFrame:
         """
         if not event:
             return
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         u = c.undoer
         w = event.w
         if not g.isTextWrapper(w):

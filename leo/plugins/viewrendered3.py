@@ -3397,7 +3397,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def must_update(self, keywords):
         """Return True if we must update the rendering pane."""
         _must_update = False
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         body_editor = c.frame.body.widget  # LeoQTextBrowser
         doc = body_editor.document()
 
@@ -4047,7 +4048,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
     # @+node:TomP.20191215195433.70: *5* vr3.convert_to_pandoc
     def convert_to_pandoc(self, s):
         """Convert s to html using the asciidoctor or asciidoc processor."""
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         path = c.getPath(p)
         if not os.path.isdir(path):
             path = os.path.dirname(path)
@@ -4853,7 +4855,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
     # @+node:TomP.20191215195433.78: *4* vr3.update_url
     def update_url(self, s, keywords):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         colorizer = c.frame.body.colorizer
         language = colorizer.scanLanguageDirectives(p)
         if language == 'asciidoc':

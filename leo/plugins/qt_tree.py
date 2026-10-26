@@ -540,7 +540,8 @@ class LeoQtTree(leoFrame.LeoTree):
         """Redraw all Qt outline items cloned to c.p."""
         if self.busy:
             return
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         if p:
             h = p.h  # 2010/02/09: Fix bug 518823.
             for item in self.vnode2items(p.v):

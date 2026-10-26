@@ -719,7 +719,8 @@ class SpellTabHandler:
         """
         if not self.loaded:
             return None
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         sc = self.spellController
         w = c.frame.body.wrapper
         c.selectPosition(p)
