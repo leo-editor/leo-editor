@@ -1729,8 +1729,9 @@ class TestJava(BaseTestImporter):
     # @+node:ekr.20231225065750.1: *3* TestJava.test_round_trip
     def test_round_trip(self):
 
-        c, root = self.c, self.c.p
+        c = self.c
         at = c.atFileCommands
+        root = c.p
         # @+<< define contents: test_round_trip >>
         # @+node:ekr.20231225065840.1: *4* << define contents: test_round_trip >>
         contents = (
