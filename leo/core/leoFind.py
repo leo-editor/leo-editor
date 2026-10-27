@@ -278,7 +278,9 @@ class LeoFind:
 
     # @+node:ekr.20210108070948.1: *4* find._batch_change_helper
     def _batch_change_helper(self, p: Position, find_text: str, change_text: str) -> int:
-        c, p1, u = self.c, p.copy(), self.c.undoer
+        c = self.c
+        p1 = p.copy()
+        u = c.undoer
         # Check...
         if not find_text:  # pragma: no cover
             return 0
@@ -1028,7 +1030,8 @@ class LeoFind:
 
     def set_find_scope(self, where: str) -> None:
         """Set the radio buttons to the given scope"""
-        c, fc = self.c, self.c.findCommands
+        c = self.c
+        fc = c.findCommands
         self.ftm.set_radio_button(where)
         options = fc.compute_find_options_in_status_area()
         c.frame.statusLine.put(options)
@@ -2978,7 +2981,8 @@ class LeoFind:
         """
         Restore Leo's gui and settings from data, a g.Bunch.
         """
-        c, p = self.c, data.p
+        c = self.c
+        p = data.p
 
         # #4688: Restore previous settings.
         if self.previous_settings:
@@ -3417,7 +3421,8 @@ class LeoFind:
     # @+node:ekr.20150629072547.1: *4* find.preload_find_pattern
     def preload_find_pattern(self, w: QTextMixin) -> None:
         """Preload the find pattern from the selected text of widget w."""
-        c, ftm = self.c, self.ftm
+        c = self.c
+        ftm = self.ftm
         if not c.config.getBool('preload-find-pattern', default=False):
             # Make *sure* we don't preload the find pattern if it is not wanted.
             return

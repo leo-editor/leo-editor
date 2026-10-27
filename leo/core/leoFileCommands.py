@@ -1388,7 +1388,8 @@ class FileCommands:
 
     # @+node:ekr.20060919110638.13: *5* fc.setPositionsFromVnodes
     def setPositionsFromVnodes(self) -> None:
-        c, root = self.c, self.c.rootPosition()
+        c = self.c
+        root = c.rootPosition()
         assert root.v
         current, str_pos = None, None
         if c.mFileName:
