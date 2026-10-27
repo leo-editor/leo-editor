@@ -1019,7 +1019,9 @@ class Undoer:
 
     # @+node:ekr.20201109080732.1: *5* u.redoChangeBody
     def redoChangeBody(self) -> None:
-        c, u, w = self.c, self, self.c.frame.body.wrapper
+        u = self
+        c = u.c
+        w = c.frame.body.wrapper
         # selectPosition causes recoloring, so don't do this unless needed.
         if c.p != u.p:  # #1333.
             c.selectPosition(u.p)
@@ -1074,7 +1076,9 @@ class Undoer:
 
     # @+node:ekr.20230721131611.1: *5* u.redoChangeTree (no calls!)
     def redoChangeTree(self) -> None:
-        c, u, w = self.c, self, self.c.frame.body.wrapper
+        u = self
+        c = u.c
+        w = c.frame.body.wrapper
         # selectPosition causes recoloring, so don't do this unless needed.
         if c.p != u.p:
             c.selectPosition(u.p)
@@ -1419,7 +1423,9 @@ class Undoer:
         Undo all changes to the contents of a node,
         including headline and body text, and marked bits.
         """
-        c, u, w = self.c, self, self.c.frame.body.wrapper
+        u = self
+        c = u.c
+        w = c.frame.body.wrapper
         # PR #4991: do not change c.p here!
         u.p.setDirty()
         u.p.b = u.oldBody
@@ -2017,7 +2023,9 @@ class Undoer:
         actually typed something. Commands should use u.beforeChangeBody and
         u.afterChangeBody.
         """
-        c, u, w = self.c, self, self.c.frame.body.wrapper
+        u = self
+        c = u.c
+        w = c.frame.body.wrapper
         # Leo 6.4: undo_type must be 'Typing'.
         undo_type = undo_type.capitalize()
         assert undo_type == 'Typing', (repr(undo_type), g.callers())
