@@ -1799,7 +1799,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
     # @+node:ekr.20110605121601.18256: *5* LeoQtFrame.destroySelf
     def destroySelf(self) -> None:
         # Remember these: we are about to destroy all of our ivars!
-        c, top = self.c, self.top
+        c = self.c
+        top = self.top
         if hasattr(g.app.gui, 'frameFactory'):
             g.app.gui.frameFactory.deleteFrame(top)
         # Indicate that the commander is no longer valid.
@@ -1996,7 +1997,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
 
     # @+node:ekr.20110605121601.18281: *4* LeoQtFrame.reconfigurePanes
     def reconfigurePanes(self) -> None:
-        c, f = self.c, self
+        f = self
+        c = f.c
         if f.splitVerticalFlag:
             r = c.config.getRatio("initial-vertical-ratio")
             if r is None or r < 0.0 or r > 1.0:
@@ -2301,7 +2303,9 @@ class LeoQtLog(leoFrame.LeoLog):
     # @+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate
     def finishCreate(self) -> None:
         """Finish creating the LeoQtLog class."""
-        c, log, w = self.c, self, self.tabWidget
+        log = self
+        c = log.c
+        w = log.tabWidget
         assert c
 
         # Create the log tab as the leftmost tab.
@@ -2453,7 +2457,8 @@ class LeoQtLog(leoFrame.LeoLog):
     def onContextMenu(self, point: QPoint) -> None:
         """LeoQtLog: Callback for customContextMenuRequested events."""
         # #1286.
-        c, w = self.c, self
+        w = self
+        c = w.c
         g.app.gui.onContextMenu(c, w, point)
 
     # @+node:ekr.20110605121601.18321: *3* LeoQtLog.put and helpers
