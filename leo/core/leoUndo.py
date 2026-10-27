@@ -2699,6 +2699,9 @@ class Undoer:
             old_state = u.capture_node(p.v)
             old_ui = u.capture_ui()
             u.node_captures.add(p.v)
+            if old_p.v != c.p.v:
+                message = f"u.change_node changed p.v: {p.v.h=} {g.callers()=}"
+                g.es_print_unique_message(message)
             try:
                 yield u
             finally:
@@ -2871,6 +2874,9 @@ class Undoer:
                 yield u
             finally:
                 new_p = p.copy()
+                if old_p.v != c.p.v:
+                    message = f"u.move_node changed p.v: {p.v.h=} {g.callers()=}"
+                    g.es_print_unique_message(message)
                 if old_p != new_p:
                     new_ui = u.capture_ui()
                     u._redraw(new_p)  # PR #5005
