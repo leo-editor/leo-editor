@@ -245,7 +245,8 @@ class TestCommands(LeoUnitTest):
 
     # @+node:ekr.20210906075242.8: *3* TestCommands.test_c_findMatchingBracket
     def test_c_findMatchingBracket(self):
-        c, w = self.c, self.c.frame.body.wrapper
+        c = self.c
+        w = c.frame.body.wrapper
         s = '(abc)'
         c.p.b = s
         table = (

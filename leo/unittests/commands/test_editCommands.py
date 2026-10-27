@@ -4154,7 +4154,8 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20210905064816.1: *3* TestEditCommands: Others
     # @+node:ekr.20210905064816.4: *4* test_capitalizeHelper
     def test_capitalizeHelper(self):
-        c, w = self.c, self.c.frame.body.wrapper
+        c = self.c
+        w = c.frame.body.wrapper
         w.setAllText('# TARGETWORD\n')
         table = (
             ('cap', 'Targetword'),

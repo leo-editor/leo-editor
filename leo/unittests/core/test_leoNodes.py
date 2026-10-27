@@ -997,7 +997,8 @@ class TestNodes(LeoUnitTest):
     # @+node:ekr.20210830095545.36: *4* TestNodes.test_p_setBodyString
     def test_p_setBodyString(self):
         # Test that c.setBodyString works immediately.
-        c, w = self.c, self.c.frame.body.wrapper
+        c = self.c
+        w = c.frame.body.wrapper
         next = self.root_p.next()
         c.setBodyString(next, "after")
         c.selectPosition(next)
