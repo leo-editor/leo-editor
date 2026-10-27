@@ -105,9 +105,11 @@ class TestQtGui(LeoUnitTest):
     def test_bug_4626(self):
         # https://github.com/leo-editor/leo-editor/issues/4626
         self.skipTest('Can hang depending clipboard contents')
-
-        c, gui = self.c, g.app.gui
-        k, log, qtApp = c.k, c.frame.log, gui.qtApp
+        c = self.c
+        gui = g.app.gui
+        k = c.k
+        log = c.frame.log
+        qtApp = gui.qtApp
         old_log = g.app.log
         old_clipboard_contents = gui.getTextFromClipboard()
         try:

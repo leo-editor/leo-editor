@@ -123,7 +123,8 @@ class TestPersistence(LeoUnitTest):
 
     # @+node:ekr.20210908172651.23: *3* TestPersistence.test_pd_has_at_gnxs_node
     def test_pd_has_at_gnxs_node(self):
-        c, pd = self.c, self.c.persistenceController
+        c = self.c
+        pd = c.persistenceController
         # Set up the tree.
         root = self.root_p
         root.h = '@auto root'  # Make root look like an @auto node.
@@ -152,7 +153,8 @@ class TestPersistence(LeoUnitTest):
 
     # @+node:ekr.20210908172651.30: *3* TestPersistence.test_pd_restore_gnxs
     def test_pd_restore_gnxs(self):
-        c, pd = self.c, self.c.persistenceController
+        c = self.c
+        pd = c.persistenceController
         root = self.root_p
         # Set up the tree.
         persistence = g.findNodeAnywhere(c, '@persistence')
@@ -171,7 +173,8 @@ class TestPersistence(LeoUnitTest):
 
     # @+node:ekr.20210908172651.35: *3* TestPersistence.test_pd_unl
     def test_pd_unl(self):
-        c, pd = self.c, self.c.persistenceController
+        c = self.c
+        pd = c.persistenceController
         root = self.root_p
         node1 = root.insertAsLastChild()
         node1.h = 'node1'
@@ -182,7 +185,8 @@ class TestPersistence(LeoUnitTest):
 
     # @+node:ekr.20210908172651.36: *3* TestPersistence.test_pd_update_before_write_foreign_file
     def test_pd_update_before_write_foreign_file(self):
-        c, pd = self.c, self.c.persistenceController
+        c = self.c
+        pd = c.persistenceController
         root = self.root_p
         assert root
         persistence = pd.find_at_persistence_node()
