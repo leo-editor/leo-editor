@@ -1043,7 +1043,8 @@ def selectVisNext(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('dehoist')
 def dehoist(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Undo a previous hoist of an outline."""
-    c, cc, tag = self, self.chapterController, '@chapter '
+    c, cc = self, self.chapterController
+    tag = '@chapter '
     if not c.p or not c.hoistStack:
         return
     # #2718: de-hoisting an @chapter node is equivalent to selecting the main chapter.

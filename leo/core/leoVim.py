@@ -2042,7 +2042,8 @@ class VimCommands:
         # @+node:ekr.20140820034724.18317: *5* :r.load_file_at_cursor
         def load_file_at_cursor(self, fn: str) -> None:
             vc = self.vc
-            c, w = vc.c, vc.colon_w
+            c = vc.c
+            w = vc.colon_w
             if not w:
                 w = vc.w = c.frame.body.wrapper
             if g.os_path_exists(fn):

@@ -426,7 +426,8 @@ class AutoCompleterClass:
     # @+node:ekr.20061031131434.11: *4* ac.auto_completer_state_handler
     def auto_completer_state_handler(self, event: LeoKeyEvent | None = None) -> str | None:
         """Handle all keys while autocompleting."""
-        c, k, tag = self.c, self.k, 'auto-complete'
+        c, k = self.c, self.k
+        tag = 'auto-complete'
         state = k.getState(tag)
         ch = event.char if event else ''
         stroke = event.stroke if event else ''
