@@ -838,7 +838,8 @@ class LeoImportCommands:
 
     # @+node:ekr.20031218072017.3224: *4* ic.importWebCommand & helpers
     def importWebCommand(self, files: list[str], webType: str) -> None:
-        c, current = self.c, self.c.p
+        c = self.c
+        current = c.p
         if not current:
             return
         if not files:
@@ -1237,7 +1238,8 @@ class LeoImportCommands:
         Similar to c.setBodyString, but does not recolor the text or
         redraw the screen.
         """
-        c, v = self.c, p.v
+        c = self.c
+        v = p.v
         if not c or not p:
             return
         s = g.toUnicode(s, self.encoding)

@@ -3743,7 +3743,10 @@ class KeyHandlerClass:
 
     # @+node:vitalije.20170708161511.1: *6* k.handleInputShortcut
     def handleInputShortcut(self, event: LeoKeyEvent, stroke: Stroke) -> None:
-        c, k, p, u = self.c, self, self.c.p, self.c.undoer
+        k = self
+        c = k.c
+        p = c.p
+        u = c.undoer
         k.clearState()
         with u.change_outline('k.handleInputShortcut'):
             if p.h.startswith(('@shortcuts', '@mode')):
@@ -3863,7 +3866,9 @@ class KeyHandlerClass:
 
     # @+node:ekr.20091230094319.6240: *6* k.getPaneBinding & helper
     def getPaneBinding(self, event: LeoKeyEvent) -> g.BindingInfo | None:
-        c, k, state = self.c, self, self.unboundKeyAction
+        k = self
+        c = k.c
+        state = k.unboundKeyAction
         w = event.w
         stroke = event.stroke if event else None
         if not g.assert_is(stroke, g.KeyStroke):
@@ -4038,7 +4043,8 @@ class KeyHandlerClass:
     def resetLabel(self) -> None:
         """Reset the minibuffer label."""
         k = self
-        c, w = k.c, k.w
+        c = k.c
+        w = k.w
         k.setLabelGrey('')
         k.mb_prefix = ''
         if g.isTextWrapper(w):
