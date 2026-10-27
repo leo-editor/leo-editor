@@ -1103,13 +1103,13 @@ def hoist(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 def clone(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Create a clone of the selected outline."""
     c = self
+    u = c.undoer
     if not c.p:
         return None
     c.endEditing()
-    with c.undoer as u:
-        u.set_command_name('Clone Node')
+    with u.change_outline('clone-node'):
         clone = u.clone_node(c.p)  # Cloning a node is *always* valid.
-        c.p = clone  # type:ignore
+        c.p = clone
         c.treeWantsFocus()
         return clone
 
