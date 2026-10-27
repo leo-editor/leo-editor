@@ -545,7 +545,8 @@ class AutoCompleterClass:
     # @+node:ekr.20061031131434.29: *4* ac.do_backspace
     def do_backspace(self) -> None:
         """Delete the character and recompute the completion list."""
-        c, w = self.c, self.w
+        c = self.c
+        w = self.w
         c.bodyWantsFocusNow()
         i = w.getInsertPoint()
         while i > 1:
@@ -932,7 +933,8 @@ class AutoCompleterClass:
 
         Leo 6.4. This *part* of auto-completion is no longer undoable.
         """
-        c, w = self.c, self.w
+        c = self.c
+        w = self.w
         if not g.isTextWrapper(w):
             return
         c.widgetWantsFocusNow(w)
