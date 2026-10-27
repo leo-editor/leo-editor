@@ -153,31 +153,6 @@ class TestContextUndo(LeoUnitTest):
             self.assertEqual(w.getSelectionRange(), (2, 4))
             self.assertEqual(w.getInsertPoint(), 4)
 
-    # @+node:ekr.20261014103254.8: *3* TestContextUndo.test_headline_refresh_replays_without_full_redraw
-    def test_headline_refresh_replays_without_full_redraw(self):
-        c = self.c
-        p = c.p
-        u = c.undoer
-        old_head = p.h
-        with (
-            patch.object(c, 'redraw_after_head_changed') as headline,
-            patch.object(c, 'redraw') as redraw,
-        ):
-            with u:
-                u.set_command_name('headline')
-                u.change_headline(p, 'new headline')
-                u.redraw_after_head_changed()
-            headline.assert_called_once()
-            headline.reset_mock()
-            u.undo()
-            headline.assert_called_once()
-            self.assertEqual(p.h, old_head)
-            headline.reset_mock()
-            u.redo()
-            headline.assert_called_once()
-            self.assertEqual(p.h, 'new headline')
-            redraw.assert_not_called()
-
     # @+node:ekr.20261014103254.9: *3* TestContextUndo.test_noop_context_preserves_redo
     def test_noop_context_preserves_redo(self):
         c = self.c

@@ -1089,7 +1089,7 @@ class LeoTree:
         # Handle undo.
         with c.undoer as u:
             u.set_command_name(undoType)
-            u.change_headline(p, s, ch=ch, update_editor=False)
+            u.change_headline(p, s, ch=ch)
             u.redraw_after_head_changed()
 
     # @+node:ekr.20061109165848: *3* LeoTree: Must be defined in base class

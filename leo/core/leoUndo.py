@@ -2667,14 +2667,7 @@ class Undoer:
 
     # @+node:ekr.20261015042249.1: *5* u: contexts
     # @+node:ekr.20261009185938.1: *6* u.change_headline
-    def change_headline(
-        self,
-        p: Position,
-        new_h: str,
-        *,
-        ch: str = '',
-        update_editor: bool = True,
-    ) -> None:
+    def change_headline(self, p: Position, new_h: str, *, ch: str = '') -> None:
         """
         Change a headline and preserve directives, dirty bits and editor state.
 
@@ -2694,8 +2687,7 @@ class Undoer:
 
         def update(head):
             c.p = p
-            p.initHeadString(head)
-            # p.setDirty() calls p.v.setAllAncestorAtFileNodesDirty()
+            p.initHeadString(head)  # Call p.v.setAllAncestorAtFileNodesDirty()
             p.setDirty()
             c.frame.tree.setHeadline(p, head)
 
@@ -2703,8 +2695,6 @@ class Undoer:
         # Leave the live editor alone: it may contain multiline abbreviation text.
         p.initHeadString(new_h)
         p.setDirty()
-        if update_editor:  # This test is required.
-            c.frame.tree.setHeadline(p, new_h)
         c.frame.scanForTabWidth(p)
         c.recolor(p)
         g.doHook('headkey2', c=c, p=p, ch=ch, changed=True)
