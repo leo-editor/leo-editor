@@ -2443,7 +2443,7 @@ class Undoer:
 
     # @+node:ekr.20261015042013.1: *5* u: actions
     # @+node:ekr.20261006155509.1: *6* u.clone_node
-    def clone_node(self, p: Position) -> Position | None:
+    def clone_node(self, p: Position) -> Position:
         """Clone p, returning and selecting the new occurrence."""
         c, b = self.c, self._require_bead()
         old_p = p.copy()
