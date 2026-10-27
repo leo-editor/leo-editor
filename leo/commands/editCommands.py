@@ -881,7 +881,9 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.get1Arg(event, handler=self.setFillColumn1)
 
     def setFillColumn1(self, event: LeoKeyEvent | None = None) -> None:
-        c, k, w = self.c, self.c.k, self.w
+        c = self.c
+        k = c.k
+        w = self.w
         k.clearState()
         try:
             # Bug fix: 2011/05/23: set the fillColumn ivar!
@@ -2020,7 +2022,9 @@ class EditCommandsClass(BaseEditCommandsClass):
             k.get1Arg(event, handler=self.replaceCurrentCharacter1)
 
     def replaceCurrentCharacter1(self, event: LeoKeyEvent | None = None) -> None:
-        c, k, w = self.c, self.c.k, self.w
+        c = self.c
+        k = c.k
+        w = self.w
         if ch := k.arg:
             i, j = w.getSelectionRange()
             if i > j:
@@ -4171,8 +4175,10 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.getNextArg(self.setUa2)
 
     def setUa2(self) -> None:
-        c, k, u = self.c, self.c.k, self.c.undoer
+        c = self.c
+        k = c.k
         p = c.p
+        u = c.undoer
         val = k.arg
         d = p.v.u
         d[self.uaName] = val

@@ -4806,7 +4806,8 @@ class Commands:
     # New in 4.9: all FocusNow methods now *do* call c.outerUpdate().
 
     def bodyWantsFocusNow(self) -> None:
-        c, body = self, self.frame.body
+        c = self
+        body = c.frame.body
         c.widgetWantsFocusNow(body and body.wrapper)
 
     def logWantsFocusNow(self) -> None:
@@ -4822,7 +4823,8 @@ class Commands:
         c.widgetWantsFocusNow(c.miniBufferWidget)
 
     def treeWantsFocusNow(self) -> None:
-        c, tree = self, self.frame.tree
+        c = self
+        tree = c.frame.tree
         c.widgetWantsFocusNow(tree and tree.canvas)
 
     # @+node:ekr.20031218072017.2955: *4* c.Menus

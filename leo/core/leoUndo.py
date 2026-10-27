@@ -277,7 +277,8 @@ class TypingBead(UndoBead):
 
     # @+node:ekr.20261014100625.4: *3* TypingBead.apply
     def apply(self, middle, sel, ins):
-        c, p = self.c, self.p
+        c = self.c
+        p = self.p
         if c.p != p:
             c.selectPosition(p)
         p.v.b = self.replace_middle(p.b, middle)
