@@ -852,7 +852,9 @@ def flattenOutlineToNode(self: Self, event: LeoKeyEvent | None = None) -> None:
     Append the body text of all descendants of the selected node to the
     body text of a new (last) top-level node.
     """
-    c, root, u = self, self.p, self.undoer
+    c = self
+    root = c.p
+    u = c.undoer
     if not root.hasChildren():
         return
     with u.change_outline('flatten-outline-to-node'):

@@ -372,7 +372,9 @@ def extract(self: Self, event: LeoKeyEvent | None = None) -> None:
        selected lines become the child's body text.
     """
     # @-<< docstring for extract command >>
-    c, u, w = self, self.undoer, self.frame.body.wrapper
+    c = self
+    u = c.undoer
+    w = c.frame.body.wrapper
 
     # Set data.
     head, lines, tail, oldSel, oldYview = c.getBodyLines()
@@ -889,7 +891,8 @@ def reformatParagraph(
     Paragraph is bound by start of body, end of body and blank lines. Paragraph is
     selected by position of current insertion cursor.
     """
-    c, w = self, self.frame.body.wrapper
+    c = self
+    w = c.frame.body.wrapper
     if g.app.batchMode:
         c.notValidInBatchMode("reformat-paragraph")
         return

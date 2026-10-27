@@ -206,7 +206,8 @@ def openLeoScripts(self: Self, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('leo-settings')
 def openLeoSettings(self: Self, event: LeoKeyEvent | None = None) -> Cmdr | None:
     """Open leoSettings.leo in a new Leo window."""
-    c, lm = self, g.app.loadManager
+    c = self
+    lm = g.app.loadManager
     if path := lm.computeLeoSettingsPath():
         return g.openWithFileName(path, old_c=c)
     g.es('not found: leoSettings.leo')
@@ -219,7 +220,8 @@ def openLeoSettings(self: Self, event: LeoKeyEvent | None = None) -> Cmdr | None
 @g.commander_command('my-leo-settings')
 def openMyLeoSettings(self: Self, event: LeoKeyEvent | None = None) -> Cmdr | None:
     """Open myLeoSettings.leo in a new Leo window."""
-    c, lm = self, g.app.loadManager
+    c = self
+    lm = g.app.loadManager
     if path := lm.computeMyLeoSettingsPath():
         return g.openWithFileName(path, old_c=c)
     g.es('not found: myLeoSettings.leo')
