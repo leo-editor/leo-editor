@@ -1129,7 +1129,8 @@ class LeoFind:
         self.toggle_option(event, 'whole_word')
 
     def toggle_option(self, event: LeoKeyEvent | None, checkbox_name: str) -> None:
-        c, finder = self.c, self.c.findCommands
+        c = self.c
+        finder = c.findCommands
         self.ftm.toggle_checkbox(checkbox_name)
         if self.minibuffer_mode:
             options = finder.compute_find_options_in_status_area()
@@ -2298,7 +2299,9 @@ class LeoFind:
     def interactive_tag_children1(
         self, event: LeoKeyEvent
     ) -> None:  # pragma: no cover (interactive)
-        c, k, p = self.c, self.k, self.c.p
+        c = self.c
+        k = self.k
+        p = c.p
         # Settings...
         tag = k.arg
         # Gui...
@@ -2337,7 +2340,9 @@ class LeoFind:
     def interactive_tag_node1(
         self, event: LeoKeyEvent | None = None
     ) -> None:  # pragma: no cover (interactive)
-        c, k, p = self.c, self.k, self.c.p
+        c = self.c
+        k = self.k
+        p = c.p
         # Settings...
         tag = k.arg
         # Gui...
@@ -3179,7 +3184,9 @@ class LeoFind:
     # @+node:ekr.20131117164142.16949: *5* find.iSearch_helper
     def iSearch_helper(self, again: bool = False) -> None:
         """Handle the actual incremental search."""
-        c, k, p = self.c, self.k, self.c.p
+        c = self.c
+        k = self.k
+        p = c.p
         reverse = not self.isearch_forward_flag
         pattern = k.getLabel(ignorePrompt=True)
         if not pattern:
