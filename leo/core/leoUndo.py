@@ -2967,12 +2967,15 @@ class Undoer:
         if u.undoBeadLevel > 1:
             return
         p.setDirty()  # Call p.v.setAllAncestorAtFileNodesDirty()
-        sel, ins, scroll = w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
+        preserve_body = p == c.p and p.b == w.getAllText()
+        if preserve_body:
+            sel, ins, scroll = w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
         c.updateSyntaxColorer(p)
         c.recolor()
         c.redraw(p)
-        w.setSelectionRange(*sel, insert=ins)
-        w.setYScrollPosition(scroll)
+        if preserve_body:
+            w.setSelectionRange(*sel, insert=ins)
+            w.setYScrollPosition(scroll)
 
     # @+node:ekr.20261011193020.1: *6* u.redraw_after_head_changed
     def redraw_after_head_changed(self) -> None:
