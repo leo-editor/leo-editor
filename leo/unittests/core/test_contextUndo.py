@@ -88,37 +88,6 @@ class TestContextUndo(LeoUnitTest):
             lambda: self.assertEqual(tuple(c.all_unique_nodes()), after),
         )
 
-    # @+node:ekr.20261014103254.5: *3* TestContextUndo.test_action_helpers_leave_redraw_to_caller
-    def test_action_helpers_leave_redraw_to_caller(self):
-        c = self.c
-        p = c.p
-        u = c.undoer
-        with (
-            patch.object(c, 'redraw') as redraw,
-            patch.object(c, 'redrawAndEdit') as edit,
-            patch.object(c, 'redraw_after_head_changed') as headline,
-        ):
-            with u:
-                u.set_command_name('composed actions')
-                inserted = u.insert_node(p)
-                u.change_headline(inserted, 'inserted')
-                clone = u.clone_node(inserted)
-                u.delete_node(clone)
-                redraw.assert_not_called()
-                edit.assert_not_called()
-                headline.assert_not_called()
-                c.p = inserted
-                u._redraw(c.p)
-            redraw.assert_called_once()
-            redraw.reset_mock()
-            u.undo()
-            redraw.assert_called_once()
-            self.assertEqual(c.p, p)
-            redraw.reset_mock()
-            u.redo()
-            redraw.assert_called_once()
-            self.assertEqual(c.p, inserted)
-
     # @+node:ekr.20261014103254.6: *3* TestContextUndo.test_insert_command_redraw_and_edit_replays_once
     def test_insert_command_redraw_and_edit_replays_once(self):
         c = self.c
@@ -762,6 +731,37 @@ class TestContextUndo(LeoUnitTest):
                 for node in ast.walk(ast.parse(path.read_text(encoding='utf-8'))):
                     if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
                         self.assertNotIn(node.func.attr, legacy, f'{path}:{node.lineno}')
+
+    # @+node:ekr.20261027134713.1: *3* TestContextUndo.test_clone_node
+    def test_clone_node(self):
+        # Test the changes in PR #5015.
+        c = self.c
+        p = c.p
+        u = c.undoer
+        v = p.v
+        assert not p.isCloned()
+        for _i in range(3):
+            c.redraw_count = 0
+            clone = c.clone()
+            assert c.redraw_count == 1, f"{c.redraw_count=}"
+            assert clone == c.p
+            assert clone.v == v
+            assert clone.isCloned()
+            assert c.p.isCloned()
+            u.undo()
+            assert c.redraw_count == 2, f"{c.redraw_count=}"
+            assert c.p.v == v
+            assert c.p == p, f"\n{c.p=}\n  {p=}\n"
+            assert not c.p.isCloned()
+            u.redo()
+            assert c.redraw_count == 3, f"{c.redraw_count=}"
+            assert clone.v == v
+            assert c.p.isCloned()
+            u.undo()
+            assert c.redraw_count == 4, f"{c.redraw_count=}"
+            assert c.p.v == v
+            assert c.p == p, f"\n{c.p=}\n  {p=}\n"
+            assert not c.p.isCloned()
 
     # @-others
 

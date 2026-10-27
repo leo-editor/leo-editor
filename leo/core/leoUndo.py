@@ -386,10 +386,7 @@ class Undoer:
                 u.redoHelper()
             else:
                 g.trace(f"no redo helper for {u.kind} {u.undoType}")
-
-            # Finish.
             c.checkOutline()
-            u.update_status(redraw=not (isinstance(obj, UndoBead) and obj.redraw_finishers))
         finally:
             u.redoing = False
         u.bead += 1
@@ -427,10 +424,7 @@ class Undoer:
                 u.undoHelper()
             else:
                 g.trace(f"no undo helper for {u.kind} {u.undoType}")
-
-            # Finish.
             c.checkOutline()
-            u.update_status(redraw=not (isinstance(obj, UndoBead) and obj.redraw_finishers))
         finally:
             u.undoing = False
         u.bead -= 1
@@ -2389,32 +2383,6 @@ class Undoer:
         ni = g.app.nodeIndices
         for v in c.all_unique_nodes():
             ni.check_gnx(c, v.fileIndex, v)
-
-    # @+node:ekr.20191213092304.1: *5* u.update_status
-    def update_status(self, *, redraw: bool = True) -> None:
-        """
-        Update status after either an undo or redo:
-        """
-        u = self
-        c = u.c
-        w = c.frame.body.wrapper
-
-        # PR #4809. c.p has already been set.
-
-        # # 1451. *Always* set the changed bit.
-        # Redrawing *must* be done here before setting u.undoing to False.
-        i, j = w.getSelectionRange()
-        ins = w.getInsertPoint()
-        if redraw:
-            c.redraw()
-        c.recolor()
-        if u.inHead:
-            c.editHeadline()
-            u.inHead = False
-        else:
-            c.bodyWantsFocus()
-            w.setSelectionRange(i, j, insert=ins)
-            w.seeInsertPoint()
 
     # @+node:ekr.20201127035748.1: *5* u.updateAfterTyping
     def updateAfterTyping(self, p: Position, w: QTextMixin) -> None:
