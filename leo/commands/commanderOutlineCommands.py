@@ -486,7 +486,9 @@ def contractNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('contract-or-go-left')
 def contractNodeOrGoToParent(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Simulate the left Arrow Key in folder of Windows Explorer."""
-    c, cc, p = self, self.chapterController, self.p
+    c = self
+    cc = c.chapterController
+    p = c.p
     parent = p.parent()
     redraw = False
     # Bug fix: 2016/04/19: test p.v.isExpanded().
@@ -1043,7 +1045,8 @@ def selectVisNext(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('dehoist')
 def dehoist(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Undo a previous hoist of an outline."""
-    c, cc = self, self.chapterController
+    c = self
+    cc = c.chapterController
     tag = '@chapter '
     if not c.p or not c.hoistStack:
         return
@@ -1476,7 +1479,9 @@ def markHeadline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('mark-subheads')
 def markSubheads(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Mark all children of the selected node as changed."""
-    c, current, u = self, self.p, self.undoer
+    c = self
+    current = c.p
+    u = c.undoer
     if not current:
         return
     c.endEditing()
@@ -1491,7 +1496,9 @@ def markSubheads(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('unmark-all')
 def unmarkAll(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Unmark all nodes in the entire outline."""
-    c, current, u = self, self.p, self.undoer
+    c = self
+    current = c.p
+    u = c.undoer
     if not current:
         return
     c.endEditing()
