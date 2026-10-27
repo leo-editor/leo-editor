@@ -2523,7 +2523,8 @@ class Undoer:
     def delete_node(self, p: Position) -> None:
         """Delete p without scheduling a redraw; retain its original links."""
         u = self
-        c, b = u.c, u._require_bead()
+        b = u._require_bead()
+        c = u.c
         old_p = p.copy()
         old_back, old_parent = p.back(), p.parent()
         new_p = p.visBack(c) if p.hasVisBack(c) else p.next()
@@ -2565,7 +2566,9 @@ class Undoer:
         before: bool = False,
     ) -> Position:
         """Insert a node once; redo relinks that same vnode, including its subtree."""
-        c, b = self.c, self._require_bead()
+        u = self
+        b = u._require_bead()
+        c = u.c
         old_p = p.copy()
         if before:
             new_p = p.insertBefore()

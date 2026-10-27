@@ -865,7 +865,8 @@ class JEditColorizer(BaseColorizer):
     # @+node:ekr.20171114041307.1: *4* jedit.reloadSettings
 
     def reloadSettings(self) -> None:
-        c, getBool = self.c, self.c.config.getBool
+        c = self.c
+        getBool = c.config.getBool
 
         # fmt: off
 
@@ -3196,7 +3197,8 @@ if QtGui:
         # @+node:ekr.20190327052228.1: *3* leo_h.reloadSettings
         def reloadSettings(self) -> None:
             """Reload all reloadable settings."""
-            c, document = self.c, self.leo_document
+            c = self.c
+            document = self.leo_document
             if not pygments:
                 return
             if not c.config.getBool('use-pygments', default=False):

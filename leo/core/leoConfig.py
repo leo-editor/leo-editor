@@ -161,7 +161,8 @@ class ParserBaseClass:
     # @+node:ekr.20070925144337: *4* pbc.doButtons
     def doButtons(self, p: Position, kind: str, name: str, val: Any) -> None:
         """Create buttons for each @button node in an @buttons tree."""
-        c, tag = self.c, '@button'
+        c = self.c
+        tag = '@button'
         aList: list[tuple[Position, str, list[Callable]]] = []
         seen: list[VNode] = []
         after = p.nodeAfterTree()

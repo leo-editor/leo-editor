@@ -374,7 +374,8 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.383: *4* helpForCommandFinisher
     def helpForCommandFinisher(self, commandName: str) -> None:
-        c, s = self.c, None
+        c = self.c
+        s = None
         if commandName and commandName.startswith('help-for-'):
             # Execute the command itself.
             c.doCommandByName(commandName)

@@ -2541,7 +2541,8 @@ class VimCommands:
     # @+node:ekr.20140807070500.18161: *5* vc.set_property
     def set_property(self, w: QTextMixin, focus_flag: bool) -> None:
         """Set the property of w, depending on focus and state."""
-        c, state = self.c, self.state
+        c = self.c
+        state = self.state
 
         # #1221: Use a style sheet based on new settings.
         if focus_flag:
