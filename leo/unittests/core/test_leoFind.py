@@ -75,8 +75,10 @@ class TestFind(LeoUnitTest):
     # @+node:ekr.20210110073117.59: *3* Tests of Commands...
     # @+node:ekr.20210110073117.67: *4* TestFind.test_change-all
     def test_change_all(self):
-        c, settings, x = self.c, self.settings, self.x
+        c = self.c
         root = c.rootPosition()
+        settings = self.settings
+        x = self.x
 
         def init():
             self.make_test_tree()  # Reinit the whole tree.
@@ -141,8 +143,10 @@ class TestFind(LeoUnitTest):
 
     # @+node:ekr.20210220091434.1: *4* TestFind.test_change-all (@file node)
     def test_change_all_with_at_file_node(self):
-        c, settings, x = self.c, self.settings, self.x
+        c = self.c
         root = c.rootPosition().next()  # Must have children.
+        settings = self.settings
+        x = self.x
         settings.find_text = 'def'
         settings.change_text = '_DEF_'
         settings.ignore_case = False
@@ -376,7 +380,9 @@ class TestFind(LeoUnitTest):
 
     # @+node:ekr.20210216094444.1: *4* TestFind.test_find-prev
     def test_find_prev(self):
-        c, settings, x = self.c, self.settings, self.x
+        c = self.c
+        settings = self.settings
+        x = self.x
         settings.find_text = 'def top1'
         # Start at end, so we stay in the node.
         grand_child = g.findNodeAnywhere(c, 'child 6')
@@ -440,7 +446,9 @@ class TestFind(LeoUnitTest):
         x.do_change_then_find(settings)
 
     def test_replace_then_find_in_headline(self):
-        c, settings, x = self.c, self.settings, self.x
+        c = self.c
+        settings = self.settings
+        x = self.x
         settings.find_text = 'Node 1'
         settings.change_text = 'Node 1a'
         settings.in_headline = True
@@ -567,8 +575,10 @@ class TestFind(LeoUnitTest):
 
     # @+node:ekr.20210110073117.80: *4* TestFind.test_cfa_find_next_match
     def test_cfa_find_next_match(self):
-        c, settings, x = self.c, self.settings, self.x
+        c = self.c
         p = c.rootPosition()
+        settings = self.settings
+        x = self.x
         for find in ('xxx', 'def'):
             settings.find_text = find
             x._cfa_find_next_match(p)
