@@ -316,7 +316,6 @@ class ScreenCastController:
         """Simulate typing in the body pane.
         n1 and n2 indicate the range of delays between keystrokes.
         """
-        # c, m, p, u = self.c, self, self.c.p, self.c.undoer
         m = self
         c = m.c
         p = c.p

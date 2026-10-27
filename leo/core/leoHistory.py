@@ -90,7 +90,8 @@ class NodeHistory:
         """
         Update the beadList while p is being selected.
         """
-        c, cc = self.c, self.c.chapterController
+        c = self.c
+        cc = c.chapterController
         if not p or not c.positionExists(p):
             return
 

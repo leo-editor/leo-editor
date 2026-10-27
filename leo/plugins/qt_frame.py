@@ -4189,7 +4189,8 @@ class QtStatusLineClass:
     def update(self) -> None:
         if g.app.killed:
             return
-        c, body = self.c, self.c.frame.body
+        c = self.c
+        body = c.frame.body
         if not c.p:
             return
         te = body.widget

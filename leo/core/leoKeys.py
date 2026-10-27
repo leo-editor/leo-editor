@@ -4618,7 +4618,10 @@ class ModeInfo:
     # @+node:ekr.20120208064440.10160: *3* mode_i.createModeBindings
     def createModeBindings(self, w: QTextMixin | None) -> None:
         """Create mode bindings for w, a text widget."""
-        c, d, k, modeName = self.c, self.d, self.k, self.name
+        c = self.c
+        d = self.d
+        k = self.k
+        modeName = self.name
         for commandName in d:
             func = c.commandsDict.get(commandName)
             if not func:
@@ -4672,7 +4675,9 @@ class ModeInfo:
     # @+node:ekr.20120208064440.10153: *3* mode_i.init
     def init(self, name: str, dataList: list[tuple[str, g.BindingInfo]]) -> None:
         """aList is a list of tuples (commandName,bi)."""
-        c, d, modeName = self.c, self.d, self.name
+        c = self.c
+        d = self.d
+        modeName = self.name
         for name, bi in dataList:
             if not name:
                 # An entry command: put it in the special *entry-commands* key.

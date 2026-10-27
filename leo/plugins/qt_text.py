@@ -1431,7 +1431,8 @@ class QScintillaWrapper(QTextMixin):
     # @+node:ekr.20110605121601.18106: *3* QScintillaWrapper.set_config
     def set_config(self) -> None:
         """Set QScintillaWrapper configuration options."""
-        c, w = self.c, self.widget
+        c = self.c
+        w = self.widget
         n = c.config.getInt('qt-scintilla-zoom-in')
         if n not in (None, 1, 0):
             w.zoomIn(n)
@@ -1694,7 +1695,8 @@ class QTextEditWrapper(QTextMixin):
     # @+node:ekr.20140901062324.18566: *4* QTextEditWrapper.set_signals
     def set_signals(self) -> None:
         """Set up signals."""
-        c, name = self.c, self.name
+        c = self.c
+        name = self.name
         if name in ('body', 'rendering-pane-wrapper') or name.startswith('head'):
             # Hook up qt events.
             g.app.gui.setFilter(c, self.widget, self, tag=name)
