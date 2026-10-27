@@ -459,7 +459,8 @@ class Chapter:
     # @+node:ekr.20070317131708: *4* chapter.findPositionInChapter
     def findPositionInChapter(self, p1: Position, strict: bool = False) -> Position | None:
         """Return a valid position p such that p.v == v."""
-        c, name = self.c, self.name
+        c = self.c
+        name = self.name
         # Bug fix: 2012/05/24: Search without root arg in the main chapter.
         if name == 'main' and c.positionExists(p1):
             return p1

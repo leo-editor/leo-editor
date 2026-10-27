@@ -489,7 +489,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     def insertHeadlineTime(self, event: LeoKeyEvent | None = None) -> None:
         """Insert a date/time stamp in the headline of the selected node."""
         frame = self
-        c, p = frame.c, self.c.p
+        c = frame.c
+        p = c.p
         u = c.undoer
         if g.app.batchMode:
             c.notValidInBatchMode('insert-headline-time')
@@ -517,7 +518,9 @@ class EditCommandsClass(BaseEditCommandsClass):
     def capitalizeHeadline(self, event: LeoKeyEvent | None = None) -> None:
         """Capitalize all words in the headline of the selected node."""
         frame = self
-        c, p, u = frame.c, self.c.p, self.c.undoer
+        c = frame.c
+        p = c.p
+        u = c.undoer
 
         if g.app.batchMode:
             c.notValidInBatchMode('capitalize-headline')
@@ -644,7 +647,9 @@ class EditCommandsClass(BaseEditCommandsClass):
     def capitalizeWords(self, event: LeoKeyEvent | None = None) -> None:
         """Capitalize Entire Body Or Selection."""
         frame = self
-        c, p, u = frame.c, self.c.p, self.c.undoer
+        c = frame.c
+        p = c.p
+        u = c.undoer
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
