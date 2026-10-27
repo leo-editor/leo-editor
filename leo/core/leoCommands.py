@@ -3396,7 +3396,8 @@ class Commands:
              This allows, for example, `go run .` to work as expected.
           3. Append the full path to the command.
         """
-        c, log = self, self.frame.log
+        c = self
+        log = c.frame.log
 
         # @+others  # Define helper functions
         # @+node:ekr.20210529142153.1: *5* function: put_line (c.general_script_helper)
@@ -4805,7 +4806,8 @@ class Commands:
         c.widgetWantsFocusNow(body and body.wrapper)
 
     def logWantsFocusNow(self) -> None:
-        c, log = self, self.frame.log
+        c = self
+        log = c.frame.log
         try:  # 4652
             c.widgetWantsFocusNow(log.logCtrl.widget)
         except AttributeError:
