@@ -2443,9 +2443,11 @@ class Undoer:
 
     # @+node:ekr.20261015042013.1: *5* u: actions
     # @+node:ekr.20261006155509.1: *6* u.clone_node
-    def clone_node(self, p: Position) -> Position | None:
+    def clone_node(self, p: Position) -> Position:
         """Clone p, returning and selecting the new occurrence."""
-        c, b = self.c, self._require_bead()
+        u = self
+        b = u._require_bead()
+        c = u.c
         old_p = p.copy()
         clone = p.clone()
 
@@ -2640,8 +2642,9 @@ class Undoer:
         This method should *not* have an @contextmanager decorator:
         it is never called from within other @contextmanager methods.
         """
-        c = self.c
-        b = self._require_bead()
+        u = self
+        b = u._require_bead()
+        c = u.c
         old_h = p.h
         if old_h == new_h:
             return
@@ -2684,13 +2687,14 @@ class Undoer:
 
         u.restore_node does the heavy lifting.
         """
-        c = self.c
-        if self.undoing or self.redoing:
-            yield self
+        u = self
+        c = u.c
+        if u.undoing or u.redoing:
+            yield u
             return
         if not c.changed:
             c.setChanged()
-        with self as u:
+        with u:
             u.set_command_name(command_name)
             if u.capture_level > 0 or p.v in u.node_captures:
                 yield u
@@ -2699,6 +2703,9 @@ class Undoer:
             old_state = u.capture_node(p.v)
             old_ui = u.capture_ui()
             u.node_captures.add(p.v)
+            if old_p.v != c.p.v:
+                message = f"u.change_node changed p.v: {p.v.h=} {g.callers()=}"
+                g.es_print_unique_message(message)
             try:
                 yield u
             finally:
@@ -2740,13 +2747,14 @@ class Undoer:
 
         u.restore_node does the heavy lifting of restoring all data.
         """
-        if self.undoing or self.redoing:
-            yield self
+        u = self
+        c = u.c
+        if u.undoing or u.redoing:
+            yield u
             return
-        c = self.c
         if not c.changed:
             c.setChanged()
-        with self as u:
+        with u:
             u.set_command_name(command_name)
             if u.capture_level > 0:
                 yield u
@@ -2797,35 +2805,39 @@ class Undoer:
 
     # @+node:ekr.20261015041620.2: *7* u.capture_outline
     def capture_outline(self) -> dict:
+        u = self
+        c = u.c
         result = {}
-        pending = [self.c.hiddenRootNode]
+        pending = [c.hiddenRootNode]
         while pending:
             v = pending.pop()
             if v in result:
                 continue
-            result[v] = self.capture_node(v), tuple(v.children), tuple(v.parents)
+            result[v] = u.capture_node(v), tuple(v.children), tuple(v.parents)
             pending.extend(v.children)
         return result
 
     # @+node:ekr.20261015041620.3: *7* u.restore_outline
     def restore_outline(self, delta: dict) -> None:
         # Restore every link before touching content or propagating dirty bits.
+        u = self
         for v in delta:
             v.setAllAncestorAtFileNodesDirty()
         for v, (_, children, parents) in delta.items():
             v.children = list(children)
             v.parents = list(parents)
         for v, (state, _, _) in delta.items():
-            self.restore_node(v, state)
+            u.restore_node(v, state)
 
     # @+node:vivainio.202610110001.4: *6* u.change_recent_files
     @contextmanager
     def change_recent_files(self, command_name: str = 'Clear Recent Files') -> Iterator[Undoer]:
         """
         Handling doing, undoing and redoing for the 'Clear Recent Files' menu item."""
+        u = self
         rf = g.app.recentFilesManager
         old_files = rf.recentFiles[:]
-        with self as u:
+        with u:
             u.set_command_name(command_name)
             try:
                 yield u
@@ -2855,13 +2867,14 @@ class Undoer:
 
         The internal move function does the heavy lifting.
         """
-        if self.undoing or self.redoing:
-            yield self
+        u = self
+        c = u.c
+        if u.undoing or u.redoing:
+            yield u
             return
-        c = self.c
         if not c.changed:
             c.setChanged()
-        with self as u:
+        with u:
             u.set_command_name(command_name)
             if u.capture_level > 0:
                 yield u
@@ -2871,6 +2884,9 @@ class Undoer:
                 yield u
             finally:
                 new_p = p.copy()
+                if old_p.v != c.p.v:
+                    message = f"u.move_node changed p.v: {p.v.h=} {g.callers()=}"
+                    g.es_print_unique_message(message)
                 if old_p != new_p:
                     new_ui = u.capture_ui()
                     u._redraw(new_p)  # PR #5005
@@ -2924,6 +2940,8 @@ class Undoer:
         - v.b
         - v.h
         """
+        u = self
+        c = u.c
         head, body, marked, ua = state
         head_changed = v.h != head
         v.initHeadString(head)
@@ -2941,8 +2959,8 @@ class Undoer:
 
         # Keep the headline editor from restoring stale text at the next redraw.
         if head_changed:
-            for p in self.c.vnode2allPositions(v):
-                self.c.frame.tree.setHeadline(p, head)
+            for p in c.vnode2allPositions(v):
+                c.frame.tree.setHeadline(p, head)
 
     # @+node:ekr.20261015041620.5: *7* u.restore_ui
     def restore_ui(self, state: tuple) -> None:
@@ -2967,12 +2985,15 @@ class Undoer:
         if u.undoBeadLevel > 1:
             return
         p.setDirty()  # Call p.v.setAllAncestorAtFileNodesDirty()
-        sel, ins, scroll = w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
+        preserve_body = p == c.p and p.b == w.getAllText()
+        if preserve_body:
+            sel, ins, scroll = w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
         c.updateSyntaxColorer(p)
         c.recolor()
         c.redraw(p)
-        w.setSelectionRange(*sel, insert=ins)
-        w.setYScrollPosition(scroll)
+        if preserve_body:
+            w.setSelectionRange(*sel, insert=ins)
+            w.setYScrollPosition(scroll)
 
     # @+node:ekr.20261011193020.1: *6* u.redraw_after_head_changed
     def redraw_after_head_changed(self) -> None:
