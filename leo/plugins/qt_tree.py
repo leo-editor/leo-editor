@@ -632,7 +632,8 @@ class LeoQtTree(leoFrame.LeoTree):
     def onContextMenu(self, point: QPoint) -> None:
         """LeoQtTree: Callback for customContextMenuRequested events."""
         # #1286.
-        c, w = self.c, self.treeWidget
+        c = self.c
+        w = self.treeWidget
         g.app.gui.onContextMenu(c, w, point)
 
     # @+node:ekr.20110605121601.17896: *5* LeoQtTree.onItemClicked
@@ -1179,7 +1180,8 @@ class LeoQtTree(leoFrame.LeoTree):
         selection: tuple | None = None,
     ) -> tuple[QLineEdit, QHeadlineWrapper | None]:
         """Helper for qtree.editLabel."""
-        c, vc = self.c, self.c.vimCommands
+        c = self.c
+        vc = c.vimCommands
         w = self.treeWidget
         # Must do this first.
         # This generates a call to onTreeSelect.

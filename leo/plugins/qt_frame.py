@@ -3070,7 +3070,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         except Exception:  # Defensive.
             g.es_exception()
             return
-        c, tree = self.c, self.c.frame.tree
+        c = self.c
+        tree = c.frame.tree
         p = None
         point = ev.position().toPoint()
         if item := self.itemAt(point):
