@@ -416,7 +416,10 @@ class TestFind(LeoUnitTest):
 
     # @+node:ekr.20210110073117.68: *4* TestFind.test_replace-then-find
     def test_replace_then_find(self):
-        settings, w, x = self.settings, self.c.frame.body.wrapper, self.x
+        c = self.c
+        settings = self.settings
+        w = c.frame.body.wrapper
+        x = self.x
         settings.find_text = 'def top1'
         settings.change_text = 'def top'
         # find-next
@@ -433,7 +436,10 @@ class TestFind(LeoUnitTest):
         x.do_change_then_find(settings)
 
     def test_replace_then_find_regex(self):
-        settings, w, x = self.settings, self.c.frame.body.wrapper, self.x
+        c = self.c
+        settings = self.settings
+        w = c.frame.body.wrapper
+        x = self.x
         settings.find_text = r'(def) top1'
         settings.change_text = r'\1\1'
         settings.pattern_match = True
