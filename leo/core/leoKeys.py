@@ -3980,7 +3980,9 @@ class KeyHandlerClass:
     # These may be overridden, but this code is now gui-independent.
     # @+node:ekr.20061031170011.9: *4* k.extendLabel
     def extendLabel(self, s: str, select: bool = False, protect: bool = False) -> None:
-        c, k, w = self.c, self, self.w
+        k = self
+        c = k.c
+        w = k.w
         if not (w and s):
             return
         c.widgetWantsFocusNow(w)
@@ -4057,7 +4059,9 @@ class KeyHandlerClass:
     # @+node:ekr.20061031170011.8: *4* k.setLabel
     def setLabel(self, s: str, protect: bool = False) -> None:
         """Set the label of the minibuffer."""
-        c, k, w = self.c, self, self.w
+        k = self
+        c = k.c
+        w = k.w
         if g.isTextWrapper(w):
             # Support for the curses gui.
             if hasattr(g.app.gui, 'set_minibuffer_label'):
@@ -4117,7 +4121,9 @@ class KeyHandlerClass:
         Mimic what would happen with the keyboard and a Text editor
         instead of plain accumulation.
         """
-        c, k, w = self.c, self, self.w
+        k = self
+        c = k.c
+        w = k.w
         if not event:
             return
         ch, stroke = event.char, event.stroke

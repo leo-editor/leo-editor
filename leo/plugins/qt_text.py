@@ -1032,7 +1032,8 @@ if QtWidgets:
         def onContextMenu(self, point: QPoint) -> None:
             """LeoQTextBrowser: Callback for customContextMenuRequested events."""
             # #1286.
-            c, w = self.leo_c, self
+            w = self
+            c = w.leo_c
             g.app.gui.onContextMenu(c, w, point)
 
         # @+node:ekr.20120925061642.13506: *3* LeoQTextBrowser.onSliderChanged
@@ -1063,8 +1064,9 @@ if QtWidgets:
                             This is as close as possible to vim's look.
             New in Leo 6.6.2: Draw right margin guideline.
             """
-            # pylint: disable = too-many-locals
-            c, vc, w = self.leo_c, self.leo_c.vimCommands, self
+            w = self
+            c = w.leo_c
+            vc = c.vimCommands
             if w == getattr(c.frame.body, 'widget', None) and c.config.getBool(
                 'show-rmargin-guide'
             ):

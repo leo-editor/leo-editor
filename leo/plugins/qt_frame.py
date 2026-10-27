@@ -1776,7 +1776,8 @@ class LeoQtBody(leoFrame.LeoBody):
     # @+node:ekr.20110605121601.18224: *4* LeoQtBody.qtBody.onFocusColorHelper (revised)
     def onFocusColorHelper(self, kind: str, obj: QObject) -> None:
         """Handle changes of style when focus changes."""
-        c, vc = self.c, self.c.vimCommands
+        c = self.c
+        vc = c.vimCommands
         if vc and c.vim_mode:
             try:
                 assert kind in ('focus-in', 'focus-out')
