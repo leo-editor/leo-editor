@@ -716,7 +716,8 @@ class Commands:
 
         Set the cwd before calling the command.
         """
-        c, p = self, self.p
+        c = self
+        p = c.p
         tag = 'execute-general-script'
 
         def get_setting_for_language(setting: str) -> str | None:

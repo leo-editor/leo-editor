@@ -598,7 +598,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         # @+node:ekr.20220105154158.1: *5* ama.add_annotations (entry)
         def add_annotations(self) -> None:  # pragma: no cover
-            c, p = self.c, self.c.p
+            c = self.c
+            p = c.p
             tag = self.tag
             # Checks.
             if not p.isAnyAtFileNode():
