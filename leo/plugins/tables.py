@@ -71,7 +71,8 @@ class TableController:
     def abort(self):
         """undo all monkey-patches."""
         g.es_print('exiting table.py plugin')
-        c, ec = self.c, self.ec
+        c = self.c
+        ec = self.ec
         c.tableController = None
         c.k.handleDefaultChar = self.old_handleDefaultChar
         ec.insertNewlineBase = self.old_insert_newline

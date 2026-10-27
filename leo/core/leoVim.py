@@ -2079,7 +2079,7 @@ class VimCommands:
         def __call__(self, event: QEvent | None = None) -> None:
             """Handle the :s and :%s commands. Neither command affects the dot."""
             vc = self.vc
-            c, w = vc.c, vc.w
+            c = vc.c
             w = vc.w if c.vim_mode else c.frame.body
             if vc.is_text_wrapper(w):
                 fc = vc.c.findCommands
