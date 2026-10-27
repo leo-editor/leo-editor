@@ -2706,7 +2706,8 @@ class KeyHandlerClass:
     # @+node:ekr.20061031131434.120: *5* printBindingsHelper
     def printBindingsHelper(self, result: list[str], data: list[tuple], prefix: str) -> None:
         """Helper for k.showBindings"""
-        c, lm = self.c, g.app.loadManager
+        c = self.c
+        lm = g.app.loadManager
         data.sort(key=lambda x: x[1])
         data2, n = [], 0
         for scope, key, bi in data:

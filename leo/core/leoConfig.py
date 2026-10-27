@@ -1096,7 +1096,8 @@ class ActiveSettingsOutline:
     # @+node:ekr.20190905091614.7: *4* aso.legend
     def legend(self) -> str:
         """Compute legend for self.c"""
-        c, lm = self.c, g.app.loadManager
+        c = self.c
+        lm = g.app.loadManager
         legend = f'''\
             @language rest
 
