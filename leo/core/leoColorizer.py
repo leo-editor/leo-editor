@@ -1208,7 +1208,8 @@ class JEditColorizer(BaseColorizer):
         This method probably only works probably if the body text contains
         a single @language directive, and it may not work properly even then.
         """
-        c, widget = self.c, self.widget
+        c = self.c
+        widget = self.widget
         if isinstance(widget, QtWidgets.QTextEdit):
             # #1919: https://forum.qt.io/topic/99371/how-to-set-tab-stop-width-and-space-width
             fm = QtGui.QFontMetrics(font)

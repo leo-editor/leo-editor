@@ -941,7 +941,8 @@ class AtFile:
 
     # @+node:ekr.20080712080505.1: *6* at.importAtShadowNode
     def importAtShadowNode(self, p: Position) -> bool:  # pragma: no cover
-        c, ic = self.c, self.c.importCommands
+        c = self.c
+        ic = c.importCommands
         fn = c.fullPath(p)
         if not g.os_path_exists(fn):
             g.error(f"not found: {p.h!r}", nodeLink=p.get_UNL())
