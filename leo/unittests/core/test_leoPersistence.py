@@ -36,7 +36,8 @@ class TestPersistence(LeoUnitTest):
 
     # @+node:ekr.20210908172651.44: *3* TestPersistence.test_delete_all_children_of_persistence_node
     def test_delete_all_children_of_persistence_node(self):
-        c, pd = self.c, self.c.persistenceController
+        c = self.c
+        pd = c.persistenceController
         persistence = g.findNodeAnywhere(c, '@persistence')
         assert persistence
         assert pd.has_at_persistence_node()
