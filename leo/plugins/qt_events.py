@@ -438,6 +438,10 @@ class LeoQtEventFilter(QtCore.QObject):
     def traceEvent(self, obj: Any, event: LeoKeyEvent) -> None:
         if g.unitTesting:
             return
+        c = self.c
+        e = QtCore.QEvent
+        eventType = event.type()
+
         # http://qt-project.org/doc/qt-4.8/qevent.html#properties
         exclude_names = ('tree', 'log', 'body', 'minibuffer')
         traceActivate = True
@@ -449,8 +453,7 @@ class LeoQtEventFilter(QtCore.QObject):
         traceMouse = False
         tracePaint = False
         traceUpdate = False
-        c, e = self.c, QtCore.QEvent
-        eventType = event.type()
+
         # http://doc.qt.io/qt-5/qevent.html
         show: list[tuple[QtCore.QEvent.Type, str]] = []
         # @+<< define events >>

@@ -685,7 +685,8 @@ class ParserBaseClass:
         self, p: Position, kind: str, junk_name: str, junk_val: Any, s: str = ''
     ) -> None:
         """Handle an @shortcut or @shortcuts node."""
-        c, d = self.c, self.shortcutsDict
+        c = self.c
+        d = self.shortcutsDict
         if not s:
             s = p.b
         fn = d.name()

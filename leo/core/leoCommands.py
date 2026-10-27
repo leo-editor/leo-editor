@@ -2750,7 +2750,8 @@ class Commands:
         Check for errors in the outline.
         Return the number of errors.
         """
-        c, errors = self, 0
+        c = self
+        errors = 0
         for f in (c.checkVnodeLinks, c.checkGnxs):
             errors += f()
         return errors
@@ -2879,7 +2880,8 @@ class Commands:
 
     # @+node:ekr.20040723094220.5: *4* c.checkPythonNode
     def checkPythonNode(self, p: Position) -> None:
-        c, h = self, p.h
+        c = self
+        h = p.h
         # Call getScript to ignore directives and section references.
         body = g.getScript(c, p.copy())
         if not body:
@@ -4167,7 +4169,8 @@ class Commands:
     # @+node:ekr.20140717074441.17770: *4* c.recreateGnxDict
     def recreateGnxDict(self) -> None:
         """Recreate the gnx dict prior to refreshing nodes from disk."""
-        c, d = self, {}
+        c = self
+        d = {}
         # Start with the hidden-root-vnode
         vHiddenRoot = c.hiddenRootNode
         d[vHiddenRoot.gnx] = vHiddenRoot
