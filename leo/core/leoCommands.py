@@ -5015,7 +5015,8 @@ class Commands:
 
     # @+node:ekr.20031218072017.2973: *6* c.canMoveOutlineUp Bug!
     def canMoveOutlineUp(self) -> bool:
-        c, current = self, self.p
+        c = self
+        current = c.p
         visBack = current and current.visBack(c)
         if not visBack:
             return False
@@ -5109,7 +5110,8 @@ class Commands:
     # @+node:ekr.20040323172420: *6* Slow routines: no longer used
     # @+node:ekr.20031218072017.2966: *7* c.canGoToNextDirtyHeadline (slow)
     def canGoToNextDirtyHeadline(self) -> bool:
-        c, current = self, self.p
+        c = self
+        current = c.p
         for p in c.all_unique_positions():
             if p != current and p.isDirty():
                 return True
@@ -5117,7 +5119,8 @@ class Commands:
 
     # @+node:ekr.20031218072017.2967: *7* c.canGoToNextMarkedHeadline (slow)
     def canGoToNextMarkedHeadline(self) -> bool:
-        c, current = self, self.p
+        c = self
+        current = c.p
         for p in c.all_unique_positions():
             if p != current and p.isMarked():
                 return True
