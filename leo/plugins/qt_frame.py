@@ -306,7 +306,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
     # @+node:ekr.20110605121601.18166: *4* dw.createFindTab & helpers
     def createFindTab(self, parent: QWidget, tab_widget: QWidget) -> None:
         """Create a Find Tab in the given parent."""
-        c, dw = self.leo_c, self
+        dw = self
+        c = dw.leo_c
         fc = c.findCommands
         assert not fc.ftm
         fc.ftm = ftm = FindTabManager(c)
@@ -352,7 +353,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
     # @+node:ekr.20131118152731.16848: *5* dw.create_find_findbox
     def create_find_findbox(self, grid: QGridLayout, parent: QWidget, row: int) -> int:
         """Create the Find: label and text area."""
-        c, dw = self.leo_c, self
+        dw = self
+        c = dw.leo_c
         fc = c.findCommands
         ftm = fc.ftm
         assert ftm.find_findbox is None
@@ -367,7 +369,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
     # @+node:ekr.20131118152731.16850: *5* dw.create_find_replacebox
     def create_find_replacebox(self, grid: QGridLayout, parent: QWidget, row: int) -> int:
         """Create the Replace: label and text area."""
-        c, dw = self.leo_c, self
+        dw = self
+        c = dw.leo_c
         fc = c.findCommands
         ftm = fc.ftm
         assert ftm.find_replacebox is None
@@ -384,7 +387,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self, grid: QGridLayout, parent: QWidget, max_row2: int, row: int
     ) -> int:
         """Create check boxes and radio buttons."""
-        c, dw = self.leo_c, self
+        dw = self
+        c = dw.leo_c
         fc = c.findCommands
         ftm = fc.ftm
 
