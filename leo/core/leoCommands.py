@@ -2113,7 +2113,8 @@ class Commands:
     # @+node:ekr.20131017174814.17480: *5* c.shouldBeExpanded
     def shouldBeExpanded(self, p: Position) -> bool:
         """Return True if the node at position p should be expanded."""
-        c, v = self, p.v
+        c = self
+        v = p.v
         if not p.hasChildren():
             return False
         # Always clear non-existent positions.
@@ -2273,7 +2274,8 @@ class Commands:
         """
         This is equivalent to p.b = s.
         """
-        c, v = self, p.v
+        c = self
+        v = p.v
         if not c or not v:
             return
         s = g.toUnicode(s)
@@ -3518,7 +3520,9 @@ class Commands:
         Handle the character given by event.stroke, ignoring various special keys.
         """
         trace = all(z in g.app.debug for z in ('keys', 'verbose'))
-        c, k, w = self, self.k, event.w
+        c = self
+        k = c.k
+        w = event.w
         name = c.widget_name(w)
         stroke = event.stroke
         if trace:
