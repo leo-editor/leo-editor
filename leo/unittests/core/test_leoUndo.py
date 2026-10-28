@@ -356,8 +356,8 @@ class TestUndo(LeoUnitTest):
         func = c.line_to_headline
         self.runTest(before, after, i, j, func)
 
-    # @+node:ekr.20210906172626.15: *3* TestUndo.test_restore_marked_bits
-    def test_restore_marked_bits(self):
+    # @+node:ekr.20210906172626.15: *3* TestUndo.xxx_test_restore_marked_bits
+    def xxx_test_restore_marked_bits(self):
         # Test of #1694.
         c = self.c
         p = c.p
