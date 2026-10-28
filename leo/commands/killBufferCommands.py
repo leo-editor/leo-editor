@@ -83,9 +83,11 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         if i == -1:
             return
         with u.change_node(p, 'backward-kill-sentence'):
+            self.beginCommand(w, undoType='backward-kill-sentence')
             i2 = s.rfind('.', 0, i) + 1
             self.killHelper(None, i2, i + 1, w, undoType='backward-kill-sentence')
             w.setInsertPoint(i2)
+            self.endCommand(changed=True, setLabel=True)
 
     # @+node:ekr.20150514063305.413: *3* backwardKillWord & killWord
     @cmd('backward-kill-word')

@@ -5141,14 +5141,12 @@ class LeoServer:
         # Otherwise, search all subcommanders for the method.
         table = (  # This table comes from c.initObjects.
             'abbrevCommands',
-            'bufferCommands',
             'chapterCommands',
             'controlCommands',
             'convertCommands',
             'debugCommands',
             'editCommands',
             'editFileCommands',
-            # 'evalController',  # Previously, set in mod_scripting.py.
             'gotoCommands',
             'helpCommands',
             'keyHandler',

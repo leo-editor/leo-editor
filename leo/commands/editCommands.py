@@ -847,6 +847,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     def centerLine(self, event: LeoKeyEvent | None = None) -> None:
         """Centers line within current fill column"""
         c = self.c
+        p = c.p
+        u = c.undoer
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
@@ -859,14 +861,15 @@ class EditCommandsClass(BaseEditCommandsClass):
         line = s[i:j].strip()
         if not line or len(line) >= fillColumn:
             return
-        self.beginCommand(w, 'center-line')
-        n = (fillColumn - len(line)) / 2
-        ws = ' ' * int(n)  # mypy.
-        k = g.skip_ws(s, i)
-        if k > i:
-            w.delete(i, k - i)
-        w.insert(i, ws)
-        self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, 'center-line'):
+            self.beginCommand(w, 'center-line')
+            n = (fillColumn - len(line)) / 2
+            ws = ' ' * int(n)  # mypy.
+            k = g.skip_ws(s, i)
+            if k > i:
+                w.delete(i, k - i)
+            w.insert(i, ws)
+            self.endCommand(changed=True, setLabel=True)
 
     # @+node:ekr.20150514063305.216: *4* ec.setFillColumn
     @cmd('set-fill-column')
@@ -3487,7 +3490,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not g.isTextWrapper(w):
             return
         with u.change_node(p, 'backward-kill-paragraph'):
-            ### self.beginCommand(w, 'backward-kill-paragraph')
+            self.beginCommand(w, 'backward-kill-paragraph')
             try:
                 self.backwardParagraphHelper(event, extend=True)
                 i, j = w.getSelectionRange()
@@ -3496,7 +3499,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 c.killBufferCommands.killParagraphHelper(event, i, j)
                 w.setSelectionRange(i, i, insert=i)
             finally:
-                pass  ### self.endCommand(changed=True, setLabel=True)
+                self.endCommand(changed=True, setLabel=True)
 
     # @+node:ekr.20150514063305.321: *4* ec.fillRegion
     @cmd('fill-region')
