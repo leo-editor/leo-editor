@@ -74,7 +74,6 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
-        ### w = event.w if event else c.frame.body.wrapper
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
@@ -87,8 +86,8 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             i2 = s.rfind('.', 0, i) + 1
             self._kill_helper(i2, i + 1, w)
             w.setInsertPoint(i2)
-            c.k.resetLabel()
             u.set_body(p, new_body=w.getAllText(), old_body=p.b)
+            c.k.resetLabel()
             c.p = p
 
     # @+node:ekr.20150514063305.413: *3* backwardKillWord & killWord

@@ -2507,13 +2507,15 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.288: *5* ec.moveToHelper
     def moveToHelper(self, event: LeoKeyEvent | None, spot: int, extend: bool) -> None:
+        ### To do: remove the event arg.
         """
         Common helper method for commands the move the cursor
         in a way that can be described by a Tk Text expression.
         """
         c = self.c
         k = c.k
-        w = event.w if event else c.frame.body.wrapper
+        ### w = event.w if event else c.frame.body.wrapper
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         c.widgetWantsFocusNow(w)
@@ -3210,10 +3212,9 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.309: *5* ec.backwardParagraphHelper
     def backwardParagraphHelper(self, event: LeoKeyEvent | None, extend: bool) -> None:
+        ### To do: remove event arg.
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -3486,20 +3487,19 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
-        w = event.w if event else c.frame.body.wrapper
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         with u.change_node(p, 'backward-kill-paragraph'):
-            self.beginCommand(w, 'backward-kill-paragraph')
-            try:
-                self.backwardParagraphHelper(event, extend=True)
-                i, j = w.getSelectionRange()
-                if i > 0:
-                    i = min(i + 1, j)
-                c.killBufferCommands.killParagraphHelper(event, i, j)
-                w.setSelectionRange(i, i, insert=i)
-            finally:
-                self.endCommand(changed=True, setLabel=True)
+            self.backwardParagraphHelper(None, extend=True)
+            i, j = w.getSelectionRange()
+            if i > 0:
+                i = min(i + 1, j)
+            c.killBufferCommands.killParagraphHelper(event, i, j)
+            w.setSelectionRange(i, i, insert=i)
+            u.set_body(p, new_body=w.getAllText(), old_body=p.b)
+            c.k.resetLabel()
+            c.p = p
 
     # @+node:ekr.20150514063305.321: *4* ec.fillRegion
     @cmd('fill-region')
