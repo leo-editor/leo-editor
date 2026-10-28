@@ -92,11 +92,13 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     def backwardKillWord(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the previous word."""
         c = self.c
+        p = c.p
+        u = c.undoer
         w = event.w if event else c.frame.body.wrapper
-        if not w:
+        if not g.isTextWrapper(w):
             return
-        if g.isTextWrapper(w):
-            self.beginCommand(w, undoType='backward-kill-word')
+        with u.change_node(p, 'backward-kill-word'):
+            self.beginCommand(w, undoType='backward-kill-word')  # Required, for now.
             c.editCommands.backwardWord(event)
             self.killWordHelper(event)
 
@@ -104,24 +106,24 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     def killWord(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the word containing the cursor."""
         c = self.c
+        p = c.p
+        u = c.undoer
         w = event.w if event else c.frame.body.wrapper
-        if not w:
+        if not g.isTextWrapper(w):
             return
-        if g.isTextWrapper(w):
-            self.beginCommand(w, undoType='kill-word')
+        with u.change_node(p, 'kill-word'):
+            self.beginCommand(w, undoType='kill-word')  # Required, for now.
             self.killWordHelper(event)
 
     def killWordHelper(self, event: LeoKeyEvent | None = None) -> None:
         c = self.c
         w = event.w if event else c.frame.body.wrapper
-        if not w:
+        if not g.isTextWrapper(w):
             return
-        if g.isTextWrapper(w):
-            # self.killWs(event)
-            c.editCommands.extendToWord(event)
-            i, j = w.getSelectionRange()
-            self.killHelper(event, i, j, w)
-            self.endCommand(changed=True, setLabel=True)
+        c.editCommands.extendToWord(event)
+        i, j = w.getSelectionRange()
+        self.killHelper(event, i, j, w)
+        self.endCommand(changed=True, setLabel=True)  # Required, for now.
 
     # @+node:ekr.20150514063305.414: *3* clearKillRing
     @cmd('clear-kill-ring')
