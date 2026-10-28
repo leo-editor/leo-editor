@@ -868,8 +868,8 @@ class EditCommandsClass(BaseEditCommandsClass):
             if k > i:
                 w.delete(i, k - i)
             w.insert(i, ws)
-            u.set_body(p, new_body=w.getAllText(), old_body=p.b)
             c.k.resetLabel()
+            p.b = w.getAllText()
             c.p = p
 
     # @+node:ekr.20150514063305.216: *4* ec.setFillColumn
@@ -1604,35 +1604,35 @@ class EditCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514063305.252: *5* ec.addRemoveHelper
     def addRemoveHelper(self, event: LeoKeyEvent | None, ch: str, add: bool, undoType: str) -> None:
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        if w.hasSelection():
-            s = w.getSelectedText()
-        else:
-            s = w.getAllText()
+        s = w.getSelectedText() if w.hasSelection() else w.getAllText()
         if not s:
             return
         # Insert or delete spaces instead of tabs when negative tab width is in effect.
         width = c.getTabWidth(c.p)
         if ch == '\t' and width < 0:
             ch = ' ' * abs(width)
-        self.beginCommand(w, undoType=undoType)
         lines = g.splitLines(s)
         if add:
             result_list = [ch + line for line in lines]
         else:
             result_list = [line[len(ch) :] if line.startswith(ch) else line for line in lines]
         result = ''.join(result_list)
-        if w.hasSelection():
-            i, j = w.getSelectionRange()
-            w.delete(i, j)
-            w.insert(i, result)
-            w.setSelectionRange(i, i + len(result))
-        else:
-            w.setAllText(result)
-            w.setSelectionRange(0, len(s))
-        self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, undoType):
+            if w.hasSelection():
+                i, j = w.getSelectionRange()
+                w.delete(i, j)
+                w.insert(i, result)
+                w.setSelectionRange(i, i + len(result))
+            else:
+                w.setAllText(result)
+                w.setSelectionRange(0, len(s))
+            p.b = w.getAllText()
+            c.p = p
 
     # @+node:ekr.20150514063305.253: *4* ec.backwardDeleteCharacter
     @cmd('backward-delete-char')
@@ -3498,8 +3498,8 @@ class EditCommandsClass(BaseEditCommandsClass):
                 i = min(i + 1, j)
             c.killBufferCommands.killParagraphHelper(event, i, j)
             w.setSelectionRange(i, i, insert=i)
-            u.set_body(p, new_body=w.getAllText(), old_body=p.b)
             c.k.resetLabel()
+            p.b = w.getAllText()
             c.p = p
 
     # @+node:ekr.20150514063305.321: *4* ec.fillRegion

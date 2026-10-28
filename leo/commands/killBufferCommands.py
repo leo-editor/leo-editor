@@ -86,11 +86,11 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             i2 = s.rfind('.', 0, i) + 1
             self._kill_helper(i2, i + 1, w)
             w.setInsertPoint(i2)
-            u.set_body(p, new_body=w.getAllText(), old_body=p.b)
             c.k.resetLabel()
+            p.b = w.getAllText()
             c.p = p
 
-    # @+node:ekr.20150514063305.413: *3* backwardKillWord & killWord
+    # @+node:ekr.20150514063305.413: *3* backwardKillWord & killWord (converted)
     @cmd('backward-kill-word')
     def backwardKillWord(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the previous word."""
@@ -452,34 +452,38 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         finally:
             self.endCommand(changed=True, setLabel=True)
 
-    # @+node:ekr.20150514063305.427: *3* zapToCharacter
+    # @+node:ekr.20150514063305.427: *3* zapToCharacter (converted)
     @cmd('zap-to-character')
     def zapToCharacter(self, event: LeoKeyEvent | None = None) -> None:
         """Kill characters from the insertion point to a given character."""
         c = self.c
         k = c.k
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):  # #4998.
             return
         state = k.getState('zap-to-char')
         if state == 0:
             k.setLabelBlue('Zap To Character: ')
             k.setState('zap-to-char', 1, handler=self.zapToCharacter)
-        else:
-            ch = event.char if event else ' '
-            k.resetLabel()
-            k.clearState()
-            s = w.getAllText()
-            ins = w.getInsertPoint()
-            i = s.find(ch, ins)
-            if i == -1:
-                return
-            self.beginCommand(w, 'zap-to-char')
+            return
+        ch = event.char if event else ' '
+        k.resetLabel()
+        k.clearState()
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        i = s.find(ch, ins)
+        if i == -1:
+            return
+        with u.change_node(p, 'zap-to-char'):
             self.addToKillBuffer(s[ins:i])
             g.app.gui.replaceClipboardWith(s[ins:i])  # Support for proper yank.
             w.setAllText(s[:ins] + s[i:])
             w.setInsertPoint(ins)
-            self.endCommand(changed=True, setLabel=True)
+            c.k.resetLabel()
+            p.b = w.getAllText()
+            c.p = p
 
     # @-others
 
