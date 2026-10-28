@@ -3481,21 +3481,22 @@ class EditCommandsClass(BaseEditCommandsClass):
     def backwardKillParagraph(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the previous paragraph."""
         c = self.c
+        p = c.p
+        u = c.undoer
         w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, 'backward-kill-paragraph')
-        try:
-            self.backwardParagraphHelper(event, extend=True)
-            i, j = w.getSelectionRange()
-            if i > 0:
-                i = min(i + 1, j)
-            c.killBufferCommands.killParagraphHelper(event, i, j)
-            w.setSelectionRange(i, i, insert=i)
-        finally:
-            self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, 'backward-kill-paragraph'):
+            ### self.beginCommand(w, 'backward-kill-paragraph')
+            try:
+                self.backwardParagraphHelper(event, extend=True)
+                i, j = w.getSelectionRange()
+                if i > 0:
+                    i = min(i + 1, j)
+                c.killBufferCommands.killParagraphHelper(event, i, j)
+                w.setSelectionRange(i, i, insert=i)
+            finally:
+                pass  ### self.endCommand(changed=True, setLabel=True)
 
     # @+node:ekr.20150514063305.321: *4* ec.fillRegion
     @cmd('fill-region')
