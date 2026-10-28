@@ -97,13 +97,12 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
-        w = event.w if event else c.frame.body.wrapper
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         with u.change_node(p, 'backward-kill-word'):
-            self.beginCommand(w, undoType='backward-kill-word')  # Required, for now.
             c.editCommands.backwardWord(event)
-            self.killWordHelper(event)
+            self.killWordHelper(w)
 
     @cmd('kill-word')
     def killWord(self, event: LeoKeyEvent | None = None) -> None:
@@ -111,22 +110,23 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
-        w = event.w if event else c.frame.body.wrapper
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         with u.change_node(p, 'kill-word'):
-            self.beginCommand(w, undoType='kill-word')  # Required, for now.
-            self.killWordHelper(event)
+            self.killWordHelper(None)
 
     def killWordHelper(self, event: LeoKeyEvent | None = None) -> None:
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not g.isTextWrapper(w):
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         c.editCommands.extendToWord(event)
         i, j = w.getSelectionRange()
         self.killHelper(event, i, j, w)
-        self.endCommand(changed=True, setLabel=True)  # Required, for now.
+        u.set_body(p, new_body=w.getAllText(), old_body=p.b)
+        c.k.resetLabel()
+        c.p = p
 
     # @+node:ekr.20150514063305.414: *3* clearKillRing
     @cmd('clear-kill-ring')
@@ -187,7 +187,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514063305.419: *3* ec.killHelper
     def killHelper(
         self,
-        event: LeoKeyEvent | None,
+        event: LeoKeyEvent | None,  ### To do: remove event arg.
         frm: int,
         to: int,
         w: QTextMixin,
@@ -197,7 +197,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         A helper method for all kill commands except kill-paragraph commands.
         """
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        w = c.frame.body.wrapper
         if not w:
             return
         if not g.isTextWrapper(w):

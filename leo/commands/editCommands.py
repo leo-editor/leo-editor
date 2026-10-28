@@ -842,7 +842,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     #
     # after an center-region command via Alt-x.
     # @@language python
-    # @+node:ekr.20150514063305.215: *4* ec.centerLine
+    # @+node:ekr.20150514063305.215: *4* ec.centerLine (converted)
     @cmd('center-line')
     def centerLine(self, event: LeoKeyEvent | None = None) -> None:
         """Centers line within current fill column"""
@@ -3004,7 +3004,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     ) -> tuple[int, int]:
         """Compute the word at the cursor. Select it if select arg is True."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return 0, 0
         assert isinstance(w, QTextMixin)
