@@ -64,16 +64,12 @@ class BufferCommandsClass(BaseEditCommandsClass):
         s = w.getSelectedText()
         if s and p:
             with u.change_node(f"append-to-buffer: {p.h}"):
-                ### w = self.w
-                ### c.selectPosition(p)
                 c.p = p
                 self.beginCommand(w, f"append-to-buffer: {p.h}")
                 end = w.getLastIndex()
                 w.insert(end, s)
                 w.setInsertPoint(end + len(s))
                 w.seeInsertPoint()
-                ### self.endCommand()
-                ### c.recolor()
 
     # @+node:ekr.20150514045829.7: *4* copyToBuffer
     @cmd('buffer-copy')

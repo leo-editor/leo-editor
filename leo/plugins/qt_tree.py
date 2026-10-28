@@ -920,7 +920,6 @@ class LeoQtTree(leoFrame.LeoTree):
         # @+node:ekr.20201109043641.1: *5* function: editingFinished_callback
         def editingFinished_callback() -> None:
             """Called when Qt emits the editingFinished signal."""
-            g.trace(g.callers())  ###
             s = w.text()
             # #3633: Replace newlines with a blank.
             if '\n' in s:
