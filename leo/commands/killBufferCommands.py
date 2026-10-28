@@ -72,9 +72,9 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     def backwardKillSentence(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the previous sentence."""
         c = self.c
+        p = c.p
+        u = c.undoer
         w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -82,12 +82,10 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         i = s.rfind('.', ins)
         if i == -1:
             return
-        undoType = 'backward-kill-sentence'
-        self.beginCommand(w, undoType=undoType)
-        i2 = s.rfind('.', 0, i) + 1
-        self.killHelper(event, i2, i + 1, w, undoType=undoType)
-        w.setInsertPoint(i2)
-        self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, 'backward-kill-sentence'):
+            i2 = s.rfind('.', 0, i) + 1
+            self.killHelper(None, i2, i + 1, w, undoType='backward-kill-sentence')
+            w.setInsertPoint(i2)
 
     # @+node:ekr.20150514063305.413: *3* backwardKillWord & killWord
     @cmd('backward-kill-word')
