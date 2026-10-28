@@ -74,7 +74,8 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
-        w = event.w if event else c.frame.body.wrapper
+        ### w = event.w if event else c.frame.body.wrapper
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -83,11 +84,12 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         if i == -1:
             return
         with u.change_node(p, 'backward-kill-sentence'):
-            self.beginCommand(w, undoType='backward-kill-sentence')
             i2 = s.rfind('.', 0, i) + 1
-            self.killHelper(None, i2, i + 1, w, undoType='backward-kill-sentence')
+            self._kill_helper(i2, i + 1, w)
             w.setInsertPoint(i2)
-            self.endCommand(changed=True, setLabel=True)
+            c.k.resetLabel()
+            u.set_body(p, new_body=w.getAllText(), old_body=p.b)
+            c.p = p
 
     # @+node:ekr.20150514063305.413: *3* backwardKillWord & killWord
     @cmd('backward-kill-word')
@@ -215,6 +217,26 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         w.setInsertPoint(frm)
         if undoType:
             self.endCommand(changed=True, setLabel=True)
+        g.app.gui.set_focus(c, w)  # 2607
+
+    # @+node:ekr.20261028165709.1: *3* ec._kill_helper (new)
+    def _kill_helper(self, frm: int, to: int, w: QTextMixin) -> None:
+        """
+        A helper method for all kill commands except kill-paragraph commands.
+
+        This method does not change c.p.b.
+        """
+        c = self.c
+        # Extend (frm, to) if it spans a line.
+        i, j = w.getSelectionRange()
+        s = w.get(i, j)
+        if s.find('\n') > -1:
+            frm, to = i, j
+        s = w.get(frm, to)
+        self.addToKillBuffer(s)
+        g.app.gui.replaceClipboardWith(s)
+        w.delete(frm, to)
+        w.setInsertPoint(frm)
         g.app.gui.set_focus(c, w)  # 2607
 
     # @+node:ekr.20220121073752.1: *3* ec.killParagraphHelper

@@ -1268,7 +1268,7 @@ class Undoer:
         u = self
         b = u._require_bead()
         c = u.c
-        w = u.c.frame.body.wrapper
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             g.error(f"Not a text wrapper: {w=} {g.callers()}")
             return
