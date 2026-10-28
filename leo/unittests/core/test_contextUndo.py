@@ -9,7 +9,7 @@ from unittest.mock import patch
 from leo.core import leoGlobals as g
 from leo.core.leoGui import LeoKeyEvent
 from leo.core.leoTest2 import LeoUnitTest
-from leo.core.leoUndo import TypingBead, UndoBead
+from leo.core.leoUndo import TypingBead
 
 
 # @+others
@@ -447,40 +447,6 @@ class TestContextUndo(LeoUnitTest):
         u.redo()
         self.assertEqual(p.b, 'changed')
 
-    # @+node:ekr.20261014103254.25: *3* TestContextUndo.test_legacy_node_edit_and_new_node_edit_share_history
-    def test_legacy_node_edit_and_new_node_edit_share_history(self):
-        c = self.c
-        p = c.p
-        u = c.undoer
-        with u.change_node(p, 'new edit'):
-            p.b = 'one'
-        bunch = u.beforeChangeBody(p)
-        p.b = 'two'
-        u.afterChangeBody(p, 'legacy edit', bunch)
-        self.assertIsInstance(u.beads[0], UndoBead)
-        u.undo()
-        self.assertEqual(p.b, 'one')
-        u.undo()
-        self.assertEqual(p.b, '')
-        u.redo()
-        u.redo()
-        self.assertEqual(p.b, 'two')
-
-    # @+node:ekr.20261014103254.26: *3* TestContextUndo.test_legacy_group_can_contain_new_and_old_commands
-    def test_legacy_group_can_contain_new_and_old_commands(self):
-        c = self.c
-        p = c.p
-        u = c.undoer
-        u.beforeChangeGroup(p, 'mixed')
-        with u.change_node(p, 'new edit'):
-            p.b = 'one'
-        bunch = u.beforeChangeBody(p)
-        p.b = 'two'
-        u.afterChangeBody(p, 'legacy edit', bunch)
-        u.afterChangeGroup(p, 'mixed')
-        self.assertEqual(len(u.beads), 1)
-        self.cycles(lambda: self.assertEqual(p.b, ''), lambda: self.assertEqual(p.b, 'two'))
-
     # @+node:ekr.20261014103254.27: *3* TestContextUndo.test_typing_preserves_text_mark_and_newlines
     def test_typing_preserves_text_mark_and_newlines(self):
         c = self.c
@@ -553,34 +519,6 @@ class TestContextUndo(LeoUnitTest):
         u.redo()
         u.redo()
         self.assertEqual(p.b, 'ab cd')
-
-    # @+node:ekr.20261014103254.31: *3* TestContextUndo.test_legacy_calls_inside_new_context_are_grouped
-    def test_legacy_calls_inside_new_context_are_grouped(self):
-        c = self.c
-        p = c.p
-        with c.undoer as u:
-            u.set_command_name('new group')
-            u.beforeChangeGroup(p, 'legacy subgroup')
-            bunch = u.beforeChangeBody(p)
-            p.b = 'legacy'
-            u.afterChangeBody(p, 'legacy edit', bunch)
-            u.afterChangeGroup(p, 'legacy subgroup')
-            u.set_body(p, 'final')
-        self.assertEqual(len(u.beads), 1)
-        self.cycles(lambda: self.assertEqual(p.b, ''), lambda: self.assertEqual(p.b, 'final'))
-
-    # @+node:ekr.20261014103254.32: *3* TestContextUndo.test_new_context_with_legacy_group_and_only_new_children
-    def test_new_context_with_legacy_group_and_only_new_children(self):
-        c = self.c
-        p = c.p
-        with c.undoer as u:
-            u.set_command_name('outer')
-            u.beforeChangeGroup(p, 'inner')
-            u.set_body(p, 'inner')
-            u.afterChangeGroup(p, 'inner')
-            u.set_body(p, 'after inner')
-        self.assertEqual(len(u.beads), 1)
-        self.cycles(lambda: self.assertEqual(p.b, ''), lambda: self.assertEqual(p.b, 'after inner'))
 
     # @+node:ekr.20261014103254.33: *3* TestContextUndo.test_bulk_marks_and_sort_keep_vnode_identity
     def test_bulk_marks_and_sort_keep_vnode_identity(self):

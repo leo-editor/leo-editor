@@ -886,7 +886,7 @@ class quickMoveButton:
         self.type_ = type_
         self.has_parent = False
 
-    # @+node:ekr.20070117121326.1: *3* moveCurrentNodeToTarget
+    # @+node:ekr.20070117121326.1: *3* moveCurrentNodeToTarget (quickMove.py)
     def moveCurrentNodeToTarget(self, checked=False):
         """Move the current position to the last child of self.target."""
 
