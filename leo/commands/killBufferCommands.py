@@ -67,7 +67,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             g.app.globalKillBuffer = [z for z in g.app.globalKillBuffer if z != text]
             g.app.globalKillBuffer.insert(0, text)
 
-    # @+node:ekr.20150514063305.412: *3* backwardKillSentence
+    # @+node:ekr.20150514063305.412: *3* backwardKillSentence (converted)
     @cmd('backward-kill-sentence')
     def backwardKillSentence(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the previous sentence."""

@@ -849,7 +849,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
-        w = event.w if event else c.frame.body.wrapper
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         if self.fillColumn > 0:
@@ -862,14 +862,15 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not line or len(line) >= fillColumn:
             return
         with u.change_node(p, 'center-line'):
-            self.beginCommand(w, 'center-line')
             n = (fillColumn - len(line)) / 2
-            ws = ' ' * int(n)  # mypy.
+            ws = ' ' * int(n)
             k = g.skip_ws(s, i)
             if k > i:
                 w.delete(i, k - i)
             w.insert(i, ws)
-            self.endCommand(changed=True, setLabel=True)
+            u.set_body(p, new_body=w.getAllText(), old_body=p.b)
+            c.k.resetLabel()
+            c.p = p
 
     # @+node:ekr.20150514063305.216: *4* ec.setFillColumn
     @cmd('set-fill-column')
@@ -3480,7 +3481,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.moveWithinLineHelper(event, 'start-line', extend=True)
 
     # @+node:ekr.20150514063305.319: *3* ec: paragraph
-    # @+node:ekr.20150514063305.320: *4* ec.backwardKillParagraph
+    # @+node:ekr.20150514063305.320: *4* ec.backwardKillParagraph (converted)
     @cmd('backward-kill-paragraph')
     def backwardKillParagraph(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the previous paragraph."""
