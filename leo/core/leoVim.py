@@ -2042,7 +2042,8 @@ class VimCommands:
         # @+node:ekr.20140820034724.18317: *5* :r.load_file_at_cursor
         def load_file_at_cursor(self, fn: str) -> None:
             vc = self.vc
-            c, w = vc.c, vc.colon_w
+            c = vc.c
+            w = vc.colon_w
             if not w:
                 w = vc.w = c.frame.body.wrapper
             if g.os_path_exists(fn):
@@ -2078,7 +2079,7 @@ class VimCommands:
         def __call__(self, event: QEvent | None = None) -> None:
             """Handle the :s and :%s commands. Neither command affects the dot."""
             vc = self.vc
-            c, w = vc.c, vc.w
+            c = vc.c
             w = vc.w if c.vim_mode else c.frame.body
             if vc.is_text_wrapper(w):
                 fc = vc.c.findCommands
@@ -2215,7 +2216,8 @@ class VimCommands:
     @cmd(':!')
     def shell_command(self, event: LeoKeyEvent | None = None) -> None:
         """Execute a shell command."""
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
         if k.functionTail:
             command = k.functionTail
             c.controlCommands.executeSubprocess(event, command)
@@ -2496,7 +2498,9 @@ class VimCommands:
     # @+node:ekr.20140802120757.18001: *4* vc.save_body (handles undo)
     def save_body(self) -> None:
         """Undoably preserve any changes to body text."""
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         w = self.command_w or self.w
         name = c.widget_name(w)
         with u.change_outline('vc-save-body'):
@@ -2537,7 +2541,8 @@ class VimCommands:
     # @+node:ekr.20140807070500.18161: *5* vc.set_property
     def set_property(self, w: QTextMixin, focus_flag: bool) -> None:
         """Set the property of w, depending on focus and state."""
-        c, state = self.c, self.state
+        c = self.c
+        state = self.state
 
         # #1221: Use a style sheet based on new settings.
         if focus_flag:

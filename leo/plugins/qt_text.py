@@ -239,7 +239,8 @@ class QTextMixin:
         """
         # #4785: Do not delete this method. It is essential!
         w = self
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         tree = c.frame.tree
         if w.changingText:
             return
@@ -1031,7 +1032,8 @@ if QtWidgets:
         def onContextMenu(self, point: QPoint) -> None:
             """LeoQTextBrowser: Callback for customContextMenuRequested events."""
             # #1286.
-            c, w = self.leo_c, self
+            w = self
+            c = w.leo_c
             g.app.gui.onContextMenu(c, w, point)
 
         # @+node:ekr.20120925061642.13506: *3* LeoQTextBrowser.onSliderChanged
@@ -1062,8 +1064,9 @@ if QtWidgets:
                             This is as close as possible to vim's look.
             New in Leo 6.6.2: Draw right margin guideline.
             """
-            # pylint: disable = too-many-locals
-            c, vc, w = self.leo_c, self.leo_c.vimCommands, self
+            w = self
+            c = w.leo_c
+            vc = c.vimCommands
             if w == getattr(c.frame.body, 'widget', None) and c.config.getBool(
                 'show-rmargin-guide'
             ):
@@ -1369,7 +1372,8 @@ class QMinibufferWrapper(QLineEditWrapper):
             """
             assert isinstance(self, QMinibufferWrapper), self
             assert isinstance(self.widget, QtWidgets.QLineEdit), self.widget
-            c, k = self.c, self.c.k
+            c = self.c
+            k = c.k
             if not k.state.kind:
                 # c.widgetWantsFocusNow(w) # Doesn't work.
                 event2 = g.app.gui.create_key_event(c, w=c.frame.body.wrapper)
@@ -1429,7 +1433,8 @@ class QScintillaWrapper(QTextMixin):
     # @+node:ekr.20110605121601.18106: *3* QScintillaWrapper.set_config
     def set_config(self) -> None:
         """Set QScintillaWrapper configuration options."""
-        c, w = self.c, self.widget
+        c = self.c
+        w = self.widget
         n = c.config.getInt('qt-scintilla-zoom-in')
         if n not in (None, 1, 0):
             w.zoomIn(n)
@@ -1692,7 +1697,8 @@ class QTextEditWrapper(QTextMixin):
     # @+node:ekr.20140901062324.18566: *4* QTextEditWrapper.set_signals
     def set_signals(self) -> None:
         """Set up signals."""
-        c, name = self.c, self.name
+        c = self.c
+        name = self.name
         if name in ('body', 'rendering-pane-wrapper') or name.startswith('head'):
             # Hook up qt events.
             g.app.gui.setFilter(c, self.widget, self, tag=name)

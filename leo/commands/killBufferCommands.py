@@ -433,7 +433,8 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     @cmd('zap-to-character')
     def zapToCharacter(self, event: LeoKeyEvent | None = None) -> None:
         """Kill characters from the insertion point to a given character."""
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):  # #4998.
             return

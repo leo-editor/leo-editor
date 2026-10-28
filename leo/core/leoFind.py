@@ -278,7 +278,9 @@ class LeoFind:
 
     # @+node:ekr.20210108070948.1: *4* find._batch_change_helper
     def _batch_change_helper(self, p: Position, find_text: str, change_text: str) -> int:
-        c, p1, u = self.c, p.copy(), self.c.undoer
+        c = self.c
+        p1 = p.copy()
+        u = c.undoer
         # Check...
         if not find_text:  # pragma: no cover
             return 0
@@ -488,7 +490,8 @@ class LeoFind:
 
         This is a stand-alone method for unit testing.
         """
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         failMsg = 'No marked nodes'
 
         count = 0
@@ -526,7 +529,8 @@ class LeoFind:
         Create an organizer node whose direct children are clones of all
         parents of the selected node, which must be a clone.
         """
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         p = c.p
         if not p:  # pragma: no cover
             return False
@@ -874,7 +878,8 @@ class LeoFind:
         Return True (for vim-mode) if a match was found.
 
         """
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
 
         # The gui widget may not exist for headlines.
         w = c.headline_wrapper(p) if self.in_headline else c.frame.body.wrapper
@@ -1025,7 +1030,8 @@ class LeoFind:
 
     def set_find_scope(self, where: str) -> None:
         """Set the radio buttons to the given scope"""
-        c, fc = self.c, self.c.findCommands
+        c = self.c
+        fc = c.findCommands
         self.ftm.set_radio_button(where)
         options = fc.compute_find_options_in_status_area()
         c.frame.statusLine.put(options)
@@ -1126,7 +1132,8 @@ class LeoFind:
         self.toggle_option(event, 'whole_word')
 
     def toggle_option(self, event: LeoKeyEvent | None, checkbox_name: str) -> None:
-        c, finder = self.c, self.c.findCommands
+        c = self.c
+        finder = c.findCommands
         self.ftm.toggle_checkbox(checkbox_name)
         if self.minibuffer_mode:
             options = finder.compute_find_options_in_status_area()
@@ -1170,7 +1177,9 @@ class LeoFind:
     def interactive_replace_all2(
         self, event: LeoKeyEvent
     ) -> None:  # pragma: no cover (interactive)
-        c, k, w = self.c, self.k, self.c.frame.body.wrapper
+        c = self.c
+        k = c.k
+        w = c.frame.body.wrapper
 
         # Update settings data.
         find_pattern = self._sString
@@ -1212,7 +1221,8 @@ class LeoFind:
     def _change_all_helper(self, settings: g.Bunch) -> int:
         """Do the change-all command. Return the number of changes, or 0 for error."""
         # Caller has checked settings.
-        c, _current, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        u = c.undoer
         t1 = time.process_time()
 
         saveData = self.save()
@@ -1438,7 +1448,9 @@ class LeoFind:
     def interactive_clone_find_all1(
         self, event: LeoKeyEvent
     ) -> int:  # pragma: no cover (interactive)
-        c, k, w = self.c, self.k, self.c.frame.body.wrapper
+        c = self.c
+        k = c.k
+        w = c.frame.body.wrapper
         # Settings...
         pattern = k.arg
         self.ftm.set_find_text(pattern)
@@ -1502,7 +1514,9 @@ class LeoFind:
     def interactive_cff1(
         self, event: LeoKeyEvent | None = None
     ) -> int:  # pragma: no cover (interactive)
-        c, k, w = self.c, self.k, self.c.frame.body.wrapper
+        c = self.c
+        k = c.k
+        w = c.frame.body.wrapper
         # Settings...
         pattern = k.arg
         self.ftm.set_find_text(pattern)
@@ -1563,7 +1577,8 @@ class LeoFind:
     def interactive_clone_find_tag1(
         self, event: LeoKeyEvent
     ) -> None:  # pragma: no cover (interactive)
-        c, k = self.c, self.k
+        c = self.c
+        k = self.k
         # Settings...
         self.find_text = tag = k.arg
         # Gui...
@@ -1580,7 +1595,8 @@ class LeoFind:
         Do the clone-all-find commands from settings.
         Return (len(clones), found) for unit tests.
         """
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         tc = getattr(c, 'theTagController', None)
         if not tc:
             if not g.unitTesting:  # pragma: no cover (skip)
@@ -1604,7 +1620,8 @@ class LeoFind:
         Create a "Found Tag" node as the last node of the outline.
         Clone all positions in the clones set as children of found.
         """
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         # Create the found node.
         assert c.positionExists(c.lastTopLevel()), c.lastTopLevel()
         found = c.lastTopLevel().insertAfter()
@@ -1672,7 +1689,9 @@ class LeoFind:
     def find_all_escape_handler2(
         self, event: LeoKeyEvent
     ) -> None:  # pragma: no cover (interactive)
-        c, k, w = self.c, self.k, self.c.frame.body.wrapper
+        c = self.c
+        k = c.k
+        w = c.frame.body.wrapper
         find_pattern = self._sString
         change_pattern = k.arg
         self.update_change_list(change_pattern)
@@ -1725,7 +1744,8 @@ class LeoFind:
 
         Return the list of Dicts describing each match.
         """
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         saveData = self.save()
         if self.pattern_match:
             ok = self.compile_pattern()
@@ -2156,7 +2176,9 @@ class LeoFind:
     # @+node:ekr.20210117143611.1: *5* find.start_search1
     def start_search1(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """Common handler for use by vim commands and other find commands."""
-        c, k, w = self.c, self.k, self.c.frame.body.wrapper
+        c = self.c
+        k = c.k
+        w = c.frame.body.wrapper
         # Settings...
         find_pattern = k.arg
         self.ftm.set_find_text(find_pattern)
@@ -2197,7 +2219,9 @@ class LeoFind:
 
     # @+node:ekr.20210117143615.1: *5* find._start_search_escape2
     def _start_search_escape2(self, event: LeoKeyEvent | None = None) -> None:
-        c, k, w = self.c, self.k, self.c.frame.body.wrapper
+        c = self.c
+        k = c.k
+        w = c.frame.body.wrapper
         # Compute settings...
         find_pattern = self._sString
         change_pattern = k.arg
@@ -2278,7 +2302,9 @@ class LeoFind:
     def interactive_tag_children1(
         self, event: LeoKeyEvent
     ) -> None:  # pragma: no cover (interactive)
-        c, k, p = self.c, self.k, self.c.p
+        c = self.c
+        k = self.k
+        p = c.p
         # Settings...
         tag = k.arg
         # Gui...
@@ -2317,7 +2343,9 @@ class LeoFind:
     def interactive_tag_node1(
         self, event: LeoKeyEvent | None = None
     ) -> None:  # pragma: no cover (interactive)
-        c, k, p = self.c, self.k, self.c.p
+        c = self.c
+        k = self.k
+        p = c.p
         # Settings...
         tag = k.arg
         # Gui...
@@ -2391,7 +2419,8 @@ class LeoFind:
 
         Return the number of found nodes.
         """
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         if self.pattern_match:
             ok = self.compile_pattern()
             if not ok:
@@ -2484,7 +2513,8 @@ class LeoFind:
     # @+node:ekr.20031218072017.3070: *4* find.change_selection
     def change_selection(self, p: Position) -> bool:
         """Replace selection with self.change_text."""
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         wrapper = c.frame.body and c.frame.body.wrapper
         w = c.headline_wrapper(p) if self.in_headline else wrapper
         if not w:  # pragma: no cover
@@ -2951,7 +2981,8 @@ class LeoFind:
         """
         Restore Leo's gui and settings from data, a g.Bunch.
         """
-        c, p = self.c, data.p
+        c = self.c
+        p = data.p
 
         # #4688: Restore previous settings.
         if self.previous_settings:
@@ -3135,7 +3166,8 @@ class LeoFind:
     # @+node:ekr.20131117164142.16947: *5* find.abort_search (incremental)
     def abort_search(self) -> None:
         """Restore the original position and selection."""
-        c, k = self.c, self.k
+        c = self.c
+        k = self.k
         w = c.frame.body.wrapper
         k.clearState()
         k.resetLabel()
@@ -3147,7 +3179,8 @@ class LeoFind:
 
     # @+node:ekr.20131117164142.16948: *5* find.end_search
     def end_search(self) -> None:
-        c, k = self.c, self.k
+        c = self.c
+        k = self.k
         k.clearState()
         k.resetLabel()
         c.bodyWantsFocus()
@@ -3155,7 +3188,9 @@ class LeoFind:
     # @+node:ekr.20131117164142.16949: *5* find.iSearch_helper
     def iSearch_helper(self, again: bool = False) -> None:
         """Handle the actual incremental search."""
-        c, k, p = self.c, self.k, self.c.p
+        c = self.c
+        k = self.k
+        p = c.p
         reverse = not self.isearch_forward_flag
         pattern = k.getLabel(ignorePrompt=True)
         if not pattern:
@@ -3273,7 +3308,8 @@ class LeoFind:
 
     # @+node:ekr.20131117164142.16954: *5* find.set_widget
     def set_widget(self) -> QTextMixin:
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         wrapper = c.frame.body.wrapper
         if self.in_headline:
             w = c.headline_wrapper(p)
@@ -3301,7 +3337,8 @@ class LeoFind:
         ignoreCase: bool | None,
         regexp: bool | None,
     ) -> None:
-        c, k = self.c, self.k
+        c = self.c
+        k = self.k
         # None is a signal to get the option from the find tab.
         self.event = event
         self.isearch_forward_flag = not self.reverse if forward is None else forward
@@ -3338,7 +3375,8 @@ class LeoFind:
 
     # @+node:ekr.20131117164142.16993: *4* find.add_find_string_to_label
     def add_find_string_to_label(self, protect: bool = True) -> None:
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
         ftm = c.findCommands.ftm
         s = ftm.get_find_text()
         c.minibufferWantsFocus()
@@ -3383,7 +3421,8 @@ class LeoFind:
     # @+node:ekr.20150629072547.1: *4* find.preload_find_pattern
     def preload_find_pattern(self, w: QTextMixin) -> None:
         """Preload the find pattern from the selected text of widget w."""
-        c, ftm = self.c, self.ftm
+        c = self.c
+        ftm = self.ftm
         if not c.config.getBool('preload-find-pattern', default=False):
             # Make *sure* we don't preload the find pattern if it is not wanted.
             return
@@ -3463,7 +3502,8 @@ class LeoFind:
         """
         Initialize and start the state machine used to get user arguments.
         """
-        c, k = self.c, self.k
+        c = self.c
+        k = self.k
         w = c.frame.body.wrapper
         if not w:
             return

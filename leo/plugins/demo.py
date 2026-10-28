@@ -472,7 +472,8 @@ class Demo:
     # @+node:ekr.20170128213103.28: *4* demo.key
     def key(self, ch, speed=None):
         """Simulate typing a single key"""
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
         w = g.app.gui.get_focus(c=c, raw=True)
         self.key_wait(speed=speed)
         event = self.new_key_event(ch, w)

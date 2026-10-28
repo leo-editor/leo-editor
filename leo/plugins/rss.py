@@ -335,7 +335,8 @@ class RSSController:
     # @+node:peckj.20131003085421.6060: *4* delete_selected_feed_stories
     def delete_selected_feed_stories(self, event=None):
         """Deletes all the children of the selected `@feed` node."""
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         if self.is_feed(p):
             c.deletePositionsInList(p.children())
             c.redraw()

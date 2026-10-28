@@ -473,7 +473,8 @@ class ScriptingController:
     # @+node:ekr.20060328125248.21: *4* sc.runScriptCommand
     def runScriptCommand(self, event: Event | None = None) -> None:
         """Called when user presses the 'run-script' button or executes the run-script command."""
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         args = self.getArgs(p)
         g.app.scriptDict = {'script_gnx': p.gnx}
         c.executeScript(args=args, p=p, useSelectedText=True, silent=True)
@@ -1145,7 +1146,8 @@ class ScriptingController:
         tag: str = '',
     ) -> None:
         """Register @button <name> and @rclick <name> and <name>"""
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
         trace = False and not g.unitTesting
         shortcut = self.getShortcut(h) or ''
         commandName = self.cleanButtonText(h)

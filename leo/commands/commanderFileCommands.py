@@ -852,7 +852,9 @@ def flattenOutlineToNode(self: Self, event: LeoKeyEvent | None = None) -> None:
     Append the body text of all descendants of the selected node to the
     body text of a new (last) top-level node.
     """
-    c, root, u = self, self.p, self.undoer
+    c = self
+    root = c.p
+    u = c.undoer
     if not root.hasChildren():
         return
     with u.change_outline('flatten-outline-to-node'):
@@ -979,7 +981,8 @@ def readAtFileNodes(self: Self, event: LeoKeyEvent | None = None) -> None:
 
     This command is not undoable.
     """
-    c, p = self, self.p
+    c = self
+    p = c.p
     c.endEditing()
     c.atFileCommands.readAllSelected(p)
 
@@ -997,7 +1000,8 @@ def readAtShadowNodes(self: Self, event: LeoKeyEvent | None = None) -> None:
 
     This command is not undoable.
     """
-    c, p = self, self.p
+    c = self
+    p = c.p
     c.endEditing()
     c.init_error_dialogs()
     c.atFileCommands.readAtShadowNodes(p)
@@ -1044,7 +1048,8 @@ def writeFileFromNode(self: Self, event: LeoKeyEvent | None = None) -> None:
     If node starts with @read-file-into-node, use the full path name in the headline.
     Otherwise, prompt for a file name.
     """
-    c, p = self, self.p
+    c = self
+    p = c.p
     c.endEditing()
     h = p.h.rstrip()
     s = p.b
@@ -1084,7 +1089,8 @@ def writeFileFromSubtree(self: Self, event: LeoKeyEvent | None = None) -> None:
     If node starts with @read-file-into-node, use the full path name in the headline.
     Otherwise, prompt for a file name.
     """
-    c, p = self, self.p
+    c = self
+    p = c.p
     c.endEditing()
     h = p.h.rstrip()
     s = ''

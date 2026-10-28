@@ -26,7 +26,8 @@ class TestBaseWriter(BaseTestWriter):
     def test_put_node_sentinel(self):
         from leo.plugins.writers.basewriter import BaseWriter
 
-        c, root = self.c, self.c.p
+        c = self.c
+        root = c.p
         at = c.atFileCommands
         x = BaseWriter(c)
         table = (
@@ -54,7 +55,8 @@ class TestDartWriter(BaseTestWriter):
     # @+others
     # @+node:ekr.20220812175936.1: *3* TestDartWriter.test_dart_writer
     def test_dart_writer(self):
-        c, root = self.c, self.c.p
+        c = self.c
+        root = c.p
         child = root.insertAsLastChild()
         child.h = 'h'
         child.b = 'dart line 1\ndart_line2\n'
@@ -77,7 +79,8 @@ class TestMDWriter(BaseTestWriter):
 
     # @+node:ekr.20231219151402.1: *3* TestMDWriter.test_markdown_sections
     def test_markdown_sections(self):
-        c, root = self.c, self.c.p
+        c = self.c
+        root = c.p
         # @+<< define contents: test_markdown_sections >>
         # @+node:ekr.20231221072635.1: *4* << define contents: test_markdown_sections >>
         contents = (
@@ -121,7 +124,8 @@ class TestMDWriter(BaseTestWriter):
 
     # @+node:ekr.20231225025012.1: *3* TestMDWriter.test_markdown_image
     def test_markdown_image(self):
-        c, root = self.c, self.c.p
+        c = self.c
+        root = c.p
         # @+<< define contents: test_markdown_image >>
         # @+node:ekr.20231225025012.2: *4* << define contents: test_markdown_image >>
         contents = (
@@ -203,7 +207,8 @@ class TestMDWriter(BaseTestWriter):
 
     # @+node:ekr.20231227225308.1: *3* TestMDWriter.test_placeholders
     def test_markdown_placeholders(self):
-        c, root = self.c, self.c.p
+        c = self.c
+        root = c.p
         # @+<< define contents: test_markdown_placeholders >>
         # @+node:ekr.20231227225358.1: *4* << define contents: test_markdown_placeholders >>
         # There must be two newlines after each node.
@@ -250,7 +255,8 @@ class TestRstWriter(BaseTestWriter):
     # @+others
     # @+node:ekr.20220812175959.1: *3* TestRstWriter.test_rst_writer
     def test_rst_writer(self):
-        c, root = self.c, self.c.p
+        c = self.c
+        root = c.p
         child = root.insertAsLastChild()
         child.h = 'h'
         # For full coverage, we don't want a leading newline.
@@ -310,7 +316,8 @@ class TestTreepadWriter(BaseTestWriter):
     # @+others
     # @+node:ekr.20220812180015.1: *3* TestTreepadWriter.test_treepad_writer
     def test_treepad_writer(self):
-        c, root = self.c, self.c.p
+        c = self.c
+        root = c.p
         child = root.insertAsLastChild()
         child.h = 'h'
         child.b = 'line 1\nline2\n'

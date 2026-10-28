@@ -65,7 +65,8 @@ class ChapterController:
 
     def finishCreate(self) -> None:
         """Create the box in the icon area."""
-        c, cc = self.c, self
+        cc = self
+        c = cc.c
         cc.createIcon()
         cc.setAllChapterNames()  # Create all chapters.
         # #31.
@@ -78,7 +79,8 @@ class ChapterController:
     # @+node:ekr.20160411145155.1: *4* cc.makeCommand
     def makeCommand(self, chapterName: str, binding: str | None = None) -> None:
         """Make chapter-select-<chapterName> command."""
-        c, cc = self.c, self
+        cc = self
+        c = cc.c
         commandName = f"chapter-select-{chapterName}"
 
         # For tracing:
@@ -319,7 +321,8 @@ class ChapterController:
 
         Note: this code calls c.redraw() if the chapter changes.
         """
-        c, cc = self.c, self
+        cc = self
+        c = cc.c
         # New in Leo 4.11
         if cc.selectChapterLockout:
             return
@@ -357,7 +360,8 @@ class ChapterController:
     # @+node:ekr.20130915052002.11289: *4* cc.setAllChapterNames
     def setAllChapterNames(self) -> list[str]:
         """Called early and often to discover all chapter names."""
-        c, cc = self.c, self
+        cc = self
+        c = cc.c
         # sel_name = cc.selectedChapter and cc.selectedChapter.name or 'main'
         if 'main' not in cc.chaptersDict:
             cc.chaptersDict['main'] = Chapter(c, cc, 'main')
@@ -455,7 +459,8 @@ class Chapter:
     # @+node:ekr.20070317131708: *4* chapter.findPositionInChapter
     def findPositionInChapter(self, p1: Position, strict: bool = False) -> Position | None:
         """Return a valid position p such that p.v == v."""
-        c, name = self.c, self.name
+        c = self.c
+        name = self.name
         # Bug fix: 2012/05/24: Search without root arg in the main chapter.
         if name == 'main' and c.positionExists(p1):
             return p1

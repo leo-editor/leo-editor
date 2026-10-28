@@ -2421,7 +2421,8 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20210829062149.1: *4* Commands M-R
     # @+node:ekr.20220517064432.1: *5* test_merge-node-with-next-node
     def test_merge_node_with_next_node(self):
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         prev_b = self.prep(
             """
             def spam():
@@ -2460,7 +2461,8 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20220517064507.1: *5* test_merge-node-with-prev-node
     def test_merge_node_with_prev_node(self):
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         prev_b = self.prep(
             """
             def spam():
@@ -4152,7 +4154,8 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20210905064816.1: *3* TestEditCommands: Others
     # @+node:ekr.20210905064816.4: *4* test_capitalizeHelper
     def test_capitalizeHelper(self):
-        c, w = self.c, self.c.frame.body.wrapper
+        c = self.c
+        w = c.frame.body.wrapper
         w.setAllText('# TARGETWORD\n')
         table = (
             ('cap', 'Targetword'),
@@ -4263,7 +4266,8 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20210914154830.1: *4* test_helpForPython
     def test_helpForPthon(self):
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
         k.arg = 'os'
         s = c.helpCommands.pythonHelp1(event=None)
         self.assertTrue('Help on module os' in s)
@@ -4304,7 +4308,8 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20210905064816.15: *4* test_most_toggle_commands
     def test_most_toggle_commands(self):
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
         ed = c.editCommands
         # These don't set ivars
         # 'toggle-active-pane'),

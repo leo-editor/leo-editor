@@ -162,7 +162,8 @@ class TestIndentedTypeScript(LeoUnitTest):
     # @+others
     # @+node:ekr.20230919025755.1: *3* test_its.test_typescript
     def test_typescript(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
 
         # @+<< define contents: test_typescript >>
         # @+node:ekr.20231022133716.1: *4* << define contents: test_typescript >>
@@ -238,7 +239,8 @@ class TestIndentedLisp(LeoUnitTest):
     # @+others
     # @+node:ekr.20231025174704.1: *3* test_ilisp.test_lisp_reduce_fraction
     def test_lisp_reduce_fraction(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         contents = """
             (defun test (a)
                 (+ 1 (* 2 a))

@@ -186,7 +186,8 @@ class TagController:
     # @+node:ekr.20201030095446.1: *4* tag_c.show_all_tags
     def show_all_tags(self) -> None:
         """Show all tags, organized by node."""
-        c, tc = self.c, self
+        tc = self
+        c = tc.c
         aList: list[str]
         d: dict[str, list[str]] = {}
         for p in c.all_unique_positions():

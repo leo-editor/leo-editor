@@ -306,7 +306,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
     # @+node:ekr.20110605121601.18166: *4* dw.createFindTab & helpers
     def createFindTab(self, parent: QWidget, tab_widget: QWidget) -> None:
         """Create a Find Tab in the given parent."""
-        c, dw = self.leo_c, self
+        dw = self
+        c = dw.leo_c
         fc = c.findCommands
         assert not fc.ftm
         fc.ftm = ftm = FindTabManager(c)
@@ -352,7 +353,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
     # @+node:ekr.20131118152731.16848: *5* dw.create_find_findbox
     def create_find_findbox(self, grid: QGridLayout, parent: QWidget, row: int) -> int:
         """Create the Find: label and text area."""
-        c, dw = self.leo_c, self
+        dw = self
+        c = dw.leo_c
         fc = c.findCommands
         ftm = fc.ftm
         assert ftm.find_findbox is None
@@ -367,7 +369,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
     # @+node:ekr.20131118152731.16850: *5* dw.create_find_replacebox
     def create_find_replacebox(self, grid: QGridLayout, parent: QWidget, row: int) -> int:
         """Create the Replace: label and text area."""
-        c, dw = self.leo_c, self
+        dw = self
+        c = dw.leo_c
         fc = c.findCommands
         ftm = fc.ftm
         assert ftm.find_replacebox is None
@@ -384,7 +387,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self, grid: QGridLayout, parent: QWidget, max_row2: int, row: int
     ) -> int:
         """Create check boxes and radio buttons."""
-        c, dw = self.leo_c, self
+        dw = self
+        c = dw.leo_c
         fc = c.findCommands
         ftm = fc.ftm
 
@@ -1772,7 +1776,8 @@ class LeoQtBody(leoFrame.LeoBody):
     # @+node:ekr.20110605121601.18224: *4* LeoQtBody.qtBody.onFocusColorHelper (revised)
     def onFocusColorHelper(self, kind: str, obj: QObject) -> None:
         """Handle changes of style when focus changes."""
-        c, vc = self.c, self.c.vimCommands
+        c = self.c
+        vc = c.vimCommands
         if vc and c.vim_mode:
             try:
                 assert kind in ('focus-in', 'focus-out')
@@ -1795,7 +1800,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
     # @+node:ekr.20110605121601.18256: *5* LeoQtFrame.destroySelf
     def destroySelf(self) -> None:
         # Remember these: we are about to destroy all of our ivars!
-        c, top = self.c, self.top
+        c = self.c
+        top = self.top
         if hasattr(g.app.gui, 'frameFactory'):
             g.app.gui.frameFactory.deleteFrame(top)
         # Indicate that the commander is no longer valid.
@@ -1992,7 +1998,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
 
     # @+node:ekr.20110605121601.18281: *4* LeoQtFrame.reconfigurePanes
     def reconfigurePanes(self) -> None:
-        c, f = self.c, self
+        f = self
+        c = f.c
         if f.splitVerticalFlag:
             r = c.config.getRatio("initial-vertical-ratio")
             if r is None or r < 0.0 or r > 1.0:
@@ -2297,7 +2304,9 @@ class LeoQtLog(leoFrame.LeoLog):
     # @+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate
     def finishCreate(self) -> None:
         """Finish creating the LeoQtLog class."""
-        c, log, w = self.c, self, self.tabWidget
+        log = self
+        c = log.c
+        w = log.tabWidget
         assert c
 
         # Create the log tab as the leftmost tab.
@@ -2449,7 +2458,8 @@ class LeoQtLog(leoFrame.LeoLog):
     def onContextMenu(self, point: QPoint) -> None:
         """LeoQtLog: Callback for customContextMenuRequested events."""
         # #1286.
-        c, w = self.c, self
+        w = self
+        c = w.c
         g.app.gui.onContextMenu(c, w, point)
 
     # @+node:ekr.20110605121601.18321: *3* LeoQtLog.put and helpers
@@ -3066,7 +3076,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         except Exception:  # Defensive.
             g.es_exception()
             return
-        c, tree = self.c, self.c.frame.tree
+        c = self.c
+        tree = c.frame.tree
         p = None
         point = ev.position().toPoint()
         if item := self.itemAt(point):
@@ -4039,7 +4050,8 @@ class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):  # ty-pe:ignore[misc,override]
 
     # @+node:ekr.20120120095156.10260: *4* QtMenuWrapper.leo_update_shortcut
     def leo_update_shortcut(self, action: QAction, commandName: str) -> None:
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
         if action:
             s = action.text()
             parts = s.split('\t')
@@ -4184,7 +4196,8 @@ class QtStatusLineClass:
     def update(self) -> None:
         if g.app.killed:
             return
-        c, body = self.c, self.c.frame.body
+        c = self.c
+        body = c.frame.body
         if not c.p:
             return
         te = body.widget
@@ -4229,7 +4242,8 @@ class QtStatusLineClass:
         Return the line of the first line of c.p in its external file.
         Return None if c.p is not part of an external file.
         """
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         if p:
             goto = gotoCommands.GoToCommands(c)
             return goto.find_node_start(p)

@@ -274,7 +274,8 @@ class ExternalFilesController:
     def update_open_with_node(self, ef: ExternalFile) -> None:
         """Update the body text of ef.p to the contents of ef.path."""
         assert isinstance(ef, ExternalFile), ef
-        c, p = ef.c, ef.p.copy()
+        c = ef.c
+        p = ef.p.copy()
         g.blue(f"updated {p.h}")
         s, e = g.readFileIntoString(ef.path)
         p.b = s or ''

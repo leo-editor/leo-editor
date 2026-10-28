@@ -338,7 +338,8 @@ class HelpCommandsClass(BaseEditCommandsClass):
     @cmd('help-for-command')
     def helpForCommand(self, event: LeoKeyEvent | None = None) -> None:
         """Prompts for a command name and prints the help message for that command."""
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
         s = '''\
     Alt-0 (vr-toggle) hides this help message.
 
@@ -373,7 +374,8 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.383: *4* helpForCommandFinisher
     def helpForCommandFinisher(self, commandName: str) -> None:
-        c, s = self.c, None
+        c = self.c
+        s = None
         if commandName and commandName.startswith('help-for-'):
             # Execute the command itself.
             c.doCommandByName(commandName)
@@ -810,7 +812,8 @@ class HelpCommandsClass(BaseEditCommandsClass):
     @cmd('help-for-keystroke')
     def helpForKeystroke(self, event: LeoKeyEvent | None = None) -> None:
         """Prompts for any key and prints the bindings for that key."""
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
         if not event:
             return  # PR #4812
         state_name = 'help-for-keystroke'
@@ -1310,13 +1313,15 @@ class HelpCommandsClass(BaseEditCommandsClass):
     @cmd('help-for-python')
     def pythonHelp(self, event: LeoKeyEvent | None = None) -> None:
         """Prompt for a arg for Python's help function, and put it to the VR pane."""
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
         c.minibufferWantsFocus()
         k.setLabelBlue('Python help: ')
         k.get1Arg(event, handler=self.pythonHelp1)
 
     def pythonHelp1(self, event: LeoKeyEvent | None = None) -> str:
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
         k.clearState()
         k.resetLabel()
         s = k.arg.strip()

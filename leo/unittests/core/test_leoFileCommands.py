@@ -12,7 +12,8 @@ class TestFileCommands(LeoUnitTest):
     # @+others
     # @+node:ekr.20210909194336.24: *3* TestFileCommands.test_fc_resolveArchivedPosition
     def test_fc_resolveArchivedPosition(self):
-        c, root = self.c, self.root_p
+        c = self.c
+        root = self.root_p
         root_v = root.v
         # Create the test tree. Headlines don't matter.
         child1 = root.insertAsLastChild()
@@ -70,7 +71,8 @@ class TestFileCommands(LeoUnitTest):
 
     # @+node:ekr.20210909194336.38: *3* TestFileCommands.test_putDescendentVnodeUas
     def test_putDescendentVnodeUas(self):
-        c, root = self.c, self.root_p
+        c = self.c
+        root = self.root_p
         fc = c.fileCommands
         # Create the test tree. Headlines don't matter.
         child1 = root.insertAsLastChild()
@@ -87,7 +89,8 @@ class TestFileCommands(LeoUnitTest):
     # @+node:ekr.20210909194336.40: *5* grandChild
     # @+node:ekr.20210909194336.41: *3* TestFileCommands.test_putUa
     def test_putUa(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         fc = c.fileCommands
         p.v.unknownAttributes = {'unit_test': 'abcd'}
         s = fc.putUnknownAttributes(p.v)

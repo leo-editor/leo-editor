@@ -543,7 +543,8 @@ class Commands:
         Finish creating the commander and all sub-objects.
         This is the last step in the startup process.
         """
-        c, k = self, self.k
+        c = self
+        k = c.k
         assert c.gui
         assert k
         t1 = time.process_time()
@@ -715,7 +716,9 @@ class Commands:
 
         Set the cwd before calling the command.
         """
-        c, p, tag = self, self.p, 'execute-general-script'
+        c = self
+        p = c.p
+        tag = 'execute-general-script'
 
         def get_setting_for_language(setting: str) -> str | None:
             """
@@ -1694,7 +1697,8 @@ class Commands:
     # @+node:ekr.20070615070925.1: *5* c.firstVisible
     def firstVisible(self) -> Position:
         """Move to the first visible node of the present chapter or hoist."""
-        c, p = self, self.p
+        c = self
+        p = c.p
         while 1:
             back = p.visBack(c)
             if back and back.isVisible(c):
@@ -2041,7 +2045,8 @@ class Commands:
     # @+node:ekr.20031218072017.4146: *5* c.lastVisible
     def lastVisible(self) -> Position:
         """Move to the last visible node of the present chapter or hoist."""
-        c, p = self, self.p
+        c = self
+        p = c.p
         while 1:
             next = p.visNext(c)
             if next and next.isVisible(c):
@@ -2108,7 +2113,8 @@ class Commands:
     # @+node:ekr.20131017174814.17480: *5* c.shouldBeExpanded
     def shouldBeExpanded(self, p: Position) -> bool:
         """Return True if the node at position p should be expanded."""
-        c, v = self, p.v
+        c = self
+        v = p.v
         if not p.hasChildren():
             return False
         # Always clear non-existent positions.
@@ -2268,7 +2274,8 @@ class Commands:
         """
         This is equivalent to p.b = s.
         """
-        c, v = self, p.v
+        c = self
+        v = p.v
         if not c or not v:
             return
         s = g.toUnicode(s)
@@ -2743,7 +2750,8 @@ class Commands:
         Check for errors in the outline.
         Return the number of errors.
         """
-        c, errors = self, 0
+        c = self
+        errors = 0
         for f in (c.checkVnodeLinks, c.checkGnxs):
             errors += f()
         return errors
@@ -2872,7 +2880,8 @@ class Commands:
 
     # @+node:ekr.20040723094220.5: *4* c.checkPythonNode
     def checkPythonNode(self, p: Position) -> None:
-        c, h = self, p.h
+        c = self
+        h = p.h
         # Call getScript to ignore directives and section references.
         body = g.getScript(c, p.copy())
         if not body:
@@ -3049,7 +3058,8 @@ class Commands:
         event: LeoKeyEvent | None,  # Used in the callback.
         prompts: Sequence,
     ) -> None:
-        c, k = self, self.k
+        c = self
+        k = c.k
         prompt = prompts[0]
 
         def state1(event: LeoKeyEvent | None = None) -> None:
@@ -3068,7 +3078,8 @@ class Commands:
         event: LeoKeyEvent | None,
         prompts: Sequence,
     ) -> None:
-        c, k = self, self.k
+        c = self
+        k = c.k
         d: dict[str, str] = {}
         prompt1, prompt2 = prompts
 
@@ -3270,7 +3281,8 @@ class Commands:
         command func if g.doHook("command1") returns False. This provides a
         simple mechanism for overriding commands.
         """
-        c, p = self, self.p
+        c = self
+        p = c.p
         c.setLog()
         self.command_count += 1
         # New in Leo 6.2. Set command_function and command_name ivars.
@@ -3388,7 +3400,8 @@ class Commands:
              This allows, for example, `go run .` to work as expected.
           3. Append the full path to the command.
         """
-        c, log = self, self.frame.log
+        c = self
+        log = c.frame.log
 
         # @+others  # Define helper functions
         # @+node:ekr.20210529142153.1: *5* function: put_line (c.general_script_helper)
@@ -3509,7 +3522,9 @@ class Commands:
         Handle the character given by event.stroke, ignoring various special keys.
         """
         trace = all(z in g.app.debug for z in ('keys', 'verbose'))
-        c, k, w = self, self.k, event.w
+        c = self
+        k = c.k
+        w = event.w
         name = c.widget_name(w)
         stroke = event.stroke
         if trace:
@@ -4154,7 +4169,8 @@ class Commands:
     # @+node:ekr.20140717074441.17770: *4* c.recreateGnxDict
     def recreateGnxDict(self) -> None:
         """Recreate the gnx dict prior to refreshing nodes from disk."""
-        c, d = self, {}
+        c = self
+        d = {}
         # Start with the hidden-root-vnode
         vHiddenRoot = c.hiddenRootNode
         d[vHiddenRoot.gnx] = vHiddenRoot
@@ -4317,7 +4333,9 @@ class Commands:
     # @+node:ekr.20031218072017.2945: *4* c.Dragging
     # @+node:ekr.20031218072017.2947: *5* c.dragToNthChildOf
     def dragToNthChildOf(self, p: Position, parent: Position, n: int) -> None:
-        c, p, u = self, self.p, self.undoer
+        c = self
+        p = c.p
+        u = c.undoer
         if not c.checkDrag(p, parent):
             return
         if not c.checkMoveWithParentWithWarning(p, parent, True):
@@ -4331,7 +4349,9 @@ class Commands:
 
     # @+node:ekr.20031218072017.2353: *5* c.dragAfter (not used)
     def dragAfter(self, p: Position, after: Position) -> None:
-        c, p, u = self, self.p, self.undoer
+        c = self
+        p = c.p
+        u = c.undoer
         if not c.checkDrag(p, after):
             return
         if not c.checkMoveWithParentWithWarning(p, after.parent(), True):
@@ -4477,12 +4497,15 @@ class Commands:
         c.enableRedrawFlag = True
 
     # @+node:ekr.20090110073010.1: *6* c.redraw
+    redraw_count = 0  # For unit tests.
+
     def redraw(self, p: Position | None = None) -> None:
         """
         Redraw the screen immediately.
         If p is given, set c.p to p.
         """
         c = self
+        c.redraw_count += 1
         if not p:
             p = c.p
         if not p:
@@ -4551,7 +4574,8 @@ class Commands:
         """
         if not event or not event.char or not event.char.isalnum():
             return
-        c, p = self, self.p
+        c = self
+        p = c.p
         p1 = p.copy()
         invisible = c.config.getBool('invisible-outline-navigation')
         ch = event.char if event else ''
@@ -4788,11 +4812,13 @@ class Commands:
     # New in 4.9: all FocusNow methods now *do* call c.outerUpdate().
 
     def bodyWantsFocusNow(self) -> None:
-        c, body = self, self.frame.body
+        c = self
+        body = c.frame.body
         c.widgetWantsFocusNow(body and body.wrapper)
 
     def logWantsFocusNow(self) -> None:
-        c, log = self, self.frame.log
+        c = self
+        log = c.frame.log
         try:  # 4652
             c.widgetWantsFocusNow(log.logCtrl.widget)
         except AttributeError:
@@ -4803,7 +4829,8 @@ class Commands:
         c.widgetWantsFocusNow(c.miniBufferWidget)
 
     def treeWantsFocusNow(self) -> None:
-        c, tree = self, self.frame.tree
+        c = self
+        tree = c.frame.tree
         c.widgetWantsFocusNow(tree and tree.canvas)
 
     # @+node:ekr.20031218072017.2955: *4* c.Menus
@@ -4880,7 +4907,8 @@ class Commands:
 
     # @+node:ekr.20031218072017.2960: *6* c.canCutOutline & canDeleteHeadline
     def canDeleteHeadline(self) -> bool:
-        c, p = self, self.p
+        c = self
+        p = c.p
         if c.hoistStack:
             bunch = c.hoistStack[0]
             if p == bunch.p:
@@ -4976,12 +5004,14 @@ class Commands:
 
     # @+node:ekr.20031218072017.2970: *6* c.canMoveOutlineDown
     def canMoveOutlineDown(self) -> bool:
-        c, p = self, self.p
+        c = self
+        p = c.p
         return bool(p and p.visNext(c))
 
     # @+node:ekr.20031218072017.2971: *6* c.canMoveOutlineLeft
     def canMoveOutlineLeft(self) -> bool:
-        c, p = self, self.p
+        c = self
+        p = c.p
         if c.hoistStack:
             bunch = c.hoistStack[-1]
             if p and p.hasParent():
@@ -4992,7 +5022,8 @@ class Commands:
 
     # @+node:ekr.20031218072017.2972: *6* c.canMoveOutlineRight
     def canMoveOutlineRight(self) -> bool:
-        c, p = self, self.p
+        c = self
+        p = c.p
         if c.hoistStack:
             bunch = c.hoistStack[-1]
             return bool(p and p.hasBack() and p != bunch.p)
@@ -5000,7 +5031,8 @@ class Commands:
 
     # @+node:ekr.20031218072017.2973: *6* c.canMoveOutlineUp Bug!
     def canMoveOutlineUp(self) -> bool:
-        c, current = self, self.p
+        c = self
+        current = c.p
         visBack = current and current.visBack(c)
         if not visBack:
             return False
@@ -5048,11 +5080,13 @@ class Commands:
         return p.hasThreadNext()
 
     def canSelectVisBack(self) -> bool:
-        c, p = self, self.p
+        c = self
+        p = c.p
         return bool(p.visBack(c))
 
     def canSelectVisNext(self) -> bool:
-        c, p = self, self.p
+        c = self
+        p = c.p
         return bool(p.visNext(c))
 
     # @+node:ekr.20031218072017.2978: *6* c.canShiftBodyLeft/Right
@@ -5092,7 +5126,8 @@ class Commands:
     # @+node:ekr.20040323172420: *6* Slow routines: no longer used
     # @+node:ekr.20031218072017.2966: *7* c.canGoToNextDirtyHeadline (slow)
     def canGoToNextDirtyHeadline(self) -> bool:
-        c, current = self, self.p
+        c = self
+        current = c.p
         for p in c.all_unique_positions():
             if p != current and p.isDirty():
                 return True
@@ -5100,7 +5135,8 @@ class Commands:
 
     # @+node:ekr.20031218072017.2967: *7* c.canGoToNextMarkedHeadline (slow)
     def canGoToNextMarkedHeadline(self) -> bool:
-        c, current = self, self.p
+        c = self
+        current = c.p
         for p in c.all_unique_positions():
             if p != current and p.isMarked():
                 return True
@@ -5148,7 +5184,8 @@ class Commands:
         keepMinibuffer: bool = False,
     ) -> None:
         """Redraw the screen and edit p's headline."""
-        c, k = self, self.k
+        c = self
+        k = c.k
         c.redraw(p)  # This *must* be done now.
         if p:
             # This should request focus.

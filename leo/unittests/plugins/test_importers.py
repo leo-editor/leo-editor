@@ -123,7 +123,9 @@ class BaseTestImporter(LeoUnitTest):
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
         """
-        c, ext, p = self.c, self.ext, self.c.p
+        c = self.c
+        ext = self.ext
+        p = c.p
         self.assertTrue(ext)
 
         # Run the test.
@@ -155,7 +157,9 @@ class BaseTestImporter(LeoUnitTest):
         i.e., create a tree from string s at location c.p.
         Return the created tree.
         """
-        c, ext, p = self.c, self.ext, self.c.p
+        c = self.c
+        ext = self.ext
+        p = c.p
         self.assertTrue(ext)
 
         # Run the test.
@@ -1729,8 +1733,9 @@ class TestJava(BaseTestImporter):
     # @+node:ekr.20231225065750.1: *3* TestJava.test_round_trip
     def test_round_trip(self):
 
-        c, root = self.c, self.c.p
+        c = self.c
         at = c.atFileCommands
+        root = c.p
         # @+<< define contents: test_round_trip >>
         # @+node:ekr.20231225065840.1: *4* << define contents: test_round_trip >>
         contents = (

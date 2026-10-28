@@ -847,7 +847,8 @@ class ViewRenderedController(QtWidgets.QWidget):
     # @+node:ekr.20191004143805.1: *5* vr.convert_to_asciidoctor
     def convert_to_asciidoctor(self, s: str) -> str:
         """Convert s to html using the asciidoctor or asciidoc processor."""
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         path = c.getPath(p)
         if not os.path.isdir(path):
             path = os.path.dirname(path)
@@ -1159,7 +1160,8 @@ class ViewRenderedController(QtWidgets.QWidget):
         except ImportError:
             return ''
 
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         path = c.getPath(p)
         if not os.path.isdir(path):
             path = os.path.dirname(path)
@@ -1242,7 +1244,8 @@ class ViewRenderedController(QtWidgets.QWidget):
     # @+node:ekr.20191006155748.3: *5* vr.convert_to_pandoc
     def convert_to_pandoc(self, s: str) -> str:
         """Convert s to html using the asciidoctor or asciidoc processor."""
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         path = c.getPath(p)
         if not os.path.isdir(path):
             path = os.path.dirname(path)
@@ -1415,7 +1418,8 @@ class ViewRenderedController(QtWidgets.QWidget):
     # @+node:ekr.20160920221324.1: *5* vr.convert_to_html
     def convert_to_html(self, s: str) -> str:
         """Convert s to html using docutils."""
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
 
         try:
             from docutils.core import publish_string
@@ -1536,7 +1540,8 @@ class ViewRenderedController(QtWidgets.QWidget):
     # @+node:ekr.20110321005148.14537: *4* vr.update_url
     def update_url(self, s: str, keywords: Any) -> None:
         """Display the url in `s` in the VR pane."""
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         colorizer = c.frame.body.colorizer
         language = colorizer.scanLanguageDirectives(p)
         if language == 'asciidoc':
@@ -1639,7 +1644,8 @@ class ViewRenderedController(QtWidgets.QWidget):
     # @+node:ekr.20110320120020.14476: *5* vr.must_update
     def must_update(self, keywords: Any) -> bool:
         """Return True if we must update the rendering pane."""
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         if g.unitTesting:
             return False
         if c != keywords.get('c') or not self.active:

@@ -2897,7 +2897,8 @@ class VNode:
     # @+node:ekr.20220905044353.1: *4* v.updateIcon
     def updateIcon(self) -> None:
         """Update any user icon."""
-        c, v = self.context, self
+        v = self
+        c = v.context
         try:
             tree = c.frame.tree  # May not exist at startup.
             if not tree:

@@ -316,7 +316,10 @@ class ScreenCastController:
         """Simulate typing in the body pane.
         n1 and n2 indicate the range of delays between keystrokes.
         """
-        c, m, p, u = self.c, self, self.c.p, self.c.undoer
+        m = self
+        c = m.c
+        p = c.p
+        u = c.undoer
         w = c.frame.body.wrapper.widget
         if n1 is None:
             n1 = 0.02

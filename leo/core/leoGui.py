@@ -594,7 +594,8 @@ class StringFindTabManager:
         Init widgets and ivars from c.config settings.
         Create callbacks that always keep the LeoFind ivars up to date.
         """
-        c, find = self.c, self.c.findCommands
+        c = self.c
+        find = c.findCommands
         # Find/change text boxes.
         table1 = (
             ('find_findbox',    'find_text',   '<find pattern here>'),

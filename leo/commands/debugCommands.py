@@ -33,7 +33,8 @@ class DebugCommandsClass(BaseEditCommandsClass):
         Start an external debugger in another process to debug a script. The
         script is the presently selected text or then entire tree's script.
         """
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         python = sys.executable
         script = g.getScript(c, p)
         winpdb = self.findDebugger()

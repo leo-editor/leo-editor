@@ -208,7 +208,8 @@ class FastRead:
     # @+node:ekr.20180624125321.1: *4* fast.handleBits (reads c.db)
     def handleBits(self) -> None:
         """Restore the expanded and marked bits from c.db."""
-        c, fc = self.c, self.c.fileCommands
+        c = self.c
+        fc = c.fileCommands
         expanded = c.db.get('expanded')
         marked = c.db.get('marked')
         expanded = expanded.split(',') if expanded else []
@@ -350,7 +351,8 @@ class FastRead:
         gnx2ua: dict[str, Value],
         v_elements: Element,
     ) -> VNode:
-        c, fc = self.c, self.c.fileCommands
+        c = self.c
+        fc = c.fileCommands
 
         # @+<< define v_element_visitor >>
         # @+node:ekr.20180605102822.1: *5* << define v_element_visitor >>
@@ -543,7 +545,8 @@ class FastRead:
         gnx2ua: dict[str, Value],
         v_elements: Element,
     ) -> VNode | None:
-        c, fc = self.c, self.c.fileCommands
+        c = self.c
+        fc = c.fileCommands
 
         def v_element_visitor(parent_e: Element, parent_v: VNode) -> None:
             """Visit the given element, creating or updating the parent vnode."""
@@ -1067,7 +1070,8 @@ class FileCommands:
     # @+node:ekr.20120212220616.10537: *5* fc.readExternalFiles & helper
     def readExternalFiles(self) -> Position | None:
         """Read all external files in the outline."""
-        c, fc = self.c, self
+        fc = self
+        c = fc.c
         c.atFileCommands.readAll(c.rootPosition())
         recoveryNode = fc.handleNodeConflicts()
 
@@ -1138,7 +1142,8 @@ class FileCommands:
 
         This method follows behavior of readSaxFile.
         """
-        c, fc = self.c, self
+        fc = self
+        c = fc.c
         sql = '''select gnx, head,
              body,
              children,
@@ -1193,7 +1198,8 @@ class FileCommands:
     # @+node:vitalije.20170815162307.1: *6* fc.initNewDb
     def initNewDb(self, conn: Conn, path: str | None = None) -> VNode:
         """Initializes tables and returns None"""
-        c, fc = self.c, self
+        fc = self
+        c = fc.c
         v = leoNodes.VNode(context=c)
         c.hiddenRootNode.children = [v]
         (w, h, x, y, r1, r2, encp) = fc.getWindowGeometryFromDb(conn)
@@ -1382,7 +1388,8 @@ class FileCommands:
 
     # @+node:ekr.20060919110638.13: *5* fc.setPositionsFromVnodes
     def setPositionsFromVnodes(self) -> None:
-        c, root = self.c, self.c.rootPosition()
+        c = self.c
+        root = c.rootPosition()
         assert root.v
         current, str_pos = None, None
         if c.mFileName:
@@ -1458,7 +1465,8 @@ class FileCommands:
     # @+node:vitalije.20170630172118.1: *5* fc.exportToSqlite & helpers
     def exportToSqlite(self, fileName: str) -> bool:
         """Dump all vnodes to sqlite database. Returns True on success."""
-        c, fc = self.c, self
+        fc = self
+        c = fc.c
         conn = sqlite3.connect(fileName, isolation_level='DEFERRED')
 
         def dump_u(v: VNode) -> bytes:
@@ -1674,7 +1682,8 @@ class FileCommands:
     # @+node:ekr.20031218072017.3046: *5* fc.write_Leo_file
     def write_Leo_file(self, fileName: str) -> bool:
         """Write all external files and the .leo file itself."""
-        c, fc = self.c, self
+        fc = self
+        c = fc.c
         g.app.recentFilesManager.writeRecentFilesFile(c)
         fc.writeAllAtFileNodes()
         return fc.writeOutline(fileName)  # Calls c.checkOutline.

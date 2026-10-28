@@ -161,7 +161,8 @@ class ParserBaseClass:
     # @+node:ekr.20070925144337: *4* pbc.doButtons
     def doButtons(self, p: Position, kind: str, name: str, val: Any) -> None:
         """Create buttons for each @button node in an @buttons tree."""
-        c, tag = self.c, '@button'
+        c = self.c
+        tag = '@button'
         aList: list[tuple[Position, str, list[Callable]]] = []
         seen: list[VNode] = []
         after = p.nodeAfterTree()
@@ -684,7 +685,8 @@ class ParserBaseClass:
         self, p: Position, kind: str, junk_name: str, junk_val: Any, s: str = ''
     ) -> None:
         """Handle an @shortcut or @shortcuts node."""
-        c, d = self.c, self.shortcutsDict
+        c = self.c
+        d = self.shortcutsDict
         if not s:
             s = p.b
         fn = d.name()
@@ -1096,7 +1098,8 @@ class ActiveSettingsOutline:
     # @+node:ekr.20190905091614.7: *4* aso.legend
     def legend(self) -> str:
         """Compute legend for self.c"""
-        c, lm = self.c, g.app.loadManager
+        c = self.c
+        lm = g.app.loadManager
         legend = f'''\
             @language rest
 

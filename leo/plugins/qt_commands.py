@@ -143,7 +143,8 @@ def showColorNames(event: LeoKeyEvent | None = None) -> None:
 @g.command('show-color-wheel')
 def showColorWheel(self: Any, event: LeoKeyEvent | None = None) -> None:
     """Show a Qt color dialog."""
-    c, p = self.c, self.c.p
+    c = self.c
+    p = c.p
     picker = QtWidgets.QColorDialog()
     in_color_setting = p.h.startswith('@color ')
     try:
@@ -172,7 +173,8 @@ def showColorWheel(self: Any, event: LeoKeyEvent | None = None) -> None:
 @g.command('show-fonts')
 def showFonts(self: Any, event: LeoKeyEvent | None = None) -> None:
     """Open a tab in the log pane showing a font picker."""
-    c, p = self.c, self.c.p
+    c = self.c
+    p = c.p
     picker = QtWidgets.QFontDialog()
     if p.h.startswith('@font'):
         (name, family, weight, slant, size) = leoConfig.parseFont(p.b)

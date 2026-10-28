@@ -574,7 +574,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         # @+node:ekr.20220105154019.1: *5* ama.init_types_d
         def init_types_d(self) -> None:  # pragma: no cover
             """Init the annotations dict."""
-            c, d, tag = self.c, self.types_d, self.tag
+            c = self.c
+            d = self.types_d
+            tag = self.tag
             data = c.config.getData(tag)
             if not data:
                 print(f"@data {tag} not found")
@@ -596,7 +598,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         # @+node:ekr.20220105154158.1: *5* ama.add_annotations (entry)
         def add_annotations(self) -> None:  # pragma: no cover
-            c, p, tag = self.c, self.c.p, self.tag
+            c = self.c
+            p = c.p
+            tag = self.tag
             # Checks.
             if not p.isAnyAtFileNode():
                 g.es_print(f"{tag}: not an @file node: {p.h}")

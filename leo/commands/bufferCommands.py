@@ -57,7 +57,8 @@ class BufferCommandsClass(BaseEditCommandsClass):
             self.getBufferName(event, self.appendToBuffer1)
 
     def appendToBuffer1(self, name: str) -> None:
-        c, w = self.c, self.w
+        c = self.c
+        w = self.w
         s = w.getSelectedText()
         p = self.findBuffer(name)
         if s and p:
@@ -82,7 +83,8 @@ class BufferCommandsClass(BaseEditCommandsClass):
             self.getBufferName(event, self.copyToBuffer1)
 
     def copyToBuffer1(self, name: str) -> None:
-        c, w = self.c, self.w
+        c = self.c
+        w = self.w
         s = w.getSelectedText()
         p = self.findBuffer(name)
         if s and p:
@@ -104,7 +106,8 @@ class BufferCommandsClass(BaseEditCommandsClass):
             self.getBufferName(event, self.insertToBuffer1)
 
     def insertToBuffer1(self, name: str) -> None:
-        c, w = self.c, self.w
+        c = self.c
+        w = self.w
         s = w.getSelectedText()
         p = self.findBuffer(name)
         if s and p:
@@ -172,7 +175,8 @@ class BufferCommandsClass(BaseEditCommandsClass):
             self.getBufferName(event, self.prependToBuffer1)
 
     def prependToBuffer1(self, name: str) -> None:
-        c, w = self.c, self.w
+        c = self.c
+        w = self.w
         s = w.getSelectedText()
         p = self.findBuffer(name)
         if s and p:

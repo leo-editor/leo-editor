@@ -16,7 +16,9 @@ class TestCommands(LeoUnitTest):
     # @+others
     # @+node:ekr.20210906075242.28: *3* TestCommands.test_add_comments_with_multiple_language_directives
     def test_add_comments_with_multiple_language_directives(self):
-        c, p, w = self.c, self.c.p, self.c.frame.body.wrapper
+        c = self.c
+        p = c.p
+        w = c.frame.body.wrapper
         p.b = self.prep(
             """
             @language rest
@@ -45,7 +47,9 @@ class TestCommands(LeoUnitTest):
 
     # @+node:ekr.20210906075242.30: *3* TestCommands.test_add_html_comments
     def test_add_html_comments(self):
-        c, p, w = self.c, self.c.p, self.c.frame.body.wrapper
+        c = self.c
+        p = c.p
+        w = c.frame.body.wrapper
         p.b = self.prep(
             """
             @language html
@@ -69,7 +73,9 @@ class TestCommands(LeoUnitTest):
 
     # @+node:ekr.20210906075242.32: *3* TestCommands.test_add_python_comments
     def test_add_python_comments(self):
-        c, p, w = self.c, self.c.p, self.c.frame.body.wrapper
+        c = self.c
+        p = c.p
+        w = c.frame.body.wrapper
         p.b = self.prep(
             """
             @language python
@@ -114,7 +120,8 @@ class TestCommands(LeoUnitTest):
 
     # @+node:ekr.20210901140645.16: *3* TestCommands.test_c_checkPythonNode
     def test_c_checkPythonNode(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         p.b = self.prep(
             """
             @language python
@@ -137,7 +144,8 @@ class TestCommands(LeoUnitTest):
 
     # @+node:ekr.20210906075242.6: *3* TestCommands.test_c_demote_illegal_clone_demote
     def test_c_demote_illegal_clone_demote(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         # Create two cloned children.
         c.selectPosition(p)
         c.insertHeadline()
@@ -155,7 +163,8 @@ class TestCommands(LeoUnitTest):
 
     # @+node:felix.20250414224343.1: *3* TestCommands.test_c_doCommandByName_return_result
     def test_c_doCommandByName_return_result(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
 
         # test an existing native Leo command such as 'convert-blanks'.
         c.selectPosition(p)
@@ -181,7 +190,8 @@ class TestCommands(LeoUnitTest):
 
     # @+node:felix.20250414224344.1: *3* TestCommands.test_c_doCommandByName_return_result_from_leo_script
     def test_c_doCommandByName_return_result_from_leo_script(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
 
         # Creates a command from an @command node with mod_scripting's scriptingController.
         c.selectPosition(p)
@@ -235,7 +245,8 @@ class TestCommands(LeoUnitTest):
 
     # @+node:ekr.20210906075242.8: *3* TestCommands.test_c_findMatchingBracket
     def test_c_findMatchingBracket(self):
-        c, w = self.c, self.c.frame.body.wrapper
+        c = self.c
+        w = c.frame.body.wrapper
         s = '(abc)'
         c.p.b = s
         table = (
@@ -252,7 +263,8 @@ class TestCommands(LeoUnitTest):
 
     # @+node:ekr.20250404075346.1: *3* TestCommands.test_c_getEncoding
     def test_c_getEncoding(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         self.root_p.b = ''  # To ensure default.
         child = p.insertAfter()
         child.h = 'child'
@@ -414,7 +426,8 @@ class TestCommands(LeoUnitTest):
 
     # @+node:ekr.20250404075519.1: *3* TestCommands.test_c_getPath
     def test_c_getPath(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         child = p.insertAfter()
         child.h = '@path one'
         grand = child.insertAsLastChild()
@@ -441,7 +454,8 @@ class TestCommands(LeoUnitTest):
 
     # @+node:ekr.20210901140645.17: *3* TestCommands.test_c_tabNannyNode
     def test_c_tabNannyNode(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         # Test 1.
         s = self.prep(
             """
@@ -485,7 +499,9 @@ class TestCommands(LeoUnitTest):
 
     # @+node:ekr.20210906075242.29: *3* TestCommands.test_delete_comments_with_multiple_at_language_directives
     def test_delete_comments_with_multiple_at_language_directives(self):
-        c, p, w = self.c, self.c.p, self.c.frame.body.wrapper
+        c = self.c
+        p = c.p
+        w = c.frame.body.wrapper
         p.b = self.prep(
             """
             @language rest
@@ -513,7 +529,9 @@ class TestCommands(LeoUnitTest):
 
     # @+node:ekr.20210906075242.31: *3* TestCommands.test_delete_html_comments
     def test_delete_html_comments(self):
-        c, p, w = self.c, self.c.p, self.c.frame.body.wrapper
+        c = self.c
+        p = c.p
+        w = c.frame.body.wrapper
         p.b = self.prep(
             """
             @language html
@@ -537,7 +555,9 @@ class TestCommands(LeoUnitTest):
 
     # @+node:ekr.20210906075242.33: *3* TestCommands.test_delete_python_comments
     def test_delete_python_comments(self):
-        c, p, w = self.c, self.c.p, self.c.frame.body.wrapper
+        c = self.c
+        p = c.p
+        w = c.frame.body.wrapper
         p.b = self.prep(
             """
             @language python
@@ -561,7 +581,8 @@ class TestCommands(LeoUnitTest):
 
     # @+node:ekr.20230308103855.1: *3* TestCommands.test_find_b_h
     def test_find_b_h(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
 
         # Create two children of c.p.
         child1 = p.insertAsLastChild()
@@ -583,7 +604,8 @@ class TestCommands(LeoUnitTest):
 
     # @+node:ekr.20210901140645.27: *3* TestCommands.test_koi8_r_encoding
     def test_koi8_r_encoding(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         p1 = p.insertAsLastChild()
         s = '\xd4\xc5\xd3\xd4'  # the word 'test' in Russian, koi8-r
         assert isinstance(s, str), repr(s)

@@ -497,7 +497,8 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     @cmd('file-diff-files')
     def diff(self, event: LeoKeyEvent | None = None) -> None:
         """Creates a node and puts the diff between 2 files into it."""
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         fn = self.getReadableTextFile()
         if not fn:
             return
@@ -879,7 +880,8 @@ class GitDiffController:
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
         """
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
 
         if not self.get_parent_of_git_directory():
             return
@@ -1270,7 +1272,8 @@ class GitDiffController:
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
         """
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         if not self.get_parent_of_git_directory():
             return
         # Get list of changed files.  This is fast.
@@ -1854,7 +1857,8 @@ class GitDiffController:
         - Omit the diffs.
         - Don't show added or deleted nodes.
         """
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
 
         if not self.get_parent_of_git_directory():
             return

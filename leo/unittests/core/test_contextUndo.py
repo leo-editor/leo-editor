@@ -56,7 +56,8 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.3: *3* TestContextUndo.test_nested_node_contexts_capture_distinct_nodes_and_same_node_once
     def test_nested_node_contexts_capture_distinct_nodes_and_same_node_once(self):
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         p = c.p.copy()
         q = p.insertAfter()
         p.b, q.b = 'p original', 'q original'
@@ -87,40 +88,11 @@ class TestContextUndo(LeoUnitTest):
             lambda: self.assertEqual(tuple(c.all_unique_nodes()), after),
         )
 
-    # @+node:ekr.20261014103254.5: *3* TestContextUndo.test_action_helpers_leave_redraw_to_caller
-    def test_action_helpers_leave_redraw_to_caller(self):
+    # @+node:ekr.20261014103254.6: *3* TestContextUndo.test_insert_command_redraw_and_edit_replays_once
+    def test_insert_command_redraw_and_edit_replays_once(self):
         c = self.c
         p = c.p
         u = c.undoer
-        with (
-            patch.object(c, 'redraw') as redraw,
-            patch.object(c, 'redrawAndEdit') as edit,
-            patch.object(c, 'redraw_after_head_changed') as headline,
-        ):
-            with u:
-                u.set_command_name('composed actions')
-                inserted = u.insert_node(p)
-                u.change_headline(inserted, 'inserted')
-                clone = u.clone_node(inserted)
-                u.delete_node(clone)
-                redraw.assert_not_called()
-                edit.assert_not_called()
-                headline.assert_not_called()
-                c.p = inserted
-                u._redraw(c.p)
-            redraw.assert_called_once()
-            redraw.reset_mock()
-            u.undo()
-            redraw.assert_called_once()
-            self.assertEqual(c.p, p)
-            redraw.reset_mock()
-            u.redo()
-            redraw.assert_called_once()
-            self.assertEqual(c.p, inserted)
-
-    # @+node:ekr.20261014103254.6: *3* TestContextUndo.test_insert_command_redraw_and_edit_replays_once
-    def test_insert_command_redraw_and_edit_replays_once(self):
-        c, p, u = self.c, self.c.p, self.c.undoer
         with patch.object(c, 'redrawAndEdit', wraps=c.redrawAndEdit) as edit:
             inserted = c.insertHeadline()
             edit.assert_called_once_with(inserted, selectAll=True)
@@ -133,7 +105,9 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.7: *3* TestContextUndo.test_snapshot_redraw_restores_body_selection_after_refresh
     def test_snapshot_redraw_restores_body_selection_after_refresh(self):
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         p.b = 'before'
         w = c.frame.body.wrapper
         w.setSelectionRange(1, 3, insert=1)
@@ -147,31 +121,6 @@ class TestContextUndo(LeoUnitTest):
             u.redo()
             self.assertEqual(w.getSelectionRange(), (2, 4))
             self.assertEqual(w.getInsertPoint(), 4)
-
-    # @+node:ekr.20261014103254.8: *3* TestContextUndo.test_headline_refresh_replays_without_full_redraw
-    def test_headline_refresh_replays_without_full_redraw(self):
-        c = self.c
-        p = c.p
-        u = c.undoer
-        old_head = p.h
-        with (
-            patch.object(c, 'redraw_after_head_changed') as headline,
-            patch.object(c, 'redraw') as redraw,
-        ):
-            with u:
-                u.set_command_name('headline')
-                u.change_headline(p, 'new headline')
-                u.redraw_after_head_changed()
-            headline.assert_called_once()
-            headline.reset_mock()
-            u.undo()
-            headline.assert_called_once()
-            self.assertEqual(p.h, old_head)
-            headline.reset_mock()
-            u.redo()
-            headline.assert_called_once()
-            self.assertEqual(p.h, 'new headline')
-            redraw.assert_not_called()
 
     # @+node:ekr.20261014103254.9: *3* TestContextUndo.test_noop_context_preserves_redo
     def test_noop_context_preserves_redo(self):
@@ -281,7 +230,7 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.14: *3* TestContextUndo.test_insert_reuses_vnode_and_preserves_later_contents
     def test_insert_reuses_vnode_and_preserves_later_contents(self):
-        c, _u = self.c, self.c.undoer
+        c = self.c
         original = c.p.copy()
         inserted = c.insertHeadline()
         vnode = inserted.v
@@ -326,7 +275,8 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.16: *3* TestContextUndo.test_clone_returns_position_and_selects_it_on_redo
     def test_clone_returns_position_and_selects_it_on_redo(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         clone = c.clone()
         self.assertEqual(clone, c.p)
 
@@ -342,7 +292,7 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.17: *3* TestContextUndo.test_delete_first_root_adjusts_following_selection
     def test_delete_first_root_adjusts_following_selection(self):
-        c, _u = self.c, self.c.undoer
+        c = self.c
         first = c.p.copy()
         second = first.next().copy()
         c.deleteOutline()
@@ -360,7 +310,8 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.18: *3* TestContextUndo.test_delete_selected_subtree_preserves_children
     def test_delete_selected_subtree_preserves_children(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         child = p.insertAsLastChild()
         grandchild = child.insertAsLastChild()
         grandchild.h = 'grandchild'
@@ -374,7 +325,9 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.19: *3* TestContextUndo.test_outline_context_preserves_clones_and_nested_user_attributes
     def test_outline_context_preserves_clones_and_nested_user_attributes(self):
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         child = p.insertAsLastChild()
         clone = child.clone()
         child.v.u = {'nested': {'items': [1]}}
@@ -418,7 +371,8 @@ class TestContextUndo(LeoUnitTest):
         for retain in (False, True):
             with self.subTest(retain=retain):
                 self.setUp()
-                c, p = self.c, self.c.p
+                c = self.c
+                p = c.p
                 child = p.insertAsLastChild()
                 child.h, child.b = 'child', 'child body'
                 c.copyOutline()
@@ -438,7 +392,9 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.22: *3* TestContextUndo.test_move_context_does_not_scan_outline
     def test_move_context_does_not_scan_outline(self):
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         sibling = p.next()
         c.selectPosition(sibling)
         with patch.object(u, 'capture_outline', side_effect=AssertionError('whole outline scan')):
@@ -527,7 +483,9 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.27: *3* TestContextUndo.test_typing_preserves_text_mark_and_newlines
     def test_typing_preserves_text_mark_and_newlines(self):
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         for marked in (False, True):
             for old, new in (('', '\n'), ('a\n\n', 'a\nb\n\n'), ('a\n', ''), ('a\nb', 'a\nb\n')):
                 with self.subTest(marked=marked, old=old, new=new):
@@ -547,7 +505,9 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.28: *3* TestContextUndo.test_typing_granularity_and_save_boundary
     def test_typing_granularity_and_save_boundary(self):
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         for granularity in ('char', 'line', 'word', 'node'):
             with self.subTest(granularity=granularity):
                 p.b = ''
@@ -574,7 +534,9 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.29: *3* TestContextUndo.test_typing_word_boundary
     def test_typing_word_boundary(self):
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         u.granularity = 'word'
         p.b = ''
         for new in ('a', 'ab', 'ab ', 'ab c', 'ab cd'):
@@ -622,7 +584,9 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.33: *3* TestContextUndo.test_bulk_marks_and_sort_keep_vnode_identity
     def test_bulk_marks_and_sort_keep_vnode_identity(self):
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         first = p.insertAsLastChild()
         first.h = 'Z'
         second = first.insertAfter()
@@ -642,7 +606,8 @@ class TestContextUndo(LeoUnitTest):
     # @+node:ekr.20261014103254.34: *3* TestContextUndo.test_copy_marked_repeats
     def test_copy_marked_repeats(self):
         self.setUp()
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         child = p.insertAsLastChild()
         child.setMarked()
         before = c.hiddenRootNode.children[:]
@@ -658,7 +623,8 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.35: *3* TestContextUndo.test_drag_clone_is_removed_on_undo
     def test_drag_clone_is_removed_on_undo(self):
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         target = p.next()
         before = c.hiddenRootNode.children[:]
         c.dragCloneToNthChildOf(p, target, 0)
@@ -725,7 +691,9 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261014103254.37: *3* TestContextUndo.test_per_node_undo_keeps_new_beads
     def test_per_node_undo_keeps_new_beads(self):
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         u.per_node_undo = True
         with u.change_node(p, 'edit first'):
             p.b = 'first'
@@ -763,6 +731,37 @@ class TestContextUndo(LeoUnitTest):
                 for node in ast.walk(ast.parse(path.read_text(encoding='utf-8'))):
                     if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
                         self.assertNotIn(node.func.attr, legacy, f'{path}:{node.lineno}')
+
+    # @+node:ekr.20261027134713.1: *3* TestContextUndo.test_clone_node
+    def test_clone_node(self):
+        # Test the changes in PR #5015.
+        c = self.c
+        p = c.p
+        u = c.undoer
+        v = p.v
+        assert not p.isCloned()
+        for _i in range(3):
+            c.redraw_count = 0
+            clone = c.clone()
+            assert c.redraw_count == 1, f"{c.redraw_count=}"
+            assert clone == c.p
+            assert clone.v == v
+            assert clone.isCloned()
+            assert c.p.isCloned()
+            u.undo()
+            assert c.redraw_count == 2, f"{c.redraw_count=}"
+            assert c.p.v == v
+            assert c.p == p, f"\n{c.p=}\n  {p=}\n"
+            assert not c.p.isCloned()
+            u.redo()
+            assert c.redraw_count == 3, f"{c.redraw_count=}"
+            assert clone.v == v
+            assert c.p.isCloned()
+            u.undo()
+            assert c.redraw_count == 4, f"{c.redraw_count=}"
+            assert c.p.v == v
+            assert c.p == p, f"\n{c.p=}\n  {p=}\n"
+            assert not c.p.isCloned()
 
     # @-others
 

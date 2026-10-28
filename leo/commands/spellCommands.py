@@ -675,7 +675,9 @@ class SpellTabHandler:
         """Make the selected change to the text"""
         if not self.loaded:
             return False
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         w = c.frame.body.wrapper
         with u.change_outline('spell.change'):
             if selection := self.tab.getSuggestion():
@@ -719,7 +721,8 @@ class SpellTabHandler:
         """
         if not self.loaded:
             return None
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         sc = self.spellController
         w = c.frame.body.wrapper
         c.selectPosition(p)

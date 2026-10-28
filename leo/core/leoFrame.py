@@ -522,7 +522,8 @@ class LeoFrame:
         """Invoked from the mini-buffer and from shortcuts."""
         if not event:
             return
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         u = c.undoer
         w = event.w
         if not g.isTextWrapper(w):
@@ -560,7 +561,8 @@ class LeoFrame:
         """
         if not event:
             return
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         u = c.undoer
         w = event.w
         if not g.isTextWrapper(w):
@@ -1087,7 +1089,7 @@ class LeoTree:
         # Handle undo.
         with c.undoer as u:
             u.set_command_name(undoType)
-            u.change_headline(p, s, ch=ch, update_editor=False)
+            u.change_headline(p, s, ch=ch)
             u.redraw_after_head_changed()
 
     # @+node:ekr.20061109165848: *3* LeoTree: Must be defined in base class

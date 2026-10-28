@@ -16,8 +16,10 @@ class TestUndo(LeoUnitTest):
     # @+node:ekr.20210906141410.9: *3* TestUndo.runTest (Test)
     def runTest(self, before, after, i, j, func):
         """TestUndo.runTest."""
-        c, p, w = self.c, self.c.p, self.c.frame.body.wrapper
+        c = self.c
+        p = c.p
         u = c.undoer
+        w = c.frame.body.wrapper
         # Restore section references.
         before = before.replace('> >', '>>').replace('< <', '<<')
         after = after.replace('> >', '>>').replace('< <', '<<')
@@ -280,7 +282,8 @@ class TestUndo(LeoUnitTest):
     # @+node:ekr.20210906172626.16: *3* TestUndo.test_edit_headline
     def test_edit_headline(self):
         # Brian Theado.
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         u = c.undoer
         node1 = p.insertAsLastChild()
         node2 = node1.insertAfter()
@@ -355,8 +358,9 @@ class TestUndo(LeoUnitTest):
 
     # @+node:ekr.20210906172626.15: *3* TestUndo.test_restore_marked_bits
     def test_restore_marked_bits(self):
-        c, p = self.c, self.c.p
         # Test of #1694.
+        c = self.c
+        p = c.p
         u, w = c.undoer, c.frame.body.wrapper
         oldText = p.b
         newText = p.b + '\n#changed'
@@ -381,7 +385,8 @@ class TestUndo(LeoUnitTest):
     def test_undo_group(self):
         # Test an off-by-one error in c.undoer.bead.
         # The buggy redoGroup code worked if the undo group was the first item on the undo stack.
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         u = c.undoer
         original = p.insertAfter()
         original_s = original.b = self.prep(
@@ -413,7 +418,9 @@ class TestUndo(LeoUnitTest):
     # @+node:ekr.20250625044932.1: *3* TestUndo.test_undo_group_after_move
     def test_undo_group_after_move(self):
         # Test a group of moves.
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c = self.c
+        p = c.p
+        u = c.undoer
         p1 = p.insertAfter()
         p1.h = 'p1'
         p2 = p1.insertAfter()

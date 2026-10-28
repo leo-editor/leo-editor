@@ -458,7 +458,8 @@ def contractIfNotCurrent(c: Cmdr, p: Position, leaveOpen: Position) -> None:
 @g.commander_command('contract-all-subheads')
 def contractAllSubheads(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Contract all children of the presently selected node."""
-    c, p = self, self.p
+    c = self
+    p = c.p
     if not p:
         return
     child = p.firstChild()
@@ -485,7 +486,9 @@ def contractNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('contract-or-go-left')
 def contractNodeOrGoToParent(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Simulate the left Arrow Key in folder of Windows Explorer."""
-    c, cc, p = self, self.chapterController, self.p
+    c = self
+    cc = c.chapterController
+    p = c.p
     parent = p.parent()
     redraw = False
     # Bug fix: 2016/04/19: test p.v.isExpanded().
@@ -543,7 +546,8 @@ def expandAllHeadlines(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('expand-all-subheads')
 def expandAllSubheads(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Expand all children of the presently selected node."""
-    c, p = self, self.p
+    c = self
+    p = c.p
     if not p:
         return
     child = p.firstChild()
@@ -640,7 +644,8 @@ def expandNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('expand-and-go-right')
 def expandNodeAndGoToFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """If a node has children, expand it if needed and go to the first child."""
-    c, p = self, self.p
+    c = self
+    p = c.p
     c.endEditing()
     if p.hasChildren():
         if not p.isExpanded():
@@ -658,7 +663,8 @@ def expandNodeOrGoToFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> 
     Otherwise, if c.p is expanded, select the first child.
     Otherwise, expand c.p.
     """
-    c, p = self, self.p
+    c = self
+    p = c.p
     c.endEditing()
     if p.hasChildren():
         if p.isExpanded():
@@ -718,7 +724,8 @@ def fullCheckOutline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('find-next-clone')
 def findNextClone(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the next cloned node."""
-    c, p = self, self.p
+    c = self
+    p = c.p
     cc = c.chapterController
     if not p:
         return
@@ -774,7 +781,8 @@ def goToFirstNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('goto-first-sibling')
 def goToFirstSibling(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the first sibling of the selected node."""
-    c, p = self, self.p
+    c = self
+    p = c.p
     if p.hasBack():
         while p.hasBack():
             p.moveToBack()
@@ -810,7 +818,8 @@ def goToLastNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('goto-last-sibling')
 def goToLastSibling(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the last sibling of the selected node."""
-    c, p = self, self.p
+    c = self
+    p = c.p
     if p.hasNext():
         while p.hasNext():
             p.moveToNext()
@@ -837,7 +846,8 @@ def goToNextClone(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     Select the next node that is a clone of the selected node.
     If the selected node is not a clone, do find-next-clone.
     """
-    c, p = self, self.p
+    c = self
+    p = c.p
     cc = c.chapterController
     if not p:
         return
@@ -876,7 +886,8 @@ def goToNextClone(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('goto-next-changed')
 def goToNextDirtyHeadline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the node that is marked as changed."""
-    c, p = self, self.p
+    c = self
+    p = c.p
     if not p:
         return
     p.moveToThreadNext()
@@ -900,7 +911,8 @@ def goToNextDirtyHeadline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('goto-next-marked')
 def goToNextMarkedHeadline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the next marked node."""
-    c, p = self, self.p
+    c = self
+    p = c.p
     if not p:
         return
     p.moveToThreadNext()
@@ -924,7 +936,8 @@ def goToNextMarkedHeadline(self: Cmdr, event: LeoKeyEvent | None = None) -> None
 @g.commander_command('goto-next-sibling')
 def goToNextSibling(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the next sibling of the selected node."""
-    c, p = self, self.p
+    c = self
+    p = c.p
     c.treeSelectHelper(p and p.next())
 
 
@@ -932,7 +945,8 @@ def goToNextSibling(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('goto-parent')
 def goToParent(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the parent of the selected node."""
-    c, p = self, self.p
+    c = self
+    p = c.p
     c.treeSelectHelper(p and p.parent())
 
 
@@ -940,7 +954,8 @@ def goToParent(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('goto-prev-marked')
 def goToPrevMarkedHeadline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the previous marked node."""
-    c, p = self, self.p
+    c = self
+    p = c.p
     if not p:
         return
     p.moveToThreadBack()
@@ -964,7 +979,8 @@ def goToPrevMarkedHeadline(self: Cmdr, event: LeoKeyEvent | None = None) -> None
 @g.commander_command('goto-prev-sibling')
 def goToPrevSibling(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the previous sibling of the selected node."""
-    c, p = self, self.p
+    c = self
+    p = c.p
     c.treeSelectHelper(p and p.back())
 
 
@@ -972,7 +988,8 @@ def goToPrevSibling(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('goto-prev-node')
 def selectThreadBack(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the node preceding the selected node in outline order."""
-    c, p = self, self.p
+    c = self
+    p = c.p
     if not p:
         return
     p.moveToThreadBack()
@@ -983,7 +1000,8 @@ def selectThreadBack(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('goto-next-node')
 def selectThreadNext(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the node following the selected node in outline order."""
-    c, p = self, self.p
+    c = self
+    p = c.p
     if not p:
         return
     p.moveToThreadNext()
@@ -995,7 +1013,8 @@ def selectThreadNext(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 def selectVisBack(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the visible node preceding the presently selected node."""
     # This has an up arrow for a control key.
-    c, p = self, self.p
+    c = self
+    p = c.p
     if not p:
         return
     if c.canSelectVisBack():
@@ -1009,7 +1028,8 @@ def selectVisBack(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('goto-next-visible')
 def selectVisNext(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the visible node following the presently selected node."""
-    c, p = self, self.p
+    c = self
+    p = c.p
     if not p:
         return
     if c.canSelectVisNext():
@@ -1025,7 +1045,9 @@ def selectVisNext(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('dehoist')
 def dehoist(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Undo a previous hoist of an outline."""
-    c, cc, tag = self, self.chapterController, '@chapter '
+    c = self
+    cc = c.chapterController
+    tag = '@chapter '
     if not c.p or not c.hoistStack:
         return
     # #2718: de-hoisting an @chapter node is equivalent to selecting the main chapter.
@@ -1060,7 +1082,8 @@ def clearAllHoists(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('hoist')
 def hoist(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Make only the selected outline visible."""
-    c, p = self, self.p
+    c = self
+    p = c.p
     if not p:
         return
     # Don't hoist an @chapter node.
@@ -1102,7 +1125,9 @@ def cloneToAtSpot(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     Create a clone of the selected node and move it to the last @spot node
     of the outline. Create the @spot node if necessary.
     """
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     if not p:
         return
     # 2015/12/27: fix bug 220: do not allow clone-to-at-spot on @spot node.
@@ -1146,7 +1171,9 @@ def cloneToLastNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     Clone the selected node and move it to the last node.
     Do *not* change the selected node.
     """
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     if not p:
         return
     prev = p.copy()
@@ -1269,7 +1296,8 @@ def insertHeadlineBefore(self: Cmdr, event: LeoKeyEvent | None = None) -> Positi
 @g.commander_command('copy-marked-nodes')
 def copyMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Copy all marked nodes as children of a new node."""
-    c, u = self, self.undoer
+    c = self
+    u = c.undoer
     p1 = c.p
     # Create a new node to hold clones.
     with u.change_outline('copy-marked-nodes'):
@@ -1302,7 +1330,8 @@ def copyMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('delete-marked-nodes')
 def deleteMarked(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Delete all marked nodes."""
-    c, u = self, self.undoer
+    c = self
+    u = c.undoer
     with u.change_outline('delete-marked-nodes'):
         undo_data, p = [], c.rootPosition()
         while p:
@@ -1399,7 +1428,8 @@ def createMoveMarkedNode(c: Cmdr) -> Position:
 @g.commander_command('mark-changed-nodes')
 def markChangedHeadlines(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Mark all nodes that have been changed."""
-    c, _current, u = self, self.p, self.undoer
+    c = self
+    u = c.undoer
     c.endEditing()
     with u.change_outline('mark-changed-nodes'):
         for p in c.all_unique_positions():
@@ -1412,7 +1442,8 @@ def markChangedHeadlines(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 # @+node:ekr.20031218072017.2924: *3* c_oc.markChangedRoots
 def markChangedRoots(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Mark all changed @root nodes."""
-    c, _current, u = self, self.p, self.undoer
+    c = self
+    u = c.undoer
     c.endEditing()
     with u.change_outline('c.markChangedRoots'):
         for p in c.all_unique_positions():
@@ -1429,7 +1460,9 @@ def markChangedRoots(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('toggle-mark')
 def markHeadline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Toggle the mark of the selected node."""
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     if not p:
         return
     c.endEditing()
@@ -1446,7 +1479,9 @@ def markHeadline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('mark-subheads')
 def markSubheads(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Mark all children of the selected node as changed."""
-    c, current, u = self, self.p, self.undoer
+    c = self
+    current = c.p
+    u = c.undoer
     if not current:
         return
     c.endEditing()
@@ -1461,7 +1496,9 @@ def markSubheads(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('unmark-all')
 def unmarkAll(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Unmark all nodes in the entire outline."""
-    c, current, u = self, self.p, self.undoer
+    c = self
+    current = c.p
+    u = c.undoer
     if not current:
         return
     c.endEditing()
@@ -1483,7 +1520,9 @@ def unmarkAll(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('demote')
 def demote(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Make all following siblings children of the selected node."""
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     if not p or not p.hasNext():
         c.treeFocusHelper()
         return
@@ -1523,7 +1562,9 @@ def moveOutlineDown(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     # An important optimization:
     # we don't have to call checkMoveWithParentWithWarning() if the parent of
     # the moved node remains the same.
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     if not p:
         return
     if not c.canMoveOutlineDown():
@@ -1572,7 +1613,9 @@ def moveOutlineDown(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('move-outline-left')
 def moveOutlineLeft(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Move the selected node left if possible."""
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     if not p:
         return
     if not c.canMoveOutlineLeft():
@@ -1599,7 +1642,9 @@ def moveOutlineLeft(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('move-outline-right')
 def moveOutlineRight(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Move the selected node right if possible."""
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     if not p:
         return
     if not c.canMoveOutlineRight():  # 11/4/03: Support for hoist.
@@ -1627,7 +1672,9 @@ def moveOutlineRight(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('move-outline-up')
 def moveOutlineUp(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Move the selected node up if possible."""
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     if not p:
         return
     if not c.canMoveOutlineUp():  # Support for hoist.
@@ -1693,7 +1740,9 @@ def moveOutlineToFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Non
 
     Do nothing if a hoist is in effect.
     """
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     if not p:
         return
     if c.hoistStack:
@@ -1719,7 +1768,9 @@ def moveOutlineToLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> None
 
     Do nothing if a hoist is in effect.
     """
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     if not p:
         return
     if c.hoistStack:
@@ -1741,7 +1792,9 @@ def moveOutlineToLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> None
 @g.commander_command('promote')
 def promote(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Make all children of the selected nodes siblings of the selected node."""
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     if not p or not p.hasChildren():
         c.treeFocusHelper()
         return
@@ -1795,7 +1848,8 @@ def sortChildren(
 ) -> None:
     """Sort the children of a node."""
     # This method no longer supports the 'cmp' keyword arg.
-    c, p = self, self.p
+    c = self
+    p = c.p
     if p and p.hasChildren():
         c.sortSiblings(p=p.firstChild(), sortChildren=True, key=key, reverse=reverse)
 
@@ -1811,7 +1865,8 @@ def sortSiblings(
     reverse: bool = False,
 ) -> None:
     """Sort the siblings of a node."""
-    c, u = self, self.undoer
+    c = self
+    u = c.undoer
     if not p:
         p = c.p
     if not p:

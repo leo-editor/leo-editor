@@ -316,7 +316,8 @@ class AtFile:
     @cmd('check-external-file')
     def checkExternalFile(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """Make sure an external file written by Leo may be read properly."""
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         if not p.isAtFileNode() and not p.isAtThinFileNode():
             g.red('Please select an @thin or @file node')
             return
@@ -343,7 +344,8 @@ class AtFile:
 
         Scripts should use c.makeLinkLeoFiles helper to make @leo files.
         """
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         if not p.isAtLeoNode():
             g.red('Please select an @leo node')
             return
@@ -939,7 +941,8 @@ class AtFile:
 
     # @+node:ekr.20080712080505.1: *6* at.importAtShadowNode
     def importAtShadowNode(self, p: Position) -> bool:  # pragma: no cover
-        c, ic = self.c, self.c.importCommands
+        c = self.c
+        ic = c.importCommands
         fn = c.fullPath(p)
         if not g.os_path_exists(fn):
             g.error(f"not found: {p.h!r}", nodeLink=p.get_UNL())

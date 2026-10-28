@@ -676,7 +676,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         w: QTextMixin | None = None,
     ) -> None:
         """State handler for dabbrev-expands command."""
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
         w = w or c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
@@ -692,7 +693,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
 
     def dynamicExpandHelper1(self, event: LeoKeyEvent | None = None) -> None:
         """Finisher for dabbrev-expands."""
-        c, k = self.c, self.c.k
+        c = self.c
+        k = c.k
         u = c.undoer
         w = self.w
         c.frame.log.deleteTab('Completion')

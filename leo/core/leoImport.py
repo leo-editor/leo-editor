@@ -392,7 +392,8 @@ class LeoImportCommands:
     # @+node:ekr.20031218072017.1462: *4* ic.exportHeadlines
     def exportHeadlines(self, fileName: str) -> None:
         """Export headlines for c.p and its subtree to the file with the given name."""
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         nl = self.output_newline
         if not p:
             return
@@ -534,7 +535,8 @@ class LeoImportCommands:
 
     # @+node:ekr.20031218072017.1464: *4* ic.weave
     def weave(self, filename: str) -> None:
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         nl = self.output_newline
         if not p:
             return
@@ -700,7 +702,8 @@ class LeoImportCommands:
 
     # @+node:ekr.20070806111212: *4* ic.readAtAutoNodes
     def readAtAutoNodes(self) -> None:
-        c, p = self.c, self.c.p
+        c = self.c
+        p = c.p
         after = p.nodeAfterTree()
         found = False
         while p and p != after:
@@ -765,7 +768,8 @@ class LeoImportCommands:
         verbose: bool = True,  # Legacy value.
     ) -> None:
         # Not a command.  It must *not* have an event arg.
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         if not c or not c.p or not files:
             return
         self.treeType = treeType
@@ -834,7 +838,8 @@ class LeoImportCommands:
 
     # @+node:ekr.20031218072017.3224: *4* ic.importWebCommand & helpers
     def importWebCommand(self, files: list[str], webType: str) -> None:
-        c, current = self.c, self.c.p
+        c = self.c
+        current = c.p
         if not current:
             return
         if not files:
@@ -1233,7 +1238,8 @@ class LeoImportCommands:
         Similar to c.setBodyString, but does not recolor the text or
         redraw the screen.
         """
-        c, v = self.c, p.v
+        c = self.c
+        v = p.v
         if not c or not p:
             return
         s = g.toUnicode(s, self.encoding)
@@ -2050,7 +2056,8 @@ class TabImporter:
     # @+node:ekr.20161006073129.1: *3* tabbed.import_files
     def import_files(self, files: list[str]) -> None:
         """Import a list of tab-delimited files."""
-        c, u = self.c, self.c.undoer
+        c = self.c
+        u = c.undoer
         if not files:
             return
         with u.change_outline('import-tabbed-files'):

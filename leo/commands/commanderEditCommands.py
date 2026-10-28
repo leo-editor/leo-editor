@@ -24,7 +24,10 @@ if TYPE_CHECKING:  # pragma: no cover
 @g.commander_command('add-comments')
 def addComments(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Undoably add comments to the selected text."""
-    c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
+    c = self
+    p = c.p
+    u = c.undoer
+    w = c.frame.body.wrapper
     head, lines, tail, _old_sel, old_y_scroll = self.getBodyLines()
     if not lines:
         g.warning('no text selected')
@@ -67,7 +70,8 @@ def addComments(self: Self, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('convert-all-blanks')
 def convertAllBlanks(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Convert all blanks to tabs in the selected outline."""
-    c, u = self, self.undoer
+    c = self
+    u = c.undoer
     current = c.p
     if g.app.batchMode:
         c.notValidInBatchMode('convert-all-blanks')
@@ -145,7 +149,10 @@ def convertBlanks(self: Self, event: LeoKeyEvent | None = None) -> bool:
     Convert *all* blanks to tabs in the selected node.
     Return True if the the p.b was changed.
     """
-    c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
+    c = self
+    p = c.p
+    u = c.undoer
+    w = c.frame.body.wrapper
     w.selectAllText()
     head, lines, tail, _old_sel, old_y_scroll = self.getBodyLines()
     tabWidth = c.getTabWidth(c.p)
@@ -169,7 +176,10 @@ def convertBlanks(self: Self, event: LeoKeyEvent | None = None) -> bool:
 @g.commander_command('convert-tabs')
 def convertTabs(self: Self, event: LeoKeyEvent | None = None) -> bool:
     """Convert all tabs to blanks in the selected node."""
-    c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
+    c = self
+    p = c.p
+    u = c.undoer
+    w = c.frame.body.wrapper
     w.selectAllText()
     head, lines, tail, _old_sel, old_y_scroll = self.getBodyLines()
     tabWidth = c.getTabWidth(c.p)
@@ -198,7 +208,9 @@ def convertTabs(self: Self, event: LeoKeyEvent | None = None) -> bool:
 @g.commander_command('unindent-region')
 def dedentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Remove one tab's worth of indentation from all presently selected lines."""
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     w = c.frame.body.wrapper  # Only valid in body.
     sel_1, sel_2 = w.getSelectionRange()
     tab_width = c.getTabWidth(c.p)
@@ -252,7 +264,10 @@ def deleteComments(self: Self, event: LeoKeyEvent | None = None) -> None:
     *See also*: add-comments.
     """
     # @-<< deleteComments docstring >>
-    c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
+    c = self
+    p = c.p
+    u = c.undoer
+    w = c.frame.body.wrapper
 
     # Initial data.
     head, lines, tail, old_sel, old_y_scroll = self.getBodyLines()
@@ -357,7 +372,9 @@ def extract(self: Self, event: LeoKeyEvent | None = None) -> None:
        selected lines become the child's body text.
     """
     # @-<< docstring for extract command >>
-    c, u, w = self, self.undoer, self.frame.body.wrapper
+    c = self
+    u = c.undoer
+    w = c.frame.body.wrapper
 
     # Set data.
     head, lines, tail, oldSel, oldYview = c.getBodyLines()
@@ -539,7 +556,8 @@ def findSectionName(self: Self, s: str) -> str:
 @g.commander_command('select-to-matching-bracket')
 def findMatchingBracket(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Select the text between matching brackets."""
-    c, p = self, self.p
+    c = self
+    p = c.p
     if g.app.batchMode:
         c.notValidInBatchMode('match-brackets')
         return
@@ -559,7 +577,10 @@ def alwaysIndentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     text. The @tabwidth directive in effect determines amount of
     indentation.
     """
-    c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
+    c = self
+    p = c.p
+    u = c.undoer
+    w = c.frame.body.wrapper
     if not event:
         return
     # #1801: Don't rely on bindings to ensure that we are editing the body.
@@ -637,7 +658,9 @@ def indentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('insert-body-time')
 def insertBodyTime(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Insert a time/date stamp at the cursor."""
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     w = c.frame.body.wrapper
     if g.app.batchMode:
         c.notValidInBatchMode('insert-body-time')
@@ -674,7 +697,10 @@ def line_to_headline(self: Self, event: LeoKeyEvent | None = None) -> None:
 
     Cut the selected line and make it the new node's headline
     """
-    c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
+    c = self
+    p = c.p
+    u = c.undoer
+    w = c.frame.body.wrapper
     ins, s = w.getInsertPoint(), p.b
     i = g.find_line_start(s, ins)
     j = g.skip_line(s, i)
@@ -865,7 +891,8 @@ def reformatParagraph(
     Paragraph is bound by start of body, end of body and blank lines. Paragraph is
     selected by position of current insertion cursor.
     """
-    c, w = self, self.frame.body.wrapper
+    c = self
+    w = c.frame.body.wrapper
     if g.app.batchMode:
         c.notValidInBatchMode("reformat-paragraph")
         return
@@ -1174,7 +1201,9 @@ def showInvisiblesHelper(c: Cmdr, val: Value) -> None:
 @g.commander_command('toggle-angle-brackets')
 def toggleAngleBrackets(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Add or remove double angle brackets from the headline of the selected node."""
-    c, p, u = self, self.p, self.undoer
+    c = self
+    p = c.p
+    u = c.undoer
     if g.app.batchMode:
         c.notValidInBatchMode('toggle-angle-brackets')
         return

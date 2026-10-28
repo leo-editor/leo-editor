@@ -8689,7 +8689,8 @@ def openUrlHelper(event: LeoKeyEvent | None = None, url: str = '') -> None:
     """Open the unl, url or gnx under the cursor.  Return it for unit testing."""
     if not event:
         return
-    c, w = event.c, event.w
+    c = event.c
+    w = event.w
     if not c:
         return
     if not g.app.gui.isTextWrapper(w):

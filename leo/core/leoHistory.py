@@ -77,7 +77,8 @@ class NodeHistory:
     # @+node:ekr.20130915111638.11294: *3* NodeHistory.select
     def select(self, p: Position, chapter: Chapter | None) -> None:
         """Select p in the given chapter."""
-        c, cc = self.c, self.c.chapterController
+        cc = self
+        c = cc.c.c.chapterController
         assert c.positionExists(p), repr(p)
         oldChapter = cc.getSelectedChapter()
         if oldChapter != chapter:
@@ -89,7 +90,8 @@ class NodeHistory:
         """
         Update the beadList while p is being selected.
         """
-        c, cc = self.c, self.c.chapterController
+        c = self.c
+        cc = c.chapterController
         if not p or not c.positionExists(p):
             return
 

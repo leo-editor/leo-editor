@@ -299,7 +299,8 @@ class PersistenceDataController:
         If it does not exist, create it as the *last* top-level node,
         so that no existing positions become invalid.
         """
-        c, h = self.c, '@persistence'
+        c = self.c
+        h = '@persistence'
         if p := g.findNodeAnywhere(c, h):
             return p
         if c.config.getBool('create-at-persistence-nodes-automatically'):
