@@ -2722,9 +2722,13 @@ class Undoer:
             finally:
                 u.node_captures.remove(p.v)
                 new_p = c.p
-                u._redraw(new_p)  # PR #5005.
                 new_state = u.capture_node(p.v)
                 if old_state != new_state:
+                    # Redraw only if the node has actually changed.
+                    # A redraw destroys any headline editor in progress,
+                    # so redrawing a node that did not change would lose
+                    # the user's in-progress headline edit.
+                    u._redraw(new_p)  # PR #5005.
                     new_ui = u.capture_ui()
 
                     def change_node_redoer() -> None:

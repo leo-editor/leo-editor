@@ -267,19 +267,36 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514043850.18: *5* abbrev.replace_selection
     def replace_selection(self, i: int, j: int, s: str) -> None:
-        """Undoably replace w[i:j] by s."""
+        """
+        Replace w[i:j] by s.
+
+        In the body, the change is undoable immediately.
+        In a headline, the change becomes official (and undoable)
+        when the headline editor closes.
+        """
         c = self.c
         p = c.p
         u = c.undoer
         w = self.w
+        if self.in_head:
+            # The headline is not yet officially changed.
+            #
+            # Do *not* use u.change_node here:
+            #   - u.change_node redraws the tree, and a redraw destroys the
+            #     headline editor, so the expansion would be lost.
+            #   - The headline does not change until the editor closes.
+            # The change becomes official (and undoable) at that time.
+            # This mirrors LeoFrame.cutText and LeoFrame.pasteText.
+            w.delete(i, j)
+            w.insert(i, s)
+            return
         with u.change_node(p, 'replace-selection'):
             # Make the replacement.
             w.delete(i, j)
             w.insert(i, s)
 
-            # Update only body text. Setting p.h here would be wrong.
-            if not self.in_head:
-                p.v.b = w.getAllText()
+            # Update the body text.
+            p.v.b = w.getAllText()
 
     # @+node:ekr.20260516063743.1: *4* abbrev: script substitution
     # @+node:ekr.20260516063159.1: *5* abbrev.make_all_scripting_substitutions

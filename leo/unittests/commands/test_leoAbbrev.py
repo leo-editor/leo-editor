@@ -254,6 +254,55 @@ class TestAbbrev(LeoUnitTest):
             c.endEditing()
             test(p.h, expected)
 
+    # @+node:ekr.20261029120000.1: *3* TestAbbrev.test_headline_expansion_survives_a_redraw
+    def test_headline_expansion_survives_a_redraw(self):
+        """
+        Emulate the Qt tree, where a redraw destroys the headline editor.
+
+        Expanding an abbreviation in a headline must not redraw the tree:
+        the redraw would destroy the headline editor, and the expansion
+        (which is not official until the editor closes) would be lost.
+        """
+        c = self.c
+        p = c.p
+        x = c.abbrevCommands
+        x.abbrevs = {}
+        definition = 'det;;=<details><summary><|Title|></summary></details>'
+        x.addAbbrevHelper(definition)
+        i = definition.find(';=')
+        contents = definition[:i]
+        expected = definition[i + 2 :]
+
+        tree = c.frame.tree
+        original_redraw_tree = tree.redraw_tree
+
+        def redraw_tree(p=None):
+            # Emulate LeoQtTree.redraw_tree: the redraw destroys the editor.
+            tree.editWidgetsDict.clear()
+            return original_redraw_tree(p)
+
+        tree.redraw_tree = redraw_tree
+        try:
+            c.editHeadline()
+            w = c.headline_wrapper(p)
+            p.h = contents
+            w.setAllText(contents)
+            w.setInsertPoint(len(contents), contents)
+            event = LeoKeyEvent(c, char=';', binding=';', w=w)
+            self.assertTrue(x.expandAbbrev(event=event, stroke=None))
+            # The headline editor must still exist and contain the expansion.
+            w2 = c.headline_wrapper(p)
+            self.assertIsNotNone(w2)
+            self.assertEqual(w2.getAllText(), expected)
+            # The headline becomes official when the editor closes.
+            c.endEditing()
+            self.assertEqual(p.h, expected)
+            # The expansion must be undoable.
+            c.undoer.undo()
+            self.assertEqual(p.h, contents)
+        finally:
+            tree.redraw_tree = original_redraw_tree
+
     # @+node:ekr.20210905064816.3: *3* TestAbbrev.test_addAbbrevHelper
     def test_addAbbrevHelper(self):
         c = self.c
