@@ -537,13 +537,11 @@ class LeoFrame:
         s = w.get(i, j)
         s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
         g.app.gui.replaceClipboardWith(s)
-        # Update the widget.
         if c.widget_name(w).startswith('body'):
             with u.change_node(p, 'cut-text'):
                 w.delete(i, j)
+                p.v.b = w.getAllText()
                 w.see(i)
-                u.set_body(p, new_body=w.getAllText())
-                c.p = p
         else:
             w.delete(i, j)
             w.see(i)
@@ -591,8 +589,8 @@ class LeoFrame:
         if wname.startswith('body'):
             with u.change_node(p, 'paste-text'):
                 update_w()
-                u.set_body(p, new_body=w.getAllText())
-                c.p = p
+                p.v.b = w.getAllText()
+                w.see(w.getInsertPoint())
         else:
             if hasattr(w, 'getXScrollPosition'):
                 x_pos = w.getXScrollPosition()
