@@ -974,7 +974,7 @@ class Undoer:
         else:
             bead = TypingBead(u, p, oldText, newText, oldSel, newSel, newInsert, scroll)
             u.pushBead(bead)
-        p.b = newText
+        p.v.b = newText  # Do **not** use p.b = newText!!!
         u.updateAfterTyping(p, w)
         if u.per_node_undo:
             u.putIvarsToVnode(p)
