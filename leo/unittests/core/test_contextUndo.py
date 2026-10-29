@@ -358,26 +358,19 @@ class TestContextUndo(LeoUnitTest):
             test()
             assert len(u.beads) == 1
             assert p.b == 'after'
+            assert c.p.isCloned()
             u.undo()
             assert len(u.beads) == 1
             assert p.b == 'before'
+            assert not c.p.isCloned()
             u.redo()
             assert len(u.beads) == 1
             assert p.b == 'after'
+            assert c.p.isCloned()
             u.undo()
             assert len(u.beads) == 1
             assert p.b == 'before'
-
-        # with u.change_outline('bulk'):
-        #     with c.undoer as u:
-        #         u.set_command_name('inner')
-        #         p.b = 'after'
-        #         clone = u.clone_node(p)
-        # self.assertEqual(len(u.beads), 1)
-        # self.cycles(
-        #     lambda: (self.assertEqual(p.b, 'before'), self.assertFalse(p.isCloned())),
-        #     lambda: (self.assertEqual(p.b, 'after'), self.assertEqual(c.p, clone)),
-        # )
+            assert not c.p.isCloned()
 
     # @+node:ekr.20261014103254.21: *3* TestContextUndo.test_plain_and_clone_preserving_paste_repeat
     def test_plain_and_clone_preserving_paste_repeat(self):
