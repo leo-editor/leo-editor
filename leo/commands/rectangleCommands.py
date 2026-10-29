@@ -236,6 +236,8 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         """Yank into the rectangle defined by the start and end of selected text."""
         c = self.c
         k = c.k
+        p = c.p
+        u = c.undoer
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
@@ -250,19 +252,20 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         elif not killRect:
             k.setLabelGrey('No kill rect')
             return
-        self.beginCommand(w, 'yank-rectangle')
-        r1, r2, r3, r4 = self.getRectanglePoints(w)
-        n = 0
-        for r in range(r1, r3 + 1):
-            if n >= len(killRect):
-                break
-            w.delete(toInt(f"{r}.{r2}"), toInt(f"{r}.{r4}"))
-            w.insert(toInt(f"{r}.{r2}"), killRect[n])
-            n += 1
-        i = toInt(f"{r1}.{r2}")
-        j = toInt(f"{r3}.{r2 + len(killRect[n - 1])}")
-        w.setSelectionRange(i, j, insert=j)
-        self.endCommand()
+        with u.change_node(p, 'yank-rectangle'):
+            r1, r2, r3, r4 = self.getRectanglePoints(w)
+            n = 0
+            for r in range(r1, r3 + 1):
+                if n >= len(killRect):
+                    break
+                w.delete(toInt(f"{r}.{r2}"), toInt(f"{r}.{r4}"))
+                w.insert(toInt(f"{r}.{r2}"), killRect[n])
+                n += 1
+            i = toInt(f"{r1}.{r2}")
+            j = toInt(f"{r3}.{r2 + len(killRect[n - 1])}")
+            w.setSelectionRange(i, j, insert=j)
+            p.b = w.getAllText()
+            # c.p = p
 
     # @-others
 

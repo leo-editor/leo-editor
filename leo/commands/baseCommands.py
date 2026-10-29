@@ -83,7 +83,7 @@ class BaseEditCommandsClass:
             i = callers_s.find(tag)
             if i > -1:
                 callers_s = callers_s[i + len(tag) :]
-            g.print_unique_message(f"\nendCommand: {bunch.__class__.__name__=}: {callers_s}")  ###
+            g.print_unique_message(f"\nendCommand: {bunch.__class__.__name__=}: {callers_s}")
         if bunch and bunch.name.startswith('body') and changed:
             newText = w.getAllText()
             if bunch.undoType.capitalize() == 'Typing':

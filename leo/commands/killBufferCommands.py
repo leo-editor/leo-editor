@@ -88,7 +88,6 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             w.setInsertPoint(i2)
             c.k.resetLabel()
             p.b = w.getAllText()
-            c.p = p
 
     # @+node:ekr.20150514063305.413: *3* backwardKillWord & killWord (converted)
     @cmd('backward-kill-word')
@@ -189,10 +188,12 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         A helper method for all kill commands except kill-paragraph commands.
         """
         c = self.c
+        p = c.p
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         # Extend (frm, to) if it spans a line.
+        old_y_scroll = w.getYScrollPosition()
         i, j = w.getSelectionRange()
         s = w.get(i, j)
         if s.find('\n') > -1:
@@ -201,7 +202,9 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         self.addToKillBuffer(s)
         g.app.gui.replaceClipboardWith(s)
         w.delete(frm, to)
-        w.setInsertPoint(frm)
+        p.b = w.getAllText()
+        w.setInsertPoint(frm)  # Do this *after* setting p.b.
+        w.setYScrollPosition(old_y_scroll)  # PR #5020.
         g.app.gui.set_focus(c, w)  # 2607
 
     # @+node:ekr.20261028165709.1: *3* ec._kill_helper (new)
@@ -228,6 +231,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     def killParagraphHelper(self, frm: int, to: int) -> None:
         """A helper method for kill-paragraph commands."""
         c = self.c
+        p = c.p
         w = c.frame.body.wrapper
         if not w:
             return
@@ -237,6 +241,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         self.addToKillBuffer(s)
         g.app.gui.replaceClipboardWith(s)
         w.delete(frm, to)
+        p.b = w.getAllText()
         w.setInsertPoint(frm)
 
     # @+node:ekr.20150514063305.420: *3* ec.killToEndOfLine (converted)
@@ -266,8 +271,6 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         if i < j:
             with u.change_node(p, 'kill-to-end-of-line'):
                 self.killHelper(i, j, w)
-                p.b = w.getAllText()
-                c.p = p
                 c.k.resetLabel()
 
     # @+node:ekr.20150514063305.421: *3* ec.killLine (converted)
@@ -294,8 +297,6 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             pass  # Kill the newline in the present line.
         with u.change_node(p, 'kill-line'):
             self.killHelper(i, j, w)
-            p.b = w.getAllText()
-            c.p = p
             c.k.resetLabel()
 
     # @+node:ekr.20150514063305.422: *3* killRegion & killRegionSave
@@ -350,9 +351,6 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         with u.change_node(p, 'kill-sentence'):
             i2 = s.rfind('.', 0, ins) + 1
             self.killHelper(i2, i + 1, w)
-            w.setInsertPoint(i2)
-            p.b = w.getAllText()
-            c.p = p
             c.k.resetLabel()
 
     # @+node:ekr.20150514063305.424: *3* killWs
@@ -432,7 +430,6 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             w.setInsertPoint(i + len(s))
             self.lastYankP = p.copy()
             p.b = w.getAllText()
-            c.p = p
             c.k.resetLabel()
 
     # @+node:ekr.20150514063305.427: *3* zapToCharacter (converted)

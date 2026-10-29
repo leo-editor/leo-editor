@@ -644,7 +644,6 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.insert(i, word2)
             p.b = w.getAllText()
             w.setSelectionRange(ins, ins, insert=ins)  # Restore the old insert point.
-            c.p = p
             c.k.resetLabel()
 
     # @+node:tom.20210922171731.1: *4* ec.capitalizeWords & selection
@@ -873,9 +872,9 @@ class EditCommandsClass(BaseEditCommandsClass):
             if k > i:
                 w.delete(i, k - i)
             w.insert(i, ws)
-            c.k.resetLabel()
             p.b = w.getAllText()
-            c.p = p
+            w.setInsertPoint(i)
+            c.k.resetLabel()
 
     # @+node:ekr.20150514063305.216: *4* ec.setFillColumn
     @cmd('set-fill-column')
@@ -1632,12 +1631,12 @@ class EditCommandsClass(BaseEditCommandsClass):
                 i, j = w.getSelectionRange()
                 w.delete(i, j)
                 w.insert(i, result)
+                p.b = w.getAllText()
                 w.setSelectionRange(i, i + len(result))
             else:
                 w.setAllText(result)
+                p.b = w.getAllText()
                 w.setSelectionRange(0, len(s))
-            p.b = w.getAllText()
-            c.p = p
 
     # @+node:ekr.20150514063305.253: *4* ec.backwardDeleteCharacter
     @cmd('backward-delete-char')
@@ -3502,10 +3501,9 @@ class EditCommandsClass(BaseEditCommandsClass):
             if i > 0:
                 i = min(i + 1, j)
             c.killBufferCommands.killParagraphHelper(i, j)
+            p.b = w.getAllText()
             w.setSelectionRange(i, i, insert=i)
             c.k.resetLabel()
-            p.b = w.getAllText()
-            c.p = p
 
     # @+node:ekr.20150514063305.321: *4* ec.fillRegion
     @cmd('fill-region')
@@ -3570,9 +3568,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             self.extendToParagraph(event)
             i, j = w.getSelectionRange()
             c.killBufferCommands.killParagraphHelper(i, j)
-            w.setSelectionRange(i, i, insert=i)
-            p.b = w.getAllText()
-            c.p = p
             c.k.resetLabel()
 
     # @+node:ekr.20150514063305.325: *4* ec.extend-to-paragraph & helper
