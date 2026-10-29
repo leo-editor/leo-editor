@@ -901,7 +901,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             k.resetLabel()  # pragma: no cover (defensive)
         c.widgetWantsFocus(w)
 
-    # @+node:ekr.20150514063305.217: *4* ec.centerRegion
+    # @+node:ekr.20150514063305.217: *4* ec.centerRegion(converted)
     @cmd('center-region')
     def centerRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Centers the selected text within the fill column"""
@@ -1733,7 +1733,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                         n += 1
             g.es(f"cleaned {n} node{g.plural(n)}")
 
-    # @+node:ekr.20150514063305.256: *4* ec.cleanLines
+    # @+node:ekr.20150514063305.256: *4* ec.cleanLines (converted)
     @cmd('clean-lines')
     def cleanLines(self, event: LeoKeyEvent | None = None) -> None:
         """
@@ -1742,6 +1742,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         Not recommended: reindent is better.
         """
         c = self.c
+        p = c.p
+        u = c.undoer
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
@@ -1754,11 +1756,12 @@ class EditCommandsClass(BaseEditCommandsClass):
                 lines.append('\n')
         result = ''.join(lines)
         if s != result:
-            self.beginCommand(w, 'clean-lines')
-            w.delete(0, w.getLastIndex())
-            w.insert(0, result)
-            w.setInsertPoint(0)
-            self.endCommand(changed=True, setLabel=True)
+            with u.change_node(p, 'clean-lines'):
+                w.delete(0, w.getLastIndex())
+                w.insert(0, result)
+                p.v.b = w.getAllText()
+                w.setInsertPoint(0)
+                c.k.resetLabel()
 
     # @+node:ekr.20150514063305.257: *4* ec.clearSelectedText
     @cmd('clear-selected-text')
