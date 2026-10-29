@@ -603,22 +603,24 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('capitalize-word')
     def capitalizeWord(self, event: LeoKeyEvent | None = None) -> None:
         """Capitalize the word at the cursor."""
-        self.capitalizeHelper(event, 'cap', 'capitalize-word')
+        self.capitalizeHelper('cap', 'capitalize-word')
 
     @cmd('downcase-word')
     def downCaseWord(self, event: LeoKeyEvent | None = None) -> None:
         """Convert all characters of the word at the cursor to lower case."""
-        self.capitalizeHelper(event, 'low', 'downcase-word')
+        self.capitalizeHelper('low', 'downcase-word')
 
     @cmd('upcase-word')
     def upCaseWord(self, event: LeoKeyEvent | None = None) -> None:
         """Convert all characters of the word at the cursor to UPPER CASE."""
-        self.capitalizeHelper(event, 'up', 'upcase-word')
+        self.capitalizeHelper('up', 'upcase-word')
 
-    # @+node:ekr.20150514063305.194: *4* ec.capitalizeHelper
-    def capitalizeHelper(self, event: LeoKeyEvent | None, which: str, undoType: str) -> None:
+    # @+node:ekr.20150514063305.194: *4* ec.capitalizeHelper (converted)
+    def capitalizeHelper(self, which: str, undoType: str) -> None:
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -627,7 +629,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         word = s[i:j]
         if not word.strip():
             return  # pragma: no cover (defensive)
-        self.beginCommand(w, undoType=undoType)
         if which == 'cap':
             word2 = word.capitalize()
         elif which == 'low':
@@ -636,11 +637,15 @@ class EditCommandsClass(BaseEditCommandsClass):
             word2 = word.upper()
         else:
             g.trace(f"can not happen: which = {which}")
-        if changed := word != word2:
-            w.delete(i, j)
-            w.insert(i, word2)
-            w.setSelectionRange(ins, ins, insert=ins)
-        self.endCommand(changed=changed, setLabel=True)
+            return
+        with u.change_node(p, undoType):
+            if word != word2:
+                w.delete(i, j)
+                w.insert(i, word2)
+            p.b = w.getAllText()
+            w.setSelectionRange(ins, ins, insert=ins)  # Restore the old insert point.
+            c.p = p
+            c.k.resetLabel()
 
     # @+node:tom.20210922171731.1: *4* ec.capitalizeWords & selection
     @cmd('capitalize-words-or-selection')
@@ -1601,7 +1606,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Remove a tab from start of all lines, or all selected lines."""
         self.addRemoveHelper(event, ch='\t', add=False, undoType='remove-tab-from-lines')
 
-    # @+node:ekr.20150514063305.252: *5* ec.addRemoveHelper
+    # @+node:ekr.20150514063305.252: *5* ec.addRemoveHelper converted)
     def addRemoveHelper(self, event: LeoKeyEvent | None, ch: str, add: bool, undoType: str) -> None:
         c = self.c
         p = c.p
@@ -3496,7 +3501,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             i, j = w.getSelectionRange()
             if i > 0:
                 i = min(i + 1, j)
-            c.killBufferCommands.killParagraphHelper(event, i, j)
+            c.killBufferCommands.killParagraphHelper(i, j)
             w.setSelectionRange(i, i, insert=i)
             c.k.resetLabel()
             p.b = w.getAllText()
@@ -3551,24 +3556,24 @@ class EditCommandsClass(BaseEditCommandsClass):
         w.setSelectionRange(i, i, insert=i)
         self.c.reformatParagraph(event)
 
-    # @+node:ekr.20150514063305.324: *4* ec.killParagraph
+    # @+node:ekr.20150514063305.324: *4* ec.killParagraph (converted)
     @cmd('kill-paragraph')
     def killParagraph(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the present paragraph."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, 'kill-paragraph')
-        try:
+        with u.change_node(p, 'kill-paragraph'):
             self.extendToParagraph(event)
             i, j = w.getSelectionRange()
-            c.killBufferCommands.killParagraphHelper(event, i, j)
+            c.killBufferCommands.killParagraphHelper(i, j)
             w.setSelectionRange(i, i, insert=i)
-        finally:
-            self.endCommand(changed=True, setLabel=True)
+            p.b = w.getAllText()
+            c.p = p
+            c.k.resetLabel()
 
     # @+node:ekr.20150514063305.325: *4* ec.extend-to-paragraph & helper
     @cmd('extend-to-paragraph')
