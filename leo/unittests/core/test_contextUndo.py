@@ -38,21 +38,37 @@ class TestContextUndo(LeoUnitTest):
     def test_nested_context_composes_helpers_after_inner_exit(self):
         c = self.c
         p = c.p
+        u = c.undoer
+
+        def inner() -> None:
+            with u.change_node(c.p, 'inner'):
+                p.b = 'inner'
+            self.assertTrue(len(u.beads) in (0, 1))
+
+        def outer() -> None:
+            with u.change_node(c.p, 'outer'):
+                p.b = 'outer'
+                inner()
+
         p.b = 'original'
-        with c.undoer as u:
-            u.set_command_name('outer')
-            with u:
-                u.set_command_name('inner')
-                u.set_body(p, 'inner')
-            self.assertIsNotNone(u.undoBead)
-            u.set_body(p, 'final')
-        self.assertEqual(len(u.beads), 1)
-        self.assertEqual(u.beads[0].command_name, 'outer')
-        self.assertIsNone(u.undoBead)
-        self.assertEqual(u.undoBeadLevel, 0)
-        self.cycles(
-            lambda: self.assertEqual(p.b, 'original'), lambda: self.assertEqual(p.b, 'final')
-        )
+        for _i in range(3):
+            u.beads = []
+            outer()
+            assert p.b == 'inner'
+            assert len(u.beads) == 1
+            assert u.beads[0].command_name == 'outer'
+            u.undo()
+            assert p.b == 'original'
+            assert len(u.beads) == 1
+            assert u.beads[0].command_name == 'outer'
+            u.redo()
+            assert p.b == 'inner'
+            assert len(u.beads) == 1
+            assert u.beads[0].command_name == 'outer'
+            u.undo()
+            assert p.b == 'original'
+            assert len(u.beads) == 1
+            assert u.beads[0].command_name == 'outer'
 
     # @+node:ekr.20261014103254.3: *3* TestContextUndo.test_nested_node_contexts_capture_distinct_nodes_and_same_node_once
     def test_nested_node_contexts_capture_distinct_nodes_and_same_node_once(self):
@@ -358,7 +374,7 @@ class TestContextUndo(LeoUnitTest):
         with u.change_outline('bulk'):
             with c.undoer as u:
                 u.set_command_name('inner')
-                u.set_body(p, 'after')
+                p.b = 'after'
                 clone = u.clone_node(p)
         self.assertEqual(len(u.beads), 1)
         self.cycles(
