@@ -186,7 +186,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         w.setSelectionRange(i, j, insert=j)
         self.endCommand()
 
-    # @+node:ekr.20150514063305.459: *4* RectangleCommandsClass.stringRectangle
+    # @+node:ekr.20150514063305.459: *4* RectangleCommandsClass.stringRectangle (converted)
     @cmd('rectangle-string')
     def stringRectangle(self, event: LeoKeyEvent | None = None) -> None:
         """
@@ -210,25 +210,24 @@ class RectangleCommandsClass(BaseEditCommandsClass):
     def stringRectangle1(self, event: LeoKeyEvent | None = None) -> None:
         c = self.c
         k = c.k
+        p = c.p
+        u = c.undoer
+        w = self.w
         k.clearState()
         k.resetLabel()
         c.bodyWantsFocus()
-        w = self.w
-        self.beginCommand(w, 'string-rectangle')
         r1, r2, r3, r4 = self.stringRect
         s = w.getAllText()
         for r in range(r1, r3 + 1):
             i = g.convertRowColToPythonIndex(s, r - 1, r2)
             j = g.convertRowColToPythonIndex(s, r - 1, r4)
             s = s[:i] + k.arg + s[j:]
-        w.setAllText(s)
         i = g.convertRowColToPythonIndex(s, r1 - 1, r2)
         j = g.convertRowColToPythonIndex(s, r3 - 1, r2 + len(k.arg))
-        w.setSelectionRange(i, j)
-        self.endCommand()
-        # 2010/1/1: Fix bug 480422:
-        # string-rectangle kills syntax highlighting.
-        c.recolor(c.p)
+        with u.change_node(p, 'string-rectangle'):
+            w.setAllText(s)
+            p.b = s
+            w.setSelectionRange(i, j)
 
     # @+node:ekr.20150514063305.460: *4* RectangleCommandsClass.yankRectangle
     @cmd('rectangle-yank')

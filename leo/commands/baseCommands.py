@@ -113,7 +113,7 @@ class BaseEditCommandsClass:
     ) -> bool:
         """Return True if there is a selection in the edit widget."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        w = c.frame.body.wrapper
         val = bool(w and w.hasSelection())
         if warning and not val:  # pragma: no cover
             g.es(warning, color='red')
