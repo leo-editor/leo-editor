@@ -1763,21 +1763,24 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.setInsertPoint(0)
                 c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.257: *4* ec.clearSelectedText
+    # @+node:ekr.20150514063305.257: *4* ec.clearSelectedText (converted)
     @cmd('clear-selected-text')
     def clearSelectedText(self, event: LeoKeyEvent | None = None) -> None:
         """Delete the selected text."""
         c = self.c
+        p = c.p
+        u = c.undoer
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         i, j = w.getSelectionRange()
         if i == j:
             return
-        self.beginCommand(w, 'clear-selected-text')
-        w.delete(i, j)
-        w.setInsertPoint(i)
-        self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, 'clear-selected-text'):
+            w.delete(i, j)
+            p.v.b = w.getAllText()
+            w.setInsertPoint(i)
+            c.k.resetLabel()
 
     # @+node:ekr.20150514063305.258: *4* ec.delete-word & backward-delete-word
     @cmd('delete-word')
