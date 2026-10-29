@@ -383,41 +383,38 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             if undoType:
                 self.endCommand(changed=True, setLabel=True)
 
-    # @+node:ekr.20150514063305.425: *3* yank & yankPop
+    # @+node:ekr.20150514063305.425: *3* yank & yankPop (converted)
     @cmd('yank')
     def yank(self, event: LeoKeyEvent | None = None) -> None:
         """Insert the next entry of the kill ring."""
-        self.yankHelper(event, pop=False)
+        self.yankHelper(pop=False)
 
     @cmd('yank-pop')
     def yankPop(self, event: LeoKeyEvent | None = None) -> None:
         """Insert the first entry of the kill ring."""
-        self.yankHelper(event, pop=True)
+        self.yankHelper(pop=True)
 
-    def yankHelper(self, event: LeoKeyEvent | None, pop: bool) -> None:
+    def yankHelper(self, pop: bool) -> None:
         """
         Helper for yank and yank-pop:
         pop = False: insert the first entry of the kill ring.
         pop = True:  insert the next entry of the kill ring.
         """
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        current = c.p
-        if not current:
+        if not p:
             return
         text = w.getAllText()
         i, j = w.getSelectionRange()
         clip_text = self.getClipboard()
         if not g.app.globalKillBuffer and not clip_text:
             return
-        undoType = 'yank-pop' if pop else 'yank'
-        self.beginCommand(w, undoType)
-        try:
-            if not pop or self.lastYankP and self.lastYankP != current:
+        with u.change_node(p, 'yank-pop' if pop else 'yank'):
+            if not pop or self.lastYankP and self.lastYankP != p:
                 self.reset = 0
             s = self.kbiterator.__next__()
             if s is None:
@@ -432,12 +429,11 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
                     w.delete(i2, k)
                     i = i2
             w.insert(i, s)
-            # Fix bug 1099035: Leo yank and kill behavior not quite the same as emacs.
-            # w.setSelectionRange(i,i+len(s),insert=i+len(s))
             w.setInsertPoint(i + len(s))
-            self.lastYankP = current.copy()
-        finally:
-            self.endCommand(changed=True, setLabel=True)
+            self.lastYankP = p.copy()
+            p.b = w.getAllText()
+            c.p = p
+            c.k.resetLabel()
 
     # @+node:ekr.20150514063305.427: *3* zapToCharacter (converted)
     @cmd('zap-to-character')
