@@ -299,23 +299,24 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             self.killHelper(i, j, w)
             c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.422: *3* killRegion & killRegionSave
+    # @+node:ekr.20150514063305.422: *3* killRegion & killRegionSave (converted)
     @cmd('kill-region')
     def killRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the text selection."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         i, j = w.getSelectionRange()
         if i == j:
             return
         s = w.getSelectedText()
-        self.beginCommand(w, 'kill-region')
-        w.delete(i, j)
-        self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, 'kill-region'):
+            w.delete(i, j)
+            p.b = w.getAllText()
+            w.setInsertPoint(i)
         self.addToKillBuffer(s)
         g.app.gui.replaceClipboardWith(s)
 
@@ -323,7 +324,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     def killRegionSave(self, event: LeoKeyEvent | None = None) -> None:
         """Add the selected text to the kill ring, but do not delete it."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         i, j = w.getSelectionRange()

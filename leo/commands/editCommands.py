@@ -2863,7 +2863,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             else:
                 g.trace('can not happen: bad spot', spot)  # pragma: no cover (defensive)
 
-    # @+node:ekr.20150514063305.296: *4* ec.characters & helper
+    # @+node:ekr.20150514063305.296: *4* ec.characters & helper (converted)
     @cmd('back-char')
     def backCharacter(self, event: LeoKeyEvent | None = None) -> None:
         """Move the cursor back one character, extending the selection if in extend mode."""
@@ -2884,7 +2884,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Extend the selection by moving the cursor forward one character."""
         self.moveToCharacterHelper(event, 'right', extend=True)
 
-    # @+node:ekr.20150514063305.297: *5* ec.moveToCharacterHelper
+    # @+node:ekr.20150514063305.297: *5* ec.moveToCharacterHelper (converted)
     def moveToCharacterHelper(self, event: LeoKeyEvent | None, spot: str, extend: bool) -> None:
         c = self.c
         # This helper must work in headlines.
