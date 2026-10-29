@@ -906,7 +906,9 @@ class EditCommandsClass(BaseEditCommandsClass):
     def centerRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Centers the selected text within the fill column"""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -917,24 +919,25 @@ class EditCommandsClass(BaseEditCommandsClass):
             fillColumn = self.fillColumn
         else:
             fillColumn = c.getPageWidth(c.p)
-        self.beginCommand(w, 'center-region')
-        inserted = 0
-        while ind < end:
-            s = w.getAllText()
-            i, j = g.getLine(s, ind)
-            line = s[i:j].strip()
-            if len(line) >= fillColumn:
-                ind = j
-            else:
-                n = int((fillColumn - len(line)) / 2)
-                inserted += n
-                k = g.skip_ws(s, i)
-                if k > i:
-                    w.delete(i, k - i)
-                w.insert(i, ' ' * n)
-                ind = j + n - (k - i)
-        w.setSelectionRange(sel_1, sel_2 + inserted)
-        self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, 'center-region'):
+            inserted = 0
+            while ind < end:
+                s = w.getAllText()
+                i, j = g.getLine(s, ind)
+                line = s[i:j].strip()
+                if len(line) >= fillColumn:
+                    ind = j
+                else:
+                    n = int((fillColumn - len(line)) / 2)
+                    inserted += n
+                    k = g.skip_ws(s, i)
+                    if k > i:
+                        w.delete(i, k - i)
+                    w.insert(i, ' ' * n)
+                    ind = j + n - (k - i)
+            w.setSelectionRange(sel_1, sel_2 + inserted)
+            p.v.b = w.getAllText()
+            c.k.resetLabel()
 
     # @+node:ekr.20150514063305.218: *4* ec.setFillPrefix
     @cmd('set-fill-prefix')
@@ -1638,7 +1641,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 p.v.b = w.getAllText()
                 w.setSelectionRange(0, len(s))
 
-    # @+node:ekr.20150514063305.253: *4* ec.backwardDeleteCharacter
+    # @+node:ekr.20150514063305.253: *4* ec.backwardDeleteCharacter (converted)
     @cmd('backward-delete-char')
     def backwardDeleteCharacter(self, event: LeoKeyEvent | None = None) -> None:
         """Delete the character to the left of the cursor."""
@@ -1659,7 +1662,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                     w.delete(i, j)
                     w.setSelectionRange(i, i, insert=i)
                 elif i == 0:
-                    pass  ### changed = False
+                    pass
                 elif tab_width > 0:
                     w.delete(ins - 1)
                     w.setSelectionRange(ins - 1, ins - 1, insert=ins - 1)
