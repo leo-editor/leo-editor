@@ -106,7 +106,7 @@ class BaseEditCommandsClass:
             else:
                 k.resetLabel()
 
-    # @+node:ekr.20150514043714.11: *3* BaseEdit._checkSelection
+    # @+node:ekr.20150514043714.11: *3* BaseEdit._checkSelection (converted)
     def _checkSelection(self, w: QTextMixin) -> bool:
         """Return True if there is a selection in the edit widget."""
         c = self.c
