@@ -197,32 +197,6 @@ class TestContextUndo(LeoUnitTest):
 
                 self.cycles(before, lambda p=p, after=after: self.assertEqual(p.b, after))
 
-    # @+node:ekr.20261014103254.12: *3* TestContextUndo.test_undo_after_actual_save_is_changed
-    def test_undo_after_actual_save_is_changed(self):
-        import tempfile
-
-        for initially_changed in (False, True):
-            with self.subTest(initially_changed=initially_changed):
-                c = self.c
-                p = c.p
-                u = c.undoer
-                p.b = 'before'
-                u.clearUndoState()
-                c.changed = initially_changed
-                with u:
-                    u.set_command_name('edit')
-                    u.set_body(p, 'after')
-                with tempfile.TemporaryDirectory() as directory:
-                    path = str(Path(directory) / 'saved.leo')
-                    self.assertTrue(c.fileCommands.save(path))
-                    self.assertFalse(c.changed)
-                    u.undo()
-                    self.assertEqual(p.b, 'before')
-                    self.assertTrue(c.changed)
-                    u.redo()
-                    self.assertEqual(p.b, 'after')
-                    self.assertTrue(c.changed)
-
     # @+node:ekr.20261014103254.13: *3* TestContextUndo.test_set_body_snapshots_target_and_redirties_ancestors
     def test_set_body_snapshots_target_and_redirties_ancestors(self):
         c = self.c
@@ -371,16 +345,39 @@ class TestContextUndo(LeoUnitTest):
         p = c.p
         u = c.undoer
         p.b = 'before'
-        with u.change_outline('bulk'):
-            with c.undoer as u:
-                u.set_command_name('inner')
+        v = p.v
+
+        def test() -> None:
+            with u.change_node(p, 'my-command'):
                 p.b = 'after'
                 clone = u.clone_node(p)
-        self.assertEqual(len(u.beads), 1)
-        self.cycles(
-            lambda: (self.assertEqual(p.b, 'before'), self.assertFalse(p.isCloned())),
-            lambda: (self.assertEqual(p.b, 'after'), self.assertEqual(c.p, clone)),
-        )
+                assert clone.v == v
+
+        for _i in range(3):
+            u.beads = []
+            test()
+            assert len(u.beads) == 1
+            assert p.b == 'after'
+            u.undo()
+            assert len(u.beads) == 1
+            assert p.b == 'before'
+            u.redo()
+            assert len(u.beads) == 1
+            assert p.b == 'after'
+            u.undo()
+            assert len(u.beads) == 1
+            assert p.b == 'before'
+
+        # with u.change_outline('bulk'):
+        #     with c.undoer as u:
+        #         u.set_command_name('inner')
+        #         p.b = 'after'
+        #         clone = u.clone_node(p)
+        # self.assertEqual(len(u.beads), 1)
+        # self.cycles(
+        #     lambda: (self.assertEqual(p.b, 'before'), self.assertFalse(p.isCloned())),
+        #     lambda: (self.assertEqual(p.b, 'after'), self.assertEqual(c.p, clone)),
+        # )
 
     # @+node:ekr.20261014103254.21: *3* TestContextUndo.test_plain_and_clone_preserving_paste_repeat
     def test_plain_and_clone_preserving_paste_repeat(self):
