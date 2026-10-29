@@ -975,7 +975,7 @@ class Undoer:
         else:
             bead = TypingBead(u, p, oldText, newText, oldSel, newSel, newInsert, scroll)
             u.pushBead(bead)
-        p.v.b = newText
+        p.b = newText
         u.updateAfterTyping(p, w)
         if u.per_node_undo:
             u.putIvarsToVnode(p)
@@ -1256,7 +1256,7 @@ class Undoer:
         g.doHook('create-node', c=c, p=new_p)
         return new_p
 
-    # @+node:ekr.20261005140833.1: *6* u.set_body
+    # @+node:ekr.20261005140833.1: *6* u.set_body (to be deleted)
     def set_body(
         self,
         new_p: Position,
@@ -1341,14 +1341,14 @@ class Undoer:
 
         def update(head):
             c.p = p
-            p.initHeadString(head)  # Call p.v.setAllAncestorAtFileNodesDirty()
-            p.setDirty()
+            p.initHeadString(head)
+            p.setDirty()  # Call p.v.setAllAncestorAtFileNodesDirty()
             c.frame.tree.setHeadline(p, head)
 
         # Do the action.
         # Leave the live editor alone: it may contain multiline abbreviation text.
         p.initHeadString(new_h)
-        p.setDirty()
+        p.setDirty()  # Call p.v.setAllAncestorAtFileNodesDirty()
         c.frame.scanForTabWidth(p)
         c.recolor(p)
         g.doHook('headkey2', c=c, p=p, ch=ch, changed=True)
@@ -1396,7 +1396,7 @@ class Undoer:
             finally:
                 u.node_captures.remove(p.v)
                 new_p = c.p
-                u._redraw(new_p)  # PR #5005.
+                u._redraw(new_p)  # PR #5005. Calls new_p.setDirty()
                 new_state = u.capture_node(p.v)
                 if old_state != new_state:
                     new_ui = u.capture_ui()
@@ -1454,7 +1454,7 @@ class Undoer:
             finally:
                 u.capture_level -= 1
                 new_p = c.p  # PR #5005
-                u._redraw(new_p)  # PR #5005
+                u._redraw(new_p)  # PR #5005: calls new_p.setDirty()
                 new_state = u.capture_outline()
                 old_delta, new_delta = {}, {}
                 for v in old_state.keys() | new_state.keys():
@@ -1480,11 +1480,11 @@ class Undoer:
 
                     def change_outline_ui_redoer() -> None:
                         u.restore_ui(new_ui)
-                        u._redraw(new_p)
+                        u._redraw(new_p)  # Calls new_p.setDirty()
 
                     def change_outline_ui_undoer() -> None:
                         u.restore_ui(old_ui)
-                        u._redraw(old_p)
+                        u._redraw(old_p)  # Calls old_p.setDirty()
 
                     u.undoBead.add_finishers(change_outline_ui_redoer, change_outline_ui_undoer)
 
@@ -1574,7 +1574,7 @@ class Undoer:
                     g.es_print_unique_message(message)
                 if old_p != new_p:
                     new_ui = u.capture_ui()
-                    u._redraw(new_p)  # PR #5005
+                    u._redraw(new_p)  # PR #5005: calls new_p.setDirty()
 
                     def move(source, target):
                         source.v._cutLink(source.childIndex(), source._parentVnode())

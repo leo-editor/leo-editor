@@ -2425,7 +2425,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             c.p.v.b = w.getAllText().rstrip() + '\n'
             c.selectPosition(c.p.threadNext())
             c.p.b = lines + '\n' + c.p.b
-            c.recolor()
         finally:
             self.endCommand(changed=True, setLabel=True)
 

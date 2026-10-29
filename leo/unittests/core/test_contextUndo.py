@@ -197,27 +197,6 @@ class TestContextUndo(LeoUnitTest):
 
                 self.cycles(before, lambda p=p, after=after: self.assertEqual(p.b, after))
 
-    # @+node:ekr.20261014103254.13: *3* TestContextUndo.test_set_body_snapshots_target_and_redirties_ancestors
-    def test_set_body_snapshots_target_and_redirties_ancestors(self):
-        c = self.c
-        parent = c.p
-        parent.h = '@file example.py'
-        child = parent.insertAsLastChild()
-        child.b = 'child before'
-        parent.b = 'parent'
-        child.setDirty()
-        parent.v.clearDirty()
-        with c.undoer as u:
-            u.set_command_name('edit child')
-            u.set_body(child, 'child after')
-            c.p = child
-        self.assertTrue(parent.isDirty())
-        self.cycles(
-            lambda: self.assertEqual(child.b, 'child before'),
-            lambda: self.assertEqual(child.b, 'child after'),
-        )
-        self.assertEqual(parent.b, 'parent')
-
     # @+node:ekr.20261014103254.14: *3* TestContextUndo.test_insert_reuses_vnode_and_preserves_later_contents
     def test_insert_reuses_vnode_and_preserves_later_contents(self):
         c = self.c
