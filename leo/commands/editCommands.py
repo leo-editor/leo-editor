@@ -1643,6 +1643,9 @@ class EditCommandsClass(BaseEditCommandsClass):
     def backwardDeleteCharacter(self, event: LeoKeyEvent | None = None) -> None:
         """Delete the character to the left of the cursor."""
         c = self.c
+        p = c.p
+        u = c.undoer
+        # This command must work in headlines.
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
@@ -1650,15 +1653,16 @@ class EditCommandsClass(BaseEditCommandsClass):
         ins = w.getInsertPoint()
         i, j = w.getSelectionRange()
         if wname.startswith('body'):
-            self.beginCommand(w, 'Typing')
-            changed = True
-            try:
+            ###self.beginCommand(w, 'Typing')
+            ### changed = True
+            ###try:
+            with u.change_node(p, 'backward-delete-char'):
                 tab_width = c.getTabWidth(c.p)
                 if i != j:
                     w.delete(i, j)
                     w.setSelectionRange(i, i, insert=i)
                 elif i == 0:
-                    changed = False
+                    pass  ### changed = False
                 elif tab_width > 0:
                     w.delete(ins - 1)
                     w.setSelectionRange(ins - 1, ins - 1, insert=ins - 1)
@@ -1687,22 +1691,29 @@ class EditCommandsClass(BaseEditCommandsClass):
                     w.delete(i, ins)
                     w.setSelectionRange(i, i, insert=i)
                     # @-<< backspace with negative tab_width >>
-            finally:
-                # Necessary to make text changes stick.
-                self.endCommand(changed=changed, setLabel=False)
-        else:
-            # No undo in this widget.
-            s = w.getAllText()
-            # Delete something if we can.
-            if i != j:
-                j = max(i, min(j, len(s)))
-                w.delete(i, j)
-                w.setSelectionRange(i, i, insert=i)
-            elif ins != 0:
-                # Do nothing at the start of the headline.
-                w.delete(ins - 1)
-                ins = ins - 1
-                w.setSelectionRange(ins, ins, insert=ins)
+                u.type_text(
+                    p,
+                    oldText=p.b,
+                    newText=w.getAllText(),
+                    undo_type='Typing',
+                )
+            return
+            ###finally:
+            #    # Necessary to make text changes stick.
+            #    self.endCommand(changed=changed, setLabel=False)
+
+        # No undo in this widget.
+        s = w.getAllText()
+        # Delete something if we can.
+        if i != j:
+            j = max(i, min(j, len(s)))
+            w.delete(i, j)
+            w.setSelectionRange(i, i, insert=i)
+        elif ins != 0:
+            # Do nothing at the start of the headline.
+            w.delete(ins - 1)
+            ins = ins - 1
+            w.setSelectionRange(ins, ins, insert=ins)
 
     # @+node:ekr.20150514063305.255: *4* ec.cleanAllLines
     @cmd('clean-all-lines')
