@@ -2512,15 +2512,14 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.288: *5* ec.moveToHelper
     def moveToHelper(self, event: LeoKeyEvent | None, spot: int, extend: bool) -> None:
-        ### To do: remove the event arg.
         """
         Common helper method for commands the move the cursor
         in a way that can be described by a Tk Text expression.
         """
         c = self.c
         k = c.k
-        ### w = event.w if event else c.frame.body.wrapper
-        w = c.frame.body.wrapper
+        # This helper must work in headlines.
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         c.widgetWantsFocusNow(w)
@@ -2536,6 +2535,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514063305.305: *5* ec.moveWithinLineHelper
     def moveWithinLineHelper(self, event: LeoKeyEvent | None, spot: str, extend: bool) -> None:
         c = self.c
+        # This helper must work in headlines.
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
@@ -2586,6 +2586,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         The cursor is placed at the start of the word unless end=True
         """
         c = self.c
+        # This helper must work in headlines.
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return  # pragma: no cover (defensive)
@@ -2886,6 +2887,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514063305.297: *5* ec.moveToCharacterHelper
     def moveToCharacterHelper(self, event: LeoKeyEvent | None, spot: str, extend: bool) -> None:
         c = self.c
+        # This helper must work in headlines.
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return

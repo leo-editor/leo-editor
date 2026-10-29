@@ -353,7 +353,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             self.killHelper(i2, i + 1, w)
             c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.424: *3* killWs
+    # @+node:ekr.20150514063305.424: *3* killWs (converted)
     @cmd('kill-ws')
     def killWs(self, event: LeoKeyEvent | None = None) -> None:
         """Kill whitespace."""
