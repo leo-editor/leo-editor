@@ -87,7 +87,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             self._kill_helper(i2, i + 1, w)
             w.setInsertPoint(i2)
             c.k.resetLabel()
-            p.b = w.getAllText()
+            p.v.b = w.getAllText()
 
     # @+node:ekr.20150514063305.413: *3* backwardKillWord & killWord (converted)
     @cmd('backward-kill-word')
@@ -122,8 +122,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         c.editCommands.extendToWord(event)
         i, j = w.getSelectionRange()
         self.killHelper(i, j, w)
-        p.b = w.getAllText()
-        c.p = p
+        p.v.b = w.getAllText()
         c.k.resetLabel()
 
     # @+node:ekr.20150514063305.414: *3* clearKillRing
@@ -202,7 +201,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         self.addToKillBuffer(s)
         g.app.gui.replaceClipboardWith(s)
         w.delete(frm, to)
-        p.b = w.getAllText()
+        p.v.b = w.getAllText()
         w.setInsertPoint(frm)  # Do this *after* setting p.b.
         w.setYScrollPosition(old_y_scroll)  # PR #5020.
         g.app.gui.set_focus(c, w)  # 2607
@@ -241,7 +240,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         self.addToKillBuffer(s)
         g.app.gui.replaceClipboardWith(s)
         w.delete(frm, to)
-        p.b = w.getAllText()
+        p.v.b = w.getAllText()
         w.setInsertPoint(frm)
 
     # @+node:ekr.20150514063305.420: *3* ec.killToEndOfLine (converted)
@@ -315,7 +314,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         s = w.getSelectedText()
         with u.change_node(p, 'kill-region'):
             w.delete(i, j)
-            p.b = w.getAllText()
+            p.v.b = w.getAllText()
             w.setInsertPoint(i)
         self.addToKillBuffer(s)
         g.app.gui.replaceClipboardWith(s)
@@ -378,7 +377,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
                 w.delete(i, j)
                 if self.addWsToKillRing:
                     self.addToKillBuffer(ws)
-                p.b = w.getAllText()
+                p.v.b = w.getAllText()
                 w.setInsertPoint(i)
 
     # @+node:ekr.20150514063305.425: *3* yank & yankPop (converted)
@@ -429,7 +428,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             w.insert(i, s)
             w.setInsertPoint(i + len(s))
             self.lastYankP = p.copy()
-            p.b = w.getAllText()
+            p.v.b = w.getAllText()
             c.k.resetLabel()
 
     # @+node:ekr.20150514063305.427: *3* zapToCharacter (converted)
@@ -462,8 +461,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             w.setAllText(s[:ins] + s[i:])
             w.setInsertPoint(ins)
             c.k.resetLabel()
-            p.b = w.getAllText()
-            c.p = p
+            p.v.b = w.getAllText()
 
     # @-others
 

@@ -78,7 +78,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
             for r in range(r1, r3 + 1):
                 w.delete(toInt(f"{r}.{r2}"), toInt(f"{r}.{r4}"))
                 w.insert(toInt(f"{r}.{r2}"), fill)
-            p.b = w.getAllText()
+            p.v.b = w.getAllText()
             w.setSelectionRange(toInt(f"{r1}.{r2}"), toInt(f"{r3}.{r2 + len(fill)}"))
 
     # @+node:ekr.20150514063305.455: *4* RectangleCommandsClass.closeRectangle (converted)
@@ -108,7 +108,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
                 w.delete(toInt(f"{r}.{r2}"), toInt(f"{r}.{r4}"))
             i = toInt(f"{r1}.{r2}")
             j = toInt(f"{r3}.{r2}")
-            p.b = w.getAllText()
+            p.v.b = w.getAllText()
             w.setSelectionRange(i, j, insert=j)
 
     # @+node:ekr.20150514063305.456: *4* RectangleCommandsClass.deleteRectangle (converted)
@@ -133,7 +133,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
                 w.delete(toInt(f"{r}.{r2}"), toInt(f"{r}.{r4}"))
             i = toInt(f"{r1}.{r2}")
             j = toInt(f"{r3}.{r2}")
-            p.b = w.getAllText()
+            p.v.b = w.getAllText()
             w.setSelectionRange(i, j, insert=j)
 
     # @+node:ekr.20150514063305.457: *4* RectangleCommandsClass.killRectangle (converted)
@@ -160,7 +160,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
                 s = w.get(toInt(f"{r}.{r2}"), toInt(f"{r}.{r4}"))
                 self.theKillRectangle.append(s)
                 w.delete(toInt(f"{r}.{r2}"), toInt(f"{r}.{r4}"))
-            p.b = w.getAllText()
+            p.v.b = w.getAllText()
             if self.theKillRectangle:
                 ins = toInt(f"{r}.{r2}")
                 w.setSelectionRange(ins, ins, insert=ins)
@@ -191,7 +191,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
                 w.insert(toInt(f"{r}.{r2}"), fill)
             i = toInt(f"{r1}.{r2}")
             j = toInt(f"{r3}.{r2 + len(fill)}")
-            p.b = w.getAllText()
+            p.v.b = w.getAllText()
             w.setSelectionRange(i, j, insert=j)
 
     # @+node:ekr.20150514063305.459: *4* RectangleCommandsClass.stringRectangle (converted)
@@ -274,8 +274,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
             i = toInt(f"{r1}.{r2}")
             j = toInt(f"{r3}.{r2 + len(killRect[n - 1])}")
             w.setSelectionRange(i, j, insert=j)
-            p.b = w.getAllText()
-            # c.p = p
+            p.v.b = w.getAllText()
 
     # @-others
 

@@ -642,7 +642,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             if word != word2:
                 w.delete(i, j)
                 w.insert(i, word2)
-            p.b = w.getAllText()
+            p.v.b = w.getAllText()
             w.setSelectionRange(ins, ins, insert=ins)  # Restore the old insert point.
             c.k.resetLabel()
 
@@ -872,7 +872,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             if k > i:
                 w.delete(i, k - i)
             w.insert(i, ws)
-            p.b = w.getAllText()
+            p.v.b = w.getAllText()
             w.setInsertPoint(i)
             c.k.resetLabel()
 
@@ -1631,11 +1631,11 @@ class EditCommandsClass(BaseEditCommandsClass):
                 i, j = w.getSelectionRange()
                 w.delete(i, j)
                 w.insert(i, result)
-                p.b = w.getAllText()
+                p.v.b = w.getAllText()
                 w.setSelectionRange(i, i + len(result))
             else:
                 w.setAllText(result)
-                p.b = w.getAllText()
+                p.v.b = w.getAllText()
                 w.setSelectionRange(0, len(s))
 
     # @+node:ekr.20150514063305.253: *4* ec.backwardDeleteCharacter
@@ -2422,7 +2422,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         try:
             next_i, next_j = g.getLine(s, j)
             w.delete(i, next_j)
-            c.p.b = w.getAllText().rstrip() + '\n'
+            c.p.v.b = w.getAllText().rstrip() + '\n'
             c.selectPosition(c.p.threadNext())
             c.p.b = lines + '\n' + c.p.b
             c.recolor()
@@ -3503,7 +3503,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             if i > 0:
                 i = min(i + 1, j)
             c.killBufferCommands.killParagraphHelper(i, j)
-            p.b = w.getAllText()
+            p.v.b = w.getAllText()
             w.setSelectionRange(i, i, insert=i)
             c.k.resetLabel()
 
