@@ -355,12 +355,12 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.424: *3* killWs
     @cmd('kill-ws')
-    def killWs(self, event: LeoKeyEvent | None = None, undoType: str = 'kill-ws') -> None:
+    def killWs(self, event: LeoKeyEvent | None = None) -> None:
         """Kill whitespace."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -372,14 +372,13 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         while j < len(s) and s[j] in (' ', '\t'):
             j += 1
         if j > i:
-            ws = s[i:j]
-            w.delete(i, j)
-            if undoType:
-                self.beginCommand(w, undoType=undoType)
-            if self.addWsToKillRing:
-                self.addToKillBuffer(ws)
-            if undoType:
-                self.endCommand(changed=True, setLabel=True)
+            with u.change_node(p, 'kill-ws'):
+                ws = s[i:j]
+                w.delete(i, j)
+                if self.addWsToKillRing:
+                    self.addToKillBuffer(ws)
+                p.b = w.getAllText()
+                w.setInsertPoint(i)
 
     # @+node:ekr.20150514063305.425: *3* yank & yankPop (converted)
     @cmd('yank')
