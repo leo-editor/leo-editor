@@ -444,7 +444,7 @@ class TestContextUndo(LeoUnitTest):
                     w = c.frame.body.wrapper
                     w.setAllText(new)
                     w.setSelectionRange(len(new), len(new))
-                    u.type_text(p, 'Typing', old, new, oldSel=(len(old), len(old)))
+                    u.type_text(p, old, new, oldSel=(len(old), len(old)))
                     self.assertIsInstance(u.beads[-1], TypingBead)
                     self.cycles(
                         lambda old=old: self.assertEqual(p.b, old),
@@ -467,7 +467,7 @@ class TestContextUndo(LeoUnitTest):
                     w = c.frame.body.wrapper
                     w.setAllText(new)
                     w.setSelectionRange(len(new), len(new))
-                    u.type_text(p, 'Typing', old, new, oldSel=(len(old), len(old)))
+                    u.type_text(p, old, new, oldSel=(len(old), len(old)))
                 self.assertEqual(len(u.beads), 2 if granularity == 'char' else 1)
                 u.undo()
                 self.assertEqual(p.b, 'a' if granularity == 'char' else '')
@@ -475,7 +475,7 @@ class TestContextUndo(LeoUnitTest):
                 c.clearChanged()
                 w.setAllText('abc')
                 w.setSelectionRange(3, 3)
-                u.type_text(p, 'Typing', 'ab', 'abc', oldSel=(2, 2))
+                u.type_text(p, 'ab', 'abc', oldSel=(2, 2))
                 self.assertEqual(len(u.beads), 3 if granularity == 'char' else 2)
                 u.undo()
                 self.assertEqual(p.b, 'ab')
@@ -493,7 +493,7 @@ class TestContextUndo(LeoUnitTest):
             w = c.frame.body.wrapper
             w.setAllText(new)
             w.setSelectionRange(len(new), len(new))
-            u.type_text(p, 'Typing', old, new, oldSel=(len(old), len(old)))
+            u.type_text(p, old, new, oldSel=(len(old), len(old)))
         self.assertEqual(len(u.beads), 2)
         u.undo()
         self.assertEqual(p.b, 'ab')

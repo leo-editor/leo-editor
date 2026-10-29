@@ -910,9 +910,9 @@ class Undoer:
     def type_text(
         self,
         p: Position,
-        undo_type: str,
         oldText: str,
         newText: str,
+        *,
         newInsert: int | None = None,
         oldSel: tuple[int, int] | None = None,
         newSel: tuple[int, int] | None = None,
@@ -921,7 +921,6 @@ class Undoer:
         """Record actual typing, retaining the configured char/line/word/node granularity."""
         if self.undoing or self.redoing or oldText == newText:
             return
-        assert undo_type.capitalize() == 'Typing', undo_type
         u = self
         c = u.c
         w = c.frame.body.wrapper

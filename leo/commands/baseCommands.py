@@ -88,7 +88,6 @@ class BaseEditCommandsClass:
             if bunch.undoType.capitalize() == 'Typing':
                 u.type_text(
                     p,
-                    'Typing',
                     oldText=bunch.oldText,
                     newText=newText,
                     oldSel=bunch.oldSel,

@@ -1653,9 +1653,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         ins = w.getInsertPoint()
         i, j = w.getSelectionRange()
         if wname.startswith('body'):
-            ###self.beginCommand(w, 'Typing')
-            ### changed = True
-            ###try:
             with u.change_node(p, 'backward-delete-char'):
                 tab_width = c.getTabWidth(c.p)
                 if i != j:
@@ -1691,17 +1688,8 @@ class EditCommandsClass(BaseEditCommandsClass):
                     w.delete(i, ins)
                     w.setSelectionRange(i, i, insert=i)
                     # @-<< backspace with negative tab_width >>
-                u.type_text(
-                    p,
-                    oldText=p.b,
-                    newText=w.getAllText(),
-                    undo_type='Typing',
-                )
+                u.type_text(p, oldText=p.b, newText=w.getAllText())
             return
-            ###finally:
-            #    # Necessary to make text changes stick.
-            #    self.endCommand(changed=changed, setLabel=False)
-
         # No undo in this widget.
         s = w.getAllText()
         # Delete something if we can.
@@ -2136,7 +2124,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             newSel = w.getSelectionRange()
             u.type_text(
                 p,
-                'Typing',
                 oldText,
                 newText,
                 oldSel=oldSel,

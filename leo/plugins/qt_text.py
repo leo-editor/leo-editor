@@ -259,7 +259,6 @@ class QTextMixin:
         oldSel = (i, i + j)
         c.undoer.type_text(
             p,
-            'Typing',
             oldText,
             newText,
             oldSel=oldSel,
@@ -713,7 +712,6 @@ if QtWidgets:
                     w.setInsertPoint(j)
                     c.undoer.type_text(
                         p,
-                        'Typing',
                         oldText,
                         newText=w.getAllText(),
                         newInsert=w.getInsertPoint(),
