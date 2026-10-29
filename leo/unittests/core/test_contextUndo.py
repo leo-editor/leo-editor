@@ -52,7 +52,6 @@ class TestContextUndo(LeoUnitTest):
 
         p.b = 'original'
         for _i in range(3):
-            u.beads = []
             outer()
             assert p.b == 'inner'
             assert len(u.beads) == 1
@@ -333,7 +332,6 @@ class TestContextUndo(LeoUnitTest):
                 assert clone.v == v
 
         for _i in range(3):
-            u.beads = []
             test()
             assert len(u.beads) == 1
             assert p.b == 'after'
