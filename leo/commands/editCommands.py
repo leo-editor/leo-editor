@@ -11,7 +11,7 @@ from typing import cast, Any, TYPE_CHECKING
 
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
-from leo.plugins.qt_text import QTextMixin
+from leo.plugins.qt_text import QTextMixin  # For cast.
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
@@ -3529,12 +3529,10 @@ class EditCommandsClass(BaseEditCommandsClass):
     def fillRegionAsParagraph(self, event: LeoKeyEvent | None = None) -> None:
         """Fill the selected text."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        if not self._checkSelection(event):
+        if not self._checkSelection(w):
             return
         self.beginCommand(w, 'fill-region-as-paragraph')
         self.endCommand(changed=True, setLabel=True)
@@ -3625,13 +3623,11 @@ class EditCommandsClass(BaseEditCommandsClass):
     def tabIndentRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Insert a hard tab at the start of each line of the selected text."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        if not self._checkSelection(event):
-            return  # pragma: no cover (defensive)
+        if not self._checkSelection(w):
+            return
         self.beginCommand(w, 'indent-rigidly')
         s = w.getAllText()
         i1, j1 = w.getSelectionRange()
@@ -3760,9 +3756,12 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('reverse-region')
     def reverseRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Reverse the order of lines in the selected text."""
-        w = event.w if event else None
-        if not w or not self._checkSelection(event):
-            return  # pragma: no cover (defensive)
+        c = self.c
+        w = c.frame.body.wrapper
+        if not g.isTextWrapper(w):
+            return
+        if not self._checkSelection(w):
+            return
         self.beginCommand(w, 'reverse-region')
         s = w.getAllText()
         i1, j1 = w.getSelectionRange()
@@ -3936,13 +3935,11 @@ class EditCommandsClass(BaseEditCommandsClass):
         comparison.
         """
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        if not self._checkSelection(event):
-            return  # pragma: no cover (defensive)
+        if not self._checkSelection(w):
+            return
         s = w.getAllText()
 
         def toInt(index: str) -> int:
@@ -3997,12 +3994,10 @@ class EditCommandsClass(BaseEditCommandsClass):
     ) -> None:
         """Sort the selected lines."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not c:
-            return
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        if not self._checkSelection(event):
+        if not self._checkSelection(w):
             return
         undoType = 'reverse-sort-lines' if reverse else 'sort-lines'
         self.beginCommand(w, undoType=undoType)

@@ -10,7 +10,6 @@ from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent
     from leo.plugins.qt_text import QTextMixin
 
 # @-<< baseCommands imports & abbreviations >>
@@ -108,16 +107,14 @@ class BaseEditCommandsClass:
                 k.resetLabel()
 
     # @+node:ekr.20150514043714.11: *3* BaseEdit._checkSelection
-    def _checkSelection(
-        self, event: LeoKeyEvent | None = None, warning: str = 'no selection'
-    ) -> bool:
+    def _checkSelection(self, w: QTextMixin) -> bool:
         """Return True if there is a selection in the edit widget."""
         c = self.c
         w = c.frame.body.wrapper
-        val = bool(w and w.hasSelection())
-        if warning and not val:  # pragma: no cover
-            g.es(warning, color='red')
-        return val
+        if w and w.hasSelection():
+            return True
+        g.es('no selection', color='red')
+        return False
 
     # @-others
 

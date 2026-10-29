@@ -64,7 +64,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        if not self._checkSelection(event):
+        if not self._checkSelection(w):
             return
 
         def toInt(index: str) -> int:
@@ -88,7 +88,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        if not self._checkSelection(event):
+        if not self._checkSelection(w):
             return
 
         def toInt(index: str) -> int:
@@ -117,7 +117,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        if not self._checkSelection(event):
+        if not self._checkSelection(w):
             return
 
         def toInt(index: str) -> int:
@@ -140,7 +140,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        if not self._checkSelection(event):
+        if not self._checkSelection(w):
             return
 
         def toInt(index: str) -> int:
@@ -170,7 +170,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        if not self._checkSelection(event):
+        if not self._checkSelection(w):
             return
 
         def toInt(index: str) -> int:
@@ -195,17 +195,20 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         """
         c = self.c
         k = c.k
+        w = self.w = c.frame.body.wrapper
+        if not g.isTextWrapper(w):
+            return
+        if not self._checkSelection(w):
+            return
+
         if g.unitTesting:
             k.arg = 's...s'  # This string is known to the unit test.
-            self.w = event.w if event else c.frame.body.wrapper
             self.stringRect = self.getRectanglePoints(self.w)
             self.stringRectangle1(event)
             return
-        self.w = c.frame.body.wrapper
-        if self.w and self._checkSelection(event):
-            self.stringRect = self.getRectanglePoints(self.w)
-            k.setLabelBlue('String rectangle: ')
-            k.get1Arg(event, handler=self.stringRectangle1)
+        self.stringRect = self.getRectanglePoints(self.w)
+        k.setLabelBlue('String rectangle: ')
+        k.get1Arg(event, handler=self.stringRectangle1)
 
     def stringRectangle1(self, event: LeoKeyEvent | None = None) -> None:
         c = self.c
