@@ -1472,7 +1472,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             w.setSelectionRange(ins, ins, insert=ins)
             self.endCommand(changed=True, setLabel=True)
 
-    # @+node:ekr.20150514063305.244: *4* ec.indentRelative
+    # @+node:ekr.20150514063305.244: *4* ec.indentRelative (converted)
     @cmd('indent-relative')
     def indentRelative(self, event: LeoKeyEvent | None = None) -> None:
         """
@@ -1504,20 +1504,16 @@ class EditCommandsClass(BaseEditCommandsClass):
             line = s[i:j]
             if line.strip():
                 break
-        self.beginCommand(w, undoType='indent-relative')
         with u.change_outline('indent-relative'):
-            try:
-                k = g.skip_ws(s, i)
-                ws = s[i:k]
-                i2, j2 = g.getLine(s, ins)
-                k = g.skip_ws(s, i2)
-                line = ws + s[k:j2]
-                w.delete(i2, j2)
-                w.insert(i2, line)
-                w.setInsertPoint(i2 + len(ws))
-                p.v.b = w.getAllText()
-            finally:
-                self.endCommand(changed=True, setLabel=True)  # Handles undo.
+            k = g.skip_ws(s, i)
+            ws = s[i:k]
+            i2, j2 = g.getLine(s, ins)
+            k = g.skip_ws(s, i2)
+            line = ws + s[k:j2]
+            w.delete(i2, j2)
+            w.insert(i2, line)
+            w.setInsertPoint(i2 + len(ws))
+            p.v.b = w.getAllText()
 
     # @+node:ekr.20150514063305.245: *3* ec: info
     # @+node:ekr.20210311154956.1: *4* ec.copyGnx
@@ -1782,7 +1778,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             w.setInsertPoint(i)
             c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.258: *4* ec.delete-word & backward-delete-word
+    # @+node:ekr.20150514063305.258: *4* ec.delete-word & backward-delete-word (converted)
     @cmd('delete-word')
     def deleteWord(self, event: LeoKeyEvent | None = None) -> None:
         """Delete the word at the cursor."""
@@ -1809,21 +1805,23 @@ class EditCommandsClass(BaseEditCommandsClass):
         self, event: LeoKeyEvent | None, forward: bool, smart: bool = False
     ) -> None:
         c = self.c
+        p = c.p
+        u = c.undoer
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, "delete-word")
-        if w.hasSelection():
-            from_pos, to_pos = w.getSelectionRange()
-        else:
-            from_pos = w.getInsertPoint()
-            self.moveWordHelper(event, extend=False, forward=forward, smart=smart)
-            to_pos = w.getInsertPoint()
-        # For Tk GUI, make sure to_pos > from_pos
-        if from_pos > to_pos:
-            from_pos, to_pos = to_pos, from_pos
-        w.delete(from_pos, to_pos)
-        self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, 'delete-word'):
+            if w.hasSelection():
+                from_pos, to_pos = w.getSelectionRange()
+            else:
+                from_pos = w.getInsertPoint()
+                self.moveWordHelper(event, extend=False, forward=forward, smart=smart)
+                to_pos = w.getInsertPoint()
+            if from_pos > to_pos:
+                from_pos, to_pos = to_pos, from_pos
+            w.delete(from_pos, to_pos)
+            p.v.b = w.getAllText()
+            c.k.resetLabel()
 
     # @+node:ekr.20150514063305.259: *4* ec.deleteNextChar
     @cmd('delete-char')
