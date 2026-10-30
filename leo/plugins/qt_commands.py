@@ -145,6 +145,7 @@ def showColorWheel(self: Any, event: LeoKeyEvent | None = None) -> None:
     """Show a Qt color dialog."""
     c = self.c
     p = c.p
+    u = c.undoer
     picker = QtWidgets.QColorDialog()
     in_color_setting = p.h.startswith('@color ')
     try:
@@ -160,9 +161,10 @@ def showColorWheel(self: Any, event: LeoKeyEvent | None = None) -> None:
     if not result:
         g.es("No color selected")
     elif in_color_setting:
-        udata = c.undoer.beforeChangeNodeContents(p)
-        p.h = f"{p.h.split('=', 1)[0].strip()} = {picker.selectedColor().name()}"
-        c.undoer.afterChangeNodeContents(p, 'change-color', udata)
+        with u.change_node(p, 'show-color-wheel'):
+            name = picker.selectedColor().name()
+            h = p.h.split('=', 1)[0].strip()
+            p.h = f"{h} = {name}"
     else:
         text = picker.selectedColor().name()
         g.es("copied to clipboard:", text)
@@ -175,6 +177,7 @@ def showFonts(self: Any, event: LeoKeyEvent | None = None) -> None:
     """Open a tab in the log pane showing a font picker."""
     c = self.c
     p = c.p
+    u = c.undoer
     picker = QtWidgets.QFontDialog()
     if p.h.startswith('@font'):
         (name, family, weight, slant, size) = leoConfig.parseFont(p.b)
@@ -200,7 +203,6 @@ def showFonts(self: Any, event: LeoKeyEvent | None = None) -> None:
         g.es("No font selected")
     else:
         font = picker.selectedFont()
-        udata = c.undoer.beforeChangeNodeContents(p)
         comments = [x for x in g.splitLines(p.b) if x.strip().startswith('#')]
         defs = [
             '\n' if comments else '',
@@ -209,8 +211,8 @@ def showFonts(self: Any, event: LeoKeyEvent | None = None) -> None:
             f"{name}_slant = {'italic' if font.italic() else 'roman'}\n",
             f"{name}_size = {font.pointSizeF()}\n",
         ]
-        p.b = ''.join(comments + defs)
-        c.undoer.afterChangeNodeContents(p, 'change-font', udata)
+        with u.change_node(p, 'show-fonts'):
+            p.b = ''.join(comments + defs)
 
 
 # @+node:ekr.20140918124632.17893: ** qt: show-style-sheet
