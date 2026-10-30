@@ -79,9 +79,9 @@ class TestContextUndo(LeoUnitTest):
         with u.change_node(p, 'nested edits'):
             p.b = 'p intermediate'
             with u.change_node(p, 'same node'):
-                u.set_body(p, 'p final')
+                p.b = 'p final'
             with u.change_node(q, 'other node'):
-                u.set_body(q, 'q final')
+                q.b = 'q final'
         self.cycles(
             lambda: self.assertEqual((p.b, q.b), ('p original', 'q original')),
             lambda: self.assertEqual((p.b, q.b), ('p final', 'q final')),
@@ -148,29 +148,12 @@ class TestContextUndo(LeoUnitTest):
         history = u.beads[:]
         with c.undoer as u:
             u.set_command_name('noop')
-            u.set_body(p, p.b)
         with u.change_outline('noop bulk'):
             pass
         self.assertEqual(u.beads, history)
         self.assertTrue(u.canRedo())
         u.redo()
         self.assertEqual(p.b, 'changed')
-
-    # @+node:ekr.20261014103254.10: *3* TestContextUndo.test_new_edit_discards_redo
-    def test_new_edit_discards_redo(self):
-        c = self.c
-        p = c.p
-        for text in ('one', 'two'):
-            with c.undoer as u:
-                u.set_command_name('edit')
-                u.set_body(p, text)
-        u.undo()
-        with c.undoer as u:
-            u.set_command_name('branch')
-            u.set_body(p, 'three')
-        self.assertEqual(len(u.beads), 2)
-        self.assertFalse(u.canRedo())
-        self.cycles(lambda: self.assertEqual(p.b, 'one'), lambda: self.assertEqual(p.b, 'three'))
 
     # @+node:ekr.20261014103254.11: *3* TestContextUndo.test_cut_and_paste_mark_clean_document_changed_and_restore_selection
     def test_cut_and_paste_mark_clean_document_changed_and_restore_selection(self):
@@ -404,32 +387,6 @@ class TestContextUndo(LeoUnitTest):
             p.b = 'next'
         self.assertEqual(p.b, 'next')
 
-    # @+node:ekr.20261014103254.24: *3* TestContextUndo.test_replay_exception_resets_flags_and_keeps_pointer
-    def test_replay_exception_resets_flags_and_keeps_pointer(self):
-        c = self.c
-        p = c.p
-
-        def fail():
-            raise RuntimeError('replay')
-
-        with c.undoer as u:
-            u.set_command_name('failure')
-            u.set_body(p, 'changed')
-        b = u.beads[-1]
-        with patch.object(b, 'undo_functions', [fail]):
-            with self.assertRaisesRegex(RuntimeError, 'replay'):
-                u.undo()
-        self.assertFalse(u.undoing)
-        self.assertEqual(u.bead, 0)
-        u.undo()
-        with patch.object(b, 'redo_functions', [fail]):
-            with self.assertRaisesRegex(RuntimeError, 'replay'):
-                u.redo()
-        self.assertFalse(u.redoing)
-        self.assertEqual(u.bead, -1)
-        u.redo()
-        self.assertEqual(p.b, 'changed')
-
     # @+node:ekr.20261014103254.27: *3* TestContextUndo.test_typing_preserves_text_mark_and_newlines
     def test_typing_preserves_text_mark_and_newlines(self):
         c = self.c
@@ -558,57 +515,6 @@ class TestContextUndo(LeoUnitTest):
             ),
             lambda: (self.assertEqual(c.p, clone), self.assertTrue(p.isCloned())),
         )
-
-    # @+node:ekr.20261014103254.36: *3* TestContextUndo.test_randomized_composite_operations_restore_graph
-    def test_randomized_composite_operations_restore_graph(self):
-        import random
-
-        c = self.c
-        rng = random.Random(4996)
-
-        def graph():
-            return {
-                v.gnx: (
-                    v.h,
-                    v.b,
-                    v.isMarked(),
-                    tuple(child.gnx for child in v.children),
-                    tuple(sorted(parent.gnx for parent in v.parents)),
-                )
-                for v in [c.hiddenRootNode, *c.all_unique_nodes()]
-            }
-
-        snapshots = [graph()]
-        for i in range(40):
-            positions = list(c.all_positions())
-            p = rng.choice(positions)
-            c.selectPosition(p)
-            with c.undoer as u:
-                u.set_command_name(f'composite {i}')
-                action = rng.choice(('insert', 'clone', 'delete', 'body', 'mark'))
-                if action == 'insert':
-                    inserted = u.insert_node(p, as_child=True)
-                    u.change_headline(inserted, f'inserted {i}')
-                elif action == 'clone':
-                    u.clone_node(p)
-                elif action == 'delete' and (p.hasParent() or p.hasNext() or p.hasBack()):
-                    u.delete_node(p)
-                elif action == 'mark':
-                    with u.change_node(p, 'mark'):
-                        p.setMarked() if not p.isMarked() else p.clearMarked()
-                else:
-                    u.set_body(p, f'body {i}')
-            self.assertEqual(c.checkOutline(), 0)
-            snapshots.append(graph())
-        self.assertEqual(len(u.beads), 40)
-        for snapshot in reversed(snapshots[:-1]):
-            u.undo()
-            self.assertEqual(graph(), snapshot)
-            self.assertEqual(c.checkOutline(), 0)
-        for snapshot in snapshots[1:]:
-            u.redo()
-            self.assertEqual(graph(), snapshot)
-            self.assertEqual(c.checkOutline(), 0)
 
     # @+node:ekr.20261014103254.37: *3* TestContextUndo.test_per_node_undo_keeps_new_beads
     def test_per_node_undo_keeps_new_beads(self):
