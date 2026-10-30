@@ -435,7 +435,7 @@ class Undoer:
         u.setUndoTypes()
 
     # @+node:ekr.20031218072017.3608: *3* u: Externally visible entries
-    # @+node:ekr.20050318085432.2: *4* u.createCommonBunch
+    # @+node:ekr.20050318085432.2: *4* u.createCommonBunch (to be deleted)
     def createCommonBunch(self, p: Position) -> g.Bunch:
         """
         Return a bunch containing all common undo info.
@@ -827,7 +827,7 @@ class Undoer:
         if hasattr(v, 'undo_info'):
             u.setIvarsFromBunch(v.undo_info)  # type:ignore
 
-    # @+node:EKR.20040526075238.5: *5* u.redoTyping (keep???)
+    # @+node:EKR.20040526075238.5: *5* u.redoTyping (to be deleted)
     def redoTyping(self) -> None:
         u = self
         c = u.c
@@ -906,7 +906,7 @@ class Undoer:
         for v in c.all_unique_nodes():
             ni.check_gnx(c, v.fileIndex, v)
 
-    # @+node:vivainio.202610110002.2: *5* u.type_text (legacy: revise!!!)
+    # @+node:vivainio.202610110002.2: *5* u.type_text (legacy: to be deleted)
     def type_text(
         self,
         p: Position,
@@ -979,7 +979,7 @@ class Undoer:
         if u.per_node_undo:
             u.putIvarsToVnode(p)
 
-    # @+node:ekr.20031218072017.1493: *5* u.undoRedoText (keep???)
+    # @+node:ekr.20031218072017.1493: *5* u.undoRedoText (to be deleted)
     def undoRedoText(
         self,
         p: Position,
@@ -1028,7 +1028,7 @@ class Undoer:
         c.recolor(u.p)
         w.seeInsertPoint()  # 2009/12/21
 
-    # @+node:EKR.20040526090701.4: *5* u.undoTyping (keep???)
+    # @+node:EKR.20040526090701.4: *5* u.undoTyping (to be deleted)
     def undoTyping(self) -> None:
         u = self
         c = u.c
