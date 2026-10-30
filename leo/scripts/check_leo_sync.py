@@ -33,6 +33,8 @@ from leo.core import leoBridge  # noqa: E402
 
 
 def main() -> int:
+
+    print('check_leo_sync.py')
     leo_path = os.path.join(leo_editor_dir, 'leo', 'core', 'LeoPyRef.leo')
     bridge = leoBridge.controller(
         gui='nullGui',
@@ -73,8 +75,7 @@ def main() -> int:
         if derived != disk:
             out_of_sync.append((h, full, 'content differs from what the outline would write'))
 
-    print(f"checked {checked} @file/@clean nodes in {leo_path}")
-
+    # print(f"checked {checked} @file/@clean nodes in {leo_path}")
     ok = True
     if missing:
         ok = False
@@ -85,7 +86,6 @@ def main() -> int:
             "  (the file was likely renamed or deleted without updating the "
             "matching node's headline in LeoPyRef.leo)"
         )
-
     if out_of_sync:
         ok = False
         print(f"\n{len(out_of_sync)} node(s) are out of sync with their mirrored file:")
@@ -95,11 +95,7 @@ def main() -> int:
             "  (re-sync via leoBridge: c.refreshFromDisk(p) for each node, "
             "then c.fileCommands.save() -- see the leo-editor skill)"
         )
-
-    if ok:
-        print("\nLeoPyRef.leo is in sync with all mirrored files.")
-        return 0
-    return 1
+    return 0 if ok else 1
 
 
 if __name__ == '__main__':
