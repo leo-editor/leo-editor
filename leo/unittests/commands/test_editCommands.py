@@ -4164,7 +4164,7 @@ class TestEditCommands(LeoUnitTest):
         )  # fmt: skip
         for which, result in table:
             w.setInsertPoint(5)  # Must be inside the target.
-            c.editCommands.capitalizeHelper(which=which, undoType='X')
+            c.editCommands.capitalizeHelper(None, which=which, undoType='X')
             s = w.getAllText()
             word = s[2:12]
             self.assertEqual(word, result, msg=which)

@@ -96,8 +96,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
-        # Not valid in headlines.
-        w = c.frame.body.wrapper
+        w = event.w if event else c.frame.body.wrapper  # Valid in headlines.
         if not g.isTextWrapper(w):
             return
         with u.change_node(p, 'backward-kill-word'):
@@ -120,13 +119,12 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     def killWordHelper(self, event: LeoKeyEvent | None = None) -> None:
         c = self.c
         p = c.p
-        # Must be valid in headlines.
-        w = event.w if event else c.frame.body.wrapper
+        w = event.w if event else c.frame.body.wrapper  # Valid in headlines.
         c.editCommands.extendToWord(event)
         i, j = w.getSelectionRange()
-        self.killHelper(i, j, w)
-        ### Test for body
-        p.v.b = w.getAllText()
+        self.killHelper(event, i, j, w)
+        if g.app.is_body_wrapper(w):
+            p.v.b = w.getAllText()
         c.k.resetLabel()
 
     # @+node:ekr.20150514063305.414: *3* clearKillRing
@@ -186,14 +184,13 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         return self.KillBufferIterClass(self.c)
 
     # @+node:ekr.20150514063305.419: *3* ec.killHelper (converted)
-    def killHelper(self, frm: int, to: int, w: QTextMixin) -> None:
+    def killHelper(self, event: LeoKeyEvent | None, frm: int, to: int, w: QTextMixin) -> None:
         """
         A helper method for all kill commands except kill-paragraph commands.
         """
         c = self.c
         p = c.p
-        # Must be valid in headlines.
-        w = c.frame.body.wrapper
+        w = event.w if event else c.frame.body.wrapper  # Valid in headlines.
         if not g.isTextWrapper(w):
             return
         # Extend (frm, to) if it spans a line.
@@ -206,7 +203,8 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         self.addToKillBuffer(s)
         g.app.gui.replaceClipboardWith(s)
         w.delete(frm, to)
-        p.v.b = w.getAllText()
+        if g.app.is_body_wrapper(w):
+            p.v.b = w.getAllText()
         w.setInsertPoint(frm)  # Do this *after* setting p.b.
         w.setYScrollPosition(old_y_scroll)  # PR #5020.
         g.app.gui.set_focus(c, w)  # 2607
@@ -255,8 +253,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
-        # Not valid in headlines.
-        w = event.w if event else c.frame.body.wrapper
+        w = event.w if event else c.frame.body.wrapper  # Valid in headlines.
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -275,7 +272,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             i = j
         if i < j:
             with u.change_node(p, 'kill-to-end-of-line'):
-                self.killHelper(i, j, w)
+                self.killHelper(event, i, j, w)
                 c.k.resetLabel()
 
     # @+node:ekr.20150514063305.421: *3* ec.killLine (converted)
@@ -301,7 +298,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         else:
             pass  # Kill the newline in the present line.
         with u.change_node(p, 'kill-line'):
-            self.killHelper(i, j, w)
+            self.killHelper(event, i, j, w)
             c.k.resetLabel()
 
     # @+node:ekr.20150514063305.422: *3* killRegion & killRegionSave (converted)
@@ -358,7 +355,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             return
         with u.change_node(p, 'kill-sentence'):
             i2 = s.rfind('.', 0, ins) + 1
-            self.killHelper(i2, i + 1, w)
+            self.killHelper(event, i2, i + 1, w)
             c.k.resetLabel()
 
     # @+node:ekr.20150514063305.424: *3* killWs (converted)
@@ -368,8 +365,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
-        # Not valid in headlines.
-        w = c.frame.body.wrapper
+        w = event.w if event else c.frame.body.wrapper  # Valid in headlines.
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -386,21 +382,22 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
                 w.delete(i, j)
                 if self.addWsToKillRing:
                     self.addToKillBuffer(ws)
-                p.v.b = w.getAllText()
+                if g.app.is_body_wrapper(w):
+                    p.v.b = w.getAllText()
                 w.setInsertPoint(i)
 
     # @+node:ekr.20150514063305.425: *3* yank & yankPop (converted)
     @cmd('yank')
     def yank(self, event: LeoKeyEvent | None = None) -> None:
         """Insert the next entry of the kill ring."""
-        self.yankHelper(pop=False)
+        self.yankHelper(event, pop=False)
 
     @cmd('yank-pop')
     def yankPop(self, event: LeoKeyEvent | None = None) -> None:
         """Insert the first entry of the kill ring."""
-        self.yankHelper(pop=True)
+        self.yankHelper(event, pop=True)
 
-    def yankHelper(self, pop: bool) -> None:
+    def yankHelper(self, event: LeoKeyEvent | None, pop: bool) -> None:
         """
         Helper for yank and yank-pop:
         pop = False: insert the first entry of the kill ring.
@@ -409,8 +406,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
-        # Not valid in headlines.
-        w = c.frame.body.wrapper
+        w = event.w if event else c.frame.body.wrapper  # Valid in headlines.
         if not g.isTextWrapper(w):
             return
         if not p:
@@ -438,7 +434,8 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             w.insert(i, s)
             w.setInsertPoint(i + len(s))
             self.lastYankP = p.copy()
-            p.v.b = w.getAllText()
+            if g.app.is_body_wrapper(w):
+                p.v.b = w.getAllText()
             c.k.resetLabel()
 
     # @+node:ekr.20150514063305.427: *3* zapToCharacter (converted)
@@ -449,8 +446,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         k = c.k
         p = c.p
         u = c.undoer
-        # Not valid in headlines.
-        w = c.frame.body.wrapper
+        w = event.w if event else c.frame.body.wrapper  # Valid in headlines.
         if not g.isTextWrapper(w):  # #4998.
             return
         state = k.getState('zap-to-char')
@@ -471,8 +467,9 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             g.app.gui.replaceClipboardWith(s[ins:i])  # Support for proper yank.
             w.setAllText(s[:ins] + s[i:])
             w.setInsertPoint(ins)
+            if g.app.is_body_wrapper(w):
+                p.v.b = w.getAllText()
             c.k.resetLabel()
-            p.v.b = w.getAllText()
 
     # @-others
 

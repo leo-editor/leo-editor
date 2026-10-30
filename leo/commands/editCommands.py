@@ -603,25 +603,24 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('capitalize-word')
     def capitalizeWord(self, event: LeoKeyEvent | None = None) -> None:
         """Capitalize the word at the cursor."""
-        self.capitalizeHelper('cap', 'capitalize-word')
+        self.capitalizeHelper(event, 'cap', 'capitalize-word')
 
     @cmd('downcase-word')
     def downCaseWord(self, event: LeoKeyEvent | None = None) -> None:
         """Convert all characters of the word at the cursor to lower case."""
-        self.capitalizeHelper('low', 'downcase-word')
+        self.capitalizeHelper(event, 'low', 'downcase-word')
 
     @cmd('upcase-word')
     def upCaseWord(self, event: LeoKeyEvent | None = None) -> None:
         """Convert all characters of the word at the cursor to UPPER CASE."""
-        self.capitalizeHelper('up', 'upcase-word')
+        self.capitalizeHelper(event, 'up', 'upcase-word')
 
     # @+node:ekr.20150514063305.194: *4* ec.capitalizeHelper (converted)
-    def capitalizeHelper(self, which: str, undoType: str) -> None:
+    def capitalizeHelper(self, event: LeoKeyEvent | None, which: str, undoType: str) -> None:
         c = self.c
         p = c.p
         u = c.undoer
-        # Not valid in headlines.
-        w = c.frame.body.wrapper
+        w = event.w if event else c.frame.body.wrapper  # Valid in headlines.
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -643,7 +642,8 @@ class EditCommandsClass(BaseEditCommandsClass):
             if word != word2:
                 w.delete(i, j)
                 w.insert(i, word2)
-            p.v.b = w.getAllText()
+            if g.app.is_body_wrapper(w):
+                p.v.b = w.getAllText()
             w.setSelectionRange(ins, ins, insert=ins)  # Restore the old insert point.
             c.k.resetLabel()
 
@@ -3015,8 +3015,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     ) -> tuple[int, int]:
         """Compute the word at the cursor. Select it if select arg is True."""
         c = self.c
-        # Must be valid in headlines.
-        w = event.w if event else c.frame.body.wrapper
+        w = event.w if event else c.frame.body.wrapper  # Valid in headlines.
         if not g.isTextWrapper(w):
             return 0, 0
         assert isinstance(w, QTextMixin)
