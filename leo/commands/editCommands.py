@@ -1451,11 +1451,13 @@ class EditCommandsClass(BaseEditCommandsClass):
             self._setIconUA(p, aList)
 
     # @+node:ekr.20150514063305.242: *3* ec: indent
-    # @+node:ekr.20150514063305.243: *4* ec.deleteIndentation
+    # @+node:ekr.20150514063305.243: *4* ec.deleteIndentation (converted)
     @cmd('delete-indentation')
     def deleteIndentation(self, event: LeoKeyEvent | None = None) -> None:
         """Delete indentation in the presently line."""
         c = self.c
+        p = c.p
+        u = c.undoer
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
@@ -1465,12 +1467,13 @@ class EditCommandsClass(BaseEditCommandsClass):
         line = s[i:j]
         line2 = s[i:j].lstrip()
         if delta := len(line) - len(line2):
-            self.beginCommand(w, 'delete-indentation')
-            w.delete(i, j)
-            w.insert(i, line2)
-            ins -= delta
-            w.setSelectionRange(ins, ins, insert=ins)
-            self.endCommand(changed=True, setLabel=True)
+            with u.change_node(p, 'delete-indentation'):
+                w.delete(i, j)
+                w.insert(i, line2)
+                ins -= delta
+                p.v.b = w.getAllText()
+                w.setSelectionRange(ins, ins, insert=ins)
+                c.k.resetLabel()
 
     # @+node:ekr.20150514063305.244: *4* ec.indentRelative (converted)
     @cmd('indent-relative')
@@ -1823,40 +1826,37 @@ class EditCommandsClass(BaseEditCommandsClass):
             p.v.b = w.getAllText()
             c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.259: *4* ec.deleteNextChar
+    # @+node:ekr.20150514063305.259: *4* ec.deleteNextChar (converted)
     @cmd('delete-char')
     def deleteNextChar(self, event: LeoKeyEvent | None = None) -> None:
         """Delete the character to the right of the cursor."""
         c = self.c
+        p = c.p
+        u = c.undoer
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
+        s = w.getAllText()
+        i, j = w.getSelectionRange()
         wname = c.widget_name(w)
         if wname.startswith('body'):
-            s = w.getAllText()
-            i, j = w.getSelectionRange()
-            self.beginCommand(w, 'delete-char')
-            changed = True
-            if i != j:
-                w.delete(i, j)
-                w.setInsertPoint(i)
-            elif j < len(s):
-                w.delete(i)
-                w.setInsertPoint(i)
-            else:
-                changed = False
-            self.endCommand(changed=changed, setLabel=False)
-        else:
-            # No undo in this widget.
-            s = w.getAllText()
-            i, j = w.getSelectionRange()
-            # Delete something if we can.
-            if i != j:
-                w.delete(i, j)
-                w.setInsertPoint(i)
-            elif j < len(s):
-                w.delete(i)
-                w.setInsertPoint(i)
+            with u.change_node(p, 'delete-char'):
+                if i != j:
+                    w.delete(i, j)
+                    w.setInsertPoint(i)
+                elif j < len(s):
+                    w.delete(i)
+                    w.setInsertPoint(i)
+                p.v.b = w.getAllText()
+                c.k.resetLabel()
+            return
+        # No undo in this widget. Delete something if we can.
+        if i != j:
+            w.delete(i, j)
+            w.setInsertPoint(i)
+        elif j < len(s):
+            w.delete(i)
+            w.setInsertPoint(i)
 
     # @+node:ekr.20150514063305.260: *4* ec.deleteSpaces
     @cmd('delete-spaces')
