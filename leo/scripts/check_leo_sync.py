@@ -1,3 +1,5 @@
+# @+leo-ver=5-thin
+# @+node:ekr.20261030054958.1: * @file ../scripts/check_leo_sync.py
 """
 check_leo_sync.py: Verify that LeoPyRef.leo is in sync with the plain
 files it mirrors.
@@ -52,6 +54,9 @@ def main() -> int:
         if not p.isAnyAtFileNode():
             continue
         h = p.h.strip()
+        # @verbatim
+        # @auto/@edit don't have a stable derived-string round-trip to compare.
+        # @verbatim
         # @auto/@edit don't have a stable derived-string round-trip to compare.
         if h.startswith(('@auto', '@edit')):
             continue
@@ -104,3 +109,4 @@ def main() -> int:
 
 if __name__ == '__main__':
     sys.exit(main())
+# @-leo
