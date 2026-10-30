@@ -3530,19 +3530,6 @@ class EditCommandsClass(BaseEditCommandsClass):
                 if progress >= ins or ins >= j or ins >= len(s):
                     break
 
-    # @+node:ekr.20150514063305.322: *4* ec.fillRegionAsParagraph
-    @cmd('fill-region-as-paragraph')
-    def fillRegionAsParagraph(self, event: LeoKeyEvent | None = None) -> None:
-        """Fill the selected text."""
-        c = self.c
-        w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
-            return
-        if not self._checkSelection(w):
-            return
-        self.beginCommand(w, 'fill-region-as-paragraph')
-        self.endCommand(changed=True, setLabel=True)
-
     # @+node:ekr.20150514063305.323: *4* ec.fillParagraph
     @cmd('fill-paragraph')
     def fillParagraph(self, event: LeoKeyEvent | None = None) -> None:
