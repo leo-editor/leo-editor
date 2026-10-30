@@ -1179,7 +1179,8 @@ class LeoFind:
     ) -> None:  # pragma: no cover (interactive)
         c = self.c
         k = c.k
-        w = c.frame.body.wrapper
+        # Must be valid in headlines.
+        w = event.w if event else c.frame.body.wrapper
 
         # Update settings data.
         find_pattern = self._sString
@@ -2221,7 +2222,8 @@ class LeoFind:
     def _start_search_escape2(self, event: LeoKeyEvent | None = None) -> None:
         c = self.c
         k = c.k
-        w = c.frame.body.wrapper
+        # Must be valid in headlines.
+        w = event.w if event else c.frame.body.wrapper
         # Compute settings...
         find_pattern = self._sString
         change_pattern = k.arg

@@ -669,7 +669,8 @@ if QtWidgets:
             def keyPressEvent(self, event: QKeyEvent) -> None:
                 """Handle a key event from QListWidget."""
                 c = self.leo_c
-                w = c.frame.body.wrapper
+                # Must be valid in headlines.
+                w = event.w if event else c.frame.body.wrapper
                 key = event.key()
                 if event.modifiers() != KeyboardModifier.NoModifier and not event.text():
                     # A modifier key on it's own.
@@ -751,6 +752,7 @@ if QtWidgets:
                     return obj.mapToGlobal(pt)
 
                 c = self.leo_c
+                # Not in headlines.
                 w = c.frame.body.wrapper.widget
                 vp = self.viewport()
                 assert vp is not None

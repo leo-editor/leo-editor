@@ -96,12 +96,13 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
+        # Not valid in headlines.
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         with u.change_node(p, 'backward-kill-word'):
             c.editCommands.backwardWord(event)
-            self.killWordHelper(w)
+            self.killWordHelper(event)
 
     @cmd('kill-word')
     def killWord(self, event: LeoKeyEvent | None = None) -> None:
@@ -109,19 +110,22 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
-        w = c.frame.body.wrapper
+        # Must be valid in headlines.
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         with u.change_node(p, 'kill-word'):
-            self.killWordHelper(None)
+            self.killWordHelper(event)
 
     def killWordHelper(self, event: LeoKeyEvent | None = None) -> None:
         c = self.c
         p = c.p
-        w = c.frame.body.wrapper
+        # Must be valid in headlines.
+        w = event.w if event else c.frame.body.wrapper
         c.editCommands.extendToWord(event)
         i, j = w.getSelectionRange()
         self.killHelper(i, j, w)
+        ### Test for body
         p.v.b = w.getAllText()
         c.k.resetLabel()
 
@@ -188,6 +192,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         """
         c = self.c
         p = c.p
+        # Must be valid in headlines.
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
@@ -250,7 +255,8 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
-        w = c.frame.body.wrapper
+        # Not valid in headlines.
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -305,6 +311,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
+        # Not valid in headlines.
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
@@ -323,6 +330,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     def killRegionSave(self, event: LeoKeyEvent | None = None) -> None:
         """Add the selected text to the kill ring, but do not delete it."""
         c = self.c
+        # Not valid in headlines.
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
@@ -360,6 +368,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
+        # Not valid in headlines.
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
@@ -400,6 +409,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
+        # Not valid in headlines.
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
@@ -439,6 +449,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         k = c.k
         p = c.p
         u = c.undoer
+        # Not valid in headlines.
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):  # #4998.
             return

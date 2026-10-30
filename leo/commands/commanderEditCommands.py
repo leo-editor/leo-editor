@@ -661,7 +661,8 @@ def insertBodyTime(self: Self, event: LeoKeyEvent | None = None) -> None:
     c = self
     p = c.p
     u = c.undoer
-    w = c.frame.body.wrapper
+    # Must be valid in headlines.
+    w = event.w if event else c.frame.body.wrapper
     if g.app.batchMode:
         c.notValidInBatchMode('insert-body-time')
         return

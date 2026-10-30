@@ -620,6 +620,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
+        # Not valid in headlines.
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
@@ -3014,7 +3015,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     ) -> tuple[int, int]:
         """Compute the word at the cursor. Select it if select arg is True."""
         c = self.c
-        w = c.frame.body.wrapper
+        # Must be valid in headlines.
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return 0, 0
         assert isinstance(w, QTextMixin)
@@ -3616,6 +3618,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def tabIndentRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Insert a hard tab at the start of each line of the selected text."""
         c = self.c
+        # Not valid in headlines.
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
