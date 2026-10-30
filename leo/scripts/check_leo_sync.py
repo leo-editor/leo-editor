@@ -55,9 +55,6 @@ def main() -> int:
         # at-auto or at-edit files don't have a stable round-trip to compare.
         if h.startswith(('@auto', '@edit')):
             continue
-        if h.endswith('check_leo_sync.py'):
-            # Don't check this file!
-            continue
         if not h.startswith(('@file', '@clean', '@thin', '@shadow', '@nosent')):
             continue
         full = c.fullPath(p)

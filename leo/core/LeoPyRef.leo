@@ -3690,8 +3690,7 @@ def main() -&gt; int:
         if not p.isAnyAtFileNode():
             continue
         h = p.h.strip()
-        # @auto/@edit don't have a stable derived-string round-trip to compare.
-        # @auto/@edit don't have a stable derived-string round-trip to compare.
+        # at-auto or at-edit files don't have a stable round-trip to compare.
         if h.startswith(('@auto', '@edit')):
             continue
         if not h.startswith(('@file', '@clean', '@thin', '@shadow', '@nosent')):
