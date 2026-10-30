@@ -141,19 +141,31 @@ class TestContextUndo(LeoUnitTest):
     def test_noop_context_preserves_redo(self):
         c = self.c
         p = c.p
-        with c.undoer as u:
-            u.set_command_name('edit')
-            u.set_body(p, 'changed')
-        u.undo()
-        history = u.beads[:]
-        with c.undoer as u:
-            u.set_command_name('noop')
-        with u.change_outline('noop bulk'):
-            pass
-        self.assertEqual(u.beads, history)
-        self.assertTrue(u.canRedo())
-        u.redo()
-        self.assertEqual(p.b, 'changed')
+        u = c.undoer
+
+        def edit() -> None:
+            with u.change_node(p, 'edit'):
+                p.b = 'changed'
+
+        def noop() -> None:
+            with u.change_node(p, 'noop'):
+                pass
+
+        p.b = 'original'
+        noop()
+        edit()
+        noop()
+        for _i in range(3):
+            assert p.b == 'changed', repr(p.b)
+            u.undo()
+            assert u.canRedo()
+            u.redo()
+            assert p.b == 'changed', repr(p.b)
+            u.undo()
+            u.undo()
+            assert p.b == 'original', repr(p.b)
+            u.redo()
+            u.redo()
 
     # @+node:ekr.20261014103254.11: *3* TestContextUndo.test_cut_and_paste_mark_clean_document_changed_and_restore_selection
     def test_cut_and_paste_mark_clean_document_changed_and_restore_selection(self):
