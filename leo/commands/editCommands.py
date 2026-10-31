@@ -2411,32 +2411,30 @@ class EditCommandsClass(BaseEditCommandsClass):
         w.setSelectionRange(ins, ins, insert=ins)
 
     # @+node:ekr.20150514063305.280: *3* ec: lines
-    # @+node:ekr.20200619082429.1: *4* ec.moveLinesToNextNode
+    # @+node:ekr.20200619082429.1: *4* ec.moveLinesToNextNode (converted)
     @cmd('move-lines-to-next-node')
     def moveLineToNextNode(self, event: LeoKeyEvent | None = None) -> None:
         """Move one or *trailing* lines to the start of the next node."""
         c = self.c
-        if not c.p.threadNext():
-            return
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
+            return
+        if not p.threadNext():
             return
         s = w.getAllText()
         sel_1, sel_2 = w.getSelectionRange()
         i, junk = g.getLine(s, sel_1)
-        i2, j = g.getLine(s, sel_2)
-        lines = s[i:j]
+        lines = s[i:]  # PR #5020
         if not lines.strip():
             return
-        self.beginCommand(w, 'move-lines-to-next-node')
-        try:
-            next_i, next_j = g.getLine(s, j)
-            w.delete(i, next_j)
-            c.p.v.b = w.getAllText().rstrip() + '\n'
-            c.selectPosition(c.p.threadNext())
-            c.p.b = lines + '\n' + c.p.b
-        finally:
-            self.endCommand(changed=True, setLabel=True)
+        with u.change_outline('move-lines-to-next-node'):
+            w.delete(i, len(s))  # PR #5020
+            p.v.b = w.getAllText().rstrip() + '\n'
+            c.p = p = p.threadNext()
+            p.v.b = lines + '\n' + p.v.b
+            c.k.resetLabel()
 
     # @+node:ekr.20150514063305.284: *4* ec.splitLine (converted)
     @cmd('split-line')
