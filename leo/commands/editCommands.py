@@ -1955,7 +1955,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             k.setInputState('insert')
             k.showStateAndMode()
 
-    # @+node:ekr.20150514063305.264: *4* ec.insertParentheses
+    # @+node:ekr.20150514063305.264: *4* ec.insertParentheses (converted)
     @cmd('insert-parentheses')
     def insertParentheses(self, event: LeoKeyEvent | None = None) -> None:
         """Insert () at the cursor."""
@@ -1966,28 +1966,28 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not g.isTextWrapper(w):
             return
         with u.change_node(p, 'insert-parenthesis'):
-            ###self.beginCommand(w, 'insert-parenthesis')
             i = w.getInsertPoint()
             w.insert(i, '()')
             w.setInsertPoint(i + 1)
             p.v.b = w.getAllText()
-            ### self.endCommand(changed=True, setLabel=False)
 
-    # @+node:ekr.20150514063305.265: *4* ec.insertSoftTab
+    # @+node:ekr.20150514063305.265: *4* ec.insertSoftTab (converted)
     @cmd('insert-soft-tab')
     def insertSoftTab(self, event: LeoKeyEvent | None = None) -> None:
         """Insert spaces equivalent to one tab."""
         c = self.c
+        p = c.p
+        u = c.undoer
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         tab_width = abs(c.getTabWidth(c.p))
         ins = w.getInsertPoint()
-        self.beginCommand(w, 'insert-soft-tab')
-        w.insert(ins, ' ' * tab_width)
-        ins += tab_width
-        w.setSelectionRange(ins, ins, insert=ins)
-        self.endCommand()
+        with u.change_node(p, 'insert-soft-tab'):
+            w.insert(ins, ' ' * tab_width)
+            ins += tab_width
+            w.setSelectionRange(ins, ins, insert=ins)
+            p.v.b = w.getAllText()
 
     # @+node:ekr.20150514063305.266: *4* ec.removeBlankLines (remove-blank-lines)
     @cmd('remove-blank-lines')
