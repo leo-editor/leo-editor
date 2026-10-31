@@ -3720,26 +3720,25 @@ class EditCommandsClass(BaseEditCommandsClass):
         Move all lines containing any selected text up one line.
         """
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
-            return  # pragma: no cover (defensive)
+            return
         s = w.getAllText()
         sel_1, sel_2 = w.getSelectionRange()
         insert_pt = w.getInsertPoint()  # 2011/04/01
         i, junk = g.getLine(s, sel_1)
         i2, j = g.getLine(s, sel_2)
         lines = s[i:j]
-        self.beginCommand(w, 'move-lines-up')
-        try:
-            prev_i, prev_j = g.getLine(s, i - 1)
-            prev_line = s[prev_i:prev_j]
-            n2 = prev_j - prev_i
+        prev_i, prev_j = g.getLine(s, i - 1)
+        prev_line = s[prev_i:prev_j]
+        n2 = prev_j - prev_i
+        with u.change_node(p, 'move-lines-up'):
             if i > 0:
                 w.delete(prev_i, j)
                 if lines.endswith('\n'):
-                    # Simply swap positions with next line
+                    # Swap positions with next line
                     new_lines = lines + prev_line
                 else:
                     # Lines to be moved up don't end in a newline while the
@@ -3748,13 +3747,11 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.insert(prev_i, new_lines)
                 w.setSelectionRange(sel_1 - n2, sel_2 - n2, insert=insert_pt - n2)
             else:
-                # Leo 5.6: Insert a blank line after the line.
+                # Insert a blank line after the line.
                 w.insert(j, '\n')
                 w.setSelectionRange(sel_1, sel_2, insert=sel_1)
-            # Fix bug 799695: colorizer bug after move-lines-up into a docstring
-            c.recolor()
-        finally:
-            self.endCommand(changed=True, setLabel=True)
+            p.v.b = w.getAllText()
+            c.k.resetLabel()
 
     # @+node:ekr.20150514063305.332: *4* ec.reverseRegion (converted)
     @cmd('reverse-region')
