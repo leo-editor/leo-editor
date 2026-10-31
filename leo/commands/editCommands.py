@@ -3776,28 +3776,27 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('downcase-region')
     def downCaseRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Convert all characters in the selected text to lower case."""
-        self.caseHelper(event, 'low', 'downcase-region')
+        self.caseHelper('low', 'downcase-region')
 
     @cmd('toggle-case-region')
     def toggleCaseRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Toggle the case of all characters in the selected text."""
-        self.caseHelper(event, 'toggle', 'toggle-case-region')
+        self.caseHelper('toggle', 'toggle-case-region')
 
     @cmd('upcase-region')
     def upCaseRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Convert all characters in the selected text to UPPER CASE."""
-        self.caseHelper(event, 'up', 'upcase-region')
+        self.caseHelper('up', 'upcase-region')
 
-    def caseHelper(self, event: LeoKeyEvent | None, way: str, undoType: str) -> None:
+    def caseHelper(self, way: str, undoType: str) -> None:
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         if not w.hasSelection():
             return
-        self.beginCommand(w, undoType=undoType)
         s = w.getAllText()
         i, j = w.getSelectionRange()
         ins = w.getInsertPoint()
@@ -3810,10 +3809,12 @@ class EditCommandsClass(BaseEditCommandsClass):
             assert way == 'toggle'
             sel = s2.swapcase()
         s2 = s[:i] + sel + s[j:]
-        if changed := s2 != s:
-            w.setAllText(s2)
-            w.setSelectionRange(i, j, insert=ins)
-        self.endCommand(changed=changed, setLabel=True)
+        if s2 != s:
+            with u.change_node(p, undoType):
+                w.setAllText(s2)
+                w.setSelectionRange(i, j, insert=ins)
+                p.v.b = w.getAllText()
+                c.k.resetLabel()
 
     # @+node:ekr.20150514063305.334: *3* ec: scrolling
     # @+node:ekr.20150514063305.335: *4* ec.scrollUp/Down & helper
