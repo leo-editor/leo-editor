@@ -3977,7 +3977,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         finally:
             self.endCommand(changed=True, setLabel=True)
 
-    # @+node:ekr.20150514063305.340: *4* ec.sortLines commands
+    # @+node:ekr.20150514063305.340: *4* ec.sortLines commands (converted)
     @cmd('reverse-sort-lines-ignoring-case')
     def reverseSortLinesIgnoringCase(self, event: LeoKeyEvent | None = None) -> None:
         """Sort the selected lines in reverse order, ignoring case."""
@@ -3995,40 +3995,43 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     @cmd('sort-lines')
     def sortLines(
-        self, event: LeoKeyEvent | None = None, ignoreCase: bool = False, reverse: bool = False
+        self,
+        event: LeoKeyEvent | None = None,
+        ignoreCase: bool = False,
+        reverse: bool = False,
     ) -> None:
         """Sort the selected lines."""
         c = self.c
+        p = c.p
+        u = c.undoer
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        if not self._checkSelection(w):
+        if not w.hasSelection():
             return
-        undoType = 'reverse-sort-lines' if reverse else 'sort-lines'
-        self.beginCommand(w, undoType=undoType)
-        try:
-            s = w.getAllText()
-            sel1, sel2 = w.getSelectionRange()
-            ins = w.getInsertPoint()
-            i, junk = g.getLine(s, sel1)
-            junk, j = g.getLine(s, sel2)
-            s2 = s[i:j]
-            if not s2.endswith('\n'):
-                s2 = s2 + '\n'
-            aList = g.splitLines(s2)
 
-            def lower(s: str) -> str:
-                return s.lower() if ignoreCase else s
+        def lower(s: str) -> str:
+            return s.lower() if ignoreCase else s
 
-            aList.sort(key=lower)  # key is a function that extracts args.
-            if reverse:
-                aList.reverse()
-            s = ''.join(aList)
+        s = w.getAllText()
+        sel1, sel2 = w.getSelectionRange()
+        ins = w.getInsertPoint()
+        i, junk = g.getLine(s, sel1)
+        junk, j = g.getLine(s, sel2)
+        s2 = s[i:j]
+        if not s2.endswith('\n'):
+            s2 = s2 + '\n'
+        aList = g.splitLines(s2)
+        aList.sort(key=lower)
+        if reverse:
+            aList.reverse()
+        s = ''.join(aList)
+        with u.change_node(p, 'reverse-sort-lines' if reverse else 'sort-lines'):
             w.delete(i, j)
             w.insert(i, s)
             w.setSelectionRange(sel1, sel2, insert=ins)
-        finally:
-            self.endCommand(changed=True, setLabel=True)
+            p.v.b = w.getAllText()
+            c.k.resetLabel()
 
     # @+node:ekr.20150514063305.343: *3* ec: swap/transpose
     # @+node:ekr.20150514063305.344: *4* ec.transposeLines (converted)
