@@ -1695,7 +1695,8 @@ class EditCommandsClass(BaseEditCommandsClass):
                     # @-<< backspace with negative tab_width >>
                 u.type_text(p, oldText=p.b, newText=w.getAllText())
             return
-        # No undo in this widget.
+        # No *direct* undo in this widget.
+        # Undo in headlines is handled indirectly.
         s = w.getAllText()
         # Delete something if we can.
         if i != j:
@@ -1854,7 +1855,8 @@ class EditCommandsClass(BaseEditCommandsClass):
                 p.v.b = w.getAllText()
                 c.k.resetLabel()
             return
-        # No undo in this widget. Delete something if we can.
+        # No *direct* undo in this widget.
+        # Undo in headlines is handled indirectly.
         if i != j:
             w.delete(i, j)
             w.setInsertPoint(i)
