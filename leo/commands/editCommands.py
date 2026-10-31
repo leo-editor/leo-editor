@@ -3772,7 +3772,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         w.setSelectionRange(ins, ins, insert=ins)
         self.endCommand(changed=True, setLabel=True)
 
-    # @+node:ekr.20150514063305.333: *4* ec.up/downCaseRegion & helper
+    # @+node:ekr.20150514063305.333: *4* ec.up/downCaseRegion & helper (converted)
     @cmd('downcase-region')
     def downCaseRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Convert all characters in the selected text to lower case."""
@@ -4054,7 +4054,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             w.setInsertPoint(j - 1)
         self.endCommand(changed=True, setLabel=True)
 
-    # @+node:ekr.20150514063305.345: *4* ec.transposeWords
+    # @+node:ekr.20150514063305.345: *4* ec.transposeWords (converted)
     @cmd('transpose-words')
     def transposeWords(self, event: LeoKeyEvent | None = None) -> None:
         """
@@ -4063,30 +4063,33 @@ class EditCommandsClass(BaseEditCommandsClass):
         transposes into ‘BAR, FOO’.
         """
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, 'transpose-words')
-        s = w.getAllText()
-        i1, j1 = self.extendToWord(event, select=False)
-        s1 = s[i1:j1]
-        if i1 > j1:
-            i1, j1 = j1, i1
-        # Search for the next word.
-        k = j1 + 1
-        while k < len(s) and s[k] != '\n' and not g.isWordChar1(s[k]):
-            k += 1
-        if changed := k < len(s):
-            ws = s[j1:k]
-            w.setInsertPoint(k + 1)
-            i2, j2 = self.extendToWord(event, select=False)
-            s2 = s[i2:j2]
-            s3 = s[:i1] + s2 + ws + s1 + s[j2:]
-            w.setAllText(s3)
-            w.setSelectionRange(j1, j1, insert=j1)
-        self.endCommand(changed=changed, setLabel=True)
+        with u.change_node(p, 'transpose-words'):
+            ### self.beginCommand(w, 'transpose-words')
+            s = w.getAllText()
+            i1, j1 = self.extendToWord(event, select=False)
+            s1 = s[i1:j1]
+            if i1 > j1:
+                i1, j1 = j1, i1
+            # Search for the next word.
+            k = j1 + 1
+            while k < len(s) and s[k] != '\n' and not g.isWordChar1(s[k]):
+                k += 1
+            if k < len(s):
+                ws = s[j1:k]
+                w.setInsertPoint(k + 1)
+                i2, j2 = self.extendToWord(event, select=False)
+                s2 = s[i2:j2]
+                s3 = s[:i1] + s2 + ws + s1 + s[j2:]
+                w.setAllText(s3)
+                w.setSelectionRange(j1, j1, insert=j1)
+                p.v.b = w.getAllText()
+                c.k.resetLabel()
+            ##self.endCommand(changed=changed, setLabel=True)
 
     # @+node:ekr.20150514063305.346: *4* ec.swapCharacters & transeposeCharacters
     @cmd('transpose-chars')
