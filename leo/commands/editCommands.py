@@ -3756,17 +3756,18 @@ class EditCommandsClass(BaseEditCommandsClass):
         finally:
             self.endCommand(changed=True, setLabel=True)
 
-    # @+node:ekr.20150514063305.332: *4* ec.reverseRegion
+    # @+node:ekr.20150514063305.332: *4* ec.reverseRegion (converted)
     @cmd('reverse-region')
     def reverseRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Reverse the order of lines in the selected text."""
         c = self.c
+        p = c.p
+        u = c.undoer
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         if not w.hasSelection():
             return
-        self.beginCommand(w, 'reverse-region')
         s = w.getAllText()
         i1, j1 = w.getSelectionRange()
         i, junk = g.getLine(s, i1)
@@ -3775,10 +3776,12 @@ class EditCommandsClass(BaseEditCommandsClass):
         aList = txt.split('\n')
         aList.reverse()
         txt = '\n'.join(aList) + '\n'
-        w.setAllText(s[:i1] + txt + s[j1:])
-        ins = i1 + len(txt) - 1
-        w.setSelectionRange(ins, ins, insert=ins)
-        self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, 'reverse-region'):
+            w.setAllText(s[:i1] + txt + s[j1:])
+            ins = i1 + len(txt) - 1
+            w.setSelectionRange(ins, ins, insert=ins)
+            p.v.b = w.getAllText()
+            c.k.resetLabel()
 
     # @+node:ekr.20150514063305.333: *4* ec.up/downCaseRegion & helper (converted)
     @cmd('downcase-region')
