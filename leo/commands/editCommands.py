@@ -1911,7 +1911,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             w.setSelectionRange(ins, ins, insert=ins)
             p.v.b = w.getAllText()
 
-    # @+node:ekr.20150514063305.262: *4* ec.insertNewLine (insert-newline)
+    # @+node:ekr.20150514063305.262: *4* ec.insertNewLine (insert-newline) (converted)
     @cmd('insert-newline')
     def insertNewLine(self, event: LeoKeyEvent | None = None) -> None:
         """Insert a newline at the cursor."""
@@ -1924,15 +1924,17 @@ class EditCommandsClass(BaseEditCommandsClass):
         # Note: insertNewlineHelper already exists.
         c = self.c
         k = c.k
+        p = c.p
+        u = c.undoer
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         oldSel = w.getSelectionRange()
-        self.beginCommand(w, 'insert-newline')
-        self.insertNewlineHelper(w=w, oldSel=oldSel, undoType='')
-        k.setInputState('insert')
-        k.showStateAndMode()
-        self.endCommand()
+        with u.change_node(p, 'insert-newline'):
+            self.insertNewlineHelper(w=w, oldSel=oldSel, undoType='')
+            p.v.b = w.getAllText()
+            k.setInputState('insert')
+            k.showStateAndMode()
 
     # @+node:ekr.20150514063305.263: *4* ec.insertNewLineAndTab (newline-and-indent)
     @cmd('newline-and-indent')
