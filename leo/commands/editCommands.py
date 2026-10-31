@@ -3613,18 +3613,18 @@ class EditCommandsClass(BaseEditCommandsClass):
         w.setSelectionRange(i1, j, insert=j)
 
     # @+node:ekr.20150514063305.327: *3* ec: region
-    # @+node:ekr.20150514063305.328: *4* ec.tabIndentRegion (indent-rigidly)
+    # @+node:ekr.20150514063305.328: *4* ec.tabIndentRegion (converted)
     @cmd('indent-rigidly')
     def tabIndentRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Insert a hard tab at the start of each line of the selected text."""
         c = self.c
-        # Not valid in headlines.
+        p = c.p
+        u = c.undoer
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         if not self._checkSelection(w):
             return
-        self.beginCommand(w, 'indent-rigidly')
         s = w.getAllText()
         i1, j1 = w.getSelectionRange()
         i, junk = g.getLine(s, i1)
@@ -3633,10 +3633,12 @@ class EditCommandsClass(BaseEditCommandsClass):
         n = len(lines)
         lines_s = ''.join('\t' + line for line in lines)
         s = s[:i] + lines_s + s[j:]
-        w.setAllText(s)
-        # Retain original row/col selection.
-        w.setSelectionRange(i1, j1 + n, insert=j1 + n)
-        self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, 'indent-rigidly'):
+            w.setAllText(s)
+            # Retain original row/col selection.
+            w.setSelectionRange(i1, j1 + n, insert=j1 + n)
+            p.v.b = s
+            c.k.resetLabel()
 
     # @+node:ekr.20150514063305.329: *4* ec.countRegion
     @cmd('count-region')
