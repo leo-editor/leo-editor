@@ -661,7 +661,7 @@ def insertBodyTime(self: Self, event: LeoKeyEvent | None = None) -> None:
     c = self
     p = c.p
     u = c.undoer
-    w = event.w if event else c.frame.body.wrapper  # Valid in headlines.
+    w = c.frame.body.wrapper
     if g.app.batchMode:
         c.notValidInBatchMode('insert-body-time')
         return
@@ -670,8 +670,7 @@ def insertBodyTime(self: Self, event: LeoKeyEvent | None = None) -> None:
         w.deleteTextSelection()
         i = w.getInsertPoint()
         w.insert(i, s)
-        if g.app.is_body_wrapper(w):
-            p.v.b = w.getAllText()
+        p.v.b = w.getAllText()
 
 
 # @+node:ekr.20171123135625.52: ** c_ec.justify-toggle-auto

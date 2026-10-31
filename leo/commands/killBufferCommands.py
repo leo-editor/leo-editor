@@ -89,19 +89,25 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             c.k.resetLabel()
             p.v.b = w.getAllText()
 
-    # @+node:ekr.20150514063305.413: *3* backwardKillWord & killWord (converted)
+    # @+node:ekr.20150514063305.413: *3* backwardKillWord & killWord (simplify!!!)
     @cmd('backward-kill-word')
     def backwardKillWord(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the previous word."""
         c = self.c
         p = c.p
         u = c.undoer
-        w = event.w if event else c.frame.body.wrapper  # Valid in headlines.
+        # Must be valid in headlines.
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         with u.change_node(p, 'backward-kill-word'):
             c.editCommands.backwardWord(event)
-            self.killWordHelper(event)
+            c.editCommands.extendToWord(event)
+            i, j = w.getSelectionRange()
+            self.killHelper(event, i, j, w)
+            if g.app.is_body_wrapper(w):
+                p.v.b = w.getAllText()
+            c.k.resetLabel()
 
     @cmd('kill-word')
     def killWord(self, event: LeoKeyEvent | None = None) -> None:
@@ -114,18 +120,12 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         if not g.isTextWrapper(w):
             return
         with u.change_node(p, 'kill-word'):
-            self.killWordHelper(event)
-
-    def killWordHelper(self, event: LeoKeyEvent | None = None) -> None:
-        c = self.c
-        p = c.p
-        w = event.w if event else c.frame.body.wrapper  # Valid in headlines.
-        c.editCommands.extendToWord(event)
-        i, j = w.getSelectionRange()
-        self.killHelper(event, i, j, w)
-        if g.app.is_body_wrapper(w):
-            p.v.b = w.getAllText()
-        c.k.resetLabel()
+            c.editCommands.extendToWord(event)
+            i, j = w.getSelectionRange()
+            self.killHelper(event, i, j, w)
+            if g.app.is_body_wrapper(w):
+                p.v.b = w.getAllText()
+            c.k.resetLabel()
 
     # @+node:ekr.20150514063305.414: *3* clearKillRing
     @cmd('clear-kill-ring')
