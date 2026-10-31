@@ -2452,7 +2452,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.endCommand(changed=True, setLabel=True)
 
     # @+node:ekr.20150514063305.285: *3* ec: move cursor
-    # @+node:ekr.20150514063305.286: *4* ec. helpers
+    # @+node:ekr.20150514063305.286: *4* ec. helpers (fully converted)
     # @+node:ekr.20150514063305.287: *5* ec.extendHelper
     def extendHelper(
         self,
@@ -2525,7 +2525,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """
         c = self.c
         k = c.k
-        # This helper must work in headlines.
+        # This helper *must* work in headlines.
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
@@ -2542,7 +2542,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514063305.305: *5* ec.moveWithinLineHelper
     def moveWithinLineHelper(self, event: LeoKeyEvent | None, spot: str, extend: bool) -> None:
         c = self.c
-        # This helper must work in headlines.
+        # This helper *must* work in headlines.
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
@@ -2593,7 +2593,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         The cursor is placed at the start of the word unless end=True
         """
         c = self.c
-        # This helper must work in headlines.
+        # This helper *must* work in headlines.
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return  # pragma: no cover (defensive)
@@ -2894,7 +2894,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514063305.297: *5* ec.moveToCharacterHelper (converted)
     def moveToCharacterHelper(self, event: LeoKeyEvent | None, spot: str, extend: bool) -> None:
         c = self.c
-        w = c.frame.body.wrapper
+        # This helper *must* work in headlines.
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         if hasattr(w, 'leoMoveCursorHelper'):
