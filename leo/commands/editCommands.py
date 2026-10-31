@@ -3629,7 +3629,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        if not self._checkSelection(w):
+        if not w.hasSelection():
             return
         s = w.getAllText()
         i1, j1 = w.getSelectionRange()
@@ -3764,7 +3764,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        if not self._checkSelection(w):
+        if not w.hasSelection():
             return
         self.beginCommand(w, 'reverse-region')
         s = w.getAllText()

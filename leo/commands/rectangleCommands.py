@@ -66,7 +66,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        if not self._checkSelection(w):
+        if not w.hasSelection():
             return
 
         def toInt(index: str) -> int:
@@ -91,7 +91,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        if not self._checkSelection(w):
+        if not w.hasSelection():
             return
 
         def toInt(index: str) -> int:
@@ -121,7 +121,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        if not self._checkSelection(w):
+        if not w.hasSelection():
             return
 
         def toInt(index: str) -> int:
@@ -146,7 +146,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         u = c.undoer
         if not g.isTextWrapper(w):
             return
-        if not self._checkSelection(w):
+        if not w.hasSelection():
             return
 
         def toInt(index: str) -> int:
@@ -178,7 +178,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        if not self._checkSelection(w):
+        if not w.hasSelection():
             return
 
         def toInt(index: str) -> int:
@@ -206,7 +206,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         w = self.w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        if not self._checkSelection(w):
+        if not w.hasSelection():
             return
 
         if g.unitTesting:
