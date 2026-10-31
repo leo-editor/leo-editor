@@ -3667,16 +3667,16 @@ class EditCommandsClass(BaseEditCommandsClass):
                 chars += 1
         k.setLabelGrey(f"Region has {lines} lines, {chars} character{g.plural(chars)}")
 
-    # @+node:ekr.20150514063305.330: *4* ec.moveLinesDown
+    # @+node:ekr.20150514063305.330: *4* ec.moveLinesDown (converted)
     @cmd('move-lines-down')
     def moveLinesDown(self, event: LeoKeyEvent | None = None) -> None:
         """
         Move all lines containing any selected text down one line.
         """
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -3687,15 +3687,14 @@ class EditCommandsClass(BaseEditCommandsClass):
         lines = s[i:j]
         # Select from start of the first line to the *start* of the last line.
         # This prevents selection creep.
-        self.beginCommand(w, 'move-lines-down')
-        try:
-            next_i, next_j = g.getLine(s, j)  # 2011/04/01: was j+1
-            next_line = s[next_i:next_j]
-            n2 = next_j - next_i
+        next_i, next_j = g.getLine(s, j)  # 2011/04/01: was j+1
+        next_line = s[next_i:next_j]
+        n2 = next_j - next_i
+        with u.change_node(p, 'move-lines-down'):
             if j < len(s):
                 w.delete(i, next_j)
                 if next_line.endswith('\n'):
-                    # Simply swap positions with next line
+                    # Swap positions with next line
                     new_lines = next_line + lines
                 else:
                     # Last line of the body to be moved up doesn't end in a newline
@@ -3705,15 +3704,13 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.insert(i, new_lines)
                 w.setSelectionRange(sel_1 + n2, sel_2 + n2, insert=insert_pt + n2)
             else:
-                # Leo 5.6: insert a blank line before the selected lines.
+                # Insert a blank line before the selected lines.
                 w.insert(i, '\n')
                 w.setSelectionRange(sel_1 + 1, sel_2 + 1, insert=insert_pt + 1)
-            # Fix bug 799695: colorizer bug after move-lines-up into a docstring
-            c.recolor()
-        finally:
-            self.endCommand(changed=True, setLabel=True)
+            p.v.b = w.getAllText()
+            c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.331: *4* ec.moveLinesUp
+    # @+node:ekr.20150514063305.331: *4* ec.moveLinesUp (converted)
     @cmd('move-lines-up')
     def moveLinesUp(self, event: LeoKeyEvent | None = None) -> None:
         """
