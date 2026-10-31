@@ -1960,14 +1960,18 @@ class EditCommandsClass(BaseEditCommandsClass):
     def insertParentheses(self, event: LeoKeyEvent | None = None) -> None:
         """Insert () at the cursor."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, 'insert-parenthesis')
-        i = w.getInsertPoint()
-        w.insert(i, '()')
-        w.setInsertPoint(i + 1)
-        self.endCommand(changed=True, setLabel=False)
+        with u.change_node(p, 'insert-parenthesis'):
+            ###self.beginCommand(w, 'insert-parenthesis')
+            i = w.getInsertPoint()
+            w.insert(i, '()')
+            w.setInsertPoint(i + 1)
+            p.v.b = w.getAllText()
+            ### self.endCommand(changed=True, setLabel=False)
 
     # @+node:ekr.20150514063305.265: *4* ec.insertSoftTab
     @cmd('insert-soft-tab')
