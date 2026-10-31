@@ -2438,20 +2438,23 @@ class EditCommandsClass(BaseEditCommandsClass):
         finally:
             self.endCommand(changed=True, setLabel=True)
 
-    # @+node:ekr.20150514063305.284: *4* ec.splitLine
+    # @+node:ekr.20150514063305.284: *4* ec.splitLine (converted)
     @cmd('split-line')
     def splitLine(self, event: LeoKeyEvent | None = None) -> None:
         """Split a line at the cursor position."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, 'split-line')
-        s = w.getAllText()
-        ins = w.getInsertPoint()
-        w.setAllText(s[:ins] + '\n' + s[ins:])
-        w.setInsertPoint(ins + 1)
-        self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, 'split-line'):
+            s = w.getAllText()
+            ins = w.getInsertPoint()
+            w.setAllText(s[:ins] + '\n' + s[ins:])
+            w.setInsertPoint(ins + 1)
+            p.v.b = w.getAllText()
+            c.k.resetLabel()
 
     # @+node:ekr.20150514063305.285: *3* ec: move cursor
     # @+node:ekr.20150514063305.286: *4* ec. helpers (fully converted)
@@ -4109,12 +4112,10 @@ class EditCommandsClass(BaseEditCommandsClass):
         i = w.getInsertPoint()
         if 0 < i < len(s):
             with u.change_node(p, 'swap-characters'):
-                ### self.beginCommand(w, 'swap-characters')
                 w.setAllText(s[: i - 1] + s[i] + s[i - 1] + s[i + 1 :])
                 w.setSelectionRange(i, i, insert=i)
                 p.v.b = w.getAllText()
                 c.k.resetLabel()
-                ### self.endCommand(changed=True, setLabel=True)
 
     swapCharacters = transposeCharacters
 
