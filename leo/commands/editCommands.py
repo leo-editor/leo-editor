@@ -4023,14 +4023,14 @@ class EditCommandsClass(BaseEditCommandsClass):
             self.endCommand(changed=True, setLabel=True)
 
     # @+node:ekr.20150514063305.343: *3* ec: swap/transpose
-    # @+node:ekr.20150514063305.344: *4* ec.transposeLines
+    # @+node:ekr.20150514063305.344: *4* ec.transposeLines (converted)
     @cmd('transpose-lines')
     def transposeLines(self, event: LeoKeyEvent | None = None) -> None:
         """Transpose the line containing the cursor with the preceding line."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         ins = w.getInsertPoint()
@@ -4039,20 +4039,21 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         i, j = g.getLine(s, ins)
         line1 = s[i:j]
-        self.beginCommand(w, 'transpose-lines')
-        if i == 0:  # Transpose the next line.
-            i2, j2 = g.getLine(s, j + 1)
-            line2 = s[i2:j2]
-            w.delete(0, j2)
-            w.insert(0, line2 + line1)
-            w.setInsertPoint(j2 - 1)
-        else:  # Transpose the previous line.
-            i2, j2 = g.getLine(s, i - 1)
-            line2 = s[i2:j2]
-            w.delete(i2, j)
-            w.insert(i2, line1 + line2)
-            w.setInsertPoint(j - 1)
-        self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, 'transpose-lines'):
+            if i == 0:  # Transpose the next line.
+                i2, j2 = g.getLine(s, j + 1)
+                line2 = s[i2:j2]
+                w.delete(0, j2)
+                w.insert(0, line2 + line1)
+                w.setInsertPoint(j2 - 1)
+            else:  # Transpose the previous line.
+                i2, j2 = g.getLine(s, i - 1)
+                line2 = s[i2:j2]
+                w.delete(i2, j)
+                w.insert(i2, line1 + line2)
+                w.setInsertPoint(j - 1)
+            p.v.b = w.getAllText()
+            c.k.resetLabel()
 
     # @+node:ekr.20150514063305.345: *4* ec.transposeWords (converted)
     @cmd('transpose-words')
@@ -4069,7 +4070,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not g.isTextWrapper(w):
             return
         with u.change_node(p, 'transpose-words'):
-            ### self.beginCommand(w, 'transpose-words')
             s = w.getAllText()
             i1, j1 = self.extendToWord(event, select=False)
             s1 = s[i1:j1]
@@ -4089,7 +4089,6 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.setSelectionRange(j1, j1, insert=j1)
                 p.v.b = w.getAllText()
                 c.k.resetLabel()
-            ##self.endCommand(changed=changed, setLabel=True)
 
     # @+node:ekr.20150514063305.346: *4* ec.swapCharacters & transeposeCharacters
     @cmd('transpose-chars')
