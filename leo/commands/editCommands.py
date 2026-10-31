@@ -1650,7 +1650,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
-        w = c.frame.body.wrapper
+        # This method *must* work everywhere.
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         wname = c.widget_name(w)
@@ -1835,7 +1836,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
-        w = c.frame.body.wrapper
+        # This method *must* work in headlines.
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -1920,11 +1922,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         # Note: insertNewlineHelper already exists.
         c = self.c
         k = c.k
-        w = event.w if event else c.frame.body.wrapper
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
-            return
-        name = c.widget_name(w)
-        if name.startswith('head'):
             return
         oldSel = w.getSelectionRange()
         self.beginCommand(w, 'insert-newline')
@@ -1937,18 +1936,12 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('newline-and-indent')
     def insertNewLineAndTab(self, event: LeoKeyEvent | None = None) -> None:
         """Insert a newline and tab at the cursor."""
-        trace = 'keys' in g.app.debug
         c = self.c
         k = c.k
         p = c.p
-        w = event.w if event else c.frame.body.wrapper
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        name = c.widget_name(w)
-        if name.startswith('head'):
-            return
-        if trace:
-            g.trace('(newline-and-indent)')
         self.beginCommand(w, 'insert-newline-and-indent')
         oldSel = w.getSelectionRange()
         self.insertNewlineHelper(w=w, oldSel=oldSel, undoType='')
@@ -1976,11 +1969,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     def insertSoftTab(self, event: LeoKeyEvent | None = None) -> None:
         """Insert spaces equivalent to one tab."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
-            return
-        name = c.widget_name(w)
-        if name.startswith('head'):
             return
         tab_width = abs(c.getTabWidth(c.p))
         ins = w.getInsertPoint()
@@ -2525,7 +2515,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """
         c = self.c
         k = c.k
-        # This helper *must* work in headlines.
+        # This method *must* work everywhere.
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
