@@ -3932,7 +3932,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             tree.canvas.xview_scroll(-1, "unit")
 
     # @+node:ekr.20150514063305.339: *3* ec: sort
-    # @+node:ekr.20150514063305.341: *4* ec.sortColumns
+    # @+node:ekr.20150514063305.341: *4* ec.sortColumns (converted)
     @cmd('sort-columns')
     def sortColumns(self, event: LeoKeyEvent | None = None) -> None:
         """
@@ -3940,42 +3940,43 @@ class EditCommandsClass(BaseEditCommandsClass):
         comparison.
         """
         c = self.c
+        p = c.p
+        u = c.undoer
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        if not self._checkSelection(w):
+        if not w.hasSelection():
             return
         s = w.getAllText()
 
         def toInt(index: str) -> int:
             return g.toPythonIndex(s, index)
 
-        self.beginCommand(w, 'sort-columns')
-        try:
-            sel_1, sel_2 = w.getSelectionRange()
-            sint1, sint2 = g.convertPythonIndexToRowCol(s, sel_1)
-            sint3, sint4 = g.convertPythonIndexToRowCol(s, sel_2)
-            sint1 += 1
-            sint3 += 1
-            i, junk = g.getLine(s, sel_1)
-            junk, j = g.getLine(s, sel_2)
-            txt = s[i:j]
-            columns = [
-                w.get(
-                    toInt(f"{z}.{sint2}"),
-                    toInt(f"{z}.{sint4}"),
-                )
-                for z in range(sint1, sint3 + 1)
-            ]
-            aList = g.splitLines(txt)
-            zlist = list(zip(columns, aList))
-            zlist.sort()
-            s = ''.join([z[1] for z in zlist])
+        sel_1, sel_2 = w.getSelectionRange()
+        sint1, sint2 = g.convertPythonIndexToRowCol(s, sel_1)
+        sint3, sint4 = g.convertPythonIndexToRowCol(s, sel_2)
+        sint1 += 1
+        sint3 += 1
+        i, junk = g.getLine(s, sel_1)
+        junk, j = g.getLine(s, sel_2)
+        txt = s[i:j]
+        columns = [
+            w.get(
+                toInt(f"{z}.{sint2}"),
+                toInt(f"{z}.{sint4}"),
+            )
+            for z in range(sint1, sint3 + 1)
+        ]
+        aList = g.splitLines(txt)
+        zlist = list(zip(columns, aList))
+        zlist.sort()
+        s = ''.join([z[1] for z in zlist])
+        with u.change_node(p, 'sort-columns'):
             w.delete(i, j)
             w.insert(i, s)
             w.setSelectionRange(sel_1, sel_1 + len(s), insert=sel_1 + len(s))
-        finally:
-            self.endCommand(changed=True, setLabel=True)
+            p.v.b = w.getAllText()
+            c.k.resetLabel()
 
     # @+node:ekr.20150514063305.340: *4* ec.sortLines commands (converted)
     @cmd('reverse-sort-lines-ignoring-case')
