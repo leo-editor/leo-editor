@@ -89,7 +89,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             c.k.resetLabel()
             p.v.b = w.getAllText()
 
-    # @+node:ekr.20150514063305.413: *3* backwardKillWord & killWord (simplify!!!)
+    # @+node:ekr.20150514063305.413: *3* backwardKillWord & killWord (converted)
     @cmd('backward-kill-word')
     def backwardKillWord(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the previous word."""

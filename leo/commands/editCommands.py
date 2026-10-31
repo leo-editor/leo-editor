@@ -1936,23 +1936,24 @@ class EditCommandsClass(BaseEditCommandsClass):
             k.setInputState('insert')
             k.showStateAndMode()
 
-    # @+node:ekr.20150514063305.263: *4* ec.insertNewLineAndTab (newline-and-indent)
+    # @+node:ekr.20150514063305.263: *4* ec.insertNewLineAndTab (converted)
     @cmd('newline-and-indent')
     def insertNewLineAndTab(self, event: LeoKeyEvent | None = None) -> None:
         """Insert a newline and tab at the cursor."""
         c = self.c
         k = c.k
         p = c.p
+        u = c.undoer
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, 'insert-newline-and-indent')
         oldSel = w.getSelectionRange()
-        self.insertNewlineHelper(w=w, oldSel=oldSel, undoType='')
-        self.updateTab(event, p, w, smartTab=False)
-        k.setInputState('insert')
-        k.showStateAndMode()
-        self.endCommand(changed=True, setLabel=False)
+        with u.change_node(p, 'insert-newline-and-indent'):
+            self.insertNewlineHelper(w=w, oldSel=oldSel, undoType='')
+            self.updateTab(event, p, w, smartTab=False)
+            p.v.b = w.getAllText()
+            k.setInputState('insert')
+            k.showStateAndMode()
 
     # @+node:ekr.20150514063305.264: *4* ec.insertParentheses
     @cmd('insert-parentheses')
