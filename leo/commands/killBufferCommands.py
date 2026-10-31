@@ -190,7 +190,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         """
         c = self.c
         p = c.p
-        w = event.w if event else c.frame.body.wrapper  # Valid in headlines.
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         # Extend (frm, to) if it spans a line.
@@ -203,8 +203,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         self.addToKillBuffer(s)
         g.app.gui.replaceClipboardWith(s)
         w.delete(frm, to)
-        if g.app.is_body_wrapper(w):
-            p.v.b = w.getAllText()
+        p.v.b = w.getAllText()
         w.setInsertPoint(frm)  # Do this *after* setting p.b.
         w.setYScrollPosition(old_y_scroll)  # PR #5020.
         g.app.gui.set_focus(c, w)  # 2607
@@ -253,7 +252,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
-        w = event.w if event else c.frame.body.wrapper  # Valid in headlines.
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -308,7 +307,6 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
-        # Not valid in headlines.
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
@@ -327,7 +325,6 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     def killRegionSave(self, event: LeoKeyEvent | None = None) -> None:
         """Add the selected text to the kill ring, but do not delete it."""
         c = self.c
-        # Not valid in headlines.
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
@@ -365,7 +362,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
-        w = event.w if event else c.frame.body.wrapper  # Valid in headlines.
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -382,8 +379,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
                 w.delete(i, j)
                 if self.addWsToKillRing:
                     self.addToKillBuffer(ws)
-                if g.app.is_body_wrapper(w):
-                    p.v.b = w.getAllText()
+                p.v.b = w.getAllText()
                 w.setInsertPoint(i)
 
     # @+node:ekr.20150514063305.425: *3* yank & yankPop (converted)
@@ -406,7 +402,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
-        w = event.w if event else c.frame.body.wrapper  # Valid in headlines.
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         if not p:
@@ -434,8 +430,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             w.insert(i, s)
             w.setInsertPoint(i + len(s))
             self.lastYankP = p.copy()
-            if g.app.is_body_wrapper(w):
-                p.v.b = w.getAllText()
+            p.v.b = w.getAllText()
             c.k.resetLabel()
 
     # @+node:ekr.20150514063305.427: *3* zapToCharacter (converted)
@@ -446,7 +441,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         k = c.k
         p = c.p
         u = c.undoer
-        w = event.w if event else c.frame.body.wrapper  # Valid in headlines.
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):  # #4998.
             return
         state = k.getState('zap-to-char')
@@ -467,8 +462,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             g.app.gui.replaceClipboardWith(s[ins:i])  # Support for proper yank.
             w.setAllText(s[:ins] + s[i:])
             w.setInsertPoint(ins)
-            if g.app.is_body_wrapper(w):
-                p.v.b = w.getAllText()
+            p.v.b = w.getAllText()
             c.k.resetLabel()
 
     # @-others
