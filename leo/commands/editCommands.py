@@ -802,7 +802,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         row, col = g.convertPythonIndexToRowCol(s, ins)
         self.ccolumn = col
 
-    # @+node:ekr.20150514063305.209: *4* ec.indentToCommentColumn
+    # @+node:ekr.20150514063305.209: *4* ec.indentToCommentColumn (converted)
     @cmd('indent-to-comment-column')
     def indentToCommentColumn(self, event: LeoKeyEvent | None = None) -> None:
         """
@@ -816,12 +816,11 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not g.isTextWrapper(w):
             return
         with u.change_node(p, 'indent-to-comment-column'):
-            ### self.beginCommand(w, 'indent-to-comment-column')
             s = w.getAllText()
             ins = w.getInsertPoint()
             i, j = g.getLine(s, ins)
             line = s[i:j]
-            c1 = self.ccolumn  # 2021/07/28: already an int.
+            c1 = self.ccolumn
             line2 = ' ' * c1 + line.lstrip()
             if line2 != line:
                 w.delete(i, j)
@@ -829,7 +828,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             w.setInsertPoint(i + c1)
             p.v.b = w.getAllText()
             c.k.resetLabel()
-            ### self.endCommand(changed=True, setLabel=True)
 
     # @+node:ekr.20150514063305.214: *3* ec: fill column and centering
     # @@language rest
@@ -1892,23 +1890,22 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.setAllText(s)
                 w.setInsertPoint(w1)
 
-    # @+node:ekr.20150514063305.261: *4* ec.insertHardTab
+    # @+node:ekr.20150514063305.261: *4* ec.insertHardTab (converted)
     @cmd('insert-hard-tab')
     def insertHardTab(self, event: LeoKeyEvent | None = None) -> None:
         """Insert one hard tab."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        name = c.widget_name(w)
-        if name.startswith('head'):
-            return
         ins = w.getInsertPoint()
-        self.beginCommand(w, 'insert-hard-tab')
-        w.insert(ins, '\t')
-        ins += 1
-        w.setSelectionRange(ins, ins, insert=ins)
-        self.endCommand()
+        with u.change_node(p, 'insert-hard-tab'):
+            w.insert(ins, '\t')
+            ins += 1
+            w.setSelectionRange(ins, ins, insert=ins)
+            p.v.b = w.getAllText()
 
     # @+node:ekr.20150514063305.262: *4* ec.insertNewLine (insert-newline)
     @cmd('insert-newline')
