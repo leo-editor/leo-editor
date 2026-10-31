@@ -157,7 +157,6 @@
 </v>
 <v t="ekr.20150514035207.1"><vh>Command classes</vh>
 <v t="ekr.20150514035236.1"><vh>@file ../commands/abbrevCommands.py</vh></v>
-<v t="ekr.20150514035943.1"><vh>@file ../commands/baseCommands.py</vh></v>
 <v t="ekr.20161021090740.1"><vh>@file ../commands/checkerCommands.py</vh></v>
 <v t="ekr.20171123135539.1"><vh>@file ../commands/commanderEditCommands.py</vh></v>
 <v t="ekr.20171123095353.1"><vh>@file ../commands/commanderFileCommands.py</vh></v>
@@ -1019,7 +1018,7 @@ prefix_lines:
 
 [General Patterns]
 </t>
-<t tx="ekr.20170427114412.1">@language rest
+<t tx="ekr.20170427114412.1">@language python
 </t>
 <t tx="ekr.20170428084123.1">@language python
 """Recursively import all python files in a directory and clean the result."""
@@ -3108,8 +3107,10 @@ efc.GitDiffController(c).diff_two_revs(
     # path='leo/core',
 )
 </t>
-<t tx="ekr.20260503063616.1"></t>
-<t tx="ekr.20260503063649.1"></t>
+<t tx="ekr.20260503063616.1">@language python
+</t>
+<t tx="ekr.20260503063649.1">@language python
+</t>
 <t tx="ekr.20260526171943.1"></t>
 <t tx="ekr.20260709152903.1">g.cls()
 import os
@@ -3128,11 +3129,13 @@ efc.GitDiffController(c).diff_two_branches(
     fn='leo/plugins/qt_text.py',  # Don't use back slashes.
 )
 </t>
-<t tx="ekr.20260721065927.1">from leo.commands import editFileCommands as efc
+<t tx="ekr.20260721065927.1">g.cls()
+
+from leo.commands import editFileCommands as efc
 
 efc.GitDiffController(c).diff_two_revs(
-    rev1='main',  # Old
-    rev2='6.8.10',  # New
+    rev1='v6.8.10',  # Old
+    rev2='main',  # New
     # Optional path, relative to the git directory.
     # path='leo/core',
 )
@@ -3671,6 +3674,8 @@ from leo.core import leoBridge  # noqa: E402
 
 
 def main() -&gt; int:
+
+    print('check_leo_sync.py')
     leo_path = os.path.join(leo_editor_dir, 'leo', 'core', 'LeoPyRef.leo')
     bridge = leoBridge.controller(
         gui='nullGui',
@@ -3711,8 +3716,7 @@ def main() -&gt; int:
         if derived != disk:
             out_of_sync.append((h, full, 'content differs from what the outline would write'))
 
-    print(f"checked {checked} @file/@clean nodes in {leo_path}")
-
+    # print(f"checked {checked} @file/@clean nodes in {leo_path}")
     ok = True
     if missing:
         ok = False
@@ -3723,7 +3727,6 @@ def main() -&gt; int:
             "  (the file was likely renamed or deleted without updating the "
             "matching node's headline in LeoPyRef.leo)"
         )
-
     if out_of_sync:
         ok = False
         print(f"\n{len(out_of_sync)} node(s) are out of sync with their mirrored file:")
@@ -3733,11 +3736,7 @@ def main() -&gt; int:
             "  (re-sync via leoBridge: c.refreshFromDisk(p) for each node, "
             "then c.fileCommands.save() -- see the leo-editor skill)"
         )
-
-    if ok:
-        print("\nLeoPyRef.leo is in sync with all mirrored files.")
-        return 0
-    return 1
+    return 0 if ok else 1
 
 
 if __name__ == '__main__':
