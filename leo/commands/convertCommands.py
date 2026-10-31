@@ -11,7 +11,6 @@ import time
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoBeautify
-from leo.commands.baseCommands import BaseEditCommandsClass
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
@@ -519,12 +518,11 @@ class AnnotationError(Exception):
 
 
 # @+node:ekr.20160316111303.1: ** class ConvertCommandsClass
-class ConvertCommandsClass(BaseEditCommandsClass):
+class ConvertCommandsClass:
     """Leo's file-conversion commands"""
 
     def __init__(self, c: Cmdr) -> None:
         """Ctor for EditCommandsClass class."""
-        # pylint: disable=super-init-not-called
         self.c = c
 
     # @+others
@@ -1653,9 +1651,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         # @-<< docstring: Python_To_Rust >>
 
-        # The handlers are clear as they are.
-        # pylint: disable=no-else-return
-
         # Keys are argument names. Values are Rust types.
         # Typescript can infer types of initialized kwargs.
         types_d: dict[str, str] = {}
@@ -1728,7 +1723,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 for kind, pattern, handler in self.patterns:
                     if m := pattern.match(lines[i]):
                         # May change lines.
-                        j = handler(self, i, lines, m, p)  # pylint: disable=too-many-function-args
+                        j = handler(self, i, lines, m, p)
                         break
                 else:
                     kind = 'code'
@@ -2370,9 +2365,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20211013080132.2: *4* class PythonToTypescript
     class PythonToTypescript:  # pragma: no cover
-        # The handlers are clear as they are.
-        # pylint: disable=no-else-return
-
         # Keys are argument names. Values are typescript types.
         # Typescript can infer types of initialized kwargs.
         types_d: dict[str, str] = {}
@@ -2563,7 +2555,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 line = lines[i]
                 # Buglet: ignores whatever might follow.
                 tail = line.replace(delim, '').strip()
-                # pylint: disable=no-else-return
                 if delim in line:
                     if tail:
                         lines[i] = f"{lws} * {tail}\n"

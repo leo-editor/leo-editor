@@ -11,10 +11,10 @@ import subprocess
 import sys
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
-from leo.commands.baseCommands import BaseEditCommandsClass
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent
+    from leo.core.leoCommands import Commands as Cmdr
 
 # @-<< debugCommands imports & annotations >>
 
@@ -24,7 +24,10 @@ def cmd(name: str) -> Callable:
     return g.new_cmd_decorator(name, ['c', 'debugCommands'])
 
 
-class DebugCommandsClass(BaseEditCommandsClass):
+class DebugCommandsClass:
+    def __init__(self, c: Cmdr) -> None:
+        self.c = c
+
     # @+others
     # @+node:ekr.20150514063305.104: ** debug.debug & helper
     @cmd('debug')

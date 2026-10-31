@@ -88,10 +88,6 @@ if TYPE_CHECKING:  # pragma: no cover
 
     assert AbbrevCommandsClass is not None
 
-    from leo.commands.bufferCommands import BufferCommandsClass
-
-    assert BufferCommandsClass is not None
-
     from leo.commands.controlCommands import ControlCommandsClass
 
     assert ControlCommandsClass is not None
@@ -373,7 +369,7 @@ class Commands:
 
         # User commands...
         from leo.commands import abbrevCommands
-        from leo.commands import bufferCommands
+
         from leo.commands import checkerCommands  # Required.
 
         assert checkerCommands  # To suppress a pyflakes warning.
@@ -443,7 +439,6 @@ class Commands:
 
         # 15 command handlers...
         self.abbrevCommands     = abbrevCommands.AbbrevCommandsClass(c)
-        self.bufferCommands     = bufferCommands.BufferCommandsClass(c)
         self.controlCommands    = controlCommands.ControlCommandsClass(c)
         self.convertCommands    = convertCommands.ConvertCommandsClass(c)
         self.debugCommands      = debugCommands.DebugCommandsClass(c)
@@ -464,7 +459,6 @@ class Commands:
         self.subCommanders = [
             self.abbrevCommands,
             self.atFileCommands,
-            self.bufferCommands,
             self.chapterController,
             self.controlCommands,
             self.convertCommands,

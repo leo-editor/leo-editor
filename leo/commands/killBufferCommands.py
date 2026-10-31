@@ -8,7 +8,6 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
-from leo.commands.baseCommands import BaseEditCommandsClass
 
 if TYPE_CHECKING:  # pragma: no cover
     try:
@@ -33,14 +32,13 @@ def cmd(name: str) -> Callable:
 
 # @+others
 # @+node:ekr.20160514120919.1: ** class KillBufferCommandsClass
-class KillBufferCommandsClass(BaseEditCommandsClass):
+class KillBufferCommandsClass:
     """A class to manage the kill buffer."""
 
     # @+others
     # @+node:ekr.20150514063305.409: *3* kill.ctor & reloadSettings
     def __init__(self, c: Cmdr) -> None:
         """Ctor for KillBufferCommandsClass class."""
-        # pylint: disable=super-init-not-called
         self.c = c
         self.kbiterator = self.iterateKillBuffer()  # An instance of KillBufferIterClass.
         # For interacting with system clipboard.
@@ -67,14 +65,14 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             g.app.globalKillBuffer = [z for z in g.app.globalKillBuffer if z != text]
             g.app.globalKillBuffer.insert(0, text)
 
-    # @+node:ekr.20150514063305.412: *3* backwardKillSentence
+    # @+node:ekr.20150514063305.412: *3* backwardKillSentence (converted)
     @cmd('backward-kill-sentence')
     def backwardKillSentence(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the previous sentence."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -82,48 +80,50 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         i = s.rfind('.', ins)
         if i == -1:
             return
-        undoType = 'backward-kill-sentence'
-        self.beginCommand(w, undoType=undoType)
-        i2 = s.rfind('.', 0, i) + 1
-        self.killHelper(event, i2, i + 1, w, undoType=undoType)
-        w.setInsertPoint(i2)
-        self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, 'backward-kill-sentence'):
+            i2 = s.rfind('.', 0, i) + 1
+            self._kill_helper(i2, i + 1, w)
+            w.setInsertPoint(i2)
+            c.k.resetLabel()
+            p.v.b = w.getAllText()
 
-    # @+node:ekr.20150514063305.413: *3* backwardKillWord & killWord
+    # @+node:ekr.20150514063305.413: *3* backwardKillWord & killWord (converted)
     @cmd('backward-kill-word')
     def backwardKillWord(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the previous word."""
         c = self.c
+        p = c.p
+        u = c.undoer
+        # Must be valid in headlines.
         w = event.w if event else c.frame.body.wrapper
-        if not w:
+        if not g.isTextWrapper(w):
             return
-        if g.isTextWrapper(w):
-            self.beginCommand(w, undoType='backward-kill-word')
+        with u.change_node(p, 'backward-kill-word'):
             c.editCommands.backwardWord(event)
-            self.killWordHelper(event)
+            c.editCommands.extendToWord(event)
+            i, j = w.getSelectionRange()
+            self.killHelper(event, i, j, w)
+            if g.app.is_body_wrapper(w):
+                p.v.b = w.getAllText()
+            c.k.resetLabel()
 
     @cmd('kill-word')
     def killWord(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the word containing the cursor."""
         c = self.c
+        p = c.p
+        u = c.undoer
+        # Must be valid in headlines.
         w = event.w if event else c.frame.body.wrapper
-        if not w:
+        if not g.isTextWrapper(w):
             return
-        if g.isTextWrapper(w):
-            self.beginCommand(w, undoType='kill-word')
-            self.killWordHelper(event)
-
-    def killWordHelper(self, event: LeoKeyEvent | None = None) -> None:
-        c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
-        if g.isTextWrapper(w):
-            # self.killWs(event)
+        with u.change_node(p, 'kill-word'):
             c.editCommands.extendToWord(event)
             i, j = w.getSelectionRange()
             self.killHelper(event, i, j, w)
-            self.endCommand(changed=True, setLabel=True)
+            if g.app.is_body_wrapper(w):
+                p.v.b = w.getAllText()
+            c.k.resetLabel()
 
     # @+node:ekr.20150514063305.414: *3* clearKillRing
     @cmd('clear-kill-ring')
@@ -181,73 +181,76 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     def iterateKillBuffer(self) -> KillBufferIterClass:
         return self.KillBufferIterClass(self.c)
 
-    # @+node:ekr.20150514063305.419: *3* ec.killHelper
-    def killHelper(
-        self,
-        event: LeoKeyEvent | None,
-        frm: int,
-        to: int,
-        w: QTextMixin,
-        undoType: str | None = None,
-    ) -> None:
+    # @+node:ekr.20150514063305.419: *3* ec.killHelper (converted)
+    def killHelper(self, event: LeoKeyEvent | None, frm: int, to: int, w: QTextMixin) -> None:
         """
         A helper method for all kill commands except kill-paragraph commands.
         """
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        p = c.p
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
+        # Extend (frm, to) if it spans a line.
+        old_y_scroll = w.getYScrollPosition()
+        i, j = w.getSelectionRange()
+        s = w.get(i, j)
+        if s.find('\n') > -1:
+            frm, to = i, j
+        s = w.get(frm, to)
+        self.addToKillBuffer(s)
+        g.app.gui.replaceClipboardWith(s)
+        w.delete(frm, to)
+        p.v.b = w.getAllText()
+        w.setInsertPoint(frm)  # Do this *after* setting p.b.
+        w.setYScrollPosition(old_y_scroll)  # PR #5020.
+        g.app.gui.set_focus(c, w)  # 2607
+
+    # @+node:ekr.20261028165709.1: *3* ec._kill_helper (new)
+    def _kill_helper(self, frm: int, to: int, w: QTextMixin) -> None:
+        """
+        A helper method for all kill commands except kill-paragraph commands.
+
+        This method does not change c.p.b.
+        """
+        c = self.c
         # Extend (frm, to) if it spans a line.
         i, j = w.getSelectionRange()
         s = w.get(i, j)
         if s.find('\n') > -1:
             frm, to = i, j
         s = w.get(frm, to)
-        if undoType:
-            self.beginCommand(w, undoType=undoType)
         self.addToKillBuffer(s)
         g.app.gui.replaceClipboardWith(s)
         w.delete(frm, to)
         w.setInsertPoint(frm)
-        if undoType:
-            self.endCommand(changed=True, setLabel=True)
         g.app.gui.set_focus(c, w)  # 2607
 
-    # @+node:ekr.20220121073752.1: *3* ec.killParagraphHelper
-    def killParagraphHelper(
-        self,
-        event: LeoKeyEvent | None,
-        frm: int,
-        to: int,
-        undoType: str | None = None,
-    ) -> None:
+    # @+node:ekr.20220121073752.1: *3* ec.killParagraphHelper (converted)
+    def killParagraphHelper(self, frm: int, to: int) -> None:
         """A helper method for kill-paragraph commands."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        w = c.frame.body.wrapper
         if not w:
             return
         if not g.isTextWrapper(w):
             return
         s = w.get(frm, to)
-        if undoType:
-            self.beginCommand(w, undoType=undoType)
         self.addToKillBuffer(s)
         g.app.gui.replaceClipboardWith(s)
         w.delete(frm, to)
+        p.v.b = w.getAllText()
         w.setInsertPoint(frm)
-        if undoType:
-            self.endCommand(changed=True, setLabel=True)
 
-    # @+node:ekr.20150514063305.420: *3* ec.killToEndOfLine
+    # @+node:ekr.20150514063305.420: *3* ec.killToEndOfLine (converted)
     @cmd('kill-to-end-of-line')
     def killToEndOfLine(self, event: LeoKeyEvent | None = None) -> None:
         """Kill from the cursor to end of the line."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -265,16 +268,18 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         else:
             i = j
         if i < j:
-            self.killHelper(event, i, j, w, 'kill-to-end-of-line')
+            with u.change_node(p, 'kill-to-end-of-line'):
+                self.killHelper(event, i, j, w)
+                c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.421: *3* ec.killLine
+    # @+node:ekr.20150514063305.421: *3* ec.killLine (converted)
     @cmd('kill-line')
     def killLine(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the line containing the cursor."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -289,25 +294,28 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             j -= 1
         else:
             pass  # Kill the newline in the present line.
-        self.killHelper(event, i, j, w, 'kill-line')
+        with u.change_node(p, 'kill-line'):
+            self.killHelper(event, i, j, w)
+            c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.422: *3* killRegion & killRegionSave
+    # @+node:ekr.20150514063305.422: *3* killRegion & killRegionSave (converted)
     @cmd('kill-region')
     def killRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the text selection."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         i, j = w.getSelectionRange()
         if i == j:
             return
         s = w.getSelectedText()
-        self.beginCommand(w, 'kill-region')
-        w.delete(i, j)
-        self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, 'kill-region'):
+            w.delete(i, j)
+            p.v.b = w.getAllText()
+            w.setInsertPoint(i)
         self.addToKillBuffer(s)
         g.app.gui.replaceClipboardWith(s)
 
@@ -315,7 +323,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     def killRegionSave(self, event: LeoKeyEvent | None = None) -> None:
         """Add the selected text to the kill ring, but do not delete it."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         i, j = w.getSelectionRange()
@@ -325,34 +333,34 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         self.addToKillBuffer(s)
         g.app.gui.replaceClipboardWith(s)
 
-    # @+node:ekr.20150514063305.423: *3* ec.killSentence
+    # @+node:ekr.20150514063305.423: *3* ec.killSentence (converted)
     @cmd('kill-sentence')
     def killSentence(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the sentence containing the cursor."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
+        if not g.isTextWrapper(w):
             return
         s = w.getAllText()
         ins = w.getInsertPoint()
         i = s.find('.', ins)
         if i == -1:
             return
-        undoType = 'kill-sentence'
-        self.beginCommand(w, undoType)
-        i2 = s.rfind('.', 0, ins) + 1
-        self.killHelper(event, i2, i + 1, w, undoType=undoType)
-        w.setInsertPoint(i2)
-        self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, 'kill-sentence'):
+            i2 = s.rfind('.', 0, ins) + 1
+            self.killHelper(event, i2, i + 1, w)
+            c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.424: *3* killWs
+    # @+node:ekr.20150514063305.424: *3* killWs (converted)
     @cmd('kill-ws')
-    def killWs(self, event: LeoKeyEvent | None = None, undoType: str = 'kill-ws') -> None:
+    def killWs(self, event: LeoKeyEvent | None = None) -> None:
         """Kill whitespace."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -364,16 +372,15 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         while j < len(s) and s[j] in (' ', '\t'):
             j += 1
         if j > i:
-            ws = s[i:j]
-            w.delete(i, j)
-            if undoType:
-                self.beginCommand(w, undoType=undoType)
-            if self.addWsToKillRing:
-                self.addToKillBuffer(ws)
-            if undoType:
-                self.endCommand(changed=True, setLabel=True)
+            with u.change_node(p, 'kill-ws'):
+                ws = s[i:j]
+                w.delete(i, j)
+                if self.addWsToKillRing:
+                    self.addToKillBuffer(ws)
+                p.v.b = w.getAllText()
+                w.setInsertPoint(i)
 
-    # @+node:ekr.20150514063305.425: *3* yank & yankPop
+    # @+node:ekr.20150514063305.425: *3* yank & yankPop (converted)
     @cmd('yank')
     def yank(self, event: LeoKeyEvent | None = None) -> None:
         """Insert the next entry of the kill ring."""
@@ -391,23 +398,20 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         pop = True:  insert the next entry of the kill ring.
         """
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        current = c.p
-        if not current:
+        if not p:
             return
         text = w.getAllText()
         i, j = w.getSelectionRange()
         clip_text = self.getClipboard()
         if not g.app.globalKillBuffer and not clip_text:
             return
-        undoType = 'yank-pop' if pop else 'yank'
-        self.beginCommand(w, undoType)
-        try:
-            if not pop or self.lastYankP and self.lastYankP != current:
+        with u.change_node(p, 'yank-pop' if pop else 'yank'):
+            if not pop or self.lastYankP and self.lastYankP != p:
                 self.reset = 0
             s = self.kbiterator.__next__()
             if s is None:
@@ -422,41 +426,42 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
                     w.delete(i2, k)
                     i = i2
             w.insert(i, s)
-            # Fix bug 1099035: Leo yank and kill behavior not quite the same as emacs.
-            # w.setSelectionRange(i,i+len(s),insert=i+len(s))
             w.setInsertPoint(i + len(s))
-            self.lastYankP = current.copy()
-        finally:
-            self.endCommand(changed=True, setLabel=True)
+            self.lastYankP = p.copy()
+            p.v.b = w.getAllText()
+            c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.427: *3* zapToCharacter
+    # @+node:ekr.20150514063305.427: *3* zapToCharacter (converted)
     @cmd('zap-to-character')
     def zapToCharacter(self, event: LeoKeyEvent | None = None) -> None:
         """Kill characters from the insertion point to a given character."""
         c = self.c
         k = c.k
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):  # #4998.
             return
         state = k.getState('zap-to-char')
         if state == 0:
             k.setLabelBlue('Zap To Character: ')
             k.setState('zap-to-char', 1, handler=self.zapToCharacter)
-        else:
-            ch = event.char if event else ' '
-            k.resetLabel()
-            k.clearState()
-            s = w.getAllText()
-            ins = w.getInsertPoint()
-            i = s.find(ch, ins)
-            if i == -1:
-                return
-            self.beginCommand(w, 'zap-to-char')
+            return
+        ch = event.char if event else ' '
+        k.resetLabel()
+        k.clearState()
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        i = s.find(ch, ins)
+        if i == -1:
+            return
+        with u.change_node(p, 'zap-to-char'):
             self.addToKillBuffer(s[ins:i])
             g.app.gui.replaceClipboardWith(s[ins:i])  # Support for proper yank.
             w.setAllText(s[:ins] + s[i:])
             w.setInsertPoint(ins)
-            self.endCommand(changed=True, setLabel=True)
+            p.v.b = w.getAllText()
+            c.k.resetLabel()
 
     # @-others
 

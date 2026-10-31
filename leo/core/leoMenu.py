@@ -262,16 +262,13 @@ class LeoMenu:
             return True
         return False
 
-    # @+node:ekr.20031218072017.3780: *4* LeoMenu.hasSelection
-    # Returns True if text in the outline or body text is selected.
-
+    # @+node:ekr.20031218072017.3780: *4* LeoMenu.hasSelection (changed)
     def hasSelection(self) -> bool:
+        """Return True if text in the outline or body text is selected."""
         c = self.c
         w = c.frame.body.wrapper
-        if c.frame.body:
-            first, last = w.getSelectionRange()
-            return first != last
-        return False
+        first, last = w.getSelectionRange()
+        return first != last
 
     # @+node:ekr.20051022053758.1: *3* LeoMenu: Helpers
     # @+node:ekr.20031218072017.3783: *4* LeoMenu.canonicalize*

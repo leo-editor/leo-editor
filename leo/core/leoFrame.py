@@ -537,13 +537,11 @@ class LeoFrame:
         s = w.get(i, j)
         s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
         g.app.gui.replaceClipboardWith(s)
-        # Update the widget.
         if c.widget_name(w).startswith('body'):
             with u.change_node(p, 'cut-text'):
                 w.delete(i, j)
+                p.v.b = w.getAllText()
                 w.see(i)
-                u.set_body(p, new_body=w.getAllText())
-                c.p = p
         else:
             w.delete(i, j)
             w.see(i)
@@ -591,8 +589,8 @@ class LeoFrame:
         if wname.startswith('body'):
             with u.change_node(p, 'paste-text'):
                 update_w()
-                u.set_body(p, new_body=w.getAllText())
-                c.p = p
+                p.v.b = w.getAllText()
+                w.see(w.getInsertPoint())
         else:
             if hasattr(w, 'getXScrollPosition'):
                 x_pos = w.getXScrollPosition()
@@ -1063,6 +1061,7 @@ class LeoTree:
         Set the old undo text to the previous revert point.
         """
         c = self.c
+        u = c.undoer
         w = self.headline_wrapper(p)
         if not w:
             g.trace('no w')
@@ -1087,7 +1086,8 @@ class LeoTree:
         if g.doHook("headkey1", c=c, p=p, ch=ch, changed=changed):
             return  # The hook claims to have handled the event.
         # Handle undo.
-        with c.undoer as u:
+        ### with c.undoer as u:
+        with u:
             u.set_command_name(undoType)
             u.change_headline(p, s, ch=ch)
             u.redraw_after_head_changed()

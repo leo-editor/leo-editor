@@ -12,7 +12,6 @@ import re
 from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoCommands
-from leo.commands.baseCommands import BaseEditCommandsClass
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
@@ -160,8 +159,12 @@ class ConvertAtRoot:
 
 
 # @+node:ekr.20170806094319.14: ** class EditFileCommandsClass
-class EditFileCommandsClass(BaseEditCommandsClass):
+class EditFileCommandsClass:
     """A class to load files into buffers and save buffers to files."""
+
+    def __init__(self, c: Cmdr) -> None:
+        """Ctor for EditFileCommandsClass."""
+        self.c = c
 
     # @+others
     # @+node:ekr.20210308051724.1: *3* efc.convert-at-root
@@ -558,16 +561,17 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         """
         GitDiffController(c=self.c).clone_diff_pr()
 
-    # @+node:ekr.20170806094318.7: *3* efc.insertFile
+    # @+node:ekr.20170806094318.7: *3* efc.insertFile (converted)
     @cmd('file-insert')
     def insertFile(self, event: LeoKeyEvent | None = None) -> None:
         """
         Prompt for the name of a file.
         Insert the file's contents in the body at the insertion point.
         """
-        w = event.w if event else None
-        if not w:
-            return  # PR #4812
+        c = self.c
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         fn = self.getReadableTextFile()
@@ -575,11 +579,12 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             return
         s, e = g.readFileIntoString(fn)
         if s is not None:
-            self.beginCommand(w, 'insert-file')
-            i = w.getInsertPoint()
-            w.insert(i, s)
-            w.seeInsertPoint()
-            self.endCommand(changed=True, setLabel=True)
+            with u.change_node(p, 'insert-file'):
+                i = w.getInsertPoint()
+                w.insert(i, s)
+                w.seeInsertPoint()
+                p.v.b = w.getAllText()
+                c.k.resetLabel()
 
     # @+node:ekr.20170806094318.9: *3* efc.makeDirectory
     @cmd('directory-make')

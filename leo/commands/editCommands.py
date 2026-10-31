@@ -10,8 +10,7 @@ import re
 from typing import cast, Any, TYPE_CHECKING
 
 from leo.core import leoGlobals as g
-from leo.commands.baseCommands import BaseEditCommandsClass
-from leo.plugins.qt_text import QTextMixin
+from leo.plugins.qt_text import QTextMixin  # For cast.
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
@@ -376,15 +375,13 @@ def unmark_node_and_parents(event: LeoKeyEvent | None = None) -> list[Position]:
 
 
 # @+node:ekr.20160514100029.1: ** class EditCommandsClass
-class EditCommandsClass(BaseEditCommandsClass):
+class EditCommandsClass:
     """Editing commands with little or no state."""
 
-    # pylint: disable=eval-used
     # @+others
     # @+node:ekr.20150514063305.116: *3* ec.__init__
     def __init__(self, c: Cmdr) -> None:
         """Ctor for EditCommandsClass class."""
-        # pylint: disable=super-init-not-called
         self.c = c
         self.ccolumn = 0  # For comment column functions.
         self.cursorStack: list[tuple] = []  # Values are tuples, (i, j, ins)
@@ -567,36 +564,39 @@ class EditCommandsClass(BaseEditCommandsClass):
 
         return path
 
-    # @+node:ekr.20150514063305.347: *3* ec.tabify & untabify
+    # @+node:ekr.20150514063305.347: *3* ec.tabify & untabify (converted)
     @cmd('tabify')
     def tabify(self, event: LeoKeyEvent | None = None) -> None:
         """Convert 4 spaces to tabs in the selected text."""
-        self.tabifyHelper(event, which='tabify')
+        self.tabifyHelper(which='tabify')
 
     @cmd('untabify')
     def untabify(self, event: LeoKeyEvent | None = None) -> None:
         """Convert tabs to 4 spaces in the selected text."""
-        self.tabifyHelper(event, which='untabify')
+        self.tabifyHelper(which='untabify')
 
-    def tabifyHelper(self, event: LeoKeyEvent | None, which: str) -> None:
+    def tabifyHelper(self, which: str) -> None:
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, undoType=which)
-        i, end = w.getSelectionRange()
-        txt = w.getSelectedText()
-        if which == 'tabify':
-            pattern = re.compile(r' {4,4}')  # Huh?
-            ntxt = pattern.sub('\t', txt)
-        else:
-            pattern = re.compile(r'\t')
-            ntxt = pattern.sub('    ', txt)
-        w.delete(i, end)
-        w.insert(i, ntxt)
-        n = i + len(ntxt)
-        w.setSelectionRange(n, n, insert=n)
-        self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, which):
+            i, end = w.getSelectionRange()
+            txt = w.getSelectedText()
+            if which == 'tabify':
+                pattern = re.compile(r' {4,4}')  # Exactly four blanks.
+                ntxt = pattern.sub('\t', txt)
+            else:
+                pattern = re.compile(r'\t')
+                ntxt = pattern.sub('    ', txt)
+            w.delete(i, end)
+            w.insert(i, ntxt)
+            n = i + len(ntxt)
+            w.setSelectionRange(n, n, insert=n)
+            p.v.b = w.getAllText()
+            c.k.resetLabel()
 
     # @+node:ekr.20150514063305.191: *3* ec: capitalization & case
     # @+node:ekr.20150514063305.192: *4* ec.capitalizeWord & up/downCaseWord
@@ -615,10 +615,12 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Convert all characters of the word at the cursor to UPPER CASE."""
         self.capitalizeHelper(event, 'up', 'upcase-word')
 
-    # @+node:ekr.20150514063305.194: *4* ec.capitalizeHelper
+    # @+node:ekr.20150514063305.194: *4* ec.capitalizeHelper (converted)
     def capitalizeHelper(self, event: LeoKeyEvent | None, which: str, undoType: str) -> None:
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -627,7 +629,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         word = s[i:j]
         if not word.strip():
             return  # pragma: no cover (defensive)
-        self.beginCommand(w, undoType=undoType)
         if which == 'cap':
             word2 = word.capitalize()
         elif which == 'low':
@@ -636,11 +637,14 @@ class EditCommandsClass(BaseEditCommandsClass):
             word2 = word.upper()
         else:
             g.trace(f"can not happen: which = {which}")
-        if changed := word != word2:
-            w.delete(i, j)
-            w.insert(i, word2)
-            w.setSelectionRange(ins, ins, insert=ins)
-        self.endCommand(changed=changed, setLabel=True)
+            return
+        with u.change_node(p, undoType):
+            if word != word2:
+                w.delete(i, j)
+                w.insert(i, word2)
+            p.v.b = w.getAllText()
+            w.setSelectionRange(ins, ins, insert=ins)  # Restore the old insert point.
+            c.k.resetLabel()
 
     # @+node:tom.20210922171731.1: *4* ec.capitalizeWords & selection
     @cmd('capitalize-words-or-selection')
@@ -798,7 +802,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         row, col = g.convertPythonIndexToRowCol(s, ins)
         self.ccolumn = col
 
-    # @+node:ekr.20150514063305.209: *4* ec.indentToCommentColumn
+    # @+node:ekr.20150514063305.209: *4* ec.indentToCommentColumn (converted)
     @cmd('indent-to-comment-column')
     def indentToCommentColumn(self, event: LeoKeyEvent | None = None) -> None:
         """
@@ -806,21 +810,24 @@ class EditCommandsClass(BaseEditCommandsClass):
         comment column.
         """
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, 'indent-to-comment-column')
-        s = w.getAllText()
-        ins = w.getInsertPoint()
-        i, j = g.getLine(s, ins)
-        line = s[i:j]
-        c1 = self.ccolumn  # 2021/07/28: already an int.
-        line2 = ' ' * c1 + line.lstrip()
-        if line2 != line:
-            w.delete(i, j)
-            w.insert(i, line2)
-        w.setInsertPoint(i + c1)
-        self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, 'indent-to-comment-column'):
+            s = w.getAllText()
+            ins = w.getInsertPoint()
+            i, j = g.getLine(s, ins)
+            line = s[i:j]
+            c1 = self.ccolumn
+            line2 = ' ' * c1 + line.lstrip()
+            if line2 != line:
+                w.delete(i, j)
+                w.insert(i, line2)
+            w.setInsertPoint(i + c1)
+            p.v.b = w.getAllText()
+            c.k.resetLabel()
 
     # @+node:ekr.20150514063305.214: *3* ec: fill column and centering
     # @@language rest
@@ -842,12 +849,14 @@ class EditCommandsClass(BaseEditCommandsClass):
     #
     # after an center-region command via Alt-x.
     # @@language python
-    # @+node:ekr.20150514063305.215: *4* ec.centerLine
+    # @+node:ekr.20150514063305.215: *4* ec.centerLine (converted)
     @cmd('center-line')
     def centerLine(self, event: LeoKeyEvent | None = None) -> None:
         """Centers line within current fill column"""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         if self.fillColumn > 0:
@@ -859,14 +868,16 @@ class EditCommandsClass(BaseEditCommandsClass):
         line = s[i:j].strip()
         if not line or len(line) >= fillColumn:
             return
-        self.beginCommand(w, 'center-line')
-        n = (fillColumn - len(line)) / 2
-        ws = ' ' * int(n)  # mypy.
-        k = g.skip_ws(s, i)
-        if k > i:
-            w.delete(i, k - i)
-        w.insert(i, ws)
-        self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, 'center-line'):
+            n = (fillColumn - len(line)) / 2
+            ws = ' ' * int(n)
+            k = g.skip_ws(s, i)
+            if k > i:
+                w.delete(i, k - i)
+            w.insert(i, ws)
+            p.v.b = w.getAllText()
+            w.setInsertPoint(i)
+            c.k.resetLabel()
 
     # @+node:ekr.20150514063305.216: *4* ec.setFillColumn
     @cmd('set-fill-column')
@@ -893,12 +904,14 @@ class EditCommandsClass(BaseEditCommandsClass):
             k.resetLabel()  # pragma: no cover (defensive)
         c.widgetWantsFocus(w)
 
-    # @+node:ekr.20150514063305.217: *4* ec.centerRegion
+    # @+node:ekr.20150514063305.217: *4* ec.centerRegion(converted)
     @cmd('center-region')
     def centerRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Centers the selected text within the fill column"""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -909,24 +922,25 @@ class EditCommandsClass(BaseEditCommandsClass):
             fillColumn = self.fillColumn
         else:
             fillColumn = c.getPageWidth(c.p)
-        self.beginCommand(w, 'center-region')
-        inserted = 0
-        while ind < end:
-            s = w.getAllText()
-            i, j = g.getLine(s, ind)
-            line = s[i:j].strip()
-            if len(line) >= fillColumn:
-                ind = j
-            else:
-                n = int((fillColumn - len(line)) / 2)
-                inserted += n
-                k = g.skip_ws(s, i)
-                if k > i:
-                    w.delete(i, k - i)
-                w.insert(i, ' ' * n)
-                ind = j + n - (k - i)
-        w.setSelectionRange(sel_1, sel_2 + inserted)
-        self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, 'center-region'):
+            inserted = 0
+            while ind < end:
+                s = w.getAllText()
+                i, j = g.getLine(s, ind)
+                line = s[i:j].strip()
+                if len(line) >= fillColumn:
+                    ind = j
+                else:
+                    n = int((fillColumn - len(line)) / 2)
+                    inserted += n
+                    k = g.skip_ws(s, i)
+                    if k > i:
+                        w.delete(i, k - i)
+                    w.insert(i, ' ' * n)
+                    ind = j + n - (k - i)
+            w.setSelectionRange(sel_1, sel_2 + inserted)
+            p.v.b = w.getAllText()
+            c.k.resetLabel()
 
     # @+node:ekr.20150514063305.218: *4* ec.setFillPrefix
     @cmd('set-fill-prefix')
@@ -1440,12 +1454,14 @@ class EditCommandsClass(BaseEditCommandsClass):
             self._setIconUA(p, aList)
 
     # @+node:ekr.20150514063305.242: *3* ec: indent
-    # @+node:ekr.20150514063305.243: *4* ec.deleteIndentation
+    # @+node:ekr.20150514063305.243: *4* ec.deleteIndentation (converted)
     @cmd('delete-indentation')
     def deleteIndentation(self, event: LeoKeyEvent | None = None) -> None:
         """Delete indentation in the presently line."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -1454,14 +1470,15 @@ class EditCommandsClass(BaseEditCommandsClass):
         line = s[i:j]
         line2 = s[i:j].lstrip()
         if delta := len(line) - len(line2):
-            self.beginCommand(w, 'delete-indentation')
-            w.delete(i, j)
-            w.insert(i, line2)
-            ins -= delta
-            w.setSelectionRange(ins, ins, insert=ins)
-            self.endCommand(changed=True, setLabel=True)
+            with u.change_node(p, 'delete-indentation'):
+                w.delete(i, j)
+                w.insert(i, line2)
+                ins -= delta
+                p.v.b = w.getAllText()
+                w.setSelectionRange(ins, ins, insert=ins)
+                c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.244: *4* ec.indentRelative
+    # @+node:ekr.20150514063305.244: *4* ec.indentRelative (converted)
     @cmd('indent-relative')
     def indentRelative(self, event: LeoKeyEvent | None = None) -> None:
         """
@@ -1479,7 +1496,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = c.p
         u = c.undoer
-        w = event.w if event else c.frame.body.wrapper
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -1493,20 +1510,16 @@ class EditCommandsClass(BaseEditCommandsClass):
             line = s[i:j]
             if line.strip():
                 break
-        self.beginCommand(w, undoType='indent-relative')
         with u.change_outline('indent-relative'):
-            try:
-                k = g.skip_ws(s, i)
-                ws = s[i:k]
-                i2, j2 = g.getLine(s, ins)
-                k = g.skip_ws(s, i2)
-                line = ws + s[k:j2]
-                w.delete(i2, j2)
-                w.insert(i2, line)
-                w.setInsertPoint(i2 + len(ws))
-                p.v.b = w.getAllText()
-            finally:
-                self.endCommand(changed=True, setLabel=True)  # Handles undo.
+            k = g.skip_ws(s, i)
+            ws = s[i:k]
+            i2, j2 = g.getLine(s, ins)
+            k = g.skip_ws(s, i2)
+            line = ws + s[k:j2]
+            w.delete(i2, j2)
+            w.insert(i2, line)
+            w.setInsertPoint(i2 + len(ws))
+            p.v.b = w.getAllText()
 
     # @+node:ekr.20150514063305.245: *3* ec: info
     # @+node:ekr.20210311154956.1: *4* ec.copyGnx
@@ -1597,44 +1610,47 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Remove a tab from start of all lines, or all selected lines."""
         self.addRemoveHelper(event, ch='\t', add=False, undoType='remove-tab-from-lines')
 
-    # @+node:ekr.20150514063305.252: *5* ec.addRemoveHelper
+    # @+node:ekr.20150514063305.252: *5* ec.addRemoveHelper converted)
     def addRemoveHelper(self, event: LeoKeyEvent | None, ch: str, add: bool, undoType: str) -> None:
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        if w.hasSelection():
-            s = w.getSelectedText()
-        else:
-            s = w.getAllText()
+        s = w.getSelectedText() if w.hasSelection() else w.getAllText()
         if not s:
             return
         # Insert or delete spaces instead of tabs when negative tab width is in effect.
         width = c.getTabWidth(c.p)
         if ch == '\t' and width < 0:
             ch = ' ' * abs(width)
-        self.beginCommand(w, undoType=undoType)
         lines = g.splitLines(s)
         if add:
             result_list = [ch + line for line in lines]
         else:
             result_list = [line[len(ch) :] if line.startswith(ch) else line for line in lines]
         result = ''.join(result_list)
-        if w.hasSelection():
-            i, j = w.getSelectionRange()
-            w.delete(i, j)
-            w.insert(i, result)
-            w.setSelectionRange(i, i + len(result))
-        else:
-            w.setAllText(result)
-            w.setSelectionRange(0, len(s))
-        self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, undoType):
+            if w.hasSelection():
+                i, j = w.getSelectionRange()
+                w.delete(i, j)
+                w.insert(i, result)
+                p.v.b = w.getAllText()
+                w.setSelectionRange(i, i + len(result))
+            else:
+                w.setAllText(result)
+                p.v.b = w.getAllText()
+                w.setSelectionRange(0, len(s))
 
-    # @+node:ekr.20150514063305.253: *4* ec.backwardDeleteCharacter
+    # @+node:ekr.20150514063305.253: *4* ec.backwardDeleteCharacter (converted)
     @cmd('backward-delete-char')
     def backwardDeleteCharacter(self, event: LeoKeyEvent | None = None) -> None:
         """Delete the character to the left of the cursor."""
         c = self.c
+        p = c.p
+        u = c.undoer
+        # This method *must* work everywhere.
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
@@ -1642,15 +1658,13 @@ class EditCommandsClass(BaseEditCommandsClass):
         ins = w.getInsertPoint()
         i, j = w.getSelectionRange()
         if wname.startswith('body'):
-            self.beginCommand(w, 'Typing')
-            changed = True
-            try:
+            with u.change_node(p, 'backward-delete-char'):
                 tab_width = c.getTabWidth(c.p)
                 if i != j:
                     w.delete(i, j)
                     w.setSelectionRange(i, i, insert=i)
                 elif i == 0:
-                    changed = False
+                    pass
                 elif tab_width > 0:
                     w.delete(ins - 1)
                     w.setSelectionRange(ins - 1, ins - 1, insert=ins - 1)
@@ -1679,22 +1693,21 @@ class EditCommandsClass(BaseEditCommandsClass):
                     w.delete(i, ins)
                     w.setSelectionRange(i, i, insert=i)
                     # @-<< backspace with negative tab_width >>
-            finally:
-                # Necessary to make text changes stick.
-                self.endCommand(changed=changed, setLabel=False)
-        else:
-            # No undo in this widget.
-            s = w.getAllText()
-            # Delete something if we can.
-            if i != j:
-                j = max(i, min(j, len(s)))
-                w.delete(i, j)
-                w.setSelectionRange(i, i, insert=i)
-            elif ins != 0:
-                # Do nothing at the start of the headline.
-                w.delete(ins - 1)
-                ins = ins - 1
-                w.setSelectionRange(ins, ins, insert=ins)
+                u.type_text(p, oldText=p.b, newText=w.getAllText())
+            return
+        # No *direct* undo in this widget.
+        # Undo in headlines is handled indirectly.
+        s = w.getAllText()
+        # Delete something if we can.
+        if i != j:
+            j = max(i, min(j, len(s)))
+            w.delete(i, j)
+            w.setSelectionRange(i, i, insert=i)
+        elif ins != 0:
+            # Do nothing at the start of the headline.
+            w.delete(ins - 1)
+            ins = ins - 1
+            w.setSelectionRange(ins, ins, insert=ins)
 
     # @+node:ekr.20150514063305.255: *4* ec.cleanAllLines
     @cmd('clean-all-lines')
@@ -1723,7 +1736,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                         n += 1
             g.es(f"cleaned {n} node{g.plural(n)}")
 
-    # @+node:ekr.20150514063305.256: *4* ec.cleanLines
+    # @+node:ekr.20150514063305.256: *4* ec.cleanLines (converted)
     @cmd('clean-lines')
     def cleanLines(self, event: LeoKeyEvent | None = None) -> None:
         """
@@ -1732,7 +1745,9 @@ class EditCommandsClass(BaseEditCommandsClass):
         Not recommended: reindent is better.
         """
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -1744,29 +1759,33 @@ class EditCommandsClass(BaseEditCommandsClass):
                 lines.append('\n')
         result = ''.join(lines)
         if s != result:
-            self.beginCommand(w, 'clean-lines')
-            w.delete(0, w.getLastIndex())
-            w.insert(0, result)
-            w.setInsertPoint(0)
-            self.endCommand(changed=True, setLabel=True)
+            with u.change_node(p, 'clean-lines'):
+                w.delete(0, w.getLastIndex())
+                w.insert(0, result)
+                p.v.b = w.getAllText()
+                w.setInsertPoint(0)
+                c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.257: *4* ec.clearSelectedText
+    # @+node:ekr.20150514063305.257: *4* ec.clearSelectedText (converted)
     @cmd('clear-selected-text')
     def clearSelectedText(self, event: LeoKeyEvent | None = None) -> None:
         """Delete the selected text."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         i, j = w.getSelectionRange()
         if i == j:
             return
-        self.beginCommand(w, 'clear-selected-text')
-        w.delete(i, j)
-        w.setInsertPoint(i)
-        self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, 'clear-selected-text'):
+            w.delete(i, j)
+            p.v.b = w.getAllText()
+            w.setInsertPoint(i)
+            c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.258: *4* ec.delete-word & backward-delete-word
+    # @+node:ekr.20150514063305.258: *4* ec.delete-word & backward-delete-word (converted)
     @cmd('delete-word')
     def deleteWord(self, event: LeoKeyEvent | None = None) -> None:
         """Delete the word at the cursor."""
@@ -1793,63 +1812,66 @@ class EditCommandsClass(BaseEditCommandsClass):
         self, event: LeoKeyEvent | None, forward: bool, smart: bool = False
     ) -> None:
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, "delete-word")
-        if w.hasSelection():
-            from_pos, to_pos = w.getSelectionRange()
-        else:
-            from_pos = w.getInsertPoint()
-            self.moveWordHelper(event, extend=False, forward=forward, smart=smart)
-            to_pos = w.getInsertPoint()
-        # For Tk GUI, make sure to_pos > from_pos
-        if from_pos > to_pos:
-            from_pos, to_pos = to_pos, from_pos
-        w.delete(from_pos, to_pos)
-        self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, 'delete-word'):
+            if w.hasSelection():
+                from_pos, to_pos = w.getSelectionRange()
+            else:
+                from_pos = w.getInsertPoint()
+                self.moveWordHelper(event, extend=False, forward=forward, smart=smart)
+                to_pos = w.getInsertPoint()
+            if from_pos > to_pos:
+                from_pos, to_pos = to_pos, from_pos
+            w.delete(from_pos, to_pos)
+            p.v.b = w.getAllText()
+            c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.259: *4* ec.deleteNextChar
+    # @+node:ekr.20150514063305.259: *4* ec.deleteNextChar (converted)
     @cmd('delete-char')
     def deleteNextChar(self, event: LeoKeyEvent | None = None) -> None:
         """Delete the character to the right of the cursor."""
         c = self.c
+        p = c.p
+        u = c.undoer
+        # This method *must* work in headlines.
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
+        s = w.getAllText()
+        i, j = w.getSelectionRange()
         wname = c.widget_name(w)
         if wname.startswith('body'):
-            s = w.getAllText()
-            i, j = w.getSelectionRange()
-            self.beginCommand(w, 'delete-char')
-            changed = True
-            if i != j:
-                w.delete(i, j)
-                w.setInsertPoint(i)
-            elif j < len(s):
-                w.delete(i)
-                w.setInsertPoint(i)
-            else:
-                changed = False
-            self.endCommand(changed=changed, setLabel=False)
-        else:
-            # No undo in this widget.
-            s = w.getAllText()
-            i, j = w.getSelectionRange()
-            # Delete something if we can.
-            if i != j:
-                w.delete(i, j)
-                w.setInsertPoint(i)
-            elif j < len(s):
-                w.delete(i)
-                w.setInsertPoint(i)
+            with u.change_node(p, 'delete-char'):
+                if i != j:
+                    w.delete(i, j)
+                    w.setInsertPoint(i)
+                elif j < len(s):
+                    w.delete(i)
+                    w.setInsertPoint(i)
+                p.v.b = w.getAllText()
+                c.k.resetLabel()
+            return
+        # No *direct* undo in this widget.
+        # Undo in headlines is handled indirectly.
+        if i != j:
+            w.delete(i, j)
+            w.setInsertPoint(i)
+        elif j < len(s):
+            w.delete(i)
+            w.setInsertPoint(i)
 
     # @+node:ekr.20150514063305.260: *4* ec.deleteSpaces
     @cmd('delete-spaces')
     def deleteSpaces(self, event: LeoKeyEvent | None = None, insertspace: bool = False) -> None:
         """Delete all whitespace surrounding the cursor."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -1863,34 +1885,33 @@ class EditCommandsClass(BaseEditCommandsClass):
         while w2 <= j and s[w2].isspace():
             w2 += 1
         if s[w1:w2]:  # spaces.
-            self.beginCommand(w, 'insert-space' if insertspace else 'delete-spaces')
-            if insertspace:
-                s = s[:w1] + ' ' + s[w2:]
-            else:
-                s = s[:w1] + s[w2:]
-            w.setAllText(s)
-            w.setInsertPoint(w1)
-            self.endCommand(changed=True, setLabel=True)
+            with u.change_node(p, 'insert-space'):
+                if insertspace:
+                    s = s[:w1] + ' ' + s[w2:]
+                else:
+                    s = s[:w1] + s[w2:]
+                p.v.b = s
+                w.setAllText(s)
+                w.setInsertPoint(w1)
 
-    # @+node:ekr.20150514063305.261: *4* ec.insertHardTab
+    # @+node:ekr.20150514063305.261: *4* ec.insertHardTab (converted)
     @cmd('insert-hard-tab')
     def insertHardTab(self, event: LeoKeyEvent | None = None) -> None:
         """Insert one hard tab."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        name = c.widget_name(w)
-        if name.startswith('head'):
-            return
         ins = w.getInsertPoint()
-        self.beginCommand(w, 'insert-hard-tab')
-        w.insert(ins, '\t')
-        ins += 1
-        w.setSelectionRange(ins, ins, insert=ins)
-        self.endCommand()
+        with u.change_node(p, 'insert-hard-tab'):
+            w.insert(ins, '\t')
+            ins += 1
+            w.setSelectionRange(ins, ins, insert=ins)
+            p.v.b = w.getAllText()
 
-    # @+node:ekr.20150514063305.262: *4* ec.insertNewLine (insert-newline)
+    # @+node:ekr.20150514063305.262: *4* ec.insertNewLine (insert-newline) (converted)
     @cmd('insert-newline')
     def insertNewLine(self, event: LeoKeyEvent | None = None) -> None:
         """Insert a newline at the cursor."""
@@ -1903,75 +1924,70 @@ class EditCommandsClass(BaseEditCommandsClass):
         # Note: insertNewlineHelper already exists.
         c = self.c
         k = c.k
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        name = c.widget_name(w)
-        if name.startswith('head'):
-            return
         oldSel = w.getSelectionRange()
-        self.beginCommand(w, 'insert-newline')
-        self.insertNewlineHelper(w=w, oldSel=oldSel, undoType='')
-        k.setInputState('insert')
-        k.showStateAndMode()
-        self.endCommand()
+        with u.change_node(p, 'insert-newline'):
+            self.insertNewlineHelper(w=w, oldSel=oldSel, undoType='')
+            p.v.b = w.getAllText()
+            k.setInputState('insert')
+            k.showStateAndMode()
 
-    # @+node:ekr.20150514063305.263: *4* ec.insertNewLineAndTab (newline-and-indent)
+    # @+node:ekr.20150514063305.263: *4* ec.insertNewLineAndTab (converted)
     @cmd('newline-and-indent')
     def insertNewLineAndTab(self, event: LeoKeyEvent | None = None) -> None:
         """Insert a newline and tab at the cursor."""
-        trace = 'keys' in g.app.debug
         c = self.c
         k = c.k
         p = c.p
-        w = event.w if event else c.frame.body.wrapper
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        name = c.widget_name(w)
-        if name.startswith('head'):
-            return
-        if trace:
-            g.trace('(newline-and-indent)')
-        self.beginCommand(w, 'insert-newline-and-indent')
         oldSel = w.getSelectionRange()
-        self.insertNewlineHelper(w=w, oldSel=oldSel, undoType='')
-        self.updateTab(event, p, w, smartTab=False)
-        k.setInputState('insert')
-        k.showStateAndMode()
-        self.endCommand(changed=True, setLabel=False)
+        with u.change_node(p, 'insert-newline-and-indent'):
+            self.insertNewlineHelper(w=w, oldSel=oldSel, undoType='')
+            self.updateTab(event, p, w, smartTab=False)
+            p.v.b = w.getAllText()
+            k.setInputState('insert')
+            k.showStateAndMode()
 
-    # @+node:ekr.20150514063305.264: *4* ec.insertParentheses
+    # @+node:ekr.20150514063305.264: *4* ec.insertParentheses (converted)
     @cmd('insert-parentheses')
     def insertParentheses(self, event: LeoKeyEvent | None = None) -> None:
         """Insert () at the cursor."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, 'insert-parenthesis')
-        i = w.getInsertPoint()
-        w.insert(i, '()')
-        w.setInsertPoint(i + 1)
-        self.endCommand(changed=True, setLabel=False)
+        with u.change_node(p, 'insert-parenthesis'):
+            i = w.getInsertPoint()
+            w.insert(i, '()')
+            w.setInsertPoint(i + 1)
+            p.v.b = w.getAllText()
 
-    # @+node:ekr.20150514063305.265: *4* ec.insertSoftTab
+    # @+node:ekr.20150514063305.265: *4* ec.insertSoftTab (converted)
     @cmd('insert-soft-tab')
     def insertSoftTab(self, event: LeoKeyEvent | None = None) -> None:
         """Insert spaces equivalent to one tab."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
-            return
-        name = c.widget_name(w)
-        if name.startswith('head'):
             return
         tab_width = abs(c.getTabWidth(c.p))
         ins = w.getInsertPoint()
-        self.beginCommand(w, 'insert-soft-tab')
-        w.insert(ins, ' ' * tab_width)
-        ins += tab_width
-        w.setSelectionRange(ins, ins, insert=ins)
-        self.endCommand()
+        with u.change_node(p, 'insert-soft-tab'):
+            w.insert(ins, ' ' * tab_width)
+            ins += tab_width
+            w.setSelectionRange(ins, ins, insert=ins)
+            p.v.b = w.getAllText()
 
     # @+node:ekr.20150514063305.266: *4* ec.removeBlankLines (remove-blank-lines)
     @cmd('remove-blank-lines')
@@ -2117,7 +2133,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             newSel = w.getSelectionRange()
             u.type_text(
                 p,
-                'Typing',
                 oldText,
                 newText,
                 oldSel=oldSel,
@@ -2216,7 +2231,6 @@ class EditCommandsClass(BaseEditCommandsClass):
     ) -> None:
         """Flash matching brackets at char ch at position i at widget w."""
         d = {}
-        # pylint: disable=consider-using-enumerate
         if ch in self.openBracketsList:
             for z in range(len(self.openBracketsList)):
                 d[self.openBracketsList[z]] = self.closeBracketsList[z]
@@ -2393,51 +2407,51 @@ class EditCommandsClass(BaseEditCommandsClass):
         w.setSelectionRange(ins, ins, insert=ins)
 
     # @+node:ekr.20150514063305.280: *3* ec: lines
-    # @+node:ekr.20200619082429.1: *4* ec.moveLinesToNextNode
+    # @+node:ekr.20200619082429.1: *4* ec.moveLinesToNextNode (converted)
     @cmd('move-lines-to-next-node')
     def moveLineToNextNode(self, event: LeoKeyEvent | None = None) -> None:
         """Move one or *trailing* lines to the start of the next node."""
         c = self.c
-        if not c.p.threadNext():
-            return
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
+            return
+        if not p.threadNext():
             return
         s = w.getAllText()
         sel_1, sel_2 = w.getSelectionRange()
         i, junk = g.getLine(s, sel_1)
-        i2, j = g.getLine(s, sel_2)
-        lines = s[i:j]
+        lines = s[i:]  # PR #5020
         if not lines.strip():
             return
-        self.beginCommand(w, 'move-lines-to-next-node')
-        try:
-            next_i, next_j = g.getLine(s, j)
-            w.delete(i, next_j)
-            c.p.b = w.getAllText().rstrip() + '\n'
-            c.selectPosition(c.p.threadNext())
-            c.p.b = lines + '\n' + c.p.b
-            c.recolor()
-        finally:
-            self.endCommand(changed=True, setLabel=True)
+        with u.change_outline('move-lines-to-next-node'):
+            w.delete(i, len(s))  # PR #5020
+            p.v.b = w.getAllText().rstrip() + '\n'
+            c.p = p = p.threadNext()
+            p.v.b = lines + '\n' + p.v.b
+            c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.284: *4* ec.splitLine
+    # @+node:ekr.20150514063305.284: *4* ec.splitLine (converted)
     @cmd('split-line')
     def splitLine(self, event: LeoKeyEvent | None = None) -> None:
         """Split a line at the cursor position."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, 'split-line')
-        s = w.getAllText()
-        ins = w.getInsertPoint()
-        w.setAllText(s[:ins] + '\n' + s[ins:])
-        w.setInsertPoint(ins + 1)
-        self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, 'split-line'):
+            s = w.getAllText()
+            ins = w.getInsertPoint()
+            w.setAllText(s[:ins] + '\n' + s[ins:])
+            w.setInsertPoint(ins + 1)
+            p.v.b = w.getAllText()
+            c.k.resetLabel()
 
     # @+node:ekr.20150514063305.285: *3* ec: move cursor
-    # @+node:ekr.20150514063305.286: *4* ec. helpers
+    # @+node:ekr.20150514063305.286: *4* ec. helpers (fully converted)
     # @+node:ekr.20150514063305.287: *5* ec.extendHelper
     def extendHelper(
         self,
@@ -2510,6 +2524,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """
         c = self.c
         k = c.k
+        # This method *must* work everywhere.
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
@@ -2526,6 +2541,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514063305.305: *5* ec.moveWithinLineHelper
     def moveWithinLineHelper(self, event: LeoKeyEvent | None, spot: str, extend: bool) -> None:
         c = self.c
+        # This helper *must* work in headlines.
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
@@ -2576,6 +2592,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         The cursor is placed at the start of the word unless end=True
         """
         c = self.c
+        # This helper *must* work in headlines.
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return  # pragma: no cover (defensive)
@@ -2852,7 +2869,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             else:
                 g.trace('can not happen: bad spot', spot)  # pragma: no cover (defensive)
 
-    # @+node:ekr.20150514063305.296: *4* ec.characters & helper
+    # @+node:ekr.20150514063305.296: *4* ec.characters & helper (converted)
     @cmd('back-char')
     def backCharacter(self, event: LeoKeyEvent | None = None) -> None:
         """Move the cursor back one character, extending the selection if in extend mode."""
@@ -2873,9 +2890,10 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Extend the selection by moving the cursor forward one character."""
         self.moveToCharacterHelper(event, 'right', extend=True)
 
-    # @+node:ekr.20150514063305.297: *5* ec.moveToCharacterHelper
+    # @+node:ekr.20150514063305.297: *5* ec.moveToCharacterHelper (converted)
     def moveToCharacterHelper(self, event: LeoKeyEvent | None, spot: str, extend: bool) -> None:
         c = self.c
+        # This helper *must* work in headlines.
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
@@ -2998,7 +3016,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     ) -> tuple[int, int]:
         """Compute the word at the cursor. Select it if select arg is True."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        w = event.w if event else c.frame.body.wrapper  # Valid in headlines.
         if not g.isTextWrapper(w):
             return 0, 0
         assert isinstance(w, QTextMixin)
@@ -3207,10 +3225,9 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.309: *5* ec.backwardParagraphHelper
     def backwardParagraphHelper(self, event: LeoKeyEvent | None, extend: bool) -> None:
+        ### To do: remove event arg.
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -3476,26 +3493,25 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.moveWithinLineHelper(event, 'start-line', extend=True)
 
     # @+node:ekr.20150514063305.319: *3* ec: paragraph
-    # @+node:ekr.20150514063305.320: *4* ec.backwardKillParagraph
+    # @+node:ekr.20150514063305.320: *4* ec.backwardKillParagraph (converted)
     @cmd('backward-kill-paragraph')
     def backwardKillParagraph(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the previous paragraph."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, 'backward-kill-paragraph')
-        try:
-            self.backwardParagraphHelper(event, extend=True)
+        with u.change_node(p, 'backward-kill-paragraph'):
+            self.backwardParagraphHelper(None, extend=True)
             i, j = w.getSelectionRange()
             if i > 0:
                 i = min(i + 1, j)
-            c.killBufferCommands.killParagraphHelper(event, i, j)
+            c.killBufferCommands.killParagraphHelper(i, j)
+            p.v.b = w.getAllText()
             w.setSelectionRange(i, i, insert=i)
-        finally:
-            self.endCommand(changed=True, setLabel=True)
+            c.k.resetLabel()
 
     # @+node:ekr.20150514063305.321: *4* ec.fillRegion
     @cmd('fill-region')
@@ -3516,21 +3532,6 @@ class EditCommandsClass(BaseEditCommandsClass):
                 if progress >= ins or ins >= j or ins >= len(s):
                     break
 
-    # @+node:ekr.20150514063305.322: *4* ec.fillRegionAsParagraph
-    @cmd('fill-region-as-paragraph')
-    def fillRegionAsParagraph(self, event: LeoKeyEvent | None = None) -> None:
-        """Fill the selected text."""
-        c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
-        if not g.isTextWrapper(w):
-            return
-        if not self._checkSelection(event):
-            return
-        self.beginCommand(w, 'fill-region-as-paragraph')
-        self.endCommand(changed=True, setLabel=True)
-
     # @+node:ekr.20150514063305.323: *4* ec.fillParagraph
     @cmd('fill-paragraph')
     def fillParagraph(self, event: LeoKeyEvent | None = None) -> None:
@@ -3546,24 +3547,21 @@ class EditCommandsClass(BaseEditCommandsClass):
         w.setSelectionRange(i, i, insert=i)
         self.c.reformatParagraph(event)
 
-    # @+node:ekr.20150514063305.324: *4* ec.killParagraph
+    # @+node:ekr.20150514063305.324: *4* ec.killParagraph (converted)
     @cmd('kill-paragraph')
     def killParagraph(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the present paragraph."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, 'kill-paragraph')
-        try:
+        with u.change_node(p, 'kill-paragraph'):
             self.extendToParagraph(event)
             i, j = w.getSelectionRange()
-            c.killBufferCommands.killParagraphHelper(event, i, j)
-            w.setSelectionRange(i, i, insert=i)
-        finally:
-            self.endCommand(changed=True, setLabel=True)
+            c.killBufferCommands.killParagraphHelper(i, j)
+            c.k.resetLabel()
 
     # @+node:ekr.20150514063305.325: *4* ec.extend-to-paragraph & helper
     @cmd('extend-to-paragraph')
@@ -3615,19 +3613,18 @@ class EditCommandsClass(BaseEditCommandsClass):
         w.setSelectionRange(i1, j, insert=j)
 
     # @+node:ekr.20150514063305.327: *3* ec: region
-    # @+node:ekr.20150514063305.328: *4* ec.tabIndentRegion (indent-rigidly)
+    # @+node:ekr.20150514063305.328: *4* ec.tabIndentRegion (converted)
     @cmd('indent-rigidly')
     def tabIndentRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Insert a hard tab at the start of each line of the selected text."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        if not self._checkSelection(event):
-            return  # pragma: no cover (defensive)
-        self.beginCommand(w, 'indent-rigidly')
+        if not w.hasSelection():
+            return
         s = w.getAllText()
         i1, j1 = w.getSelectionRange()
         i, junk = g.getLine(s, i1)
@@ -3636,10 +3633,12 @@ class EditCommandsClass(BaseEditCommandsClass):
         n = len(lines)
         lines_s = ''.join('\t' + line for line in lines)
         s = s[:i] + lines_s + s[j:]
-        w.setAllText(s)
-        # Retain original row/col selection.
-        w.setSelectionRange(i1, j1 + n, insert=j1 + n)
-        self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, 'indent-rigidly'):
+            w.setAllText(s)
+            # Retain original row/col selection.
+            w.setSelectionRange(i1, j1 + n, insert=j1 + n)
+            p.v.b = s
+            c.k.resetLabel()
 
     # @+node:ekr.20150514063305.329: *4* ec.countRegion
     @cmd('count-region')
@@ -3662,16 +3661,16 @@ class EditCommandsClass(BaseEditCommandsClass):
                 chars += 1
         k.setLabelGrey(f"Region has {lines} lines, {chars} character{g.plural(chars)}")
 
-    # @+node:ekr.20150514063305.330: *4* ec.moveLinesDown
+    # @+node:ekr.20150514063305.330: *4* ec.moveLinesDown (converted)
     @cmd('move-lines-down')
     def moveLinesDown(self, event: LeoKeyEvent | None = None) -> None:
         """
         Move all lines containing any selected text down one line.
         """
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -3682,15 +3681,14 @@ class EditCommandsClass(BaseEditCommandsClass):
         lines = s[i:j]
         # Select from start of the first line to the *start* of the last line.
         # This prevents selection creep.
-        self.beginCommand(w, 'move-lines-down')
-        try:
-            next_i, next_j = g.getLine(s, j)  # 2011/04/01: was j+1
-            next_line = s[next_i:next_j]
-            n2 = next_j - next_i
+        next_i, next_j = g.getLine(s, j)  # 2011/04/01: was j+1
+        next_line = s[next_i:next_j]
+        n2 = next_j - next_i
+        with u.change_node(p, 'move-lines-down'):
             if j < len(s):
                 w.delete(i, next_j)
                 if next_line.endswith('\n'):
-                    # Simply swap positions with next line
+                    # Swap positions with next line
                     new_lines = next_line + lines
                 else:
                     # Last line of the body to be moved up doesn't end in a newline
@@ -3700,41 +3698,38 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.insert(i, new_lines)
                 w.setSelectionRange(sel_1 + n2, sel_2 + n2, insert=insert_pt + n2)
             else:
-                # Leo 5.6: insert a blank line before the selected lines.
+                # Insert a blank line before the selected lines.
                 w.insert(i, '\n')
                 w.setSelectionRange(sel_1 + 1, sel_2 + 1, insert=insert_pt + 1)
-            # Fix bug 799695: colorizer bug after move-lines-up into a docstring
-            c.recolor()
-        finally:
-            self.endCommand(changed=True, setLabel=True)
+            p.v.b = w.getAllText()
+            c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.331: *4* ec.moveLinesUp
+    # @+node:ekr.20150514063305.331: *4* ec.moveLinesUp (converted)
     @cmd('move-lines-up')
     def moveLinesUp(self, event: LeoKeyEvent | None = None) -> None:
         """
         Move all lines containing any selected text up one line.
         """
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
-            return  # pragma: no cover (defensive)
+            return
         s = w.getAllText()
         sel_1, sel_2 = w.getSelectionRange()
         insert_pt = w.getInsertPoint()  # 2011/04/01
         i, junk = g.getLine(s, sel_1)
         i2, j = g.getLine(s, sel_2)
         lines = s[i:j]
-        self.beginCommand(w, 'move-lines-up')
-        try:
-            prev_i, prev_j = g.getLine(s, i - 1)
-            prev_line = s[prev_i:prev_j]
-            n2 = prev_j - prev_i
+        prev_i, prev_j = g.getLine(s, i - 1)
+        prev_line = s[prev_i:prev_j]
+        n2 = prev_j - prev_i
+        with u.change_node(p, 'move-lines-up'):
             if i > 0:
                 w.delete(prev_i, j)
                 if lines.endswith('\n'):
-                    # Simply swap positions with next line
+                    # Swap positions with next line
                     new_lines = lines + prev_line
                 else:
                     # Lines to be moved up don't end in a newline while the
@@ -3743,22 +3738,24 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.insert(prev_i, new_lines)
                 w.setSelectionRange(sel_1 - n2, sel_2 - n2, insert=insert_pt - n2)
             else:
-                # Leo 5.6: Insert a blank line after the line.
+                # Insert a blank line after the line.
                 w.insert(j, '\n')
                 w.setSelectionRange(sel_1, sel_2, insert=sel_1)
-            # Fix bug 799695: colorizer bug after move-lines-up into a docstring
-            c.recolor()
-        finally:
-            self.endCommand(changed=True, setLabel=True)
+            p.v.b = w.getAllText()
+            c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.332: *4* ec.reverseRegion
+    # @+node:ekr.20150514063305.332: *4* ec.reverseRegion (converted)
     @cmd('reverse-region')
     def reverseRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Reverse the order of lines in the selected text."""
-        w = event.w if event else None
-        if not w or not self._checkSelection(event):
-            return  # pragma: no cover (defensive)
-        self.beginCommand(w, 'reverse-region')
+        c = self.c
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
+        if not g.isTextWrapper(w):
+            return
+        if not w.hasSelection():
+            return
         s = w.getAllText()
         i1, j1 = w.getSelectionRange()
         i, junk = g.getLine(s, i1)
@@ -3767,37 +3764,38 @@ class EditCommandsClass(BaseEditCommandsClass):
         aList = txt.split('\n')
         aList.reverse()
         txt = '\n'.join(aList) + '\n'
-        w.setAllText(s[:i1] + txt + s[j1:])
-        ins = i1 + len(txt) - 1
-        w.setSelectionRange(ins, ins, insert=ins)
-        self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, 'reverse-region'):
+            w.setAllText(s[:i1] + txt + s[j1:])
+            ins = i1 + len(txt) - 1
+            w.setSelectionRange(ins, ins, insert=ins)
+            p.v.b = w.getAllText()
+            c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.333: *4* ec.up/downCaseRegion & helper
+    # @+node:ekr.20150514063305.333: *4* ec.up/downCaseRegion & helper (converted)
     @cmd('downcase-region')
     def downCaseRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Convert all characters in the selected text to lower case."""
-        self.caseHelper(event, 'low', 'downcase-region')
+        self.caseHelper('low', 'downcase-region')
 
     @cmd('toggle-case-region')
     def toggleCaseRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Toggle the case of all characters in the selected text."""
-        self.caseHelper(event, 'toggle', 'toggle-case-region')
+        self.caseHelper('toggle', 'toggle-case-region')
 
     @cmd('upcase-region')
     def upCaseRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Convert all characters in the selected text to UPPER CASE."""
-        self.caseHelper(event, 'up', 'upcase-region')
+        self.caseHelper('up', 'upcase-region')
 
-    def caseHelper(self, event: LeoKeyEvent | None, way: str, undoType: str) -> None:
+    def caseHelper(self, way: str, undoType: str) -> None:
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         if not w.hasSelection():
             return
-        self.beginCommand(w, undoType=undoType)
         s = w.getAllText()
         i, j = w.getSelectionRange()
         ins = w.getInsertPoint()
@@ -3810,10 +3808,12 @@ class EditCommandsClass(BaseEditCommandsClass):
             assert way == 'toggle'
             sel = s2.swapcase()
         s2 = s[:i] + sel + s[j:]
-        if changed := s2 != s:
-            w.setAllText(s2)
-            w.setSelectionRange(i, j, insert=ins)
-        self.endCommand(changed=changed, setLabel=True)
+        if s2 != s:
+            with u.change_node(p, undoType):
+                w.setAllText(s2)
+                w.setSelectionRange(i, j, insert=ins)
+                p.v.b = w.getAllText()
+                c.k.resetLabel()
 
     # @+node:ekr.20150514063305.334: *3* ec: scrolling
     # @+node:ekr.20150514063305.335: *4* ec.scrollUp/Down & helper
@@ -3923,7 +3923,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             tree.canvas.xview_scroll(-1, "unit")
 
     # @+node:ekr.20150514063305.339: *3* ec: sort
-    # @+node:ekr.20150514063305.341: *4* ec.sortColumns
+    # @+node:ekr.20150514063305.341: *4* ec.sortColumns (converted)
     @cmd('sort-columns')
     def sortColumns(self, event: LeoKeyEvent | None = None) -> None:
         """
@@ -3931,46 +3931,45 @@ class EditCommandsClass(BaseEditCommandsClass):
         comparison.
         """
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        if not self._checkSelection(event):
-            return  # pragma: no cover (defensive)
+        if not w.hasSelection():
+            return
         s = w.getAllText()
 
         def toInt(index: str) -> int:
             return g.toPythonIndex(s, index)
 
-        self.beginCommand(w, 'sort-columns')
-        try:
-            sel_1, sel_2 = w.getSelectionRange()
-            sint1, sint2 = g.convertPythonIndexToRowCol(s, sel_1)
-            sint3, sint4 = g.convertPythonIndexToRowCol(s, sel_2)
-            sint1 += 1
-            sint3 += 1
-            i, junk = g.getLine(s, sel_1)
-            junk, j = g.getLine(s, sel_2)
-            txt = s[i:j]
-            columns = [
-                w.get(
-                    toInt(f"{z}.{sint2}"),
-                    toInt(f"{z}.{sint4}"),
-                )
-                for z in range(sint1, sint3 + 1)
-            ]
-            aList = g.splitLines(txt)
-            zlist = list(zip(columns, aList))
-            zlist.sort()
-            s = ''.join([z[1] for z in zlist])
+        sel_1, sel_2 = w.getSelectionRange()
+        sint1, sint2 = g.convertPythonIndexToRowCol(s, sel_1)
+        sint3, sint4 = g.convertPythonIndexToRowCol(s, sel_2)
+        sint1 += 1
+        sint3 += 1
+        i, junk = g.getLine(s, sel_1)
+        junk, j = g.getLine(s, sel_2)
+        txt = s[i:j]
+        columns = [
+            w.get(
+                toInt(f"{z}.{sint2}"),
+                toInt(f"{z}.{sint4}"),
+            )
+            for z in range(sint1, sint3 + 1)
+        ]
+        aList = g.splitLines(txt)
+        zlist = list(zip(columns, aList))
+        zlist.sort()
+        s = ''.join([z[1] for z in zlist])
+        with u.change_node(p, 'sort-columns'):
             w.delete(i, j)
             w.insert(i, s)
             w.setSelectionRange(sel_1, sel_1 + len(s), insert=sel_1 + len(s))
-        finally:
-            self.endCommand(changed=True, setLabel=True)
+            p.v.b = w.getAllText()
+            c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.340: *4* ec.sortLines commands
+    # @+node:ekr.20150514063305.340: *4* ec.sortLines commands (converted)
     @cmd('reverse-sort-lines-ignoring-case')
     def reverseSortLinesIgnoringCase(self, event: LeoKeyEvent | None = None) -> None:
         """Sort the selected lines in reverse order, ignoring case."""
@@ -3988,52 +3987,53 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     @cmd('sort-lines')
     def sortLines(
-        self, event: LeoKeyEvent | None = None, ignoreCase: bool = False, reverse: bool = False
+        self,
+        event: LeoKeyEvent | None = None,
+        ignoreCase: bool = False,
+        reverse: bool = False,
     ) -> None:
         """Sort the selected lines."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not c:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        if not self._checkSelection(event):
+        if not w.hasSelection():
             return
-        undoType = 'reverse-sort-lines' if reverse else 'sort-lines'
-        self.beginCommand(w, undoType=undoType)
-        try:
-            s = w.getAllText()
-            sel1, sel2 = w.getSelectionRange()
-            ins = w.getInsertPoint()
-            i, junk = g.getLine(s, sel1)
-            junk, j = g.getLine(s, sel2)
-            s2 = s[i:j]
-            if not s2.endswith('\n'):
-                s2 = s2 + '\n'
-            aList = g.splitLines(s2)
 
-            def lower(s: str) -> str:
-                return s.lower() if ignoreCase else s
+        def lower(s: str) -> str:
+            return s.lower() if ignoreCase else s
 
-            aList.sort(key=lower)  # key is a function that extracts args.
-            if reverse:
-                aList.reverse()
-            s = ''.join(aList)
+        s = w.getAllText()
+        sel1, sel2 = w.getSelectionRange()
+        ins = w.getInsertPoint()
+        i, junk = g.getLine(s, sel1)
+        junk, j = g.getLine(s, sel2)
+        s2 = s[i:j]
+        if not s2.endswith('\n'):
+            s2 = s2 + '\n'
+        aList = g.splitLines(s2)
+        aList.sort(key=lower)
+        if reverse:
+            aList.reverse()
+        s = ''.join(aList)
+        with u.change_node(p, 'reverse-sort-lines' if reverse else 'sort-lines'):
             w.delete(i, j)
             w.insert(i, s)
             w.setSelectionRange(sel1, sel2, insert=ins)
-        finally:
-            self.endCommand(changed=True, setLabel=True)
+            p.v.b = w.getAllText()
+            c.k.resetLabel()
 
     # @+node:ekr.20150514063305.343: *3* ec: swap/transpose
-    # @+node:ekr.20150514063305.344: *4* ec.transposeLines
+    # @+node:ekr.20150514063305.344: *4* ec.transposeLines (converted)
     @cmd('transpose-lines')
     def transposeLines(self, event: LeoKeyEvent | None = None) -> None:
         """Transpose the line containing the cursor with the preceding line."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         ins = w.getInsertPoint()
@@ -4042,22 +4042,23 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         i, j = g.getLine(s, ins)
         line1 = s[i:j]
-        self.beginCommand(w, 'transpose-lines')
-        if i == 0:  # Transpose the next line.
-            i2, j2 = g.getLine(s, j + 1)
-            line2 = s[i2:j2]
-            w.delete(0, j2)
-            w.insert(0, line2 + line1)
-            w.setInsertPoint(j2 - 1)
-        else:  # Transpose the previous line.
-            i2, j2 = g.getLine(s, i - 1)
-            line2 = s[i2:j2]
-            w.delete(i2, j)
-            w.insert(i2, line1 + line2)
-            w.setInsertPoint(j - 1)
-        self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, 'transpose-lines'):
+            if i == 0:  # Transpose the next line.
+                i2, j2 = g.getLine(s, j + 1)
+                line2 = s[i2:j2]
+                w.delete(0, j2)
+                w.insert(0, line2 + line1)
+                w.setInsertPoint(j2 - 1)
+            else:  # Transpose the previous line.
+                i2, j2 = g.getLine(s, i - 1)
+                line2 = s[i2:j2]
+                w.delete(i2, j)
+                w.insert(i2, line1 + line2)
+                w.setInsertPoint(j - 1)
+            p.v.b = w.getAllText()
+            c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.345: *4* ec.transposeWords
+    # @+node:ekr.20150514063305.345: *4* ec.transposeWords (converted)
     @cmd('transpose-words')
     def transposeWords(self, event: LeoKeyEvent | None = None) -> None:
         """
@@ -4066,48 +4067,50 @@ class EditCommandsClass(BaseEditCommandsClass):
         transposes into ‘BAR, FOO’.
         """
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if not w:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, 'transpose-words')
-        s = w.getAllText()
-        i1, j1 = self.extendToWord(event, select=False)
-        s1 = s[i1:j1]
-        if i1 > j1:
-            i1, j1 = j1, i1
-        # Search for the next word.
-        k = j1 + 1
-        while k < len(s) and s[k] != '\n' and not g.isWordChar1(s[k]):
-            k += 1
-        if changed := k < len(s):
-            ws = s[j1:k]
-            w.setInsertPoint(k + 1)
-            i2, j2 = self.extendToWord(event, select=False)
-            s2 = s[i2:j2]
-            s3 = s[:i1] + s2 + ws + s1 + s[j2:]
-            w.setAllText(s3)
-            w.setSelectionRange(j1, j1, insert=j1)
-        self.endCommand(changed=changed, setLabel=True)
+        with u.change_node(p, 'transpose-words'):
+            s = w.getAllText()
+            i1, j1 = self.extendToWord(event, select=False)
+            s1 = s[i1:j1]
+            if i1 > j1:
+                i1, j1 = j1, i1
+            # Search for the next word.
+            k = j1 + 1
+            while k < len(s) and s[k] != '\n' and not g.isWordChar1(s[k]):
+                k += 1
+            if k < len(s):
+                ws = s[j1:k]
+                w.setInsertPoint(k + 1)
+                i2, j2 = self.extendToWord(event, select=False)
+                s2 = s[i2:j2]
+                s3 = s[:i1] + s2 + ws + s1 + s[j2:]
+                w.setAllText(s3)
+                w.setSelectionRange(j1, j1, insert=j1)
+                p.v.b = w.getAllText()
+                c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.346: *4* ec.swapCharacters & transeposeCharacters
+    # @+node:ekr.20150514063305.346: *4* ec.swapCharacters & transeposeCharacters (converted)
     @cmd('transpose-chars')
     def transposeCharacters(self, event: LeoKeyEvent | None = None) -> None:
         """Swap the characters at the cursor."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if w is None:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, 'swap-characters')
         s = w.getAllText()
         i = w.getInsertPoint()
         if 0 < i < len(s):
-            w.setAllText(s[: i - 1] + s[i] + s[i - 1] + s[i + 1 :])
-            w.setSelectionRange(i, i, insert=i)
-        self.endCommand(changed=True, setLabel=True)
+            with u.change_node(p, 'swap-characters'):
+                w.setAllText(s[: i - 1] + s[i] + s[i - 1] + s[i + 1 :])
+                w.setSelectionRange(i, i, insert=i)
+                p.v.b = w.getAllText()
+                c.k.resetLabel()
 
     swapCharacters = transposeCharacters
 

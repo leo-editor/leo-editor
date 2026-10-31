@@ -12,10 +12,10 @@ import sys
 import textwrap
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
-from leo.commands.baseCommands import BaseEditCommandsClass
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent
+    from leo.core.leoCommands import Commands as Cmdr
 # @-<< helpCommands imports & annotations >>
 
 
@@ -26,8 +26,11 @@ def cmd(name: str) -> Callable:
 
 # @+others
 # @+node:ekr.20160514121110.1: ** class HelpCommandsClass
-class HelpCommandsClass(BaseEditCommandsClass):
+class HelpCommandsClass:
     """A class containing Leo's help-for commands."""
+
+    def __init__(self, c: Cmdr) -> None:
+        self.c = c
 
     # @+others
     # @+node:ekr.20150514063305.373: *3* help
