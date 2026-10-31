@@ -4095,23 +4095,26 @@ class EditCommandsClass(BaseEditCommandsClass):
                 p.v.b = w.getAllText()
                 c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.346: *4* ec.swapCharacters & transeposeCharacters
+    # @+node:ekr.20150514063305.346: *4* ec.swapCharacters & transeposeCharacters (converted)
     @cmd('transpose-chars')
     def transposeCharacters(self, event: LeoKeyEvent | None = None) -> None:
         """Swap the characters at the cursor."""
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
-        if w is None:
-            return
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, 'swap-characters')
         s = w.getAllText()
         i = w.getInsertPoint()
         if 0 < i < len(s):
-            w.setAllText(s[: i - 1] + s[i] + s[i - 1] + s[i + 1 :])
-            w.setSelectionRange(i, i, insert=i)
-        self.endCommand(changed=True, setLabel=True)
+            with u.change_node(p, 'swap-characters'):
+                ### self.beginCommand(w, 'swap-characters')
+                w.setAllText(s[: i - 1] + s[i] + s[i - 1] + s[i + 1 :])
+                w.setSelectionRange(i, i, insert=i)
+                p.v.b = w.getAllText()
+                c.k.resetLabel()
+                ### self.endCommand(changed=True, setLabel=True)
 
     swapCharacters = transposeCharacters
 
