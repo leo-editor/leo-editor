@@ -567,36 +567,39 @@ class EditCommandsClass(BaseEditCommandsClass):
 
         return path
 
-    # @+node:ekr.20150514063305.347: *3* ec.tabify & untabify
+    # @+node:ekr.20150514063305.347: *3* ec.tabify & untabify (converted)
     @cmd('tabify')
     def tabify(self, event: LeoKeyEvent | None = None) -> None:
         """Convert 4 spaces to tabs in the selected text."""
-        self.tabifyHelper(event, which='tabify')
+        self.tabifyHelper(which='tabify')
 
     @cmd('untabify')
     def untabify(self, event: LeoKeyEvent | None = None) -> None:
         """Convert tabs to 4 spaces in the selected text."""
-        self.tabifyHelper(event, which='untabify')
+        self.tabifyHelper(which='untabify')
 
-    def tabifyHelper(self, event: LeoKeyEvent | None, which: str) -> None:
+    def tabifyHelper(self, which: str) -> None:
         c = self.c
-        w = event.w if event else c.frame.body.wrapper
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        self.beginCommand(w, undoType=which)
-        i, end = w.getSelectionRange()
-        txt = w.getSelectedText()
-        if which == 'tabify':
-            pattern = re.compile(r' {4,4}')  # Huh?
-            ntxt = pattern.sub('\t', txt)
-        else:
-            pattern = re.compile(r'\t')
-            ntxt = pattern.sub('    ', txt)
-        w.delete(i, end)
-        w.insert(i, ntxt)
-        n = i + len(ntxt)
-        w.setSelectionRange(n, n, insert=n)
-        self.endCommand(changed=True, setLabel=True)
+        with u.change_node(p, which):
+            i, end = w.getSelectionRange()
+            txt = w.getSelectedText()
+            if which == 'tabify':
+                pattern = re.compile(r' {4,4}')  # Exactly four blanks.
+                ntxt = pattern.sub('\t', txt)
+            else:
+                pattern = re.compile(r'\t')
+                ntxt = pattern.sub('    ', txt)
+            w.delete(i, end)
+            w.insert(i, ntxt)
+            n = i + len(ntxt)
+            w.setSelectionRange(n, n, insert=n)
+            p.v.b = w.getAllText()
+            c.k.resetLabel()
 
     # @+node:ekr.20150514063305.191: *3* ec: capitalization & case
     # @+node:ekr.20150514063305.192: *4* ec.capitalizeWord & up/downCaseWord
