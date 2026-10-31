@@ -11,7 +11,6 @@ import time
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoBeautify
-from leo.commands.baseCommands import BaseEditCommandsClass
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
@@ -519,12 +518,11 @@ class AnnotationError(Exception):
 
 
 # @+node:ekr.20160316111303.1: ** class ConvertCommandsClass
-class ConvertCommandsClass(BaseEditCommandsClass):
+class ConvertCommandsClass:
     """Leo's file-conversion commands"""
 
     def __init__(self, c: Cmdr) -> None:
         """Ctor for EditCommandsClass class."""
-        # pylint: disable=super-init-not-called
         self.c = c
 
     # @+others

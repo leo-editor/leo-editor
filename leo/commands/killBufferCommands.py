@@ -8,7 +8,6 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
-from leo.commands.baseCommands import BaseEditCommandsClass
 
 if TYPE_CHECKING:  # pragma: no cover
     try:
@@ -33,14 +32,13 @@ def cmd(name: str) -> Callable:
 
 # @+others
 # @+node:ekr.20160514120919.1: ** class KillBufferCommandsClass
-class KillBufferCommandsClass(BaseEditCommandsClass):
+class KillBufferCommandsClass:
     """A class to manage the kill buffer."""
 
     # @+others
     # @+node:ekr.20150514063305.409: *3* kill.ctor & reloadSettings
     def __init__(self, c: Cmdr) -> None:
         """Ctor for KillBufferCommandsClass class."""
-        # pylint: disable=super-init-not-called
         self.c = c
         self.kbiterator = self.iterateKillBuffer()  # An instance of KillBufferIterClass.
         # For interacting with system clipboard.

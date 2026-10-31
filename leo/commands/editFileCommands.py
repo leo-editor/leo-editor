@@ -12,7 +12,6 @@ import re
 from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoCommands
-from leo.commands.baseCommands import BaseEditCommandsClass
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
@@ -160,8 +159,12 @@ class ConvertAtRoot:
 
 
 # @+node:ekr.20170806094319.14: ** class EditFileCommandsClass
-class EditFileCommandsClass(BaseEditCommandsClass):
+class EditFileCommandsClass:
     """A class to load files into buffers and save buffers to files."""
+
+    def __init__(self, c: Cmdr) -> None:
+        """Ctor for EditFileCommandsClass."""
+        self.c = c
 
     # @+others
     # @+node:ekr.20210308051724.1: *3* efc.convert-at-root

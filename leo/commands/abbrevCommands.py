@@ -12,7 +12,6 @@ import string
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
-from leo.commands.baseCommands import BaseEditCommandsClass
 from leo.plugins.qt_text import QTextMixin
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -29,7 +28,7 @@ def cmd(name: str) -> Callable:
 
 # @+others
 # @+node:ekr.20160514095531.1: ** class AbbrevCommands
-class AbbrevCommandsClass(BaseEditCommandsClass):
+class AbbrevCommandsClass:
     """
     A class to handle user-defined abbreviations.
     See apropos-abbreviations for details.
@@ -42,6 +41,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         'c',
         'dyna_regex',
         'expanding',
+        'globalDynamicAbbrevs',
         'in_head',
         'number_regex',
         'scripting_enabled',
@@ -55,9 +55,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514043850.3: *3* abbrev.__init__
     def __init__(self, c: Cmdr) -> None:
         """Ctor for AbbrevCommandsClass class."""
-        # pylint: disable=super-init-not-called
         self.c = c
-        # Set local ivars.
         self.abbrevs: dict[str, str] = {}  # Keys are names, values are abbreviations.
         self.dyna_regex = re.compile(  # For dynamic abbreviations
             r'[%s%s\-_]+' % (string.ascii_letters, string.digits)

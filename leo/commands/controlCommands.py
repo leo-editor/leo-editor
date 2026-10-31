@@ -10,7 +10,6 @@ import shlex
 import subprocess
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
-from leo.commands.baseCommands import BaseEditCommandsClass
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
@@ -26,10 +25,9 @@ def cmd(name: str) -> Callable:
 
 # @+others
 # @+node:ekr.20160514095828.1: ** class ControlCommandsClass
-class ControlCommandsClass(BaseEditCommandsClass):
+class ControlCommandsClass:
     def __init__(self, c: Cmdr) -> None:
         """Ctor for ControlCommandsClass."""
-        # pylint: disable=super-init-not-called
         self.c = c
 
     # @+others

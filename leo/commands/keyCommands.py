@@ -8,17 +8,20 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
-from leo.commands.baseCommands import BaseEditCommandsClass
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent
+    from leo.core.leoCommands import Commands as Cmdr
 # @-<< keyCommands imports and abbreviations >>
 
 
 # @+others
 # @+node:ekr.20160514120948.1: ** class KeyHandlerCommandsClass
-class KeyHandlerCommandsClass(BaseEditCommandsClass):
+class KeyHandlerCommandsClass:
     """User commands to access the keyHandler class."""
+
+    def __init__(self, c: Cmdr) -> None:
+        self.c = c
 
     # @+others
     # @+node:ekr.20150514063305.406: *3* menuShortcutPlaceHolder

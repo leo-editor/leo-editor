@@ -14,7 +14,7 @@ try:
     import enchant
 except Exception:  # May throw WinError(!)
     enchant = None
-from leo.commands.baseCommands import BaseEditCommandsClass
+
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -449,7 +449,7 @@ class EnchantWrapper(BaseSpellWrapper):
 
 
 # @+node:ekr.20150514063305.481: ** class SpellCommandsClass
-class SpellCommandsClass(BaseEditCommandsClass):
+class SpellCommandsClass:
     """Commands to support the Spell Tab."""
 
     # @+others

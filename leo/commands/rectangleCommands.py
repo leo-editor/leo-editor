@@ -8,7 +8,6 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
-from leo.commands.baseCommands import BaseEditCommandsClass
 from leo.plugins.qt_text import QTextMixin
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -24,12 +23,11 @@ def cmd(name: str) -> Callable:
 
 # @+others
 # @+node:ekr.20160514120751.1: ** class RectangleCommandsClass
-class RectangleCommandsClass(BaseEditCommandsClass):
+class RectangleCommandsClass:
     # @+others
     # @+node:ekr.20150514063305.448: *3* RectangleCommandsClass.__init__
     def __init__(self, c: Cmdr) -> None:
         """Ctor for RectangleCommandsClass."""
-        # pylint: disable=super-init-not-called
         self.c = c
         self.theKillRectangle: list[str] = []  # Do not re-init this!
         self.stringRect: tuple[int, int, int, int]

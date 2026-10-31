@@ -10,7 +10,6 @@ import re
 from typing import cast, Any, TYPE_CHECKING
 
 from leo.core import leoGlobals as g
-from leo.commands.baseCommands import BaseEditCommandsClass
 from leo.plugins.qt_text import QTextMixin  # For cast.
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -376,15 +375,13 @@ def unmark_node_and_parents(event: LeoKeyEvent | None = None) -> list[Position]:
 
 
 # @+node:ekr.20160514100029.1: ** class EditCommandsClass
-class EditCommandsClass(BaseEditCommandsClass):
+class EditCommandsClass:
     """Editing commands with little or no state."""
 
-    # pylint: disable=eval-used
     # @+others
     # @+node:ekr.20150514063305.116: *3* ec.__init__
     def __init__(self, c: Cmdr) -> None:
         """Ctor for EditCommandsClass class."""
-        # pylint: disable=super-init-not-called
         self.c = c
         self.ccolumn = 0  # For comment column functions.
         self.cursorStack: list[tuple] = []  # Values are tuples, (i, j, ins)
