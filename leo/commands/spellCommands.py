@@ -459,7 +459,6 @@ class SpellCommandsClass:
         Ctor for SpellCommandsClass class.
         Inits happen when the first frame opens.
         """
-        # pylint: disable=super-init-not-called
         self.c = c
         self.handler: SpellTabHandler | None = None
         self.suggestion_idx = 0

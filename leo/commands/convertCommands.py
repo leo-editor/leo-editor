@@ -1651,9 +1651,6 @@ class ConvertCommandsClass:
 
         # @-<< docstring: Python_To_Rust >>
 
-        # The handlers are clear as they are.
-        # pylint: disable=no-else-return
-
         # Keys are argument names. Values are Rust types.
         # Typescript can infer types of initialized kwargs.
         types_d: dict[str, str] = {}
@@ -1726,7 +1723,7 @@ class ConvertCommandsClass:
                 for kind, pattern, handler in self.patterns:
                     if m := pattern.match(lines[i]):
                         # May change lines.
-                        j = handler(self, i, lines, m, p)  # pylint: disable=too-many-function-args
+                        j = handler(self, i, lines, m, p)
                         break
                 else:
                     kind = 'code'
@@ -2368,9 +2365,6 @@ class ConvertCommandsClass:
 
     # @+node:ekr.20211013080132.2: *4* class PythonToTypescript
     class PythonToTypescript:  # pragma: no cover
-        # The handlers are clear as they are.
-        # pylint: disable=no-else-return
-
         # Keys are argument names. Values are typescript types.
         # Typescript can infer types of initialized kwargs.
         types_d: dict[str, str] = {}
@@ -2561,7 +2555,6 @@ class ConvertCommandsClass:
                 line = lines[i]
                 # Buglet: ignores whatever might follow.
                 tail = line.replace(delim, '').strip()
-                # pylint: disable=no-else-return
                 if delim in line:
                     if tail:
                         lines[i] = f"{lws} * {tail}\n"
