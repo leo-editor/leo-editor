@@ -232,8 +232,6 @@ class KillBufferCommandsClass:
         c = self.c
         p = c.p
         w = c.frame.body.wrapper
-        if not w:
-            return
         if not g.isTextWrapper(w):
             return
         s = w.get(frm, to)
@@ -250,7 +248,7 @@ class KillBufferCommandsClass:
         c = self.c
         p = c.p
         u = c.undoer
-        w = c.frame.body.wrapper
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -270,6 +268,8 @@ class KillBufferCommandsClass:
         if i < j:
             with u.change_node(p, 'kill-to-end-of-line'):
                 self.killHelper(event, i, j, w)
+                if g.app.is_body_wrapper(w):
+                    p.v.b = w.getAllText()
                 c.k.resetLabel()
 
     # @+node:ekr.20150514063305.421: *3* ec.killLine (converted)

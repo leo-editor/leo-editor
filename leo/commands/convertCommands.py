@@ -522,7 +522,7 @@ class ConvertCommandsClass:
     """Leo's file-conversion commands"""
 
     def __init__(self, c: Cmdr) -> None:
-        """Ctor for EditCommandsClass class."""
+        """Ctor for ConvertCommandsClass class."""
         self.c = c
 
     # @+others
