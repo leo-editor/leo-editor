@@ -1610,7 +1610,7 @@ class EditCommandsClass:
         """Remove a tab from start of all lines, or all selected lines."""
         self.addRemoveHelper(event, ch='\t', add=False, undoType='remove-tab-from-lines')
 
-    # @+node:ekr.20150514063305.252: *5* ec.addRemoveHelper converted)
+    # @+node:ekr.20150514063305.252: *5* ec.addRemoveHelper
     def addRemoveHelper(self, event: LeoKeyEvent | None, ch: str, add: bool, undoType: str) -> None:
         c = self.c
         p = c.p
@@ -2077,8 +2077,6 @@ class EditCommandsClass:
         if not event:
             return  # PR #4812
         w = event.w
-        if not w:
-            return  # PR #4812
         if not g.isTextWrapper(w):
             return  # pragma: no cover (defensive)
         # @+<< set local vars >>
@@ -3224,8 +3222,11 @@ class EditCommandsClass:
         self.forwardParagraphHelper(event, extend=True)
 
     # @+node:ekr.20150514063305.309: *5* ec.backwardParagraphHelper
-    def backwardParagraphHelper(self, event: LeoKeyEvent | None, extend: bool) -> None:
-        ### To do: remove event arg.
+    def backwardParagraphHelper(
+        self,
+        event: LeoKeyEvent | None,  # Required by moveToHelper.
+        extend: bool,
+    ) -> None:
         c = self.c
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
