@@ -235,7 +235,7 @@ class RectangleCommandsClass:
         j = g.convertRowColToPythonIndex(s, r3 - 1, r2 + len(k.arg))
         with u.change_node(p, 'string-rectangle'):
             w.setAllText(s)
-            p.b = s
+            p.v.b = s
             w.setSelectionRange(i, j)
 
     # @+node:ekr.20150514063305.460: *4* RectangleCommandsClass.yankRectangle
