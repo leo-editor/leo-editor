@@ -377,7 +377,8 @@ class KillBufferCommandsClass:
                 w.delete(i, j)
                 if self.addWsToKillRing:
                     self.addToKillBuffer(ws)
-                p.v.b = w.getAllText()
+                if g.app.is_body_wrapper(w):
+                    p.v.b = w.getAllText()
                 w.setInsertPoint(i)
 
     # @+node:ekr.20150514063305.425: *3* yank & yankPop (converted)
@@ -400,7 +401,7 @@ class KillBufferCommandsClass:
         c = self.c
         p = c.p
         u = c.undoer
-        w = c.frame.body.wrapper
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         if not p:
@@ -428,7 +429,8 @@ class KillBufferCommandsClass:
             w.insert(i, s)
             w.setInsertPoint(i + len(s))
             self.lastYankP = p.copy()
-            p.v.b = w.getAllText()
+            if g.app.is_body_wrapper(w):
+                p.v.b = w.getAllText()
             c.k.resetLabel()
 
     # @+node:ekr.20150514063305.427: *3* zapToCharacter (converted)
