@@ -34,6 +34,13 @@
 <v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
 <v t="ekr.20170811173924.1"><vh>@button backup-repo</vh></v>
 <v t="ekr.20231107062256.1"><vh>@button check-leoPy.leo</vh></v>
+<v t="ekr.20261031154952.1"><vh>@button filter-diff</vh></v>
+<v t="ekr.20260802055601.1"><vh>@command cover-todo</vh></v>
+<v t="ekr.20261011040837.1"><vh>@command ed-test-one</vh>
+<v t="ekr.20261011040837.2"><vh>&lt;&lt; test-one: test kind &gt;&gt;</vh></v>
+<v t="ekr.20261011040837.3"><vh>&lt;&lt; test the beautifier &gt;&gt;</vh></v>
+<v t="ekr.20261011040837.4"><vh>&lt;&lt; prefixes &gt;&gt;</vh></v>
+</v>
 <v t="ekr.20230508145335.1"><vh>@command slow-tests</vh></v>
 <v t="ekr.20240714075119.1"><vh>@command sync-reqs</vh></v>
 <v t="ekr.20220306092217.1"><vh>@command t1</vh>
@@ -46,12 +53,6 @@
 <v t="ekr.20261011041507.3"><vh>&lt;&lt; test the beautifier &gt;&gt;</vh></v>
 <v t="ekr.20261011041507.4"><vh>&lt;&lt; prefixes &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20261011040837.1"><vh>@command ed-test-one</vh>
-<v t="ekr.20261011040837.2"><vh>&lt;&lt; test-one: test kind &gt;&gt;</vh></v>
-<v t="ekr.20261011040837.3"><vh>&lt;&lt; test the beautifier &gt;&gt;</vh></v>
-<v t="ekr.20261011040837.4"><vh>&lt;&lt; prefixes &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20260802055601.1"><vh>@command cover-todo</vh></v>
 </v>
 </v>
 <v t="ekr.20170427114412.1"><vh>scripts</vh>
@@ -190,7 +191,7 @@
 <v t="ekr.20180225010707.1"><vh>--- (do not delete) In leo-editor</vh>
 <v t="ekr.20260813051101.1"><vh>--- (do not delete) leo-editor: build files</vh>
 <v t="ekr.20240317061516.1"><vh>@clean ../../MANIFEST.in</vh></v>
-<v t="ekr.20240206161713.1"><vh>@clean ../../setup.cfg </vh></v>
+<v t="ekr.20240206161713.1"><vh>@clean ../../setup.cfg</vh></v>
 <v t="ekr.20260821134304.1"><vh>@clean ../../ty.toml</vh>
 <v t="ekr.20260902044618.1"><vh>&lt;&lt; ty.toml: exludes &gt;&gt;</vh></v>
 <v t="ekr.20260902044553.1"><vh>&lt;&lt; ty.toml: rules &gt;&gt;</vh></v>
@@ -3741,6 +3742,98 @@ def main() -&gt; int:
 
 if __name__ == '__main__':
     sys.exit(main())
+</t>
+<t tx="ekr.20261031154952.1">"""
+A Leonine script to filter the results of git-diff or git-diff-pr commands,
+putting the results in a node whose headline is `filter diff...` by default.
+
+For example, consider this Leonine script:
+    
+    g.cls()
+
+    from leo.commands import editFileCommands as efc
+
+    efc.GitDiffController(c).diff_two_revs(
+        rev1='main',  # Old
+        rev2='ekr-5018-retire-legacy-undo-code',  # New
+        # Optional path, relative to the git directory.
+        # path='leo/commands/editCommands.py',
+        path='leo/commands',
+    )
+    
+This script will produce (in the branch ekr-5018-retire-legacy-undo-code),
+a top-level node whose name is (without the quotes):
+'git diff revs: main ekr-5018-retire-legacy-undo-code (leo/commands)'
+
+To run *this* script:
+- Set `target_h` to the top-level headline produced the git-diff-command.
+- Set `top_h` to the desired name of the output outline.
+- Set `kind` to the desired filtering, either 'both', 'clone' or 'diff'.
+"""
+g.cls()
+from leo.core.leoNodes import Position
+
+u = c.undoer
+target_h = 'git diff revs: main ekr-5018-retire-legacy-undo-code (leo/commands)'
+top_h = 'filter diff...'
+kind = 'clone'  # 'clone', 'diff', 'both'
+
+def filter_diffs() -&gt; Position | None:
+    target_p = g.findNodeAnywhere(c, target_h)
+    if not target_p:
+        print(f"Not found: {target_h}")
+        return None
+    target_diff_nodes = [z for z in target_p.children() if z.h.startswith('diff:')]
+    # g.printObj([z.h for z in target_diff_nodes], tag='target_diff_nodes')
+    with u.change_outline('filter-clones'):
+        top_p = g.findTopLevelNode(c, top_h)
+        if top_p:
+            top_p.deleteAllChildren()
+        else:
+            top_p = c.lastTopLevel().insertAfter()
+            top_p.h = top_h
+        top_p.b = f"@language python\n\n# Found {len(target_diff_nodes)} changed nodes"
+        for target_diff_node in target_diff_nodes:
+            changed_node = None
+            for child in target_diff_node.children():
+                if child.h == 'diff: Changed':
+                    changed_node = child
+                    break
+            else:
+                continue
+            # Per-file organizer.
+            c.p = organizer = top_p.insertAsLastChild()
+            organizer.h = target_diff_node.h
+            diff_nodes = list(changed_node.children())
+            # g.printObj([z.h for z in diff_nodes], tag = target_diff_node.h)
+            for diff_node in diff_nodes:
+                if kind == 'both':
+                    diff2 = organizer.insertAsLastChild()
+                    diff2.h = diff_node.h
+                    diff2.b = diff_node.b
+                    clone = diff_node.firstChild().next()
+                    assert clone.isCloned(), clone.h
+                    clone2 = clone.clone()
+                    clone2.moveToLastChildOf(diff2)
+                elif kind.startswith('clone'):
+                    clone = diff_node.firstChild().next()
+                    assert clone.isCloned(), clone.h
+                    clone2 = clone.clone()
+                    clone2.moveToLastChildOf(organizer)
+                elif kind.startswith('diff'):
+                    diff2 = organizer.insertAsLastChild()
+                    diff2.h = diff_node.h
+                    diff2.b = diff_node.b
+                else:
+                    print(f"Unknown kind: {kind=}")
+                    return None
+        c.p = top_p  # Inside u.change_outline.
+    return top_p
+
+if top_p := filter_diffs():
+    top_p.contract()
+    c.redraw(top_p)
+print('Done!')
 </t>
 </tnodes>
 </leo_file>
