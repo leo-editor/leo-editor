@@ -274,7 +274,6 @@ class AbbrevCommandsClass:
             # Make the replacement.
             w.delete(i, j)
             w.insert(i, s)
-
             # Update only body text. Setting p.h here would be wrong.
             if not self.in_head:
                 p.v.b = w.getAllText()
@@ -609,6 +608,7 @@ class AbbrevCommandsClass:
         This corresponds to C-M-/ in Emacs.
         """
         c = self.c
+        p = c.p
         u = c.undoer
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
@@ -634,6 +634,9 @@ class AbbrevCommandsClass:
         with u.change_outline('dabbrev-completion'):
             w.setAllText(s)
             w.setSelectionRange(ins, ins, insert=ins)
+            # Update only body text. Setting p.h here would be wrong.
+            if not self.in_head:
+                p.v.b = w.getAllText()
 
     # @+node:ekr.20150514043850.21: *4* abbrev.dynamicExpansion M-/ & helper
     @cmd('dabbrev-expands')
@@ -693,6 +696,7 @@ class AbbrevCommandsClass:
         """Finisher for dabbrev-expands."""
         c = self.c
         k = c.k
+        p = c.p
         u = c.undoer
         w = self.w
         c.frame.log.deleteTab('Completion')
@@ -710,6 +714,9 @@ class AbbrevCommandsClass:
         with u.change_outline('dabbrev-expand'):
             w.setAllText(s)
             w.setSelectionRange(ins, ins, insert=ins)
+            # Update only body text. Setting p.h here would be wrong.
+            if not self.in_head:
+                p.v.b = w.getAllText()
 
     # @+node:ekr.20150514043850.28: *4* abbrev.killAllAbbrevs
     @cmd('abbrev-kill-all')
