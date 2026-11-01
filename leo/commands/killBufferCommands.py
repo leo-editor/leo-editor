@@ -360,7 +360,7 @@ class KillBufferCommandsClass:
         c = self.c
         p = c.p
         u = c.undoer
-        w = c.frame.body.wrapper
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
