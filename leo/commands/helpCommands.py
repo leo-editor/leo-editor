@@ -874,7 +874,7 @@ class HelpCommandsClass:
             vr-toggle, or vr3-toggle commands.
 
             The show-layouts command and this command (help-for-layouts) show the
-            avaialable layouts.
+            available layouts.
         """)
 
         # Create lesser rST sections for each layout command.

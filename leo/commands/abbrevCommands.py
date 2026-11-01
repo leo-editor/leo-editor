@@ -287,7 +287,7 @@ class AbbrevCommandsClass:
         if not self.scripting_enabled:
             return
 
-        # Do nothing if {|{... appears nowwhere in c.p's tree.
+        # Do nothing if {|{... appears nowhere in c.p's tree.
         start_pat = re.escape(c.abbrev_subst_start)
         end_pat = re.escape(c.abbrev_subst_end)
         substitution_regex = re.compile(rf"^.*?{start_pat}.*?{end_pat}")
