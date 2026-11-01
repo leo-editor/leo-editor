@@ -187,8 +187,7 @@ class KillBufferCommandsClass:
         A helper method for all kill commands except kill-paragraph commands.
         """
         c = self.c
-        p = c.p
-        w = c.frame.body.wrapper
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         # Extend (frm, to) if it spans a line.
@@ -201,7 +200,6 @@ class KillBufferCommandsClass:
         self.addToKillBuffer(s)
         g.app.gui.replaceClipboardWith(s)
         w.delete(frm, to)
-        p.v.b = w.getAllText()
         w.setInsertPoint(frm)  # Do this *after* setting p.b.
         w.setYScrollPosition(old_y_scroll)  # PR #5020.
         g.app.gui.set_focus(c, w)  # 2607
@@ -296,6 +294,7 @@ class KillBufferCommandsClass:
             pass  # Kill the newline in the present line.
         with u.change_node(p, 'kill-line'):
             self.killHelper(event, i, j, w)
+            p.v.b = w.getAllText()
             c.k.resetLabel()
 
     # @+node:ekr.20150514063305.422: *3* killRegion & killRegionSave (converted)
@@ -351,6 +350,7 @@ class KillBufferCommandsClass:
         with u.change_node(p, 'kill-sentence'):
             i2 = s.rfind('.', 0, ins) + 1
             self.killHelper(event, i2, i + 1, w)
+            p.v.b = w.getAllText()
             c.k.resetLabel()
 
     # @+node:ekr.20150514063305.424: *3* killWs (converted)
