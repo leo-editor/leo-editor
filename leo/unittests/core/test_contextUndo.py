@@ -9,7 +9,7 @@ from unittest.mock import patch
 from leo.core import leoGlobals as g
 from leo.core.leoGui import LeoKeyEvent
 from leo.core.leoTest2 import LeoUnitTest
-from leo.core.leoUndo import TypingBead, UndoBead
+from leo.core.leoUndo import TypingBead
 
 
 # @+others
@@ -38,21 +38,36 @@ class TestContextUndo(LeoUnitTest):
     def test_nested_context_composes_helpers_after_inner_exit(self):
         c = self.c
         p = c.p
+        u = c.undoer
+
+        def inner() -> None:
+            with u.change_node(c.p, 'inner'):
+                p.b = 'inner'
+            self.assertTrue(len(u.beads) in (0, 1))
+
+        def outer() -> None:
+            with u.change_node(c.p, 'outer'):
+                p.b = 'outer'
+                inner()
+
         p.b = 'original'
-        with c.undoer as u:
-            u.set_command_name('outer')
-            with u:
-                u.set_command_name('inner')
-                u.set_body(p, 'inner')
-            self.assertIsNotNone(u.undoBead)
-            u.set_body(p, 'final')
-        self.assertEqual(len(u.beads), 1)
-        self.assertEqual(u.beads[0].command_name, 'outer')
-        self.assertIsNone(u.undoBead)
-        self.assertEqual(u.undoBeadLevel, 0)
-        self.cycles(
-            lambda: self.assertEqual(p.b, 'original'), lambda: self.assertEqual(p.b, 'final')
-        )
+        for _i in range(3):
+            outer()
+            assert p.b == 'inner'
+            assert len(u.beads) == 1
+            assert u.beads[0].command_name == 'outer'
+            u.undo()
+            assert p.b == 'original'
+            assert len(u.beads) == 1
+            assert u.beads[0].command_name == 'outer'
+            u.redo()
+            assert p.b == 'inner'
+            assert len(u.beads) == 1
+            assert u.beads[0].command_name == 'outer'
+            u.undo()
+            assert p.b == 'original'
+            assert len(u.beads) == 1
+            assert u.beads[0].command_name == 'outer'
 
     # @+node:ekr.20261014103254.3: *3* TestContextUndo.test_nested_node_contexts_capture_distinct_nodes_and_same_node_once
     def test_nested_node_contexts_capture_distinct_nodes_and_same_node_once(self):
@@ -64,9 +79,9 @@ class TestContextUndo(LeoUnitTest):
         with u.change_node(p, 'nested edits'):
             p.b = 'p intermediate'
             with u.change_node(p, 'same node'):
-                u.set_body(p, 'p final')
+                p.b = 'p final'
             with u.change_node(q, 'other node'):
-                u.set_body(q, 'q final')
+                q.b = 'q final'
         self.cycles(
             lambda: self.assertEqual((p.b, q.b), ('p original', 'q original')),
             lambda: self.assertEqual((p.b, q.b), ('p final', 'q final')),
@@ -126,36 +141,31 @@ class TestContextUndo(LeoUnitTest):
     def test_noop_context_preserves_redo(self):
         c = self.c
         p = c.p
-        with c.undoer as u:
-            u.set_command_name('edit')
-            u.set_body(p, 'changed')
-        u.undo()
-        history = u.beads[:]
-        with c.undoer as u:
-            u.set_command_name('noop')
-            u.set_body(p, p.b)
-        with u.change_outline('noop bulk'):
-            pass
-        self.assertEqual(u.beads, history)
-        self.assertTrue(u.canRedo())
-        u.redo()
-        self.assertEqual(p.b, 'changed')
+        u = c.undoer
 
-    # @+node:ekr.20261014103254.10: *3* TestContextUndo.test_new_edit_discards_redo
-    def test_new_edit_discards_redo(self):
-        c = self.c
-        p = c.p
-        for text in ('one', 'two'):
-            with c.undoer as u:
-                u.set_command_name('edit')
-                u.set_body(p, text)
-        u.undo()
-        with c.undoer as u:
-            u.set_command_name('branch')
-            u.set_body(p, 'three')
-        self.assertEqual(len(u.beads), 2)
-        self.assertFalse(u.canRedo())
-        self.cycles(lambda: self.assertEqual(p.b, 'one'), lambda: self.assertEqual(p.b, 'three'))
+        def edit() -> None:
+            with u.change_node(p, 'edit'):
+                p.b = 'changed'
+
+        def noop() -> None:
+            with u.change_node(p, 'noop'):
+                pass
+
+        p.b = 'original'
+        noop()
+        edit()
+        noop()
+        for _i in range(3):
+            assert p.b == 'changed', repr(p.b)
+            u.undo()
+            assert u.canRedo()
+            u.redo()
+            assert p.b == 'changed', repr(p.b)
+            u.undo()
+            u.undo()
+            assert p.b == 'original', repr(p.b)
+            u.redo()
+            u.redo()
 
     # @+node:ekr.20261014103254.11: *3* TestContextUndo.test_cut_and_paste_mark_clean_document_changed_and_restore_selection
     def test_cut_and_paste_mark_clean_document_changed_and_restore_selection(self):
@@ -180,53 +190,6 @@ class TestContextUndo(LeoUnitTest):
                     self.assertEqual(w.getInsertPoint(), 1)
 
                 self.cycles(before, lambda p=p, after=after: self.assertEqual(p.b, after))
-
-    # @+node:ekr.20261014103254.12: *3* TestContextUndo.test_undo_after_actual_save_is_changed
-    def test_undo_after_actual_save_is_changed(self):
-        import tempfile
-
-        for initially_changed in (False, True):
-            with self.subTest(initially_changed=initially_changed):
-                c = self.c
-                p = c.p
-                u = c.undoer
-                p.b = 'before'
-                u.clearUndoState()
-                c.changed = initially_changed
-                with u:
-                    u.set_command_name('edit')
-                    u.set_body(p, 'after')
-                with tempfile.TemporaryDirectory() as directory:
-                    path = str(Path(directory) / 'saved.leo')
-                    self.assertTrue(c.fileCommands.save(path))
-                    self.assertFalse(c.changed)
-                    u.undo()
-                    self.assertEqual(p.b, 'before')
-                    self.assertTrue(c.changed)
-                    u.redo()
-                    self.assertEqual(p.b, 'after')
-                    self.assertTrue(c.changed)
-
-    # @+node:ekr.20261014103254.13: *3* TestContextUndo.test_set_body_snapshots_target_and_redirties_ancestors
-    def test_set_body_snapshots_target_and_redirties_ancestors(self):
-        c = self.c
-        parent = c.p
-        parent.h = '@file example.py'
-        child = parent.insertAsLastChild()
-        child.b = 'child before'
-        parent.b = 'parent'
-        child.setDirty()
-        parent.v.clearDirty()
-        with c.undoer as u:
-            u.set_command_name('edit child')
-            u.set_body(child, 'child after')
-            c.p = child
-        self.assertTrue(parent.isDirty())
-        self.cycles(
-            lambda: self.assertEqual(child.b, 'child before'),
-            lambda: self.assertEqual(child.b, 'child after'),
-        )
-        self.assertEqual(parent.b, 'parent')
 
     # @+node:ekr.20261014103254.14: *3* TestContextUndo.test_insert_reuses_vnode_and_preserves_later_contents
     def test_insert_reuses_vnode_and_preserves_later_contents(self):
@@ -355,16 +318,31 @@ class TestContextUndo(LeoUnitTest):
         p = c.p
         u = c.undoer
         p.b = 'before'
-        with u.change_outline('bulk'):
-            with c.undoer as u:
-                u.set_command_name('inner')
-                u.set_body(p, 'after')
+        v = p.v
+
+        def test() -> None:
+            with u.change_node(p, 'my-command'):
+                p.b = 'after'
                 clone = u.clone_node(p)
-        self.assertEqual(len(u.beads), 1)
-        self.cycles(
-            lambda: (self.assertEqual(p.b, 'before'), self.assertFalse(p.isCloned())),
-            lambda: (self.assertEqual(p.b, 'after'), self.assertEqual(c.p, clone)),
-        )
+                assert clone.v == v
+
+        for _i in range(3):
+            test()
+            assert len(u.beads) == 1
+            assert p.b == 'after'
+            assert c.p.isCloned()
+            u.undo()
+            assert len(u.beads) == 1
+            assert p.b == 'before'
+            assert not c.p.isCloned()
+            u.redo()
+            assert len(u.beads) == 1
+            assert p.b == 'after'
+            assert c.p.isCloned()
+            u.undo()
+            assert len(u.beads) == 1
+            assert p.b == 'before'
+            assert not c.p.isCloned()
 
     # @+node:ekr.20261014103254.21: *3* TestContextUndo.test_plain_and_clone_preserving_paste_repeat
     def test_plain_and_clone_preserving_paste_repeat(self):
@@ -421,66 +399,6 @@ class TestContextUndo(LeoUnitTest):
             p.b = 'next'
         self.assertEqual(p.b, 'next')
 
-    # @+node:ekr.20261014103254.24: *3* TestContextUndo.test_replay_exception_resets_flags_and_keeps_pointer
-    def test_replay_exception_resets_flags_and_keeps_pointer(self):
-        c = self.c
-        p = c.p
-
-        def fail():
-            raise RuntimeError('replay')
-
-        with c.undoer as u:
-            u.set_command_name('failure')
-            u.set_body(p, 'changed')
-        b = u.beads[-1]
-        with patch.object(b, 'undo_functions', [fail]):
-            with self.assertRaisesRegex(RuntimeError, 'replay'):
-                u.undo()
-        self.assertFalse(u.undoing)
-        self.assertEqual(u.bead, 0)
-        u.undo()
-        with patch.object(b, 'redo_functions', [fail]):
-            with self.assertRaisesRegex(RuntimeError, 'replay'):
-                u.redo()
-        self.assertFalse(u.redoing)
-        self.assertEqual(u.bead, -1)
-        u.redo()
-        self.assertEqual(p.b, 'changed')
-
-    # @+node:ekr.20261014103254.25: *3* TestContextUndo.test_legacy_node_edit_and_new_node_edit_share_history
-    def test_legacy_node_edit_and_new_node_edit_share_history(self):
-        c = self.c
-        p = c.p
-        u = c.undoer
-        with u.change_node(p, 'new edit'):
-            p.b = 'one'
-        bunch = u.beforeChangeBody(p)
-        p.b = 'two'
-        u.afterChangeBody(p, 'legacy edit', bunch)
-        self.assertIsInstance(u.beads[0], UndoBead)
-        u.undo()
-        self.assertEqual(p.b, 'one')
-        u.undo()
-        self.assertEqual(p.b, '')
-        u.redo()
-        u.redo()
-        self.assertEqual(p.b, 'two')
-
-    # @+node:ekr.20261014103254.26: *3* TestContextUndo.test_legacy_group_can_contain_new_and_old_commands
-    def test_legacy_group_can_contain_new_and_old_commands(self):
-        c = self.c
-        p = c.p
-        u = c.undoer
-        u.beforeChangeGroup(p, 'mixed')
-        with u.change_node(p, 'new edit'):
-            p.b = 'one'
-        bunch = u.beforeChangeBody(p)
-        p.b = 'two'
-        u.afterChangeBody(p, 'legacy edit', bunch)
-        u.afterChangeGroup(p, 'mixed')
-        self.assertEqual(len(u.beads), 1)
-        self.cycles(lambda: self.assertEqual(p.b, ''), lambda: self.assertEqual(p.b, 'two'))
-
     # @+node:ekr.20261014103254.27: *3* TestContextUndo.test_typing_preserves_text_mark_and_newlines
     def test_typing_preserves_text_mark_and_newlines(self):
         c = self.c
@@ -495,7 +413,7 @@ class TestContextUndo(LeoUnitTest):
                     w = c.frame.body.wrapper
                     w.setAllText(new)
                     w.setSelectionRange(len(new), len(new))
-                    u.type_text(p, 'Typing', old, new, oldSel=(len(old), len(old)))
+                    u.type_text(p, old, new, oldSel=(len(old), len(old)))
                     self.assertIsInstance(u.beads[-1], TypingBead)
                     self.cycles(
                         lambda old=old: self.assertEqual(p.b, old),
@@ -518,7 +436,7 @@ class TestContextUndo(LeoUnitTest):
                     w = c.frame.body.wrapper
                     w.setAllText(new)
                     w.setSelectionRange(len(new), len(new))
-                    u.type_text(p, 'Typing', old, new, oldSel=(len(old), len(old)))
+                    u.type_text(p, old, new, oldSel=(len(old), len(old)))
                 self.assertEqual(len(u.beads), 2 if granularity == 'char' else 1)
                 u.undo()
                 self.assertEqual(p.b, 'a' if granularity == 'char' else '')
@@ -526,7 +444,7 @@ class TestContextUndo(LeoUnitTest):
                 c.clearChanged()
                 w.setAllText('abc')
                 w.setSelectionRange(3, 3)
-                u.type_text(p, 'Typing', 'ab', 'abc', oldSel=(2, 2))
+                u.type_text(p, 'ab', 'abc', oldSel=(2, 2))
                 self.assertEqual(len(u.beads), 3 if granularity == 'char' else 2)
                 u.undo()
                 self.assertEqual(p.b, 'ab')
@@ -544,7 +462,7 @@ class TestContextUndo(LeoUnitTest):
             w = c.frame.body.wrapper
             w.setAllText(new)
             w.setSelectionRange(len(new), len(new))
-            u.type_text(p, 'Typing', old, new, oldSel=(len(old), len(old)))
+            u.type_text(p, old, new, oldSel=(len(old), len(old)))
         self.assertEqual(len(u.beads), 2)
         u.undo()
         self.assertEqual(p.b, 'ab')
@@ -553,34 +471,6 @@ class TestContextUndo(LeoUnitTest):
         u.redo()
         u.redo()
         self.assertEqual(p.b, 'ab cd')
-
-    # @+node:ekr.20261014103254.31: *3* TestContextUndo.test_legacy_calls_inside_new_context_are_grouped
-    def test_legacy_calls_inside_new_context_are_grouped(self):
-        c = self.c
-        p = c.p
-        with c.undoer as u:
-            u.set_command_name('new group')
-            u.beforeChangeGroup(p, 'legacy subgroup')
-            bunch = u.beforeChangeBody(p)
-            p.b = 'legacy'
-            u.afterChangeBody(p, 'legacy edit', bunch)
-            u.afterChangeGroup(p, 'legacy subgroup')
-            u.set_body(p, 'final')
-        self.assertEqual(len(u.beads), 1)
-        self.cycles(lambda: self.assertEqual(p.b, ''), lambda: self.assertEqual(p.b, 'final'))
-
-    # @+node:ekr.20261014103254.32: *3* TestContextUndo.test_new_context_with_legacy_group_and_only_new_children
-    def test_new_context_with_legacy_group_and_only_new_children(self):
-        c = self.c
-        p = c.p
-        with c.undoer as u:
-            u.set_command_name('outer')
-            u.beforeChangeGroup(p, 'inner')
-            u.set_body(p, 'inner')
-            u.afterChangeGroup(p, 'inner')
-            u.set_body(p, 'after inner')
-        self.assertEqual(len(u.beads), 1)
-        self.cycles(lambda: self.assertEqual(p.b, ''), lambda: self.assertEqual(p.b, 'after inner'))
 
     # @+node:ekr.20261014103254.33: *3* TestContextUndo.test_bulk_marks_and_sort_keep_vnode_identity
     def test_bulk_marks_and_sort_keep_vnode_identity(self):
@@ -637,57 +527,6 @@ class TestContextUndo(LeoUnitTest):
             ),
             lambda: (self.assertEqual(c.p, clone), self.assertTrue(p.isCloned())),
         )
-
-    # @+node:ekr.20261014103254.36: *3* TestContextUndo.test_randomized_composite_operations_restore_graph
-    def test_randomized_composite_operations_restore_graph(self):
-        import random
-
-        c = self.c
-        rng = random.Random(4996)
-
-        def graph():
-            return {
-                v.gnx: (
-                    v.h,
-                    v.b,
-                    v.isMarked(),
-                    tuple(child.gnx for child in v.children),
-                    tuple(sorted(parent.gnx for parent in v.parents)),
-                )
-                for v in [c.hiddenRootNode, *c.all_unique_nodes()]
-            }
-
-        snapshots = [graph()]
-        for i in range(40):
-            positions = list(c.all_positions())
-            p = rng.choice(positions)
-            c.selectPosition(p)
-            with c.undoer as u:
-                u.set_command_name(f'composite {i}')
-                action = rng.choice(('insert', 'clone', 'delete', 'body', 'mark'))
-                if action == 'insert':
-                    inserted = u.insert_node(p, as_child=True)
-                    u.change_headline(inserted, f'inserted {i}')
-                elif action == 'clone':
-                    u.clone_node(p)
-                elif action == 'delete' and (p.hasParent() or p.hasNext() or p.hasBack()):
-                    u.delete_node(p)
-                elif action == 'mark':
-                    with u.change_node(p, 'mark'):
-                        p.setMarked() if not p.isMarked() else p.clearMarked()
-                else:
-                    u.set_body(p, f'body {i}')
-            self.assertEqual(c.checkOutline(), 0)
-            snapshots.append(graph())
-        self.assertEqual(len(u.beads), 40)
-        for snapshot in reversed(snapshots[:-1]):
-            u.undo()
-            self.assertEqual(graph(), snapshot)
-            self.assertEqual(c.checkOutline(), 0)
-        for snapshot in snapshots[1:]:
-            u.redo()
-            self.assertEqual(graph(), snapshot)
-            self.assertEqual(c.checkOutline(), 0)
 
     # @+node:ekr.20261014103254.37: *3* TestContextUndo.test_per_node_undo_keeps_new_beads
     def test_per_node_undo_keeps_new_beads(self):

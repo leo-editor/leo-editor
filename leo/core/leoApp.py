@@ -1552,6 +1552,13 @@ class LeoApp:
         """A factory returning a scanner function for the given file extension."""
         return g.app.classDispatchDict.get(ext)
 
+    # @+node:ekr.20261030131538.1: *3* app.is_body_wrapper
+    def is_body_wrapper(self, obj: Any) -> bool:
+        """return True if obj is the body pane's wrapper"""
+        app = self
+        gui = app.gui
+        return gui.widget_name(obj).startswith('body') if gui else False
+
     # @+node:ekr.20170429152049.1: *3* app.listenToLog
     @cmd('listen-to-log')
     @cmd('log-listen')

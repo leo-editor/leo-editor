@@ -924,19 +924,15 @@ class LeoQtTree(leoFrame.LeoTree):
             # #3633: Replace newlines with a blank.
             if '\n' in s:
                 s = re.sub(r'\s*\n\s*', ' ', s).replace('  ', ' ').rstrip()
-            # #1310: update the tooltip.
             if p.h != s:
                 # Update p.h and handle undo.
-                item.setToolTip(0, s)
-                undoData = u.beforeChangeHeadline(p)
-                p.v.setHeadString(s)  # Set v.h *after* calling the undoer's before method.
-                if not c.changed:
-                    c.setChanged()
-                # We must recolor the body because
-                # the headline may contain directives.
-                c.recolor(p)
-                p.setDirty()
-                u.afterChangeHeadline(p, 'Edit Headline', undoData)
+                item.setToolTip(0, s)  # #1310.
+                with u:
+                    u.set_command_name('edit-headline')
+                    u.change_headline(p, s)
+                    p.v.setHeadString(s)
+                    p.setDirty()
+            # *Always* do this.
             self.redraw_after_head_changed()
             c.outerUpdate()
 

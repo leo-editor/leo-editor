@@ -12,7 +12,6 @@ import string
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
-from leo.commands.baseCommands import BaseEditCommandsClass
 from leo.plugins.qt_text import QTextMixin
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -29,7 +28,7 @@ def cmd(name: str) -> Callable:
 
 # @+others
 # @+node:ekr.20160514095531.1: ** class AbbrevCommands
-class AbbrevCommandsClass(BaseEditCommandsClass):
+class AbbrevCommandsClass:
     """
     A class to handle user-defined abbreviations.
     See apropos-abbreviations for details.
@@ -42,6 +41,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         'c',
         'dyna_regex',
         'expanding',
+        'globalDynamicAbbrevs',
         'in_head',
         'number_regex',
         'scripting_enabled',
@@ -55,9 +55,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514043850.3: *3* abbrev.__init__
     def __init__(self, c: Cmdr) -> None:
         """Ctor for AbbrevCommandsClass class."""
-        # pylint: disable=super-init-not-called
         self.c = c
-        # Set local ivars.
         self.abbrevs: dict[str, str] = {}  # Keys are names, values are abbreviations.
         self.dyna_regex = re.compile(  # For dynamic abbreviations
             r'[%s%s\-_]+' % (string.ascii_letters, string.digits)
@@ -276,7 +274,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             # Make the replacement.
             w.delete(i, j)
             w.insert(i, s)
-
             # Update only body text. Setting p.h here would be wrong.
             if not self.in_head:
                 p.v.b = w.getAllText()
@@ -289,7 +286,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         if not self.scripting_enabled:
             return
 
-        # Do nothing if {|{... appears nowwhere in c.p's tree.
+        # Do nothing if {|{... appears nowhere in c.p's tree.
         start_pat = re.escape(c.abbrev_subst_start)
         end_pat = re.escape(c.abbrev_subst_end)
         substitution_regex = re.compile(rf"^.*?{start_pat}.*?{end_pat}")
@@ -611,6 +608,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         This corresponds to C-M-/ in Emacs.
         """
         c = self.c
+        p = c.p
         u = c.undoer
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
@@ -636,6 +634,9 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         with u.change_outline('dabbrev-completion'):
             w.setAllText(s)
             w.setSelectionRange(ins, ins, insert=ins)
+            # Update only body text. Setting p.h here would be wrong.
+            if not self.in_head:
+                p.v.b = w.getAllText()
 
     # @+node:ekr.20150514043850.21: *4* abbrev.dynamicExpansion M-/ & helper
     @cmd('dabbrev-expands')
@@ -695,6 +696,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         """Finisher for dabbrev-expands."""
         c = self.c
         k = c.k
+        p = c.p
         u = c.undoer
         w = self.w
         c.frame.log.deleteTab('Completion')
@@ -712,6 +714,9 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         with u.change_outline('dabbrev-expand'):
             w.setAllText(s)
             w.setSelectionRange(ins, ins, insert=ins)
+            # Update only body text. Setting p.h here would be wrong.
+            if not self.in_head:
+                p.v.b = w.getAllText()
 
     # @+node:ekr.20150514043850.28: *4* abbrev.killAllAbbrevs
     @cmd('abbrev-kill-all')

@@ -259,7 +259,6 @@ class QTextMixin:
         oldSel = (i, i + j)
         c.undoer.type_text(
             p,
-            'Typing',
             oldText,
             newText,
             oldSel=oldSel,
@@ -670,7 +669,7 @@ if QtWidgets:
             def keyPressEvent(self, event: QKeyEvent) -> None:
                 """Handle a key event from QListWidget."""
                 c = self.leo_c
-                w = c.frame.body.wrapper
+                w = event.w if event else c.frame.body.wrapper  # Valid in headlines.
                 key = event.key()
                 if event.modifiers() != KeyboardModifier.NoModifier and not event.text():
                     # A modifier key on it's own.
@@ -713,7 +712,6 @@ if QtWidgets:
                     w.setInsertPoint(j)
                     c.undoer.type_text(
                         p,
-                        'Typing',
                         oldText,
                         newText=w.getAllText(),
                         newInsert=w.getInsertPoint(),

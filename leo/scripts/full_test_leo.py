@@ -7,6 +7,9 @@ full_test_leo.py: Run all these tests scripts in this order:
 - run_test_leo.py.
 - ruff_leo.py.
 - check_leo.py.
+- check_leo_sync.py
+- ty_leo.py
+
 
 Devs: *please* run this script before pushing!
 
@@ -39,6 +42,7 @@ for command in [
     # rf'{python} -m leo.scripts.mypy_leo',
     rf'{python} -m leo.scripts.ruff_leo',
     rf'{python} -m leo.scripts.check_leo',
+    rf'{python} -m leo.scripts.check_leo_sync',
     rf'{python} -m leo.scripts.ty_leo',
 ]:
     subprocess.run(command, shell=True, check=False)

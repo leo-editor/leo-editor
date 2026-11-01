@@ -1016,6 +1016,7 @@ def readFileIntoNode(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Read a file into a single node."""
     c = self
     u = c.undoer
+    w = c.frame.body.wrapper
     c.endEditing()
     filetypes = [
         ("All files", "*"),
@@ -1032,7 +1033,6 @@ def readFileIntoNode(self: Self, event: LeoKeyEvent | None = None) -> None:
         return
     g.chdir(fileName)
     s = '@nocolor\n' + s
-    w = c.frame.body.wrapper
     with u.change_outline('read-file-into-node'):
         p = c.p.insertAfter()
         p.setHeadString('@read-file-into-node ' + fileName)

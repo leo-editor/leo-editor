@@ -34,6 +34,13 @@
 <v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
 <v t="ekr.20170811173924.1"><vh>@button backup-repo</vh></v>
 <v t="ekr.20231107062256.1"><vh>@button check-leoPy.leo</vh></v>
+<v t="ekr.20261031154952.1"><vh>@button filter-diff</vh></v>
+<v t="ekr.20260802055601.1"><vh>@command cover-todo</vh></v>
+<v t="ekr.20261011040837.1"><vh>@command ed-test-one</vh>
+<v t="ekr.20261011040837.2"><vh>&lt;&lt; test-one: test kind &gt;&gt;</vh></v>
+<v t="ekr.20261011040837.3"><vh>&lt;&lt; test the beautifier &gt;&gt;</vh></v>
+<v t="ekr.20261011040837.4"><vh>&lt;&lt; prefixes &gt;&gt;</vh></v>
+</v>
 <v t="ekr.20230508145335.1"><vh>@command slow-tests</vh></v>
 <v t="ekr.20240714075119.1"><vh>@command sync-reqs</vh></v>
 <v t="ekr.20220306092217.1"><vh>@command t1</vh>
@@ -46,12 +53,6 @@
 <v t="ekr.20261011041507.3"><vh>&lt;&lt; test the beautifier &gt;&gt;</vh></v>
 <v t="ekr.20261011041507.4"><vh>&lt;&lt; prefixes &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20261011040837.1"><vh>@command ed-test-one</vh>
-<v t="ekr.20261011040837.2"><vh>&lt;&lt; test-one: test kind &gt;&gt;</vh></v>
-<v t="ekr.20261011040837.3"><vh>&lt;&lt; test the beautifier &gt;&gt;</vh></v>
-<v t="ekr.20261011040837.4"><vh>&lt;&lt; prefixes &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20260802055601.1"><vh>@command cover-todo</vh></v>
 </v>
 </v>
 <v t="ekr.20170427114412.1"><vh>scripts</vh>
@@ -157,8 +158,6 @@
 </v>
 <v t="ekr.20150514035207.1"><vh>Command classes</vh>
 <v t="ekr.20150514035236.1"><vh>@file ../commands/abbrevCommands.py</vh></v>
-<v t="ekr.20150514035943.1"><vh>@file ../commands/baseCommands.py</vh></v>
-<v t="ekr.20150514035559.1"><vh>@file ../commands/bufferCommands.py</vh></v>
 <v t="ekr.20161021090740.1"><vh>@file ../commands/checkerCommands.py</vh></v>
 <v t="ekr.20171123135539.1"><vh>@file ../commands/commanderEditCommands.py</vh></v>
 <v t="ekr.20171123095353.1"><vh>@file ../commands/commanderFileCommands.py</vh></v>
@@ -192,7 +191,7 @@
 <v t="ekr.20180225010707.1"><vh>--- (do not delete) In leo-editor</vh>
 <v t="ekr.20260813051101.1"><vh>--- (do not delete) leo-editor: build files</vh>
 <v t="ekr.20240317061516.1"><vh>@clean ../../MANIFEST.in</vh></v>
-<v t="ekr.20240206161713.1"><vh>@clean ../../setup.cfg </vh></v>
+<v t="ekr.20240206161713.1"><vh>@clean ../../setup.cfg</vh></v>
 <v t="ekr.20260821134304.1"><vh>@clean ../../ty.toml</vh>
 <v t="ekr.20260902044618.1"><vh>&lt;&lt; ty.toml: exludes &gt;&gt;</vh></v>
 <v t="ekr.20260902044553.1"><vh>&lt;&lt; ty.toml: rules &gt;&gt;</vh></v>
@@ -272,6 +271,7 @@
 <v t="ekr.20260818055843.1"><vh>@clean ../scripts/build_docs.py</vh></v>
 </v>
 <v t="ekr.20240321122614.1"><vh>--- test scripts</vh>
+<v t="ekr.20261030054958.1"><vh>@clean ../scripts/check_leo_sync.py</vh></v>
 <v t="ekr.20240323050520.1"><vh>@file ../scripts/beautify_all_leo.py</vh></v>
 <v t="ekr.20251129060454.1"><vh>@file ../scripts/check_leo.py</vh></v>
 <v t="ekr.20240323051724.1"><vh>@file ../scripts/full_test_leo.py</vh></v>
@@ -1019,7 +1019,7 @@ prefix_lines:
 
 [General Patterns]
 </t>
-<t tx="ekr.20170427114412.1">@language rest
+<t tx="ekr.20170427114412.1">@language python
 </t>
 <t tx="ekr.20170428084123.1">@language python
 """Recursively import all python files in a directory and clean the result."""
@@ -3108,8 +3108,10 @@ efc.GitDiffController(c).diff_two_revs(
     # path='leo/core',
 )
 </t>
-<t tx="ekr.20260503063616.1"></t>
-<t tx="ekr.20260503063649.1"></t>
+<t tx="ekr.20260503063616.1">@language python
+</t>
+<t tx="ekr.20260503063649.1">@language python
+</t>
 <t tx="ekr.20260526171943.1"></t>
 <t tx="ekr.20260709152903.1">g.cls()
 import os
@@ -3128,11 +3130,13 @@ efc.GitDiffController(c).diff_two_branches(
     fn='leo/plugins/qt_text.py',  # Don't use back slashes.
 )
 </t>
-<t tx="ekr.20260721065927.1">from leo.commands import editFileCommands as efc
+<t tx="ekr.20260721065927.1">g.cls()
+
+from leo.commands import editFileCommands as efc
 
 efc.GitDiffController(c).diff_two_revs(
-    rev1='main',  # Old
-    rev2='6.8.10',  # New
+    rev1='v6.8.10',  # Old
+    rev2='main',  # New
     # Optional path, relative to the git directory.
     # path='leo/core',
 )
@@ -3635,6 +3639,201 @@ writers = 'leo.unittests.plugins.test_writers'
 <t tx="ekr.20261011041619.1">@language rest
 
 .. Use @language rest to suppress ruff format
+</t>
+<t tx="ekr.20261030054958.1">"""
+check_leo_sync.py: Verify that LeoPyRef.leo is in sync with the plain
+files it mirrors.
+
+leo-editor's own source is tracked both as plain files (.py, .toml, .txt)
+and as @file/@clean nodes inside leo/core/LeoPyRef.leo. A plain-file edit
+that's never synced back into the outline (via refresh-from-disk) leaves
+LeoPyRef.leo stale -- invisible to anyone not using the Leo GUI, until
+someone next opens it there and gets a surprise (a resurrected stale node,
+a missing file, or a spurious reindent).
+
+This script opens LeoPyRef.leo headlessly and, for every @file/@clean node,
+compares what AtFile would derive from the outline against the actual
+mirrored file on disk, byte for byte. It exits nonzero (and lists every
+mismatch) if anything is out of sync, so drift gets caught in CI instead
+of by whoever next opens the outline in the GUI.
+
+Usage:
+    python -m leo.scripts.check_leo_sync
+"""
+
+import os
+import sys
+
+os.environ.setdefault('QT_QPA_PLATFORM', 'offscreen')
+
+# cd to leo-editor, matching this directory's other scripts (flake8_leo.py etc).
+leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
+os.chdir(leo_editor_dir)
+sys.path.insert(0, leo_editor_dir)
+
+from leo.core import leoBridge  # noqa: E402
+
+
+def main() -&gt; int:
+
+    print('check_leo_sync.py')
+    leo_path = os.path.join(leo_editor_dir, 'leo', 'core', 'LeoPyRef.leo')
+    bridge = leoBridge.controller(
+        gui='nullGui',
+        loadPlugins=False,
+        readSettings=False,
+        silent=True,
+        verbose=False,
+    )
+    c = bridge.openLeoFile(leo_path)
+    at = c.atFileCommands
+
+    missing: list[tuple[str, str]] = []
+    out_of_sync: list[tuple[str, str, str]] = []
+    checked = 0
+
+    for p in c.all_positions():
+        if not p.isAnyAtFileNode():
+            continue
+        h = p.h.strip()
+        # at-auto or at-edit files don't have a stable round-trip to compare.
+        if h.startswith(('@auto', '@edit')):
+            continue
+        if not h.startswith(('@file', '@clean', '@thin', '@shadow', '@nosent')):
+            continue
+        full = c.fullPath(p)
+        if not os.path.exists(full):
+            missing.append((h, full))
+            continue
+        checked += 1
+        use_sentinels = not h.startswith('@clean')
+        try:
+            derived = at.atFileToString(p.copy(), sentinels=use_sentinels)
+        except Exception as e:  # pragma: no cover (defensive)
+            out_of_sync.append((h, full, f'error deriving content: {e}'))
+            continue
+        with open(full, 'r', encoding='utf-8', errors='replace') as f:
+            disk = f.read()
+        if derived != disk:
+            out_of_sync.append((h, full, 'content differs from what the outline would write'))
+
+    # print(f"checked {checked} @file/@clean nodes in {leo_path}")
+    ok = True
+    if missing:
+        ok = False
+        print(f"\n{len(missing)} node(s) reference a file that no longer exists on disk:")
+        for h, full in missing:
+            print(f"  MISSING: {h} -&gt; {full}")
+        print(
+            "  (the file was likely renamed or deleted without updating the "
+            "matching node's headline in LeoPyRef.leo)"
+        )
+    if out_of_sync:
+        ok = False
+        print(f"\n{len(out_of_sync)} node(s) are out of sync with their mirrored file:")
+        for h, full, reason in out_of_sync:
+            print(f"  DIFF: {h} -&gt; {full} ({reason})")
+        print(
+            "  (re-sync via leoBridge: c.refreshFromDisk(p) for each node, "
+            "then c.fileCommands.save() -- see the leo-editor skill)"
+        )
+    return 0 if ok else 1
+
+
+if __name__ == '__main__':
+    sys.exit(main())
+</t>
+<t tx="ekr.20261031154952.1">"""
+A Leonine script to filter the results of git-diff or git-diff-pr commands,
+putting the results in a node whose headline is `filter diff...` by default.
+
+For example, consider this Leonine script:
+    
+    g.cls()
+
+    from leo.commands import editFileCommands as efc
+
+    efc.GitDiffController(c).diff_two_revs(
+        rev1='main',  # Old
+        rev2='ekr-5018-retire-legacy-undo-code',  # New
+        # Optional path, relative to the git directory.
+        # path='leo/commands/editCommands.py',
+        path='leo/commands',
+    )
+    
+This script will produce (in the branch ekr-5018-retire-legacy-undo-code),
+a top-level node whose name is (without the quotes):
+'git diff revs: main ekr-5018-retire-legacy-undo-code (leo/commands)'
+
+To run *this* script:
+- Set `target_h` to the top-level headline produced the git-diff-command.
+- Set `top_h` to the desired name of the output outline.
+- Set `kind` to the desired filtering, either 'both', 'clone' or 'diff'.
+"""
+g.cls()
+from leo.core.leoNodes import Position
+
+u = c.undoer
+target_h = 'git diff revs: main ekr-5018-retire-legacy-undo-code (leo/commands)'
+top_h = 'filter diff...'
+kind = 'clone'  # 'clone', 'diff', 'both'
+
+def filter_diffs() -&gt; Position | None:
+    target_p = g.findNodeAnywhere(c, target_h)
+    if not target_p:
+        print(f"Not found: {target_h}")
+        return None
+    target_diff_nodes = [z for z in target_p.children() if z.h.startswith('diff:')]
+    # g.printObj([z.h for z in target_diff_nodes], tag='target_diff_nodes')
+    with u.change_outline('filter-clones'):
+        top_p = g.findTopLevelNode(c, top_h)
+        if top_p:
+            top_p.deleteAllChildren()
+        else:
+            top_p = c.lastTopLevel().insertAfter()
+            top_p.h = top_h
+        top_p.b = f"@language python\n\n# Found {len(target_diff_nodes)} changed nodes"
+        for target_diff_node in target_diff_nodes:
+            changed_node = None
+            for child in target_diff_node.children():
+                if child.h == 'diff: Changed':
+                    changed_node = child
+                    break
+            else:
+                continue
+            # Per-file organizer.
+            c.p = organizer = top_p.insertAsLastChild()
+            organizer.h = target_diff_node.h
+            diff_nodes = list(changed_node.children())
+            # g.printObj([z.h for z in diff_nodes], tag = target_diff_node.h)
+            for diff_node in diff_nodes:
+                if kind == 'both':
+                    diff2 = organizer.insertAsLastChild()
+                    diff2.h = diff_node.h
+                    diff2.b = diff_node.b
+                    clone = diff_node.firstChild().next()
+                    assert clone.isCloned(), clone.h
+                    clone2 = clone.clone()
+                    clone2.moveToLastChildOf(diff2)
+                elif kind.startswith('clone'):
+                    clone = diff_node.firstChild().next()
+                    assert clone.isCloned(), clone.h
+                    clone2 = clone.clone()
+                    clone2.moveToLastChildOf(organizer)
+                elif kind.startswith('diff'):
+                    diff2 = organizer.insertAsLastChild()
+                    diff2.h = diff_node.h
+                    diff2.b = diff_node.b
+                else:
+                    print(f"Unknown kind: {kind=}")
+                    return None
+        c.p = top_p  # Inside u.change_outline.
+    return top_p
+
+if top_p := filter_diffs():
+    top_p.contract()
+    c.redraw(top_p)
+print('Done!')
 </t>
 </tnodes>
 </leo_file>

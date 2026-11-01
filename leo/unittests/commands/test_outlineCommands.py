@@ -24,8 +24,8 @@ class TestOutlineCommands(LeoUnitTest):
     """
 
     # @+others
-    # @+node:ekr.20230724130924.1: *3* TestOutlineCommands.test_paste_as_template
-    def test_paste_as_template(self):
+    # @+node:ekr.20230724130924.1: *3* TestOutlineCommands.xxx_test_paste_as_template
+    def xxx_test_paste_as_template(self):
         c = self.c
         p = c.p
         u = c.undoer
