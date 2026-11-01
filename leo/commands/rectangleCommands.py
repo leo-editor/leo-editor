@@ -54,7 +54,7 @@ class RectangleCommandsClass:
         return r1 + 1, r2, r3 + 1, r4
 
     # @+node:ekr.20150514063305.453: *3* RectangleCommandsClass.Entries
-    # @+node:ekr.20150514063305.454: *4* RectangleCommandsClass.clearRectangle (converted)
+    # @+node:ekr.20150514063305.454: *4* RectangleCommandsClass.clearRectangle
     @cmd('rectangle-clear')
     def clearRectangle(self, event: LeoKeyEvent | None = None) -> None:
         """Clear the rectangle defined by the start and end of selected text."""
@@ -79,7 +79,7 @@ class RectangleCommandsClass:
             p.v.b = w.getAllText()
             w.setSelectionRange(toInt(f"{r1}.{r2}"), toInt(f"{r3}.{r2 + len(fill)}"))
 
-    # @+node:ekr.20150514063305.455: *4* RectangleCommandsClass.closeRectangle (converted)
+    # @+node:ekr.20150514063305.455: *4* RectangleCommandsClass.closeRectangle
     @cmd('rectangle-close')
     def closeRectangle(self, event: LeoKeyEvent | None = None) -> None:
         """Delete the rectangle if it contains nothing but whitespace.."""
@@ -109,7 +109,7 @@ class RectangleCommandsClass:
             p.v.b = w.getAllText()
             w.setSelectionRange(i, j, insert=j)
 
-    # @+node:ekr.20150514063305.456: *4* RectangleCommandsClass.deleteRectangle (converted)
+    # @+node:ekr.20150514063305.456: *4* RectangleCommandsClass.deleteRectangle
     @cmd('rectangle-delete')
     def deleteRectangle(self, event: LeoKeyEvent | None = None) -> None:
         """Delete the rectangle defined by the start and end of selected text."""
@@ -134,7 +134,7 @@ class RectangleCommandsClass:
             p.v.b = w.getAllText()
             w.setSelectionRange(i, j, insert=j)
 
-    # @+node:ekr.20150514063305.457: *4* RectangleCommandsClass.killRectangle (converted)
+    # @+node:ekr.20150514063305.457: *4* RectangleCommandsClass.killRectangle
     @cmd('rectangle-kill')
     def killRectangle(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the rectangle defined by the start and end of selected text."""
@@ -163,7 +163,7 @@ class RectangleCommandsClass:
                 ins = toInt(f"{r}.{r2}")
                 w.setSelectionRange(ins, ins, insert=ins)
 
-    # @+node:ekr.20150514063305.458: *4* RectangleCommandsClass.openRectangle (converted)
+    # @+node:ekr.20150514063305.458: *4* RectangleCommandsClass.openRectangle
     @cmd('rectangle-open')
     def openRectangle(self, event: LeoKeyEvent | None = None) -> None:
         """
@@ -192,7 +192,7 @@ class RectangleCommandsClass:
             p.v.b = w.getAllText()
             w.setSelectionRange(i, j, insert=j)
 
-    # @+node:ekr.20150514063305.459: *4* RectangleCommandsClass.stringRectangle (converted)
+    # @+node:ekr.20150514063305.459: *4* RectangleCommandsClass.stringRectangle
     @cmd('rectangle-string')
     def stringRectangle(self, event: LeoKeyEvent | None = None) -> None:
         """

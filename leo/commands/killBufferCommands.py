@@ -65,7 +65,7 @@ class KillBufferCommandsClass:
             g.app.globalKillBuffer = [z for z in g.app.globalKillBuffer if z != text]
             g.app.globalKillBuffer.insert(0, text)
 
-    # @+node:ekr.20150514063305.412: *3* backwardKillSentence (converted)
+    # @+node:ekr.20150514063305.412: *3* backwardKillSentence
     @cmd('backward-kill-sentence')
     def backwardKillSentence(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the previous sentence."""
@@ -82,12 +82,12 @@ class KillBufferCommandsClass:
             return
         with u.change_node(p, 'backward-kill-sentence'):
             i2 = s.rfind('.', 0, i) + 1
-            self._kill_helper(i2, i + 1, w)
+            self.killHelper(event, i2, i + 1, w)
             w.setInsertPoint(i2)
             c.k.resetLabel()
             p.v.b = w.getAllText()
 
-    # @+node:ekr.20150514063305.413: *3* backwardKillWord & killWord (converted)
+    # @+node:ekr.20150514063305.413: *3* backwardKillWord & killWord
     @cmd('backward-kill-word')
     def backwardKillWord(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the previous word."""
@@ -181,7 +181,7 @@ class KillBufferCommandsClass:
     def iterateKillBuffer(self) -> KillBufferIterClass:
         return self.KillBufferIterClass(self.c)
 
-    # @+node:ekr.20150514063305.419: *3* ec.killHelper (converted)
+    # @+node:ekr.20150514063305.419: *3* ec.killHelper
     def killHelper(self, event: LeoKeyEvent | None, frm: int, to: int, w: QTextMixin) -> None:
         """
         A helper method for all kill commands except kill-paragraph commands.
@@ -204,27 +204,7 @@ class KillBufferCommandsClass:
         w.setYScrollPosition(old_y_scroll)  # PR #5020.
         g.app.gui.set_focus(c, w)  # 2607
 
-    # @+node:ekr.20261028165709.1: *3* ec._kill_helper (new)
-    def _kill_helper(self, frm: int, to: int, w: QTextMixin) -> None:
-        """
-        A helper method for all kill commands except kill-paragraph commands.
-
-        This method does not change c.p.b.
-        """
-        c = self.c
-        # Extend (frm, to) if it spans a line.
-        i, j = w.getSelectionRange()
-        s = w.get(i, j)
-        if s.find('\n') > -1:
-            frm, to = i, j
-        s = w.get(frm, to)
-        self.addToKillBuffer(s)
-        g.app.gui.replaceClipboardWith(s)
-        w.delete(frm, to)
-        w.setInsertPoint(frm)
-        g.app.gui.set_focus(c, w)  # 2607
-
-    # @+node:ekr.20220121073752.1: *3* ec.killParagraphHelper (converted)
+    # @+node:ekr.20220121073752.1: *3* ec.killParagraphHelper
     def killParagraphHelper(self, frm: int, to: int) -> None:
         """A helper method for kill-paragraph commands."""
         c = self.c
@@ -239,7 +219,7 @@ class KillBufferCommandsClass:
         p.v.b = w.getAllText()
         w.setInsertPoint(frm)
 
-    # @+node:ekr.20150514063305.420: *3* ec.killToEndOfLine (converted)
+    # @+node:ekr.20150514063305.420: *3* ec.killToEndOfLine
     @cmd('kill-to-end-of-line')
     def killToEndOfLine(self, event: LeoKeyEvent | None = None) -> None:
         """Kill from the cursor to end of the line."""
@@ -270,7 +250,7 @@ class KillBufferCommandsClass:
                     p.v.b = w.getAllText()
                 c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.421: *3* ec.killLine (converted)
+    # @+node:ekr.20150514063305.421: *3* ec.killLine
     @cmd('kill-line')
     def killLine(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the line containing the cursor."""
@@ -297,7 +277,7 @@ class KillBufferCommandsClass:
             p.v.b = w.getAllText()
             c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.422: *3* killRegion & killRegionSave (converted)
+    # @+node:ekr.20150514063305.422: *3* killRegion & killRegionSave
     @cmd('kill-region')
     def killRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the text selection."""
@@ -332,7 +312,7 @@ class KillBufferCommandsClass:
         self.addToKillBuffer(s)
         g.app.gui.replaceClipboardWith(s)
 
-    # @+node:ekr.20150514063305.423: *3* ec.killSentence (converted)
+    # @+node:ekr.20150514063305.423: *3* ec.killSentence
     @cmd('kill-sentence')
     def killSentence(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the sentence containing the cursor."""
@@ -353,7 +333,7 @@ class KillBufferCommandsClass:
             p.v.b = w.getAllText()
             c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.424: *3* killWs (converted)
+    # @+node:ekr.20150514063305.424: *3* killWs
     @cmd('kill-ws')
     def killWs(self, event: LeoKeyEvent | None = None) -> None:
         """Kill whitespace."""
@@ -381,7 +361,7 @@ class KillBufferCommandsClass:
                     p.v.b = w.getAllText()
                 w.setInsertPoint(i)
 
-    # @+node:ekr.20150514063305.425: *3* yank & yankPop (converted)
+    # @+node:ekr.20150514063305.425: *3* yank & yankPop
     @cmd('yank')
     def yank(self, event: LeoKeyEvent | None = None) -> None:
         """Insert the next entry of the kill ring."""
@@ -433,7 +413,7 @@ class KillBufferCommandsClass:
                 p.v.b = w.getAllText()
             c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.427: *3* zapToCharacter (converted)
+    # @+node:ekr.20150514063305.427: *3* zapToCharacter
     @cmd('zap-to-character')
     def zapToCharacter(self, event: LeoKeyEvent | None = None) -> None:
         """Kill characters from the insertion point to a given character."""

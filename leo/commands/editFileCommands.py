@@ -561,7 +561,7 @@ class EditFileCommandsClass:
         """
         GitDiffController(c=self.c).clone_diff_pr()
 
-    # @+node:ekr.20170806094318.7: *3* efc.insertFile (converted)
+    # @+node:ekr.20170806094318.7: *3* efc.insertFile
     @cmd('file-insert')
     def insertFile(self, event: LeoKeyEvent | None = None) -> None:
         """

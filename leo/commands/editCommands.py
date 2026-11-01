@@ -564,7 +564,7 @@ class EditCommandsClass:
 
         return path
 
-    # @+node:ekr.20150514063305.347: *3* ec.tabify & untabify (converted)
+    # @+node:ekr.20150514063305.347: *3* ec.tabify & untabify
     @cmd('tabify')
     def tabify(self, event: LeoKeyEvent | None = None) -> None:
         """Convert 4 spaces to tabs in the selected text."""
@@ -615,7 +615,7 @@ class EditCommandsClass:
         """Convert all characters of the word at the cursor to UPPER CASE."""
         self.capitalizeHelper(event, 'up', 'upcase-word')
 
-    # @+node:ekr.20150514063305.194: *4* ec.capitalizeHelper (converted)
+    # @+node:ekr.20150514063305.194: *4* ec.capitalizeHelper
     def capitalizeHelper(self, event: LeoKeyEvent | None, which: str, undoType: str) -> None:
         c = self.c
         p = c.p
@@ -802,7 +802,7 @@ class EditCommandsClass:
         row, col = g.convertPythonIndexToRowCol(s, ins)
         self.ccolumn = col
 
-    # @+node:ekr.20150514063305.209: *4* ec.indentToCommentColumn (converted)
+    # @+node:ekr.20150514063305.209: *4* ec.indentToCommentColumn
     @cmd('indent-to-comment-column')
     def indentToCommentColumn(self, event: LeoKeyEvent | None = None) -> None:
         """
@@ -849,7 +849,7 @@ class EditCommandsClass:
     #
     # after an center-region command via Alt-x.
     # @@language python
-    # @+node:ekr.20150514063305.215: *4* ec.centerLine (converted)
+    # @+node:ekr.20150514063305.215: *4* ec.centerLine
     @cmd('center-line')
     def centerLine(self, event: LeoKeyEvent | None = None) -> None:
         """Centers line within current fill column"""
@@ -904,7 +904,7 @@ class EditCommandsClass:
             k.resetLabel()  # pragma: no cover (defensive)
         c.widgetWantsFocus(w)
 
-    # @+node:ekr.20150514063305.217: *4* ec.centerRegion(converted)
+    # @+node:ekr.20150514063305.217: *4* ec.centerRegion
     @cmd('center-region')
     def centerRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Centers the selected text within the fill column"""
@@ -1454,7 +1454,7 @@ class EditCommandsClass:
             self._setIconUA(p, aList)
 
     # @+node:ekr.20150514063305.242: *3* ec: indent
-    # @+node:ekr.20150514063305.243: *4* ec.deleteIndentation (converted)
+    # @+node:ekr.20150514063305.243: *4* ec.deleteIndentation
     @cmd('delete-indentation')
     def deleteIndentation(self, event: LeoKeyEvent | None = None) -> None:
         """Delete indentation in the presently line."""
@@ -1478,7 +1478,7 @@ class EditCommandsClass:
                 w.setSelectionRange(ins, ins, insert=ins)
                 c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.244: *4* ec.indentRelative (converted)
+    # @+node:ekr.20150514063305.244: *4* ec.indentRelative
     @cmd('indent-relative')
     def indentRelative(self, event: LeoKeyEvent | None = None) -> None:
         """
@@ -1643,7 +1643,7 @@ class EditCommandsClass:
                 p.v.b = w.getAllText()
                 w.setSelectionRange(0, len(s))
 
-    # @+node:ekr.20150514063305.253: *4* ec.backwardDeleteCharacter (converted)
+    # @+node:ekr.20150514063305.253: *4* ec.backwardDeleteCharacter
     @cmd('backward-delete-char')
     def backwardDeleteCharacter(self, event: LeoKeyEvent | None = None) -> None:
         """Delete the character to the left of the cursor."""
@@ -1736,7 +1736,7 @@ class EditCommandsClass:
                         n += 1
             g.es(f"cleaned {n} node{g.plural(n)}")
 
-    # @+node:ekr.20150514063305.256: *4* ec.cleanLines (converted)
+    # @+node:ekr.20150514063305.256: *4* ec.cleanLines
     @cmd('clean-lines')
     def cleanLines(self, event: LeoKeyEvent | None = None) -> None:
         """
@@ -1766,7 +1766,7 @@ class EditCommandsClass:
                 w.setInsertPoint(0)
                 c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.257: *4* ec.clearSelectedText (converted)
+    # @+node:ekr.20150514063305.257: *4* ec.clearSelectedText
     @cmd('clear-selected-text')
     def clearSelectedText(self, event: LeoKeyEvent | None = None) -> None:
         """Delete the selected text."""
@@ -1785,7 +1785,7 @@ class EditCommandsClass:
             w.setInsertPoint(i)
             c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.258: *4* ec.delete-word & backward-delete-word (converted)
+    # @+node:ekr.20150514063305.258: *4* ec.delete-word & backward-delete-word
     @cmd('delete-word')
     def deleteWord(self, event: LeoKeyEvent | None = None) -> None:
         """Delete the word at the cursor."""
@@ -1830,7 +1830,7 @@ class EditCommandsClass:
             p.v.b = w.getAllText()
             c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.259: *4* ec.deleteNextChar (converted)
+    # @+node:ekr.20150514063305.259: *4* ec.deleteNextChar
     @cmd('delete-char')
     def deleteNextChar(self, event: LeoKeyEvent | None = None) -> None:
         """Delete the character to the right of the cursor."""
@@ -1894,7 +1894,7 @@ class EditCommandsClass:
                 w.setAllText(s)
                 w.setInsertPoint(w1)
 
-    # @+node:ekr.20150514063305.261: *4* ec.insertHardTab (converted)
+    # @+node:ekr.20150514063305.261: *4* ec.insertHardTab
     @cmd('insert-hard-tab')
     def insertHardTab(self, event: LeoKeyEvent | None = None) -> None:
         """Insert one hard tab."""
@@ -1911,7 +1911,7 @@ class EditCommandsClass:
             w.setSelectionRange(ins, ins, insert=ins)
             p.v.b = w.getAllText()
 
-    # @+node:ekr.20150514063305.262: *4* ec.insertNewLine (insert-newline) (converted)
+    # @+node:ekr.20150514063305.262: *4* ec.insertNewLine (insert-newline)
     @cmd('insert-newline')
     def insertNewLine(self, event: LeoKeyEvent | None = None) -> None:
         """Insert a newline at the cursor."""
@@ -1936,7 +1936,7 @@ class EditCommandsClass:
             k.setInputState('insert')
             k.showStateAndMode()
 
-    # @+node:ekr.20150514063305.263: *4* ec.insertNewLineAndTab (converted)
+    # @+node:ekr.20150514063305.263: *4* ec.insertNewLineAndTab
     @cmd('newline-and-indent')
     def insertNewLineAndTab(self, event: LeoKeyEvent | None = None) -> None:
         """Insert a newline and tab at the cursor."""
@@ -1955,7 +1955,7 @@ class EditCommandsClass:
             k.setInputState('insert')
             k.showStateAndMode()
 
-    # @+node:ekr.20150514063305.264: *4* ec.insertParentheses (converted)
+    # @+node:ekr.20150514063305.264: *4* ec.insertParentheses
     @cmd('insert-parentheses')
     def insertParentheses(self, event: LeoKeyEvent | None = None) -> None:
         """Insert () at the cursor."""
@@ -1971,7 +1971,7 @@ class EditCommandsClass:
             w.setInsertPoint(i + 1)
             p.v.b = w.getAllText()
 
-    # @+node:ekr.20150514063305.265: *4* ec.insertSoftTab (converted)
+    # @+node:ekr.20150514063305.265: *4* ec.insertSoftTab
     @cmd('insert-soft-tab')
     def insertSoftTab(self, event: LeoKeyEvent | None = None) -> None:
         """Insert spaces equivalent to one tab."""
@@ -2407,7 +2407,7 @@ class EditCommandsClass:
         w.setSelectionRange(ins, ins, insert=ins)
 
     # @+node:ekr.20150514063305.280: *3* ec: lines
-    # @+node:ekr.20200619082429.1: *4* ec.moveLinesToNextNode (converted)
+    # @+node:ekr.20200619082429.1: *4* ec.moveLinesToNextNode
     @cmd('move-lines-to-next-node')
     def moveLineToNextNode(self, event: LeoKeyEvent | None = None) -> None:
         """Move one or *trailing* lines to the start of the next node."""
@@ -2432,7 +2432,7 @@ class EditCommandsClass:
             p.v.b = lines + '\n' + p.v.b
             c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.284: *4* ec.splitLine (converted)
+    # @+node:ekr.20150514063305.284: *4* ec.splitLine
     @cmd('split-line')
     def splitLine(self, event: LeoKeyEvent | None = None) -> None:
         """Split a line at the cursor position."""
@@ -2869,7 +2869,7 @@ class EditCommandsClass:
             else:
                 g.trace('can not happen: bad spot', spot)  # pragma: no cover (defensive)
 
-    # @+node:ekr.20150514063305.296: *4* ec.characters & helper (converted)
+    # @+node:ekr.20150514063305.296: *4* ec.characters & helper
     @cmd('back-char')
     def backCharacter(self, event: LeoKeyEvent | None = None) -> None:
         """Move the cursor back one character, extending the selection if in extend mode."""
@@ -2890,7 +2890,7 @@ class EditCommandsClass:
         """Extend the selection by moving the cursor forward one character."""
         self.moveToCharacterHelper(event, 'right', extend=True)
 
-    # @+node:ekr.20150514063305.297: *5* ec.moveToCharacterHelper (converted)
+    # @+node:ekr.20150514063305.297: *5* ec.moveToCharacterHelper
     def moveToCharacterHelper(self, event: LeoKeyEvent | None, spot: str, extend: bool) -> None:
         c = self.c
         # This helper *must* work in headlines.
@@ -3493,7 +3493,7 @@ class EditCommandsClass:
         self.moveWithinLineHelper(event, 'start-line', extend=True)
 
     # @+node:ekr.20150514063305.319: *3* ec: paragraph
-    # @+node:ekr.20150514063305.320: *4* ec.backwardKillParagraph (converted)
+    # @+node:ekr.20150514063305.320: *4* ec.backwardKillParagraph
     @cmd('backward-kill-paragraph')
     def backwardKillParagraph(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the previous paragraph."""
@@ -3547,7 +3547,7 @@ class EditCommandsClass:
         w.setSelectionRange(i, i, insert=i)
         self.c.reformatParagraph(event)
 
-    # @+node:ekr.20150514063305.324: *4* ec.killParagraph (converted)
+    # @+node:ekr.20150514063305.324: *4* ec.killParagraph
     @cmd('kill-paragraph')
     def killParagraph(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the present paragraph."""
@@ -3613,7 +3613,7 @@ class EditCommandsClass:
         w.setSelectionRange(i1, j, insert=j)
 
     # @+node:ekr.20150514063305.327: *3* ec: region
-    # @+node:ekr.20150514063305.328: *4* ec.tabIndentRegion (converted)
+    # @+node:ekr.20150514063305.328: *4* ec.tabIndentRegion
     @cmd('indent-rigidly')
     def tabIndentRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Insert a hard tab at the start of each line of the selected text."""
@@ -3661,7 +3661,7 @@ class EditCommandsClass:
                 chars += 1
         k.setLabelGrey(f"Region has {lines} lines, {chars} character{g.plural(chars)}")
 
-    # @+node:ekr.20150514063305.330: *4* ec.moveLinesDown (converted)
+    # @+node:ekr.20150514063305.330: *4* ec.moveLinesDown
     @cmd('move-lines-down')
     def moveLinesDown(self, event: LeoKeyEvent | None = None) -> None:
         """
@@ -3704,7 +3704,7 @@ class EditCommandsClass:
             p.v.b = w.getAllText()
             c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.331: *4* ec.moveLinesUp (converted)
+    # @+node:ekr.20150514063305.331: *4* ec.moveLinesUp
     @cmd('move-lines-up')
     def moveLinesUp(self, event: LeoKeyEvent | None = None) -> None:
         """
@@ -3744,7 +3744,7 @@ class EditCommandsClass:
             p.v.b = w.getAllText()
             c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.332: *4* ec.reverseRegion (converted)
+    # @+node:ekr.20150514063305.332: *4* ec.reverseRegion
     @cmd('reverse-region')
     def reverseRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Reverse the order of lines in the selected text."""
@@ -3771,7 +3771,7 @@ class EditCommandsClass:
             p.v.b = w.getAllText()
             c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.333: *4* ec.up/downCaseRegion & helper (converted)
+    # @+node:ekr.20150514063305.333: *4* ec.up/downCaseRegion & helper
     @cmd('downcase-region')
     def downCaseRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Convert all characters in the selected text to lower case."""
@@ -3923,7 +3923,7 @@ class EditCommandsClass:
             tree.canvas.xview_scroll(-1, "unit")
 
     # @+node:ekr.20150514063305.339: *3* ec: sort
-    # @+node:ekr.20150514063305.341: *4* ec.sortColumns (converted)
+    # @+node:ekr.20150514063305.341: *4* ec.sortColumns
     @cmd('sort-columns')
     def sortColumns(self, event: LeoKeyEvent | None = None) -> None:
         """
@@ -3969,7 +3969,7 @@ class EditCommandsClass:
             p.v.b = w.getAllText()
             c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.340: *4* ec.sortLines commands (converted)
+    # @+node:ekr.20150514063305.340: *4* ec.sortLines commands
     @cmd('reverse-sort-lines-ignoring-case')
     def reverseSortLinesIgnoringCase(self, event: LeoKeyEvent | None = None) -> None:
         """Sort the selected lines in reverse order, ignoring case."""
@@ -4026,7 +4026,7 @@ class EditCommandsClass:
             c.k.resetLabel()
 
     # @+node:ekr.20150514063305.343: *3* ec: swap/transpose
-    # @+node:ekr.20150514063305.344: *4* ec.transposeLines (converted)
+    # @+node:ekr.20150514063305.344: *4* ec.transposeLines
     @cmd('transpose-lines')
     def transposeLines(self, event: LeoKeyEvent | None = None) -> None:
         """Transpose the line containing the cursor with the preceding line."""
@@ -4058,7 +4058,7 @@ class EditCommandsClass:
             p.v.b = w.getAllText()
             c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.345: *4* ec.transposeWords (converted)
+    # @+node:ekr.20150514063305.345: *4* ec.transposeWords
     @cmd('transpose-words')
     def transposeWords(self, event: LeoKeyEvent | None = None) -> None:
         """
@@ -4093,7 +4093,7 @@ class EditCommandsClass:
                 p.v.b = w.getAllText()
                 c.k.resetLabel()
 
-    # @+node:ekr.20150514063305.346: *4* ec.swapCharacters & transeposeCharacters (converted)
+    # @+node:ekr.20150514063305.346: *4* ec.swapCharacters & transeposeCharacters
     @cmd('transpose-chars')
     def transposeCharacters(self, event: LeoKeyEvent | None = None) -> None:
         """Swap the characters at the cursor."""
