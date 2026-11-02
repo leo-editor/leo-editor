@@ -230,9 +230,12 @@ class TypingBead(UndoBead):
     """An incremental text patch, independent of the legacy Undoer ivars."""
 
     # @+others
-    # @+node:ekr.20261014100558.1: *3* TypingBead.__init__
+    # @+node:ekr.20261014100558.1: *3* TypingBead.__init__ (trace)
     def __init__(self, undoer, p, old_text, new_text, old_sel, new_sel, new_ins, scroll):
+        """Init a new Typing bead when a new bead is needed."""
         super().__init__(undoer)
+        if not g.unitTesting:  ###
+            g.trace(p.h, g.callers(2))  ###
         self.command_name = self.undoType = 'Typing'
         self.p = p.copy()
         self.old_sel = old_sel
@@ -303,7 +306,7 @@ class TypingBead(UndoBead):
     def redo(self):
         self.apply(self.new_lines, self.new_sel, self.new_ins)
 
-    # @+node:ekr.20261014100625.7: *3* TypingBead.get
+    # @+node:ekr.20261014100625.7: *3* TypingBead.get (to be deleted)
     def get(self, key, default=None):
         # Legacy doTyping must not try to extend a new-style typing bead.
         if key == 'kind':
@@ -906,7 +909,7 @@ class Undoer:
         for v in c.all_unique_nodes():
             ni.check_gnx(c, v.fileIndex, v)
 
-    # @+node:vivainio.202610110002.2: *5* u.type_text (legacy: to be deleted)
+    # @+node:vivainio.202610110002.2: *5* u.type_text (keep, trace)
     def type_text(
         self,
         p: Position,
@@ -918,7 +921,12 @@ class Undoer:
         newSel: tuple[int, int] | None = None,
         oldYview: int | None = None,
     ) -> None:
-        """Record actual typing, retaining the configured char/line/word/node granularity."""
+        """
+        Handle all undo tasks related to typing in the body pane. Called by:
+        - ec.selfInsertCommand.
+        - LeoQListWidget.select_callback.
+        - QTextMixin.onTextChanged.
+        """
         if self.undoing or self.redoing or oldText == newText:
             return
         u = self
@@ -928,46 +936,19 @@ class Undoer:
         newInsert = newInsert if newInsert is not None else w.getInsertPoint()
         scroll = oldYview if oldYview is not None else w.getYScrollPosition()
         bead = u.peekBead(u.bead)
+
+        # @+others  # define should_merge
+        # @-others
+
         # A save, intervening command, selection change, or undo ends coalescing.
-        merge = (
-            isinstance(bead, TypingBead)
-            and u.bead == len(u.beads) - 1
-            and bead.p.v == p.v
-            and c.changed
-            and u.granularity != 'char'
-        )
-        if merge and u.granularity in ('line', 'word'):
-            leading, trailing, _, _ = TypingBead.split_patch(oldText, newText)
-            merge = (leading, trailing) == (bead.leading, bead.trailing)
-            if merge and u.granularity == 'word':
-                merge = oldSel is not None and newSel is not None and bead.new_sel is not None
-                if merge:
-                    old_start, old_end = oldSel
-                    new_start, new_end = newSel
-                    merge = old_start == old_end and new_start == new_end
-                    if merge:
-                        old_row, old_col = g.convertPythonIndexToRowCol(oldText, old_start)
-                        new_row, new_col = g.convertPythonIndexToRowCol(newText, new_start)
-                        prev_row, prev_col = g.convertPythonIndexToRowCol(oldText, bead.new_sel[0])
-                        merge = old_row == new_row and abs(old_col - new_col) == 1
-                        if merge and old_col and new_col:
-                            merge = not u.recognizeStartOfTypingWord(
-                                g.splitLines(oldText),
-                                old_row,
-                                old_col,
-                                oldText[old_start - 1],
-                                g.splitLines(newText),
-                                new_row,
-                                new_col,
-                                newText[new_start - 1],
-                                prev_row,
-                                prev_col,
-                            )
+        can_merge = u._can_merge(oldSel, oldText, newSel, newText)
+        if not g.unitTesting:  ###
+            g.trace(f"can_merge: {int(can_merge)} {p.h=}")  ###
         if u.undoBead is not None:
             # Typing within an explicit command belongs to that command's bead.
             u.set_body(p, newText, old_body=oldText)
             return
-        if merge:
+        if can_merge:
             original = bead.replace_middle(oldText, bead.old_lines)
             bead.update_patch(original, newText)
             bead.new_sel, bead.new_ins = newSel, newInsert  # type:ignore
@@ -1716,6 +1697,70 @@ class Undoer:
         u.p = None  # type:ignore
         for ivar in u.optionalIvars:
             setattr(u, ivar, None)
+
+    # @+node:ekr.20261102022551.1: *4* u._can_merge (new)
+    def _can_merge(
+        self,
+        oldSel: tuple[int, int] | None,
+        oldText: str,
+        newSel: tuple[int, int] | None,
+        newText: str,
+    ) -> bool:
+        """
+        A helper for u.type_text and *maybe* for
+        < < set newBead if the change does not continue a word > >
+        Return True if we should merge typing into the previous node.
+        """
+        u = self
+        bead = u.peekBead(u.bead)
+        c = u.c
+        p = c.p
+        if (
+            u.granularity == 'char'
+            or not isinstance(bead, TypingBead)
+            or u.bead != len(u.beads) - 1
+            or bead.p.v != p.v
+            or not c.changed
+        ):
+            return False
+        leading, trailing, _, _ = TypingBead.split_patch(oldText, newText)
+        if (leading, trailing) != (bead.leading, bead.trailing):
+            return False
+        if u.granularity == 'line':
+            return True
+        # The hard case: u.granularity == 'word'
+        if oldSel is None or newSel is None or bead.new_sel is None:
+            return False
+        old_start, old_end = oldSel
+        new_start, new_end = newSel
+        if old_start != old_end or new_start != new_end:
+            return False
+        old_row, old_col = g.convertPythonIndexToRowCol(oldText, old_start)
+        new_row, new_col = g.convertPythonIndexToRowCol(newText, new_start)
+        prev_row, prev_col = g.convertPythonIndexToRowCol(oldText, bead.new_sel[0])
+        # merge = old_row == new_row and abs(old_col - new_col) == 1
+        # if not merge:
+        if (
+            old_row != new_row
+            or abs(old_col - new_col) != 1
+            or old_col == 0
+            or new_col == 0
+        ):  # fmt: skip
+            return False
+        # if old_col == 0 or new_col == 0:
+        #     return False
+        return not u.recognizeStartOfTypingWord(
+            g.splitLines(oldText),
+            old_row,
+            old_col,
+            oldText[old_start - 1],
+            g.splitLines(newText),
+            new_row,
+            new_col,
+            newText[new_start - 1],
+            prev_row,
+            prev_col,
+        )
 
     # @+node:ekr.20060127052111.1: *4* u.cutStack
     def cutStack(self) -> None:
