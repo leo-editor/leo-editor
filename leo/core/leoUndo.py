@@ -380,15 +380,10 @@ class Undoer:
 
         # Dispatch.
         try:
-            # WRONG: Leo *must* support both old and new beads "forever"!
-            ### assert isinstance(obj, UndoBead), g.callers()
             if isinstance(obj, UndoBead):
                 obj.redo()
-            elif u.redoHelper:
-                g.print_unique_message(f"\nOops: using g.Bunch: {g.callers()=}")
-                u.redoHelper()
             else:
-                g.trace(f"no redo helper for {u.kind} {u.undoType}")
+                g.es_print_unique_message(f"no redo helper for {u.kind} {u.undoType}")
             c.checkOutline()
         finally:
             u.redoing = False
@@ -418,17 +413,10 @@ class Undoer:
 
         # Dispatch.
         try:
-            ### assert isinstance(obj, UndoBead), g.callers()
-            # WRONG: Leo *must* support both old and new beads "forever"!
             if isinstance(obj, UndoBead):
                 obj.undo()
-            elif u.undoHelper:
-                g.print_unique_message(f"\nOops: using g.Bunch: {g.callers()=}")
-                if u.per_node_undo:
-                    u.setIvarsFromVnode(c.p)
-                u.undoHelper()
             else:
-                g.trace(f"no undo helper for {u.kind} {u.undoType}")
+                g.es_print_unique_message(f"no undo helper for {u.kind} {u.undoType}")
             c.checkOutline()
         finally:
             u.undoing = False
@@ -1707,6 +1695,7 @@ class Undoer:
         """
         u = self
         bead = u.peekBead(u.bead)
+        assert bead is None or isinstance(bead, UndoBead), repr(bead)
         c = u.c
         p = c.p
         if (
