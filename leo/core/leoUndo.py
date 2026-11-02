@@ -1233,21 +1233,14 @@ class Undoer:
             # This work regardless of how many items appear after bead n.
             u.beads = u.beads[-n:]
             u.bead = n - 1
-        if 'undo' in g.app.debug and 'verbose' in g.app.debug:  # pragma: no cover
-            print(f"u.cutStack: {len(u.beads):3}")
 
     # @+node:EKR.20040526150818: *4* u.getBead
     def getBead(self, n: int) -> g.Bunch | UndoBead | None:
         """Set Undoer ivars from the bunch at the top of the undo stack."""
         u = self
         if n < 0 or n >= len(u.beads):
-            return None  # pragma: no cover
-        bunch = u.beads[n]
-        if 'undo' in g.app.debug:  # pragma: no cover
-            print(f" u.getBead: {n:3} of {len(u.beads)}")
-        if isinstance(bunch, g.Bunch):  # Legacy undo code:
-            self.setIvarsFromBunch(bunch)
-        return bunch
+            return None
+        return u.beads[n]
 
     # @+node:EKR.20040526150818.1: *4* u.peekBead
     def peekBead(self, n: int) -> g.Bunch | None:
@@ -1285,8 +1278,6 @@ class Undoer:
             u.beads[u.bead :] = [bunch]
             # Recalculate the menu labels.
             u.setUndoTypes()
-        if 'undo' in g.app.debug:
-            print(f"u.pushBead: {len(u.beads):3} {bunch.undoType}")
 
     # @+node:ekr.20031218072017.3613: *4* u.redoMenuName, undoMenuName
     def redoMenuName(self, name: str) -> str:
