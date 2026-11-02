@@ -362,15 +362,42 @@ class Undoer:
         self.reloadSettings()
 
     # @+node:ekr.20261102104518.1: *3* u: Entries
-    # @+node:ekr.20191213085126.1: *4* u.reloadSettings
-    def reloadSettings(self) -> None:
-        """Undoer.reloadSettings."""
-        c = self.c
-        self.granularity = c.config.getString('undo-granularity')
-        if self.granularity:
-            self.granularity = self.granularity.lower()
-        if self.granularity not in ('node', 'line', 'word', 'char'):
-            self.granularity = 'line'
+    # @+node:ekr.20031218072017.3610: *4* u.canRedo & canUndo
+    # Translation does not affect these routines.
+
+    def canRedo(self) -> bool:
+        u = self
+        return u.redoMenuLabel != "Can't Redo"
+
+    def canUndo(self) -> bool:
+        u = self
+        return u.undoMenuLabel != "Can't Undo"
+
+    # @+node:ekr.20230714012821.1: *4* u.clearAndWarn
+    def clearAndWarn(self, command_name: str) -> None:
+        """
+        Clear all undo state. However, the warning is annoying.
+        """
+        u = self
+        u.clearUndoState()
+        # g.es_print_unique_message(f"{command_name} is not undoable")
+
+    # @+node:ekr.20031218072017.3609: *4* u.clearUndoState
+    def clearUndoState(self) -> None:
+        """Clears the entire Undo state."""
+        u = self
+        u.setRedoType("Can't Redo")
+        u.setUndoType("Can't Undo")
+        u.beads = []
+        u.bead = -1
+
+    # @+node:ekr.20031218072017.3611: *4* u.enableMenuItems (to be deleted)
+    def enableMenuItems(self) -> None:
+        u = self
+        frame = u.c.frame
+        if menu := frame.menu.getMenu("Edit"):
+            frame.menu.enableMenu(menu, u.redoMenuLabel, u.canRedo())
+            frame.menu.enableMenu(menu, u.undoMenuLabel, u.canUndo())
 
     # @+node:ekr.20031218072017.2030: *4* u.redo
     @cmd('redo')
@@ -404,78 +431,17 @@ class Undoer:
         u.bead += 1
         u.setUndoTypes()
 
-    # @+node:ekr.20031218072017.2039: *4* u.undo
-    @cmd('undo')
-    def undo(self, event: LeoKeyEvent | None = None) -> None:
-        """Undo the operation described by the undo parameters."""
-        u = self
-        c = u.c
-        if not c.p:
-            g.trace('no current position')
-            return
-        # End editing *before* getting state.
-        c.endEditing()
-        if not u.canUndo():
-            return
-        obj = u.getBead(u.bead)
-        if not obj:
-            return
+    # @+node:ekr.20191213085126.1: *4* u.reloadSettings
+    def reloadSettings(self) -> None:
+        """Undoer.reloadSettings."""
+        c = self.c
+        self.granularity = c.config.getString('undo-granularity')
+        if self.granularity:
+            self.granularity = self.granularity.lower()
+        if self.granularity not in ('node', 'line', 'word', 'char'):
+            self.granularity = 'line'
 
-        # Init status.
-        u.undoing = True
-        u.groupCount = 0
-
-        # Dispatch.
-        try:
-            if isinstance(obj, UndoBead):
-                obj.undo()
-            else:
-                g.es_print_unique_message(f"no undo helper for {u.kind} {u.undoType}")
-            c.checkOutline()
-        finally:
-            u.undoing = False
-        u.bead -= 1
-        u.setUndoTypes()
-
-    # @+node:ekr.20261018092627.1: *4* u: Legacy entries
-    # @+node:ekr.20031218072017.3610: *5* u.canRedo & canUndo
-    # Translation does not affect these routines.
-
-    def canRedo(self) -> bool:
-        u = self
-        return u.redoMenuLabel != "Can't Redo"
-
-    def canUndo(self) -> bool:
-        u = self
-        return u.undoMenuLabel != "Can't Undo"
-
-    # @+node:ekr.20230714012821.1: *5* u.clearAndWarn
-    def clearAndWarn(self, command_name: str) -> None:
-        """
-        Clear all undo state. However, the warning is annoying.
-        """
-        u = self
-        u.clearUndoState()
-        # g.es_print_unique_message(f"{command_name} is not undoable")
-
-    # @+node:ekr.20031218072017.3609: *5* u.clearUndoState
-    def clearUndoState(self) -> None:
-        """Clears the entire Undo state."""
-        u = self
-        u.setRedoType("Can't Redo")
-        u.setUndoType("Can't Undo")
-        u.beads = []
-        u.bead = -1
-
-    # @+node:ekr.20031218072017.3611: *5* u.enableMenuItems
-    def enableMenuItems(self) -> None:
-        u = self
-        frame = u.c.frame
-        if menu := frame.menu.getMenu("Edit"):
-            frame.menu.enableMenu(menu, u.redoMenuLabel, u.canRedo())
-            frame.menu.enableMenu(menu, u.undoMenuLabel, u.canUndo())
-
-    # @+node:vivainio.202610110002.2: *5* u.type_text and helper
+    # @+node:vivainio.202610110002.2: *4* u.type_text and helper
     def type_text(
         self,
         p: Position,
@@ -517,54 +483,6 @@ class Undoer:
             u.pushBead(bead)
         p.v.b = newText  # Do **not** use p.b = newText!!!
         u._update_after_typing(p, w)
-
-    # @+node:ekr.20201127035748.1: *6* u._update_after_typing
-    def _update_after_typing(self, p: Position, w: QTextMixin) -> None:
-        """
-        Perform all update tasks after changing body text.
-
-        This is ugly, ad-hoc code, but should be done uniformly.
-        """
-        c = self.c
-        if g.isTextWrapper(w):
-            # An important, ever-present unit test.
-            if p == c.p:
-                all = w.getAllText()
-                if g.unitTesting:
-                    assert p.b == all, (w, g.callers())
-                elif p.b != all:
-                    g.trace(
-                        f"\np.b != w.getAllText() p: {p.h} \n"
-                        f"w: {w!r} \n{g.callers()}\n"
-                    )  # fmt: skip
-            p.v.insertSpot = ins = w.getInsertPoint()
-            # From u.doTyping.
-            newSel = w.getSelectionRange()
-            if newSel is None:
-                p.v.selectionStart, p.v.selectionLength = (ins, 0)
-            else:
-                i, j = newSel
-                p.v.selectionStart, p.v.selectionLength = (i, j - i)
-        else:
-            if g.unitTesting:
-                assert False, f"Not a text wrapper: {g.callers()}"  # noqa
-            g.trace('Not a text wrapper')
-            p.v.insertSpot = 0
-            p.v.selectionStart, p.v.selectionLength = (0, 0)
-        if not p.isDirty():
-            p.setDirty()
-        if not c.isChanged():
-            c.setChanged()
-
-        # Update icons.
-        val = p.computeIcon()
-        if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
-            p.v.iconVal = val
-        if p == c.p:
-            # Recolor the body.
-            c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
-            c.recolor()
-            w.setFocus()
 
     # @+node:ekr.20201127035748.1: *5* u._update_after_typing
     def _update_after_typing(self, p: Position, w: QTextMixin) -> None:
@@ -614,35 +532,41 @@ class Undoer:
             c.recolor()
             w.setFocus()
 
-    # @+node:ekr.20261005135125.1: *4* u: New entries
-    # @+node:ekr.20261005094529.1: *5* u.__enter__ and __exit__
-    def __enter__(self) -> Self:
-        """Compose nested operations into one bead, published on outermost exit."""
-        if self.undoBeadLevel == 0:
-            self.undoBead = UndoBead(self)
-        self.undoBeadLevel += 1
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback) -> None:
-        b = self.undoBead
-        self.undoBeadLevel -= 1
-        if self.undoBeadLevel:
+    # @+node:ekr.20031218072017.2039: *4* u.undo
+    @cmd('undo')
+    def undo(self, event: LeoKeyEvent | None = None) -> None:
+        """Undo the operation described by the undo parameters."""
+        u = self
+        c = u.c
+        if not c.p:
+            g.trace('no current position')
             return
-        self.undoBead = None
-        if b.undo_functions and not (self.undoing or self.redoing):
-            if not b.command_name:
-                raise AssertionError("Missing call to u.set_command_name")
-            # Record partial mutations even if the command raised an exception.
-            self.pushBead(b)
+        # End editing *before* getting state.
+        c.endEditing()
+        if not u.canUndo():
+            return
+        obj = u.getBead(u.bead)
+        if not obj:
+            return
 
-    # @+node:vivainio.202610110004.1: *5* u._require_bead
-    def _require_bead(self) -> UndoBead:
-        """Reject helper calls outside a context before any mutation occurs."""
-        assert isinstance(self.undoBead, UndoBead), "Undo helper requires 'with c.undoer'"
-        return self.undoBead
+        # Init status.
+        u.undoing = True
+        u.groupCount = 0
 
-    # @+node:ekr.20261015042013.1: *5* u: actions
-    # @+node:ekr.20261006155509.1: *6* u.clone_node
+        # Dispatch.
+        try:
+            if isinstance(obj, UndoBead):
+                obj.undo()
+            else:
+                g.es_print_unique_message(f"no undo helper for {u.kind} {u.undoType}")
+            c.checkOutline()
+        finally:
+            u.undoing = False
+        u.bead -= 1
+        u.setUndoTypes()
+
+    # @+node:ekr.20261015042013.1: *4* u: actions
+    # @+node:ekr.20261006155509.1: *5* u.clone_node
     def clone_node(self, p: Position) -> Position:
         """Clone p, returning and selecting the new occurrence."""
         u = self
@@ -669,7 +593,7 @@ class Undoer:
         b.add_helpers(clone_redoer, clone_undoer)
         return clone
 
-    # @+node:ekr.20261005143707.1: *6* u.delete_node
+    # @+node:ekr.20261005143707.1: *5* u.delete_node
     def delete_node(self, p: Position) -> None:
         """Delete p without scheduling a redraw; retain its original links."""
         u = self
@@ -706,7 +630,7 @@ class Undoer:
         if old_p.v not in u.node_captures:
             b.add_helpers(delete_node_redoer, delete_node_undoer)
 
-    # @+node:ekr.20261006155622.1: *6* u.insert_node
+    # @+node:ekr.20261006155622.1: *5* u.insert_node
     def insert_node(
         self,
         p: Position,
@@ -764,7 +688,7 @@ class Undoer:
         g.doHook('create-node', c=c, p=new_p)
         return new_p
 
-    # @+node:ekr.20261005140833.1: *6* u.set_body (to be deleted)
+    # @+node:ekr.20261005140833.1: *5* u.set_body (to be deleted)
     def set_body(
         self,
         new_p: Position,
@@ -817,7 +741,7 @@ class Undoer:
         if new_p.v not in u.node_captures:
             b.add_helpers(set_body_redoer, set_body_undoer)
 
-    # @+node:ekr.20261005094529.2: *6* u.set_command_name
+    # @+node:ekr.20261005094529.2: *5* u.set_command_name
     def set_command_name(self, command_name: str) -> None:
         u = self
         b = u._require_bead()
@@ -827,8 +751,8 @@ class Undoer:
             b.undoType = command_name
             # Menu labels are updated when the completed bead is pushed.
 
-    # @+node:ekr.20261015042249.1: *5* u: contexts
-    # @+node:ekr.20261009185938.1: *6* u.change_headline
+    # @+node:ekr.20261015042249.1: *4* u: contexts
+    # @+node:ekr.20261009185938.1: *5* u.change_headline
     def change_headline(self, p: Position, new_h: str, *, ch: str = '') -> None:
         """
         Change a headline and preserve directives, dirty bits and editor state.
@@ -872,7 +796,7 @@ class Undoer:
         b.add_helpers(change_headline_redoer, change_headline_undoer)
         b.add_recolor(p, p)
 
-    # @+node:vivainio.202610110001.1: *6* u.change_node
+    # @+node:vivainio.202610110001.1: *5* u.change_node
     @contextmanager
     def change_node(self, p: Position, command_name: str) -> Iterator[Undoer]:
         """
@@ -927,7 +851,7 @@ class Undoer:
 
                     u.undoBead.add_finishers(change_node_ui_redoer, change_node_ui_undoer)
 
-    # @+node:vivainio.202610110001.2: *6* u.change_outline & helpers
+    # @+node:vivainio.202610110001.2: *5* u.change_outline & helpers
     @contextmanager
     def change_outline(self, command_name: str) -> Iterator[Undoer]:
         """
@@ -996,7 +920,7 @@ class Undoer:
 
                     u.undoBead.add_finishers(change_outline_ui_redoer, change_outline_ui_undoer)
 
-    # @+node:ekr.20261015041620.2: *7* u.capture_outline
+    # @+node:ekr.20261015041620.2: *6* u.capture_outline
     def capture_outline(self) -> dict:
         u = self
         c = u.c
@@ -1010,7 +934,7 @@ class Undoer:
             pending.extend(v.children)
         return result
 
-    # @+node:ekr.20261015041620.3: *7* u.restore_outline
+    # @+node:ekr.20261015041620.3: *6* u.restore_outline
     def restore_outline(self, delta: dict) -> None:
         # Restore every link before touching content or propagating dirty bits.
         u = self
@@ -1022,7 +946,7 @@ class Undoer:
         for v, (state, _, _) in delta.items():
             u.restore_node(v, state)
 
-    # @+node:vivainio.202610110001.4: *6* u.change_recent_files
+    # @+node:vivainio.202610110001.4: *5* u.change_recent_files
     @contextmanager
     def change_recent_files(self, command_name: str = 'Clear Recent Files') -> Iterator[Undoer]:
         """
@@ -1052,7 +976,7 @@ class Undoer:
 
                     u.undoBead.add_helpers(change_recent_files_redoer, change_recent_files_undoer)
 
-    # @+node:vivainio.202610110003.1: *6* u.move_node
+    # @+node:vivainio.202610110003.1: *5* u.move_node
     @contextmanager
     def move_node(self, p: Position, command_name: str) -> Iterator[Undoer]:
         """
@@ -1109,21 +1033,21 @@ class Undoer:
 
                     u.undoBead.add_finishers(restore_ui_redoer, restore_ui_undoer)
 
-    # @+node:ekr.20261018041400.1: *6* u:common context helpers
-    # @+node:vivainio.202610110001.3: *7* u.capture_node
+    # @+node:ekr.20261018041400.1: *5* u:common context helpers
+    # @+node:vivainio.202610110001.3: *6* u.capture_node
     def capture_node(self, v: VNode) -> tuple:
         """
         Record everything needed by u.restore_node.
         """
         return v.h, v.b, v.isMarked(), deepcopy(v.u)
 
-    # @+node:ekr.20261015041620.4: *7* u.capture_ui
+    # @+node:ekr.20261015041620.4: *6* u.capture_ui
     def capture_ui(self) -> tuple:
         c = self.c
         w = c.frame.body.wrapper
         return c.p.copy(), w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
 
-    # @+node:ekr.20261015041620.1: *7* u.restore_node
+    # @+node:ekr.20261015041620.1: *6* u.restore_node
     def restore_node(self, v: VNode, state: tuple) -> None:
         """
         Restore everything related to the given VNode:
@@ -1155,7 +1079,7 @@ class Undoer:
             for p in c.vnode2allPositions(v):
                 c.frame.tree.setHeadline(p, head)
 
-    # @+node:ekr.20261015041620.5: *7* u.restore_ui
+    # @+node:ekr.20261015041620.5: *6* u.restore_ui
     def restore_ui(self, state: tuple) -> None:
         c = self.c
         p, sel, ins, scroll = state
@@ -1167,8 +1091,8 @@ class Undoer:
         w.setSelectionRange(*sel, insert=ins)
         w.setYScrollPosition(scroll)
 
-    # @+node:ekr.20261015041852.1: *5* u: redrawers & finishers
-    # @+node:ekr.20261025152930.1: *6* u._redraw
+    # @+node:ekr.20261015041852.1: *4* u: redrawers & finishers
+    # @+node:ekr.20261025152930.1: *5* u._redraw
     def _redraw(self, p: Position) -> None:
         """Redraw now and choose the command's single undo/redo redraw."""
         u = self
@@ -1188,7 +1112,7 @@ class Undoer:
             w.setSelectionRange(*sel, insert=ins)
             w.setYScrollPosition(scroll)
 
-    # @+node:ekr.20261011193020.1: *6* u.redraw_after_head_changed
+    # @+node:ekr.20261011193020.1: *5* u.redraw_after_head_changed
     def redraw_after_head_changed(self) -> None:
         """Refresh headlines now and after undo/redo."""
         u = self
@@ -1203,7 +1127,7 @@ class Undoer:
         c.redraw_after_head_changed()
         u.undoBead.add_redraw_after_head_changed()
 
-    # @+node:ekr.20261011190258.1: *6* u.redraw_and_edit
+    # @+node:ekr.20261011190258.1: *5* u.redraw_and_edit
     def redraw_and_edit(self, new_p: Position) -> None:
         """Redraw and edit now and after undo/redo."""
         u = self
@@ -1219,6 +1143,26 @@ class Undoer:
         u.undoBead.add_redraw_and_edit(new_p, self.undoBead.old_p)
 
     # @+node:ekr.20050416092908.1: *3* u: Internal helpers
+    # @+node:ekr.20261005094529.1: *4* u.__enter__ and __exit__
+    def __enter__(self) -> Self:
+        """Compose nested operations into one bead, published on outermost exit."""
+        if self.undoBeadLevel == 0:
+            self.undoBead = UndoBead(self)
+        self.undoBeadLevel += 1
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback) -> None:
+        b = self.undoBead
+        self.undoBeadLevel -= 1
+        if self.undoBeadLevel:
+            return
+        self.undoBead = None
+        if b.undo_functions and not (self.undoing or self.redoing):
+            if not b.command_name:
+                raise AssertionError("Missing call to u.set_command_name")
+            # Record partial mutations even if the command raised an exception.
+            self.pushBead(b)
+
     # @+node:ekr.20261102022551.1: *4* u._can_merge
     def _can_merge(
         self,
@@ -1276,6 +1220,12 @@ class Undoer:
         new_ch = newText[new_start - 1]
         # We must not be starting a new word.
         return not (not old_ch.isspace() and new_ch.isspace())
+
+    # @+node:vivainio.202610110004.1: *4* u._require_bead
+    def _require_bead(self) -> UndoBead:
+        """Reject helper calls outside a context before any mutation occurs."""
+        assert isinstance(self.undoBead, UndoBead), "Undo helper requires 'with c.undoer'"
+        return self.undoBead
 
     # @+node:ekr.20060127052111.1: *4* u.cutStack
     def cutStack(self) -> None:
