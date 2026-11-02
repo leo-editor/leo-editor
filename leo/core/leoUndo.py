@@ -467,16 +467,6 @@ class Undoer:
         u.beads = []
         u.bead = -1
 
-    # @+node:ekr.20261008093043.1: *5* u.dump_stack (to be deleted)
-    def dump_stack(self, message: str = '') -> None:
-        u = self
-        print()
-        print(f"Dump of undo stack: {g.caller()} {message}")
-        for i, obj in enumerate(u.beads):
-            s = obj.kind if isinstance(obj, g.Bunch) else repr(obj)
-            prefix = '**' if i == u.bead else '  '
-            print(f"{prefix} {i:} {obj.__class__.__name__} {s}")
-
     # @+node:ekr.20031218072017.3611: *5* u.enableMenuItems
     def enableMenuItems(self) -> None:
         u = self
