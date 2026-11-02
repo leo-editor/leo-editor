@@ -234,8 +234,6 @@ class TypingBead(UndoBead):
     def __init__(self, undoer, p, old_text, new_text, old_sel, new_sel, new_ins, scroll):
         """Init a new Typing bead when a new bead is needed."""
         super().__init__(undoer)
-        if not g.unitTesting:  ###
-            g.trace(p.h, g.callers(2))  ###
         self.command_name = self.undoType = 'Typing'
         self.p = p.copy()
         self.old_sel = old_sel
@@ -936,18 +934,14 @@ class Undoer:
         newInsert = newInsert if newInsert is not None else w.getInsertPoint()
         scroll = oldYview if oldYview is not None else w.getYScrollPosition()
         bead = u.peekBead(u.bead)
-
-        # @+others  # define should_merge
-        # @-others
-
-        # A save, intervening command, selection change, or undo ends coalescing.
-        can_merge = u._can_merge(oldSel, oldText, newSel, newText)
-        if not g.unitTesting:  ###
-            g.trace(f"can_merge: {int(can_merge)} {p.h=}")  ###
         if u.undoBead is not None:
             # Typing within an explicit command belongs to that command's bead.
             u.set_body(p, newText, old_body=oldText)
             return
+        # A save, intervening command, selection change, or undo ends coalescing.
+        can_merge = u._can_merge(oldSel, oldText, newSel, newText)
+        if not g.unitTesting and 'leoPy' not in c.shortFileName():  ###
+            g.trace(f"{can_merge=}")
         if can_merge:
             original = bead.replace_middle(oldText, bead.old_lines)
             bead.update_patch(original, newText)
@@ -1738,8 +1732,6 @@ class Undoer:
         old_row, old_col = g.convertPythonIndexToRowCol(oldText, old_start)
         new_row, new_col = g.convertPythonIndexToRowCol(newText, new_start)
         prev_row, prev_col = g.convertPythonIndexToRowCol(oldText, bead.new_sel[0])
-        # merge = old_row == new_row and abs(old_col - new_col) == 1
-        # if not merge:
         if (
             old_row != new_row
             or abs(old_col - new_col) != 1
@@ -1747,8 +1739,6 @@ class Undoer:
             or new_col == 0
         ):  # fmt: skip
             return False
-        # if old_col == 0 or new_col == 0:
-        #     return False
         return not u.recognizeStartOfTypingWord(
             g.splitLines(oldText),
             old_row,
