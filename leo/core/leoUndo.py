@@ -311,6 +311,31 @@ class TypingBead(UndoBead):
 class Undoer:
     """A class that implements unlimited undo and redo."""
 
+    # @+<< class Undoer: __slots__ >>
+    # @+node:ekr.20261102102957.1: *3* << class Undoer: __slots__ >>
+    __slots__ = (
+        'bead',
+        'beads',
+        'c',
+        'capture_level',
+        'granularity',
+        'groupCount',
+        'inHead',
+        'max_undo_stack_size',
+        'node_captures',
+        'p',
+        'realRedoMenuLabel',
+        'realUndoMenuLabel',
+        'redoMenuLabel',
+        'redoing',
+        'undoBead',
+        'undoBeadLevel',
+        'undoMenuLabel',
+        'undoType',
+        'undoing',
+    )
+    # @-<< class Undoer: __slots__ >>
+
     # @+others
     # @+node:ekr.20031218072017.3606: *3* u.__init__
     def __init__(self, c: Cmdr) -> None:
@@ -323,6 +348,7 @@ class Undoer:
         self.bead = -1  # Index of the present bead: -1:len(beads)
         self.inHead = False
         self.capture_level = 0
+        self.groupCount = 0
         self.node_captures = set()
         self.undoBeadLevel = 0
         self.undoBead = None
@@ -332,10 +358,8 @@ class Undoer:
         self.undoMenuLabel = "Can't Undo"
         self.realRedoMenuLabel = "Can't Redo"
         self.realUndoMenuLabel = "Can't Undo"
-        self.undoing = False  # True if executing an Undo command.
-        self.redoing = False  # True if executing a Redo command.
-        # New in 4.2...
-        self.optionalIvars = []
+        self.undoing = False
+        self.redoing = False
         # Update settings.
         self.reloadSettings()
 

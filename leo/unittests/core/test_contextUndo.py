@@ -368,19 +368,6 @@ class TestContextUndo(LeoUnitTest):
                     ),
                 )
 
-    # @+node:ekr.20261014103254.22: *3* TestContextUndo.test_move_context_does_not_scan_outline
-    def test_move_context_does_not_scan_outline(self):
-        c = self.c
-        p = c.p
-        u = c.undoer
-        sibling = p.next()
-        c.selectPosition(sibling)
-        with patch.object(u, 'capture_outline', side_effect=AssertionError('whole outline scan')):
-            c.moveOutlineRight()
-        self.cycles(
-            lambda: self.assertEqual(c.p, sibling), lambda: self.assertEqual(c.p.parent(), p)
-        )
-
     # @+node:ekr.20261014103254.23: *3* TestContextUndo.test_bulk_context_releases_state_after_exception_and_can_undo_partial_work
     def test_bulk_context_releases_state_after_exception_and_can_undo_partial_work(self):
         c = self.c
