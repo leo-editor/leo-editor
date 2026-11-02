@@ -16,7 +16,6 @@ from copy import deepcopy
 import warnings
 from typing import cast, Any, Self, TYPE_CHECKING
 from leo.core import leoGlobals as g
-from leo.core.leoFileCommands import FastRead
 from leo.core.leoNodes import Position, VNode
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -362,7 +361,8 @@ class Undoer:
         # Update settings.
         self.reloadSettings()
 
-    # @+node:ekr.20191213085126.1: *3* u.reloadSettings
+    # @+node:ekr.20261102104518.1: *3* u: Entries
+    # @+node:ekr.20191213085126.1: *4* u.reloadSettings
     def reloadSettings(self) -> None:
         """Undoer.reloadSettings."""
         c = self.c
@@ -372,7 +372,7 @@ class Undoer:
         if self.granularity not in ('node', 'line', 'word', 'char'):
             self.granularity = 'line'
 
-    # @+node:ekr.20031218072017.2030: *3* u.redo
+    # @+node:ekr.20031218072017.2030: *4* u.redo
     @cmd('redo')
     def redo(self, event: LeoKeyEvent | None = None) -> None:
         """Redo the operation undone by the last undo."""
@@ -404,7 +404,7 @@ class Undoer:
         u.bead += 1
         u.setUndoTypes()
 
-    # @+node:ekr.20031218072017.2039: *3* u.undo
+    # @+node:ekr.20031218072017.2039: *4* u.undo
     @cmd('undo')
     def undo(self, event: LeoKeyEvent | None = None) -> None:
         """Undo the operation described by the undo parameters."""
@@ -437,7 +437,6 @@ class Undoer:
         u.bead -= 1
         u.setUndoTypes()
 
-    # @+node:ekr.20031218072017.3608: *3* u: Externally visible entries
     # @+node:ekr.20261018092627.1: *4* u: Legacy entries
     # @+node:ekr.20031218072017.3610: *5* u.canRedo & canUndo
     # Translation does not affect these routines.
@@ -463,13 +462,12 @@ class Undoer:
     def clearUndoState(self) -> None:
         """Clears the entire Undo state."""
         u = self
-        ### u.clearOptionalIvars()  # Do this first.
         u.setRedoType("Can't Redo")
         u.setUndoType("Can't Undo")
-        u.beads = []  # List of undo nodes.
-        u.bead = -1  # Index of the present bead: -1:len(beads)
+        u.beads = []
+        u.bead = -1
 
-    # @+node:ekr.20261008093043.1: *5* u.dump_stack
+    # @+node:ekr.20261008093043.1: *5* u.dump_stack (to be deleted)
     def dump_stack(self, message: str = '') -> None:
         u = self
         print()
@@ -486,55 +484,6 @@ class Undoer:
         if menu := frame.menu.getMenu("Edit"):
             frame.menu.enableMenu(menu, u.redoMenuLabel, u.canRedo())
             frame.menu.enableMenu(menu, u.undoMenuLabel, u.canUndo())
-
-    # @+node:ekr.20230722062645.1: *5* u.restoreFromCopiedTree
-    def restoreFromCopiedTree(self, v: VNode, s: str) -> None:
-        # @+<< docstring: restoreFromCopiedTree >>
-        # @+node:ekr.20230722062838.1: *6* << docstring: restoreFromCopiedTree >>
-        """
-        c.restoreFromCopiedTree: restore v from a copied tree.
-
-        This is a low-level method. See u.undo/redoChangeTree for examples.
-
-        The caller is responsible for:
-
-        - Calling c.endEditing.
-        - Setting c.p correctly.
-        - Updating selection range and y-scroll position in c.frame.body.wrapper.
-        - Calling c.redraw.
-        """
-        # @-<< docstring: restoreFromCopiedTree >>
-        u = self
-        c = u.c
-        fc = c.fileCommands
-        if not isinstance(v, VNode):
-            g.trace("Can't happen: not a vnode: {v!r}")
-            return
-        old_parents = v.parents[:]  # Essential.
-
-        # This encoding must match the encoding used in outline_to_clipboard_string.
-        encoding = fc.leo_file_encoding
-
-        # Create a tree of vnodes from s.
-        x = FastRead(c, fc.gnxDict)  # Must use fc.gnxDict.
-        fc.initReadIvars()
-        s_bytes = g.toEncodedString(s, encoding, reportErrors=True)
-        hidden_v = x.readFileFromClipboard(s_bytes)
-        fc.initReadIvars()
-        if not hidden_v:
-            u.clearAndWarn('undo-change-tree')
-            return
-
-        # The big switcharoo: change v in place.
-        new_v = hidden_v.children[0]
-        new_v.parents = old_parents  # restore v.parents.
-        assert v.gnx == new_v.gnx
-        v = new_v
-
-        # All pasted nodes should have unique gnx's.
-        ni = g.app.nodeIndices
-        for v in c.all_unique_nodes():
-            ni.check_gnx(c, v.fileIndex, v)
 
     # @+node:vivainio.202610110002.2: *5* u.type_text
     def type_text(
