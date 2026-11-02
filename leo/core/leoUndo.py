@@ -638,7 +638,7 @@ class Undoer:
         for v in c.all_unique_nodes():
             ni.check_gnx(c, v.fileIndex, v)
 
-    # @+node:vivainio.202610110002.2: *5* u.type_text (keep, trace)
+    # @+node:vivainio.202610110002.2: *5* u.type_text (trace)
     def type_text(
         self,
         p: Position,
@@ -669,7 +669,6 @@ class Undoer:
             # Typing within an explicit command belongs to that command's bead.
             u.set_body(p, newText, old_body=oldText)
             return
-        # A save, intervening command, selection change, or undo ends coalescing.
         can_merge = u._can_merge(oldSel, oldText, newSel, newText)
         if not g.unitTesting and 'leoPy' not in c.shortFileName():  ###
             g.trace(f"{can_merge=}")
@@ -1432,15 +1431,14 @@ class Undoer:
         newText: str,
     ) -> bool:
         """
-        A helper for u.type_text and *maybe* for
-        < < set newBead if the change does not continue a word > >
-        Return True if we should merge typing into the previous node.
+        Return True if we should merge changes into the previous UndoTyping node.
         """
         u = self
         bead = u.peekBead(u.bead)
         assert bead is None or isinstance(bead, UndoBead), repr(bead)
         c = u.c
         p = c.p
+        # A save, intervening command, selection change, or undo prevents
         if (
             u.granularity == 'char'
             or not isinstance(bead, TypingBead)
