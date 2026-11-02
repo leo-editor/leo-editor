@@ -524,36 +524,6 @@ class Undoer:
         if hasattr(v, 'undo_info'):
             u.setIvarsFromBunch(v.undo_info)  # type:ignore
 
-    # @+node:EKR.20040526075238.5: *5* u.redoTyping (to be deleted)
-    def redoTyping(self) -> None:
-        u = self
-        c = u.c
-        current = c.p
-        w = c.frame.body.wrapper
-        # selectPosition causes recoloring, so avoid if possible.
-        if current != u.p:
-            c.selectPosition(u.p)
-        u.p.setDirty()
-        self.undoRedoText(
-            u.p,
-            u.leading,
-            u.trailing,
-            u.newMiddleLines,
-            u.oldMiddleLines,
-            u.newNewlines,
-            u.oldNewlines,
-            tag="redo",
-            undoType=u.undoType,
-        )
-        u.updateMarks('new')
-        if u.newSel:
-            c.bodyWantsFocus()
-            i, j = u.newSel
-            w.setSelectionRange(i, j, insert=j)
-        if u.yview:
-            c.bodyWantsFocus()
-            w.setYScrollPosition(u.yview)
-
     # @+node:ekr.20230722062645.1: *5* u.restoreFromCopiedTree
     def restoreFromCopiedTree(self, v: VNode, s: str) -> None:
         # @+<< docstring: restoreFromCopiedTree >>
@@ -648,84 +618,6 @@ class Undoer:
         u.updateAfterTyping(p, w)
         if u.per_node_undo:
             u.putIvarsToVnode(p)
-
-    # @+node:ekr.20031218072017.1493: *5* u.undoRedoText (to be deleted)
-    def undoRedoText(
-        self,
-        p: Position,
-        leading: int,
-        trailing: int,  # Number of matching leading & trailing lines.
-        oldMidLines: list[str],
-        newMidLines: list[str],  # Lists of unmatched lines.
-        oldNewlines: int,
-        newNewlines: int,
-        tag: str = "undo",  # "undo" or "redo"
-        undoType: str | None = None,
-    ) -> None:
-        """Handle text undo and redo: converts _new_ text into _old_ text."""
-        # newNewlines is unused, but it has symmetry.
-        u = self
-        c = u.c
-        w = c.frame.body.wrapper
-        # @+<< Compute the result using p's body text >>
-        # @+node:ekr.20061106105812.1: *6* << Compute the result using p's body text >>
-        # Recreate the text using the present body text.
-        body = p.b
-        body = g.checkUnicode(body)
-        body_lines = body.split('\n')
-        aList = []
-        if leading > 0:
-            aList.extend(body_lines[:leading])
-        if oldMidLines:
-            aList.extend(oldMidLines)
-        if trailing > 0:
-            aList.extend(body_lines[-trailing:])
-        s = '\n'.join(aList)
-        # Remove trailing newlines in s.
-        while s and s[-1] == '\n':
-            s = s[:-1]
-        # Add oldNewlines newlines.
-        if oldNewlines > 0:
-            s = s + '\n' * oldNewlines
-        result = s
-        # @-<< Compute the result using p's body text >>
-        p.setBodyString(result)
-        p.setDirty()
-        w.setAllText(result)
-        if sel := u.oldSel if tag == 'undo' else u.newSel:
-            i, j = sel
-            w.setSelectionRange(i, j, insert=j)
-        c.recolor(u.p)
-        w.seeInsertPoint()  # 2009/12/21
-
-    # @+node:EKR.20040526090701.4: *5* u.undoTyping (to be deleted)
-    def undoTyping(self) -> None:
-        u = self
-        c = u.c
-        w = c.frame.body.wrapper
-        # selectPosition causes recoloring, so don't do this unless needed.
-        if c.p != u.p:
-            c.selectPosition(u.p)
-        u.p.setDirty()
-        u.undoRedoText(
-            u.p,
-            u.leading,
-            u.trailing,
-            u.oldMiddleLines,
-            u.newMiddleLines,
-            u.oldNewlines,
-            u.newNewlines,
-            tag="undo",
-            undoType=u.undoType,
-        )
-        u.updateMarks('old')
-        if u.oldSel:
-            c.bodyWantsFocus()
-            i, j = u.oldSel
-            w.setSelectionRange(i, j, insert=j)
-        if u.yview:
-            c.bodyWantsFocus()
-            w.setYScrollPosition(u.yview)
 
     # @+node:ekr.20201127035748.1: *5* u.updateAfterTyping
     def updateAfterTyping(self, p: Position, w: QTextMixin) -> None:
