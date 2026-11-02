@@ -781,7 +781,7 @@ class Undoer:
         if hasattr(v, 'undo_info'):
             u.setIvarsFromBunch(v.undo_info)  # type:ignore
 
-    # @+node:ekr.20050126081529: *5* u.recognizeStartOfTypingWord (keep)
+    # @+node:ekr.20050126081529: *5* u.recognizeStartOfTypingWord (to be removed)
     def recognizeStartOfTypingWord(
         self,
         old_lines: list[str],
@@ -1735,35 +1735,16 @@ class Undoer:
         ):  # fmt: skip
             return False
 
-        # We must be in the middle of a word.
-
-        # Start a word if new_ch begins whitespace + word
+        # Return true if we are continuing a word and we haven't moved the cursor.
         old_ch = oldText[old_start - 1]
         new_ch = newText[new_start - 1]
         if not old_ch.isspace() and new_ch.isspace():
-            return False
-        # Start a new word if the cursor has changed.
-        if new_row != prev_row or new_col != prev_col + 1:
-            return False
-        return True
-        ### new_word_started = not old_ch.isspace() and new_ch.isspace()
-        # Start a word if the cursor has been moved since the last change
-        # moved_cursor = new_row != prev_row or new_col != prev_col + 1
-        # return new_word_started or moved_cursor
-
-        # # We must be in the middle of a word.
-        # return not u.recognizeStartOfTypingWord(
-        #     g.splitLines(oldText),
-        #     old_row,
-        #     old_col,
-        #     oldText[old_start - 1],
-        #     g.splitLines(newText),
-        #     new_row,
-        #     new_col,
-        #     newText[new_start - 1],
-        #     prev_row,
-        #     prev_col,
-        # )
+            return False  # We are starting a new word.
+        return new_row == prev_row and new_col == prev_col + 1
+        # # not (not old_ch.isspace() and new_ch.isspace())
+        # (old_ch.isspace() or not new_ch.isspace())
+        # and new_row == prev_row
+        # and new_col == prev_col + 1
 
     # @+node:ekr.20060127052111.1: *4* u.cutStack
     def cutStack(self) -> None:
