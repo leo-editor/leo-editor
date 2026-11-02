@@ -1222,14 +1222,7 @@ class Undoer:
     def cutStack(self) -> None:
         u = self
         n = u.max_undo_stack_size
-        if u.bead >= n > 0 and not g.unitTesting:
-            # Do nothing if we are in the middle of creating a group.
-            i = len(u.beads) - 1
-            while i >= 0:
-                bunch = u.beads[i]
-                if hasattr(bunch, 'kind') and bunch.kind == 'beforeGroup':
-                    return
-                i -= 1
+        if u.bead >= n > 0:
             # This work regardless of how many items appear after bead n.
             u.beads = u.beads[-n:]
             u.bead = n - 1
