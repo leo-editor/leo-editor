@@ -356,35 +356,6 @@ class TestUndo(LeoUnitTest):
         func = c.line_to_headline
         self.runTest(before, after, i, j, func)
 
-    # @+node:ekr.20210906172626.15: *3* TestUndo.xxx_test_restore_marked_bits
-    def xxx_test_restore_marked_bits(self):
-        # Test of #1694.
-        c = self.c
-        p = c.p
-        u = c.undoer
-        w = c.frame.body.wrapper
-        oldText = p.b
-        newText = p.b + '\n#changed'
-        for marked in (True, False):
-            u.clearUndoState()  # Required.
-            if marked:
-                p.setMarked()
-            else:
-                p.clearMarked()
-            oldMarked = p.isMarked()
-            w.setAllText(newText)  # For the new assert in w.updateAfterTyping.
-            u.doTyping(p, undo_type='typing', oldText=oldText, newText=newText)
-            for _i in range(1):
-                u.undo()
-                self.assertEqual(p.b, oldText)
-                self.assertEqual(p.isMarked(), oldMarked)
-                u.redo()
-                self.assertEqual(p.b, newText)
-                self.assertEqual(p.isMarked(), oldMarked)
-                u.redo()  ### New.
-                self.assertEqual(p.b, oldText)
-                self.assertEqual(p.isMarked(), oldMarked)
-
     # @+node:ekr.20210906172626.17: *3* TestUndo.test_undo_group
     def test_undo_group(self):
         # Test an off-by-one error in c.undoer.bead.
