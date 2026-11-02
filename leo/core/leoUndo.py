@@ -573,7 +573,7 @@ class Undoer:
         for v in c.all_unique_nodes():
             ni.check_gnx(c, v.fileIndex, v)
 
-    # @+node:vivainio.202610110002.2: *5* u.type_text (trace)
+    # @+node:vivainio.202610110002.2: *5* u.type_text
     def type_text(
         self,
         p: Position,
@@ -605,8 +605,7 @@ class Undoer:
             u.set_body(p, newText, old_body=oldText)
             return
         can_merge = u._can_merge(oldSel, oldText, newSel, newText)
-        if not g.unitTesting and 'leoPy' not in c.shortFileName():  ###
-            g.trace(f"{can_merge=}")
+        # g.trace(f"{can_merge=}")
         if can_merge:
             original = bead.replace_middle(oldText, bead.old_lines)
             bead.update_patch(original, newText)
@@ -1279,7 +1278,7 @@ class Undoer:
         for ivar in u.optionalIvars:
             setattr(u, ivar, None)
 
-    # @+node:ekr.20261102022551.1: *4* u._can_merge (new)
+    # @+node:ekr.20261102022551.1: *4* u._can_merge
     def _can_merge(
         self,
         oldSel: tuple[int, int] | None,
