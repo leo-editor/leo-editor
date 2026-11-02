@@ -1930,12 +1930,6 @@ class Undoer:
             u.setRedoType("Can't Redo")
         u.cutStack()
 
-    # @+node:ekr.20050525151449: *4* u.trace
-    def trace(self) -> None:  # pragma: no cover
-        ivars = ('kind', 'undoType')
-        for ivar in ivars:
-            g.pr(ivar, getattr(self, ivar))
-
     # @+node:ekr.20050410095424: *4* u.updateMarks
     def updateMarks(self, oldOrNew: str) -> None:
         """Update dirty and marked bits."""
