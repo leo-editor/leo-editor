@@ -340,26 +340,25 @@ class Undoer:
     # @+node:ekr.20031218072017.3606: *3* u.__init__
     def __init__(self, c: Cmdr) -> None:
         self.c = c
-        self.p = cast(Position, None)  # The position/node being operated upon for undo and redo.
-        self.granularity = None  # Set in reloadSettings.
-        self.max_undo_stack_size = c.config.getInt('max-undo-stack-size') or 0
-        # State ivars...
+        # State.
+        self.bead = -1  # Index of the present bead.
         self.beads = []  # List of undo nodes.
-        self.bead = -1  # Index of the present bead: -1:len(beads)
-        self.inHead = False
         self.capture_level = 0
+        self.granularity = None  # Set in reloadSettings.
         self.groupCount = 0
+        self.inHead = False
+        self.max_undo_stack_size = c.config.getInt('max-undo-stack-size') or 0
         self.node_captures = set()
-        self.undoBeadLevel = 0
-        self.undoBead = None
-        self.undoType = "Can't Undo"
-        # These must be set here, _not_ in clearUndoState.
-        self.redoMenuLabel = "Can't Redo"
-        self.undoMenuLabel = "Can't Undo"
+        self.p = cast(Position, None)
         self.realRedoMenuLabel = "Can't Redo"
         self.realUndoMenuLabel = "Can't Undo"
-        self.undoing = False
+        self.redoMenuLabel = "Can't Redo"
         self.redoing = False
+        self.undoBead = None
+        self.undoBeadLevel = 0
+        self.undoMenuLabel = "Can't Undo"
+        self.undoType = "Can't Undo"
+        self.undoing = False
         # Update settings.
         self.reloadSettings()
 
