@@ -324,11 +324,10 @@ class Undoer:
         self.inHead = False
         self.capture_level = 0
         self.node_captures = set()
-        self.undoBeadLevel = 0  # PR #4996
-        self.undoBead = None  # PR #4994
+        self.undoBeadLevel = 0
+        self.undoBead = None
         self.undoType = "Can't Undo"
         # These must be set here, _not_ in clearUndoState.
-        self.last_undoable_command_name = None  # Name of last undoable command.
         self.redoMenuLabel = "Can't Redo"
         self.undoMenuLabel = "Can't Undo"
         self.realRedoMenuLabel = "Can't Redo"
@@ -432,25 +431,19 @@ class Undoer:
     # @+node:ekr.20230714012821.1: *5* u.clearAndWarn
     def clearAndWarn(self, command_name: str) -> None:
         """
-        Clear all undo state and issue a warning.
-
-        All non-undoable commands should call this method.
+        Clear all undo state. However, the warning is annoying.
         """
         u = self
-        u.last_undoable_command_name = command_name
         u.clearUndoState()
+        # g.es_print_unique_message(f"{command_name} is not undoable")
 
     # @+node:ekr.20031218072017.3609: *5* u.clearUndoState
     def clearUndoState(self) -> None:
         """Clears the entire Undo state."""
         u = self
-        u.clearOptionalIvars()  # Do this first.
+        ### u.clearOptionalIvars()  # Do this first.
         u.setRedoType("Can't Redo")
-        if u.last_undoable_command_name:
-            undoType = f"Can't Undo {u.last_undoable_command_name}"
-        else:
-            undoType = "Can't Undo"
-        u.setUndoType(undoType)
+        u.setUndoType("Can't Undo")
         u.beads = []  # List of undo nodes.
         u.bead = -1  # Index of the present bead: -1:len(beads)
 
@@ -1249,7 +1242,7 @@ class Undoer:
         u.undoBead.add_redraw_and_edit(new_p, self.undoBead.old_p)
 
     # @+node:ekr.20050416092908.1: *3* u: Internal helpers
-    # @+node:ekr.20031218072017.3607: *4* u.clearOptionalIvars
+    # @+node:ekr.20031218072017.3607: *4* u.clearOptionalIvars (deleted)
     def clearOptionalIvars(self) -> None:
         u = self
         u.p = None  # type:ignore
@@ -1409,7 +1402,7 @@ class Undoer:
             u.beads[u.bead :] = [bunch]
             # Recalculate the menu labels.
             u.setUndoTypes()
-        if 'undo' in g.app.debug:  # pragma: no cover
+        if 'undo' in g.app.debug:
             print(f"u.pushBead: {len(u.beads):3} {bunch.undoType}")
 
     # @+node:ekr.20031218072017.3613: *4* u.redoMenuName, undoMenuName
@@ -1423,7 +1416,7 @@ class Undoer:
             return name
         return "Undo " + name
 
-    # @+node:ekr.20060127070008: *4* u.setIvarsFromBunch
+    # @+node:ekr.20060127070008: *4* u.setIvarsFromBunch (deleted)
     def setIvarsFromBunch(self, bunch: g.Bunch) -> None:
         u = self
         u.clearOptionalIvars()
@@ -1490,17 +1483,13 @@ class Undoer:
     def setUndoTypes(self) -> None:
         u = self
         # Set the undo type and undo menu label.
-        if bunch := u.peekBead(u.bead):
-            u.setUndoType(bunch.undoType)
+        if bead := u.peekBead(u.bead):
+            u.setUndoType(bead.undoType)
         else:
-            if u.last_undoable_command_name:
-                undoType = f"Can't Undo {u.last_undoable_command_name}"
-            else:
-                undoType = "Can't Undo"
-            u.setUndoType(undoType)
+            u.setUndoType("Can't Undo")
         # Set only the redo menu label.
-        if bunch := u.peekBead(u.bead + 1):
-            u.setRedoType(bunch.undoType)
+        if bead := u.peekBead(u.bead + 1):
+            u.setRedoType(bead.undoType)
         else:
             u.setRedoType("Can't Redo")
         u.cutStack()
