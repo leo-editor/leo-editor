@@ -1209,13 +1209,6 @@ class Undoer:
         u.undoBead.add_redraw_and_edit(new_p, self.undoBead.old_p)
 
     # @+node:ekr.20050416092908.1: *3* u: Internal helpers
-    # @+node:ekr.20031218072017.3607: *4* u.clearOptionalIvars (to be deleted)
-    def clearOptionalIvars(self) -> None:
-        u = self
-        u.p = None  # type:ignore
-        for ivar in u.optionalIvars:
-            setattr(u, ivar, None)
-
     # @+node:ekr.20261102022551.1: *4* u._can_merge
     def _can_merge(
         self,
@@ -1382,22 +1375,6 @@ class Undoer:
         if name.startswith("Can't Undo"):
             return name
         return "Undo " + name
-
-    # @+node:ekr.20060127070008: *4* u.setIvarsFromBunch (to be deleted)
-    def setIvarsFromBunch(self, bunch: g.Bunch) -> None:
-        u = self
-        u.clearOptionalIvars()
-        if False and not g.unitTesting:  # Debugging. # pragma: no cover
-            print('-' * 40)
-            for key in list(bunch.keys()):
-                g.trace(f"{key:20} {bunch.get(key)!r}")
-            print('-' * 20)
-        # bunch is not a dict, so bunch.keys() is required.
-        for key in list(bunch.keys()):
-            val = bunch.get(key)
-            setattr(u, key, val)
-            if key not in u.optionalIvars:
-                u.optionalIvars.append(key)
 
     # @+node:ekr.20031218072017.3614: *4* u.setRedoType
     # These routines update both the ivar and the menu label.
