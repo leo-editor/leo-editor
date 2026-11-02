@@ -13,7 +13,6 @@ from __future__ import annotations
 from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from copy import deepcopy
-import warnings
 from typing import cast, Any, Self, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position, VNode
@@ -390,14 +389,6 @@ class Undoer:
         u.setUndoType("Can't Undo")
         u.beads = []
         u.bead = -1
-
-    # @+node:ekr.20031218072017.3611: *4* u.enableMenuItems (to be deleted)
-    def enableMenuItems(self) -> None:
-        u = self
-        frame = u.c.frame
-        if menu := frame.menu.getMenu("Edit"):
-            frame.menu.enableMenu(menu, u.redoMenuLabel, u.canRedo())
-            frame.menu.enableMenu(menu, u.undoMenuLabel, u.canUndo())
 
     # @+node:ekr.20031218072017.2030: *4* u.redo
     @cmd('redo')
@@ -1244,14 +1235,6 @@ class Undoer:
             u.bead = n - 1
         if 'undo' in g.app.debug and 'verbose' in g.app.debug:  # pragma: no cover
             print(f"u.cutStack: {len(u.beads):3}")
-
-    # @+node:ekr.20261009154747.1: *4* u.deprecated
-    def deprecated(self):
-        warnings.warn(
-            f"Undoer.{g.caller()} is deprecated; use composable undo contexts instead",
-            DeprecationWarning,
-            stacklevel=3,
-        )
 
     # @+node:ekr.20080623083646.10: *4* u.dumpBead
     def dumpBead(self, n: int) -> str:  # pragma: no cover
