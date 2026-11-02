@@ -524,41 +524,6 @@ class Undoer:
         if hasattr(v, 'undo_info'):
             u.setIvarsFromBunch(v.undo_info)  # type:ignore
 
-    # @+node:ekr.20050126081529: *5* u.recognizeStartOfTypingWord (to be removed)
-    def recognizeStartOfTypingWord(
-        self,
-        old_lines: list[str],
-        old_row: int,
-        old_col: int,
-        old_ch: str,
-        new_lines: list[str],
-        new_row: int,
-        new_col: int,
-        new_ch: str,
-        prev_row: int,
-        prev_col: int,
-    ) -> bool:
-        """
-        A potentially user-modifiable method that should return True if the
-        typing indicated by the params starts a new 'word' for the purposes of
-        undo with 'word' granularity.
-
-        u.doTyping calls this method only when the typing could possibly
-        continue a previous word. In other words, undo will work safely regardless
-        of the value returned here.
-
-        old_ch is the char at the given (Tk) row, col of old_lines.
-        new_ch is the char at the given (Tk) row, col of new_lines.
-
-        The present code uses only old_ch and new_ch. The other arguments are given
-        for use by more sophisticated algorithms.
-        """
-        # Start a word if new_ch begins whitespace + word
-        new_word_started = not old_ch.isspace() and new_ch.isspace()
-        # Start a word if the cursor has been moved since the last change
-        moved_cursor = new_row != prev_row or new_col != prev_col + 1
-        return new_word_started or moved_cursor
-
     # @+node:EKR.20040526075238.5: *5* u.redoTyping (to be deleted)
     def redoTyping(self) -> None:
         u = self
