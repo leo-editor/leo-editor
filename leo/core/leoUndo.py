@@ -679,7 +679,7 @@ class Undoer:
         g.doHook('create-node', c=c, p=new_p)
         return new_p
 
-    # @+node:ekr.20261005140833.1: *5* u.set_body (to be deleted)
+    # @+node:ekr.20261005140833.1: *5* u.set_body
     def set_body(
         self,
         new_p: Position,
@@ -1133,7 +1133,7 @@ class Undoer:
         c.redrawAndEdit(new_p, selectAll=True)
         u.undoBead.add_redraw_and_edit(new_p, self.undoBead.old_p)
 
-    # @+node:ekr.20050416092908.1: *3* u: Internal helpers
+    # @+node:ekr.20050416092908.1: *3* u: Helpers
     # @+node:ekr.20261005094529.1: *4* u.__enter__ and __exit__
     def __enter__(self) -> Self:
         """Compose nested operations into one bead, published on outermost exit."""
