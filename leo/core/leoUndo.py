@@ -304,13 +304,6 @@ class TypingBead(UndoBead):
     def redo(self):
         self.apply(self.new_lines, self.new_sel, self.new_ins)
 
-    # @+node:ekr.20261014100625.7: *3* TypingBead.get (to be deleted)
-    def get(self, key, default=None):
-        # Legacy doTyping must not try to extend a new-style typing bead.
-        if key == 'kind':
-            return 'new-typing'
-        return super().get(key) or default
-
     # @-others
 
 
