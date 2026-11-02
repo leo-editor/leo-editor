@@ -334,7 +334,6 @@ class Undoer:
         self.realUndoMenuLabel = "Can't Undo"
         self.undoing = False  # True if executing an Undo command.
         self.redoing = False  # True if executing a Redo command.
-        self.per_node_undo = False  # True: v may contain undo_info ivar.
         # New in 4.2...
         self.optionalIvars = []
         # Update settings.
@@ -465,14 +464,15 @@ class Undoer:
             frame.menu.enableMenu(menu, u.redoMenuLabel, u.canRedo())
             frame.menu.enableMenu(menu, u.undoMenuLabel, u.canUndo())
 
-    # @+node:ekr.20110519074734.6094: *5* u.onSelect & helpers
+    # @+node:ekr.20110519074734.6094: *5* u.onSelect & helpers (to be deleted)
     def onSelect(self, old_p: Position, p: Position) -> None:
-        u = self
-        if u.per_node_undo and not (u.undoing or u.redoing):
-            if old_p and u.beads:
-                u.putIvarsToVnode(old_p)
-            u.setIvarsFromVnode(p)
-            u.setUndoTypes()
+        pass
+        # u = self
+        # if u.per_node_undo and not (u.undoing or u.redoing):
+        #     if old_p and u.beads:
+        #         u.putIvarsToVnode(old_p)
+        #     u.setIvarsFromVnode(p)
+        #     u.setUndoTypes()
 
     # @+node:ekr.20110519074734.6096: *6* u.putIvarsToVnode
     def putIvarsToVnode(self, p: Position) -> None:
@@ -586,8 +586,10 @@ class Undoer:
             u.pushBead(bead)
         p.v.b = newText  # Do **not** use p.b = newText!!!
         u.updateAfterTyping(p, w)
-        if u.per_node_undo:
-            u.putIvarsToVnode(p)
+
+        ###
+        # if u.per_node_undo:
+        #     u.putIvarsToVnode(p)
 
     # @+node:ekr.20201127035748.1: *5* u.updateAfterTyping
     def updateAfterTyping(self, p: Position, w: QTextMixin) -> None:
@@ -1242,7 +1244,7 @@ class Undoer:
         u.undoBead.add_redraw_and_edit(new_p, self.undoBead.old_p)
 
     # @+node:ekr.20050416092908.1: *3* u: Internal helpers
-    # @+node:ekr.20031218072017.3607: *4* u.clearOptionalIvars (deleted)
+    # @+node:ekr.20031218072017.3607: *4* u.clearOptionalIvars
     def clearOptionalIvars(self) -> None:
         u = self
         u.p = None  # type:ignore
@@ -1416,7 +1418,7 @@ class Undoer:
             return name
         return "Undo " + name
 
-    # @+node:ekr.20060127070008: *4* u.setIvarsFromBunch (deleted)
+    # @+node:ekr.20060127070008: *4* u.setIvarsFromBunch
     def setIvarsFromBunch(self, bunch: g.Bunch) -> None:
         u = self
         u.clearOptionalIvars()

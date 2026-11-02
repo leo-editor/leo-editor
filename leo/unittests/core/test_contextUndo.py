@@ -528,29 +528,6 @@ class TestContextUndo(LeoUnitTest):
             lambda: (self.assertEqual(c.p, clone), self.assertTrue(p.isCloned())),
         )
 
-    # @+node:ekr.20261014103254.37: *3* TestContextUndo.test_per_node_undo_keeps_new_beads
-    def test_per_node_undo_keeps_new_beads(self):
-        c = self.c
-        p = c.p
-        u = c.undoer
-        u.per_node_undo = True
-        with u.change_node(p, 'edit first'):
-            p.b = 'first'
-        other = p.next()
-        c.selectPosition(other)
-        with u.change_node(other, 'edit other'):
-            other.b = 'other'
-        c.selectPosition(p)
-        u.undo()
-        self.assertEqual(p.b, '')
-        self.assertEqual(other.b, 'other')
-        u.redo()
-        self.assertEqual(p.b, 'first')
-        c.selectPosition(other)
-        u.undo()
-        self.assertEqual(other.b, '')
-        self.assertEqual(p.b, 'first')
-
     # @+node:ekr.20261014103254.38: *3* TestContextUndo.test_core_callers_do_not_use_legacy_undo_api
     def test_core_callers_do_not_use_legacy_undo_api(self):
         root = Path(g.__file__).parents[1]
