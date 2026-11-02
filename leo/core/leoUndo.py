@@ -464,37 +464,6 @@ class Undoer:
             frame.menu.enableMenu(menu, u.redoMenuLabel, u.canRedo())
             frame.menu.enableMenu(menu, u.undoMenuLabel, u.canUndo())
 
-    # @+node:ekr.20110519074734.6094: *5* u.onSelect & helpers (to be deleted)
-    def onSelect(self, old_p: Position, p: Position) -> None:
-        pass
-        # u = self
-        # if u.per_node_undo and not (u.undoing or u.redoing):
-        #     if old_p and u.beads:
-        #         u.putIvarsToVnode(old_p)
-        #     u.setIvarsFromVnode(p)
-        #     u.setUndoTypes()
-
-    # @+node:ekr.20110519074734.6096: *6* u.putIvarsToVnode
-    def putIvarsToVnode(self, p: Position) -> None:
-        u, v = self, p.v
-        assert self.per_node_undo
-        bunch = g.bunch()
-        for key in self.optionalIvars:
-            bunch[key] = getattr(u, key)
-        # Put these ivars by hand.
-        for key in ('bead', 'beads', 'undoType'):
-            bunch[key] = getattr(u, key)
-        v.undo_info = bunch
-
-    # @+node:ekr.20110519074734.6095: *6* u.setIvarsFromVnode
-    def setIvarsFromVnode(self, p: Position) -> None:
-        u = self
-        v = p.v
-        assert self.per_node_undo
-        u.clearUndoState()
-        if hasattr(v, 'undo_info'):
-            u.setIvarsFromBunch(v.undo_info)  # type:ignore
-
     # @+node:ekr.20230722062645.1: *5* u.restoreFromCopiedTree
     def restoreFromCopiedTree(self, v: VNode, s: str) -> None:
         # @+<< docstring: restoreFromCopiedTree >>
