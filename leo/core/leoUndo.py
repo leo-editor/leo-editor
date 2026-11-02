@@ -1706,18 +1706,24 @@ class Undoer:
             or not c.changed
         ):
             return False
+        # All lines *except* the current line must match.
         leading, trailing, _, _ = TypingBead.split_patch(oldText, newText)
         if (leading, trailing) != (bead.leading, bead.trailing):
             return False
         if u.granularity == 'line':
             return True
+
         # The hard case: u.granularity == 'word'
+
+        # The selection ranges must match.
         if oldSel is None or newSel is None or bead.new_sel is None:
             return False
         old_start, old_end = oldSel
         new_start, new_end = newSel
         if old_start != old_end or new_start != new_end:
             return False
+
+        # The position of the lines must match.
         old_row, old_col = g.convertPythonIndexToRowCol(oldText, old_start)
         new_row, new_col = g.convertPythonIndexToRowCol(newText, new_start)
         prev_row, prev_col = g.convertPythonIndexToRowCol(oldText, bead.new_sel[0])
@@ -1728,18 +1734,36 @@ class Undoer:
             or new_col == 0
         ):  # fmt: skip
             return False
-        return not u.recognizeStartOfTypingWord(
-            g.splitLines(oldText),
-            old_row,
-            old_col,
-            oldText[old_start - 1],
-            g.splitLines(newText),
-            new_row,
-            new_col,
-            newText[new_start - 1],
-            prev_row,
-            prev_col,
-        )
+
+        # We must be in the middle of a word.
+
+        # Start a word if new_ch begins whitespace + word
+        old_ch = oldText[old_start - 1]
+        new_ch = newText[new_start - 1]
+        if not old_ch.isspace() and new_ch.isspace():
+            return False
+        # Start a new word if the cursor has changed.
+        if new_row != prev_row or new_col != prev_col + 1:
+            return False
+        return True
+        ### new_word_started = not old_ch.isspace() and new_ch.isspace()
+        # Start a word if the cursor has been moved since the last change
+        # moved_cursor = new_row != prev_row or new_col != prev_col + 1
+        # return new_word_started or moved_cursor
+
+        # # We must be in the middle of a word.
+        # return not u.recognizeStartOfTypingWord(
+        #     g.splitLines(oldText),
+        #     old_row,
+        #     old_col,
+        #     oldText[old_start - 1],
+        #     g.splitLines(newText),
+        #     new_row,
+        #     new_col,
+        #     newText[new_start - 1],
+        #     prev_row,
+        #     prev_col,
+        # )
 
     # @+node:ekr.20060127052111.1: *4* u.cutStack
     def cutStack(self) -> None:
