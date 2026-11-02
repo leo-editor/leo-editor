@@ -556,10 +556,6 @@ class Undoer:
         p.v.b = newText  # Do **not** use p.b = newText!!!
         u.updateAfterTyping(p, w)
 
-        ###
-        # if u.per_node_undo:
-        #     u.putIvarsToVnode(p)
-
     # @+node:ekr.20201127035748.1: *5* u.updateAfterTyping
     def updateAfterTyping(self, p: Position, w: QTextMixin) -> None:
         """
@@ -1213,7 +1209,7 @@ class Undoer:
         u.undoBead.add_redraw_and_edit(new_p, self.undoBead.old_p)
 
     # @+node:ekr.20050416092908.1: *3* u: Internal helpers
-    # @+node:ekr.20031218072017.3607: *4* u.clearOptionalIvars
+    # @+node:ekr.20031218072017.3607: *4* u.clearOptionalIvars (to be deleted)
     def clearOptionalIvars(self) -> None:
         u = self
         u.p = None  # type:ignore
@@ -1387,7 +1383,7 @@ class Undoer:
             return name
         return "Undo " + name
 
-    # @+node:ekr.20060127070008: *4* u.setIvarsFromBunch
+    # @+node:ekr.20060127070008: *4* u.setIvarsFromBunch (to be deleted)
     def setIvarsFromBunch(self, bunch: g.Bunch) -> None:
         u = self
         u.clearOptionalIvars()
