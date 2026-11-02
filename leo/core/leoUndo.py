@@ -1729,22 +1729,16 @@ class Undoer:
         prev_row, prev_col = g.convertPythonIndexToRowCol(oldText, bead.new_sel[0])
         if (
             old_row != new_row
+            or new_col != prev_col + 1
             or abs(old_col - new_col) != 1
             or old_col == 0
             or new_col == 0
-        ):  # fmt: skip
+        ):
             return False
-
-        # Return true if we are continuing a word and we haven't moved the cursor.
         old_ch = oldText[old_start - 1]
         new_ch = newText[new_start - 1]
-        if not old_ch.isspace() and new_ch.isspace():
-            return False  # We are starting a new word.
-        return new_row == prev_row and new_col == prev_col + 1
-        # # not (not old_ch.isspace() and new_ch.isspace())
-        # (old_ch.isspace() or not new_ch.isspace())
-        # and new_row == prev_row
-        # and new_col == prev_col + 1
+        # We must not be starting a new word.
+        return not (not old_ch.isspace() and new_ch.isspace())
 
     # @+node:ekr.20060127052111.1: *4* u.cutStack
     def cutStack(self) -> None:
