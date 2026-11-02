@@ -1381,25 +1381,6 @@ class Undoer:
             u.setRedoType("Can't Redo")
         u.cutStack()
 
-    # @+node:ekr.20050410095424: *4* u.updateMarks
-    def updateMarks(self, oldOrNew: str) -> None:
-        """Update dirty and marked bits."""
-        u = self
-        c = u.c
-        if oldOrNew not in ('new', 'old'):  # pragma: no cover
-            g.trace("can't happen")
-            return
-        isOld = oldOrNew == 'old'
-        marked = u.oldMarked if isOld else u.newMarked
-        # Note: c.set/clearMarked call a hook.
-        if marked:
-            c.setMarked(u.p)
-        else:
-            c.clearMarked(u.p)
-        # Undo/redo always set changed/dirty bits because the file may have been saved.
-        u.p.setDirty()
-        u.c.setChanged()
-
     # @-others
 
 
