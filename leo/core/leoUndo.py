@@ -1236,26 +1236,6 @@ class Undoer:
         if 'undo' in g.app.debug and 'verbose' in g.app.debug:  # pragma: no cover
             print(f"u.cutStack: {len(u.beads):3}")
 
-    # @+node:ekr.20080623083646.10: *4* u.dumpBead
-    def dumpBead(self, n: int) -> str:  # pragma: no cover
-        u = self
-        if n < 0 or n >= len(u.beads):
-            return f"no bead: {n=}"
-        # bunch = u.beads[n]
-        result = []
-        result.append('-' * 10)
-        result.append(f"len(u.beads): {len(u.beads)}, n: {n}")
-        for ivar in ('kind', 'newP', 'newN', 'p', 'oldN', 'undoHelper'):
-            result.append(f"{ivar} = {getattr(self, ivar)}")
-        return '\n'.join(result)
-
-    def dumpTopBead(self) -> str:  # pragma: no cover
-        u = self
-        n = len(u.beads)
-        if n > 0:
-            return self.dumpBead(n - 1)
-        return '<no top bead>'
-
     # @+node:EKR.20040526150818: *4* u.getBead
     def getBead(self, n: int) -> g.Bunch | UndoBead | None:
         """Set Undoer ivars from the bunch at the top of the undo stack."""
