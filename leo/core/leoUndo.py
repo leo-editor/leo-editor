@@ -1229,7 +1229,7 @@ class Undoer:
 
     # @+node:EKR.20040526150818: *4* u.getBead
     def getBead(self, n: int) -> g.Bunch | UndoBead | None:
-        """Set Undoer ivars from the bunch at the top of the undo stack."""
+        """Set Undoer ivars from the bead at the top of the undo stack."""
         u = self
         if n < 0 or n >= len(u.beads):
             return None
@@ -1243,34 +1243,11 @@ class Undoer:
         return u.beads[n]
 
     # @+node:ekr.20060127113243: *4* u.pushBead
-    def pushBead(self, bunch: g.Bunch | UndoBead | None) -> None:
+    def pushBead(self, bead: UndoBead | None) -> None:
         u = self
-        if u.undoBead is not None and not isinstance(bunch, UndoBead):
-
-            def replay(helper):
-                u.setIvarsFromBunch(bunch)  # type:ignore
-                helper()
-
-            def push_bead_redoer():
-                replay(bunch.redoHelper)
-
-            def push_bead_undoer():
-                replay(bunch.undoHelper)
-
-            u.undoBead.add_helpers(push_bead_redoer, push_bead_undoer)
-            return
-
-        # Add the bunch to the group if it is being accumulated.
-        bunch2 = u.bead >= 0 and u.bead < len(u.beads) and u.beads[u.bead]
-        if bunch2 and hasattr(bunch2, 'kind') and bunch2.kind == 'beforeGroup':
-            # Just append the new bunch the group's items.
-            bunch2.items.append(bunch)
-        else:
-            # Push the bunch.
-            u.bead += 1
-            u.beads[u.bead :] = [bunch]
-            # Recalculate the menu labels.
-            u.setUndoTypes()
+        u.bead += 1
+        u.beads[u.bead :] = [bead]
+        u.setUndoTypes()
 
     # @+node:ekr.20031218072017.3613: *4* u.redoMenuName, undoMenuName
     def redoMenuName(self, name: str) -> str:
