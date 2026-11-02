@@ -424,21 +424,6 @@ class Undoer:
         u.setUndoTypes()
 
     # @+node:ekr.20031218072017.3608: *3* u: Externally visible entries
-    # @+node:ekr.20050318085432.2: *4* u.createCommonBunch (to be deleted)
-    def createCommonBunch(self, p: Position) -> g.Bunch:
-        """
-        Return a bunch containing all common undo info.
-
-        This method is *not* deprecated.
-        """
-        c = self.c
-        w = c.frame.body.wrapper
-        return g.Bunch(
-            oldMarked=p and p.isMarked(),
-            oldSel=w.getSelectionRange() if w else None,
-            p=p.copy() if p else None,
-        )
-
     # @+node:ekr.20261018092627.1: *4* u: Legacy entries
     # @+node:ekr.20031218072017.3610: *5* u.canRedo & canUndo
     # Translation does not affect these routines.
@@ -599,11 +584,11 @@ class Undoer:
         newSel = newSel if newSel is not None else w.getSelectionRange()
         newInsert = newInsert if newInsert is not None else w.getInsertPoint()
         scroll = oldYview if oldYview is not None else w.getYScrollPosition()
-        bead = u.peekBead(u.bead)
         if u.undoBead is not None:
             # Typing within an explicit command belongs to that command's bead.
             u.set_body(p, newText, old_body=oldText)
             return
+        bead = u.peekBead(u.bead)
         can_merge = u._can_merge(oldSel, oldText, newSel, newText)
         # g.trace(f"{can_merge=}")
         if can_merge:

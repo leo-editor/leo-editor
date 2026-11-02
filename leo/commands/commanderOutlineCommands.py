@@ -182,7 +182,8 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     u = c.undoer
     s = g.app.gui.getTextFromClipboard()
     if not s or not c.canPasteOutline(s):
-        return  # This should never happen.
+        g.trace(f"Can not paste {repr(s)}")
+        return
     isJson = s.lstrip().startswith("{")
 
     # Define helpers.
@@ -307,18 +308,6 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 
         return pasted
 
-    # @+node:vitalije.20200529120440.1: *4* undoHelper
-    def undoHelper() -> None:
-        v = vpar.children.pop(index)
-        v.parents.remove(vpar)
-        c.redraw(bunch.p)
-
-    # @+node:vitalije.20200529120537.1: *4* redoHelper
-    def redoHelper() -> None:
-        vpar.children.insert(index, pasted)
-        pasted.parents.append(vpar)
-        c.redraw(newp)
-
     # @-others
 
     xvelements: Any
@@ -347,7 +336,7 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
                 for child in node['children']:
                     addBody(child)
 
-        # generate bodies for all possible nodes, not just non-empty bodies.
+        # Generate bodies for all possible nodes, not just non-empty bodies.
         addBody(xvelements[0])
         uas = defaultdict(dict)
         uas.update(xroot.get('uas', {}))
@@ -356,48 +345,38 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     # outside will contain gnxes of nodes that are outside the copied tree
     outside = {x.gnx for x in skip_root(c.hiddenRootNode)}
 
-    # we generate new gnx for each node in the copied tree
+    # Generate anew gnx for each node in the copied tree
     translation = {x: translate_gnx(x) for x in bodies}
 
-    seen = set(outside)  # required for the treatment of local clones inside the copied tree
-
+    # required for the treatment of local clones inside the copied tree
+    seen = set(outside)
     heads: dict[str, str] = {}
+    with u.change_outline('paste-retaining-outside-clones'):
+        # @+<< prepare destination data >>
+        # @+node:vitalije.20200529111500.1: *4* << prepare destination data >>
+        # destination data consists of
+        #    1. vpar --- parent v node that should receive pasted child
+        #    2. index --- at which pasted child will be
+        #    3. parStack --- a stack for creating new position of the pasted node
+        #
+        # the new position will be:  Position(vpar.children[index], index, parStack)
+        # but it can't be calculated yet, before actual paste is done
+        if p.isExpanded():
+            # paste as a first child of current position
+            vpar = p.v
+            index = 0
+            parStack = p.stack + [(p.v, p._childIndex)]
+        else:
+            # paste after the current position
+            parStack = p.stack
+            vpar = p.stack[-1][0] if p.stack else c.hiddenRootNode
+            index = p._childIndex + 1
 
-    # This code *is* compatible with the new undoers.
-    bunch = u.createCommonBunch(p)
-    # @+<< prepare destination data >>
-    # @+node:vitalije.20200529111500.1: *4* << prepare destination data >>
-    # destination data consists of
-    #    1. vpar --- parent v node that should receive pasted child
-    #    2. index --- at which pasted child will be
-    #    3. parStack --- a stack for creating new position of the pasted node
-    #
-    # the new position will be:  Position(vpar.children[index], index, parStack)
-    # but it can't be calculated yet, before actual paste is done
-    if p.isExpanded():
-        # paste as a first child of current position
-        vpar = p.v
-        index = 0
-        parStack = p.stack + [(p.v, p._childIndex)]
-    else:
-        # paste after the current position
-        parStack = p.stack
-        vpar = p.stack[-1][0] if p.stack else c.hiddenRootNode
-        index = p._childIndex + 1
-
-    # @-<< prepare destination data >>
-
-    pasted = do_paste(vpar, index)
-
-    newp = leoNodes.Position(pasted, index, parStack)
-
-    bunch.undoHelper = undoHelper
-    bunch.redoHelper = redoHelper
-    bunch.undoType = 'paste-retaining-outside-clones'
-
-    newp.setDirty()
-    c.undoer.pushBead(bunch)
-    c.redraw(newp)
+        # @-<< prepare destination data >>
+        pasted = do_paste(vpar, index)
+        newp = leoNodes.Position(pasted, index, parStack)
+        newp.setDirty()
+        c.p = newp
 
 
 # @+node:ekr.20040412060927: ** c_oc.dumpOutline
