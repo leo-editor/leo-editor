@@ -1728,12 +1728,11 @@ class Undoer:
         new_row, new_col = g.convertPythonIndexToRowCol(newText, new_start)
         prev_row, prev_col = g.convertPythonIndexToRowCol(oldText, bead.new_sel[0])
         if (
-            old_row != new_row
-            or new_col != prev_col + 1
-            or abs(old_col - new_col) != 1
-            or old_col == 0
+            old_col == 0
             or new_col == 0
-        ):
+            or old_row != new_row
+            or new_col != prev_col + 1
+        ):  # fmt: skip
             return False
         old_ch = oldText[old_start - 1]
         new_ch = newText[new_start - 1]
