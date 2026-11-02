@@ -475,7 +475,7 @@ class Undoer:
             frame.menu.enableMenu(menu, u.redoMenuLabel, u.canRedo())
             frame.menu.enableMenu(menu, u.undoMenuLabel, u.canUndo())
 
-    # @+node:vivainio.202610110002.2: *5* u.type_text
+    # @+node:vivainio.202610110002.2: *5* u.type_text and helper
     def type_text(
         self,
         p: Position,
@@ -516,10 +516,58 @@ class Undoer:
             bead = TypingBead(u, p, oldText, newText, oldSel, newSel, newInsert, scroll)
             u.pushBead(bead)
         p.v.b = newText  # Do **not** use p.b = newText!!!
-        u.updateAfterTyping(p, w)
+        u._update_after_typing(p, w)
 
-    # @+node:ekr.20201127035748.1: *5* u.updateAfterTyping
-    def updateAfterTyping(self, p: Position, w: QTextMixin) -> None:
+    # @+node:ekr.20201127035748.1: *6* u._update_after_typing
+    def _update_after_typing(self, p: Position, w: QTextMixin) -> None:
+        """
+        Perform all update tasks after changing body text.
+
+        This is ugly, ad-hoc code, but should be done uniformly.
+        """
+        c = self.c
+        if g.isTextWrapper(w):
+            # An important, ever-present unit test.
+            if p == c.p:
+                all = w.getAllText()
+                if g.unitTesting:
+                    assert p.b == all, (w, g.callers())
+                elif p.b != all:
+                    g.trace(
+                        f"\np.b != w.getAllText() p: {p.h} \n"
+                        f"w: {w!r} \n{g.callers()}\n"
+                    )  # fmt: skip
+            p.v.insertSpot = ins = w.getInsertPoint()
+            # From u.doTyping.
+            newSel = w.getSelectionRange()
+            if newSel is None:
+                p.v.selectionStart, p.v.selectionLength = (ins, 0)
+            else:
+                i, j = newSel
+                p.v.selectionStart, p.v.selectionLength = (i, j - i)
+        else:
+            if g.unitTesting:
+                assert False, f"Not a text wrapper: {g.callers()}"  # noqa
+            g.trace('Not a text wrapper')
+            p.v.insertSpot = 0
+            p.v.selectionStart, p.v.selectionLength = (0, 0)
+        if not p.isDirty():
+            p.setDirty()
+        if not c.isChanged():
+            c.setChanged()
+
+        # Update icons.
+        val = p.computeIcon()
+        if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
+            p.v.iconVal = val
+        if p == c.p:
+            # Recolor the body.
+            c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
+            c.recolor()
+            w.setFocus()
+
+    # @+node:ekr.20201127035748.1: *5* u._update_after_typing
+    def _update_after_typing(self, p: Position, w: QTextMixin) -> None:
         """
         Perform all update tasks after changing body text.
 
