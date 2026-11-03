@@ -1673,8 +1673,7 @@ class EditCommandsClass:
                     newSel = ins - 1, ins - 1
                     w.setSelectionRange(ins - 1, ins - 1, insert=ins - 1)
                 else:
-                    # @+<< backspace with negative tab_width >>
-                    # @+node:ekr.20150514063305.254: *5* << backspace with negative tab_width >>
+                    # backspace with negative tab_width
                     s = prev = w.getAllText()
                     ins = w.getInsertPoint()
                     i, j = g.getLine(s, ins)
@@ -1697,7 +1696,6 @@ class EditCommandsClass:
                     newSel = (i, i)
                     w.delete(i, ins)
                     w.setSelectionRange(i, i, insert=i)
-                    # @-<< backspace with negative tab_width >>
                 u.type_text(
                     p,
                     oldSel=oldSel,
