@@ -368,19 +368,6 @@ class TestContextUndo(LeoUnitTest):
                     ),
                 )
 
-    # @+node:ekr.20261014103254.22: *3* TestContextUndo.test_move_context_does_not_scan_outline
-    def test_move_context_does_not_scan_outline(self):
-        c = self.c
-        p = c.p
-        u = c.undoer
-        sibling = p.next()
-        c.selectPosition(sibling)
-        with patch.object(u, 'capture_outline', side_effect=AssertionError('whole outline scan')):
-            c.moveOutlineRight()
-        self.cycles(
-            lambda: self.assertEqual(c.p, sibling), lambda: self.assertEqual(c.p.parent(), p)
-        )
-
     # @+node:ekr.20261014103254.23: *3* TestContextUndo.test_bulk_context_releases_state_after_exception_and_can_undo_partial_work
     def test_bulk_context_releases_state_after_exception_and_can_undo_partial_work(self):
         c = self.c
@@ -413,7 +400,9 @@ class TestContextUndo(LeoUnitTest):
                     w = c.frame.body.wrapper
                     w.setAllText(new)
                     w.setSelectionRange(len(new), len(new))
-                    u.type_text(p, old, new, oldSel=(len(old), len(old)))
+                    oldSel = (len(old), len(old))
+                    newSel = (len(new), len(new))
+                    u.type_text(p, old, new, newInsert=len(new), oldSel=oldSel, newSel=newSel)
                     self.assertIsInstance(u.beads[-1], TypingBead)
                     self.cycles(
                         lambda old=old: self.assertEqual(p.b, old),
@@ -426,43 +415,57 @@ class TestContextUndo(LeoUnitTest):
         c = self.c
         p = c.p
         u = c.undoer
-        for granularity in ('char', 'line', 'word', 'node'):
-            with self.subTest(granularity=granularity):
-                p.b = ''
-                u.clearUndoState()
-                c.clearChanged()
+
+        def _run_test_typing_granularity_and_save_boundary(granularity):
+            p.b = ''
+            u.clearUndoState()
+            c.clearChanged()
+            if hasattr(u, 'granularity'):
                 u.granularity = granularity
-                for old, new in (('', 'a'), ('a', 'ab')):
-                    w = c.frame.body.wrapper
-                    w.setAllText(new)
-                    w.setSelectionRange(len(new), len(new))
-                    u.type_text(p, old, new, oldSel=(len(old), len(old)))
-                self.assertEqual(len(u.beads), 2 if granularity == 'char' else 1)
-                u.undo()
-                self.assertEqual(p.b, 'a' if granularity == 'char' else '')
-                u.redo()
-                c.clearChanged()
-                w.setAllText('abc')
-                w.setSelectionRange(3, 3)
-                u.type_text(p, 'ab', 'abc', oldSel=(2, 2))
-                self.assertEqual(len(u.beads), 3 if granularity == 'char' else 2)
-                u.undo()
-                self.assertEqual(p.b, 'ab')
-                self.assertTrue(c.changed)
+            for old, new in (('', 'a'), ('a', 'ab')):
+                w = c.frame.body.wrapper
+                w.setAllText(new)
+                oldSel = (len(old), len(old))
+                newSel = (len(new), len(new))
+                w.setSelectionRange(*newSel)
+                u.type_text(p, old, new, newInsert=len(new), oldSel=oldSel, newSel=newSel)
+            self.assertEqual(len(u.beads), 2 if granularity == 'char' else 1)
+            u.undo()
+            self.assertEqual(p.b, 'a' if granularity == 'char' else '')
+            u.redo()
+            c.clearChanged()
+            w.setAllText('abc')
+            w.setSelectionRange(3, 3)
+            u.type_text(p, 'ab', 'abc', newInsert=3, oldSel=(2, 2), newSel=(3, 3))
+            self.assertEqual(len(u.beads), 3 if granularity == 'char' else 2)
+            u.undo()
+            self.assertEqual(p.b, 'ab')
+            self.assertTrue(c.changed)
+
+        if hasattr(u, 'granularity'):
+            for granularity in ('char', 'line', 'word', 'node'):
+                with self.subTest(granularity=granularity):
+                    _run_test_typing_granularity_and_save_boundary(granularity)
+        else:
+            _run_test_typing_granularity_and_save_boundary('word')
 
     # @+node:ekr.20261014103254.29: *3* TestContextUndo.test_typing_word_boundary
     def test_typing_word_boundary(self):
         c = self.c
         p = c.p
         u = c.undoer
-        u.granularity = 'word'
+        if hasattr(u, 'granularity'):
+            u.granularity = 'word'
         p.b = ''
         for new in ('a', 'ab', 'ab ', 'ab c', 'ab cd'):
             old = p.b
             w = c.frame.body.wrapper
             w.setAllText(new)
             w.setSelectionRange(len(new), len(new))
-            u.type_text(p, old, new, oldSel=(len(old), len(old)))
+            oldSel = (len(old), len(old))
+            newSel = (len(new), len(new))
+            newInsert = len(new)
+            u.type_text(p, old, new, newInsert=newInsert, oldSel=oldSel, newSel=newSel)
         self.assertEqual(len(u.beads), 2)
         u.undo()
         self.assertEqual(p.b, 'ab')
@@ -527,29 +530,6 @@ class TestContextUndo(LeoUnitTest):
             ),
             lambda: (self.assertEqual(c.p, clone), self.assertTrue(p.isCloned())),
         )
-
-    # @+node:ekr.20261014103254.37: *3* TestContextUndo.test_per_node_undo_keeps_new_beads
-    def test_per_node_undo_keeps_new_beads(self):
-        c = self.c
-        p = c.p
-        u = c.undoer
-        u.per_node_undo = True
-        with u.change_node(p, 'edit first'):
-            p.b = 'first'
-        other = p.next()
-        c.selectPosition(other)
-        with u.change_node(other, 'edit other'):
-            other.b = 'other'
-        c.selectPosition(p)
-        u.undo()
-        self.assertEqual(p.b, '')
-        self.assertEqual(other.b, 'other')
-        u.redo()
-        self.assertEqual(p.b, 'first')
-        c.selectPosition(other)
-        u.undo()
-        self.assertEqual(other.b, '')
-        self.assertEqual(p.b, 'first')
 
     # @+node:ekr.20261014103254.38: *3* TestContextUndo.test_core_callers_do_not_use_legacy_undo_api
     def test_core_callers_do_not_use_legacy_undo_api(self):

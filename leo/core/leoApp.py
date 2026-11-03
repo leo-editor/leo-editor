@@ -2847,7 +2847,7 @@ class LoadManager:
                 A comma-separated list. Valid values are:
                 abbrev, beauty, cache, coloring, drawing, events, focus,
                 git, gnx, keys, layouts, plugins, save, select, sections,
-                shutdown, size, speed, startup, themes, undo, verbose, zoom.
+                shutdown, size, speed, startup, themes, verbose, zoom.
 
           --trace-binding=KEY   trace commands bound to a key
           --trace-setting=NAME  trace where named setting is set
@@ -2998,7 +2998,6 @@ class LoadManager:
                 'speed',
                 'startup',
                 'themes',
-                'undo',
                 'verbose',
                 'zoom',
             ]

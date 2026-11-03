@@ -241,6 +241,7 @@ class QTextMixin:
         w = self
         c = self.c
         p = c.p
+        u = c.undoer
         tree = c.frame.tree
         if w.changingText:
             return
@@ -257,13 +258,12 @@ class QTextMixin:
             return
         i, j = p.v.selectionStart, p.v.selectionLength
         oldSel = (i, i + j)
-        c.undoer.type_text(
+        u.type_text(
             p,
             oldText,
             newText,
-            oldSel=oldSel,
-            oldYview=None,
             newInsert=newInsert,
+            oldSel=oldSel,
             newSel=newSel,
         )
 
@@ -691,6 +691,7 @@ if QtWidgets:
                 """
                 c = self.leo_c
                 p = c.p
+                u = c.undoer
                 w = c.k.autoCompleter.w or c.frame.body.wrapper
                 oldSel = w.getSelectionRange()
                 oldText = w.getAllText()
@@ -710,7 +711,7 @@ if QtWidgets:
                     j = i + len(completion)
                     c.setChanged()
                     w.setInsertPoint(j)
-                    c.undoer.type_text(
+                    u.type_text(
                         p,
                         oldText,
                         newText=w.getAllText(),

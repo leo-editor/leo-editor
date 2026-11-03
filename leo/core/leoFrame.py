@@ -948,7 +948,7 @@ class LeoTree:
         self.unselect_helper(old_p, p)
         # 2. Call set_body_text_after_select.
         self.select_new_node(old_p, p)
-        # 3. Call c.undoer.onSelect.
+        # 3. Change the current postion, part 2.
         self.change_current_position(old_p, p)
         # 4. Set cursor in body.
         self.scroll_cursor(p)
@@ -1026,9 +1026,7 @@ class LeoTree:
             if theChapter:
                 theChapter.p = p.copy()
 
-        # Do not call treeFocusHelper here!
-        # c.treeFocusHelper()
-        c.undoer.onSelect(old_p, p)
+        # Do not call c.treeFocusHelper here!
 
     # @+node:ekr.20140829053801.18459: *5* 4. LeoTree.scroll_cursor
     def scroll_cursor(self, p: Position) -> None:
