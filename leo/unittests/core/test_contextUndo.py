@@ -400,7 +400,9 @@ class TestContextUndo(LeoUnitTest):
                     w = c.frame.body.wrapper
                     w.setAllText(new)
                     w.setSelectionRange(len(new), len(new))
-                    u.type_text(p, old, new, oldSel=(len(old), len(old)))
+                    oldSel = (len(old), len(old))
+                    newSel = (len(new), len(new))
+                    u.type_text(p, old, new, newInsert=len(new), oldSel=oldSel, newSel=newSel)
                     self.assertIsInstance(u.beads[-1], TypingBead)
                     self.cycles(
                         lambda old=old: self.assertEqual(p.b, old),
@@ -422,8 +424,10 @@ class TestContextUndo(LeoUnitTest):
             for old, new in (('', 'a'), ('a', 'ab')):
                 w = c.frame.body.wrapper
                 w.setAllText(new)
-                w.setSelectionRange(len(new), len(new))
-                u.type_text(p, old, new, oldSel=(len(old), len(old)))
+                oldSel = (len(old), len(old))
+                newSel = (len(new), len(new))
+                w.setSelectionRange(*newSel)
+                u.type_text(p, old, new, newInsert=len(new), oldSel=oldSel, newSel=newSel)
             self.assertEqual(len(u.beads), 2 if granularity == 'char' else 1)
             u.undo()
             self.assertEqual(p.b, 'a' if granularity == 'char' else '')
@@ -431,7 +435,7 @@ class TestContextUndo(LeoUnitTest):
             c.clearChanged()
             w.setAllText('abc')
             w.setSelectionRange(3, 3)
-            u.type_text(p, 'ab', 'abc', oldSel=(2, 2))
+            u.type_text(p, 'ab', 'abc', newInsert=3, oldSel=(2, 2), newSel=(3, 3))
             self.assertEqual(len(u.beads), 3 if granularity == 'char' else 2)
             u.undo()
             self.assertEqual(p.b, 'ab')
@@ -456,7 +460,10 @@ class TestContextUndo(LeoUnitTest):
             w = c.frame.body.wrapper
             w.setAllText(new)
             w.setSelectionRange(len(new), len(new))
-            u.type_text(p, old, new, oldSel=(len(old), len(old)))
+            oldSel = (len(old), len(old))
+            newSel = (len(new), len(new))
+            newInsert = len(new)
+            u.type_text(p, old, new, newInsert=newInsert, oldSel=oldSel, newSel=newSel)
         self.assertEqual(len(u.beads), 2)
         u.undo()
         self.assertEqual(p.b, 'ab')

@@ -1662,11 +1662,15 @@ class EditCommandsClass:
                 tab_width = c.getTabWidth(c.p)
                 if i != j:
                     w.delete(i, j)
+                    newInsert = i
+                    newSel = i, i
                     w.setSelectionRange(i, i, insert=i)
                 elif i == 0:
-                    pass
+                    newInsert = i
                 elif tab_width > 0:
                     w.delete(ins - 1)
+                    newInsert = ins - 1
+                    newSel = ins - 1, ins - 1
                     w.setSelectionRange(ins - 1, ins - 1, insert=ins - 1)
                 else:
                     # @+<< backspace with negative tab_width >>
@@ -1689,11 +1693,19 @@ class EditCommandsClass:
                         else:
                             count += 1
                     # Make sure we actually delete something.
-                    i = ins - (max(1, count))
+                    i = newInsert = ins - (max(1, count))
+                    newSel = (i, i)
                     w.delete(i, ins)
                     w.setSelectionRange(i, i, insert=i)
                     # @-<< backspace with negative tab_width >>
-                u.type_text(p, oldSel=oldSel, oldText=p.b, newText=w.getAllText())
+                u.type_text(
+                    p,
+                    oldSel=oldSel,
+                    oldText=p.b,
+                    newSel=newSel,
+                    newInsert=newInsert,
+                    newText=w.getAllText(),
+                )
             return
         # No *direct* undo in this widget.
         # Undo in headlines is handled indirectly.
@@ -2125,7 +2137,6 @@ class EditCommandsClass:
         # Update the text and handle undo.
         newText = w.getAllText()
         if newText != oldText:
-            # Call u.type_text to honor the user's undo granularity.
             newSel = w.getSelectionRange()
             newInsert = w.getInsertPoint()
             newSel = w.getSelectionRange()

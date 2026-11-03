@@ -262,9 +262,8 @@ class QTextMixin:
             p,
             oldText,
             newText,
-            oldSel=oldSel,
-            oldYview=None,
             newInsert=newInsert,
+            oldSel=oldSel,
             newSel=newSel,
         )
 

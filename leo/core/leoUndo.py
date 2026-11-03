@@ -443,9 +443,9 @@ class Undoer:
         oldText: str,
         newText: str,
         *,
-        newInsert: int | None = None,
-        oldSel: tuple[int, int] | None = None,
-        newSel: tuple[int, int] | None = None,
+        newInsert: int,
+        oldSel: tuple[int, int],
+        newSel: tuple[int, int],
         oldYview: int | None = None,
     ) -> None:
         """
@@ -463,12 +463,11 @@ class Undoer:
         newInsert = newInsert if newInsert is not None else w.getInsertPoint()
         scroll = oldYview if oldYview is not None else w.getYScrollPosition()
         bead = u.peekBead(u.bead)
-        can_merge = u._can_merge(oldSel, oldText, newSel, newText)
-        # g.trace(f"{can_merge=}")
-        if can_merge:
+        if u._can_merge(oldSel, oldText, newSel, newText):
             original = bead.replace_middle(oldText, bead.old_lines)
             bead.update_patch(original, newText)
-            bead.new_sel, bead.new_ins = newSel, newInsert  # type:ignore
+            assert isinstance(bead, TypingBead)
+            bead.new_sel, bead.new_ins = newSel, newInsert
         else:
             bead = TypingBead(u, p, oldText, newText, oldSel, newSel, newInsert, scroll)
             u.pushBead(bead)
