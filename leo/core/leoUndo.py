@@ -463,7 +463,7 @@ class Undoer:
         newInsert = newInsert if newInsert is not None else w.getInsertPoint()
         scroll = oldYview if oldYview is not None else w.getYScrollPosition()
         bead = u.peekBead(u.bead)
-        if u._can_merge(oldSel, oldText, newSel, newText):
+        if u._can_merge(oldText=oldText, newText=newText, oldSel=oldSel, newSel=newSel):
             original = bead.replace_middle(oldText, bead.old_lines)
             bead.update_patch(original, newText)
             assert isinstance(bead, TypingBead)
@@ -1156,9 +1156,10 @@ class Undoer:
     # @+node:ekr.20261102022551.1: *4* u._can_merge
     def _can_merge(
         self,
-        oldSel: tuple[int, int] | None,
+        *,
+        oldSel: tuple[int, int],
         oldText: str,
-        newSel: tuple[int, int] | None,
+        newSel: tuple[int, int],
         newText: str,
     ) -> bool:
         """
