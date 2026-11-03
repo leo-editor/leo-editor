@@ -316,7 +316,7 @@ class Undoer:
         'beads',
         'c',
         'capture_level',
-        'granularity',  # Keep, for now, for unit tests.
+        # 'granularity',
         'groupCount',
         'inHead',
         'max_undo_stack_size',
@@ -1175,30 +1175,21 @@ class Undoer:
             not isinstance(bead, TypingBead)  # Intervening command.
             or u.bead != len(u.beads) - 1     # Previous undo.
             or bead.p.v != p.v                # Changed node.
-            or not c.changed                  # ???
+            or not c.changed                  # For unit tests.
         ):  # fmt: skip
-            ### print('Fail 1')
             return False
+
         # All lines *except* the current line must match.
         leading, trailing, _, _ = TypingBead.split_patch(oldText, newText)
         if (leading, trailing) != (bead.leading, bead.trailing):
-            ### print('Fail 2')
             return False
 
-        ###
-        # if u.granularity == 'line':
-        #   return True
-
-        # The hard case: u.granularity == 'word'
-
         # The selection ranges must match.
-        if oldSel is None or newSel is None or bead.new_sel is None:
-            # print(f"Fail 3 {oldSel=} {newSel=} {bead.new_sel=}")
+        if bead.new_sel is None:
             return False
         old_start, old_end = oldSel
         new_start, new_end = newSel
         if old_start != old_end or new_start != new_end:
-            # print('Fail 4')
             return False
 
         # The position of the lines must match.
@@ -1211,15 +1202,12 @@ class Undoer:
             or old_row != new_row
             or abs(new_col - prev_col) != 1
         ):  # fmt: skip
-            # print(f"Fail 5 {old_col=} {new_col=} {prev_col=}")
             return False
+
+        # We must not be starting a new word.
         old_ch = oldText[old_start - 1]
         new_ch = newText[new_start - 1]
-        # We must not be starting a new word.
-
         can_merge = not (not old_ch.isspace() and new_ch.isspace())
-        # if not g.unitTesting:
-        #     g.trace(f"{can_merge=}")
         return can_merge
 
     # @+node:vivainio.202610110004.1: *4* u._require_bead

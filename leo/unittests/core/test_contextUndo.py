@@ -420,7 +420,8 @@ class TestContextUndo(LeoUnitTest):
             p.b = ''
             u.clearUndoState()
             c.clearChanged()
-            u.granularity = granularity
+            if hasattr(u, 'granularity'):
+                u.granularity = granularity
             for old, new in (('', 'a'), ('a', 'ab')):
                 w = c.frame.body.wrapper
                 w.setAllText(new)
@@ -453,7 +454,8 @@ class TestContextUndo(LeoUnitTest):
         c = self.c
         p = c.p
         u = c.undoer
-        u.granularity = 'word'
+        if hasattr(u, 'granularity'):
+            u.granularity = 'word'
         p.b = ''
         for new in ('a', 'ab', 'ab ', 'ab c', 'ab cd'):
             old = p.b
