@@ -1170,10 +1170,10 @@ class Undoer:
         if (
             ### u.granularity == 'char'
             not isinstance(bead, TypingBead)  # Intervening command.
-            or u.bead != len(u.beads) - 1  # Previous undo.
-            or bead.p.v != p.v  # Changed node.
-            or not c.changed
-        ):
+            or u.bead != len(u.beads) - 1     # Previous undo.
+            or bead.p.v != p.v                # Changed node.
+            or not c.changed                  # ???
+        ):  # fmt: skip
             ### print('Fail 1')
             return False
         # All lines *except* the current line must match.
