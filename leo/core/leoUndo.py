@@ -1167,22 +1167,22 @@ class Undoer:
         assert bead is None or isinstance(bead, UndoBead), repr(bead)
         c = u.c
         p = c.p
-        # A save, intervening command, selection change, or undo prevents
         if (
-            # u.granularity == 'char'
-            not isinstance(bead, TypingBead)
-            or u.bead != len(u.beads) - 1
-            or bead.p.v != p.v
+            ### u.granularity == 'char'
+            not isinstance(bead, TypingBead)  # Intervening command.
+            or u.bead != len(u.beads) - 1  # Previous undo.
+            or bead.p.v != p.v  # Changed node.
             or not c.changed
         ):
-            if not g.unitTesting:
-                print('Fail 1')
+            ### print('Fail 1')
             return False
         # All lines *except* the current line must match.
         leading, trailing, _, _ = TypingBead.split_patch(oldText, newText)
         if (leading, trailing) != (bead.leading, bead.trailing):
-            print('Fail 2')
+            ### print('Fail 2')
             return False
+
+        ###
         # if u.granularity == 'line':
         #   return True
 
@@ -1190,12 +1190,12 @@ class Undoer:
 
         # The selection ranges must match.
         if oldSel is None or newSel is None or bead.new_sel is None:
-            print(f"Fail 3 {oldSel=} {newSel=} {bead.new_sel=}")
+            # print(f"Fail 3 {oldSel=} {newSel=} {bead.new_sel=}")
             return False
         old_start, old_end = oldSel
         new_start, new_end = newSel
         if old_start != old_end or new_start != new_end:
-            print('Fail 4')
+            # print('Fail 4')
             return False
 
         # The position of the lines must match.
@@ -1208,15 +1208,15 @@ class Undoer:
             or old_row != new_row
             or abs(new_col - prev_col) != 1
         ):  # fmt: skip
-            print(f"Fail 5 {old_col=} {new_col=} {prev_col=}")
+            # print(f"Fail 5 {old_col=} {new_col=} {prev_col=}")
             return False
         old_ch = oldText[old_start - 1]
         new_ch = newText[new_start - 1]
         # We must not be starting a new word.
 
         can_merge = not (not old_ch.isspace() and new_ch.isspace())
-        if not g.unitTesting:
-            g.trace(f"{can_merge=}")
+        # if not g.unitTesting:
+        #     g.trace(f"{can_merge=}")
         return can_merge
 
     # @+node:vivainio.202610110004.1: *4* u._require_bead
