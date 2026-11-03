@@ -65,13 +65,16 @@ leoVersion.version:     Leo's version number.
 # 6.8.9:  June 1, 2026.
 # 6.8.10: August 17, 2026.
 # @-<< version dates >>
-try:
-    from importlib.metadata import version as _installed_version
-
-    version = _installed_version('leo')
-except Exception:
-    # Not pip-installed (e.g. running from a git checkout): version is unknown.
+if 1:
     version = '6.8.11.dev1'
+else:
+    try:
+        from importlib.metadata import version as _installed_version
+
+        version = _installed_version('leo')
+    except Exception:
+        # Not pip-installed (e.g. running from a git checkout): version is unknown.
+        version = '6.8.11.dev1'
 static_date = 'August 19, 2026'
 # @@language python
 # @@tabwidth -4
