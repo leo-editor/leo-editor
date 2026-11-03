@@ -2689,17 +2689,6 @@ class AtFile:
         if contents == results:
             return True
 
-        if 0:  # Debugging only.
-            sfn = g.shortFileName(filename)
-            diff = difflib.unified_diff(
-                g.splitLines(contents),
-                g.splitLines(results),
-                fromfile=f"Old: {sfn}",
-                tofile=f"New {sfn}",
-            )
-            g.printObj(list(diff), tag=f"Diff: {sfn}")
-
-        # Snapshot before the reload: refreshFromDisk may also replace children.
         with u.change_outline('ruff-format'):
             g.es(f"beautified: {g.shortFileName(filename)}", color='blue')
             c.refreshFromDisk(root)
