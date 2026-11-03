@@ -1207,8 +1207,7 @@ class Undoer:
         # We must not be starting a new word.
         old_ch = oldText[old_start - 1]
         new_ch = newText[new_start - 1]
-        can_merge = not (not old_ch.isspace() and new_ch.isspace())
-        return can_merge
+        return not (not old_ch.isspace() and new_ch.isspace())
 
     # @+node:vivainio.202610110004.1: *4* u._require_bead
     def _require_bead(self) -> UndoBead:
