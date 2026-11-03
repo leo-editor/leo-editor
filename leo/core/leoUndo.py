@@ -316,7 +316,7 @@ class Undoer:
         'beads',
         'c',
         'capture_level',
-        # 'granularity',
+        ### 'granularity',
         'groupCount',
         'inHead',
         'max_undo_stack_size',
@@ -357,7 +357,7 @@ class Undoer:
         self.undoMenuLabel = "Can't Undo"
         self.undoType = "Can't Undo"
         self.undoing = False
-        # Update settings.
+        ### Update settings.
         self.reloadSettings()
 
     # @+node:ekr.20261102104518.1: *3* u: Entries
@@ -426,7 +426,7 @@ class Undoer:
         u.setUndoTypes()
 
     # @+node:ekr.20191213085126.1: *4* u.reloadSettings
-    def reloadSettings(self) -> None:
+    def reloadSettings(self) -> None:  ###
         """Undoer.reloadSettings."""
         c = self.c
         if 0:
