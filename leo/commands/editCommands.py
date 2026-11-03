@@ -1656,7 +1656,7 @@ class EditCommandsClass:
             return
         wname = c.widget_name(w)
         ins = w.getInsertPoint()
-        i, j = w.getSelectionRange()
+        i, j = oldSel = w.getSelectionRange()
         if wname.startswith('body'):
             with u.change_node(p, 'backward-delete-char'):
                 tab_width = c.getTabWidth(c.p)
@@ -1693,7 +1693,7 @@ class EditCommandsClass:
                     w.delete(i, ins)
                     w.setSelectionRange(i, i, insert=i)
                     # @-<< backspace with negative tab_width >>
-                u.type_text(p, oldText=p.b, newText=w.getAllText())
+                u.type_text(p, oldSel=oldSel, oldText=p.b, newText=w.getAllText())
             return
         # No *direct* undo in this widget.
         # Undo in headlines is handled indirectly.

@@ -1190,7 +1190,7 @@ class Undoer:
 
         # The selection ranges must match.
         if oldSel is None or newSel is None or bead.new_sel is None:
-            print('Fail 3')
+            print(f"Fail 3 {oldSel=} {newSel=} {bead.new_sel=}")
             return False
         old_start, old_end = oldSel
         new_start, new_end = newSel
@@ -1208,7 +1208,7 @@ class Undoer:
             or old_row != new_row
             or abs(new_col - prev_col) != 1
         ):  # fmt: skip
-            print('Fail 5')
+            print(f"Fail 5 {old_col=} {new_col=} {prev_col=}")
             return False
         old_ch = oldText[old_start - 1]
         new_ch = newText[new_start - 1]
