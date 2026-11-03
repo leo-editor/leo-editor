@@ -459,10 +459,6 @@ class Undoer:
         newSel = newSel if newSel is not None else w.getSelectionRange()
         newInsert = newInsert if newInsert is not None else w.getInsertPoint()
         scroll = oldYview if oldYview is not None else w.getYScrollPosition()
-        if u.undoBead is not None:
-            # Typing within an explicit command belongs to that command's bead.
-            u.set_body(p, newText, old_body=oldText)
-            return
         bead = u.peekBead(u.bead)
         can_merge = u._can_merge(oldSel, oldText, newSel, newText)
         # g.trace(f"{can_merge=}")
@@ -1179,10 +1175,13 @@ class Undoer:
             or bead.p.v != p.v
             or not c.changed
         ):
+            if not g.unitTesting:
+                print('Fail 1')
             return False
         # All lines *except* the current line must match.
         leading, trailing, _, _ = TypingBead.split_patch(oldText, newText)
         if (leading, trailing) != (bead.leading, bead.trailing):
+            print('Fail 2')
             return False
         # if u.granularity == 'line':
         #   return True
@@ -1191,10 +1190,12 @@ class Undoer:
 
         # The selection ranges must match.
         if oldSel is None or newSel is None or bead.new_sel is None:
+            print('Fail 3')
             return False
         old_start, old_end = oldSel
         new_start, new_end = newSel
         if old_start != old_end or new_start != new_end:
+            print('Fail 4')
             return False
 
         # The position of the lines must match.
@@ -1205,13 +1206,18 @@ class Undoer:
             old_col == 0
             or new_col == 0
             or old_row != new_row
-            or new_col != prev_col + 1
+            or abs(new_col - prev_col) != 1
         ):  # fmt: skip
+            print('Fail 5')
             return False
         old_ch = oldText[old_start - 1]
         new_ch = newText[new_start - 1]
         # We must not be starting a new word.
-        return not (not old_ch.isspace() and new_ch.isspace())
+
+        can_merge = not (not old_ch.isspace() and new_ch.isspace())
+        if not g.unitTesting:
+            g.trace(f"{can_merge=}")
+        return can_merge
 
     # @+node:vivainio.202610110004.1: *4* u._require_bead
     def _require_bead(self) -> UndoBead:
