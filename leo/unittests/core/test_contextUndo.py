@@ -413,29 +413,36 @@ class TestContextUndo(LeoUnitTest):
         c = self.c
         p = c.p
         u = c.undoer
-        for granularity in ('char', 'line', 'word', 'node'):
-            with self.subTest(granularity=granularity):
-                p.b = ''
-                u.clearUndoState()
-                c.clearChanged()
-                u.granularity = granularity
-                for old, new in (('', 'a'), ('a', 'ab')):
-                    w = c.frame.body.wrapper
-                    w.setAllText(new)
-                    w.setSelectionRange(len(new), len(new))
-                    u.type_text(p, old, new, oldSel=(len(old), len(old)))
-                self.assertEqual(len(u.beads), 2 if granularity == 'char' else 1)
-                u.undo()
-                self.assertEqual(p.b, 'a' if granularity == 'char' else '')
-                u.redo()
-                c.clearChanged()
-                w.setAllText('abc')
-                w.setSelectionRange(3, 3)
-                u.type_text(p, 'ab', 'abc', oldSel=(2, 2))
-                self.assertEqual(len(u.beads), 3 if granularity == 'char' else 2)
-                u.undo()
-                self.assertEqual(p.b, 'ab')
-                self.assertTrue(c.changed)
+
+        def _run_test_typing_granularity_and_save_boundary(granularity):
+            p.b = ''
+            u.clearUndoState()
+            c.clearChanged()
+            u.granularity = granularity
+            for old, new in (('', 'a'), ('a', 'ab')):
+                w = c.frame.body.wrapper
+                w.setAllText(new)
+                w.setSelectionRange(len(new), len(new))
+                u.type_text(p, old, new, oldSel=(len(old), len(old)))
+            self.assertEqual(len(u.beads), 2 if granularity == 'char' else 1)
+            u.undo()
+            self.assertEqual(p.b, 'a' if granularity == 'char' else '')
+            u.redo()
+            c.clearChanged()
+            w.setAllText('abc')
+            w.setSelectionRange(3, 3)
+            u.type_text(p, 'ab', 'abc', oldSel=(2, 2))
+            self.assertEqual(len(u.beads), 3 if granularity == 'char' else 2)
+            u.undo()
+            self.assertEqual(p.b, 'ab')
+            self.assertTrue(c.changed)
+
+        if hasattr(u, 'granularity'):
+            for granularity in ('char', 'line', 'word', 'node'):
+                with self.subTest(granularity=granularity):
+                    _run_test_typing_granularity_and_save_boundary(granularity)
+        else:
+            _run_test_typing_granularity_and_save_boundary('word')
 
     # @+node:ekr.20261014103254.29: *3* TestContextUndo.test_typing_word_boundary
     def test_typing_word_boundary(self):

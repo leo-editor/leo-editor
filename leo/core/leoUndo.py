@@ -316,7 +316,7 @@ class Undoer:
         'beads',
         'c',
         'capture_level',
-        'granularity',
+        'granularity',  # Keep, for now, for unit tests.
         'groupCount',
         'inHead',
         'max_undo_stack_size',
@@ -342,7 +342,7 @@ class Undoer:
         self.bead = -1  # Index of the present bead.
         self.beads = []  # List of undo nodes.
         self.capture_level = 0
-        self.granularity = None  # Set in reloadSettings.
+        # self.granularity = None  # Set in reloadSettings.
         self.groupCount = 0
         self.inHead = False
         self.max_undo_stack_size = c.config.getInt('max-undo-stack-size') or 0
@@ -426,11 +426,12 @@ class Undoer:
     def reloadSettings(self) -> None:
         """Undoer.reloadSettings."""
         c = self.c
-        self.granularity = c.config.getString('undo-granularity')
-        if self.granularity:
-            self.granularity = self.granularity.lower()
-        if self.granularity not in ('node', 'line', 'word', 'char'):
-            self.granularity = 'line'
+        if 0:
+            self.granularity = c.config.getString('undo-granularity')
+            if self.granularity:
+                self.granularity = self.granularity.lower()
+            if self.granularity not in ('node', 'line', 'word', 'char'):
+                self.granularity = 'line'
 
     # @+node:vivainio.202610110002.2: *4* u.type_text and helper
     def type_text(
@@ -1172,8 +1173,8 @@ class Undoer:
         p = c.p
         # A save, intervening command, selection change, or undo prevents
         if (
-            u.granularity == 'char'
-            or not isinstance(bead, TypingBead)
+            # u.granularity == 'char'
+            not isinstance(bead, TypingBead)
             or u.bead != len(u.beads) - 1
             or bead.p.v != p.v
             or not c.changed
@@ -1183,8 +1184,8 @@ class Undoer:
         leading, trailing, _, _ = TypingBead.split_patch(oldText, newText)
         if (leading, trailing) != (bead.leading, bead.trailing):
             return False
-        if u.granularity == 'line':
-            return True
+        # if u.granularity == 'line':
+        #   return True
 
         # The hard case: u.granularity == 'word'
 
