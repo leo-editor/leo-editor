@@ -818,9 +818,9 @@ class Undoer:
             finally:
                 u.node_captures.remove(p.v)
                 new_p = c.p
-                u._redraw(new_p)  # PR #5005. Calls new_p.setDirty()
                 new_state = u.capture_node(p.v)
                 if old_state != new_state:
+                    u._redraw(new_p)  # PR #5027 Redraw only if node has changed.
                     new_ui = u.capture_ui()
 
                     def change_node_redoer() -> None:
