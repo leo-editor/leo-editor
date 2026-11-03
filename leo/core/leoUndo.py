@@ -428,13 +428,13 @@ class Undoer:
     # @+node:ekr.20191213085126.1: *4* u.reloadSettings
     def reloadSettings(self) -> None:  ###
         """Undoer.reloadSettings."""
-        c = self.c
-        if 0:
-            self.granularity = c.config.getString('undo-granularity')
-            if self.granularity:
-                self.granularity = self.granularity.lower()
-            if self.granularity not in ('node', 'line', 'word', 'char'):
-                self.granularity = 'line'
+        # c = self.c
+        # if 0:
+        #     self.granularity = c.config.getString('undo-granularity')
+        #     if self.granularity:
+        #         self.granularity = self.granularity.lower()
+        #     if self.granularity not in ('node', 'line', 'word', 'char'):
+        #         self.granularity = 'line'
 
     # @+node:vivainio.202610110002.2: *4* u.type_text and helper
     def type_text(
