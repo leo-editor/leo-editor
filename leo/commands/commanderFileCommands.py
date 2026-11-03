@@ -492,9 +492,7 @@ def refreshFromDisk(
     c.fileCommands.handleNodeConflicts()
     c.setChanged()
     c.redraw(update_p)  # Select a valid position!
-    if u.undoBeadLevel == 0:  # PR #5025
-        # We aren't in undo code.
-        u.clearAndWarn('refresh-from-disk')
+    u.clearAndWarn('refresh-from-disk')
 
 
 # @+node:ekr.20210610083257.1: *3* c_file.pwd

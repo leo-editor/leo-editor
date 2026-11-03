@@ -375,11 +375,14 @@ class Undoer:
     # @+node:ekr.20230714012821.1: *4* u.clearAndWarn
     def clearAndWarn(self, command_name: str) -> None:
         """
-        Clear all undo state. However, the warning is annoying.
+        Clear all undo state, but *only* if we aren't in an undo-related `with` block.
         """
         u = self
-        u.clearUndoState()
-        # g.es_print_unique_message(f"{command_name} is not undoable")
+        if u.undoBeadLevel == 0:  # PR #5025
+            # We aren't in undo code.
+            u.clearUndoState()
+            # This message would be annoying.
+            # g.es_print_unique_message(f"{command_name} is not undoable")
 
     # @+node:ekr.20031218072017.3609: *4* u.clearUndoState
     def clearUndoState(self) -> None:
