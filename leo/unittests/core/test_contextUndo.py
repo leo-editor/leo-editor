@@ -277,7 +277,7 @@ class TestContextUndo(LeoUnitTest):
         event = LeoKeyEvent(c, char=';', binding=';', w=w)
         self.assertTrue(x.expandAbbrev(event=event, stroke=None))
 
-        # The headline editor must still exist and contain the expansion.
+        # Check the headline wrapper.
         w2 = c.headline_wrapper(p)
         self.assertIsNotNone(w2)
         self.assertEqual(w2.getAllText(), expected)
