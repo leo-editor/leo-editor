@@ -277,14 +277,15 @@ class TestContextUndo(LeoUnitTest):
         expected = definition[i + 2 :]
 
         # Monkey-patch c.redraw_tree.
-        original_redraw_tree = tree.redraw_tree
+        if 0:
+            original_redraw_tree = tree.redraw_tree
 
-        def redraw_tree(p=None):
-            # Emulate LeoQtTree.redraw_tree: the redraw destroys the editor.
-            tree.editWidgetsDict.clear()
-            return original_redraw_tree(p)
+            def redraw_tree(p=None):
+                # Emulate LeoQtTree.redraw_tree: the redraw destroys the editor.
+                tree.editWidgetsDict.clear()
+                return original_redraw_tree(p)
 
-        tree.redraw_tree = redraw_tree
+            tree.redraw_tree = redraw_tree
 
         # Setup.
         c.editHeadline()
