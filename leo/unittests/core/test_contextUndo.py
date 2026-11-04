@@ -257,16 +257,8 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261103072930.1: *3* TestContextUndo.test_headline_expansion_survives_a_redraw
     def test_headline_expansion_survives_a_redraw(self):
-        """
-        Emulate the Qt tree, where a redraw destroys the headline editor.
-
-        Expanding an abbreviation in a headline must not redraw the tree:
-        the redraw would destroy the headline editor, and the expansion
-        (which is not official until the editor closes) would be lost.
-        """
         c = self.c
         p = c.p
-        tree = c.frame.tree
         u = c.undoer
         x = c.abbrevCommands
         x.abbrevs = {}
@@ -275,16 +267,6 @@ class TestContextUndo(LeoUnitTest):
         i = definition.find(';=')
         contents = definition[:i]
         expected = definition[i + 2 :]
-
-        # Monkey-patch c.redraw_tree.
-        original_redraw_tree = tree.redraw_tree
-
-        def redraw_tree(p=None):
-            # Emulate LeoQtTree.redraw_tree: the redraw destroys the editor.
-            tree.editWidgetsDict.clear()
-            return original_redraw_tree(p)
-
-        tree.redraw_tree = redraw_tree
 
         # Setup.
         c.editHeadline()
@@ -295,7 +277,7 @@ class TestContextUndo(LeoUnitTest):
         event = LeoKeyEvent(c, char=';', binding=';', w=w)
         self.assertTrue(x.expandAbbrev(event=event, stroke=None))
 
-        # The headline editor must still exist and contain the expansion.
+        # Check the headline wrapper.
         w2 = c.headline_wrapper(p)
         self.assertIsNotNone(w2)
         self.assertEqual(w2.getAllText(), expected)

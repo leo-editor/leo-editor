@@ -1616,7 +1616,7 @@ class NullTree(LeoTree):
             if w := d.get(key):
                 g.pr('w', w, 'v.h:', key.headString, 's:', repr(w.s))
 
-    # @+node:ekr.20070228163350.1: *3* NullTree.redraw_tree and scrollTo
+    # @+node:ekr.20070228163350.1: *3* NullTree.redraw_tree
     def redraw_tree(self, p: Position | None = None) -> Position | None:
         self.redrawCount += 1
         return p
@@ -1625,12 +1625,7 @@ class NullTree(LeoTree):
     redraw_after_expand = redraw_tree
     redraw_now = redraw_tree
     redraw_after_select = redraw_tree
-
-    def redraw_after_head_changed(self) -> None:
-        pass
-
-    def scrollTo(self, p: Position) -> None:
-        pass
+    redraw_after_head_changed = redraw_tree
 
     # @+node:ekr.20070228160345: *3* NullTree.setHeadline
     def setHeadline(self, p: Position, s: str) -> None:
