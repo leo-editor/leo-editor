@@ -196,7 +196,11 @@ class StringTextWrapper(QTextMixin):
 
     # @+node:ekr.20140903172510.18600: *4* StringTextWrapper.setAllText
     def setAllText(self, s: str) -> None:
-        """StringTextWrapper."""
+        """
+        StringTextWrapper.setAllText.
+
+        Set the text and set the insert point to len(s).
+        """
         self.s = s
         i = len(self.s)
         self.ins = i
