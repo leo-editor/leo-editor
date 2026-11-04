@@ -732,28 +732,16 @@ class TestFind(LeoUnitTest):
                 got_i, got_j = x._inner_search_backward(s, i, j, pattern, nocase=nocase, word=word)
                 got = s[got_i:got_j]
                 assert expected == got and got_i == expected_i and got_j == expected_j, (
-                    '\n     table: %s'
-                    '\n    i test: %s'
-                    '\n   pattern: %r'
-                    '\n         s: %r'
-                    '\n  expected: %r'
-                    '\n       got: %r'
-                    '\nexpected i: %s'
-                    '\n     got i: %s'
-                    '\nexpected j: %s'
-                    '\n     got j: %s'
-                    % (
-                        table_name,
-                        test_n,
-                        pattern,
-                        s,
-                        expected,
-                        got,
-                        expected_i,
-                        got_i,
-                        expected_j,
-                        got_j,
-                    )
+                    f"\n     table: {table_name}"
+                    f"\n    i test: {test_n}"
+                    f"\n   pattern: {pattern!r}"
+                    f"\n         s: {s!r}"
+                    f"\n  expected: {expected!r}"
+                    f"\n       got: {got!r}"
+                    f"\nexpected i: {expected_i}"
+                    f"\n     got i: {got_i}"
+                    f"\nexpected j: {expected_j}"
+                    f"\n     got j: {got_j}"
                 )
 
         plain_table = (
@@ -789,28 +777,16 @@ class TestFind(LeoUnitTest):
                 got_i, got_j = x._inner_search_plain(s, i, j, pattern, nocase=nocase, word=word)
                 got = s[got_i:got_j]
                 assert expected == got and got_i == expected_i and got_j == expected_j, (
-                    '\n     table: %s'
-                    '\n    i test: %s'
-                    '\n   pattern: %r'
-                    '\n         s: %r'
-                    '\n  expected: %r'
-                    '\n       got: %r'
-                    '\nexpected i: %s'
-                    '\n     got i: %s'
-                    '\nexpected j: %s'
-                    '\n     got j: %s'
-                    % (
-                        table_name,
-                        test_n,
-                        pattern,
-                        s,
-                        expected,
-                        got,
-                        expected_i,
-                        got_i,
-                        expected_j,
-                        got_j,
-                    )
+                    f"\n     table: {table_name}"
+                    f"\n    i test: {test_n}"
+                    f"\n   pattern: {pattern!r}"
+                    f"\n         s: {s!r}"
+                    f"\n  expected: {expected!r}"
+                    f"\n       got: {got!r}"
+                    f"\nexpected i: {expected_i}"
+                    f"\n     got i: {got_i}"
+                    f"\nexpected j: {expected_j}"
+                    f"\n     got j: {got_j}"
                 )
 
         plain_table = (
