@@ -316,7 +316,6 @@ class Undoer:
         'beads',
         'c',
         'capture_level',
-        ### 'granularity',
         'groupCount',
         'inHead',
         'max_undo_stack_size',
@@ -357,8 +356,6 @@ class Undoer:
         self.undoMenuLabel = "Can't Undo"
         self.undoType = "Can't Undo"
         self.undoing = False
-        ### Update settings.
-        self.reloadSettings()
 
     # @+node:ekr.20261102104518.1: *3* u: Entries
     # @+node:ekr.20031218072017.3610: *4* u.canRedo & canUndo
@@ -424,17 +421,6 @@ class Undoer:
             u.redoing = False
         u.bead += 1
         u.setUndoTypes()
-
-    # @+node:ekr.20191213085126.1: *4* u.reloadSettings
-    def reloadSettings(self) -> None:  ###
-        """Undoer.reloadSettings."""
-        # c = self.c
-        # if 0:
-        #     self.granularity = c.config.getString('undo-granularity')
-        #     if self.granularity:
-        #         self.granularity = self.granularity.lower()
-        #     if self.granularity not in ('node', 'line', 'word', 'char'):
-        #         self.granularity = 'line'
 
     # @+node:vivainio.202610110002.2: *4* u.type_text and helper
     def type_text(
@@ -1171,7 +1157,6 @@ class Undoer:
         c = u.c
         p = c.p
         if (
-            ### u.granularity == 'char'
             not isinstance(bead, TypingBead)  # Intervening command.
             or u.bead != len(u.beads) - 1     # Previous undo.
             or bead.p.v != p.v                # Changed node.
