@@ -257,16 +257,8 @@ class TestContextUndo(LeoUnitTest):
 
     # @+node:ekr.20261103072930.1: *3* TestContextUndo.test_headline_expansion_survives_a_redraw
     def test_headline_expansion_survives_a_redraw(self):
-        """
-        Emulate the Qt tree, where a redraw destroys the headline editor.
-
-        Expanding an abbreviation in a headline must not redraw the tree:
-        the redraw would destroy the headline editor, and the expansion
-        (which is not official until the editor closes) would be lost.
-        """
         c = self.c
         p = c.p
-        tree = c.frame.tree
         u = c.undoer
         x = c.abbrevCommands
         x.abbrevs = {}
