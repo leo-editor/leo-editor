@@ -75,14 +75,15 @@ class AbbrevCommandsClass:
 
         Return True if the abbreviation was expanded.
         """
-        # Define ins, prefixes, self.in_head and self.w
-        # Return if there is nothing to do.
-        # @+<< expandAbbrev: prolog >>
-        # @+node:ekr.20260516052046.1: *4* << expandAbbrev: prolog >>
         c = self.c
         ch = self.get_ch(event, stroke)
         w = event.w if event else c.frame.body.wrapper
-        if self.expanding or not g.isTextWrapper(w) or w.hasSelection() or not ch.strip():
+        if (
+            self.expanding
+            or not g.isTextWrapper(w) 
+            or w.hasSelection()
+            or not ch.strip()
+        ):  # fmt: skip
             return False
         w_name = g.app.gui.widget_name(w)
         if not w_name.startswith(('body', 'head')):
@@ -97,7 +98,6 @@ class AbbrevCommandsClass:
         # Set local ivars.
         self.in_head = w_name.startswith('head')
         self.w = w
-        # @-<< expandAbbrev: prolog >>
 
         # Try to match an abbreviation.
         for prefix in prefixes:
@@ -109,6 +109,7 @@ class AbbrevCommandsClass:
                 self.init_place_holder_search(node_only=False)
                 return True
             if expansion := self.abbrevs.get(word):
+                g.trace('***')
                 self.replace_selection(i, ins, expansion)
                 self.make_script_substitutions(word)
                 self.init_place_holder_search(node_only=True)
@@ -250,6 +251,7 @@ class AbbrevCommandsClass:
             if any(find_template(z) for z in (p.h, p.b)):
                 break
         else:
+            g.trace('FAIL')
             return
 
         # Tell the search command to restore settings on failure.
@@ -272,8 +274,13 @@ class AbbrevCommandsClass:
         w = self.w
         if self.in_head:
             # #5021: Do *not* use u.change_node in headlines!
+            g.trace(f"{w.getSelectionRange()=}")  ### Wrong.
             w.delete(i, j)
             w.insert(i, s)
+            g.trace(f"{i=} {j=} {s=}")
+            ### w.setSelectionRange(j, j + len(s), insert=i)  ### Experimental
+            g.trace(f"{w=} {w.getSelectionRange()=}\n{w.getAllText()=}")
+            ### p.v.h = w.getAllText()  ### Experimental.
             return
         with u.change_node(p, 'replace-selection'):
             w.delete(i, j)

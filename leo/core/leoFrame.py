@@ -1619,7 +1619,7 @@ class NullTree(LeoTree):
     # @+node:ekr.20070228163350.1: *3* NullTree.redraw_tree and scrollTo
     def redraw_tree(self, p: Position | None = None) -> Position | None:
         self.redrawCount += 1
-        self.editWidgetsDict.clear()  ### PR: xxxx
+        ### self.editWidgetsDict.clear()  ### PR #5029
         return p
 
     redraw_after_contract = redraw_tree

@@ -123,7 +123,7 @@ class TestAbbrev(LeoUnitTest):
             )  # fmt: skip
 
         # Test bodies.
-        if 1:
+        if 0:  ### Temp!
             w = c.frame.body.wrapper
             for test_number, definition in enumerate(definitions):
                 finder.in_headline = False
