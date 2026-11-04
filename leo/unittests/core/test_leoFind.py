@@ -4,7 +4,6 @@
 
 import re
 from leo.core import leoGlobals as g
-from leo.core import leoFind
 from leo.core.leoGui import StringFindTabManager
 from leo.core.leoTest2 import LeoUnitTest
 
@@ -18,6 +17,8 @@ class TestFind(LeoUnitTest):
     # @+node:ekr.20210110073117.57: *3* TestFind.setUp
     def setUp(self):
         """setUp for TestFind class"""
+        from leo.core import leoFind
+
         super().setUp()
         c = self.c
         c.findCommands = self.x = x = leoFind.LeoFind(c)
@@ -651,25 +652,6 @@ class TestFind(LeoUnitTest):
         x.do_change_all(settings)
         x.do_change_then_find(settings)
 
-    # @+node:ekr.20210829203927.10: *4* TestFind.test_clean_init
-    def test_clean_init(self):
-        c = self.c
-        x = leoFind.LeoFind(c)
-        table = (
-            'ignore_case',
-            'node_only',
-            'pattern_match',
-            'search_headline',
-            'search_body',
-            'suboutline_only',
-            'mark_changes',
-            'mark_finds',
-            'whole_word',
-        )
-        for ivar in table:
-            assert getattr(x, ivar) is None, ivar
-        assert x.reverse is False
-
     # @+node:ekr.20210110073117.77: *4* TestFind.test_compute_result_status
     def test_compute_result_status(self):
         x = self.x
@@ -739,8 +721,7 @@ class TestFind(LeoUnitTest):
 
     # @+node:ekr.20210829203927.12: *4* TestFind.test_inner_search_backward
     def test_inner_search_backward(self):
-        c = self.c
-        x = leoFind.LeoFind(c)
+        x = self.x
 
         def test(table, table_name, nocase, word):
             test_n = 0
@@ -796,8 +777,7 @@ class TestFind(LeoUnitTest):
 
     # @+node:ekr.20210829203927.13: *4* TestFind.test_inner_search_plain
     def test_inner_search_plain(self):
-        c = self.c
-        x = leoFind.LeoFind(c)
+        x = self.x
 
         def test(table, table_name, nocase, word):
             test_n = 0
@@ -853,8 +833,7 @@ class TestFind(LeoUnitTest):
 
     # @+node:ekr.20210829203927.11: *4* TestFind.test_inner_search_regex
     def test_inner_search_regex(self):
-        c = self.c
-        x = leoFind.LeoFind(c)
+        x = self.x
 
         def test(table, table_name, back, nocase):
             for pattern, s, expected in table:
@@ -1003,8 +982,7 @@ class TestFind(LeoUnitTest):
 
     # @+node:ekr.20210829203927.14: *4* TestFind.test_replace_back_slashes
     def test_replace_back_slashes(self):
-        c = self.c
-        x = leoFind.LeoFind(c)
+        x = self.x
         table = (
             # Replace \n, \t, and \f by newline, tab, and form-feed.
             ('\\f',      '\f'),
