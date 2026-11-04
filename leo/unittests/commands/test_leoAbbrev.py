@@ -152,7 +152,7 @@ class TestAbbrev(LeoUnitTest):
                 event = LeoKeyEvent(c, char=';', binding=';', w=w)
                 x.expandAbbrev(event=event, stroke=None)
                 test_contents('head', w.getAllText(), expected)
-                ### test_selection('head', w, expected_selections[test_number])
+                test_selection('head', w, expected_selections[test_number])
                 c.endEditing()
                 expected_p_h = expected.replace('\n', ' ').replace('  ', ' ')
                 test_contents('head', p.h, expected_p_h)

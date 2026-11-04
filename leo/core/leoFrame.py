@@ -1619,7 +1619,6 @@ class NullTree(LeoTree):
     # @+node:ekr.20070228163350.1: *3* NullTree.redraw_tree & redraw_after_head_changed
     def redraw_tree(self, p: Position | None = None) -> Position | None:
         self.redrawCount += 1
-        self.editWidgetsDict.clear()  # PR #5029
         return p
 
     redraw_after_contract = redraw_tree
@@ -1628,8 +1627,6 @@ class NullTree(LeoTree):
     redraw_after_select = redraw_tree
 
     def redraw_after_head_changed(self) -> None:
-        # Called from c.endEditing and redraw_after_head_changed_finisher
-        # g.trace(g.callers(3))
         pass
 
     # @+node:ekr.20070228160345: *3* NullTree.setHeadline
