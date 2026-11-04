@@ -1667,6 +1667,7 @@ class EditCommandsClass:
                     w.setSelectionRange(i, i, insert=i)
                 elif i == 0:
                     newInsert = i
+                    newSel = i, i
                 elif tab_width > 0:
                     w.delete(ins - 1)
                     newInsert = ins - 1
@@ -1692,7 +1693,8 @@ class EditCommandsClass:
                         else:
                             count += 1
                     # Make sure we actually delete something.
-                    i = newInsert = ins - (max(1, count))
+                    i = ins - (max(1, count))
+                    newInsert = i
                     newSel = (i, i)
                     w.delete(i, ins)
                     w.setSelectionRange(i, i, insert=i)
