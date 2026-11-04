@@ -2839,7 +2839,7 @@ class LeoFind:
                     break
                 if self._inner_search_match_word(s, k, pattern):
                     return k, k + n
-                i = k + n
+                i = k + 1  # PR #5033.
             return -1, -1
         k = s.find(pattern, i, j)
         if k == -1:

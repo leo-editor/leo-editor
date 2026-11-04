@@ -826,6 +826,7 @@ class TestFind(LeoUnitTest):
             # pattern s      i,  j   expected, expected_i, expected_j
             ('a', 'abaAca',  0, -1,  '', -1, -1),
             ('A', 'AA A AAB', 0, -1, 'A', 3, 4),
+            ('c.c', 'c = cc.c.c.chapterController', 0, -1, 'c.c', 7, 10),  # PR #5033.
         )  # fmt: skip
         test(plain_table, 'plain_table', nocase=False, word=False)
         test(nocase_table, 'nocase_table', nocase=True, word=False)
