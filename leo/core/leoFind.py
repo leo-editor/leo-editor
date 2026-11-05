@@ -2790,17 +2790,16 @@ class LeoFind:
         # because the search code strips '\r' characters when searching @edit nodes.
         i = max(0, i)
         j = min(len(s), j)
-        # short circuit the search: helps debugging.
-        if s.find(pattern) == -1:
+        if not pattern in s:
             return -1, -1
         if word:
-            while 1:
+            while j >= i:  # PR #5034.
                 k = s.rfind(pattern, i, j)
                 if k == -1:
                     break
                 if self._inner_search_match_word(s, k, pattern):
                     return k, k + n
-                j = max(0, k - 1)
+                j -= 1  # PR #5034.
             return -1, -1
         k = s.rfind(pattern, i, j)
         if k == -1:
@@ -2996,7 +2995,7 @@ class LeoFind:
             return
 
         c.selectPosition(p)
-        if self.in_headline:
+        if self.in_headline and not self.reverse:  # PR #5034.
             c.treeWantsFocus()
         else:
             # Looks good and provides clear indication of failure or termination.
