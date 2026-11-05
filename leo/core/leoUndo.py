@@ -13,7 +13,7 @@ from __future__ import annotations
 from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from copy import deepcopy
-from typing import cast, Any, Self, TYPE_CHECKING
+from typing import cast, Self, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position, VNode
 
@@ -151,17 +151,6 @@ class UndoBead:
         self.add_redraw_finishers(
             redraw_after_head_changed_finisher, redraw_after_head_changed_finisher
         )
-
-    # @+node:ekr.20261007104333.1: *3* UndoBead.get (compatility)
-    def get(self, key, default=None) -> Any:
-        """A wrapper for u.undoTyping"""
-        # Called infequently, but u.undoTyping *does* sometimes call it.
-        d = {
-            'kind':     self.undoType.lower(),
-            'p':        self.old_p,
-            'undoType': self.undoType,
-        }  # fmt: skip
-        return d.get(key, default)
 
     # @+node:ekr.20261006040132.1: *3* UndoBead.redo
     def redo(self) -> None:
