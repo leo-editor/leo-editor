@@ -331,7 +331,7 @@ class Undoer:
         self.realUndoMenuLabel = "Can't Undo"
         self.redoMenuLabel = "Can't Redo"
         self.redoing = False
-        self.undoBead = None
+        self.undoBead: UndoBead | None = None
         self.undoBeadLevel = 0
         self.undoMenuLabel = "Can't Undo"
         self.undoType = "Can't Undo"
