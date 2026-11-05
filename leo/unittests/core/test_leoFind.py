@@ -822,14 +822,11 @@ class TestFind(LeoUnitTest):
                 )
                 got = s[pos:new_pos]
                 assert expected == got, (
-                    '\n   table: %s\n pattern: %r\n       s: %r\nexpected: %r\n     got: %r'
-                    % (
-                        table_name,
-                        pattern,
-                        s,
-                        expected,
-                        got,
-                    )
+                    f"\n   table: {table_name}"
+                    f"\n pattern: {pattern}"
+                    f"\n       s: {s}"
+                    f"\nexpected: {expected}"
+                    "f\n     got: {got}"
                 )
 
         plain_table = (
@@ -845,8 +842,9 @@ class TestFind(LeoUnitTest):
             (r'a',      'xAy',  'A'),
         )  # fmt: skip
         back_table = (
-            # pattern   s           expected
-            (r'a.b',    'a1b a2b', 'a2b'),
+            # pattern     s                          expected
+            (r'a.b',      'a1b a2b',                 'a2b'),
+            (r'\bc\.c\b', 'c = cc.c.c.cxx.c.c.czzz', 'c.c'),  # PR #5034.
         )  # fmt: skip
         test(plain_table, 'plain_table', back=False, nocase=False)
         test(nocase_table, 'nocase_table', back=False, nocase=True)
