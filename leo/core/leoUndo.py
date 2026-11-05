@@ -1208,8 +1208,9 @@ class Undoer:
     # @+node:ekr.20060127113243: *4* u.pushBead
     def pushBead(self, bead: UndoBead | None) -> None:
         u = self
-        u.bead += 1
-        u.beads[u.bead :] = [bead]
+        if bead:
+            u.bead += 1
+            u.beads[u.bead :] = [bead]
         u.setUndoTypes()
 
     # @+node:ekr.20031218072017.3613: *4* u.redoMenuName, undoMenuName
