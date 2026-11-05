@@ -30,7 +30,6 @@ import types
 isPython3 = sys.version_info >= (3, 0, 0)
 
 
-# py-lint: disable=no-else-return
 # @+others
 # @+node:ekr.20160317054700.3: **   type functions
 # @+node:ekr.20160317054700.4: *3* is_known_type
@@ -174,7 +173,6 @@ class AstFormatter:
     This does not have to be perfect, but it should be close.
     '''
 
-    # py-lint: disable=consider-using-enumerate
     # @+others
     # @+node:ekr.20160317055215.2: *3*  f.Entries
 
@@ -185,7 +183,6 @@ class AstFormatter:
         '''Format the node (or list of nodes) and its descendants.'''
         self.level = 0
         val = self.visit(node)
-        # py-lint: disable=consider-using-ternary
         return val and val.strip() or ''
 
     # @+node:ekr.20160317055215.5: *4* f.visit
@@ -1169,19 +1166,11 @@ class LeoGlobals:
     # @+node:ekr.20160318093308.1: *3* g.isString & isUnicode (make_stub_files.py)
     def isString(self, s):
         '''Return True if s is any string, but not bytes.'''
-        # py-lint: disable=no-member
-        if isPython3:
-            return isinstance(s, str)
-        else:
-            return isinstance(s, types.StringTypes)
+        return isinstance(s, str)
 
     def isUnicode(self, s):
         '''Return True if s is a unicode string.'''
-        # py-lint: disable=no-member
-        if isPython3:
-            return isinstance(s, str)
-        else:
-            return isinstance(s, types.UnicodeType)
+        return isinstance(s, str)
 
     # @+node:ekr.20160317054700.92: *3* g.shortFileName
     def shortFileName(self, fileName, n=None):
@@ -2057,7 +2046,6 @@ class StandAloneMakeStubFile:
                 aList.append(s)
         s = '\n'.join(aList) + '\n'
         file_object = io.StringIO(s)
-        # py-lint: disable=deprecated-method
         self.parser.readfp(file_object)
 
     # @+node:ekr.20160317054700.131: *4* msf.is_section_name
@@ -2316,7 +2304,6 @@ class StubFormatter(AstFormatter):
         if len(keys) == len(values):
             result.append('{')
             items = []
-            # py-lint: disable=consider-using-enumerate
             for i in range(len(keys)):
                 items.append('%s:%s' % (keys[i], values[i]))
             result.append(', '.join(items))
@@ -2977,7 +2964,6 @@ class StubTraverser(ast.NodeVisitor):
         # Assign default values to the last args.
         result = []
         n_plain = len(args) - len(defaults)
-        # py-lint: disable=consider-using-enumerate
         for i in range(len(args)):
             s = self.munge_arg(args[i])
             if i < n_plain:
@@ -3117,10 +3103,6 @@ class TestClass:
     This is in the make_stub_files directory, not the test directory.
     '''
 
-    # py-lint: disable=no-member
-    # py-lint: disable=undefined-variable
-    # py-lint: disable=no-method-argument
-    # py-lint: disable=unsubscriptable-object
     # @+others
     # @+node:ekr.20160317054700.189: *3* parse_group (Guido)
     def parse_group(self, group):
