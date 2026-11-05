@@ -96,7 +96,7 @@ def delete_trace_statements(event: LeoKeyEvent | None = None) -> None:
     **Warning**: Use this command at your own risk.
 
     It can cause "if" and "else" clauses to become empty, resulting in
-    syntax errors. Having said that, pyflakes & pylint will usually catch
+    syntax errors. Having said that, Leo's checker tools will usually catch
     the problems.
     """
     c = event.get('c') if event else None

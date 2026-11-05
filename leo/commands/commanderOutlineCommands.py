@@ -1482,7 +1482,6 @@ def unmarkAll(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         return
     c.endEditing()
     changed = False
-    p = None  # To keep pylint happy.
     with u.change_outline('unmark-all'):
         for p in c.all_unique_positions():
             if p.isMarked():

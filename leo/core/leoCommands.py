@@ -3605,7 +3605,6 @@ class Commands:
         """
 
         def minibufferCallback(event: LeoKeyEvent, function: Callable = function) -> None:
-            # Avoid a pylint complaint.
             keywords: dict[str, Any] | None
             if hasattr(self, 'theContextMenuController'):
                 cm = self.theContextMenuController

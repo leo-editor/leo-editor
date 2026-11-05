@@ -17,7 +17,6 @@ quote-style = "preserve"
 
 [lint]
 
-# #4855: pylint-leo-rc-ref.txt about 60 message disables.
 # These are ruff's PL* rules that overlap: same message and same numeric id with a `PL` prefix.
 extend-select = [
 

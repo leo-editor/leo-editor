@@ -885,7 +885,6 @@ class LeoTree:
         self.generation = 0  # low-level vnode methods increment this count.
         self.redrawCount = 0  # For traces
         self.use_chapters = False  # May be overridden in subclasses.
-        # Define these here to keep pylint happy.
         self.canvas: Any = None
 
     # @+node:ekr.20040803072955.128: *3* LeoTree.select & helpers

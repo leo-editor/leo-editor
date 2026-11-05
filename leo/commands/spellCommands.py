@@ -678,7 +678,6 @@ class SpellTabHandler:
         w = c.frame.body.wrapper
         with u.change_outline('spell.change'):
             if selection := self.tab.getSuggestion():
-                # Use getattr to keep pylint happy.
                 i = getattr(self.tab, 'change_i', None)
                 j = getattr(self.tab, 'change_j', None)
                 if i is not None and j is not None:

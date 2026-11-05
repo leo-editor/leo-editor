@@ -2397,7 +2397,6 @@ class TracingNullObject:
 
     def __getitem__(self, key: str) -> None:
         g.null_object_print(id(self), '__getitem__')
-        # pylint doesn't like trailing return None.
 
     def __iter__(self) -> TracingNullObject:
         g.null_object_print(id(self), '__iter__')
@@ -2413,7 +2412,6 @@ class TracingNullObject:
 
     def __setitem__(self, key: str, val: Value) -> None:
         g.null_object_print(id(self), '__setitem__')
-        # pylint doesn't like trailing return None.
 
 
 # @+node:ekr.20190330072832.1: *4* g.null_object_print
@@ -5488,7 +5486,6 @@ def dummy_act_on_node(c: Cmdr, p: Position, event: QEvent) -> None:
     pass
 
 
-# This dummy definition keeps pylint happy.
 # Plugins can change this.
 
 act_on_node = dummy_act_on_node

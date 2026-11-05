@@ -4,8 +4,8 @@
 This script checks Leo's most important files for potential attribute
 errors.
 
-This script discovered bugs that neither mypy, nor pylint, nor pyflakes
-found. For details, see: https://github.com/leo-editor/leo-editor/pull/4484
+This script discovered bugs that other checkers have not found.
+For details, see: https://github.com/leo-editor/leo-editor/pull/4484
 
 This script contains many Leo-specific hacks. In particular, Leo's naming
 conventions allow the script to convert names to live objects.
