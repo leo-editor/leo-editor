@@ -2550,13 +2550,11 @@ class VNode:
     # @+node:ekr.20031218072017.3359: *3* v.Getters
     # @+node:ekr.20031218072017.3378: *4* v.bodyString
     def bodyString(self) -> str:
-        # py-lint: disable=no-else-return
         if isinstance(self._bodyString, str):
             return self._bodyString
-        else:  # pragma: no cover
-            # This message should never be printed and we want to avoid crashing here!
-            g.internalError(f"body not unicode: {self._bodyString!r}")
-            return g.toUnicode(self._bodyString)
+        # This message should never be printed and we want to avoid crashing here!
+        g.internalError(f"body not unicode: {self._bodyString!r}")
+        return g.toUnicode(self._bodyString)
 
     # @+node:ekr.20031218072017.3360: *4* v.Children
     # @+node:ekr.20031218072017.3362: *5* v.firstChild
@@ -2607,13 +2605,11 @@ class VNode:
     # @+node:ekr.20031218072017.1581: *4* v.headString
     def headString(self) -> str:
         """Return the headline string."""
-        # py-lint: disable=no-else-return
         if isinstance(self._headString, str):
             return self._headString
-        else:  # pragma: no cover
-            # This message should never be printed and we want to avoid crashing here!
-            g.internalError(f"headline not unicode: {self._headString!r}")
-            return g.toUnicode(self._headString)
+        # This message should never be printed and we want to avoid crashing here!
+        g.internalError(f"headline not unicode: {self._headString!r}")
+        return g.toUnicode(self._headString)
 
     # @+node:ekr.20131223064351.16351: *4* v.isNthChildOf
     def isNthChildOf(self, n: int, parent_v: VNode) -> bool:

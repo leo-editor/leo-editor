@@ -190,7 +190,6 @@ class LiveCodeDisplay:
                             todo.extend(target.elts)  # type:ignore
                             continue
                         code = asttools.dump_python_source(target)
-                        # py-lint: disable=eval-used
                         node_result.append("%s = %r" % (code.strip(), eval(code, self.scope)))
                     node_result = ''.join(node_result)  # was '\n'.join
             assert node_result is None or isinstance(node_result, str)
