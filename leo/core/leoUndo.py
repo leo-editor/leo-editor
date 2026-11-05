@@ -152,21 +152,6 @@ class UndoBead:
             redraw_after_head_changed_finisher, redraw_after_head_changed_finisher
         )
 
-    # @+node:ekr.20261011185637.1: *3* undoBead.check_undo
-    def check_undo(self) -> None:
-        """Perform an important sanity check."""
-        tag = 'UndoBead.undo'
-        c = self.c
-        old_p = self.old_p
-        if old_p != c.p:
-            message = f"{tag}: Bad c.p\n  {c.p.h=}\n{old_p.h=}\n{g.callers()=}\n"
-            print()
-            g.trace(message)
-        if self.redraw_finsishers is None:
-            message = f"{tag}: Bad redraw_finishers. {g.callers()=}\n"
-            print()
-            g.trace(message)
-
     # @+node:ekr.20261007104333.1: *3* UndoBead.get (compatility)
     def get(self, key, default=None) -> Any:
         """A wrapper for u.undoTyping"""
@@ -182,12 +167,10 @@ class UndoBead:
     def redo(self) -> None:
         c = self.c
         for f in self.redo_functions:
-            # g.trace('redoer:', f.__name__)
             f()
         if self.redraw_finishers:
             self.redraw_finishers[0]()
         for f in self.redo_finishers:
-            # g.trace('finisher:', f.__name__)
             f()
         c.setChanged()  # Elegant!
 
@@ -210,12 +193,10 @@ class UndoBead:
     def undo(self) -> None:
         c = self.c
         for f in self.undo_functions:
-            # g.trace('undoer:', f.__name__)
             f()
         if self.redraw_finishers:
             self.redraw_finishers[1]()
         for f in self.undo_finishers:
-            # g.trace('undo finisher:', f.__name__)
             f()
         # A save may have occurred since this bead was created.
         c.setChanged()
