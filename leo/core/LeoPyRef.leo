@@ -8,8 +8,10 @@
 <vnodes>
 <v t="ekr.20051031040240"><vh>Startup</vh>
 <v t="ekr.20080412053100.5"><vh>@settings</vh>
+<v t="ekr.20261011041619.1"><vh>--- @data history list</vh>
+<v t="ekr.20150425145248.1"><vh>@data history-list</vh></v>
+</v>
 <v t="ekr.20260526171943.1"><vh>@bool minibuffer-find-mode = True</vh></v>
-<v t="ekr.20220904210247.1"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20140902155015.18674"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="ekr.20250715195948.1"><vh>@bool report-changed-at-clean-nodes = False</vh></v>
 <v t="ekr.20221129012213.1"><vh>@bool run-flake8-on-write = False</vh></v>
@@ -17,11 +19,10 @@
 <v t="ekr.20260820160722.1"><vh>@bool run-ty-on-write = False</vh></v>
 <v t="ekr.20210530065000.2"><vh>@data exec-script-commands</vh></v>
 <v t="ekr.20210530065000.3"><vh>@data exec-script-patterns</vh></v>
-<v t="ekr.20261011041619.1"><vh>--- @data history list</vh>
-<v t="ekr.20150425145248.1"><vh>@data history-list</vh></v>
-</v>
+<v t="ekr.20220904210247.1"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20240107154430.1"><vh>@int max-find-long-lines-length = 100</vh></v>
 <v t="ekr.20140916101314.19538"><vh>@string target_language = python</vh></v>
+<v t="ekr.20261102052902.1"><vh>@string undo-granularity = word</vh></v>
 <v t="ekr.20260111055821.1"><vh>Beautifying files</vh>
 <v t="ekr.20260111055821.2"><vh>@bool beautify-python-code-on-write = True</vh></v>
 <v t="ekr.20260111055821.4"><vh>@int black-line-length = 100</vh></v>
@@ -222,7 +223,6 @@
 <v t="ekr.20180225010743.1"><vh>In leo/external</vh>
 <v t="ekr.20190607124533.1"><vh>@nopylint</vh>
 <v t="ekr.20220823195205.1"><vh>@clean ../external/leoftsindex.py</vh></v>
-<v t="ekr.20160123142722.1"><vh>@clean ../external/make_stub_files.cfg</vh></v>
 <v t="ekr.20180708145905.1"><vh>@clean ../external/py2cs_theory.md</vh>
 <v t="ekr.20180708152000.1"><vh>The problem</vh></v>
 <v t="ekr.20180708152018.1"><vh>Design</vh></v>
@@ -235,7 +235,6 @@
 <v t="ekr.20170429161422.1"><vh>@file ../external/log_broadcast.py</vh></v>
 <v t="ekr.20170429153135.1"><vh>@file ../external/log_listener.py</vh></v>
 <v t="ville.20091010232339.6117"><vh>@file ../external/lproto.py</vh></v>
-<v t="ekr.20160317054700.1"><vh>@file ../external/make_stub_files.py</vh></v>
 <v t="ekr.20180628055640.1"><vh>@file ../external/pdb_listener.py</vh></v>
 <v t="ekr.20160316091132.1"><vh>@file ../external/py2cs.py</vh></v>
 </v>
@@ -730,7 +729,6 @@ from leo.core import leoGlobals as g
 def onStart(tag,keywords):
     pass
 
-# pylint: disable=unused-import
 try:
     import xyzzy
 except ImportError:
@@ -974,7 +972,6 @@ promote-to-at-others
 execute-script
 show-node-files
 dump-last-colorizer-trace
-pylint
 
 # clone-diff-pr
 # ctrl-click-at-cursor
@@ -991,33 +988,6 @@ c.backup_helper(sub_dir='leoPy')
 </t>
 <t tx="ekr.20150514035207.1"></t>
 <t tx="ekr.20160122104332.1">@language python
-</t>
-<t tx="ekr.20160123142722.1"># An example configuration file for make_stub_files.py.
-# By default, this is ~/stubs/make_stub_files.cfg.
-# Can be changed using the --config=path command-line option.
-
-[Global]
-
-files:
-
-    # Files to be used *only* if no files are given on the command line.
-    # glob.glob wildcards are supported.
-
-    # c:/Repos/leo-editor/leo/core/leoAst.py
-    # c:/Repos/leo-editor/leo/core/*.py
-    # c:/Repos/leo-editor/plugins/*.py
-
-output_directory: ~/stubs
-
-prefix_lines:
-    # Lines to be inserted at the start of each stub file.
-    from collections.abc import Iterable
-    from typing import TypeVar
-    T = TypeVar('T', int, float, complex)
-
-[Def Name Patterns]
-
-[General Patterns]
 </t>
 <t tx="ekr.20170427114412.1">@language python
 </t>
@@ -2627,7 +2597,7 @@ test_s = textwrap.dedent('''
 +    # @+node:ekr.20150514043850.3: *4* abbrev.ctor
      def __init__(self, c: Cmdr) -&gt; None:
          """Ctor for AbbrevCommandsClass class."""
-         # pylint: disable=super-init-not-called
+         # py-lint: disable=super-init-not-called
 @@ -41,8 +51,9 @@
          # Set local ivars.
          self.abbrevs: dict[str, tuple[str, str]] = {}  # Keys are names, values are (abbrev,tag).
@@ -3835,5 +3805,14 @@ if top_p := filter_diffs():
     c.redraw(top_p)
 print('Done!')
 </t>
+<t tx="ekr.20261102052902.1">node granularity: start a new undo unit when typing moves to a new node.
+line granularity: start a new undo unit when typing moves to new line.
+word granularity: start a new undo unit when typing starts a new word.
+char granularity: start a new undo unit for each character typed.
+
+'line' granularity is the default used if no valid setting is specified.
+
+Leo used char granularity for all version prior to 4.3. char granularity is not
+recommended; it is clumsy and wasteful of computer memory.</t>
 </tnodes>
 </leo_file>
