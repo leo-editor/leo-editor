@@ -325,7 +325,7 @@ class Undoer:
         self.groupCount = 0
         self.inHead = False
         self.max_undo_stack_size = c.config.getInt('max-undo-stack-size') or 0
-        self.node_captures = set()
+        self.node_captures: set[VNode] = set()
         self.p = cast(Position, None)
         self.realRedoMenuLabel = "Can't Redo"
         self.realUndoMenuLabel = "Can't Undo"
