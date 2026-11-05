@@ -320,7 +320,7 @@ class Undoer:
         self.c = c
         # State.
         self.bead = -1  # Index of the present bead.
-        self.beads = []  # List of undo nodes.
+        self.beads: list[UndoBead] = []  # List of undo nodes.
         self.capture_level = 0
         # self.granularity = None  # Set in reloadSettings.
         self.groupCount = 0
