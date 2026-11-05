@@ -322,7 +322,6 @@ class Undoer:
         self.bead = -1  # Index of the present bead.
         self.beads: list[UndoBead] = []  # List of undo nodes.
         self.capture_level = 0
-        # self.granularity = None  # Set in reloadSettings.
         self.groupCount = 0
         self.inHead = False
         self.max_undo_stack_size = c.config.getInt('max-undo-stack-size') or 0
