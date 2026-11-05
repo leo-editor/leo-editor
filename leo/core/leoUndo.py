@@ -1118,6 +1118,7 @@ class Undoer:
             if not b.command_name:
                 raise AssertionError("Missing call to u.set_command_name")
             # Record partial mutations even if the command raised an exception.
+            assert b
             self.pushBead(b)
 
     # @+node:ekr.20261102022551.1: *4* u._can_merge
@@ -1206,11 +1207,10 @@ class Undoer:
         return u.beads[n]
 
     # @+node:ekr.20060127113243: *4* u.pushBead
-    def pushBead(self, bead: UndoBead | None) -> None:
+    def pushBead(self, bead: UndoBead) -> None:
         u = self
-        if bead:
-            u.bead += 1
-            u.beads[u.bead :] = [bead]
+        u.bead += 1
+        u.beads[u.bead :] = [bead]
         u.setUndoTypes()
 
     # @+node:ekr.20031218072017.3613: *4* u.redoMenuName, undoMenuName
