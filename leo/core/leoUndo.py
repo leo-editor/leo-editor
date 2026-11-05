@@ -1103,23 +1103,26 @@ class Undoer:
     # @+node:ekr.20261005094529.1: *4* u.__enter__ and __exit__
     def __enter__(self) -> Self:
         """Compose nested operations into one bead, published on outermost exit."""
-        if self.undoBeadLevel == 0:
-            self.undoBead = UndoBead(self)
-        self.undoBeadLevel += 1
-        return self
+        u = self
+        if u.undoBeadLevel == 0:
+            u.undoBead = UndoBead(u)
+        u.undoBeadLevel += 1
+        assert u.undoBead
+        return u
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:
-        b = self.undoBead
-        self.undoBeadLevel -= 1
-        if self.undoBeadLevel:
+        u = self
+        b = u.undoBead
+        assert b
+        u.undoBeadLevel -= 1
+        if u.undoBeadLevel:
             return
-        self.undoBead = None
-        if b.undo_functions and not (self.undoing or self.redoing):
+        u.undoBead = None
+        if b.undo_functions and not (u.undoing or u.redoing):
             if not b.command_name:
                 raise AssertionError("Missing call to u.set_command_name")
             # Record partial mutations even if the command raised an exception.
-            assert b
-            self.pushBead(b)
+            u.pushBead(b)
 
     # @+node:ekr.20261102022551.1: *4* u._can_merge
     def _can_merge(
