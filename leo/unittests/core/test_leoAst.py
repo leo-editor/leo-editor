@@ -1,10 +1,9 @@
 # @+leo-ver=5-thin
 # @+node:ekr.20210902073413.1: * @file ../unittests/core/test_leoAst.py
 """Tests of leoAst.py"""
+
 # @+<< test_leoAst imports >>
 # @+node:ekr.20210902074548.1: ** << test_leoAst imports >>
-# py-lint: disable=reimported,wrong-import-position
-
 import ast
 from collections.abc import Callable
 import os

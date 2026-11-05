@@ -48,7 +48,7 @@ import webbrowser
 
 # Leo never imports any other Leo module.
 # PR #4772: add this import statement.
-from leo.core import leoGlobals as g  # py-lint: disable=import-self
+from leo.core import leoGlobals as g
 
 try:
     import tkinter as Tk

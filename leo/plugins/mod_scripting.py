@@ -442,7 +442,6 @@ class ScriptingController:
                         f.write('import pdb\n')
                         f.write('pdb.set_trace() # Hard breakpoint.\n')
                     elif self.debuggerKind == 'winpdb':
-                        # py-lint: disable=line-too-long
                         f.write('import rpdb2\n')
                         f.write(
                             'if rpdb2.g_debugger is not None: # don\'t hang if the debugger isn\'t running.\n'

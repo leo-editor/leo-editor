@@ -1144,7 +1144,6 @@ except ImportError:
 # @-<< imports >>
 # @+<< declarations >>
 # @+node:tom.20240520232254.1: ** << declarations >>
-# py-lint: disable=invalid-name
 C = 'c'
 VR3_NS_ID = '_leo_viewrendered3'
 VR3_DEF_LAYOUT = 'viewrendered3_default_layouts'

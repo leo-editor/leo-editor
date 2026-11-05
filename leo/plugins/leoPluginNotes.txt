@@ -7,8 +7,6 @@ This plugin intentionally has a syntax error.
 It is used for testing Leo's plugin loading logic.
 """
 
-# py-lint: disable=syntax-error
-
 a = # This is the syntax error
 
 def init ():

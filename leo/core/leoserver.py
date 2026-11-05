@@ -13,7 +13,6 @@ To run externally, do `python -m leo.core.leoserver --password <password>`.
 # py-lint: disable=line-too-long,wrong-import-position
 # @+<< leoserver imports >>
 # @+node:felix.20210621233316.2: ** << leoserver imports >>
-# py-lint: disable=raise-missing-from
 from __future__ import annotations
 import argparse
 import asyncio
