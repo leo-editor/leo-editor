@@ -2,7 +2,7 @@
 # @+node:ekr.20140810053602.18074: * @file leoQt.py
 """Leo's Qt import wrapper, specialized for Qt6."""
 
-# pylint: disable=no-name-in-module,unused-import
+# py-lint: disable=no-name-in-module,unused-import
 
 # @+<< leoQt.py: imports >>
 # @+node:ekr.20260505180734.1: ** << leoQt.py: imports >>

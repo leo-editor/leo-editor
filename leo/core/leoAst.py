@@ -883,8 +883,10 @@ class AstDumper:  # pragma: no cover
             fstrings, strings = 0, 0
             for z in values:
                 if g.python_version_tuple < (3, 12, 0):
-                    assert isinstance(z, (ast.FormattedValue, ast.Str))  # pylint: disable=no-member
-                    if isinstance(z, ast.Str):  # pylint: disable=no-member
+                    assert isinstance(
+                        z, (ast.FormattedValue, ast.Str)
+                    )  # py-lint: disable=no-member
+                    if isinstance(z, ast.Str):  # py-lint: disable=no-member
                         results.append(z.s)
                         strings += 1
                     else:
@@ -900,7 +902,7 @@ class AstDumper:  # pragma: no cover
                         fstrings += 1
             val = f"{strings} str, {fstrings} f-str"
         elif class_name == 'keyword':
-            if isinstance(node.value, ast.Str):  # pylint: disable=no-member
+            if isinstance(node.value, ast.Str):  # py-lint: disable=no-member
                 val = f"arg={node.arg}..Str.value.s={node.value.s!r}"
             elif isinstance(node.value, ast.Name):
                 val = f"arg={node.arg}..Name.value.id={node.value.id}"
@@ -913,7 +915,7 @@ class AstDumper:  # pragma: no cover
         elif class_name == 'Num':
             val = f"n={node.n}"
         elif class_name == 'Starred':
-            if isinstance(node.value, ast.Str):  # pylint: disable=no-member
+            if isinstance(node.value, ast.Str):  # py-lint: disable=no-member
                 val = f"s={node.value.s!r}"
             elif isinstance(node.value, ast.Name):
                 val = f"id={node.value.id}"
@@ -1056,7 +1058,9 @@ class Fstringify:
         ReassignTokens().reassign(filename, tokens, tree)
 
         # Main pass.
-        string_node = ast.Str if g.python_version_tuple < (3, 12, 0) else ast.Constant  # pylint: disable=no-member
+        string_node = (
+            ast.Str if g.python_version_tuple < (3, 12, 0) else ast.Constant
+        )  # py-lint: disable=no-member
         for node in ast.walk(tree):
             if (
                 isinstance(node, ast.BinOp)
@@ -1172,7 +1176,9 @@ class Fstringify:
         Replace all the relevant tokens with a single new 'string' token.
         """
         trace = False
-        string_node = ast.Str if g.python_version_tuple < (3, 12, 0) else ast.Constant  # pylint: disable=no-member
+        string_node = (
+            ast.Str if g.python_version_tuple < (3, 12, 0) else ast.Constant
+        )  # py-lint: disable=no-member
         assert isinstance(node.left, string_node), (repr(node.left), g.callers())
 
         # Careful: use the tokens, not Str.s or Constant.value. This preserves spelling.
@@ -1368,7 +1374,9 @@ class Fstringify:
         """
         trace = False
         # First, Try the most common cases.
-        string_node = ast.Str if g.python_version_tuple < (3, 12, 0) else ast.Constant  # pylint: disable=no-member
+        string_node = (
+            ast.Str if g.python_version_tuple < (3, 12, 0) else ast.Constant
+        )  # py-lint: disable=no-member
         if isinstance(node, string_node):
             token_list = get_node_token_list(node, self.tokens)
             return [token_list]
@@ -1480,7 +1488,7 @@ class Fstringify:
         # Replace the node.
         new_node: ast.AST
         if g.python_version_tuple < (3, 12, 0):
-            new_node = ast.Str(s)  # pylint: disable=deprecated-class,no-member
+            new_node = ast.Str(s)  # py-lint: disable=deprecated-class,no-member
         else:
             new_node = ast.Constant(value=s)
         replace_node(new_node, node)

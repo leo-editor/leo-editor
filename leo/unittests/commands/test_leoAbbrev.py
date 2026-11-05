@@ -2,7 +2,7 @@
 # @+node:ekr.20260512145309.1: * @file ../unittests/commands/test_leoAbbrev.py
 """Tests of leoAbbrev.py"""
 
-# pylint: disable=no-member
+# py-lint: disable=no-member
 from __future__ import annotations
 import re
 import time

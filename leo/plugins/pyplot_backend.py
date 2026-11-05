@@ -90,8 +90,8 @@ class LeoFigureManagerQT(FigureManager):
     # @+others
     # @+node:ekr.20160929050151.2: *3* LeoFigureManagerQt.__init__
     # Do NOT call the base class ctor. It creates a Qt MainWindow.
-    # pylint: disable=super-init-not-called
-    # pylint: disable=non-parent-init-called
+    # py-lint: disable=super-init-not-called
+    # py-lint: disable=non-parent-init-called
 
     def __init__(self, canvas, num):
         """Ctor for the LeoFigureManagerQt class."""

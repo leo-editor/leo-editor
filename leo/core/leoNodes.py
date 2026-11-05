@@ -215,7 +215,7 @@ class NodeIndices:
         """Update ni.lastIndex if the gnx affects it."""
         id_, t, n = self.scanGnx(gnx)
         # Don't you dare touch this code to keep pylint happy.
-        # pylint: disable=literal-comparison
+        # py-lint: disable=literal-comparison
         if not id_ or (n != 0 and not n):
             return  # the gnx is not well formed or n in ('',None)
         if id_ == self.userId and t == self.timeString:
@@ -471,7 +471,7 @@ class Position:
     def following_siblings(self, copy: bool = True) -> Generator[Position, None, None]:
         """Yield all siblings positions that follow p, not including p."""
         p = self
-        p = p.next()  # pylint: disable=not-callable
+        p = p.next()  # py-lint: disable=not-callable
         while p:
             yield p.copy() if copy else p
             p.moveToNext()
@@ -2551,7 +2551,7 @@ class VNode:
     # @+node:ekr.20031218072017.3359: *3* v.Getters
     # @+node:ekr.20031218072017.3378: *4* v.bodyString
     def bodyString(self) -> str:
-        # pylint: disable=no-else-return
+        # py-lint: disable=no-else-return
         if isinstance(self._bodyString, str):
             return self._bodyString
         else:  # pragma: no cover
@@ -2608,7 +2608,7 @@ class VNode:
     # @+node:ekr.20031218072017.1581: *4* v.headString
     def headString(self) -> str:
         """Return the headline string."""
-        # pylint: disable=no-else-return
+        # py-lint: disable=no-else-return
         if isinstance(self._headString, str):
             return self._headString
         else:  # pragma: no cover

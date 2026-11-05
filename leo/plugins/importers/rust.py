@@ -2,7 +2,7 @@
 # @+node:ekr.20200316100818.1: * @file ../plugins/importers/rust.py
 """The @auto importer for rust."""
 
-# pylint: disable=undefined-loop-variable
+# py-lint: disable=undefined-loop-variable
 from __future__ import annotations
 import re
 from typing import TYPE_CHECKING

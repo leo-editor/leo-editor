@@ -182,7 +182,7 @@ class Xdb(pdb.Pdb, threading.Thread):
     # @+node:ekr.20181002053718.1: *3* Overrides
     # @+node:ekr.20190108040329.1: *4* xdb.checkline (overrides Pdb)
     def checkline(self, path: str, n: int, module_globals=None) -> bool:
-        # pylint: disable=unexpected-keyword-arg
+        # py-lint: disable=unexpected-keyword-arg
         try:
             if g.python_version_tuple >= (3, 14, 0):  # Python 3.14+
                 return pdb.Pdb.checkline(self, path, n, module_globals=module_globals)
@@ -317,7 +317,7 @@ class Xdb(pdb.Pdb, threading.Thread):
     # @+node:ekr.20181002094126.1: *3* xdb.run
     def run(self):
         """The thread's run method: called via start."""
-        # pylint: disable=arguments-differ
+        # py-lint: disable=arguments-differ
         from leo.core.leoQt import QtCore
 
         QtCore.pyqtRemoveInputHook()  # From g.pdb

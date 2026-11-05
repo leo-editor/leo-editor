@@ -1659,7 +1659,7 @@ class VimCommands:
                 if self.visual_line_flag:
                     # Switch visual mode to visual-line mode.
                     # do_visual_mode extends the selection.
-                    # pylint: disable=unnecessary-pass
+                    # py-lint: disable=unnecessary-pass
                     pass
                 else:
                     # End visual mode.

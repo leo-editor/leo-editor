@@ -2,7 +2,7 @@
 # @+node:ekr.20210906141410.1: * @file ../unittests/core/test_leoUndo.py
 """Tests of leoUndo.py"""
 
-# pylint: disable=no-member
+# py-lint: disable=no-member
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 

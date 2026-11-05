@@ -223,7 +223,7 @@ def truncate(s, n):
 class CoffeeScriptTraverser:
     '''A class to convert python sources to coffeescript sources.'''
 
-    # pylint: disable=consider-using-enumerate
+    # py-lint: disable=consider-using-enumerate
     # @+others
     # @+node:ekr.20160316091132.13: *3*  cv.ctor
     def __init__(self, controller):
@@ -1521,7 +1521,7 @@ class MakeCoffeeScriptController:
                 aList.append(s)
         s = '\n'.join(aList) + '\n'
         file_object = io.StringIO(s)
-        # pylint: disable=deprecated-method
+        # py-lint: disable=deprecated-method
         self.parser.readfp(file_object)
 
     # @+node:ekr.20160316091132.107: *4* mcs.is_section_name

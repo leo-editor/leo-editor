@@ -8,7 +8,7 @@ This file is in the public domain.
 
 Most of this file is an html colorizer.
 """
-# pylint: disable=line-too-long
+# py-lint: disable=line-too-long
 
 from leo.core import leoGlobals as g
 

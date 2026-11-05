@@ -25,7 +25,7 @@ def insertQtIcon(self, event: LeoKeyEvent | None = None) -> None:
     insert_qt_icon_window.show()
 
 # @+node:ekr.20260805111828.1: *4* << define class QtPreviewWindow >>
-from PyQt6.QtWidgets import (  # pylint: disable=no-name-in-module
+from PyQt6.QtWidgets import (  # py-lint: disable=no-name-in-module
     QGridLayout,
     QPushButton,
     QStyle,
@@ -589,14 +589,14 @@ def register_provider(c: Cmdr, provider_instance: object) -> None:
 
 @language python
 @tabwidth -4
-# pylint: disable=logging-not-lazy,unused-private-member,wrong-import-position
+# py-lint: disable=logging-not-lazy,unused-private-member,wrong-import-position
 
 << leoflexx: docstring >>
 << leoflexx: imports >>
 << leoflexx: assets >>
 
 # flexx can't handle generators, so we *must* use comprehensions instead.
-# pylint: disable=use-a-generator
+# py-lint: disable=use-a-generator
 
 @others
 # @+node:ekr.20181122215342.1: *4* << leoflexx: docstring >>
@@ -698,7 +698,7 @@ def make_editor_function(name, node):
     base class that only defines this as a method.
     """
     global window  # pylint doesn't know about the window global.
-    ace = window.ace.edit(node, 'editor')  # pylint: disable=undefined-variable
+    ace = window.ace.edit(node, 'editor')  # py-lint: disable=undefined-variable
     ace.navigateFileEnd()  # otherwise all lines highlighted
     ace.setTheme("ace/theme/solarized_dark")
     if name == 'body':
@@ -2047,7 +2047,7 @@ def update(self, body_text='', insert_point=0):
 
     Returns (lt_part, rt_part) for LeoBrowserApp.init.
     """
-    # pylint: disable=arguments-differ
+    # py-lint: disable=arguments-differ
     if g.app.killed:
         return None
     c, p = self.c, self.c.p
@@ -2235,7 +2235,7 @@ class JS_Editor(flx.Widget):
     """
 
     def init(self, name, flex=1):
-        # pylint: disable=arguments-differ
+        # py-lint: disable=arguments-differ
         assert name in ('body', 'log', 'minibuffer'), repr(name)
         self.name = name
         self.tag = 'flx.%s' % name
@@ -2415,7 +2415,7 @@ class LeoFlexxBody(JS_Editor):
     << body css >>
 
     def init(self):
-        # pylint: disable=arguments-differ
+        # py-lint: disable=arguments-differ
         super().init('body')
         self.editor = make_editor_function(self.name, self.node)
 
@@ -2514,7 +2514,7 @@ class LeoFlexxLog(JS_Editor):
     << log css >>
 
     def init(self):
-        # pylint: disable=arguments-differ
+        # py-lint: disable=arguments-differ
         super().init('log')
         self.editor = make_editor_function(self.name, self.node)
 
@@ -2593,7 +2593,7 @@ class MinibufferEditor(flx.Widget):
 class LeoFlexxMiniBuffer(JS_Editor):
 
     def init(self):
-        # pylint: disable=arguments-differ
+        # py-lint: disable=arguments-differ
         super().init('minibuffer')
         with flx.HBox():
             flx.Label(text='Minibuffer')
@@ -2751,7 +2751,7 @@ class LeoFlexxTree(flx.Widget):
         self.tree = flx.TreeWidget(flex=1, max_selected=1)
 
     def assert_exists(self, obj):
-        # pylint: disable=undefined-variable
+        # py-lint: disable=undefined-variable
             # undefined
         global undefined
         assert obj not in (undefined, None, {}), repr(obj)
@@ -2779,7 +2779,7 @@ def clear_tree(self):
     """
     trace = 'drawing' in g.app.debug
     tag = 'flx.tree.clear_tree'
-    # pylint: disable=access-member-before-definition
+    # py-lint: disable=access-member-before-definition
     items = list(self.tree_items_dict.values())
     if trace:
         print('')
@@ -2829,7 +2829,7 @@ def redraw_with_dict(self, redraw_dict):
 # @+node:ekr.20181124194248.1: *8* tree.create_item_with_parent
 def create_item_with_parent(self, item, parent):
     """Create a tree item for item and all its visible children."""
-    # pylint: disable=no-member
+    # py-lint: disable=no-member
     # set_collapsed is in the base class.
     trace = 'drawing' in g.app.debug
     tag = 'create_item_with_parent'
@@ -3068,7 +3068,7 @@ def on_selected_event(self, *events):
 class LeoFlexxTreeItem(flx.TreeItem):
 
     def init(self, leo_ap):
-        # pylint: disable=arguments-differ
+        # py-lint: disable=arguments-differ
         self.leo_ap = leo_ap  # Immutable: Gives access to cloned, marked, expanded fields.
         self.leo_children = []
 
@@ -4323,7 +4323,7 @@ def splitterClicked_connect(self, *args):
 # This plugin is obsolete. There are no plans to make it work with Qt6.
 << docstring >>
 # This complaint is probably valid.
-# pylint: disable=no-name-in-module
+# py-lint: disable=no-name-in-module
 << imports >>
 @others
 @language python
@@ -4743,7 +4743,7 @@ def __init__(
     try:  # Don't assume g.app exists.
         from leo.core.leoQt import QtCore
         if QtCore:
-            # pylint: disable=no-member
+            # py-lint: disable=no-member
             QtCore.pyqtRemoveInputHook()
     except Exception:
         pass

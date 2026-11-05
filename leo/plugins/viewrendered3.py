@@ -3,7 +3,7 @@
 # @@tabwidth -4
 # @@language python
 # The line-too-long suppression must appear before the docstring.
-# pylint: disable=invalid-name,line-too-long,multiple-statements,undefined-variable,used-before-assignment
+# py-lint: disable=invalid-name,line-too-long,multiple-statements,undefined-variable,used-before-assignment
 r"""
 # @+<< vr3 docstring >>
 # @+node:TomP.20191215195433.2: ** << vr3 docstring >>
@@ -1144,7 +1144,7 @@ except ImportError:
 # @-<< imports >>
 # @+<< declarations >>
 # @+node:tom.20240520232254.1: ** << declarations >>
-# pylint: disable=invalid-name
+# py-lint: disable=invalid-name
 C = 'c'
 VR3_NS_ID = '_leo_viewrendered3'
 VR3_DEF_LAYOUT = 'viewrendered3_default_layouts'
@@ -1383,7 +1383,7 @@ def find_dir(name, path):
 def check_gems(gem: str, encoding: str = 'utf-8') -> bool:
     """Check if a particular ruby gem is installed."""
     cmd = f'gem list {gem}'
-    # pylint: disable = subprocess-run-check
+    # py-lint: disable = subprocess-run-check
     proc = subprocess.run(cmd, capture_output=True)
     installed = gem in proc.stdout.decode(encoding)
     return installed
@@ -3698,7 +3698,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             attrs.append(f'imagesdir={self.asciidoctor_imagesdir}')
         att_str = ''
         for att in attrs:
-            # pylint: disable = consider-using-join
+            # py-lint: disable = consider-using-join
             att_str += f'-a {att} '
 
         # Call the external program to write the output file.

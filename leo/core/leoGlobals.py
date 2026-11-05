@@ -48,7 +48,7 @@ import webbrowser
 
 # Leo never imports any other Leo module.
 # PR #4772: add this import statement.
-from leo.core import leoGlobals as g  # pylint: disable=import-self
+from leo.core import leoGlobals as g  # py-lint: disable=import-self
 
 try:
     import tkinter as Tk
@@ -1566,7 +1566,7 @@ class MatchBrackets:
         """Find the bracket matching s[i] for self.language."""
         self.forward = ch1 in self.open_brackets
         # Find the character matching the initial bracket.
-        for n in range(len(self.brackets)):  # pylint: disable=consider-using-enumerate
+        for n in range(len(self.brackets)):  # py-lint: disable=consider-using-enumerate
             if ch1 == self.brackets[n]:
                 target = self.matching_brackets[n]
                 break
@@ -2446,7 +2446,7 @@ class TestLeoGlobals(unittest.TestCase):
     # @+others
     # @+node:ekr.20200219071958.1: *4* TestLeoGlobals.test_comment_delims_from_extension
     def test_comment_delims_from_extension(self) -> None:
-        from leo.core import leoGlobals as leo_g  # pylint: disable=import-self,reimported
+        from leo.core import leoGlobals as leo_g  # py-lint: disable=import-self,reimported
         from leo.core import leoApp
 
         leo_g.app = leoApp.LeoApp()
@@ -2456,7 +2456,7 @@ class TestLeoGlobals(unittest.TestCase):
 
     # @+node:ekr.20200219072957.1: *4* TestLeoGlobals.test_is_sentinel
     def test_is_sentinel(self) -> None:
-        from leo.core import leoGlobals as leo_g  # pylint: disable=import-self,reimported
+        from leo.core import leoGlobals as leo_g  # py-lint: disable=import-self,reimported
 
         # Python. Test regular and blackened sentinels.
         py_delims = leo_g.comment_delims_from_extension('.py')
@@ -2893,7 +2893,7 @@ def pdb(message: str = '') -> None:
             pass
     if message:
         print(message)
-    # pylint: disable=forgotten-debug-statement
+    # py-lint: disable=forgotten-debug-statement
     breakpoint()  # New in Python 3.7.
 
 
@@ -4340,7 +4340,7 @@ def findRootsWithPredicate(
     roots = []
     if predicate is None:
         # A useful default predicate for python.
-        # pylint: disable=function-redefined
+        # py-lint: disable=function-redefined
 
         def predicate(p: Position) -> bool:
             headline = p.h.strip()
@@ -5344,7 +5344,7 @@ def getModifiedFiles(repo_path: str) -> list[str]:
     os.chdir(repo_path)
     try:
         # We are not checking the return code here, so:
-        # pylint: disable=subprocess-run-check
+        # py-lint: disable=subprocess-run-check
         result = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
         if result.returncode != 0:
             print("Error running git command")
@@ -5530,7 +5530,7 @@ def doHook(tag: str, *args: Args, **kwargs: KWargs) -> Any:
         return None
     # Get the hook handler function.  Usually this is doPlugins.
     c = kwargs.get("c")
-    # pylint: disable=consider-using-ternary
+    # py-lint: disable=consider-using-ternary
     f = (c and c.hookFunction) or g.app.hookFunction
     if not f:
         assert g.app.pluginsController

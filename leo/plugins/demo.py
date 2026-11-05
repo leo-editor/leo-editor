@@ -25,7 +25,7 @@ if TYPE_CHECKING:
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 # @-<< demo.py imports >>
 
-# pylint: disable=not-callable,no-member
+# py-lint: disable=not-callable,no-member
 # @@language python
 # @@tabwidth -4
 # @+others
@@ -78,7 +78,7 @@ class Demo:
     def __init__(self, c, trace=False):
         """Ctor for the Demo class."""
         self.c = c
-        # pylint: disable=import-self
+        # py-lint: disable=import-self
         from leo.plugins import demo as module
 
         # True: start calls next until finished.
@@ -497,7 +497,7 @@ class Demo:
     # @+node:ekr.20170128213103.39: *4* demo.new_key_event
     def new_key_event(self, shortcut, w):
         """Create a LeoKeyEvent for a *raw* shortcut."""
-        # pylint: disable=literal-comparison
+        # py-lint: disable=literal-comparison
         # Using the *input* logic seems best.
         event = self.filter_.create_key_event(
             event=None,

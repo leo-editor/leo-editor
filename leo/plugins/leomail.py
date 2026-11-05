@@ -56,7 +56,7 @@ def mail_refresh(event):
 
 # @+node:ekr.20170228150606.1: *3* class MLStripper
 class MLStripper(HTMLParser):
-    # pylint: disable=abstract-method
+    # py-lint: disable=abstract-method
 
     def __init__(self):
         super().__init__()

@@ -24,7 +24,7 @@ class TestSyntax(LeoUnitTest):
             del tree  # #1454: Suppress -Wd ResourceWarning.
             return True
         except SyntaxError:  # pragma: no cover
-            raise SyntaxError(fileName)  # pylint: disable=raise-missing-from
+            raise SyntaxError(fileName)  # py-lint: disable=raise-missing-from
         except Exception:  # pragma: no cover
             g.trace("unexpected error in:", fileName)
             raise

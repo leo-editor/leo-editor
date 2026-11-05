@@ -227,7 +227,7 @@ class PersistenceDataController:
                     # Handle all recent variants of the node.
                     lines = g.splitLines(b)
                     if b.startswith('unl:') and len(lines) == 2:
-                        # pylint: disable=unbalanced-tuple-unpacking
+                        # py-lint: disable=unbalanced-tuple-unpacking
                         unl, ua = lines
                     else:
                         unl, ua = None, b

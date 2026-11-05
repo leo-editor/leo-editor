@@ -61,7 +61,7 @@ def init_dict(c):
         return
     try:
         # There is something wrong. Both pylint and mypy complain.
-        # pylint: disable=no-value-for-parameter
+        # py-lint: disable=no-value-for-parameter
         formats = yaml.load(fbody)  # type:ignore
     except Exception as e:
         g.es_trace("Could not parse Headline Format yaml file\n" + str(e))

@@ -1177,7 +1177,7 @@ class TestHtml(BaseTestImporter):
     # @+node:ekr.20210904065459.20: *3* TestHtml.test_multiple_tags_on_a_line
     def test_multiple_tags_on_a_line(self):
 
-        # pylint: disable=line-too-long
+        # py-lint: disable=line-too-long
         # @+<< define s >>
         # @+node:ekr.20230126042723.1: *4* << define s >>
         # tags that cause nodes: html, head, body, div, table, nodeA, nodeB

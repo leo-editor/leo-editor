@@ -695,7 +695,7 @@ class TestFind(LeoUnitTest):
             ('ax aba ab\babc',  'ab', [7]),
         )  # fmt: skip
         for aTuple in table:
-            # pylint: disable=unbalanced-tuple-unpacking
+            # py-lint: disable=unbalanced-tuple-unpacking
             if len(aTuple) == 2:
                 fc.ignore_case, fc.whole_word = aTuple
             else:

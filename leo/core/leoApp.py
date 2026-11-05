@@ -3439,7 +3439,7 @@ class LoadManager:
             func = g.app.scanner_for_ext(ext)
             p = c.rootPosition()
             p.h = f"@auto {fn}" if func else f"@edit {fn}"
-            c.refreshFromDisk(p)  # pylint: disable=no-member
+            c.refreshFromDisk(p)  # py-lint: disable=no-member
 
         c.mFileName = ''  # #3546: Do *not* automatically save the .leo file.
         c.frame.title = c.computeTabTitle()
