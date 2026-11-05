@@ -2995,7 +2995,7 @@ class LeoFind:
             return
 
         c.selectPosition(p)
-        if self.in_headline and not self.reverse:  # PR #5034.
+        if False:  # self.in_headline:  # PR #5034.
             c.treeWantsFocus()
         else:
             # Looks good and provides clear indication of failure or termination.
