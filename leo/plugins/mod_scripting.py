@@ -462,7 +462,7 @@ class ScriptingController:
                 g.app.scriptDict = {'script_gnx': p.gnx}
                 if 'leoScriptModule' in sys.modules.keys():
                     del sys.modules['leoScriptModule']  # Essential.
-                from leo.core import leoScriptModule  # py-lint: disable=no-name-in-module
+                from leo.core import leoScriptModule
 
                 assert leoScriptModule  # for pyflakes.
             else:
@@ -871,7 +871,6 @@ class ScriptingController:
             c: Cmdr = c,
             p: Position = p.copy(),
         ) -> Value:
-            # py-lint: disable=dangerous-default-value
             return c.executeScript(args=args, p=p, silent=True)
 
         # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
@@ -918,7 +917,6 @@ class ScriptingController:
             c: Cmdr = c,
             p: Position = p.copy(),
         ) -> Value:
-            # py-lint: disable=dangerous-default-value
             return c.executeScript(args=args, p=p, silent=True)
 
         if p.b.strip():

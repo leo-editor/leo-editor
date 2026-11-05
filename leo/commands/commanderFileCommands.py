@@ -145,7 +145,7 @@ def forceRestartLeo(self: Self, event: LeoKeyEvent | None = None) -> None:
     if verbose:
         print(args_s)
     print('')
-    subprocess.run(args)  # py-lint: disable=subprocess-run-check
+    subprocess.run(args)
 
 
 # @+node:ekr.20261003164719.1: ** c_file.restartLeo
@@ -220,7 +220,7 @@ def restartLeo(self: Self, event: LeoKeyEvent | None = None) -> None:
     if verbose:
         print(args_s)
     print('')
-    subprocess.run(args)  # py-lint: disable=subprocess-run-check
+    subprocess.run(args)
 
 
 # @+node:ekr.20031218072017.2820: ** c_file.top level

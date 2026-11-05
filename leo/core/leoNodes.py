@@ -214,8 +214,7 @@ class NodeIndices:
     def updateLastIndex(self, gnx: str) -> None:
         """Update ni.lastIndex if the gnx affects it."""
         id_, t, n = self.scanGnx(gnx)
-        # Don't you dare touch this code to keep pylint happy.
-        # py-lint: disable=literal-comparison
+        # Don't you dare touch this code to keep a checker happy.
         if not id_ or (n != 0 and not n):
             return  # the gnx is not well formed or n in ('',None)
         if id_ == self.userId and t == self.timeString:
@@ -471,7 +470,7 @@ class Position:
     def following_siblings(self, copy: bool = True) -> Generator[Position, None, None]:
         """Yield all siblings positions that follow p, not including p."""
         p = self
-        p = p.next()  # py-lint: disable=not-callable
+        p = p.next()
         while p:
             yield p.copy() if copy else p
             p.moveToNext()

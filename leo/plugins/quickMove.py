@@ -484,8 +484,6 @@ class quickMove:
     # @+node:tbrown.20091207102637.11494: *3* context menu popup
     def popup(self, c, p, menu):
         """make popup menu entry for tree context menu"""
-        # py-lint: disable=function-redefined
-        # several callbacks have the same name.
         if c != self.c:
             return  # wrong commander
         for cb, name in reversed(self.recent_moves):

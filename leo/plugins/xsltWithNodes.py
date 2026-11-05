@@ -277,8 +277,6 @@ def addMenu(tag, keywords):
 # Process it against the table.leo node.
 # @@c
 
-# py-lint: disable=pointless-string-statement
-
 r"""
 # @+others
 # @+node:ekr.20140906065955.18786: *3* table.leo

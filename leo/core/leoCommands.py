@@ -975,7 +975,6 @@ class Commands:
             The extension must include the dot.
             """
             cmd = f'assoc {extension}'
-            # py-lint: disable=subprocess-run-check
             proc = subprocess.run(cmd, shell=True, capture_output=True)
             filetype = proc.stdout.decode('utf-8')  # e.g., ".py=Python.File"
             filetype = filetype.split('=')[1] if filetype else ''
@@ -1567,7 +1566,6 @@ class Commands:
         """
         c = self
         if predicate is None:
-            # py-lint: disable=function-redefined
 
             def predicate(p: Position) -> bool:
                 return p.isAnyAtFileNode()
@@ -1612,7 +1610,6 @@ class Commands:
         """
         c = self
         if predicate is None:
-            # py-lint: disable=function-redefined
 
             def predicate(p: Position) -> bool:
                 return p.isAnyAtFileNode()
@@ -3750,7 +3747,6 @@ class Commands:
         else:
             path = fn
         if path:
-            # py-lint: disable=no-member
             # Issues saved message.
             c.saveTo(fileName=path, silent=silent)
             # g.es('in', theDir)
@@ -3983,7 +3979,6 @@ class Commands:
 
         This method creates @<file> nodes whose paths are relative to *this* directory.
         """
-        # py-lint: disable=no-member
         assert os.path.exists(directory), directory
 
         # Create an @settings tree containing one @history-list node.
@@ -5674,7 +5669,7 @@ class Commands:
                 getattr(obj, 'reload_settings', None)
             ):  # fmt: skip
                 try:
-                    func()  # py-lint: disable=not-callable
+                    func()
                     g.doHook("after-reload-settings", c=c)
                 except Exception:
                     g.es_exception()

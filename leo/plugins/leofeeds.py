@@ -53,8 +53,6 @@ def onCreate(tag, keys):
 
 
 class MLStripper(HTMLParser.HTMLParser):
-    # py-lint: disable=super-init-not-called
-    # py-lint: disable=abstract-method
     def __init__(self):
         self.reset()
         self.fed = []

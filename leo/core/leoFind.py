@@ -2963,9 +2963,7 @@ class LeoFind:
         """
         c = self.c
         ftm = self.ftm
-        w = (
-            ftm and ftm.entry_focus or g.app.gui.get_focus(raw=True)
-        )  # py-lint: disable=simplify-boolean-expression
+        w = ftm and ftm.entry_focus or g.app.gui.get_focus(raw=True)
         if ftm:
             ftm.entry_focus = None  # Only use this focus widget once!
         w_name = c.widget_name(w)

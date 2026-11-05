@@ -168,7 +168,6 @@ class LiveCodeDisplay:
                 del self.codeblocks[n:]
                 try:
                     if isinstance(node, ast.Expr):
-                        # py-lint: disable=eval-used
                         node_result = repr(eval(block[n], self.scope))
                     else:
                         # exec block[n] in self.scope

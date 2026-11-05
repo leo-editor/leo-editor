@@ -175,7 +175,7 @@ class LeoCloudIOBase:
 
         :returns: vnode build from lc_id
         """
-        return self.c._leo_cloud.from_dict(self.get_data(lc_id))  # py-lint: disable=no-member
+        return self.c._leo_cloud.from_dict(self.get_data(lc_id))
 
     # @+node:ekr.20201012111338.11: *3* LeoCloudIOBase.put_subtree
     def put_subtree(self, lc_id, v):
@@ -185,7 +185,7 @@ class LeoCloudIOBase:
             lc_id (str(?)): place to put it
             v (vnode): subtree to put
         """
-        self.put_data(lc_id, LeoCloud.to_dict(v))  # py-lint: disable=no-member
+        self.put_data(lc_id, LeoCloud.to_dict(v))
 
     # @-others
 
@@ -457,7 +457,6 @@ class LeoCloud:
             LeoCloudIO instance
         """
         kwargs = self.kw_from_node(p)
-        # py-lint: disable=eval-used
         lc_io_class = eval("LeoCloudIO%s" % kwargs['type'])
         return lc_io_class(self.c, p, kwargs)
 

@@ -9,9 +9,6 @@ alt-x stickynote to pop out current node as a note.
 """
 
 # @-<< docstring >>
-# These are valid complaints.
-# py-lint: disable=no-member
-# Disable Qt warnings.
 # @+<< imports >>
 # @+node:ekr.20100103100944.5391: ** << imports >> (stickynotes_plus.py)
 import webbrowser

@@ -43,8 +43,6 @@ def spyder_launch(event):
     # Create the main window
     try:
         # Version 1.x
-        # py-lint: disable=too-many-function-args
-        # py-lint: disable=unbalanced-tuple-unpacking
         commands, intitle, message, options = data
         g.spyder = main = spyder.MainWindow(commands, intitle, message, options)
     except TypeError:
