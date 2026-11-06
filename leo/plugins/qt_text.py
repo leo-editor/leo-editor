@@ -1895,7 +1895,10 @@ class QTextEditWrapper(QTextMixin):
     # @+node:ekr.20110605121601.18077: *4* QTextEditWrapper.leoMoveCursorHelper & helper
     def leoMoveCursorHelper(self, kind: str, extend: bool = False, linesPerPage: int = 15) -> None:
         """QTextEditWrapper."""
+        c = self.c
+        gui = g.app.gui
         w = self.widget
+        cursor = w.textCursor()
         d = {
             'begin-line': MoveOperation.StartOfLine,  # Was start-line
             'down': MoveOperation.Down,
@@ -1915,40 +1918,49 @@ class QTextEditWrapper(QTextMixin):
         if not op:
             g.trace(f"can not happen: bad kind: {kind}")
             return
+
+        def clear_selection() -> None:  # PR #5037
+            if not extend:
+                cursor.clearSelection()
+                w.setTextCursor(cursor)
+
         if kind in ('page-down', 'page-up'):
             self.pageUpDown(op, mode)
         elif kind == 'exchange':  # exchange-point-and-mark
-            cursor = w.textCursor()
             anchor = cursor.anchor()
             pos = cursor.position()
             cursor.setPosition(pos, MoveMode.MoveAnchor)
             cursor.setPosition(anchor, MoveMode.KeepAnchor)
             w.setTextCursor(cursor)
-        else:
-            cursor = w.textCursor()
-            if not extend:
-                # Fix an annoyance. Make sure to clear the selection.
-                cursor.clearSelection()
-                w.setTextCursor(cursor)
+        elif kind == 'down':
+            clear_selection()
+            lastrow = w.document().blockCount() - 1
             prev_row = cursor.blockNumber()
+            row = cursor.blockNumber()
+            if prev_row == row == lastrow:  # PR #5037
+                w.moveCursor(MoveOperation.EndOfLine, mode)
+            else:
+                w.moveCursor(op, mode)
+        elif kind == 'up':
+            clear_selection()
+            prev_row = cursor.blockNumber()
+            row = cursor.blockNumber()
             w.moveCursor(op, mode)
-            if kind == 'down':
-                # If cursor is at start of last row of body,
-                # extend selection to end of that row.
-                lastrow = w.document().blockCount() - 1
-                col = cursor.columnNumber()
-                row = cursor.blockNumber()
-                if row == lastrow and prev_row == row and col == 0:
-                    w.moveCursor(MoveOperation.EndOfLine, mode)
+            if row == 0 == prev_row:  # PR #5037
+                w.moveCursor(MoveOperation.StartOfLine, mode)
+            else:
+                w.moveCursor(op, mode)
+        else:
+            clear_selection()
+            w.moveCursor(op, mode)
 
         self.seeInsertPoint()
         self.rememberSelectionAndScroll()
-        # #218.
         cursor = w.textCursor()
         sel = cursor.selection().toPlainText()
-        if sel and hasattr(g.app.gui, 'setClipboardSelection'):
-            g.app.gui.setClipboardSelection(sel)
-        self.c.frame.updateStatusLine()
+        if sel and hasattr(gui, 'setClipboardSelection'):
+            gui.setClipboardSelection(sel)
+        c.frame.updateStatusLine()
 
     # @+node:btheado.20120129145543.8180: *5* QTextEditWrapper.pageUpDown
     def pageUpDown(self, op: object, moveMode: object) -> None:
