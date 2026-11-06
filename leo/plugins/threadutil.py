@@ -13,7 +13,7 @@ from leo.core.leoQt import QtCore, QtWidgets
 
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
-log = None
+log = logging.getLogger(__name__)
 
 
 # @+others
