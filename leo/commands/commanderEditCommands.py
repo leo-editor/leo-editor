@@ -403,9 +403,8 @@ def extract(self: Self, event: LeoKeyEvent | None = None) -> None:
 
     with u.change_outline('extract'):
         p = createFirstChildNode(c, c.p, h, ''.join(b))
-        if oldSel:
-            i, j = oldSel
-            w.setSelectionRange(i, j, insert=j)
+        i, j = oldSel  # PR #5038
+        w.setSelectionRange(i, j, insert=j)
 
         # Update the text and selection
         c.p.v.b = head + middle + tail  # Don't redraw.

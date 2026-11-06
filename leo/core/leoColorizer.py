@@ -81,7 +81,7 @@ _url_bearing_tags = frozenset(
 def make_colorizer(c: Cmdr, widget: QWidget) -> JEditColorizer | PygmentsColorizer:
     """Return an instance of JEditColorizer or PygmentsColorizer."""
     if c.config.getBool('use-pygments', default=False):
-        if pygments:
+        if pygments:  # type:ignore
             return PygmentsColorizer(c, widget)
         if not g.unitTesting:
             g.es_print('ignoring @bool use-pygments', color='red')
@@ -1236,7 +1236,7 @@ class JEditColorizer(BaseColorizer):
             ("elide", "", "yellow"),
         ):
             if self.showInvisibles:
-                color = c.config.getColor(option_name) if option_name else default_color
+                color = c.config.getColor(option_name) if option_name else default_color  # type:ignore # ruff-lint bug
             else:
                 option_name, default_color = self.default_colors_dict.get(name, ('', ''))
                 color = c.config.getColor(option_name) if option_name else ''
@@ -3841,7 +3841,7 @@ class QScintillaColorizer(BaseColorizer):
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-if pygments:
+if pygments:  # type:ignore
     # @+others
     # @+node:ekr.20190320062624.2: *3* RegexLexer.get_tokens_unprocessed
     # Copyright (c) Jupyter Development Team.
@@ -3921,7 +3921,7 @@ if pygments:
 
     # Monkeypatch!
 
-    if pygments:
+    if pygments:  # type:ignore
         RegexLexer.get_tokens_unprocessed = get_tokens_unprocessed
     # @+node:ekr.20190320062624.3: *3* class PygmentsBlockUserData(QTextBlockUserData)
     # Copyright (c) Jupyter Development Team.

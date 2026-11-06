@@ -362,18 +362,12 @@ class Commands:
         t1 = time.process_time()
         from leo.core import leoAtFile
         from leo.core import leoBeautify  # So decorators are executed.
-
-        assert leoBeautify  # for pyflakes.
         from leo.core.leoCache import CommanderWrapper
         from leo.core import leoChapters
 
         # User commands...
         from leo.commands import abbrevCommands
-
         from leo.commands import checkerCommands  # Required.
-
-        assert checkerCommands  # To suppress a pyflakes warning.
-
         from leo.commands import controlCommands
         from leo.commands import convertCommands
         from leo.commands import debugCommands
@@ -386,25 +380,14 @@ class Commands:
         from leo.commands import rectangleCommands
         from leo.commands import spellCommands
 
-        # Import files to execute @g.commander_command decorators
+        # Import files that  execute @g.commander_command decorators
         from leo.core import leoCompare
-
-        assert leoCompare
         from leo.core import leoDebugger
-
-        assert leoDebugger
         from leo.commands import commanderEditCommands
-
-        assert commanderEditCommands
         from leo.commands import commanderFileCommands
-
-        assert commanderFileCommands
         from leo.commands import commanderHelpCommands
-
-        assert commanderHelpCommands
         from leo.commands import commanderOutlineCommands
 
-        assert commanderOutlineCommands
         # Other subcommanders.
         from leo.core import leoFind  # Leo 4.11.1
         from leo.core import leoKeys
@@ -418,8 +401,8 @@ class Commands:
         from leo.core import leoUndo
         from leo.core import leoVim
 
-        t2 = time.process_time()
         if 0:
+            t2 = time.process_time()
             g.trace(f"Import time: {t2 - t1:.2f}")
 
         # fmt: off
@@ -1354,7 +1337,7 @@ class Commands:
                         namespace.update(script_gnx=script_p.gnx)
                     # We *always* execute the script with p = c.p.
                     callResult = c.executeScriptHelper(
-                        args or [],
+                        args,
                         define_g,
                         define_name,
                         language,
@@ -1382,7 +1365,7 @@ class Commands:
     # @+node:ekr.20171123135625.5: *5* c.executeScriptHelper
     def executeScriptHelper(
         self,
-        args: list,
+        args: list | None,
         define_g: bool,
         define_name: str,
         language: str,
@@ -1396,7 +1379,7 @@ class Commands:
             c.setCurrentDirectoryFromContext(p)
         else:
             p = None
-        d = {'c': c, 'g': g, 'input': g.input_, 'p': p} if define_g else {}
+        d: dict = {'c': c, 'g': g, 'input': g.input_, 'p': p} if define_g else {}
         if define_name:
             d['__name__'] = define_name
         d['script_args'] = args or []
@@ -1910,7 +1893,7 @@ class Commands:
         c = self
         c.scanAtPathDirectivesCount += 1  # An important statistic.
 
-        def get_path(m: re.Match) -> str | None:
+        def get_path(m: re.Match | None) -> str | None:
             return g.stripPathCruft(m.group(1)) if m else None
 
         # The headline has higher precedence because it is more visible.
