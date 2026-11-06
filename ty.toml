@@ -41,6 +41,7 @@ strict-equality-semantics = true
 
 # Like `disable_error_code=attr-defined` in .mypy.ini.
 unresolved-attribute = "ignore"
+unresolved-import = "ignore"   # PR #5038
 
 # Like `ignore_missing_imports = True` in .mypy.ini.
 import-not-found = "ignore"  # Do not delete this.
