@@ -179,7 +179,7 @@ def _show_response(n, d):
 
 
 # @+node:ekr.20210205144500.1: ** function: client_main_loop
-async def client_main_loop(timeout):
+async def client_main_loop(timeout) -> None:
     global n_async_responses
     uri = f"ws://{wsHost}:{wsPort}"
     action_list = _get_action_list()
@@ -267,13 +267,13 @@ async def client_main_loop(timeout):
         print(f"Asynchronous responses: {n_async_responses}")
         print(f"Unknown response times: {n_unknown_response_times}")
         print(f"  Known response times: {n_known_response_times}")
-        print(
-            f" Average response_time: {(tot_response_time / n_known_response_times):3.2} sec."
-        )  # About 0.1, regardless of tracing.
+        # About 0.1, regardless of tracing.
+        ave_response_time = tot_response_time / n_known_response_times
+        print(f" Average response_time: {ave_response_time:3.2} sec.")
 
 
 # @+node:ekr.20210205141432.1: ** function: main (leoclient.py)
-def main():
+def main() -> None:
     try:
         asyncio.run(client_main_loop(timeout))  # #4664
     except KeyboardInterrupt:

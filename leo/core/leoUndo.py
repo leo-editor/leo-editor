@@ -198,8 +198,18 @@ class TypingBead(UndoBead):
     """An incremental text patch, independent of the legacy Undoer ivars."""
 
     # @+others
-    # @+node:ekr.20261014100558.1: *3* TypingBead.__init__ (trace)
-    def __init__(self, undoer, p, old_text, new_text, old_sel, new_sel, new_ins, scroll):
+    # @+node:ekr.20261014100558.1: *3* TypingBead.__init__
+    def __init__(
+        self,
+        undoer: Undoer,
+        p: Position,
+        old_text: str,
+        new_text: str,
+        old_sel: tuple[int, int],
+        new_sel: tuple[int, int],
+        new_ins: int | None,
+        scroll: int | None,
+    ) -> None:
         """Init a new Typing bead when a new bead is needed."""
         super().__init__(undoer)
         self.command_name = self.undoType = 'Typing'
@@ -213,7 +223,7 @@ class TypingBead(UndoBead):
 
     # @+node:ekr.20261014100625.1: *3* TypingBead.split_patch
     @staticmethod
-    def split_patch(old_text, new_text):
+    def split_patch(old_text: str, new_text: str) -> tuple[int, int, list[str], list[str]]:
         old, new = old_text.split('\n'), new_text.split('\n')
         leading = 0
         while leading < min(len(old), len(new)) and old[leading] == new[leading]:
@@ -232,20 +242,24 @@ class TypingBead(UndoBead):
         )
 
     # @+node:ekr.20261014100625.2: *3* TypingBead.update_patch
-    def update_patch(self, old_text, new_text):
+    def update_patch(self, old_text: str, new_text: str) -> None:
         self.leading, self.trailing, self.old_lines, self.new_lines = self.split_patch(
             old_text, new_text
         )
 
     # @+node:ekr.20261014100625.3: *3* TypingBead.replace_middle
-    def replace_middle(self, text, middle):
+    def replace_middle(self, text: str, middle: list[str]) -> str:
         lines = text.split('\n')
-        return '\n'.join(
-            lines[: self.leading] + middle + (lines[-self.trailing :] if self.trailing else [])
-        )
+        trailing_lines = lines[-self.trailing :] if self.trailing else []
+        return '\n'.join(lines[: self.leading] + middle + trailing_lines)
 
     # @+node:ekr.20261014100625.4: *3* TypingBead.apply
-    def apply(self, middle, sel, ins):
+    def apply(
+        self,
+        middle: list[str],
+        sel: tuple[int, int] | None,
+        ins: int | None,
+    ) -> None:
         c = self.c
         p = self.p
         if c.p != p:
@@ -265,11 +279,15 @@ class TypingBead(UndoBead):
         c.setChanged()
 
     # @+node:ekr.20261014100625.5: *3* TypingBead.undo
-    def undo(self):
-        self.apply(self.old_lines, self.old_sel, self.old_sel[1] if self.old_sel else None)
+    def undo(self) -> None:
+        self.apply(
+            self.old_lines,
+            self.old_sel,
+            (self.old_sel[1] if self.old_sel is not None else None),
+        )
 
     # @+node:ekr.20261014100625.6: *3* TypingBead.redo
-    def redo(self):
+    def redo(self) -> None:
         self.apply(self.new_lines, self.new_sel, self.new_ins)
 
     # @-others

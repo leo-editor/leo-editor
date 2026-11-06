@@ -35,40 +35,40 @@ pymacsFile = __file__
 
 # @+others
 # @+node:ekr.20061024131236: ** dump (pymacs)
-def dump(anObject):
+def dump(anObject) -> str:
     # global g
     init()
     return str(g.toEncodedString(repr(anObject), encoding='ascii'))
 
 
 # @+node:ekr.20061024130957: ** getters (pymacs)
-def get_app():
+def get_app() -> Any:
     """Scripts can use g.app.scriptDict for communication with pymacs."""
     # global g
     init()
     return g.app
 
 
-def get_g():
+def get_g() -> Any:
     # global g
     init()
     return g
 
 
-def script_result():
+def script_result() -> Any:
     # global g
     init()
     return g.app.scriptResult
 
 
 # @+node:ekr.20061024060248.3: ** hello (pymacs)
-def hello():
+def hello() -> str:
     init()
     return f"Hello from Leo.  g.app: {g.app}"
 
 
 # @+node:ekr.20061024075542: ** init  (pymacs)
-def init():
+def init() -> None:
     global inited
     if inited:
         return
@@ -122,7 +122,7 @@ def open(fileName=None) -> Any:
 
 
 # @+node:ekr.20061024084200: ** run-script (pymacs)
-def run_script(c, script, p=None):
+def run_script(c, script, p=None) -> Any:
     # global g
     assert g
     assert g.app

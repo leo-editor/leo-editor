@@ -13,7 +13,7 @@ import traceback
 # Override sys.excepthook.
 
 
-def leo_excepthook(typ, val, tb):
+def leo_excepthook(typ, val, tb) -> None:
     # Like g.es_exception.
     lines = traceback.format_exception(typ, val, tb)
     # #2144: The python_terminal crashes if this method uses the "flush" kwarg.
@@ -68,7 +68,7 @@ except Exception:
 # @-<< imports and inits >>
 # @+others
 # @+node:ekr.20031218072017.2607: ** profile_leo (runLeo.py)
-def profile_leo():
+def profile_leo() -> None:
     """
     Gather and print statistics about Leo.
 
@@ -103,7 +103,7 @@ prof = profile_leo
 
 
 # @+node:ekr.20120219154958.10499: ** run (runLeo.py)
-def run(fileName: str = '', pymacs: bool = False, *args, **keywords):
+def run(fileName: str = '', pymacs: bool = False, *args, **keywords) -> None:
     """Initialize and run Leo"""
     # #1403: sys.excepthook doesn't help.
     # sys.excepthook = leo_excepthook
@@ -113,7 +113,7 @@ def run(fileName: str = '', pymacs: bool = False, *args, **keywords):
 
 
 # @+node:maphew.20180110221247.1: ** run console (runLeo.py)
-def run_console(*args, **keywords):
+def run_console(*args, **keywords) -> None:
     """Initialize and run Leo in console mode gui"""
     sys.argv.append('--gui=console')
     run(*args, **keywords)
