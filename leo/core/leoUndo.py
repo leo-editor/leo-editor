@@ -14,6 +14,7 @@ from collections.abc import Callable, Generator
 from contextlib import contextmanager
 from copy import deepcopy
 from typing import cast, Self, TYPE_CHECKING
+from types import TracebackType
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position, VNode
 
@@ -541,12 +542,12 @@ class Undoer:
         clone_p = clone.copy()
         clone_p.setAllAncestorAtFileNodesDirty()
 
-        def clone_redoer():
+        def clone_redoer() -> None:
             clone_p._linkAfter(old_p)
             clone_p.setDirty()
             c.p = clone_p
 
-        def clone_undoer():
+        def clone_undoer() -> None:
             clone_p.doDelete(old_p)
             c.p = old_p
 
@@ -573,11 +574,11 @@ class Undoer:
         c.p.setAllAncestorAtFileNodesDirty()
         c.checkOutline()
 
-        def delete_node_redoer():
+        def delete_node_redoer() -> None:
             old_p.doDelete()
             c.p = new_p
 
-        def delete_node_undoer():
+        def delete_node_undoer() -> None:
             if old_back:
                 old_p._linkAfter(old_back)
             elif old_parent:
@@ -629,7 +630,7 @@ class Undoer:
         saved = new_p.copy()
         new_p.setAllAncestorAtFileNodesDirty()
 
-        def insert_node_redoer():
+        def insert_node_redoer() -> None:
             if back:
                 saved._linkAfter(back)
             elif parent:
@@ -639,7 +640,7 @@ class Undoer:
             saved.setDirty()
             c.p = saved
 
-        def insert_node_undoer():
+        def insert_node_undoer() -> None:
             saved.doDelete()
             old_p.setAllAncestorAtFileNodesDirty()
             c.p = old_p
@@ -731,7 +732,7 @@ class Undoer:
 
         p = p.copy()
 
-        def update(head):
+        def update(head: str) -> None:
             c.p = p
             p.initHeadString(head)
             p.setDirty()  # Call p.v.setAllAncestorAtFileNodesDirty()
@@ -747,10 +748,10 @@ class Undoer:
 
         # Add helpers
 
-        def change_headline_redoer():
+        def change_headline_redoer() -> None:
             update(new_h)
 
-        def change_headline_undoer():
+        def change_headline_undoer() -> None:
             update(old_h)
 
         b.add_helpers(change_headline_redoer, change_headline_undoer)
@@ -922,16 +923,16 @@ class Undoer:
                 new_files = rf.recentFiles[:]
                 if old_files != new_files:
 
-                    def restore_recent_files(files):
+                    def restore_recent_files(files: list[str]) -> None:
                         rf.recentFiles = files[:]
                         for frame in g.app.windowList:
                             rf.createRecentFilesMenuItems(frame.c)
                         rf.writeRecentFilesFile(u.c)
 
-                    def change_recent_files_redoer():
+                    def change_recent_files_redoer() -> None:
                         restore_recent_files(new_files)
 
-                    def change_recent_files_undoer():
+                    def change_recent_files_undoer() -> None:
                         restore_recent_files(old_files)
 
                     u.undoBead.add_helpers(change_recent_files_redoer, change_recent_files_undoer)
@@ -968,26 +969,26 @@ class Undoer:
                     new_ui = u.capture_ui()
                     u._redraw(new_p)  # PR #5005: calls new_p.setDirty()
 
-                    def move(source, target):
+                    def move(source: Position, target: Position) -> None:
                         source.v._cutLink(source.childIndex(), source._parentVnode())
                         target.v._addLink(target.childIndex(), target._parentVnode())
                         # These call p.v.setAllAncestorAtFileNodesDirty()
                         source.setDirty()
                         target.setDirty()
 
-                    def move_position_redoer():
+                    def move_position_redoer() -> None:
                         move(old_p, new_p)
 
-                    def move_position_undoer():
+                    def move_position_undoer() -> None:
                         move(new_p, old_p)
 
                     u.undoBead.add_helpers(move_position_redoer, move_position_undoer)
 
-                    def restore_ui_redoer():
+                    def restore_ui_redoer() -> None:
                         u.restore_ui(new_ui)
                         u._redraw(new_p)
 
-                    def restore_ui_undoer():
+                    def restore_ui_undoer() -> None:
                         u.restore_ui(old_ui)
                         u._redraw(old_p)
 
@@ -1113,7 +1114,12 @@ class Undoer:
         assert u.undoBead
         return u
 
-    def __exit__(self, exc_type, exc_value, traceback) -> None:
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: object,
+        traceback: TracebackType | None,
+    ) -> None:
         u = self
         b = u.undoBead
         assert b

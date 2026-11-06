@@ -9,11 +9,16 @@
 import os
 import sys
 import traceback
+from types import TracebackType
 
 # Override sys.excepthook.
 
 
-def leo_excepthook(typ, val, tb) -> None:
+def leo_excepthook(
+    typ: type[BaseException] | None,
+    val: BaseException | None,
+    tb: TracebackType | None,
+) -> None:
     # Like g.es_exception.
     lines = traceback.format_exception(typ, val, tb)
     # #2144: The python_terminal crashes if this method uses the "flush" kwarg.
