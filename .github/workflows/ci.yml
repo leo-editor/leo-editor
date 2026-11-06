@@ -21,7 +21,7 @@ jobs:
           cache: pip
       - run: pip install "ruff"
       - run: ruff check leo --output-format=github
-      # - run: ruff format --check leo
+      - run: ruff format --check leo
 
   test:
     runs-on: ubuntu-latest
