@@ -43,7 +43,7 @@ strict-equality-semantics = true
 unresolved-attribute = "ignore"
 
 # Like `ignore_missing_imports = True` in .mypy.ini.
-unresolved-import = "ignore"
+import-not-found = "ignore"
 
 # Warn about unused suppressions.
 unused-ignore-comment = "ignore"  # Python 3.14 and 3.15 differ.
