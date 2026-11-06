@@ -13,7 +13,7 @@ from __future__ import annotations
 from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from copy import deepcopy
-from typing import cast, Any, Self, TYPE_CHECKING
+from typing import cast, Self, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position, VNode
 
@@ -152,42 +152,14 @@ class UndoBead:
             redraw_after_head_changed_finisher, redraw_after_head_changed_finisher
         )
 
-    # @+node:ekr.20261011185637.1: *3* undoBead.check_undo
-    def check_undo(self) -> None:
-        """Perform an important sanity check."""
-        tag = 'UndoBead.undo'
-        c = self.c
-        old_p = self.old_p
-        if old_p != c.p:
-            message = f"{tag}: Bad c.p\n  {c.p.h=}\n{old_p.h=}\n{g.callers()=}\n"
-            print()
-            g.trace(message)
-        if self.redraw_finsishers is None:
-            message = f"{tag}: Bad redraw_finishers. {g.callers()=}\n"
-            print()
-            g.trace(message)
-
-    # @+node:ekr.20261007104333.1: *3* UndoBead.get (compatility)
-    def get(self, key, default=None) -> Any:
-        """A wrapper for u.undoTyping"""
-        # Called infequently, but u.undoTyping *does* sometimes call it.
-        d = {
-            'kind':     self.undoType.lower(),
-            'p':        self.old_p,
-            'undoType': self.undoType,
-        }  # fmt: skip
-        return d.get(key, default)
-
     # @+node:ekr.20261006040132.1: *3* UndoBead.redo
     def redo(self) -> None:
         c = self.c
         for f in self.redo_functions:
-            # g.trace('redoer:', f.__name__)
             f()
         if self.redraw_finishers:
             self.redraw_finishers[0]()
         for f in self.redo_finishers:
-            # g.trace('finisher:', f.__name__)
             f()
         c.setChanged()  # Elegant!
 
@@ -210,12 +182,10 @@ class UndoBead:
     def undo(self) -> None:
         c = self.c
         for f in self.undo_functions:
-            # g.trace('undoer:', f.__name__)
             f()
         if self.redraw_finishers:
             self.redraw_finishers[1]()
         for f in self.undo_finishers:
-            # g.trace('undo finisher:', f.__name__)
             f()
         # A save may have occurred since this bead was created.
         c.setChanged()
@@ -339,19 +309,18 @@ class Undoer:
         self.c = c
         # State.
         self.bead = -1  # Index of the present bead.
-        self.beads = []  # List of undo nodes.
+        self.beads: list[UndoBead] = []  # List of undo nodes.
         self.capture_level = 0
-        # self.granularity = None  # Set in reloadSettings.
         self.groupCount = 0
         self.inHead = False
         self.max_undo_stack_size = c.config.getInt('max-undo-stack-size') or 0
-        self.node_captures = set()
+        self.node_captures: set[VNode] = set()
         self.p = cast(Position, None)
         self.realRedoMenuLabel = "Can't Redo"
         self.realUndoMenuLabel = "Can't Undo"
         self.redoMenuLabel = "Can't Redo"
         self.redoing = False
-        self.undoBead = None
+        self.undoBead: UndoBead | None = None
         self.undoBeadLevel = 0
         self.undoMenuLabel = "Can't Undo"
         self.undoType = "Can't Undo"
@@ -1122,22 +1091,26 @@ class Undoer:
     # @+node:ekr.20261005094529.1: *4* u.__enter__ and __exit__
     def __enter__(self) -> Self:
         """Compose nested operations into one bead, published on outermost exit."""
-        if self.undoBeadLevel == 0:
-            self.undoBead = UndoBead(self)
-        self.undoBeadLevel += 1
-        return self
+        u = self
+        if u.undoBeadLevel == 0:
+            u.undoBead = UndoBead(u)
+        u.undoBeadLevel += 1
+        assert u.undoBead
+        return u
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:
-        b = self.undoBead
-        self.undoBeadLevel -= 1
-        if self.undoBeadLevel:
+        u = self
+        b = u.undoBead
+        assert b
+        u.undoBeadLevel -= 1
+        if u.undoBeadLevel:
             return
-        self.undoBead = None
-        if b.undo_functions and not (self.undoing or self.redoing):
+        u.undoBead = None
+        if b.undo_functions and not (u.undoing or u.redoing):
             if not b.command_name:
                 raise AssertionError("Missing call to u.set_command_name")
             # Record partial mutations even if the command raised an exception.
-            self.pushBead(b)
+            u.pushBead(b)
 
     # @+node:ekr.20261102022551.1: *4* u._can_merge
     def _can_merge(
@@ -1225,7 +1198,7 @@ class Undoer:
         return u.beads[n]
 
     # @+node:ekr.20060127113243: *4* u.pushBead
-    def pushBead(self, bead: UndoBead | None) -> None:
+    def pushBead(self, bead: UndoBead) -> None:
         u = self
         u.bead += 1
         u.beads[u.bead :] = [bead]
