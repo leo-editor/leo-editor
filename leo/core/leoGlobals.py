@@ -48,7 +48,7 @@ import webbrowser
 
 # Leo never imports any other Leo module.
 # PR #4772: add this import statement.
-from leo.core import leoGlobals as g
+from leo.core import leoGlobals as g  # noqa
 
 try:
     import tkinter as Tk
@@ -64,9 +64,9 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core import LeoGlobals  # noqa
     from leo.core.leoApp import LeoApp
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoGui, LeoKeyEvent, LeoFrame
+    from leo.core.leoGui import LeoGui, LeoKeyEvent, LeoFrame  # noqa
     from leo.core.leoNodes import Position, VNode
-    from leo.core.leoQt import QMouseEvent, QWidget, QEvent
+    from leo.core.leoQt import QMouseEvent, QWidget, QEvent  # noqa
     from leo.plugins.qt_idle_time import IdleTime as QtIdleTime
 
     Args = Any
