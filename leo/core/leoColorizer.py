@@ -3934,7 +3934,7 @@ if pygments:  # type:ignore
 
             syntax_stack = tuple('root')
 
-            def __init__(self, **kwargs: KWargs) -> None:
+            def __init__(self, **kwargs) -> None:
                 for key, value in kwargs.items():
                     setattr(self, key, value)
                 super().__init__()

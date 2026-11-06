@@ -3303,7 +3303,7 @@ class KeyHandlerClass:
         fileName: str = '',
         pane: str = 'all',
         shortcut: str = '',  # Must be empty unless allowBindings is True.
-        **kwargs: Any,  # Used only to warn about deprecated kwargs.
+        **kwargs,  # Used only to warn about deprecated kwargs.
     ) -> None:
         """
         Make the function available as a minibuffer command.
