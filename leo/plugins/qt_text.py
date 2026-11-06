@@ -6,7 +6,7 @@
 # @+node:ekr.20220416085845.1: ** << qt_text imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
-from typing import Any, cast, TYPE_CHECKING
+from typing import Any, cast, Self, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, Qsci, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier
@@ -1479,7 +1479,7 @@ class QScintillaWrapper(QTextMixin):
                 QtCore.QTimer.singleShot(delay, func)
 
             # @+node:ekr.20140902084950.18636: *5* addFlashCallback
-            def addFlashCallback(self=self) -> None:
+            def addFlashCallback(self: Self = self) -> None:
                 i = self.flashIndex
                 w = self.widget
                 self.setSelectionRange(i, i + 1)
@@ -1491,7 +1491,7 @@ class QScintillaWrapper(QTextMixin):
                 after(removeFlashCallback)
 
             # @+node:ekr.20140902084950.18637: *5* removeFlashCallback
-            def removeFlashCallback(self=self) -> None:
+            def removeFlashCallback(self: Self = self) -> None:
                 """Remove the extra selections."""
                 self.setInsertPoint(self.flashIndex)
                 w = self.widget
