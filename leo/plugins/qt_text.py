@@ -174,7 +174,7 @@ The color of the guideline is set based on the current text color.
 
 
 @g.command('help-for-right-margin-guide')
-def helpForRMarginGuides(self, event=None):
+def helpForRMarginGuides(self: Any, event: QEvent | None = None) -> None:
     """Displays settings used by right margin guide lines."""
     self.c.putHelpFor(rmargin_doc)
 

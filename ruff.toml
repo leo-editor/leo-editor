@@ -224,7 +224,7 @@ exclude = [
     "leo/plugins/quit_leo.py",
     "leo/plugins/QNCalendarWidget.py",
     "leo/plugins/qt_main.py", # Generated automatically.
-    "leo/plugins/qt_text.py",   # To do.
+    # "leo/plugins/qt_text.py",
     "leo/plugins/r*.py",
     "leo/plugins/s*.py",
     "leo/plugins/t*.py",
