@@ -9,7 +9,8 @@ leo/modes/html.py: Leo's mode file for @language html.
 from __future__ import annotations
 import re
 from typing import Any
-from leo.core import leoGlobals as g
+
+# from leo.core import leoGlobals as g
 
 
 # @-<< html.py: imports >>

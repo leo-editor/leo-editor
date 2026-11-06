@@ -3,7 +3,6 @@
 # @+<< markdownview imports >>
 # @+node:tbrown.20171028115507.1: ** << markdownview imports >>
 import markdown
-from leo.core import leoGlobals as g
 
 # FIXME: for now, prefer the older WebKit over WebEngine.  WebEngine is
 # probably superior, but needs --disable-web-security passed to the
@@ -16,6 +15,7 @@ except ImportError:
 from leo.plugins.editpane.plaintextview import LEP_PlainTextView as TextView
 
 
+# from leo.core import leoGlobals as g
 # @-<< markdownview imports >>
 # @+others
 # @+node:tbrown.20171028115507.2: ** to_html

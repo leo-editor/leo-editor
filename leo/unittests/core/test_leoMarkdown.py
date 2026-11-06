@@ -6,7 +6,7 @@ import io
 from shutil import which
 import textwrap
 
-from leo.core import leoGlobals as g
+# from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 from leo.core.leoMarkup import MarkupCommands
 

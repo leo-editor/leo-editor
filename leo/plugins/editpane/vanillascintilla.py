@@ -7,9 +7,8 @@ but does not try to add Leo key handling
 Terry Brown, Terry_N_Brown@yahoo.com, Sat Feb  4 12:38:26 2017
 """
 
-from leo.core import leoGlobals as g
-
 from leo.core.leoQt import QtGui, QtWidgets, Qsci
+# from leo.core import leoGlobals as g
 
 
 # @+others

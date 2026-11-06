@@ -44,7 +44,6 @@ from leo.core.leoQt import (
 )
 from leo.core.leoTips import UserTip
 from leo.plugins import (
-    qt_commands,
     qt_events,
     qt_frame,
     qt_idle_time,

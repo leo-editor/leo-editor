@@ -2,7 +2,7 @@
 # @+node:ekr.20210910072917.1: * @file ../unittests/core/test_leoVim.py
 """Tests of leoVim.py"""
 
-from leo.core import leoGlobals as g
+# from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 
 

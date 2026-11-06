@@ -7,8 +7,6 @@
 # @+node:ekr.20211210174132.1: ** << imports >>
 import csv
 from collections import namedtuple
-import leo.core.leoGlobals as g
-
 from leo.core.leoQt import Qt, QtCore, QtWidgets, QtGui
 from leo.core.leoQt import ItemFlag, ItemDataRole, StandardPixmap  # 2347
 
@@ -16,6 +14,8 @@ try:
     from cStringIO import StringIO
 except ImportError:
     from io import StringIO
+
+# import leo.core.leoGlobals as g
 # @-<< imports >>
 # @+<< data >>
 # @+node:ekr.20211210174157.1: ** << data >>

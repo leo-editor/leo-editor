@@ -4,8 +4,8 @@
 
 import os
 import tempfile
-import textwrap
-from leo.core import leoGlobals as g
+
+# from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 
 

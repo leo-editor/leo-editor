@@ -6,7 +6,8 @@ from __future__ import annotations
 import re
 import time
 from typing import TYPE_CHECKING
-from leo.core import leoGlobals as g
+
+# from leo.core import leoGlobals as g
 from leo.core.leoGui import LeoKeyEvent, StringFindTabManager
 from leo.core.leoTest2 import LeoUnitTest
 
