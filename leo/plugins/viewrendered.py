@@ -1052,7 +1052,7 @@ class ViewRenderedController(QtWidgets.QWidget):
             import nbformat
             from nbconvert import HTMLExporter
         except ImportError:
-            nbformat = None  # ty:ignore[invalid-assignment]
+            nbformat = None
 
         body = c.p.b.lstrip()
         if body.startswith('<'):

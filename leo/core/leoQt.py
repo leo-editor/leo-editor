@@ -27,7 +27,7 @@ try:
     from PyQt6 import Qsci
 
 except Exception:
-    Qsci = None  # type:ignore  # ty:ignore[invalid-assignment]
+    Qsci = None
     _missing_modules.append('Qsci')
 
 try:
