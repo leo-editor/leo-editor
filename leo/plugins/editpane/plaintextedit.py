@@ -5,7 +5,6 @@
 import re
 from leo.core import leoGlobals as g
 
-assert g
 from leo.core.leoQt import QtGui, QtWidgets
 from leo.core.leoQt import GlobalColor, Weight
 

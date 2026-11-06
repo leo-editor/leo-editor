@@ -9,8 +9,6 @@ leo/modes/javascript.py: Leo's mode file for @language javascript.
 from __future__ import annotations
 from typing import Any
 from leo.core import leoGlobals as g
-
-assert g
 # @-<< javascript.py: imports >>
 # @+<< javascript.py: rules >>
 # @+node:ekr.20241120014525.1: ** << javascript.py: rules >>

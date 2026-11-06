@@ -3,8 +3,6 @@
 # @+<<leotextedit imports >>
 # @+node:tbrown.20171028115508.1: ** <<leotextedit imports >>
 from leo.core import leoGlobals as g
-
-assert g
 from leo.core.leoQt import QtGui, QtWidgets
 from leo.core.leoColorizer import JEditColorizer  # LeoHighlighter
 

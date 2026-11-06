@@ -14,7 +14,6 @@ import time
 
 from leo.core import leoGlobals as leoG
 
-assert leoG
 # @-<< imports >>
 # @+<< version >>
 # @+node:bob.20180206123613.3: ** << version >>

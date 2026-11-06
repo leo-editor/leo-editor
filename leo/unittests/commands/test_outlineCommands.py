@@ -12,9 +12,6 @@ from leo.core.leoTest2 import LeoUnitTest
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position
 
-assert g
-assert sys
-
 
 # @+others
 # @+node:ekr.20221113062938.1: ** class TestOutlineCommands(LeoUnitTest)

@@ -34,8 +34,6 @@ import string
 from typing import Any
 from leo.core import leoGlobals as g
 
-assert g
-
 
 # @-<< import >>
 # @+others

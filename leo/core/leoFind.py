@@ -98,7 +98,7 @@ class LeoFind:
 
         # Created by dw.createFindTab.
         self.ftm = cast(FindTabManager, None)
-        self.re_obj = cast(re.Pattern, None)
+        self.re_obj: re.Pattern | None = None
 
         # The work "widget".
         self.work_s = ''  # p.b or p.c.

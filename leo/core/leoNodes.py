@@ -2314,7 +2314,7 @@ class VNode:
         #       g.app.nodeIndices.new_vnode_helper(c,gnx,v)
         if g.app and g.app.nodeIndices:
             g.app.nodeIndices.new_vnode_helper(context, gnx, self)
-            assert self.fileIndex, g.callers()
+            assert self.fileIndex, g.callers()  # type:ignore # ruff-lint bug.
             return
         raise ValueError(f"VNode.__init__: not initialized: {g.callers()}")
 

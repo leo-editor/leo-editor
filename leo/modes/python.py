@@ -9,8 +9,6 @@ import string
 import sys
 from leo.core import leoGlobals as g
 
-assert g
-
 v1, v2, junk1, junk2, junk3 = sys.version_info
 
 # Properties for python mode.

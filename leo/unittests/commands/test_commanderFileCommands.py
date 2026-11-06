@@ -8,9 +8,6 @@ import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 
-assert g
-assert textwrap
-
 
 # @+others
 # @+node:ekr.20230710105810.1: ** class TestCommanderFileCommands (LeoUnitTest)

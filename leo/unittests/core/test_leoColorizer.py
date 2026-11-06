@@ -15,8 +15,6 @@ try:
 except ImportError:
     pygments = None  # type:ignore
 
-assert g
-
 
 # @+others
 # @+node:ekr.20210905151702.2: ** class TestColorizer(LeoUnitTest)

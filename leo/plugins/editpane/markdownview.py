@@ -5,8 +5,6 @@
 import markdown
 from leo.core import leoGlobals as g
 
-assert g
-
 # FIXME: for now, prefer the older WebKit over WebEngine.  WebEngine is
 # probably superior, but needs --disable-web-security passed to the
 # QApplication to load local images without a server.

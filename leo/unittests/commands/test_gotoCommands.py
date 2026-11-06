@@ -7,8 +7,6 @@ from leo.core.leoTest2 import LeoUnitTest
 from leo.commands.gotoCommands import GoToCommands
 from leo.core.leoNodes import Position
 
-assert g
-
 
 # @+others
 # @+node:ekr.20230802060212.2: ** class TestGotoCommands(LeoUnitTest)

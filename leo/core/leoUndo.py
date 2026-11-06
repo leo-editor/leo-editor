@@ -10,7 +10,7 @@ https://leo-editor.github.io/leo-editor/appendices.html
 # @+<< leoUndo imports & annotations >>
 # @+node:ekr.20220821074023.1: ** << leoUndo imports & annotations >>
 from __future__ import annotations
-from collections.abc import Callable, Iterator
+from collections.abc import Callable, Generator
 from contextlib import contextmanager
 from copy import deepcopy
 from typing import cast, Self, TYPE_CHECKING
@@ -743,7 +743,7 @@ class Undoer:
 
     # @+node:vivainio.202610110001.1: *5* u.change_node
     @contextmanager
-    def change_node(self, p: Position, command_name: str) -> Iterator[Undoer]:
+    def change_node(self, p: Position, command_name: str) -> Generator[Undoer]:
         """
         Handle doing, undoing, and redoing changes to one node.
 
@@ -798,7 +798,7 @@ class Undoer:
 
     # @+node:vivainio.202610110001.2: *5* u.change_outline & helpers
     @contextmanager
-    def change_outline(self, command_name: str) -> Iterator[Undoer]:
+    def change_outline(self, command_name: str) -> Generator[Undoer]:
         """
         Handle doing, undoing, and redoing changes throughout an outline.
 
@@ -893,7 +893,7 @@ class Undoer:
 
     # @+node:vivainio.202610110001.4: *5* u.change_recent_files
     @contextmanager
-    def change_recent_files(self, command_name: str = 'Clear Recent Files') -> Iterator[Undoer]:
+    def change_recent_files(self, command_name: str = 'Clear Recent Files') -> Generator[Undoer]:
         """
         Handling doing, undoing and redoing for the 'Clear Recent Files' menu item."""
         u = self
@@ -923,7 +923,7 @@ class Undoer:
 
     # @+node:vivainio.202610110003.1: *5* u.move_node
     @contextmanager
-    def move_node(self, p: Position, command_name: str) -> Iterator[Undoer]:
+    def move_node(self, p: Position, command_name: str) -> Generator[Undoer]:
         """
         Handle doing, undoing, and redoing moving a node.
 

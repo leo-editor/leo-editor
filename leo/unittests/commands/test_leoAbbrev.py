@@ -13,8 +13,6 @@ from leo.core.leoTest2 import LeoUnitTest
 if TYPE_CHECKING:
     from leo.plugins.qt_text import QTextMixin
 
-assert g
-
 
 # @+others
 # @+node:ekr.20260512145550.104: ** class TestAbbrev (LeoUnitTest)

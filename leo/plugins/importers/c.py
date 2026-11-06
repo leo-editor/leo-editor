@@ -9,7 +9,6 @@ from leo.plugins.importers.base_importer import Block, Importer
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:
-    assert g
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
 

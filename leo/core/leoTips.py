@@ -13,7 +13,6 @@ from leo.core import leoGlobals as g
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
 # @-<< leoTips imports & annotations >>
-assert g
 
 # Define constant strings for use in f-strings.
 at_s = "@"

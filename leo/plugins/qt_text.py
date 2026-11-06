@@ -579,581 +579,577 @@ class LeoLineTextWidget(QtWidgets.QFrame):
 
 
 # @+node:ekr.20110605121601.18005: ** class LeoQTextBrowser (QtWidgets.QTextBrowser)
-if QtWidgets:
+class LeoQTextBrowser(QtWidgets.QTextBrowser):
+    """A subclass of QTextBrowser that overrides the mouse event handlers."""
 
-    class LeoQTextBrowser(QtWidgets.QTextBrowser):
-        """A subclass of QTextBrowser that overrides the mouse event handlers."""
+    # @+others
+    # @+node:ekr.20110605121601.18006: *3*  LeoQTextBrowser.__init__
+    def __init__(self, parent: QWidget, c: Cmdr) -> None:
+        """
+        ctor for LeoQTextBrowser class, a subclass of QtWidgets.QTextBrowser.
+        """
+        assert not hasattr(QtWidgets.QTextBrowser, 'leo_c')
+        self.leo_c = c
+        self.leo_s = ''  # The cached text.
+        self.htmlFlag = True
+        super().__init__(parent)
+        self.setCursorWidth(c.config.getInt('qt-cursor-width') or 1)
 
+        # Connect event handlers...
+        self.cursorPositionChanged.connect(self.highlightCurrentLine)
+        self.textChanged.connect(self.highlightCurrentLine)
+        self.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.onContextMenu)
+        # This event handler is the easy way to keep track of the vertical scroll position.
+        self.leo_vsb = vsb = self.verticalScrollBar()
+        vsb.valueChanged.connect(self.onSliderChanged)
+        # For QCompleter
+        self.leo_q_completer = None
+        self.leo_options = None
+        self.leo_model = None
+
+        hl_color_setting = c.config.getString('line-highlight-color') or ''
+        hl_color = QColor(hl_color_setting)
+        self.hiliter_params: dict[str, Any] = {
+            'lastblock': -2,
+            'last_style_hash': 0,
+            'last_color_setting': hl_color_setting,
+            'last_fg': '',
+            'last_bg': '',
+            'last_hl_color': hl_color,
+        }
+
+    # @+node:ekr.20110605121601.18007: *3* LeoQTextBrowser. __repr__ & __str__
+    def __repr__(self) -> str:
+        return f"<LeoQTextBrowser: {id(self)} {self.objectName() or 'no name'}>"
+
+    __str__ = __repr__
+
+    # @+node:ekr.20110605121601.18008: *3* LeoQTextBrowser: Auto completion
+    # @+node:ekr.20110605121601.18009: *4* class LeoQListWidget(QListWidget)
+    class LeoQListWidget(QtWidgets.QListWidget):
         # @+others
-        # @+node:ekr.20110605121601.18006: *3*  LeoQTextBrowser.__init__
-        def __init__(self, parent: QWidget, c: Cmdr) -> None:
-            """
-            ctor for LeoQTextBrowser class, a subclass of QtWidgets.QTextBrowser.
-            """
-            assert not hasattr(QtWidgets.QTextBrowser, 'leo_c')
+        # @+node:ekr.20110605121601.18010: *5* LeoQListWidget.ctor
+        def __init__(self, c: Cmdr) -> None:
+            """ctor for LeoQListWidget class"""
+            super().__init__()
+            self.setWindowFlags(WindowType.Popup | self.windowFlags())
+
+            # Inject leo_c into this class, a QtWidgets.QTextBrowser
             self.leo_c = c
-            self.leo_s = ''  # The cached text.
-            self.htmlFlag = True
-            super().__init__(parent)
-            self.setCursorWidth(c.config.getInt('qt-cursor-width') or 1)
+            self.itemClicked.connect(self.select_callback)
 
-            # Connect event handlers...
-            self.cursorPositionChanged.connect(self.highlightCurrentLine)
-            self.textChanged.connect(self.highlightCurrentLine)
-            self.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
-            self.customContextMenuRequested.connect(self.onContextMenu)
-            # This event handler is the easy way to keep track of the vertical scroll position.
-            self.leo_vsb = vsb = self.verticalScrollBar()
-            vsb.valueChanged.connect(self.onSliderChanged)
-            # For QCompleter
-            self.leo_q_completer = None
-            self.leo_options = None
-            self.leo_model = None
+        # @+node:ekr.20110605121601.18011: *5* LeoQListWidget.closeEvent
+        def closeEvent(self, event: QEvent) -> None:
+            """Kill completion and close the window."""
+            self.leo_c.k.autoCompleter.abort()
 
-            hl_color_setting = c.config.getString('line-highlight-color') or ''
-            hl_color = QColor(hl_color_setting)
-            self.hiliter_params: dict[str, Any] = {
-                'lastblock': -2,
-                'last_style_hash': 0,
-                'last_color_setting': hl_color_setting,
-                'last_fg': '',
-                'last_bg': '',
-                'last_hl_color': hl_color,
-            }
-
-        # @+node:ekr.20110605121601.18007: *3* LeoQTextBrowser. __repr__ & __str__
-        def __repr__(self) -> str:
-            return f"<LeoQTextBrowser: {id(self)} {self.objectName() or 'no name'}>"
-
-        __str__ = __repr__
-
-        # @+node:ekr.20110605121601.18008: *3* LeoQTextBrowser: Auto completion
-        # @+node:ekr.20110605121601.18009: *4* class LeoQListWidget(QListWidget)
-        class LeoQListWidget(QtWidgets.QListWidget):
-            # @+others
-            # @+node:ekr.20110605121601.18010: *5* LeoQListWidget.ctor
-            def __init__(self, c: Cmdr) -> None:
-                """ctor for LeoQListWidget class"""
-                super().__init__()
-                self.setWindowFlags(WindowType.Popup | self.windowFlags())
-
-                # Inject leo_c into this class, a QtWidgets.QTextBrowser
-                self.leo_c = c
-                self.itemClicked.connect(self.select_callback)
-
-            # @+node:ekr.20110605121601.18011: *5* LeoQListWidget.closeEvent
-            def closeEvent(self, event: QEvent) -> None:
-                """Kill completion and close the window."""
-                self.leo_c.k.autoCompleter.abort()
-
-            # @+node:ekr.20110605121601.18012: *5* LeoQListWidget.end_completer
-            def end_completer(self) -> None:
-                """End completion."""
-                c = self.leo_c
-                c.in_qt_dialog = False
-                # This is important: it clears the autocompletion state.
-                c.k.keyboardQuit()
-                c.bodyWantsFocusNow()
-                try:
-                    self.deleteLater()
-                except RuntimeError:
-                    # Avoid bug 1338773: Autocompleter error
-                    pass
-
-            # @+node:ekr.20141024170936.7: *5* LeoQListWidget.get_selection
-            def get_selection(self) -> str:
-                """Return the presently selected item's text."""
-                return self.currentItem().text()
-
-            # @+node:ekr.20110605121601.18013: *5* LeoQListWidget.keyPressEvent
-            def keyPressEvent(self, event: QKeyEvent) -> None:
-                """Handle a key event from QListWidget."""
-                c = self.leo_c
-                w = event.w if event else c.frame.body.wrapper  # Valid in headlines.
-                key = event.key()
-                if event.modifiers() != KeyboardModifier.NoModifier and not event.text():
-                    # A modifier key on it's own.
-                    pass
-                elif key in (Key.Key_Up, Key.Key_Down):
-                    QtWidgets.QListWidget.keyPressEvent(self, event)
-                elif key == Key.Key_Tab:
-                    self.tab_callback()
-                elif key in (Key.Key_Enter, Key.Key_Return):
-                    self.select_callback()
-                else:
-                    # Pass all other keys to the autocompleter via the event filter.
-                    w.ev_filter.eventFilter(obj=self, event=event)
-
-            # @+node:ekr.20110605121601.18014: *5* LeoQListWidget.select_callback
-            def select_callback(self) -> None:
-                """
-                Called when user selects an item in the QListWidget.
-                """
-                c = self.leo_c
-                p = c.p
-                u = c.undoer
-                w = c.k.autoCompleter.w or c.frame.body.wrapper
-                oldSel = w.getSelectionRange()
-                oldText = w.getAllText()
-                # Replace the tail of the prefix with the completion.
-                completion = self.currentItem().text()
-                prefix = c.k.autoCompleter.get_autocompleter_prefix()
-                parts = prefix.split('.')
-                if len(parts) > 1:
-                    tail = parts[-1]
-                else:
-                    tail = prefix
-                if tail != completion:
-                    j = w.getInsertPoint()
-                    i = j - len(tail)
-                    w.delete(i, j)
-                    w.insert(i, completion)
-                    j = i + len(completion)
-                    c.setChanged()
-                    w.setInsertPoint(j)
-                    u.type_text(
-                        p,
-                        oldText,
-                        newText=w.getAllText(),
-                        newInsert=w.getInsertPoint(),
-                        newSel=w.getSelectionRange(),
-                        oldSel=oldSel,
-                    )
-                self.end_completer()
-
-            # @+node:tbrown.20111011094944.27031: *5* LeoQListWidget.tab_callback
-            def tab_callback(self) -> None:
-                """Called when user hits tab on an item in the QListWidget."""
-                c = self.leo_c
-                w = c.k.autoCompleter.w or c.frame.body.wrapper  # 2014/09/19
-                if w is None:
-                    return
-                # Replace the tail of the prefix with the completion.
-                prefix = c.k.autoCompleter.get_autocompleter_prefix()
-                parts = prefix.split('.')
-                if len(parts) < 2:
-                    return
-                i = j = w.getInsertPoint()
-                s = w.getAllText()
-                while 0 <= i < len(s) and s[i] != '.':
-                    i -= 1
-                i += 1
-                if j > i:
-                    w.delete(i, j)
-                w.setInsertPoint(i)
-                c.k.autoCompleter.compute_completion_list()
-
-            # @+node:ekr.20110605121601.18015: *5* LeoQListWidget.set_position
-            def set_position(self, c: Cmdr) -> None:
-                """Set the position of the QListWidget."""
-
-                def to_global(obj: QObject, pt: QPoint) -> QPoint:
-                    """Convert pt from obj's local coordinates to global coordinates."""
-                    return obj.mapToGlobal(pt)
-
-                c = self.leo_c
-                w = c.frame.body.wrapper.widget
-                vp = self.viewport()
-                assert vp is not None
-                r = w.cursorRect()
-                geom = self.geometry()  # In viewport coordinates.
-                gr_topLeft = to_global(w, r.topLeft())
-                gg_topLeft = to_global(vp, geom.topLeft())
-                delta_x = gr_topLeft.x() - gg_topLeft.x()
-                delta_y = gr_topLeft.y() - gg_topLeft.y()
-                # These offset are reasonable. Perhaps they should depend on font size.
-                x_offset, y_offset = 10, 60
-                # Compute the new geometry, setting the size by hand.
-                geom2_topLeft = QtCore.QPoint(
-                    geom.x() + delta_x + x_offset, geom.y() + delta_y + y_offset
-                )
-                geom2_size = QtCore.QSize(400, 100)
-                geom2 = QtCore.QRect(geom2_topLeft, geom2_size)
-                self.setGeometry(geom2)
-
-            # @+node:ekr.20110605121601.18016: *5* LeoQListWidget.show_completions
-            def show_completions(self, aList: list[str]) -> None:
-                """Set the QListView contents to aList."""
-                self.clear()
-                self.addItems(aList)
-                self.setCurrentRow(0)
-                self.activateWindow()
-                self.setFocus()
-
-            # @-others
-
-        # @+node:ekr.20110605121601.18017: *4* LeoQTextBrowser.init_completer
-        def init_completer(self, options: list[str]) -> LeoQListWidget:
-            """Connect a QCompleter."""
-            c = self.leo_c
-            self.leo_qc = qc = self.LeoQListWidget(c)
-            # Move the window near the body pane's cursor.
-            qc.set_position(c)
-            # Show the initial completions.
-            c.in_qt_dialog = True
-            qc.show()
-            qc.activateWindow()
-            c.widgetWantsFocusNow(qc)
-            qc.show_completions(options)
-            return qc
-
-        # @+node:ekr.20110605121601.18018: *4* LeoQTextBrowser.redirections to LeoQListWidget
+        # @+node:ekr.20110605121601.18012: *5* LeoQListWidget.end_completer
         def end_completer(self) -> None:
-            if hasattr(self, 'leo_qc'):
-                self.leo_qc.end_completer()
-                delattr(self, 'leo_qc')
-
-        def show_completions(self, aList: list) -> None:
-            if hasattr(self, 'leo_qc'):
-                self.leo_qc.show_completions(aList)
-
-        # @+node:tom.20210827230127.1: *3* LeoQTextBrowser: Highlight Current Line
-        # @+node:tom.20210827225119.3: *4* LeoQTextBrowser.parse_css
-        # @@language python
-        @staticmethod
-        def parse_css(css_string: str, clas: str = '') -> tuple[str, str]:
-            """Extract colors from a css stylesheet string.
-
-            This is an extremely simple-minded function. It assumes
-            that no quotation marks are being used, and that the
-            first block in braces with the name clas is the controlling
-            css for our widget.
-
-            Returns a tuple of strings (color, background).
-            """
-            # Get first block with name matching "clas'
-            block = css_string.split(clas, 1)
-            block = block[1].split('{', 1)
-            block = block[1].split('}', 1)
-
-            # Split into styles separated by ";"
-            styles = block[0].split(';')
-
-            # Split into fields separated by ":"
-            fields = [style.split(':') for style in styles if style.strip()]
-
-            # Only get fields whose names are "color" and "background"
-            color = bg = ''
-            for style, val in fields:
-                style = style.strip()
-                if style == 'color':
-                    color = val.strip()
-                elif style == 'background':
-                    bg = val.strip()
-                if color and bg:
-                    break
-            return color, bg
-
-        # @+node:tom.20210827225119.4: *4* LeoQTextBrowser.assign_bg
-        # @@language python
-        @staticmethod
-        def assign_bg(fg: str) -> QColor:
-            """If fg or bg colors are missing, assign
-            reasonable values.  Can happen with incorrectly
-            constructed themes, or no-theme color schemes.
-
-            Intended to be called when bg color is missing.
-
-            RETURNS
-            a QColor object for the background color
-            """
-            if not fg:
-                fg = 'black'  # QTextEdit default
-                bg = 'white'  # QTextEdit default
-            if fg == 'black':
-                bg = 'white'  # QTextEdit default
-            else:
-                fg_color = QColor(fg)
-                h, s, v, a = fg_color.getHsv()
-                if v < 128:  # dark foreground
-                    bg = 'white'
-                else:
-                    bg = 'black'
-            return QColor(bg)
-
-        # @+node:tom.20210827225119.5: *4* LeoQTextBrowser.calc_hl
-        # @@language python
-        @staticmethod
-        def calc_hl(palette: QtGui.QPalette) -> QColor:
-            """Return the line highlight color.
-
-            ARGUMENT
-            palette -- a QPalette object for the body
-
-            RETURNS
-            a QColor object for the highlight color
-            """
-            fg = palette.text().color()
-            bg = palette.window().color()
-            hsv_fg = fg.getHsv()
-            hsv_bg = bg.getHsv()
-            v_fg = hsv_fg[2]
-            v_bg = hsv_bg[2]
-            if v_fg < v_bg:
-                hl = bg.darker(110)
-            else:
-                if v_bg < 20:
-                    hl = QColor(bg)
-                    hl.setHsv(360, 0, 30, hsv_bg[3])
-                else:
-                    hl = bg.lighter(140)
-            return hl
-
-        # @+node:tom.20210827225119.2: *4* LeoQTextBrowser.highlightCurrentLine
-        # @@language python
-        def highlightCurrentLine(self) -> None:
-            """Highlight cursor line."""
+            """End completion."""
             c = self.leo_c
-            params = self.hiliter_params
-            editor = c.frame.body.wrapper.widget
+            c.in_qt_dialog = False
+            # This is important: it clears the autocompletion state.
+            c.k.keyboardQuit()
+            c.bodyWantsFocusNow()
+            try:
+                self.deleteLater()
+            except RuntimeError:
+                # Avoid bug 1338773: Autocompleter error
+                pass
 
-            # #3948: The following code applies only to Qt.
-            if not isinstance(editor, QtWidgets.QTextBrowser):
-                return
+        # @+node:ekr.20141024170936.7: *5* LeoQListWidget.get_selection
+        def get_selection(self) -> str:
+            """Return the presently selected item's text."""
+            return self.currentItem().text()
 
-            if not c.config.getBool('highlight-body-line', True):
-                editor.setExtraSelections([])
-                return
-
-            curs = editor.textCursor()
-            blocknum = curs.blockNumber()
-
-            # Some cursor movements don't change the line: ignore them
-            #    if blocknum == params['lastblock'] and blocknum > 0:
-            #        return
-
-            if blocknum == 0:  # invalid position
-                blocknum = 1
-            params['lastblock'] = blocknum
-
-            hl_color = params['last_hl_color']
-
-            # @+<< Recalculate Color >>
-            # @+node:tom.20210909124441.1: *5* << Recalculate Color >>
-            config_setting = c.config.getString('line-highlight-color') or ''
-            config_setting = (
-                config_setting.replace("'", '').replace('"', '').lower().replace('none', '')
-            )
-
-            last_color_setting = params['last_color_setting']
-            config_setting_changed = config_setting != last_color_setting
-
-            if config_setting:
-                if config_setting_changed:
-                    hl_color = QColor(config_setting)
-                    params['last_hl_color'] = hl_color
-                    params['last_color_setting'] = config_setting
-                else:
-                    hl_color = params['last_hl_color']
+        # @+node:ekr.20110605121601.18013: *5* LeoQListWidget.keyPressEvent
+        def keyPressEvent(self, event: QKeyEvent) -> None:
+            """Handle a key event from QListWidget."""
+            c = self.leo_c
+            w = event.w if event else c.frame.body.wrapper  # Valid in headlines.
+            key = event.key()
+            if event.modifiers() != KeyboardModifier.NoModifier and not event.text():
+                # A modifier key on it's own.
+                pass
+            elif key in (Key.Key_Up, Key.Key_Down):
+                QtWidgets.QListWidget.keyPressEvent(self, event)
+            elif key == Key.Key_Tab:
+                self.tab_callback()
+            elif key in (Key.Key_Enter, Key.Key_Return):
+                self.select_callback()
             else:
-                # Get current colors from the body editor widget
-                wrapper = c.frame.body.wrapper
-                w = wrapper.widget
-                palette = w.viewport().palette()
+                # Pass all other keys to the autocompleter via the event filter.
+                w.ev_filter.eventFilter(obj=self, event=event)
 
-                fg_hex = palette.text().color().rgb()
-                bg_hex = palette.window().color().rgb()
-                fg = f'#{fg_hex:x}'
-                bg = f'#{bg_hex:x}'
-
-                if params['last_fg'] != fg or params['last_bg'] != bg:
-                    # bg_color = QColor(bg) if bg else self.assign_bg(fg)
-                    hl_color = self.calc_hl(palette)
-                    params['last_hl_color'] = hl_color
-                    params['last_fg'] = fg
-                    params['last_bg'] = bg
-            # @-<< Recalculate Color >>
-            # @+<< Apply Highlight >>
-            # @+node:tom.20210909124551.1: *5* << Apply Highlight >>
-            # Based on code from
-            # https://doc.qt.io/qt-5/qtwidgets-widgets-codeeditor-example.html
-
-            selection = editor.ExtraSelection()
-            selection.format.setBackground(hl_color)
-            selection.format.setProperty(FullWidthSelection, True)
-            selection.cursor = curs
-            selection.cursor.clearSelection()
-
-            editor.setExtraSelections([selection])
-            # @-<< Apply Highlight >>
-
-        # @+node:ekr.20141103061944.31: *3* LeoQTextBrowser.get/setXScrollPosition
-        def getXScrollPosition(self) -> int:
-            """Get the horizontal scrollbar position."""
-            w = self
-            sb = w.horizontalScrollBar()
-            pos = sb.sliderPosition()
-            return pos
-
-        def setXScrollPosition(self, pos: int) -> None:
-            """Set the position of the horizontal scrollbar."""
-            if pos is not None:
-                w = self
-                sb = w.horizontalScrollBar()
-                sb.setSliderPosition(pos)
-
-        # @+node:ekr.20111002125540.7021: *3* LeoQTextBrowser.get/setYScrollPosition
-        def getYScrollPosition(self) -> int:
-            """Get the vertical scrollbar position."""
-            w = self
-            sb = w.verticalScrollBar()
-            pos = sb.sliderPosition()
-            return pos
-
-        def setYScrollPosition(self, pos: int) -> None:
-            """Set the position of the vertical scrollbar."""
-            w = self
-            if pos is None:
-                pos = 0
-            sb = w.verticalScrollBar()
-            sb.setSliderPosition(pos)
-
-        # @+node:ekr.20110605121601.18019: *3* LeoQTextBrowser.leo_dumpButton
-        def leo_dumpButton(self, event: LeoKeyEvent | None, tag: str) -> str:
-            if not event:
-                return ''
-            button = event.button()
-            table = (
-                (MouseButton.NoButton,     'no button'),
-                (MouseButton.LeftButton,   'left-button'),
-                (MouseButton.RightButton,  'right-button'),
-                (MouseButton.MiddleButton, 'middle-button'),
-            )  # fmt: skip
-            for val, s in table:
-                if button == val:
-                    kind = s
-                    break
-            else:
-                kind = f"unknown: {repr(button)}"
-            return kind
-
-        # @+node:ekr.20200304130514.1: *3* LeoQTextBrowser.onContextMenu
-        def onContextMenu(self, point: QPoint) -> None:
-            """LeoQTextBrowser: Callback for customContextMenuRequested events."""
-            # #1286.
-            w = self
-            c = w.leo_c
-            g.app.gui.onContextMenu(c, w, point)
-
-        # @+node:ekr.20120925061642.13506: *3* LeoQTextBrowser.onSliderChanged
-        def onSliderChanged(self, arg: int) -> None:
-            """Handle a Qt onSliderChanged event."""
+        # @+node:ekr.20110605121601.18014: *5* LeoQListWidget.select_callback
+        def select_callback(self) -> None:
+            """
+            Called when user selects an item in the QListWidget.
+            """
             c = self.leo_c
             p = c.p
-            # Careful: changing nodes changes the scrollbars.
-            if hasattr(c.frame.tree, 'tree_select_lockout'):
-                if c.frame.tree.tree_select_lockout:
-                    return
-            # Only scrolling in the body pane should set v.scrollBarSpot.
-            if not c.frame.body or self != c.frame.body.wrapper.widget:
-                return
-            if p:
-                p.v.scrollBarSpot = arg
-
-        # @+node:ekr.20201204172235.1: *3* LeoQTextBrowser.paintEvent
-        leo_cursor_width = 0
-
-        leo_vim_mode: bool | None = None
-
-        def paintEvent(self, event: QPaintEvent) -> None:
-            """
-            LeoQTextBrowser.paintEvent.
-
-            New in Leo 6.4: Draw a box around the cursor in command mode.
-                            This is as close as possible to vim's look.
-            New in Leo 6.6.2: Draw right margin guideline.
-            """
-            w = self
-            c = w.leo_c
-            vc = c.vimCommands
-            if w == getattr(c.frame.body, 'widget', None) and c.config.getBool(
-                'show-rmargin-guide'
-            ):
-                # @+<< paint margin guides >>
-                # @+node:tom.20220423204906.1: *4* << paint margin guides  >>
-                # based on https://stackoverflow.com/questions/30371613
-                # draw-vertical-lines-on-qtextedit-in-pyqt
-                # Honor @pagewidth directive if any
-                rcol = c.getPageWidth(c.p) or c.config.getInt('rguide-col', 80)
-                vp = w.viewport()
-                palette = vp.palette()
-                font = w.document().defaultFont()
-                fm = QFontMetrics(font)
-                rmargin = fm.horizontalAdvance('9' * rcol) + 2
-                if vp.width() >= rmargin:
-                    painter = QtGui.QPainter(vp)
-                    pen = QtGui.QPen(SolidLine)
-
-                    # guideline color
-                    fg = palette.text().color()
-                    bg = palette.window().color()
-                    hsv_fg = fg.getHsv()[2]
-                    hsv_bg = bg.getHsv()[2]
-                    if hsv_fg < hsv_bg:
-                        fg = fg.lighter()
-                    else:
-                        fg = fg.darker()
-                    pen.setColor(fg)
-
-                    pen.setWidth(1)
-                    painter.setPen(pen)
-                    painter.drawLine(rmargin, 0, rmargin, vp.height())
-                # @-<< paint margin guides >>
-
-            # First, call the base class paintEvent.
-            QtWidgets.QTextBrowser.paintEvent(self, event)
-
-            def set_cursor_width(width: int) -> None:
-                """Set the cursor width, but only if necessary."""
-                if self.leo_cursor_width != width:
-                    self.leo_cursor_width = width
-                    w.setCursorWidth(width)
-
-            # Are we in vim mode?
-            if self.leo_vim_mode is None:
-                self.leo_vim_mode = c.config.getBool('vim-mode', default=False)
-
-            # Are we in command mode?
-            if self.leo_vim_mode:
-                in_command = vc and vc.state == 'normal'  # vim mode.
+            u = c.undoer
+            w = c.k.autoCompleter.w or c.frame.body.wrapper
+            oldSel = w.getSelectionRange()
+            oldText = w.getAllText()
+            # Replace the tail of the prefix with the completion.
+            completion = self.currentItem().text()
+            prefix = c.k.autoCompleter.get_autocompleter_prefix()
+            parts = prefix.split('.')
+            if len(parts) > 1:
+                tail = parts[-1]
             else:
-                in_command = c.k.unboundKeyAction == 'command'  # vim emulation.
+                tail = prefix
+            if tail != completion:
+                j = w.getInsertPoint()
+                i = j - len(tail)
+                w.delete(i, j)
+                w.insert(i, completion)
+                j = i + len(completion)
+                c.setChanged()
+                w.setInsertPoint(j)
+                u.type_text(
+                    p,
+                    oldText,
+                    newText=w.getAllText(),
+                    newInsert=w.getInsertPoint(),
+                    newSel=w.getSelectionRange(),
+                    oldSel=oldSel,
+                )
+            self.end_completer()
 
-            # Draw the box only in command mode, when w is the body pane, with focus.
-            if not in_command or w != c.frame.body.widget or w != g.app.gui.get_focus():
-                set_cursor_width(c.config.getInt('qt-cursor-width') or 1)
+        # @+node:tbrown.20111011094944.27031: *5* LeoQListWidget.tab_callback
+        def tab_callback(self) -> None:
+            """Called when user hits tab on an item in the QListWidget."""
+            c = self.leo_c
+            w = c.k.autoCompleter.w or c.frame.body.wrapper  # 2014/09/19
+            if w is None:
                 return
-
-            # Set the width of the cursor.
-            font = w.currentFont()
-            cursor_width = QtGui.QFontMetrics(font).averageCharWidth()
-            set_cursor_width(cursor_width)
-
-            # Draw a box around the cursor.
-            qp = QtGui.QPainter()
-            qp.begin(self.viewport())
-            qp.drawRect(w.cursorRect())
-            qp.end()
-
-        # @+node:tbrown.20130411145310.18855: *3* LeoQTextBrowser.wheelEvent
-        def wheelEvent(self, event: QWheelEvent) -> None:
-            """Handle a wheel event."""
-            if KeyboardModifier.ControlModifier & event.modifiers():
-                d = {'c': self.leo_c}
-                try:  # Qt5 or later.
-                    point = event.angleDelta()
-                    delta = point.y() or point.x()
-                except AttributeError:
-                    delta = event.delta()  # Qt4.
-                if delta < 0:
-                    zoom_out(d)
-                else:
-                    zoom_in(d)
-                event.accept()
+            # Replace the tail of the prefix with the completion.
+            prefix = c.k.autoCompleter.get_autocompleter_prefix()
+            parts = prefix.split('.')
+            if len(parts) < 2:
                 return
-            QtWidgets.QTextBrowser.wheelEvent(self, event)
+            i = j = w.getInsertPoint()
+            s = w.getAllText()
+            while 0 <= i < len(s) and s[i] != '.':
+                i -= 1
+            i += 1
+            if j > i:
+                w.delete(i, j)
+            w.setInsertPoint(i)
+            c.k.autoCompleter.compute_completion_list()
+
+        # @+node:ekr.20110605121601.18015: *5* LeoQListWidget.set_position
+        def set_position(self, c: Cmdr) -> None:
+            """Set the position of the QListWidget."""
+
+            def to_global(obj: QObject, pt: QPoint) -> QPoint:
+                """Convert pt from obj's local coordinates to global coordinates."""
+                return obj.mapToGlobal(pt)
+
+            c = self.leo_c
+            w = c.frame.body.wrapper.widget
+            vp = self.viewport()
+            assert vp is not None
+            r = w.cursorRect()
+            geom = self.geometry()  # In viewport coordinates.
+            gr_topLeft = to_global(w, r.topLeft())
+            gg_topLeft = to_global(vp, geom.topLeft())
+            delta_x = gr_topLeft.x() - gg_topLeft.x()
+            delta_y = gr_topLeft.y() - gg_topLeft.y()
+            # These offset are reasonable. Perhaps they should depend on font size.
+            x_offset, y_offset = 10, 60
+            # Compute the new geometry, setting the size by hand.
+            geom2_topLeft = QtCore.QPoint(
+                geom.x() + delta_x + x_offset, geom.y() + delta_y + y_offset
+            )
+            geom2_size = QtCore.QSize(400, 100)
+            geom2 = QtCore.QRect(geom2_topLeft, geom2_size)
+            self.setGeometry(geom2)
+
+        # @+node:ekr.20110605121601.18016: *5* LeoQListWidget.show_completions
+        def show_completions(self, aList: list[str]) -> None:
+            """Set the QListView contents to aList."""
+            self.clear()
+            self.addItems(aList)
+            self.setCurrentRow(0)
+            self.activateWindow()
+            self.setFocus()
 
         # @-others
+
+    # @+node:ekr.20110605121601.18017: *4* LeoQTextBrowser.init_completer
+    def init_completer(self, options: list[str]) -> LeoQListWidget:
+        """Connect a QCompleter."""
+        c = self.leo_c
+        self.leo_qc = qc = self.LeoQListWidget(c)
+        # Move the window near the body pane's cursor.
+        qc.set_position(c)
+        # Show the initial completions.
+        c.in_qt_dialog = True
+        qc.show()
+        qc.activateWindow()
+        c.widgetWantsFocusNow(qc)
+        qc.show_completions(options)
+        return qc
+
+    # @+node:ekr.20110605121601.18018: *4* LeoQTextBrowser.redirections to LeoQListWidget
+    def end_completer(self) -> None:
+        if hasattr(self, 'leo_qc'):
+            self.leo_qc.end_completer()
+            delattr(self, 'leo_qc')
+
+    def show_completions(self, aList: list) -> None:
+        if hasattr(self, 'leo_qc'):
+            self.leo_qc.show_completions(aList)
+
+    # @+node:tom.20210827230127.1: *3* LeoQTextBrowser: Highlight Current Line
+    # @+node:tom.20210827225119.3: *4* LeoQTextBrowser.parse_css
+    # @@language python
+    @staticmethod
+    def parse_css(css_string: str, clas: str = '') -> tuple[str, str]:
+        """Extract colors from a css stylesheet string.
+
+        This is an extremely simple-minded function. It assumes
+        that no quotation marks are being used, and that the
+        first block in braces with the name clas is the controlling
+        css for our widget.
+
+        Returns a tuple of strings (color, background).
+        """
+        # Get first block with name matching "clas'
+        block = css_string.split(clas, 1)
+        block = block[1].split('{', 1)
+        block = block[1].split('}', 1)
+
+        # Split into styles separated by ";"
+        styles = block[0].split(';')
+
+        # Split into fields separated by ":"
+        fields = [style.split(':') for style in styles if style.strip()]
+
+        # Only get fields whose names are "color" and "background"
+        color = bg = ''
+        for style, val in fields:
+            style = style.strip()
+            if style == 'color':
+                color = val.strip()
+            elif style == 'background':
+                bg = val.strip()
+            if color and bg:
+                break
+        return color, bg
+
+    # @+node:tom.20210827225119.4: *4* LeoQTextBrowser.assign_bg
+    # @@language python
+    @staticmethod
+    def assign_bg(fg: str) -> QColor:
+        """If fg or bg colors are missing, assign
+        reasonable values.  Can happen with incorrectly
+        constructed themes, or no-theme color schemes.
+
+        Intended to be called when bg color is missing.
+
+        RETURNS
+        a QColor object for the background color
+        """
+        if not fg:
+            fg = 'black'  # QTextEdit default
+            bg = 'white'  # QTextEdit default
+        if fg == 'black':
+            bg = 'white'  # QTextEdit default
+        else:
+            fg_color = QColor(fg)
+            h, s, v, a = fg_color.getHsv()
+            if v < 128:  # dark foreground
+                bg = 'white'
+            else:
+                bg = 'black'
+        return QColor(bg)
+
+    # @+node:tom.20210827225119.5: *4* LeoQTextBrowser.calc_hl
+    # @@language python
+    @staticmethod
+    def calc_hl(palette: QtGui.QPalette) -> QColor:
+        """Return the line highlight color.
+
+        ARGUMENT
+        palette -- a QPalette object for the body
+
+        RETURNS
+        a QColor object for the highlight color
+        """
+        fg = palette.text().color()
+        bg = palette.window().color()
+        hsv_fg = fg.getHsv()
+        hsv_bg = bg.getHsv()
+        v_fg = hsv_fg[2]
+        v_bg = hsv_bg[2]
+        if v_fg < v_bg:
+            hl = bg.darker(110)
+        else:
+            if v_bg < 20:
+                hl = QColor(bg)
+                hl.setHsv(360, 0, 30, hsv_bg[3])
+            else:
+                hl = bg.lighter(140)
+        return hl
+
+    # @+node:tom.20210827225119.2: *4* LeoQTextBrowser.highlightCurrentLine
+    # @@language python
+    def highlightCurrentLine(self) -> None:
+        """Highlight cursor line."""
+        c = self.leo_c
+        params = self.hiliter_params
+        editor = c.frame.body.wrapper.widget
+
+        # #3948: The following code applies only to Qt.
+        if not isinstance(editor, QtWidgets.QTextBrowser):
+            return
+
+        if not c.config.getBool('highlight-body-line', True):
+            editor.setExtraSelections([])
+            return
+
+        curs = editor.textCursor()
+        blocknum = curs.blockNumber()
+
+        # Some cursor movements don't change the line: ignore them
+        #    if blocknum == params['lastblock'] and blocknum > 0:
+        #        return
+
+        if blocknum == 0:  # invalid position
+            blocknum = 1
+        params['lastblock'] = blocknum
+
+        hl_color = params['last_hl_color']
+
+        # @+<< Recalculate Color >>
+        # @+node:tom.20210909124441.1: *5* << Recalculate Color >>
+        config_setting = c.config.getString('line-highlight-color') or ''
+        config_setting = (
+            config_setting.replace("'", '').replace('"', '').lower().replace('none', '')
+        )
+
+        last_color_setting = params['last_color_setting']
+        config_setting_changed = config_setting != last_color_setting
+
+        if config_setting:
+            if config_setting_changed:
+                hl_color = QColor(config_setting)
+                params['last_hl_color'] = hl_color
+                params['last_color_setting'] = config_setting
+            else:
+                hl_color = params['last_hl_color']
+        else:
+            # Get current colors from the body editor widget
+            wrapper = c.frame.body.wrapper
+            w = wrapper.widget
+            palette = w.viewport().palette()
+
+            fg_hex = palette.text().color().rgb()
+            bg_hex = palette.window().color().rgb()
+            fg = f'#{fg_hex:x}'
+            bg = f'#{bg_hex:x}'
+
+            if params['last_fg'] != fg or params['last_bg'] != bg:
+                # bg_color = QColor(bg) if bg else self.assign_bg(fg)
+                hl_color = self.calc_hl(palette)
+                params['last_hl_color'] = hl_color
+                params['last_fg'] = fg
+                params['last_bg'] = bg
+        # @-<< Recalculate Color >>
+        # @+<< Apply Highlight >>
+        # @+node:tom.20210909124551.1: *5* << Apply Highlight >>
+        # Based on code from
+        # https://doc.qt.io/qt-5/qtwidgets-widgets-codeeditor-example.html
+
+        selection = editor.ExtraSelection()
+        selection.format.setBackground(hl_color)
+        selection.format.setProperty(FullWidthSelection, True)
+        selection.cursor = curs
+        selection.cursor.clearSelection()
+
+        editor.setExtraSelections([selection])
+        # @-<< Apply Highlight >>
+
+    # @+node:ekr.20141103061944.31: *3* LeoQTextBrowser.get/setXScrollPosition
+    def getXScrollPosition(self) -> int:
+        """Get the horizontal scrollbar position."""
+        w = self
+        sb = w.horizontalScrollBar()
+        pos = sb.sliderPosition()
+        return pos
+
+    def setXScrollPosition(self, pos: int) -> None:
+        """Set the position of the horizontal scrollbar."""
+        if pos is not None:
+            w = self
+            sb = w.horizontalScrollBar()
+            sb.setSliderPosition(pos)
+
+    # @+node:ekr.20111002125540.7021: *3* LeoQTextBrowser.get/setYScrollPosition
+    def getYScrollPosition(self) -> int:
+        """Get the vertical scrollbar position."""
+        w = self
+        sb = w.verticalScrollBar()
+        pos = sb.sliderPosition()
+        return pos
+
+    def setYScrollPosition(self, pos: int) -> None:
+        """Set the position of the vertical scrollbar."""
+        w = self
+        if pos is None:
+            pos = 0
+        sb = w.verticalScrollBar()
+        sb.setSliderPosition(pos)
+
+    # @+node:ekr.20110605121601.18019: *3* LeoQTextBrowser.leo_dumpButton
+    def leo_dumpButton(self, event: LeoKeyEvent | None, tag: str) -> str:
+        if not event:
+            return ''
+        button = event.button()
+        table = (
+            (MouseButton.NoButton,     'no button'),
+            (MouseButton.LeftButton,   'left-button'),
+            (MouseButton.RightButton,  'right-button'),
+            (MouseButton.MiddleButton, 'middle-button'),
+        )  # fmt: skip
+        for val, s in table:
+            if button == val:
+                kind = s
+                break
+        else:
+            kind = f"unknown: {repr(button)}"
+        return kind
+
+    # @+node:ekr.20200304130514.1: *3* LeoQTextBrowser.onContextMenu
+    def onContextMenu(self, point: QPoint) -> None:
+        """LeoQTextBrowser: Callback for customContextMenuRequested events."""
+        # #1286.
+        w = self
+        c = w.leo_c
+        g.app.gui.onContextMenu(c, w, point)
+
+    # @+node:ekr.20120925061642.13506: *3* LeoQTextBrowser.onSliderChanged
+    def onSliderChanged(self, arg: int) -> None:
+        """Handle a Qt onSliderChanged event."""
+        c = self.leo_c
+        p = c.p
+        # Careful: changing nodes changes the scrollbars.
+        if hasattr(c.frame.tree, 'tree_select_lockout'):
+            if c.frame.tree.tree_select_lockout:
+                return
+        # Only scrolling in the body pane should set v.scrollBarSpot.
+        if not c.frame.body or self != c.frame.body.wrapper.widget:
+            return
+        if p:
+            p.v.scrollBarSpot = arg
+
+    # @+node:ekr.20201204172235.1: *3* LeoQTextBrowser.paintEvent
+    leo_cursor_width = 0
+
+    leo_vim_mode: bool | None = None
+
+    def paintEvent(self, event: QPaintEvent) -> None:
+        """
+        LeoQTextBrowser.paintEvent.
+
+        New in Leo 6.4: Draw a box around the cursor in command mode.
+                        This is as close as possible to vim's look.
+        New in Leo 6.6.2: Draw right margin guideline.
+        """
+        w = self
+        c = w.leo_c
+        vc = c.vimCommands
+        if w == getattr(c.frame.body, 'widget', None) and c.config.getBool('show-rmargin-guide'):
+            # @+<< paint margin guides >>
+            # @+node:tom.20220423204906.1: *4* << paint margin guides  >>
+            # based on https://stackoverflow.com/questions/30371613
+            # draw-vertical-lines-on-qtextedit-in-pyqt
+            # Honor @pagewidth directive if any
+            rcol = c.getPageWidth(c.p) or c.config.getInt('rguide-col', 80)
+            vp = w.viewport()
+            palette = vp.palette()
+            font = w.document().defaultFont()
+            fm = QFontMetrics(font)
+            rmargin = fm.horizontalAdvance('9' * rcol) + 2
+            if vp.width() >= rmargin:
+                painter = QtGui.QPainter(vp)
+                pen = QtGui.QPen(SolidLine)
+
+                # guideline color
+                fg = palette.text().color()
+                bg = palette.window().color()
+                hsv_fg = fg.getHsv()[2]
+                hsv_bg = bg.getHsv()[2]
+                if hsv_fg < hsv_bg:
+                    fg = fg.lighter()
+                else:
+                    fg = fg.darker()
+                pen.setColor(fg)
+
+                pen.setWidth(1)
+                painter.setPen(pen)
+                painter.drawLine(rmargin, 0, rmargin, vp.height())
+            # @-<< paint margin guides >>
+
+        # First, call the base class paintEvent.
+        QtWidgets.QTextBrowser.paintEvent(self, event)
+
+        def set_cursor_width(width: int) -> None:
+            """Set the cursor width, but only if necessary."""
+            if self.leo_cursor_width != width:
+                self.leo_cursor_width = width
+                w.setCursorWidth(width)
+
+        # Are we in vim mode?
+        if self.leo_vim_mode is None:
+            self.leo_vim_mode = c.config.getBool('vim-mode', default=False)
+
+        # Are we in command mode?
+        if self.leo_vim_mode:
+            in_command = vc and vc.state == 'normal'  # vim mode.
+        else:
+            in_command = c.k.unboundKeyAction == 'command'  # vim emulation.
+
+        # Draw the box only in command mode, when w is the body pane, with focus.
+        if not in_command or w != c.frame.body.widget or w != g.app.gui.get_focus():
+            set_cursor_width(c.config.getInt('qt-cursor-width') or 1)
+            return
+
+        # Set the width of the cursor.
+        font = w.currentFont()
+        cursor_width = QtGui.QFontMetrics(font).averageCharWidth()
+        set_cursor_width(cursor_width)
+
+        # Draw a box around the cursor.
+        qp = QtGui.QPainter()
+        qp.begin(self.viewport())
+        qp.drawRect(w.cursorRect())
+        qp.end()
+
+    # @+node:tbrown.20130411145310.18855: *3* LeoQTextBrowser.wheelEvent
+    def wheelEvent(self, event: QWheelEvent) -> None:
+        """Handle a wheel event."""
+        if KeyboardModifier.ControlModifier & event.modifiers():
+            d = {'c': self.leo_c}
+            try:  # Qt5 or later.
+                point = event.angleDelta()
+                delta = point.y() or point.x()
+            except AttributeError:
+                delta = event.delta()  # Qt4.
+            if delta < 0:
+                zoom_out(d)
+            else:
+                zoom_in(d)
+            event.accept()
+            return
+        QtWidgets.QTextBrowser.wheelEvent(self, event)
+
+    # @-others
 
 
 # @+node:ekr.20150403094706.2: ** class NumberBar(QFrame)

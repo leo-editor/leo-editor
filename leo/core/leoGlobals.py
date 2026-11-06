@@ -8726,7 +8726,7 @@ def openUrlHelper(event: LeoKeyEvent | None = None, url: str = '') -> None:
                 if g.isValidUrl(url):
                     break
         # @-<< look for url >>
-        if not url:
+        if not url:  # type:ignore # ruff-lint bug.
             # @+<< look for unl >>
             # @+node:ekr.20220704211851.1: *5* << look for unl >>
             for match in g.unl_regex.finditer(line):
@@ -8736,7 +8736,7 @@ def openUrlHelper(event: LeoKeyEvent | None = None, url: str = '') -> None:
                     g.handleUnl(unl, c)
                     return
             # @-<< look for unl >>
-            if not unl:
+            if not unl:  # type:ignore # ruff-lint bug.
                 # @+<< look for gnx >>
                 # @+node:tom.20220328142302.1: *5* << look for gnx >>
                 target = None

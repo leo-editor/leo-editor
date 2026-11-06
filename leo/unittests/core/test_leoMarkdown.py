@@ -10,8 +10,6 @@ from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 from leo.core.leoMarkup import MarkupCommands
 
-assert g
-
 
 # @+others
 # @+node:ekr.20260915043622.1: ** class TestMarkdown(LeoUnitTest)

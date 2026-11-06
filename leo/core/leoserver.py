@@ -310,7 +310,7 @@ class ServerExternalFilesController(ExternalFilesController):
                 self.idle_check_at_file_node(c, p)
 
         # if yesAll/noAll forced, then just show info message
-        if self.infoMessage:
+        if self.infoMessage:  # type:ignore  # ruff-lint buf.
             package = {"async": "info", "message": self.infoMessage}
             g.leoServer._send_async_output(package, True)
 
@@ -5696,12 +5696,11 @@ def main() -> None:  # pragma: no cover (tested in client)
             from leo.core.leoQt import QtGui, QtWidgets
             from leo.core.leoQt import ButtonRole, Information
 
-            if QtGui and QtWidgets:
-                app = QtWidgets.QApplication([])
-                assert app
-                val = qt_runAskYesNoCancelDialog(c)
-                assert val in ('yes', 'no')
-                return val
+            app = QtWidgets.QApplication([])
+            assert app
+            val = qt_runAskYesNoCancelDialog(c)
+            assert val in ('yes', 'no')
+            return val
         except Exception:
             pass
         if Tk:

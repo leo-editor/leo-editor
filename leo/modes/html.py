@@ -11,8 +11,6 @@ import re
 from typing import Any
 from leo.core import leoGlobals as g
 
-assert g
-
 
 # @-<< html.py: imports >>
 # @+others  # Rules

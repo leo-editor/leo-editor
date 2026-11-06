@@ -20,9 +20,6 @@ from leo.core import leoGlobals as g
 try:
     import docutils
     import docutils.core
-
-    assert docutils
-    assert docutils.core
 except ImportError:
     docutils = None  # type:ignore
     g.missing('docutils', tag='leoImport.py')

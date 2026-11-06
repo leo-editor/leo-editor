@@ -13,8 +13,6 @@ if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position, VNode
 
-assert g
-
 
 # @+others
 # @+node:ekr.20161124192050.2: ** class Markdown_Importer(Importer)
