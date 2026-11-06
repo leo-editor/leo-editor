@@ -61,12 +61,12 @@ StringIO = io.StringIO
 # @+<< leoGlobals: annotations >>
 # @+node:ekr.20220824084642.1: ** << leoGlobals: annotations >>
 if TYPE_CHECKING:  # pragma: no cover
-    from leo.core import LeoGlobals  # noqa
+    from leo.core import LeoGlobals  # ty: ignore
     from leo.core.leoApp import LeoApp
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoGui, LeoKeyEvent, LeoFrame  # noqa
+    from leo.core.leoGui import LeoGui, LeoKeyEvent, LeoFrame  # ty: ignore
     from leo.core.leoNodes import Position, VNode
-    from leo.core.leoQt import QMouseEvent, QWidget, QEvent  # noqa
+    from leo.core.leoQt import QMouseEvent, QWidget, QEvent  # ty: ignore
     from leo.plugins.qt_idle_time import IdleTime as QtIdleTime
 
     Args = Any

@@ -16,7 +16,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
-    from io import BufferedWriter
+    from io import BufferedWriter  # ty:ignore
 
     TextIO = Any  # PR #5038
 # @-<< leoCompare imports & annotations >>
