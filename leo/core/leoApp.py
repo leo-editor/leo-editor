@@ -39,8 +39,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from types import ModuleType
 
     # Do not import these at the top level: they would cause circular imports.
-    from leo.core.leoGui import LeoKeyEvent, LeoFrame, LeoGui  # ty:ignore
-    from leo.commands.spellCommands import SqlitePickleShare  # ty:ignore
+    from leo.core.leoGui import LeoKeyEvent, LeoFrame, LeoGui
+    from leo.commands.spellCommands import SqlitePickleShare
 
     StringIO = io.StringIO
     SpellDict = Any  # dict[str, list[str]]
