@@ -179,7 +179,7 @@ def _show_response(n, d):
 
 
 # @+node:ekr.20210205144500.1: ** function: client_main_loop
-async def client_main_loop(timeout) -> None:
+async def client_main_loop(timeout: float) -> None:
     global n_async_responses
     uri = f"ws://{wsHost}:{wsPort}"
     action_list = _get_action_list()
