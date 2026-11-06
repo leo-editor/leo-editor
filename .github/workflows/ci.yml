@@ -77,20 +77,20 @@ jobs:
       - run: pip install "PyQt6>=6.6" PyQt6-QScintilla docutils sphinx sphinx-book-theme
       - run: python -m leo.scripts.build_docs
 
-  # ty:
-  #   runs-on: ubuntu-latest
-  #   env:
-  #     TY_OUTPUT_FORMAT: github
-  #   steps:
-  #     - uses: actions/checkout@v7
-  #     - uses: actions/setup-python@v7
-  #       with:
-  #         python-version: "3.15"
-  #         cache: pip
-  #     # Install optional packages that Leo's devs should have installed,
-  #     # so ty resolves their imports the same way it does on devs' machines.
-  #     - run: pip install "ty==0.0.98"
-  #         "PyQt6>=6.6" PyQt6-QScintilla PyQt6-WebEngine
-  #         black Jinja2 Pygments docutils pyenchant jedi nbformat nbconvert
-  #         "mypy<2" lxml PyYAML
-  #     - run: ty check leo
+  ty:
+    runs-on: ubuntu-latest
+    env:
+      TY_OUTPUT_FORMAT: github
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.15"
+          cache: pip
+      # Install optional packages that Leo's devs should have installed,
+      # so ty resolves their imports the same way it does on devs' machines.
+      - run: pip install "ty==0.0.98"
+          "PyQt6>=6.6" PyQt6-QScintilla PyQt6-WebEngine
+          black Jinja2 Pygments docutils pyenchant jedi nbformat nbconvert
+          "mypy<2" lxml PyYAML
+      # - run: ty check leo
