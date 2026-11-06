@@ -8,8 +8,8 @@ from leo.core import leoGlobals as g
 
 # Third-party imports.
 try:
-    from rope import refactor
-    from rope.base import project, simplify
+    from rope import refactor  # ty:ignore[import-not-found]
+    from rope.base import project, simplify  # ty:ignore[import-not-found]
 
     has_rope = True
 except Exception:
