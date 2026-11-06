@@ -1186,69 +1186,6 @@ class Commands:
         else:
             g.es('Cannot find an @- file', color='red')
 
-    # @+node:vitalije.20190924191405.1: *4* @cmd execute-pytest
-    @cmd('execute-pytest')
-    def execute_pytest(self, event: LeoKeyEvent | None = None) -> None:
-        """Using pytest, execute all @test nodes for p, p's parents and p's subtree."""
-        c = self
-
-        def it(p: Position) -> PositionGenerator:
-            for p1 in p.self_and_parents():
-                if p1.h.startswith('@test '):
-                    yield p1
-                    return
-            for p1 in p.subtree():
-                if p1.h.startswith('@test '):
-                    yield p1
-
-        try:
-            for p in it(c.p):
-                self.execute_single_pytest(p)
-        except ImportError:
-            g.missing('pytest')
-
-    def execute_single_pytest(self, p: Position) -> None:
-        c = self
-        from _pytest.config import get_config
-        from _pytest.assertion.rewrite import rewrite_asserts
-        import ast
-
-        cfg = get_config()
-        script = g.getScript(c, p, useSentinels=False) + (
-            '\n'
-            'ls = dict(locals())\n'
-            'failed = 0\n'
-            'for x in ls:\n'
-            '    if x.startswith("test_") and callable(ls[x]):\n'
-            '        try:\n'
-            '            ls[x]()\n'
-            '        except AssertionError as e:\n'
-            '            failed += 1\n'
-            '            g.es(f"-------{p.h[6:].strip()}/{x} failed---------")\n'
-            '            g.es(str(e))\n'
-            'if failed == 0:\n'
-            '    g.es("all tests passed")\n'
-            'else:\n'
-            '    g.es(f"failed:{failed} tests")\n'
-        )
-
-        fname = g.finalize_join(g.app.homeLeoDir, 'leoPytestScript.py')
-        with open(fname, 'wt', encoding='utf8') as out:
-            out.write(script)
-        tree = ast.parse(script, filename=fname)
-        rewrite_asserts(tree, g.toEncodedString(script), config=cfg)
-        co = compile(tree, fname, "exec", dont_inherit=True)
-        sys.path.insert(0, os.getcwd())
-        sys.path.insert(0, g.os_path_dirname(c.fileName()))  # per SegundoBob
-        try:
-            exec(co, {'c': c, 'g': g, 'p': p})
-        except KeyboardInterrupt:
-            g.es('interrupted')
-        except Exception:
-            g.handleScriptException(c, p)
-        finally:
-            del sys.path[:2]
-
     # @+node:ekr.20171123135625.4: *4* @cmd execute-script & public helpers
     @cmd('execute-script')
     def executeScript(
