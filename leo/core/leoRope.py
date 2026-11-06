@@ -4,6 +4,7 @@
 # @+node:ekr.20140525065558.15807: ** << leoRope imports >>
 import time
 import importlib
+from typing import Any
 from leo.core import leoGlobals as g
 
 # Third-party imports.
@@ -26,7 +27,7 @@ if has_rope:
 class RopeController:
     # @+others
     # @+node:ekr.20140525065558.15809: *3* ctor
-    def __init__(self, c):
+    def __init__(self, c: Any) -> None:
         self.c = c
         if has_rope:
             self.proj = project.Project(g.app.loadDir)
@@ -34,17 +35,17 @@ class RopeController:
             self.proj = None
 
     # @+node:ekr.20140525065558.15806: *3* modules (RopeController)
-    def modules(self):
+    def modules(self) -> list[str]:
         """Return full path names of all Leo modules."""
         aList = g.glob_glob(g.os_path_join(g.app.loadDir, '*.py'))
         return sorted(aList)
 
     # @+node:ekr.20140525065558.15808: *3* path
-    def path(self, fn):
+    def path(self, fn: str) -> str:
         return g.os_path_join(g.app.loadDir, fn)
 
     # @+node:ekr.20140525065558.15805: *3* refactor
-    def refactor(self):
+    def refactor(self) -> None:
         """Perform refactorings."""
         proj = self.proj
         if not proj:
@@ -65,7 +66,7 @@ class RopeController:
         # prog.do(changes)
 
     # @+node:ekr.20140525065558.15810: *3* run
-    def run(self):
+    def run(self) -> None:
         """run the refactorings."""
         if proj := self.proj:
             proj.validate(proj.root)
@@ -78,7 +79,7 @@ class RopeController:
 
 
 # @+node:ekr.20140526123310.17593: ** test
-def test(c):
+def test(c: Any) -> None:
     g.cls()
     t1 = time.time()
     RopeController(c).run()
