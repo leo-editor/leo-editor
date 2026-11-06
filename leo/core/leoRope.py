@@ -15,9 +15,9 @@ try:
 except Exception:
     has_rope = False
 if has_rope:
-    importlib.reload(project)
-    importlib.reload(simplify)
-    importlib.reload(refactor)
+    importlib.reload(project)  # ty:ignore
+    importlib.reload(simplify)  # ty:ignore
+    importlib.reload(refactor)  # ty:ignore
 
 
 # @-<< leoRope imports >>
