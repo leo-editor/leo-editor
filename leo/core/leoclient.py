@@ -56,7 +56,7 @@ def _dump_outline(c: Any) -> None:  # pragma: no cover
 
 
 # @+node:ekr.20210206075253.1: ** function: _get_action_list
-def _get_action_list():
+def _get_action_list() -> list[str]:
     """
     Return all callable public methods of the server.
     In effect, these are unit tests.
