@@ -360,33 +360,36 @@ class Commands:
         # Break circular import dependencies by doing imports here.
         # All these imports take almost 3/4 sec in the leoBridge.
         t1 = time.process_time()
+
         from leo.core import leoAtFile
-        from leo.core import leoBeautify  # So decorators are executed.
+        from leo.core import leoBeautify  # noqa  # required!
         from leo.core.leoCache import CommanderWrapper
         from leo.core import leoChapters
 
+        # fmt: off
+
         # User commands...
         from leo.commands import abbrevCommands
-        from leo.commands import checkerCommands  # Required.
+        from leo.commands import checkerCommands     # noqa # required!
         from leo.commands import controlCommands
         from leo.commands import convertCommands
-        from leo.commands import debugCommands
-        from leo.commands import editCommands
+        from leo.commands import debugCommands  
+        from leo.commands import editCommands  
         from leo.commands import editFileCommands
         from leo.commands import gotoCommands
-        from leo.commands import helpCommands
+        from leo.commands import helpCommands        # noqa # required!
         from leo.commands import keyCommands
         from leo.commands import killBufferCommands
         from leo.commands import rectangleCommands
         from leo.commands import spellCommands
 
         # Import files that  execute @g.commander_command decorators
-        from leo.core import leoCompare
-        from leo.core import leoDebugger
-        from leo.commands import commanderEditCommands
-        from leo.commands import commanderFileCommands
-        from leo.commands import commanderHelpCommands
-        from leo.commands import commanderOutlineCommands
+        from leo.core import leoCompare                     # noqa # required!
+        from leo.core import leoDebugger                    # noqa # required!
+        from leo.commands import commanderEditCommands      # noqa # required!
+        from leo.commands import commanderFileCommands      # noqa # required!
+        from leo.commands import commanderHelpCommands      # noqa # required!
+        from leo.commands import commanderOutlineCommands   # noqa # required!
 
         # Other subcommanders.
         from leo.core import leoFind  # Leo 4.11.1
@@ -404,8 +407,6 @@ class Commands:
         if 0:
             t2 = time.process_time()
             g.trace(f"Import time: {t2 - t1:.2f}")
-
-        # fmt: off
 
         # Define 11 subcommanders.
         self.keyHandler = self.k    = leoKeys.KeyHandlerClass(c)
