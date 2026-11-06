@@ -47,8 +47,7 @@ import urllib.parse as urlparse
 import webbrowser
 
 # Leo never imports any other Leo module.
-# PR #4772: add this import statement.
-from leo.core import leoGlobals as g  # noqa
+from leo.core import leoGlobals as g
 
 try:
     import tkinter as Tk
