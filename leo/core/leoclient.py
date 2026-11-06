@@ -15,6 +15,7 @@ import json
 import time
 import hashlib
 import hmac
+from typing import Any
 
 from leo.core import leoGlobals as g
 from leo.core import leoserver
@@ -45,7 +46,7 @@ n_unknown_response_times = 0
 
 # @+others
 # @+node:ekr.20210219105145.1: ** function: _dump_outline
-def _dump_outline(c):  # pragma: no cover
+def _dump_outline(c: Any) -> None:  # pragma: no cover
     """Dump the outline."""
     print(f"_dump_outline: {c.shortFileName()}...\n")
     for p in c.all_positions():
@@ -147,7 +148,7 @@ def _get_action_list():
 
 
 # @+node:ekr.20210206093130.1: ** function: _show_response
-def _show_response(n, d):
+def _show_response(n: int, d: dict) -> None:
     global n_known_response_times
     global n_unknown_response_times
     global tot_response_time

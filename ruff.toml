@@ -20,11 +20,11 @@ quote-style = "preserve"
 # These are ruff's PL* rules that overlap: same message and same numeric id with a `PL` prefix.
 extend-select = [
 
-    # "ANN001", # Missing type annotation for function argument
+    "ANN001",   # Missing type annotation for function argument
     # "ANN002", # Missing type annotation for *args
     # "ANN003", # Missing type annotation for **kwargs
-    # "ANN201",   # Missing return type annotation for public function
-    # "ANN202",   # Missing return type annotation for private function
+    # "ANN201", # Missing return type annotation for public function
+    # "ANN202", # Missing return type annotation for private function
     # "RUF045", # Implicit class variable in dataclass
 
     # basic

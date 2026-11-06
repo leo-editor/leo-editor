@@ -35,7 +35,7 @@ pymacsFile = __file__
 
 # @+others
 # @+node:ekr.20061024131236: ** dump (pymacs)
-def dump(anObject) -> str:
+def dump(anObject: object) -> str:
     # global g
     init()
     return str(g.toEncodedString(repr(anObject), encoding='ascii'))
@@ -104,7 +104,7 @@ def init() -> None:
 
 
 # @+node:ekr.20061024075542.1: ** open (pymacs)
-def open(fileName=None) -> Any:
+def open(fileName: str | None = None) -> Any:
     # global g
     init()
     assert g
@@ -122,7 +122,7 @@ def open(fileName=None) -> Any:
 
 
 # @+node:ekr.20061024084200: ** run-script (pymacs)
-def run_script(c, script, p=None) -> Any:
+def run_script(c: Any, script: str, p: Any = None) -> Any:
     # global g
     assert g
     assert g.app
