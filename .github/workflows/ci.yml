@@ -95,4 +95,4 @@ jobs:
           "PyQt6>=6.6" PyQt6-QScintilla PyQt6-WebEngine
           black Jinja2 Pygments docutils pyenchant jedi nbformat nbconvert
           "mypy<2" lxml PyYAML
-      # - run: ty check leo
+      - run: ty check leo
