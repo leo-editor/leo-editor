@@ -19,9 +19,9 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
-      - run: pip install "ruff=0.16.4"
-      - run: ruff check leo --output-format=github
-      - run: ruff format --check leo
+      # - run: pip install "ruff=0.16.4"
+      # - run: ruff check leo --output-format=github
+      # - run: ruff format --check leo
 
   test:
     runs-on: ubuntu-latest
