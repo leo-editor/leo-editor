@@ -20,7 +20,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: pip
       - run: pip install "ruff"
-      # - run: ruff check leo --output-format=github
+      - run: ruff check leo --output-format=github
       # - run: ruff format --check leo
 
   test:
