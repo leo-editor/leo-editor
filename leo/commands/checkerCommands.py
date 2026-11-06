@@ -20,7 +20,7 @@ from typing import TYPE_CHECKING
 MYPY_AVAILABLE = importlib.util.find_spec('mypy') is not None
 
 try:
-    import ruff  # ty:ignore
+    import ruff
 except Exception:
     ruff = None
 
