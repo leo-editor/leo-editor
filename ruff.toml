@@ -220,11 +220,12 @@ exclude = [
     "leo/plugins/n*.py",
     "leo/plugins/o*.py",
     "leo/plugins/p*.py",
-    # Enable all qt_* plugins indirectly.
+
+    # The qt_* plugins are everything *else*.
     "leo/plugins/quit_leo.py",
     "leo/plugins/QNCalendarWidget.py",
     "leo/plugins/qt_main.py", # Generated automatically.
-    # "leo/plugins/qt_text.py",
+
     "leo/plugins/r*.py",
     "leo/plugins/s*.py",
     "leo/plugins/t*.py",
