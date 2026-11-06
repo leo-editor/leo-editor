@@ -10,10 +10,8 @@ Written by Félix Malboeuf and Edward K. Ream.
 To run externally, do `python -m leo.core.leoserver --password <password>`.
 """
 
-# pylint: disable=line-too-long,wrong-import-position
 # @+<< leoserver imports >>
 # @+node:felix.20210621233316.2: ** << leoserver imports >>
-# pylint: disable=raise-missing-from
 from __future__ import annotations
 import argparse
 import asyncio
@@ -182,8 +180,6 @@ class TerminateServer(Exception):  # pragma: no cover
 class ServerExternalFilesController(ExternalFilesController):
     """EFC Modified from Leo's sources"""
 
-    # pylint: disable=no-else-return
-
     # @+others
     # @+node:felix.20210626222905.2: *3* sefc.ctor
     def __init__(self) -> None:
@@ -314,7 +310,7 @@ class ServerExternalFilesController(ExternalFilesController):
                 self.idle_check_at_file_node(c, p)
 
         # if yesAll/noAll forced, then just show info message
-        if self.infoMessage:
+        if self.infoMessage:  # type:ignore  # ruff-lint buf.
             package = {"async": "info", "message": self.infoMessage}
             g.leoServer._send_async_output(package, True)
 
@@ -3637,7 +3633,6 @@ class LeoServer:
         Mark a node.
         Try to keep selection, then return the selected node that remains.
         """
-        # pylint: disable=no-else-return
         self._check_c(param)
         p = self._get_p(param)
         if p.isMarked():
@@ -3651,7 +3646,6 @@ class LeoServer:
         Unmark a node.
         Try to keep selection, then return the selected node that remains.
         """
-        # pylint: disable=no-else-return
         self._check_c(param)
         p = self._get_p(param)
         if not p.isMarked():
@@ -5702,12 +5696,11 @@ def main() -> None:  # pragma: no cover (tested in client)
             from leo.core.leoQt import QtGui, QtWidgets
             from leo.core.leoQt import ButtonRole, Information
 
-            if QtGui and QtWidgets:
-                app = QtWidgets.QApplication([])
-                assert app
-                val = qt_runAskYesNoCancelDialog(c)
-                assert val in ('yes', 'no')
-                return val
+            app = QtWidgets.QApplication([])
+            assert app
+            val = qt_runAskYesNoCancelDialog(c)
+            assert val in ('yes', 'no')
+            return val
         except Exception:
             pass
         if Tk:

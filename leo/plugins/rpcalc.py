@@ -2,7 +2,6 @@
 # @+node:tom.20230424140347.1: * @file ../plugins/rpcalc.py
 # @@language python
 # type: ignore
-# pylint: disable=singleton-comparison
 """An RPN calculator plugin in a log tab panel.
 
 Adapted from rpcalc.
@@ -511,7 +510,6 @@ class CalcCore:
     # @+node:tom.20230424130102.32: *4* saveStack
     def saveStack(self):
         """Store stack to option file."""
-        # pylint: disable=expression-not-assigned
         if self.option.boolData('SaveStacks'):
             [self.option.changeData('Stack' + repr(x), repr(self.stack[x]), 1) for x in range(4)]
             [self.option.changeData('Mem' + repr(x), repr(self.mem[x]), 1) for x in range(10)]
@@ -1558,7 +1556,7 @@ class ExtraViewWidget(QTreeWidget):
     # @+others
     # @+node:tom.20230424130102.95: *4* __init__
     def __init__(self, calcRef, parent=None):
-        QListView.__init__(self, parent)  # pylint: disable=non-parent-init-called
+        QListView.__init__(self, parent)
         self.calcRef = calcRef
         self.setRootIsDecorated(False)
 

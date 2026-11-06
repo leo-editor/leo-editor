@@ -10,8 +10,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoChapters import Chapter
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
-
-assert g
 # @-<< leoHistory imports & annotations >>
 
 

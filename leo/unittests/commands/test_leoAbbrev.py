@@ -2,19 +2,17 @@
 # @+node:ekr.20260512145309.1: * @file ../unittests/commands/test_leoAbbrev.py
 """Tests of leoAbbrev.py"""
 
-# pylint: disable=no-member
 from __future__ import annotations
 import re
 import time
 from typing import TYPE_CHECKING
-from leo.core import leoGlobals as g
+
+# from leo.core import leoGlobals as g
 from leo.core.leoGui import LeoKeyEvent, StringFindTabManager
 from leo.core.leoTest2 import LeoUnitTest
 
 if TYPE_CHECKING:
     from leo.plugins.qt_text import QTextMixin
-
-assert g
 
 
 # @+others

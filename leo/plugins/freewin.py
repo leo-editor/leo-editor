@@ -266,7 +266,6 @@ Leo themes.
 # @-<< docstring >>
 """
 
-# pylint: disable=invalid-name
 # @+<< imports >>
 # @+node:tom.20210527153415.1: ** << imports >> (freewin.py)
 from __future__ import annotations
@@ -347,7 +346,6 @@ if TYPE_CHECKING:  # pragma: no cover
 # @-<< annotations >>
 # @+<< declarations >>
 # @+node:tom.20210527153422.1: ** << declarations >>
-# pylint: disable=invalid-name
 # Dimensions and placing of editor windows
 W: int = 570
 H: int = 350
@@ -678,8 +676,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
     # @+others
     # @+node:tom.20210527185804.1: *3* ctor
     def __init__(self, c: Cmdr, title: str = 'Z-editor') -> None:
-        # pylint: disable=too-many-locals
-        # pylint: disable = too-many-statements
+
         global TAB2SPACES
         super().__init__()
 
@@ -1002,7 +999,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         self.deleteLater()
 
     # @+node:tom.20210619000302.1: *3* keyPressEvent
-    def keyPressEvent(self, event: QtGui.QKeyEvent) -> None:  # pylint:disable=method-hidden
+    def keyPressEvent(self, event: QtGui.QKeyEvent) -> None:
         """Take action on keypresses.
 
         A method of this name receives keystrokes for most or all

@@ -234,7 +234,6 @@ class DefaultWrapper(BaseSpellWrapper):
     # @+node:ekr.20180207071114.2: *3* DefaultWrapper. __init__
     def __init__(self, c: Cmdr) -> None:
         """Ctor for DefaultWrapper class."""
-        # pylint: disable=super-init-not-called
         self.c = c
         if not g.app.spellDict:
             g.app.spellDict = DefaultDict()  # 2024/05/15: bug fix.
@@ -359,7 +358,6 @@ class EnchantWrapper(BaseSpellWrapper):
     # @+node:ekr.20150514063305.511: *3* enchant. __init__
     def __init__(self, c: Cmdr) -> None:
         """Ctor for EnchantWrapper class."""
-        # pylint: disable=super-init-not-called
         self.c = c
         self.init_language()
         fn = self.find_user_dict()
@@ -680,7 +678,6 @@ class SpellTabHandler:
         w = c.frame.body.wrapper
         with u.change_outline('spell.change'):
             if selection := self.tab.getSuggestion():
-                # Use getattr to keep pylint happy.
                 i = getattr(self.tab, 'change_i', None)
                 j = getattr(self.tab, 'change_j', None)
                 if i is not None and j is not None:

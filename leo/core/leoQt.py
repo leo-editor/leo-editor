@@ -2,8 +2,6 @@
 # @+node:ekr.20140810053602.18074: * @file leoQt.py
 """Leo's Qt import wrapper, specialized for Qt6."""
 
-# pylint: disable=no-name-in-module,unused-import
-
 # @+<< leoQt.py: imports >>
 # @+node:ekr.20260505180734.1: ** << leoQt.py: imports >>
 from typing import Any
@@ -28,9 +26,8 @@ _missing_modules: list[str] = []
 try:
     from PyQt6 import Qsci
 
-    assert Qsci
 except Exception:
-    Qsci = None  # type:ignore  # ty:ignore[invalid-assignment]
+    Qsci = None
     _missing_modules.append('Qsci')
 
 try:

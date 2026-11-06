@@ -2,7 +2,6 @@
 # @+node:ekr.20061031131434: * @file leoKeys.py
 """Gui-independent keystroke handling for Leo."""
 
-# pylint: disable=eval-used
 # @+<< leoKeys imports >>
 # @+node:ekr.20061031131434.1: ** << leoKeys imports >>
 from __future__ import annotations

@@ -9,14 +9,16 @@ from collections.abc import Iterator
 import difflib
 import filecmp
 import os
-from typing import TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
-    from io import BufferedWriter, TextIO
+    from io import BufferedWriter
+
+    TextIO = Any  # PR #5038
 # @-<< leoCompare imports & annotations >>
 
 
@@ -345,7 +347,7 @@ class BaseLeoCompare:
 
     # @+node:ekr.20031218072017.3645: *3* compare.utils...
     # @+node:ekr.20031218072017.3646: *4* compare.doOpen
-    def doOpen(self, name: str) -> TextIO | None:
+    def doOpen(self, name: str) -> Any | None:
         try:
             f = open(name, 'r')
             return f

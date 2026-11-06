@@ -1190,7 +1190,6 @@ class LeoQtTree(leoFrame.LeoTree):
         start: int
         n: int
         if selection:
-            # pylint: disable=unpacking-non-sequence
             # Fix bug https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
             # Note: negative lengths are allowed.
             i, j, ins = selection

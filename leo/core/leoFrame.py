@@ -26,15 +26,11 @@ from leo.core.leoAPI import StringTextWrapper
 # @-<< leoFrame imports >>
 # @+<< leoFrame annotations >>
 # @+node:ekr.20220415013957.1: ** << leoFrame annotations >>
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from leo.core.leoColorizer import BaseColorizer
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import (
-        LeoKeyEvent,
-        LeoGui,
-        LeoMenu,
-        NullMenu,
-    )
+    from leo.core.leoGui import LeoKeyEvent, LeoGui
+    from leo.core.leoMenu import LeoMenu, NullMenu  # PR #5038
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.mod_scripting import ScriptingController
     from leo.plugins.qt_frame import (
@@ -265,7 +261,7 @@ class LeoFrame:
         self.tree: LeoTree | NullTree | LeoQtTree
 
         # Add required inits.
-        self.menu = None
+        self.menu = None  # type:ignore
         self.miniBufferWidget = None  # type:ignore
         self.top = None  # type:ignore
 
@@ -885,7 +881,6 @@ class LeoTree:
         self.generation = 0  # low-level vnode methods increment this count.
         self.redrawCount = 0  # For traces
         self.use_chapters = False  # May be overridden in subclasses.
-        # Define these here to keep pylint happy.
         self.canvas: Any = None
 
     # @+node:ekr.20040803072955.128: *3* LeoTree.select & helpers

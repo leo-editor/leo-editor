@@ -341,7 +341,6 @@ def _get_bm_container(c, child=False, organizer=False):
     elif not bm.current.b.strip():  # no url implies folder
         container = bm.current
     else:
-        # pylint: disable=consider-using-ternary
         container = bm.current.parents and bm.current.parents[0] or bm.v
 
     return bm, container
@@ -375,7 +374,6 @@ def cmd_bookmark(event, child=False, organizer=False, container=None):
     bc = container.context
     bp = bc.vnode2position(container)
     nd = bp.insertAsNthChild(0)
-    # pylint: disable=consider-using-ternary
     nd.h = (
         c.frame.body.wrapper.hasSelection()
         and c.frame.body.wrapper.getSelectedText()

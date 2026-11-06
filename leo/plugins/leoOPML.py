@@ -393,7 +393,6 @@ class PutToOPML:
     def initConfig(self):
         """Init all configuration settings."""
         c = self.c
-        # These prevent pylint warnings
         self.opml_use_outline_elements = True
         self.opml_write_derived_files = True
         self.opml_write_leo_details = True

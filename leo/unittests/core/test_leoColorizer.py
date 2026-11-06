@@ -2,8 +2,6 @@
 # @+node:ekr.20210905151702.1: * @file ../unittests/core/test_leoColorizer.py
 """Tests of leoColorizer.py"""
 
-# pylint: disable=line-too-long
-
 from typing import Any
 from leo.core import leoGlobals as g
 from leo.core import leoColorizer
@@ -16,8 +14,6 @@ try:
     import pygments
 except ImportError:
     pygments = None  # type:ignore
-
-assert g
 
 
 # @+others

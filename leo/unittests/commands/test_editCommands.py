@@ -13,9 +13,6 @@ from leo.core.leoGui import LeoKeyEvent
 class TestEditCommands(LeoUnitTest):
     """Unit tests for leo/commands/editCommands.py."""
 
-    # For pylint.
-    before_p = after_p = parent_p = tempNode = None
-
     # @+others
     # @+node:ekr.20201129161726.5: *3* TestEditCommands.run_test
     def run_test(

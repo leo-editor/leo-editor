@@ -106,9 +106,8 @@ class BackgroundProcessManager:
         self.lock = thread.allocate_lock()
         self.process_return_data: list[str] = []
         # #2528: A timer that runs independently of idle time.
-        if QtCore:
-            self.timer = QtCore.QTimer()
-            self.timer.timeout.connect(self.on_idle)
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.on_idle)
 
     # @+node:tom.20220409203519.1: *3* bpm.thrd_pipe_proc
     def thrd_pipe_proc(self) -> None:

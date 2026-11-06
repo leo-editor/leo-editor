@@ -72,7 +72,6 @@ Debugger commands
 # NOTE: the actual command documentation is collected from docstrings of the
 # commands and is appended to __doc__ after the class has been defined.
 # @-<< docstring >>
-# pylint: disable=eval-used
 # edb: pdb modified by EKR.'''
 # @+<< imports >>
 # @+node:ekr.20110914171443.7241: ** << imports >>

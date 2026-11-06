@@ -9,8 +9,6 @@ Older tests are in unittests/core/test_leoNodes.py
 from leo.core.leoTest2 import LeoUnitTest
 from leo.core import leoGlobals as g
 
-assert g
-
 
 # @+others
 # @+node:ekr.20230916141635.2: ** class TestSpellCommands(LeoUnitTest)

@@ -1132,11 +1132,11 @@ class LeoApp:
         table = (self.setIDFromSys, self.setIDFromFile, self.setIDFromEnv)
         for func in table:
             func(verbose)
-            if self.leoID:
+            if self.leoID:  # type:ignore # ruff-lint bug.
                 return self.leoID
         if useDialog:
             self.setIdFromDialog()
-            if self.leoID:
+            if self.leoID:  # type:ignore # ruff-lint bug.
                 self.setIDFile()
         return self.leoID
 
@@ -3439,7 +3439,7 @@ class LoadManager:
             func = g.app.scanner_for_ext(ext)
             p = c.rootPosition()
             p.h = f"@auto {fn}" if func else f"@edit {fn}"
-            c.refreshFromDisk(p)  # pylint: disable=no-member
+            c.refreshFromDisk(p)
 
         c.mFileName = ''  # #3546: Do *not* automatically save the .leo file.
         c.frame.title = c.computeTabTitle()

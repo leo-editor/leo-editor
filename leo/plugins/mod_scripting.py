@@ -442,7 +442,6 @@ class ScriptingController:
                         f.write('import pdb\n')
                         f.write('pdb.set_trace() # Hard breakpoint.\n')
                     elif self.debuggerKind == 'winpdb':
-                        # pylint: disable=line-too-long
                         f.write('import rpdb2\n')
                         f.write(
                             'if rpdb2.g_debugger is not None: # don\'t hang if the debugger isn\'t running.\n'
@@ -463,7 +462,7 @@ class ScriptingController:
                 g.app.scriptDict = {'script_gnx': p.gnx}
                 if 'leoScriptModule' in sys.modules.keys():
                     del sys.modules['leoScriptModule']  # Essential.
-                from leo.core import leoScriptModule  # pylint: disable=no-name-in-module
+                from leo.core import leoScriptModule
 
                 assert leoScriptModule  # for pyflakes.
             else:
@@ -872,7 +871,6 @@ class ScriptingController:
             c: Cmdr = c,
             p: Position = p.copy(),
         ) -> Value:
-            # pylint: disable=dangerous-default-value
             return c.executeScript(args=args, p=p, silent=True)
 
         # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
@@ -919,7 +917,6 @@ class ScriptingController:
             c: Cmdr = c,
             p: Position = p.copy(),
         ) -> Value:
-            # pylint: disable=dangerous-default-value
             return c.executeScript(args=args, p=p, silent=True)
 
         if p.b.strip():

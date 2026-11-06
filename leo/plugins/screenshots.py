@@ -1818,7 +1818,7 @@ class ScreenShotController:
                     z.expand()
         # Save the file silently.
         c.fileCommands.save(fn)
-        c.close()  # pylint: disable=no-member
+        c.close()
         return fn
 
     # @+node:ekr.20100913085058.5659: *5* setup_screen_shot & helpers

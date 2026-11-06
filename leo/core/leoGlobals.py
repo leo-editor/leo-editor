@@ -47,8 +47,7 @@ import urllib.parse as urlparse
 import webbrowser
 
 # Leo never imports any other Leo module.
-# PR #4772: add this import statement.
-from leo.core import leoGlobals as g  # pylint: disable=import-self
+from leo.core import leoGlobals as g
 
 try:
     import tkinter as Tk
@@ -1566,7 +1565,7 @@ class MatchBrackets:
         """Find the bracket matching s[i] for self.language."""
         self.forward = ch1 in self.open_brackets
         # Find the character matching the initial bracket.
-        for n in range(len(self.brackets)):  # pylint: disable=consider-using-enumerate
+        for n in range(len(self.brackets)):
             if ch1 == self.brackets[n]:
                 target = self.matching_brackets[n]
                 break
@@ -2397,7 +2396,6 @@ class TracingNullObject:
 
     def __getitem__(self, key: str) -> None:
         g.null_object_print(id(self), '__getitem__')
-        # pylint doesn't like trailing return None.
 
     def __iter__(self) -> TracingNullObject:
         g.null_object_print(id(self), '__iter__')
@@ -2413,7 +2411,6 @@ class TracingNullObject:
 
     def __setitem__(self, key: str, val: Value) -> None:
         g.null_object_print(id(self), '__setitem__')
-        # pylint doesn't like trailing return None.
 
 
 # @+node:ekr.20190330072832.1: *4* g.null_object_print
@@ -2446,7 +2443,7 @@ class TestLeoGlobals(unittest.TestCase):
     # @+others
     # @+node:ekr.20200219071958.1: *4* TestLeoGlobals.test_comment_delims_from_extension
     def test_comment_delims_from_extension(self) -> None:
-        from leo.core import leoGlobals as leo_g  # pylint: disable=import-self,reimported
+        from leo.core import leoGlobals as leo_g
         from leo.core import leoApp
 
         leo_g.app = leoApp.LeoApp()
@@ -2456,7 +2453,7 @@ class TestLeoGlobals(unittest.TestCase):
 
     # @+node:ekr.20200219072957.1: *4* TestLeoGlobals.test_is_sentinel
     def test_is_sentinel(self) -> None:
-        from leo.core import leoGlobals as leo_g  # pylint: disable=import-self,reimported
+        from leo.core import leoGlobals as leo_g
 
         # Python. Test regular and blackened sentinels.
         py_delims = leo_g.comment_delims_from_extension('.py')
@@ -2893,7 +2890,6 @@ def pdb(message: str = '') -> None:
             pass
     if message:
         print(message)
-    # pylint: disable=forgotten-debug-statement
     breakpoint()  # New in Python 3.7.
 
 
@@ -4340,7 +4336,6 @@ def findRootsWithPredicate(
     roots = []
     if predicate is None:
         # A useful default predicate for python.
-        # pylint: disable=function-redefined
 
         def predicate(p: Position) -> bool:
             headline = p.h.strip()
@@ -5344,7 +5339,6 @@ def getModifiedFiles(repo_path: str) -> list[str]:
     os.chdir(repo_path)
     try:
         # We are not checking the return code here, so:
-        # pylint: disable=subprocess-run-check
         result = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
         if result.returncode != 0:
             print("Error running git command")
@@ -5491,7 +5485,6 @@ def dummy_act_on_node(c: Cmdr, p: Position, event: QEvent) -> None:
     pass
 
 
-# This dummy definition keeps pylint happy.
 # Plugins can change this.
 
 act_on_node = dummy_act_on_node
@@ -5530,7 +5523,6 @@ def doHook(tag: str, *args: Args, **kwargs: KWargs) -> Any:
         return None
     # Get the hook handler function.  Usually this is doPlugins.
     c = kwargs.get("c")
-    # pylint: disable=consider-using-ternary
     f = (c and c.hookFunction) or g.app.hookFunction
     if not f:
         assert g.app.pluginsController
@@ -8733,7 +8725,7 @@ def openUrlHelper(event: LeoKeyEvent | None = None, url: str = '') -> None:
                 if g.isValidUrl(url):
                     break
         # @-<< look for url >>
-        if not url:
+        if not url:  # type:ignore # ruff-lint bug.
             # @+<< look for unl >>
             # @+node:ekr.20220704211851.1: *5* << look for unl >>
             for match in g.unl_regex.finditer(line):
@@ -8743,7 +8735,7 @@ def openUrlHelper(event: LeoKeyEvent | None = None, url: str = '') -> None:
                     g.handleUnl(unl, c)
                     return
             # @-<< look for unl >>
-            if not unl:
+            if not unl:  # type:ignore # ruff-lint bug.
                 # @+<< look for gnx >>
                 # @+node:tom.20220328142302.1: *5* << look for gnx >>
                 target = None

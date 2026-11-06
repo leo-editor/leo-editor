@@ -229,12 +229,12 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
 
 # @-<< imports >>
-# pylint: disable=not-callable
-# @+at
+
 # To do:
 # - Document this plugin in the docstring and with a screencast.
 # - Commands that invoke screencasts.
-# @@c
+
+
 # @@language python
 # @@tabwidth -4
 # @+others

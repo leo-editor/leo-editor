@@ -741,7 +741,7 @@ class QuickSearchController:
     # @+node:ekr.20111015194452.15686: *4* onSelectItem (quicksearch.py)
     def onSelectItem(self, it: Iterable, it_prev: Iterable | None = None) -> None:
         c = self.c
-        if not it:
+        if not len(tuple(it)):  # PR #5038
             return
 
         # tgt = self.its.get(it and id(it))

@@ -44,15 +44,12 @@ from leo.core.leoQt import (
 )
 from leo.core.leoTips import UserTip
 from leo.plugins import (
-    qt_commands,
     qt_events,
     qt_frame,
     qt_idle_time,
 )
 from leo.plugins.qt_text import QTextMixin
 
-assert Qt
-assert qt_commands
 QWidget = QtWidgets.QWidget
 # @-<< qt_gui imports  >>
 # @+<< qt_gui annotations >>
@@ -87,8 +84,6 @@ if TYPE_CHECKING:  # pragma: no cover
 # @+node:ekr.20110605121601.18134: ** init (qt_gui.py)
 def init() -> bool:
     if g.unitTesting:  # Not Ok for unit testing!
-        return False
-    if not QtCore:
         return False
     if g.app.gui:
         return g.app.gui.guiName() == 'qt'

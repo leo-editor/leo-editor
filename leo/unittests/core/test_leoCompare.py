@@ -7,8 +7,6 @@ import tempfile
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 
-assert g
-
 
 # @+others
 # @+node:ekr.20230714131540.2: ** class TestCompare(LeoUnitTest)

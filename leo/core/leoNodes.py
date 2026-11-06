@@ -214,8 +214,7 @@ class NodeIndices:
     def updateLastIndex(self, gnx: str) -> None:
         """Update ni.lastIndex if the gnx affects it."""
         id_, t, n = self.scanGnx(gnx)
-        # Don't you dare touch this code to keep pylint happy.
-        # pylint: disable=literal-comparison
+        # Don't you dare touch this code to keep a checker happy.
         if not id_ or (n != 0 and not n):
             return  # the gnx is not well formed or n in ('',None)
         if id_ == self.userId and t == self.timeString:
@@ -471,7 +470,7 @@ class Position:
     def following_siblings(self, copy: bool = True) -> Generator[Position, None, None]:
         """Yield all siblings positions that follow p, not including p."""
         p = self
-        p = p.next()  # pylint: disable=not-callable
+        p = p.next()
         while p:
             yield p.copy() if copy else p
             p.moveToNext()
@@ -2315,7 +2314,7 @@ class VNode:
         #       g.app.nodeIndices.new_vnode_helper(c,gnx,v)
         if g.app and g.app.nodeIndices:
             g.app.nodeIndices.new_vnode_helper(context, gnx, self)
-            assert self.fileIndex, g.callers()
+            assert self.fileIndex, g.callers()  # type:ignore # ruff-lint bug.
             return
         raise ValueError(f"VNode.__init__: not initialized: {g.callers()}")
 
@@ -2551,13 +2550,11 @@ class VNode:
     # @+node:ekr.20031218072017.3359: *3* v.Getters
     # @+node:ekr.20031218072017.3378: *4* v.bodyString
     def bodyString(self) -> str:
-        # pylint: disable=no-else-return
         if isinstance(self._bodyString, str):
             return self._bodyString
-        else:  # pragma: no cover
-            # This message should never be printed and we want to avoid crashing here!
-            g.internalError(f"body not unicode: {self._bodyString!r}")
-            return g.toUnicode(self._bodyString)
+        # This message should never be printed and we want to avoid crashing here!
+        g.internalError(f"body not unicode: {self._bodyString!r}")
+        return g.toUnicode(self._bodyString)
 
     # @+node:ekr.20031218072017.3360: *4* v.Children
     # @+node:ekr.20031218072017.3362: *5* v.firstChild
@@ -2608,13 +2605,11 @@ class VNode:
     # @+node:ekr.20031218072017.1581: *4* v.headString
     def headString(self) -> str:
         """Return the headline string."""
-        # pylint: disable=no-else-return
         if isinstance(self._headString, str):
             return self._headString
-        else:  # pragma: no cover
-            # This message should never be printed and we want to avoid crashing here!
-            g.internalError(f"headline not unicode: {self._headString!r}")
-            return g.toUnicode(self._headString)
+        # This message should never be printed and we want to avoid crashing here!
+        g.internalError(f"headline not unicode: {self._headString!r}")
+        return g.toUnicode(self._headString)
 
     # @+node:ekr.20131223064351.16351: *4* v.isNthChildOf
     def isNthChildOf(self, n: int, parent_v: VNode) -> bool:

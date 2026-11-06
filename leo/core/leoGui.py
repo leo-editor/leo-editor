@@ -56,7 +56,7 @@ class LeoGui:
         self.script: str = ''
         self.splashScreen: Widget = None
         self.utils = None
-        # To keep pylint happy.
+
         self.ScriptingControllerClass = NullScriptingControllerClass
 
         # Define special keys that may be overridden is subclasses.
@@ -479,9 +479,9 @@ class NullGui(LeoGui):
 
 # @+node:ekr.20080707150137.5: ** class NullScriptingControllerClass
 class NullScriptingControllerClass:
-    """A default, do-nothing class to be overridden by mod_scripting or other plugins.
-
-    This keeps pylint happy."""
+    """
+    A default, do-nothing class to be overridden by mod_scripting or other plugins.
+    """
 
     def __init__(self, c: Cmdr, iconBar: Widget = None) -> None:
         self.c = c
@@ -781,7 +781,7 @@ class UnitTestGui(NullGui):
 
     # @+node:ekr.20071128094234.1: *3* UnitTestGui.createSpellTab
     def createSpellTab(self, c: Cmdr, spellHandler: Any, tabName: str) -> None:
-        pass  # This method keeps pylint happy.
+        pass
 
     # @+node:ekr.20111001155050.15484: *3* UnitTestGui.runAtIdle
     if 1:  # Huh?
