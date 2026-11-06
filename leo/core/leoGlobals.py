@@ -61,7 +61,7 @@ StringIO = io.StringIO
 # @+<< leoGlobals: annotations >>
 # @+node:ekr.20220824084642.1: ** << leoGlobals: annotations >>
 if TYPE_CHECKING:  # pragma: no cover
-    from leo.core import LeoGlobals
+    from leo.core import LeoGlobals  # noqa
     from leo.core.leoApp import LeoApp
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoGui, LeoKeyEvent, LeoFrame
