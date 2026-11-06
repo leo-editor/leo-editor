@@ -89,7 +89,7 @@ jobs:
           cache: pip
       # Install optional packages that Leo's devs should have installed,
       # so ty resolves their imports the same way it does on devs' machines.
-      - run: pip install "ty==0.0.98"
+      - run: pip install "ty"  # "ty==0.0.98"
           "PyQt6>=6.6" PyQt6-QScintilla PyQt6-WebEngine
           black Jinja2 Pygments docutils pyenchant jedi nbformat nbconvert
           "mypy<2" lxml PyYAML
