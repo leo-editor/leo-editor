@@ -280,11 +280,8 @@ class TypingBead(UndoBead):
 
     # @+node:ekr.20261014100625.5: *3* TypingBead.undo
     def undo(self) -> None:
-        self.apply(
-            self.old_lines,
-            self.old_sel,
-            (self.old_sel[1] if self.old_sel is not None else None),
-        )
+        ins = None if self.old_sel is None else self.old_sel[1]
+        self.apply(self.old_lines, self.old_sel, ins)
 
     # @+node:ekr.20261014100625.6: *3* TypingBead.redo
     def redo(self) -> None:
