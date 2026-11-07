@@ -416,7 +416,7 @@ class Indented_Lisp(Indented_Importer):
     )
 
     # For error messages only. Set in indent_outline.
-    p: Position = None  # type:ignore
+    p: Position | None = None
 
     # @+others
     # @+node:ekr.20231024045727.1: *3* indented_lisp.find_matching_paren

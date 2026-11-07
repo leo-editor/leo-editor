@@ -5114,7 +5114,7 @@ class Commands:
             c.outerUpdate()
 
     # @+node:ekr.20031218072017.2997: *5* c.selectPosition
-    def selectPosition(self, p: Position, **kwargs: KWargs) -> None:
+    def selectPosition(self, p: Position, **kwargs) -> None:
         """
         Select a new position, redrawing the screen *only* if we must
         change chapters.

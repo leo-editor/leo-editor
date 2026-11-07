@@ -15,6 +15,7 @@ import json
 import time
 import hashlib
 import hmac
+from typing import Any
 
 from leo.core import leoGlobals as g
 from leo.core import leoserver
@@ -23,7 +24,7 @@ from leo.core import leoserver
 try:
     import websockets
 except Exception:
-    websockets = None  # type:ignore
+    websockets = None
     g.missing('websockets')
 
 wsHost = "localhost"
@@ -45,7 +46,7 @@ n_unknown_response_times = 0
 
 # @+others
 # @+node:ekr.20210219105145.1: ** function: _dump_outline
-def _dump_outline(c):  # pragma: no cover
+def _dump_outline(c: Any) -> None:  # pragma: no cover
     """Dump the outline."""
     print(f"_dump_outline: {c.shortFileName()}...\n")
     for p in c.all_positions():
@@ -55,7 +56,7 @@ def _dump_outline(c):  # pragma: no cover
 
 
 # @+node:ekr.20210206075253.1: ** function: _get_action_list
-def _get_action_list():
+def _get_action_list() -> list[str]:
     """
     Return all callable public methods of the server.
     In effect, these are unit tests.
@@ -147,7 +148,7 @@ def _get_action_list():
 
 
 # @+node:ekr.20210206093130.1: ** function: _show_response
-def _show_response(n, d):
+def _show_response(n: int, d: dict) -> None:
     global n_known_response_times
     global n_unknown_response_times
     global tot_response_time
@@ -179,7 +180,7 @@ def _show_response(n, d):
 
 
 # @+node:ekr.20210205144500.1: ** function: client_main_loop
-async def client_main_loop(timeout):
+async def client_main_loop(timeout: float) -> None:
     global n_async_responses
     uri = f"ws://{wsHost}:{wsPort}"
     action_list = _get_action_list()
@@ -267,13 +268,13 @@ async def client_main_loop(timeout):
         print(f"Asynchronous responses: {n_async_responses}")
         print(f"Unknown response times: {n_unknown_response_times}")
         print(f"  Known response times: {n_known_response_times}")
-        print(
-            f" Average response_time: {(tot_response_time / n_known_response_times):3.2} sec."
-        )  # About 0.1, regardless of tracing.
+        # About 0.1, regardless of tracing.
+        ave_response_time = tot_response_time / n_known_response_times
+        print(f" Average response_time: {ave_response_time:3.2} sec.")
 
 
 # @+node:ekr.20210205141432.1: ** function: main (leoclient.py)
-def main():
+def main() -> None:
     try:
         asyncio.run(client_main_loop(timeout))  # #4664
     except KeyboardInterrupt:

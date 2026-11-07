@@ -1132,11 +1132,11 @@ class LeoApp:
         table = (self.setIDFromSys, self.setIDFromFile, self.setIDFromEnv)
         for func in table:
             func(verbose)
-            if self.leoID:  # type:ignore # ruff-lint bug.
+            if self.leoID:  # type:ignore # ty bug.
                 return self.leoID
         if useDialog:
             self.setIdFromDialog()
-            if self.leoID:  # type:ignore # ruff-lint bug.
+            if self.leoID:  # type:ignore # ty bug.
                 self.setIDFile()
         return self.leoID
 

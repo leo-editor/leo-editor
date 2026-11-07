@@ -8,7 +8,7 @@ from __future__ import annotations
 from collections.abc import Callable
 import re
 import time
-from typing import Any, cast, TYPE_CHECKING
+from typing import Any, cast, Self, TYPE_CHECKING
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 from leo.core.leoQt import EndEditHint, Format, ItemFlag, KeyboardModifier
 from leo.core import leoGlobals as g
@@ -84,13 +84,13 @@ class LeoQtTree(leoFrame.LeoTree):
             if 1:  # Does not work
 
                 def dropMimeData(
-                    self, data: str, action: str, row: str, col: str, parent: str
+                    self: Self, data: str, action: str, row: str, col: str, parent: str
                 ) -> None:
                     g.trace()
 
                 # w.dropMimeData = dropMimeData
 
-                def mimeData(self, indexes: str) -> None:
+                def mimeData(self: Self, indexes: str) -> None:
                     g.trace()
             # @-<< Drag and drop >>
 

@@ -2253,7 +2253,7 @@ class LeoFind:
 
         c = self.c
 
-        def summarize_callback(**kwargs: Any) -> None:
+        def summarize_callback(**kwargs) -> None:
             # Get and check pattern.
             pattern_s = kwargs['args'][0]
             if not pattern_s.strip():

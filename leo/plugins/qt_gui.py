@@ -244,7 +244,7 @@ class LeoQtGui(leoGui.LeoGui):
         slant: str,
         weight: str,
         defaultSize: int = 12,
-        tag='',
+        tag: str = '',
     ) -> QFont | None:
         """Required to handle syntax coloring."""
         if isinstance(size, str):
@@ -483,7 +483,6 @@ class LeoQtGui(leoGui.LeoGui):
             # #2383: State is a tri-state, so use the official constants.
             checkbox.setCheckState(Checked if checked else Unchecked)  # #2127.
             checkbox.stateChanged.connect(controller.onClick)
-            # A mypy bug? layout is a QGridLayout. mypy thinks it's a plain QLayout.
             layout.addWidget(checkbox, 4, 0, -1, -1)  # type:ignore
             if 0:  # Does not work well.
                 sizePolicy = QtWidgets.QSizePolicy
@@ -562,7 +561,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     # @+node:ekr.20110605121601.18487: *3* LeoQtGui: Dialogs & panels
     # @+node:ekr.20231010004932.1: *4* LeoQtGui._save/_restore_focus
-    def _save_focus(self, c):
+    def _save_focus(self, c: Cmdr) -> None:
         """
         Save the data needed to restore focus to the body.
 
@@ -571,7 +570,7 @@ class LeoQtGui(leoGui.LeoGui):
         """
         c.p.saveCursorAndScroll()
 
-    def _restore_focus(self, c):
+    def _restore_focus(self, c: Cmdr) -> None:
         """Restore focus to the body pane."""
         # Fix #3601 by brute force.
         c.bringToFront()
@@ -1544,7 +1543,7 @@ class LeoQtGui(leoGui.LeoGui):
     assert QSignalSpy
 
     # @+node:ekr.20240521171848.1: *4* LeoQtGui.equalize_splitter
-    def equalize_splitter(self, splitter):
+    def equalize_splitter(self, splitter: Any) -> None:
         """Equalize all the splitter's contents."""
         if not splitter:
             return
