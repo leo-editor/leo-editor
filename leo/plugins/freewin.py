@@ -859,8 +859,8 @@ class ZEditorWin(QtWidgets.QMainWindow):
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
-        self.render_pane_type = c.config.getString('fw-render-pane') or ''  # type: ignore [attr-defined]
-        self.copy_html = c.config.getBool('fw-copy-html', default=False)  # type: ignore [attr-defined]
+        self.render_pane_type = c.config.getString('fw-render-pane') or ''
+        self.copy_html = c.config.getBool('fw-copy-html', default=False)
 
     # @+node:tom.20240811185426.1: *3* fw.calcHiliteColor
     # @@language python
