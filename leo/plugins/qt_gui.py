@@ -483,7 +483,6 @@ class LeoQtGui(leoGui.LeoGui):
             # #2383: State is a tri-state, so use the official constants.
             checkbox.setCheckState(Checked if checked else Unchecked)  # #2127.
             checkbox.stateChanged.connect(controller.onClick)
-            # A mypy bug? layout is a QGridLayout. mypy thinks it's a plain QLayout.
             layout.addWidget(checkbox, 4, 0, -1, -1)  # type:ignore
             if 0:  # Does not work well.
                 sizePolicy = QtWidgets.QSizePolicy
