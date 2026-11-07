@@ -201,7 +201,35 @@ exclude = [
     "leo/plugins/rpcalc/*.py",
     "leo/plugins/test/*.py",
     "leo/plugins/viewrendered3/*.py",
-    # Exclude all other plugins by default.
+    
+    # Exclude all uppercase plugins.
+    "leo/plugins/A*.py",
+    "leo/plugins/B*.py",
+    "leo/plugins/C*.py",
+    "leo/plugins/D*.py",
+    "leo/plugins/E*.py",
+    "leo/plugins/F*.py",
+    "leo/plugins/G*.py",
+    "leo/plugins/H*.py",
+    "leo/plugins/I*.py",
+    "leo/plugins/J*.py",
+    "leo/plugins/K*.py",
+    "leo/plugins/L*.py",
+    "leo/plugins/M*.py",
+    "leo/plugins/N*.py",
+    "leo/plugins/O*.py",
+    "leo/plugins/P*.py",
+    "leo/plugins/Q*.py",
+    "leo/plugins/R*.py",
+    "leo/plugins/S*.py",
+    "leo/plugins/T*.py",
+    "leo/plugins/U*.py",
+    "leo/plugins/V*.py",
+    "leo/plugins/W*.py",
+    "leo/plugins/X*.py",
+    "leo/plugins/Y*.py",
+    "leo/plugins/Z*.py",
+    # Exclude all lowercase plugins except those starting with 'q'.
     "leo/plugins/a*.py",
     "leo/plugins/b*.py",
     "leo/plugins/c*.py",
@@ -220,12 +248,6 @@ exclude = [
     "leo/plugins/n*.py",
     "leo/plugins/o*.py",
     "leo/plugins/p*.py",
-
-    # The qt_* plugins are everything *else*.
-    "leo/plugins/quit_leo.py",
-    "leo/plugins/QNCalendarWidget.py",
-    "leo/plugins/qt_main.py", # Generated automatically.
-
     "leo/plugins/r*.py",
     "leo/plugins/s*.py",
     "leo/plugins/t*.py",
@@ -234,6 +256,19 @@ exclude = [
     "leo/plugins/w*.py",
     "leo/plugins/x*.py",
     "leo/plugins/z*.py",
+    # "leo/plugins/q*.py", # Allow qt_* plugins. See below.
+    "leo/plugins/r*.py",
+    "leo/plugins/s*.py",
+    "leo/plugins/t*.py",
+    "leo/plugins/u*.py",
+    "leo/plugins/v*.py",
+    "leo/plugins/w*.py",
+    "leo/plugins/x*.py",
+    "leo/plugins/z*.py",
+    # The qt_* plugins are (almost) everything *else*.
+    "leo/plugins/quit_leo.py",
+    "leo/plugins/qt_main.py", # Generated automatically.
+
 ]  # fmt: skip
     
 #@-leo
