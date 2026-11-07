@@ -24,7 +24,7 @@ from leo.core import leoserver
 try:
     import websockets
 except Exception:
-    websockets = None  # type:ignore
+    websockets = None
     g.missing('websockets')
 
 wsHost = "localhost"

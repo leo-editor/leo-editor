@@ -20,12 +20,12 @@ os.chdir(leo_editor_dir)
 # @+node:ekr.20260823160000.1: ** check_optional_deps (ty_leo.py)
 def check_optional_deps() -> bool:
     """
-    Return True if every package that a `# type:ignore` fallback assumes is present is resolvable.
+    Make sure all required packages exist.
     See #4952 and #4961.
     """
     packages = [
-        ('lxml', 'lxml'),
         ('PyQt6', 'PyQt6.QtWidgets'),
+        ('lxml', 'lxml'),
         ('pyenchant', 'enchant'),
         # Don't check optional modules.
         # ('docutils', 'docutils'),
