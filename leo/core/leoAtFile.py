@@ -2689,17 +2689,6 @@ class AtFile:
         if contents == results:
             return True
 
-        if 0:  # Debugging only.
-            sfn = g.shortFileName(filename)
-            diff = difflib.unified_diff(
-                g.splitLines(contents),
-                g.splitLines(results),
-                fromfile=f"Old: {sfn}",
-                tofile=f"New {sfn}",
-            )
-            g.printObj(list(diff), tag=f"Diff: {sfn}")
-
-        # Snapshot before the reload: refreshFromDisk may also replace children.
         with u.change_outline('ruff-format'):
             g.es(f"beautified: {g.shortFileName(filename)}", color='blue')
             c.refreshFromDisk(root)
@@ -3529,7 +3518,6 @@ class FastAtRead:
         *Note*: delims[0] will end with a blank when reading a file with blackened sentinels!
         """
         first_lines: list[str] = []
-        i = 0  # To keep some versions of pylint happy.
         for i, line in enumerate(lines):
             if m := self.header_pattern.match(line):
                 delims = m.group(1), m.group(8) or ''
@@ -3599,7 +3587,6 @@ class FastAtRead:
         # Set the patterns
         self.get_patterns(comment_delims)
         # @-<< init scan_lines >>
-        i = 0  # To keep pylint happy.
         for i, line in enumerate(lines[start:]):
             # @+<< trace patterns >>
             # @+node:ekr.20231205061620.1: *4* << trace patterns >>

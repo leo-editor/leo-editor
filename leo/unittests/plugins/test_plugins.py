@@ -21,7 +21,7 @@ class TestPlugins(LeoUnitTest):
 
     # @+others
     # @+node:ekr.20210909165100.1: *3*  TestPlugin.check_syntax
-    def check_syntax(self, filename):  # pylint: disable=inconsistent-return-statements
+    def check_syntax(self, filename):
         with open(filename, 'rb') as f:
             contents = f.read()
         try:

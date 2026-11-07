@@ -270,13 +270,15 @@ class AbbrevCommandsClass:
         p = c.p
         u = c.undoer
         w = self.w
-        with u.change_node(p, 'replace-selection'):
-            # Make the replacement.
+        if self.in_head:
+            # #5021: Do *not* use u.change_node in headlines!
             w.delete(i, j)
             w.insert(i, s)
-            # Update only body text. Setting p.h here would be wrong.
-            if not self.in_head:
-                p.v.b = w.getAllText()
+            return
+        with u.change_node(p, 'replace-selection'):
+            w.delete(i, j)
+            w.insert(i, s)
+            p.v.b = w.getAllText()
 
     # @+node:ekr.20260516063743.1: *4* abbrev: script substitution
     # @+node:ekr.20260516063159.1: *5* abbrev.make_all_scripting_substitutions

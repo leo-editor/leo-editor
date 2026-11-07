@@ -108,7 +108,7 @@ try:
     from leo.core.leoQt import QtCore, QtWidgets
     from leo.core.leoQt import MouseButton
 except Exception:
-    QtCore = QtWidgets = None  # type:ignore
+    QtCore = QtWidgets = None
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr

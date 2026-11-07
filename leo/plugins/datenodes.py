@@ -215,8 +215,6 @@ def on_create(tag, keywords):
     c = keywords.get("c")
     if not (c and c.exists):
         return
-
-    # Rewrite to eliminate a pylint complaint.
     if hasattr(c, 'theDateNodesController'):
         return
 

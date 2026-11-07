@@ -93,14 +93,14 @@ def import_to_indented_typescript(event: Any) -> None:
 class Indented_Importer:
     """The base class for all indented importers."""
 
-    extensions: list[str] = None  # type:ignore # The file extension for the language.
-    language: str = None  # type:ignore # The name of the language.
-    importer_class: Callable = None  # type:ignore # The importer class
+    extensions: list[str]  # The file extension for the language.
+    language: str | None = None  # The name of the language.
+    importer_class: Callable | None = None  # The importer class
 
     def __init__(self, c):
         self.c = c
         self.file_name = None  # Set by import_one_file.
-        if self.importer_class:
+        if self.importer_class is not None:
             self.importer = self.importer_class(c)  # pylint: disable=not-callable
 
     # @+others
@@ -416,7 +416,7 @@ class Indented_Lisp(Indented_Importer):
     )
 
     # For error messages only. Set in indent_outline.
-    p: Position = None  # type:ignore
+    p: Position | None = None
 
     # @+others
     # @+node:ekr.20231024045727.1: *3* indented_lisp.find_matching_paren
@@ -845,9 +845,7 @@ class Indented_Lisp(Indented_Importer):
 class Indented_TypeScript(Indented_Importer):
     """A class to support indented Typescript files."""
 
-    extensions: list[str] = [
-        '.ts',
-    ]
+    extensions: list[str] = ['.ts']
     language = 'typescript'
     importer_class = TS_Importer
 

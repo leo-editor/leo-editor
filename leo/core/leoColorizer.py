@@ -21,7 +21,7 @@ try:
     import pygments
     from pygments.lexer import DelegatingLexer, RegexLexer, _TokenType, Text, Error
 except ImportError:
-    pygments = None  # type:ignore
+    pygments = None
 
 # Leo imports...
 from leo.core import leoGlobals as g
@@ -1236,7 +1236,7 @@ class JEditColorizer(BaseColorizer):
             ("elide", "", "yellow"),
         ):
             if self.showInvisibles:
-                color = c.config.getColor(option_name) if option_name else default_color
+                color = c.config.getColor(option_name) if option_name else default_color  # type:ignore # ruff-lint bug
             else:
                 option_name, default_color = self.default_colors_dict.get(name, ('', ''))
                 color = c.config.getColor(option_name) if option_name else ''
@@ -2465,8 +2465,6 @@ class JEditColorizer(BaseColorizer):
                     return j
             else:
                 return j
-        # For pylint.
-        return -1
 
     # @+node:ekr.20250109134131.1: *4* jedit.match_plain_eol_span
     def match_plain_eol_span(self, s: str, i: int, kind: str) -> int:
@@ -2710,8 +2708,6 @@ class JEditColorizer(BaseColorizer):
                     return j
             else:
                 return j
-        # For pylint.
-        return -1
 
     # @+node:ekr.20110605121601.18624: *5* jedit.restart_match_span
     def restart_match_span(
@@ -3574,7 +3570,7 @@ class PygmentsColorizer(JEditColorizer):
             if trace and language not in self.unknown_languages:
                 self.unknown_languages.append(language)
                 g.trace(f"\nno pygments lexer for {language!r}. Using python 3 lexer\n")
-            lexer = lexers.Python3Lexer()  # pylint: disable=no-member
+            lexer = lexers.Python3Lexer()
         return lexer
 
     # @+node:ekr.20190322094034.1: *4* pyg_c.patch_lexer
@@ -3831,7 +3827,7 @@ class QScintillaColorizer(BaseColorizer):
         for language_name in table:
             class_name = 'QsciLexer' + language_name
             if lexer_class := getattr(Qsci, class_name, None):
-                lexer = lexer_class(parent=parent)  # pylint: disable=not-callable
+                lexer = lexer_class(parent=parent)
                 self.configure_lexer(lexer)
                 d[language_name.lower()] = lexer
             elif 0:
@@ -3882,7 +3878,6 @@ if pygments:
             for rexmatch, action, new_state in statetokens:
                 if m := rexmatch(text, pos):
                     if action is not None:
-                        # pylint: disable=unidiomatic-typecheck
                         # EKR: Why not use isinstance?
                         if type(action) is _TokenType:
                             yield pos, action, m.group()
@@ -3926,7 +3921,7 @@ if pygments:
 
     # Monkeypatch!
 
-    if pygments:
+    if pygments:  # type:ignore
         RegexLexer.get_tokens_unprocessed = get_tokens_unprocessed
     # @+node:ekr.20190320062624.3: *3* class PygmentsBlockUserData(QTextBlockUserData)
     # Copyright (c) Jupyter Development Team.
@@ -3939,7 +3934,7 @@ if pygments:
 
             syntax_stack = tuple('root')
 
-            def __init__(self, **kwargs: KWargs) -> None:
+            def __init__(self, **kwargs) -> None:
                 for key, value in kwargs.items():
                     setattr(self, key, value)
                 super().__init__()

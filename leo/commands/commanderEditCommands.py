@@ -403,9 +403,8 @@ def extract(self: Self, event: LeoKeyEvent | None = None) -> None:
 
     with u.change_outline('extract'):
         p = createFirstChildNode(c, c.p, h, ''.join(b))
-        if oldSel:
-            i, j = oldSel
-            w.setSelectionRange(i, j, insert=j)
+        i, j = oldSel  # PR #5038
+        w.setSelectionRange(i, j, insert=j)
 
         # Update the text and selection
         c.p.v.b = head + middle + tail  # Don't redraw.
@@ -967,7 +966,7 @@ def find_bound_paragraph(c: Cmdr) -> tuple[str, list[str], str]:
             head_lines.append(s)
     if started:
         head = ''.join(head_lines)
-        tail_lines = para_lines[i:] if ended else []  # pylint: disable=undefined-loop-variable
+        tail_lines = para_lines[i:] if ended else []
         tail = ''.join(tail_lines)
         return head, result, tail  # string, list, string
     return '', [], ''

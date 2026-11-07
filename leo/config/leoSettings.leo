@@ -84,6 +84,11 @@
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
 <v t="ekr.20200227064211.1"><vh>Notes</vh>
+<v t="ekr.20261103061256.1"><vh>Retired settings</vh>
+<v t="tbnorth.20160414102131.1"><vh>@@@bool drag-alt-drag-expands = True</vh></v>
+<v t="tbrown.20130813134319.7224"><vh>@@@bool richtext-cke-autosave = False</vh></v>
+<v t="ekr.20050126083026"><vh>@@@string undo-granularity = None</vh></v>
+</v>
 <v t="ekr.20200226104131.1"><vh>Future settings</vh>
 <v t="ekr.20190926110217.1"><vh>@string adoc-base-directory = None</vh></v>
 </v>
@@ -592,7 +597,6 @@
 <v t="ekr.20110611092035.16477"><vh>Undo settings</vh>
 <v t="ekr.20041119041019.2"><vh>@bool save-clears-undo-buffer = False</vh></v>
 <v t="ekr.20060127050605"><vh>@int max-undo-stack-size = 0</vh></v>
-<v t="ekr.20050126083026"><vh>@string undo-granularity = None</vh></v>
 </v>
 <v t="peckj.20130514082859.5599"><vh>print settings</vh>
 <v t="peckj.20130514082859.5600"><vh>@string printing-font-size = 12</vh></v>
@@ -1941,7 +1945,6 @@
 <v t="ekr.20060919171527.2"><vh>@string opml-namespace = leo:com:leo-opml-version-1</vh></v>
 </v>
 <v t="tbrown.20130813134319.7223"><vh>richtext plugin</vh>
-<v t="tbrown.20130813134319.7224"><vh>@bool richtext-cke-autosave = False</vh></v>
 <v t="tbrown.20130813181208.23979"><vh>@data richtext-cke-config</vh></v>
 </v>
 <v t="peckj.20131012154112.5294"><vh>rss plugin</vh>
@@ -2162,7 +2165,6 @@
 <v t="felix.20220506230435.1"><vh>@bool collapse-on-goto-first-last-visible = True</vh></v>
 <v t="ekr.20111109104336.12503"><vh>@bool collapse-on-lt-arrow = True</vh></v>
 <v t="ekr.20070615094204"><vh>@bool contractVisitedNodes = True</vh></v>
-<v t="tbnorth.20160414102131.1"><vh>@bool drag-alt-drag-expands = True</vh></v>
 <v t="ekr.20041119050749.4"><vh>@bool enable-drag-messages = False</vh></v>
 <v t="ekr.20131008181812.17533"><vh>@bool enable-tree-dragging = True</vh></v>
 <v t="ekr.20061012122620"><vh>@bool insert-new-nodes-at-end = False</vh></v>
@@ -5859,7 +5861,7 @@ file-diff-files                     = None
 file-insert                         = None
 fill-paragraph                      = Alt-q
 fill-region                         = None
-fill-region-as-paragraph            = None
+# fill-region-as-paragraph          = None
 find-tab-hide                       = None
 replace                             = Ctrl-=
 replace-all                         = None  # Not recommended to bind this to a shortcut.
@@ -6248,7 +6250,7 @@ file-diff-files                     = None
 file-insert                         = None
 fill-paragraph                      = None
 fill-region                         = None
-fill-region-as-paragraph            = None
+# fill-region-as-paragraph          = None
 find-character                      = None
 find-character-extend-selection     = None
 find-clone-all                      = None
@@ -11903,6 +11905,7 @@ If not given, Leo's beautifier uses Leo's pyproject.toml file.
 True (Legacy):       Raise a dialog when any file changes externally.
 False (Recommended): Print a log message when any file changes externally.</t>
 <t tx="ekr.20260820160658.1"></t>
+<t tx="ekr.20261103061256.1"></t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>

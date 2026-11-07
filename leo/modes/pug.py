@@ -32,9 +32,8 @@ from __future__ import annotations
 import re
 import string
 from typing import Any
-from leo.core import leoGlobals as g
 
-assert g
+# from leo.core import leoGlobals as g
 
 
 # @-<< import >>

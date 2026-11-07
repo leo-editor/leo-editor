@@ -262,7 +262,7 @@ class LeoMenu:
             return True
         return False
 
-    # @+node:ekr.20031218072017.3780: *4* LeoMenu.hasSelection (changed)
+    # @+node:ekr.20031218072017.3780: *4* LeoMenu.hasSelection
     def hasSelection(self) -> bool:
         """Return True if text in the outline or body text is selected."""
         c = self.c

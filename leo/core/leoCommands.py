@@ -360,51 +360,37 @@ class Commands:
         # Break circular import dependencies by doing imports here.
         # All these imports take almost 3/4 sec in the leoBridge.
         t1 = time.process_time()
-        from leo.core import leoAtFile
-        from leo.core import leoBeautify  # So decorators are executed.
 
-        assert leoBeautify  # for pyflakes.
+        from leo.core import leoAtFile
+        from leo.core import leoBeautify  # noqa  # required!
         from leo.core.leoCache import CommanderWrapper
         from leo.core import leoChapters
 
+        # fmt: off
+
         # User commands...
         from leo.commands import abbrevCommands
-
-        from leo.commands import checkerCommands  # Required.
-
-        assert checkerCommands  # To suppress a pyflakes warning.
-
+        from leo.commands import checkerCommands     # noqa # required!
         from leo.commands import controlCommands
         from leo.commands import convertCommands
-        from leo.commands import debugCommands
-        from leo.commands import editCommands
+        from leo.commands import debugCommands  
+        from leo.commands import editCommands  
         from leo.commands import editFileCommands
         from leo.commands import gotoCommands
-        from leo.commands import helpCommands
+        from leo.commands import helpCommands        # noqa # required!
         from leo.commands import keyCommands
         from leo.commands import killBufferCommands
         from leo.commands import rectangleCommands
         from leo.commands import spellCommands
 
-        # Import files to execute @g.commander_command decorators
-        from leo.core import leoCompare
+        # Import files that  execute @g.commander_command decorators
+        from leo.core import leoCompare                     # noqa # required!
+        from leo.core import leoDebugger                    # noqa # required!
+        from leo.commands import commanderEditCommands      # noqa # required!
+        from leo.commands import commanderFileCommands      # noqa # required!
+        from leo.commands import commanderHelpCommands      # noqa # required!
+        from leo.commands import commanderOutlineCommands   # noqa # required!
 
-        assert leoCompare
-        from leo.core import leoDebugger
-
-        assert leoDebugger
-        from leo.commands import commanderEditCommands
-
-        assert commanderEditCommands
-        from leo.commands import commanderFileCommands
-
-        assert commanderFileCommands
-        from leo.commands import commanderHelpCommands
-
-        assert commanderHelpCommands
-        from leo.commands import commanderOutlineCommands
-
-        assert commanderOutlineCommands
         # Other subcommanders.
         from leo.core import leoFind  # Leo 4.11.1
         from leo.core import leoKeys
@@ -418,11 +404,9 @@ class Commands:
         from leo.core import leoUndo
         from leo.core import leoVim
 
-        t2 = time.process_time()
         if 0:
+            t2 = time.process_time()
             g.trace(f"Import time: {t2 - t1:.2f}")
-
-        # fmt: off
 
         # Define 11 subcommanders.
         self.keyHandler = self.k    = leoKeys.KeyHandlerClass(c)
@@ -975,7 +959,6 @@ class Commands:
             The extension must include the dot.
             """
             cmd = f'assoc {extension}'
-            # pylint: disable=subprocess-run-check
             proc = subprocess.run(cmd, shell=True, capture_output=True)
             filetype = proc.stdout.decode('utf-8')  # e.g., ".py=Python.File"
             filetype = filetype.split('=')[1] if filetype else ''
@@ -1203,69 +1186,6 @@ class Commands:
         else:
             g.es('Cannot find an @- file', color='red')
 
-    # @+node:vitalije.20190924191405.1: *4* @cmd execute-pytest
-    @cmd('execute-pytest')
-    def execute_pytest(self, event: LeoKeyEvent | None = None) -> None:
-        """Using pytest, execute all @test nodes for p, p's parents and p's subtree."""
-        c = self
-
-        def it(p: Position) -> PositionGenerator:
-            for p1 in p.self_and_parents():
-                if p1.h.startswith('@test '):
-                    yield p1
-                    return
-            for p1 in p.subtree():
-                if p1.h.startswith('@test '):
-                    yield p1
-
-        try:
-            for p in it(c.p):
-                self.execute_single_pytest(p)
-        except ImportError:
-            g.missing('pytest')
-
-    def execute_single_pytest(self, p: Position) -> None:
-        c = self
-        from _pytest.config import get_config
-        from _pytest.assertion.rewrite import rewrite_asserts
-        import ast
-
-        cfg = get_config()
-        script = g.getScript(c, p, useSentinels=False) + (
-            '\n'
-            'ls = dict(locals())\n'
-            'failed = 0\n'
-            'for x in ls:\n'
-            '    if x.startswith("test_") and callable(ls[x]):\n'
-            '        try:\n'
-            '            ls[x]()\n'
-            '        except AssertionError as e:\n'
-            '            failed += 1\n'
-            '            g.es(f"-------{p.h[6:].strip()}/{x} failed---------")\n'
-            '            g.es(str(e))\n'
-            'if failed == 0:\n'
-            '    g.es("all tests passed")\n'
-            'else:\n'
-            '    g.es(f"failed:{failed} tests")\n'
-        )
-
-        fname = g.finalize_join(g.app.homeLeoDir, 'leoPytestScript.py')
-        with open(fname, 'wt', encoding='utf8') as out:
-            out.write(script)
-        tree = ast.parse(script, filename=fname)
-        rewrite_asserts(tree, g.toEncodedString(script), config=cfg)
-        co = compile(tree, fname, "exec", dont_inherit=True)
-        sys.path.insert(0, os.getcwd())
-        sys.path.insert(0, g.os_path_dirname(c.fileName()))  # per SegundoBob
-        try:
-            exec(co, {'c': c, 'g': g, 'p': p})
-        except KeyboardInterrupt:
-            g.es('interrupted')
-        except Exception:
-            g.handleScriptException(c, p)
-        finally:
-            del sys.path[:2]
-
     # @+node:ekr.20171123135625.4: *4* @cmd execute-script & public helpers
     @cmd('execute-script')
     def executeScript(
@@ -1355,7 +1275,7 @@ class Commands:
                         namespace.update(script_gnx=script_p.gnx)
                     # We *always* execute the script with p = c.p.
                     callResult = c.executeScriptHelper(
-                        args or [],
+                        args,
                         define_g,
                         define_name,
                         language,
@@ -1383,7 +1303,7 @@ class Commands:
     # @+node:ekr.20171123135625.5: *5* c.executeScriptHelper
     def executeScriptHelper(
         self,
-        args: list,
+        args: list | None,
         define_g: bool,
         define_name: str,
         language: str,
@@ -1397,7 +1317,7 @@ class Commands:
             c.setCurrentDirectoryFromContext(p)
         else:
             p = None
-        d = {'c': c, 'g': g, 'input': g.input_, 'p': p} if define_g else {}
+        d: dict = {'c': c, 'g': g, 'input': g.input_, 'p': p} if define_g else {}
         if define_name:
             d['__name__'] = define_name
         d['script_args'] = args or []
@@ -1567,7 +1487,6 @@ class Commands:
         """
         c = self
         if predicate is None:
-            # pylint: disable=function-redefined
 
             def predicate(p: Position) -> bool:
                 return p.isAnyAtFileNode()
@@ -1612,7 +1531,6 @@ class Commands:
         """
         c = self
         if predicate is None:
-            # pylint: disable=function-redefined
 
             def predicate(p: Position) -> bool:
                 return p.isAnyAtFileNode()
@@ -1913,7 +1831,7 @@ class Commands:
         c = self
         c.scanAtPathDirectivesCount += 1  # An important statistic.
 
-        def get_path(m: re.Match) -> str | None:
+        def get_path(m: re.Match | None) -> str | None:
             return g.stripPathCruft(m.group(1)) if m else None
 
         # The headline has higher precedence because it is more visible.
@@ -3608,7 +3526,6 @@ class Commands:
         """
 
         def minibufferCallback(event: LeoKeyEvent, function: Callable = function) -> None:
-            # Avoid a pylint complaint.
             keywords: dict[str, Any] | None
             if hasattr(self, 'theContextMenuController'):
                 cm = self.theContextMenuController
@@ -3750,7 +3667,6 @@ class Commands:
         else:
             path = fn
         if path:
-            # pylint: disable=no-member
             # Issues saved message.
             c.saveTo(fileName=path, silent=silent)
             # g.es('in', theDir)
@@ -3983,7 +3899,6 @@ class Commands:
 
         This method creates @<file> nodes whose paths are relative to *this* directory.
         """
-        # pylint: disable=no-member
         assert os.path.exists(directory), directory
 
         # Create an @settings tree containing one @history-list node.
@@ -5199,7 +5114,7 @@ class Commands:
             c.outerUpdate()
 
     # @+node:ekr.20031218072017.2997: *5* c.selectPosition
-    def selectPosition(self, p: Position, **kwargs: KWargs) -> None:
+    def selectPosition(self, p: Position, **kwargs) -> None:
         """
         Select a new position, redrawing the screen *only* if we must
         change chapters.
@@ -5674,7 +5589,7 @@ class Commands:
                 getattr(obj, 'reload_settings', None)
             ):  # fmt: skip
                 try:
-                    func()  # pylint: disable=not-callable
+                    func()
                     g.doHook("after-reload-settings", c=c)
                 except Exception:
                     g.es_exception()

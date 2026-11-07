@@ -414,7 +414,6 @@ class LeoQtEventFilter(QtCore.QObject):
             # #1448: Replacing this by 'Key' would make separate keypad bindings impossible.
             (KeyboardModifier.KeypadModifier,  'KeyPad'),
         )  # fmt: skip
-        # pylint: disable=superfluous-parens.
         mods = [b for a, b in mod_table if (modifiers & a)]
         return mods
 

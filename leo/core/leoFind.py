@@ -98,7 +98,7 @@ class LeoFind:
 
         # Created by dw.createFindTab.
         self.ftm = cast(FindTabManager, None)
-        self.re_obj = cast(re.Pattern, None)
+        self.re_obj: re.Pattern | None = None
 
         # The work "widget".
         self.work_s = ''  # p.b or p.c.
@@ -2253,7 +2253,7 @@ class LeoFind:
 
         c = self.c
 
-        def summarize_callback(**kwargs: Any) -> None:
+        def summarize_callback(**kwargs) -> None:
             # Get and check pattern.
             pattern_s = kwargs['args'][0]
             if not pattern_s.strip():
@@ -2790,17 +2790,16 @@ class LeoFind:
         # because the search code strips '\r' characters when searching @edit nodes.
         i = max(0, i)
         j = min(len(s), j)
-        # short circuit the search: helps debugging.
-        if s.find(pattern) == -1:
+        if not pattern in s:
             return -1, -1
         if word:
-            while 1:
+            while j >= i:  # PR #5034.
                 k = s.rfind(pattern, i, j)
                 if k == -1:
                     break
                 if self._inner_search_match_word(s, k, pattern):
                     return k, k + n
-                j = max(0, k - 1)
+                j -= 1  # PR #5034.
             return -1, -1
         k = s.rfind(pattern, i, j)
         if k == -1:
@@ -2839,7 +2838,7 @@ class LeoFind:
                     break
                 if self._inner_search_match_word(s, k, pattern):
                     return k, k + n
-                i = k + n
+                i = k + 1  # PR #5033.
             return -1, -1
         k = s.find(pattern, i, j)
         if k == -1:
@@ -2964,7 +2963,7 @@ class LeoFind:
         """
         c = self.c
         ftm = self.ftm
-        w = ftm and ftm.entry_focus or g.app.gui.get_focus(raw=True)  # pylint: disable=simplify-boolean-expression
+        w = ftm and ftm.entry_focus or g.app.gui.get_focus(raw=True)
         if ftm:
             ftm.entry_focus = None  # Only use this focus widget once!
         w_name = c.widget_name(w)
@@ -2996,7 +2995,7 @@ class LeoFind:
             return
 
         c.selectPosition(p)
-        if self.in_headline:
+        if False:  # self.in_headline:  # PR #5034.
             c.treeWantsFocus()
         else:
             # Looks good and provides clear indication of failure or termination.

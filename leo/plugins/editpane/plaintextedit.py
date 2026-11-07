@@ -3,11 +3,9 @@
 # @+<< plaintextedit imports >>
 # @+node:tbrown.20171028115504.1: ** << plaintextedit imports >>
 import re
-from leo.core import leoGlobals as g
-
-assert g
 from leo.core.leoQt import QtGui, QtWidgets
 from leo.core.leoQt import GlobalColor, Weight
+# from leo.core import leoGlobals as g
 
 
 # @-<< plaintextedit imports >>

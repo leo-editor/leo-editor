@@ -96,7 +96,7 @@ def delete_trace_statements(event: LeoKeyEvent | None = None) -> None:
     **Warning**: Use this command at your own risk.
 
     It can cause "if" and "else" clauses to become empty, resulting in
-    syntax errors. Having said that, pyflakes & pylint will usually catch
+    syntax errors. Having said that, Leo's checker tools will usually catch
     the problems.
     """
     c = event.get('c') if event else None
@@ -1656,21 +1656,25 @@ class EditCommandsClass:
             return
         wname = c.widget_name(w)
         ins = w.getInsertPoint()
-        i, j = w.getSelectionRange()
+        i, j = oldSel = w.getSelectionRange()
         if wname.startswith('body'):
             with u.change_node(p, 'backward-delete-char'):
                 tab_width = c.getTabWidth(c.p)
                 if i != j:
                     w.delete(i, j)
+                    newInsert = i
+                    newSel = i, i
                     w.setSelectionRange(i, i, insert=i)
                 elif i == 0:
-                    pass
+                    newInsert = i
+                    newSel = i, i
                 elif tab_width > 0:
                     w.delete(ins - 1)
+                    newInsert = ins - 1
+                    newSel = ins - 1, ins - 1
                     w.setSelectionRange(ins - 1, ins - 1, insert=ins - 1)
                 else:
-                    # @+<< backspace with negative tab_width >>
-                    # @+node:ekr.20150514063305.254: *5* << backspace with negative tab_width >>
+                    # backspace with negative tab_width
                     s = prev = w.getAllText()
                     ins = w.getInsertPoint()
                     i, j = g.getLine(s, ins)
@@ -1690,10 +1694,18 @@ class EditCommandsClass:
                             count += 1
                     # Make sure we actually delete something.
                     i = ins - (max(1, count))
+                    newInsert = i
+                    newSel = (i, i)
                     w.delete(i, ins)
                     w.setSelectionRange(i, i, insert=i)
-                    # @-<< backspace with negative tab_width >>
-                u.type_text(p, oldText=p.b, newText=w.getAllText())
+                u.type_text(
+                    p,
+                    oldSel=oldSel,
+                    oldText=p.b,
+                    newSel=newSel,
+                    newInsert=newInsert,
+                    newText=w.getAllText(),
+                )
             return
         # No *direct* undo in this widget.
         # Undo in headlines is handled indirectly.
@@ -2125,7 +2137,6 @@ class EditCommandsClass:
         # Update the text and handle undo.
         newText = w.getAllText()
         if newText != oldText:
-            # Call u.type_text to honor the user's undo granularity.
             newSel = w.getSelectionRange()
             newInsert = w.getInsertPoint()
             newSel = w.getSelectionRange()

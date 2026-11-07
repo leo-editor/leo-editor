@@ -145,7 +145,7 @@ def forceRestartLeo(self: Self, event: LeoKeyEvent | None = None) -> None:
     if verbose:
         print(args_s)
     print('')
-    subprocess.run(args)  # pylint: disable=subprocess-run-check
+    subprocess.run(args)
 
 
 # @+node:ekr.20261003164719.1: ** c_file.restartLeo
@@ -220,7 +220,7 @@ def restartLeo(self: Self, event: LeoKeyEvent | None = None) -> None:
     if verbose:
         print(args_s)
     print('')
-    subprocess.run(args)  # pylint: disable=subprocess-run-check
+    subprocess.run(args)
 
 
 # @+node:ekr.20031218072017.2820: ** c_file.top level
@@ -455,6 +455,7 @@ def refreshFromDisk(
     """
     c = self
     at = c.atFileCommands
+    u = c.undoer  # PR #5025
     if not p:
         p = c.p
 
@@ -490,10 +491,8 @@ def refreshFromDisk(
     at.changed_roots = []
     c.fileCommands.handleNodeConflicts()
     c.setChanged()
-    # We may be coming from idle_check_commander and not already have p selected,
-    # if the selected position was inside the expanded & refreshed outline, it may not be valid.
-    c.redraw(update_p)  # Select a valid update_p position or p
-    c.undoer.clearAndWarn('refresh-from-disk')
+    c.redraw(update_p)  # Select a valid position!
+    u.clearAndWarn('refresh-from-disk')
 
 
 # @+node:ekr.20210610083257.1: *3* c_file.pwd

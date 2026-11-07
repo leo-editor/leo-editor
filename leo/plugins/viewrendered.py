@@ -997,7 +997,6 @@ class ViewRenderedController(QtWidgets.QWidget):
                 template_path = g.finalize_join(c.getPath(p), untangle(c, child).strip())
             elif child.h == '@jinja inputs':
                 for template_var_node in child.children():
-                    # pylint: disable=line-too-long
                     template_data[template_var_node.h.replace('@jinja variable', '').strip()] = (
                         untangle(c, template_var_node).strip()
                     )
@@ -1053,7 +1052,7 @@ class ViewRenderedController(QtWidgets.QWidget):
             import nbformat
             from nbconvert import HTMLExporter
         except ImportError:
-            nbformat = None  # ty:ignore[invalid-assignment]
+            nbformat = None
 
         body = c.p.b.lstrip()
         if body.startswith('<'):

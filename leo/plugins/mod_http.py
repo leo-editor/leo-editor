@@ -1,6 +1,5 @@
 # @+leo-ver=5-thin
 # @+node:EKR.20040517080250.1: * @file ../plugins/mod_http.py
-# pylint: disable=no-member
 # mypy: ignore-errors
 # @+<< docstring >>
 # @+node:ekr.20050111111238: ** << docstring >>
@@ -225,13 +224,11 @@ which node is selected.
 # @-<< docstring >>
 # @+<< imports >>
 # @+node:EKR.20040517080250.3: ** << imports >>
-# pylint: disable=deprecated-method
-# parse_qs
 try:
     import asynchat
     import asyncore
 except Exception:
-    asynchat = asyncore = None  # type:ignore
+    asynchat = asyncore = None
 import http.server
 import json
 from typing import Any, cast
@@ -399,7 +396,6 @@ if asyncore:
         # @+others
         # @+node:EKR.20040517080250.5: *3* __init__
         def __init__(self, sock):
-            # pylint: disable=super-init-not-called
             self._map = asyncore.socket_map
             self.socket = sock
             self.socket.setblocking(False)
@@ -993,8 +989,6 @@ class noLeoNodePath(Exception):
 if asynchat:
 
     class RequestHandler(leo_interface, asynchat.async_chat, SimpleHTTPRequestHandler):
-        # pylint: disable=too-many-ancestors
-        # pylint: disable=super-init-not-called
         # @+others
         # @+node:EKR.20040517080250.14: *3* __init__
         def __init__(self, conn, addr, server):
@@ -1146,7 +1140,6 @@ if asynchat:
 
         # @+node:ekr.20110522152535.18256: *3* found_terminator
         def found_terminator(self) -> None:
-            # pylint: disable=method-hidden
             # Control may be passed to another found_terminator.
             self.handle_request_line()
 
@@ -1182,7 +1175,6 @@ if asyncore:
         # @+node:EKR.20040517080250.39: *3* handle_accept
         def handle_accept(self):
             try:
-                # pylint: disable=unpacking-non-sequence
                 # The following except statements catch this.
                 conn, addr = self.accept()  # type:ignore
             except OSError:
@@ -1284,7 +1276,7 @@ def poll(timeout=0.0):
         for s in sockets_to_close:
             s.close()
         sockets_to_close = []
-    if [] == r == w == e:  # pylint: disable=bad-option-value,use-implicit-booleaness-not-comparison
+    if [] == r == w == e:
         time.sleep(timeout)
     else:
         # @+<< try r, w, e = select.select >>

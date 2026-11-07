@@ -7,8 +7,6 @@ Shows how to patch python colorizer.
 import re
 from leo.core import leoGlobals as g
 
-assert g
-
 
 # @+others
 # @+node:ekr.20180119164528.6: ** init

@@ -217,7 +217,7 @@ def main():
 
 
 # @+node:ekr.20211021202356.1: ** class Slides(QWidget)
-class Slides(QtWidgets.QWidget):  # type:ignore
+class Slides(QtWidgets.QWidget):
     # Command-line arguments...
     scale: float = 1.0
     starting_directory: str = ''
@@ -350,7 +350,7 @@ class Slides(QtWidgets.QWidget):  # type:ignore
         new_path = os.path.join(path, os.path.basename(file_name))
         if os.path.exists(new_path):
             print("File exists:", new_path)
-            pathlib.Path(file_name).unlink(new_path)  # type:ignore
+            pathlib.Path(file_name).unlink(new_path)
         else:
             pathlib.Path(file_name).rename(new_path)
         del self.files_list[self.slide_number]
@@ -491,7 +491,7 @@ class Slides(QtWidgets.QWidget):  # type:ignore
                 self.dy = int(self.dy)
             except TypeError:
                 g.trace('TypeError', file_name)
-                self.scale = self.db[file_name]  # type:ignore
+                self.scale = self.db[file_name]
                 self.dx = self.dy = 0
         else:
             self.scale = 1.0

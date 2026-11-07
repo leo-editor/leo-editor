@@ -10,8 +10,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoChapters import Chapter
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
-
-assert g
 # @-<< leoHistory imports & annotations >>
 
 
@@ -77,8 +75,8 @@ class NodeHistory:
     # @+node:ekr.20130915111638.11294: *3* NodeHistory.select
     def select(self, p: Position, chapter: Chapter | None) -> None:
         """Select p in the given chapter."""
-        cc = self
-        c = cc.c.c.chapterController
+        c = self.c
+        cc = c.chapterController
         assert c.positionExists(p), repr(p)
         oldChapter = cc.getSelectedChapter()
         if oldChapter != chapter:

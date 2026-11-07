@@ -26,15 +26,11 @@ from leo.core.leoAPI import StringTextWrapper
 # @-<< leoFrame imports >>
 # @+<< leoFrame annotations >>
 # @+node:ekr.20220415013957.1: ** << leoFrame annotations >>
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from leo.core.leoColorizer import BaseColorizer
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import (
-        LeoKeyEvent,
-        LeoGui,
-        LeoMenu,
-        NullMenu,
-    )
+    from leo.core.leoGui import LeoKeyEvent, LeoGui
+    from leo.core.leoMenu import LeoMenu, NullMenu  # PR #5038
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.mod_scripting import ScriptingController
     from leo.plugins.qt_frame import (
@@ -265,7 +261,7 @@ class LeoFrame:
         self.tree: LeoTree | NullTree | LeoQtTree
 
         # Add required inits.
-        self.menu = None
+        self.menu = None  # type:ignore
         self.miniBufferWidget = None  # type:ignore
         self.top = None  # type:ignore
 
@@ -885,7 +881,6 @@ class LeoTree:
         self.generation = 0  # low-level vnode methods increment this count.
         self.redrawCount = 0  # For traces
         self.use_chapters = False  # May be overridden in subclasses.
-        # Define these here to keep pylint happy.
         self.canvas: Any = None
 
     # @+node:ekr.20040803072955.128: *3* LeoTree.select & helpers
@@ -948,7 +943,7 @@ class LeoTree:
         self.unselect_helper(old_p, p)
         # 2. Call set_body_text_after_select.
         self.select_new_node(old_p, p)
-        # 3. Call c.undoer.onSelect.
+        # 3. Change the current postion, part 2.
         self.change_current_position(old_p, p)
         # 4. Set cursor in body.
         self.scroll_cursor(p)
@@ -1026,9 +1021,7 @@ class LeoTree:
             if theChapter:
                 theChapter.p = p.copy()
 
-        # Do not call treeFocusHelper here!
-        # c.treeFocusHelper()
-        c.undoer.onSelect(old_p, p)
+        # Do not call c.treeFocusHelper here!
 
     # @+node:ekr.20140829053801.18459: *5* 4. LeoTree.scroll_cursor
     def scroll_cursor(self, p: Position) -> None:
@@ -1618,7 +1611,7 @@ class NullTree(LeoTree):
             if w := d.get(key):
                 g.pr('w', w, 'v.h:', key.headString, 's:', repr(w.s))
 
-    # @+node:ekr.20070228163350.1: *3* NullTree.redraw_tree and scrollTo
+    # @+node:ekr.20070228163350.1: *3* NullTree.redraw_tree
     def redraw_tree(self, p: Position | None = None) -> Position | None:
         self.redrawCount += 1
         return p
@@ -1627,12 +1620,7 @@ class NullTree(LeoTree):
     redraw_after_expand = redraw_tree
     redraw_now = redraw_tree
     redraw_after_select = redraw_tree
-
-    def redraw_after_head_changed(self) -> None:
-        pass
-
-    def scrollTo(self, p: Position) -> None:
-        pass
+    redraw_after_head_changed = redraw_tree
 
     # @+node:ekr.20070228160345: *3* NullTree.setHeadline
     def setHeadline(self, p: Position, s: str) -> None:

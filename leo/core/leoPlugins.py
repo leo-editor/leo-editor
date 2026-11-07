@@ -50,7 +50,7 @@ class TryNext(Exception):
     original ones.
     """
 
-    def __init__(self, *args: Args, **kwargs: KWargs) -> None:
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__()
         self.args = args
         self.kwargs = kwargs
@@ -68,7 +68,7 @@ class CommandChainDispatcher:
     def __init__(self, commands: list | None = None) -> None:
         self.chain = commands or []
 
-    def __call__(self, *args: Args, **kw: KWargs) -> None:
+    def __call__(self, *args, **kwargs) -> None:
         """Command chain is called just like normal func.
 
         This will call all funcs in chain with the same args as were given to this
@@ -76,12 +76,12 @@ class CommandChainDispatcher:
         TryNext"""
         for _prio, cmd in self.chain:
             try:
-                ret = cmd(*args, **kw)
+                ret = cmd(*args, **kwargs)
                 return ret
             except TryNext as exc:
                 if exc.args or exc.kwargs:
                     args = exc.args
-                    kw = exc.kwargs
+                    kwargs = exc.kwargs
         # if no function will accept it, raise TryNext up to the caller
         raise TryNext
 
@@ -493,9 +493,9 @@ class LeoPluginsController:
         be loaded from outside the leo/plugins directory.
         """
 
-        def pr(*args: Args, **keywords: Keywords) -> None:
+        def pr(*args, **kwargs) -> None:
             if not g.unitTesting:
-                g.es_print(*args, **keywords)
+                g.es_print(*args, **kwargs)
 
         s = g.app.config.getEnabledPlugins()
         if not s:
@@ -606,7 +606,6 @@ class LeoPluginsController:
             return None
         if moduleOrFileName.startswith('@'):
             report(f"ignoring Leo directive: {moduleOrFileName}")
-            # Return None, not False, to keep pylint happy.
             # Allow Leo directives in @enabled-plugins nodes.
             return None
         moduleName = self.regularizeName(moduleOrFileName)

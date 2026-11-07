@@ -22,8 +22,6 @@ if TYPE_CHECKING:  # pragma: no cover
 
 # @-<< leoCache imports & annotations >>
 
-# pylint: disable=raise-missing-from
-
 # Abbreviations used throughout.
 abspath = g.os_path_abspath
 basename = g.os_path_basename
@@ -121,7 +119,6 @@ class GlobalCacher:
     def commit_and_close(self) -> None:
         # Careful: self.db may be a dict.
         if hasattr(self.db, 'conn'):
-            # pylint: disable=no-member
             if 'cache' in g.app.debug:
                 self.dump(tag='Shutdown')
             self.db.conn.commit()

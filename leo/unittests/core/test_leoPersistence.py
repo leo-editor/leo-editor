@@ -5,8 +5,6 @@
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 
-assert g
-
 
 # @+others
 # @+node:ekr.20210908171733.2: ** class TestPersistence(LeoUnitTest)

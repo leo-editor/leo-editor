@@ -1132,11 +1132,11 @@ class LeoApp:
         table = (self.setIDFromSys, self.setIDFromFile, self.setIDFromEnv)
         for func in table:
             func(verbose)
-            if self.leoID:
+            if self.leoID:  # type:ignore # ty bug.
                 return self.leoID
         if useDialog:
             self.setIdFromDialog()
-            if self.leoID:
+            if self.leoID:  # type:ignore # ty bug.
                 self.setIDFile()
         return self.leoID
 
@@ -2847,7 +2847,7 @@ class LoadManager:
                 A comma-separated list. Valid values are:
                 abbrev, beauty, cache, coloring, drawing, events, focus,
                 git, gnx, keys, layouts, plugins, save, select, sections,
-                shutdown, size, speed, startup, themes, undo, verbose, zoom.
+                shutdown, size, speed, startup, themes, verbose, zoom.
 
           --trace-binding=KEY   trace commands bound to a key
           --trace-setting=NAME  trace where named setting is set
@@ -2998,7 +2998,6 @@ class LoadManager:
                 'speed',
                 'startup',
                 'themes',
-                'undo',
                 'verbose',
                 'zoom',
             ]
@@ -3440,7 +3439,7 @@ class LoadManager:
             func = g.app.scanner_for_ext(ext)
             p = c.rootPosition()
             p.h = f"@auto {fn}" if func else f"@edit {fn}"
-            c.refreshFromDisk(p)  # pylint: disable=no-member
+            c.refreshFromDisk(p)
 
         c.mFileName = ''  # #3546: Do *not* automatically save the .leo file.
         c.frame.title = c.computeTabTitle()

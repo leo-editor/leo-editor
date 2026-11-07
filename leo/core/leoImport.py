@@ -20,17 +20,14 @@ from leo.core import leoGlobals as g
 try:
     import docutils
     import docutils.core
-
-    assert docutils
-    assert docutils.core
 except ImportError:
-    docutils = None  # type:ignore
+    docutils = None
     g.missing('docutils', tag='leoImport.py')
 try:
     import lxml
     import lxml.html
 except ImportError:
-    lxml = None  # type:ignore
+    lxml = None
 
 # Abbreviation.
 StringIO = io.StringIO

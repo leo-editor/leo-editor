@@ -1538,7 +1538,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
 
     # @+others
     # @+node:ekr.20131115120119.17390: *3* qt_base_tab.__init__
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, *args: Any, **kwargs) -> None:
         # Called from frameFactory.createMaster.
         self.factory = kwargs.get('factory')
         if self.factory:

@@ -47,8 +47,7 @@ import urllib.parse as urlparse
 import webbrowser
 
 # Leo never imports any other Leo module.
-# PR #4772: add this import statement.
-from leo.core import leoGlobals as g  # pylint: disable=import-self
+from leo.core import leoGlobals as g
 
 try:
     import tkinter as Tk
@@ -500,7 +499,7 @@ class Command:
     g can *not* be used anywhere in this class!
     """
 
-    def __init__(self, name: str, **kwargs: KWargs) -> None:
+    def __init__(self, name: str, **kwargs) -> None:
         """Ctor for command decorator class."""
         self.name = name
 
@@ -553,7 +552,7 @@ class CommanderCommand:
     g can *not* be used anywhere in this class!
     """
 
-    def __init__(self, name: str, **kwargs: KWargs) -> None:
+    def __init__(self, name: str, **kwargs) -> None:
         """Ctor for command decorator class."""
         self.name = name
 
@@ -821,7 +820,7 @@ class Bunch:
                 point.isok = True
     """
 
-    def __init__(self, **kwargs: KWargs) -> None:
+    def __init__(self, **kwargs) -> None:
         self.__dict__.update(kwargs)
 
     def __repr__(self) -> str:
@@ -1566,7 +1565,7 @@ class MatchBrackets:
         """Find the bracket matching s[i] for self.language."""
         self.forward = ch1 in self.open_brackets
         # Find the character matching the initial bracket.
-        for n in range(len(self.brackets)):  # pylint: disable=consider-using-enumerate
+        for n in range(len(self.brackets)):
             if ch1 == self.brackets[n]:
                 target = self.matching_brackets[n]
                 break
@@ -2309,10 +2308,10 @@ tracing_tags: dict[int, str] = {}  # Keys are id's, values are tags.
 class NullObject:
     """An object that does nothing, and does it very well."""
 
-    def __init__(self, ivars: list[str] | None = None, *args: Args, **kwargs: KWargs) -> None:
+    def __init__(self, ivars: list[str] | None = None, *args, **kwargs) -> None:
         pass
 
-    def __call__(self, *args: Args, **kwargs: KWargs) -> NullObject:
+    def __call__(self, *args, **kwargs) -> NullObject:
         return self
 
     def __repr__(self) -> str:
@@ -2361,12 +2360,10 @@ class NullObject:
 class TracingNullObject:
     """Tracing NullObject."""
 
-    def __init__(
-        self, tag: str, ivars: list[str] | None = None, *args: Args, **kwargs: KWargs
-    ) -> None:
+    def __init__(self, tag: str, ivars: list[str] | None = None, *args, **kwargs) -> None:
         tracing_tags[id(self)] = tag  # noqa  # conflict between flake8 and black.
 
-    def __call__(self, *args: Args, **kwargs: KWargs) -> TracingNullObject:
+    def __call__(self, *args, **kwargs) -> TracingNullObject:
         return self
 
     def __repr__(self) -> str:
@@ -2397,7 +2394,6 @@ class TracingNullObject:
 
     def __getitem__(self, key: str) -> None:
         g.null_object_print(id(self), '__getitem__')
-        # pylint doesn't like trailing return None.
 
     def __iter__(self) -> TracingNullObject:
         g.null_object_print(id(self), '__iter__')
@@ -2413,11 +2409,10 @@ class TracingNullObject:
 
     def __setitem__(self, key: str, val: Value) -> None:
         g.null_object_print(id(self), '__setitem__')
-        # pylint doesn't like trailing return None.
 
 
 # @+node:ekr.20190330072832.1: *4* g.null_object_print
-def null_object_print(id_: int, kind: str, *args: Args) -> None:
+def null_object_print(id_: int, kind: str, *args) -> None:
     tag = tracing_tags.get(id_, "<NO TAG>")
     callers = g.callers(3).split(',')
     callers_s = ','.join(callers[:-1])
@@ -2446,7 +2441,7 @@ class TestLeoGlobals(unittest.TestCase):
     # @+others
     # @+node:ekr.20200219071958.1: *4* TestLeoGlobals.test_comment_delims_from_extension
     def test_comment_delims_from_extension(self) -> None:
-        from leo.core import leoGlobals as leo_g  # pylint: disable=import-self,reimported
+        from leo.core import leoGlobals as leo_g
         from leo.core import leoApp
 
         leo_g.app = leoApp.LeoApp()
@@ -2456,7 +2451,7 @@ class TestLeoGlobals(unittest.TestCase):
 
     # @+node:ekr.20200219072957.1: *4* TestLeoGlobals.test_is_sentinel
     def test_is_sentinel(self) -> None:
-        from leo.core import leoGlobals as leo_g  # pylint: disable=import-self,reimported
+        from leo.core import leoGlobals as leo_g
 
         # Python. Test regular and blackened sentinels.
         py_delims = leo_g.comment_delims_from_extension('.py')
@@ -2893,7 +2888,6 @@ def pdb(message: str = '') -> None:
             pass
     if message:
         print(message)
-    # pylint: disable=forgotten-debug-statement
     breakpoint()  # New in Python 3.7.
 
 
@@ -4340,7 +4334,6 @@ def findRootsWithPredicate(
     roots = []
     if predicate is None:
         # A useful default predicate for python.
-        # pylint: disable=function-redefined
 
         def predicate(p: Position) -> bool:
             headline = p.h.strip()
@@ -5344,7 +5337,6 @@ def getModifiedFiles(repo_path: str) -> list[str]:
     os.chdir(repo_path)
     try:
         # We are not checking the return code here, so:
-        # pylint: disable=subprocess-run-check
         result = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
         if result.returncode != 0:
             print("Error running git command")
@@ -5491,7 +5483,6 @@ def dummy_act_on_node(c: Cmdr, p: Position, event: QEvent) -> None:
     pass
 
 
-# This dummy definition keeps pylint happy.
 # Plugins can change this.
 
 act_on_node = dummy_act_on_node
@@ -5501,7 +5492,7 @@ contentModifiedSet: set[VNode] = set()
 
 
 # @+node:ekr.20031218072017.1596: *3* g.doHook
-def doHook(tag: str, *args: Args, **kwargs: KWargs) -> Any:
+def doHook(tag: str, *args, **kwargs) -> Any:
     """
     This global function calls a hook routine. Hooks are identified by the
     tag param.
@@ -5530,7 +5521,6 @@ def doHook(tag: str, *args: Args, **kwargs: KWargs) -> Any:
         return None
     # Get the hook handler function.  Usually this is doPlugins.
     c = kwargs.get("c")
-    # pylint: disable=consider-using-ternary
     f = (c and c.hookFunction) or g.app.hookFunction
     if not f:
         assert g.app.pluginsController
@@ -5626,7 +5616,7 @@ def disableIdleTimeHook() -> None:
 
 
 # @+node:EKR.20040602125018: *3* g.enableIdleTimeHook
-def enableIdleTimeHook(*args: Args, **kwargs: KWargs) -> None:
+def enableIdleTimeHook(*args, **kwargs) -> None:
     """Enable idle-time processing."""
     g.app.idle_time_hooks_enabled = True
 
@@ -6454,33 +6444,33 @@ def enl(tabName: str = 'Log') -> None:
 # PR #4827
 
 
-def blue(*args: Args, **kwargs: Any) -> None:
+def blue(*args, **kwargs) -> None:
     kwargs['color'] = 'blue'
     g.es_print(*args, **kwargs)
 
 
-def error(*args: Args, **kwargs: KWargs) -> None:
+def error(*args, **kwargs) -> None:
     kwargs['color'] = 'error'
     g.es_print(*args, **kwargs)
 
 
-def note(*args: Args, **kwargs: KWargs) -> None:
+def note(*args, **kwargs) -> None:
     kwargs['color'] = 'note'
     g.es_print(*args, **kwargs)
 
 
-def red(*args: Args, **kwargs: KWargs) -> None:
+def red(*args, **kwargs) -> None:
     kwargs['color'] = 'red'
     g.es_print(*args, **kwargs)
 
 
-def warning(*args: Args, **kwargs: KWargs) -> None:
+def warning(*args, **kwargs) -> None:
     kwargs['color'] = 'warning'
     g.es_print(*args, **kwargs)
 
 
 # @+node:ekr.20070626132332: *3* g.es
-def es(*args: Args, **kwargs: KWargs) -> None:
+def es(*args, **kwargs) -> None:
     """Put all non-keyword args to the log pane.
     The first, third, fifth, etc. arg translated by g.translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
@@ -6542,14 +6532,14 @@ def es_dump(s: str, n: int = 30, title: str = '') -> None:
 
 
 # @+node:ekr.20031218072017.3110: *3* g.es_error & es_print_error
-def es_error(*args: Args, **kwargs: KWargs) -> None:
+def es_error(*args, **kwargs) -> None:
     color = kwargs.get('color')
     if not color and g.app.config:
         kwargs['color'] = g.app.config.getColor("log-error-color") or 'red'
     g.es(*args, **kwargs)
 
 
-def es_print_error(*args: Args, **kwargs: KWargs) -> None:
+def es_print_error(*args, **kwargs) -> None:
     color = kwargs.get('color')
     if not color and g.app and g.app.config:
         kwargs['color'] = g.app.config.getColor("log-error-color") or 'red'
@@ -6591,7 +6581,7 @@ def es_exception_type(color: str = "red") -> None:  # PR #4772: remove unused c 
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
 
-def es_print(*args: Args, **kwargs: KWargs) -> None:
+def es_print(*args, **kwargs) -> None:
     """
     Print all non-keyword args, and put them to the log pane.
 
@@ -6604,7 +6594,7 @@ def es_print(*args: Args, **kwargs: KWargs) -> None:
 
 
 # @+node:ekr.20050707065530: *3* g.es_trace
-def es_trace(*args: Args, **kwargs: KWargs) -> None:
+def es_trace(*args, **kwargs) -> None:
     if args:
         try:
             s = args[0]
@@ -6742,7 +6732,7 @@ def missing(s: str, tag: str = '') -> None:
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
 
-def pr(*args: Args, **kwargs: KWargs) -> None:
+def pr(*args, **kwargs) -> None:
     """
     Print all non-keyword args. This is a wrapper for the print statement.
 
@@ -6872,7 +6862,7 @@ def printStack() -> None:
 
 
 # @+node:ekr.20031218072017.2317: *3* g.trace
-def trace(*args: Args, **kwargs: KWargs) -> None:
+def trace(*args, **kwargs) -> None:
     """Print the name of the calling function followed by all the args."""
     name = g._callerName(2)
     if name.endswith(".pyc"):
@@ -7236,7 +7226,7 @@ def issueSecurityWarning(setting: str) -> None:
 # From the Python cookbook.
 
 
-def makeDict(**kwargs: KWargs) -> dict:
+def makeDict(**kwargs) -> dict:
     """Returns a Python dictionary from using the optional keyword arguments."""
     return kwargs
 
@@ -7447,7 +7437,7 @@ def os_path_isfile(path: str) -> bool:
 
 
 # @+node:ekr.20031218072017.2154: *3* g.os_path_join
-def os_path_join(*args: Args, **kwargs: KWargs) -> str:
+def os_path_join(*args, **kwargs) -> str:
     """
     Wrap os.path.join, *without* finalizing the result.
     """
@@ -8733,7 +8723,7 @@ def openUrlHelper(event: LeoKeyEvent | None = None, url: str = '') -> None:
                 if g.isValidUrl(url):
                     break
         # @-<< look for url >>
-        if not url:
+        if not url:  # type:ignore # ty bug.
             # @+<< look for unl >>
             # @+node:ekr.20220704211851.1: *5* << look for unl >>
             for match in g.unl_regex.finditer(line):
@@ -8743,7 +8733,7 @@ def openUrlHelper(event: LeoKeyEvent | None = None, url: str = '') -> None:
                     g.handleUnl(unl, c)
                     return
             # @-<< look for unl >>
-            if not unl:
+            if not unl:  # type:ignore # ty bug.
                 # @+<< look for gnx >>
                 # @+node:tom.20220328142302.1: *5* << look for gnx >>
                 target = None
