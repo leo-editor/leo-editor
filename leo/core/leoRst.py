@@ -32,7 +32,7 @@ try:
     from docutils import parsers
     from docutils.parsers import rst
 except Exception:
-    docutils = None  # type:ignore
+    docutils = None
     g.missing('docutils', tag='leoRst.py')
 
 # Aliases & traces.
