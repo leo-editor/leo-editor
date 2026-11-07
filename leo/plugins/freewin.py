@@ -913,7 +913,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         # https://doc.qt.io/qt-5/qtwidgets-widgets-codeeditor-example.html
 
         selection = self.editor.ExtraSelection()
-        selection.format.setBackground(hl_color)  # type:ignore
+        selection.format.setBackground(hl_color)
         selection.format.setProperty(FullWidthSelection, True)
         selection.cursor = curs
         selection.cursor.clearSelection()
