@@ -411,7 +411,7 @@ class EnchantWrapper(BaseSpellWrapper):
         self.language = language
 
     # @+node:ekr.20180207102856.1: *3* enchant.open_dict_file
-    def open_dict_file(self, fn: str) -> SpellDict:  # A pyenchant dict or a DefaultDict.
+    def open_dict_file(self, fn: str) -> dict | SpellDict:  # A pyenchant dict or a DefaultDict.
         """Open or create the dict with the given fn."""
         language = self.language
         if not fn or not language:
