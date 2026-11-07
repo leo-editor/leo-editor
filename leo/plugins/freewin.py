@@ -859,8 +859,8 @@ class ZEditorWin(QtWidgets.QMainWindow):
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
-        self.render_pane_type = c.config.getString('fw-render-pane') or ''  # type: ignore [attr-defined]
-        self.copy_html = c.config.getBool('fw-copy-html', default=False)  # type: ignore [attr-defined]
+        self.render_pane_type = c.config.getString('fw-render-pane') or ''
+        self.copy_html = c.config.getBool('fw-copy-html', default=False)
 
     # @+node:tom.20240811185426.1: *3* fw.calcHiliteColor
     # @@language python
@@ -913,7 +913,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         # https://doc.qt.io/qt-5/qtwidgets-widgets-codeeditor-example.html
 
         selection = self.editor.ExtraSelection()
-        selection.format.setBackground(hl_color)  # type:ignore
+        selection.format.setBackground(hl_color)
         selection.format.setProperty(FullWidthSelection, True)
         selection.cursor = curs
         selection.cursor.clearSelection()

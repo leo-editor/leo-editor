@@ -5,7 +5,7 @@ import sys
 try:
     import pytest
 except Exception:
-    pytest = None  # type:ignore
+    pytest = None
     g.missing('pytest')
 
 if pytest:

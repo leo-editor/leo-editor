@@ -13,7 +13,7 @@ from leo.core.leoTest2 import create_app, LeoUnitTest
 try:
     import pygments
 except ImportError:
-    pygments = None  # type:ignore
+    pygments = None
 
 
 # @+others

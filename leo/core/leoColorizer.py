@@ -21,7 +21,7 @@ try:
     import pygments
     from pygments.lexer import DelegatingLexer, RegexLexer, _TokenType, Text, Error
 except ImportError:
-    pygments = None  # type:ignore
+    pygments = None
 
 # Leo imports...
 from leo.core import leoGlobals as g
@@ -81,7 +81,7 @@ _url_bearing_tags = frozenset(
 def make_colorizer(c: Cmdr, widget: QWidget) -> JEditColorizer | PygmentsColorizer:
     """Return an instance of JEditColorizer or PygmentsColorizer."""
     if c.config.getBool('use-pygments', default=False):
-        if pygments:  # type:ignore
+        if pygments:
             return PygmentsColorizer(c, widget)
         if not g.unitTesting:
             g.es_print('ignoring @bool use-pygments', color='red')
@@ -3841,7 +3841,7 @@ class QScintillaColorizer(BaseColorizer):
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-if pygments:  # type:ignore
+if pygments:
     # @+others
     # @+node:ekr.20190320062624.2: *3* RegexLexer.get_tokens_unprocessed
     # Copyright (c) Jupyter Development Team.
@@ -3934,7 +3934,7 @@ if pygments:  # type:ignore
 
             syntax_stack = tuple('root')
 
-            def __init__(self, **kwargs: KWargs) -> None:
+            def __init__(self, **kwargs) -> None:
                 for key, value in kwargs.items():
                     setattr(self, key, value)
                 super().__init__()

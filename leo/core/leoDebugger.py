@@ -1,8 +1,5 @@
 # @+leo-ver=5-thin
 # @+node:ekr.20130302121602.10208: * @file leoDebugger.py
-# Disable all mypy errors.
-# type:ignore
-
 # @+<< leoDebugger.py docstring >>
 # @+node:ekr.20181006100710.1: ** << leoDebugger.py docstring >>
 """
@@ -168,8 +165,8 @@ class Xdb(pdb.Pdb, threading.Thread):
         # Init the base classes.
         threading.Thread.__init__(self)
         super().__init__(
-            stdin=stdin_q,
-            stdout=stdout_q,
+            stdin=stdin_q,  # ty:ignore
+            stdout=stdout_q,  # ty:ignore
             readrc=False,  # Don't read a .rc file.
         )
         sys.stdout = stdout_q
@@ -185,7 +182,7 @@ class Xdb(pdb.Pdb, threading.Thread):
         try:
             if g.python_version_tuple >= (3, 14, 0):  # Python 3.14+
                 return pdb.Pdb.checkline(self, path, n, module_globals=module_globals)
-            return pdb.Pdb.checkline(self, path, n)
+            return pdb.Pdb.checkline(self, path, n)  # ty:ignore
         except AttributeError:
             return False
         except Exception:
@@ -254,7 +251,7 @@ class Xdb(pdb.Pdb, threading.Thread):
             try:
                 bp = self.get_bpbynumber(i)
             except ValueError as err:
-                self.error(err)
+                self.error(str(err))
             else:
                 self.clear_bpbynumber(i)
                 self.message(f"Deleted {bp}")

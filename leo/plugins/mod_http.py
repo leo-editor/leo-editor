@@ -228,7 +228,7 @@ try:
     import asynchat
     import asyncore
 except Exception:
-    asynchat = asyncore = None  # type:ignore
+    asynchat = asyncore = None
 import http.server
 import json
 from typing import Any, cast
