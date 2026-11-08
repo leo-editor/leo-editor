@@ -529,45 +529,6 @@ class TestContextUndo(LeoUnitTest):
             self.assertEqual(w.getSelectionRange(), (2, 4))
             self.assertEqual(w.getInsertPoint(), 4)
 
-    # @+node:ekr.20261014103254.28: *3* TestContextUndo.test_typing_granularity_and_save_boundary
-    def test_typing_granularity_and_save_boundary(self):
-        c = self.c
-        p = c.p
-        u = c.undoer
-
-        def _run_test_typing_granularity_and_save_boundary(granularity):
-            p.b = ''
-            u.clearUndoState()
-            c.clearChanged()
-            if hasattr(u, 'granularity'):
-                u.granularity = granularity
-            for old, new in (('', 'a'), ('a', 'ab')):
-                w = c.frame.body.wrapper
-                w.setAllText(new)
-                oldSel = (len(old), len(old))
-                newSel = (len(new), len(new))
-                w.setSelectionRange(*newSel)
-                u.type_text(p, old, new, newInsert=len(new), oldSel=oldSel, newSel=newSel)
-            self.assertEqual(len(u.beads), 2 if granularity == 'char' else 1)
-            u.undo()
-            self.assertEqual(p.b, 'a' if granularity == 'char' else '')
-            u.redo()
-            c.clearChanged()
-            w.setAllText('abc')
-            w.setSelectionRange(3, 3)
-            u.type_text(p, 'ab', 'abc', newInsert=3, oldSel=(2, 2), newSel=(3, 3))
-            self.assertEqual(len(u.beads), 3 if granularity == 'char' else 2)
-            u.undo()
-            self.assertEqual(p.b, 'ab')
-            self.assertTrue(c.changed)
-
-        if hasattr(u, 'granularity'):
-            for granularity in ('char', 'line', 'word', 'node'):
-                with self.subTest(granularity=granularity):
-                    _run_test_typing_granularity_and_save_boundary(granularity)
-        else:
-            _run_test_typing_granularity_and_save_boundary('word')
-
     # @+node:ekr.20261014103254.27: *3* TestContextUndo.test_typing_preserves_text_mark_and_newlines
     def test_typing_preserves_text_mark_and_newlines(self):
         c = self.c

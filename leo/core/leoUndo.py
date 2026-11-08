@@ -48,7 +48,7 @@ class UndoBead:
         'undo_finishers',
         'undo_functions',
         'undoer',
-        'word_boundary',  # For TypingBead
+        'word_boundary',
     )
 
     # @-<< UndoBead: slots >>
@@ -214,7 +214,7 @@ class TypingBead(UndoBead):
         scroll: int | None,
     ) -> None:
         """Init a new Typing bead when a new bead is needed."""
-        super().__init__(undoer)
+        super().__init__(undoer)  # Clears self.word_boundary
         self.command_name = self.undoType = 'Typing'
         self.p = p.copy()
         self.old_sel = old_sel
@@ -516,7 +516,6 @@ class Undoer:
             not isinstance(bead, TypingBead)  # Intervening command.
             or u.bead != len(u.beads) - 1     # Previous undo.
             or bead.p.v != p.v                # Changed node.
-            or not c.changed                  # For unit tests.
         ):  # fmt: skip
             return False
 
