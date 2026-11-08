@@ -446,7 +446,10 @@ class Undoer:
         newInsert = newInsert if newInsert is not None else w.getInsertPoint()
         scroll = oldYview if oldYview is not None else w.getYScrollPosition()
         b = u.peekBead(u.bead)
-        if u._can_merge(oldText=oldText, newText=newText, oldSel=oldSel, newSel=newSel):
+        if not isinstance(b, TypingBead):
+            ### Experimental
+            u.pushBead(TypingBead(u, p, oldText, newText, oldSel, newSel, newInsert, scroll))
+        elif u._can_merge(oldText=oldText, newText=newText, oldSel=oldSel, newSel=newSel):
             assert isinstance(b, TypingBead)
             b.new_sel, b.new_ins = newSel, newInsert
             oldText = b.replace_middle(oldText, b.old_lines)
@@ -523,24 +526,21 @@ class Undoer:
         p = c.p
 
         def trace(s: str) -> None:
-            if True and not g.unitTesting:
+            if not g.unitTesting:
                 g.trace(s)
 
-        # Disqualifying conditions, part 1.
-        if not isinstance(bead, TypingBead):
-            if isinstance(bead, UndoBead):
-                trace(f"UndoBead {bead.undoType=}")
-            else:
-                trace(f"Not a TypingBead: {bead.__class__.__name__}")
-            return False
         if not u.beads or u.bead != len(u.beads) - 1:
             trace('Previous undo')
             return False
         if bead.p.v != p.v:
             trace('New node')
             return False
+        if oldText.count('\n') != newText.count('\n'):
+            trace('Inserted/deleted lines')
+            return False
+        return True  # revert to line granularity
 
-        # Disqualifying conditions, part 2. Calling split_patch is expensive.
+        # Disqualifying conditions, part 3. Calling split_patch is expensive.
         leading, trailing, old_lines, new_lines = split_patch(oldText, newText)
         try:
             new_s = new_lines[0]
