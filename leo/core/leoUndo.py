@@ -33,7 +33,7 @@ def cmd(name: str) -> Callable:
 
 
 # @+others
-# @+node:ekr.20261108045138.1: ** function: split_patch
+# @+node:ekr.20261108045138.1: ** function: split_patch (leave alone??)
 def split_patch(old_text: str, new_text: str) -> tuple[int, int, list[str], list[str]]:
     old, new = old_text.split('\n'), new_text.split('\n')
     leading = 0
@@ -221,18 +221,17 @@ class TypingBead(UndoBead):
     # @+node:ekr.20261108044128.1: *3* << TypingBead: slots >>
     __slots__ = (
         # Only the *additional* ivars of the TypingBead class.
-        'leading',      ### To be deleted.
+        'leading',   # *Might* be deleted.
         'marked',
         'new_ins',
-        'new_lines',    ### To be deleted.
-        'new_sel',      ### To be deleted.
-        'old_line_number',  ### New
-        'old_lines',    ### To be deleted.
+        'new_lines', # Can *not* be deleted.
+        'new_sel',
+        'old_lines', # Can *not* be deleted.
         'old_p',
-        'old_sel',      ### To be deleted.
+        'old_sel',
         'p',
         'scroll',
-        'trailing',     ### To be deleted.
+        'trailing',  # *Might* be deleted.
     )  # fmt: skip
     # @-<< TypingBead: slots >>
 
@@ -259,6 +258,7 @@ class TypingBead(UndoBead):
         tb.new_ins = new_ins
         tb.scroll = scroll
         tb.marked = p.isMarked()
+        ### It might be possible to delete tb.leading/tb.trailing
         tb.leading, tb.trailing, tb.old_lines, tb.new_lines = split_patch(old_text, new_text)
 
     # @+node:ekr.20261014100625.3: *3* TypingBead.replace_middle
@@ -449,9 +449,12 @@ class Undoer:
         b = u.peekBead(u.bead)
         if u._can_merge(oldText=oldText, newText=newText, oldSel=oldSel, newSel=newSel):
             assert isinstance(b, TypingBead)
+            b.replace_middle(oldText, b.old_lines)
+            ###
             oldText = b.replace_middle(oldText, b.old_lines)
-            b.leading, b.trailing, b.old_lines, b.new_lines = split_patch(oldText, newText)
-            b.new_sel, b.new_ins = newSel, newInsert
+            ### b.leading, b.trailing, b.old_lines, b.new_lines = split_patch(oldText, newText)
+            b.leading, b.trailing, b.old_lines, _ = split_patch(oldText, newText)
+            # b.new_sel, b.new_ins = newSel, newInsert
         else:
             u.pushBead(TypingBead(u, p, oldText, newText, oldSel, newSel, newInsert, scroll))
         p.v.b = newText  # Do **not** use p.b = newText!!!
@@ -518,7 +521,6 @@ class Undoer:
         Return True if we should merge changes into the previous UndoTyping node.
         """
         u = self
-        trace = not g.unitTesting  ###
         bead = u.peekBead(u.bead)
         assert bead is None or isinstance(bead, UndoBead), repr(bead)
         c = u.c
@@ -527,42 +529,15 @@ class Undoer:
             not isinstance(bead, TypingBead)              # Intervening command.
             or u.bead != len(u.beads) - 1                 # Previous undo.
             or bead.p.v != p.v                            # Changed node.
-            or oldText.count('\n') != newText.count('\n') # Inserted or deleted lines.
+            or oldText.count('\n') != newText.count('\n') # Inserted/deleted lines.
         ):  # fmt: skip
+            if not g.unitTesting:
+                g.trace('False!')
             return False
-
-        # All lines *except* the current line must match.
-        leading, trailing, _, _ = split_patch(oldText, newText)
-        if (leading, trailing) != (bead.leading, bead.trailing):
-            return False
-
-        # The selection ranges must match.
-        if bead.new_sel is None:
-            return False
-        old_start, old_end = oldSel
-        new_start, new_end = newSel
-        if old_start != old_end or new_start != new_end:
-            return False
-
-        # The position of the lines must match.
-        old_row, old_col = g.convertPythonIndexToRowCol(oldText, old_start)
-        new_row, new_col = g.convertPythonIndexToRowCol(newText, new_start)
-        prev_row, prev_col = g.convertPythonIndexToRowCol(oldText, bead.new_sel[0])
-        if (
-            old_col == 0
-            or new_col == 0
-            or old_row != new_row
-            or abs(new_col - prev_col) != 1
-        ):  # fmt: skip
-            return False
-
-        # We must not be starting a new word.
-        old_ch = oldText[old_start - 1]
-        new_ch = newText[new_start - 1]
-        can_merge = not (not old_ch.isspace() and new_ch.isspace())
-        if trace:  ###
-            g.trace(can_merge)
-        return can_merge
+        ### Revert to 'line' granularity, for now
+        if not g.unitTesting:
+            g.trace('True!')
+        return True
 
     # @+node:ekr.20031218072017.2039: *4* u.undo
     @cmd('undo')
