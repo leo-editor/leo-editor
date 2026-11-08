@@ -526,6 +526,21 @@ class Undoer:
             if True and not g.unitTesting:
                 g.trace(s)
 
+        # Memory leak! Define vars here, for tracing.
+        leading, trailing, old_lines, new_lines = split_patch(oldText, newText)
+        old_s, new_s = old_lines[0], new_lines[0]
+        old_start, new_start = oldSel[0], newSel[0]
+        try:
+            old_ch = old_s[old_start - 1]
+        except IndexError:
+            old_ch = ''
+        try:
+            new_ch = new_s[new_start - 1]
+        except IndexError:
+            new_ch = ''
+        trace(f"True: {old_ch=} {new_ch=} {new_s=}")
+
+        # Disqualifying conditions.
         if not isinstance(bead, TypingBead):
             trace('Not TypingBead')
             return False
@@ -539,27 +554,15 @@ class Undoer:
             trace('Inserted/deleted lines')
             return False
 
-        leading, trailing, old_lines, new_lines = split_patch(oldText, newText)
+        # Return true if we are continuing a word.
         if (leading, trailing) != (bead.leading, bead.trailing):
             trace('False: leading/trailing')
             return False
         if len(old_lines) != 1 or len(new_lines) != 1:
             trace('False: multi-lines')
             return False
-        old_s = old_lines[0]
-        new_s = new_lines[0]
-        old_start = oldSel[0]
-        new_start = newSel[0]
-        try:
-            old_ch = old_s[old_start - 1]
-        except IndexError:
-            old_ch = ''
-        try:
-            new_ch = new_s[new_start - 1]
-        except IndexError:
-            new_ch = ''
         if new_ch == ' ':
-            trace(f"True: {old_ch=} {new_ch=}")
+            trace(f"False: {old_ch=} {new_ch=}")
             return False
         trace(f"True: {old_ch=} {new_ch=}")
         return True
