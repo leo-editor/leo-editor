@@ -409,7 +409,7 @@ class Undoer:
         u.bead += 1
         u.setUndoTypes()
 
-    # @+node:vivainio.202610110002.2: *4* u.type_text and helper
+    # @+node:vivainio.202610110002.2: *4* u.type_text and helpers
     def type_text(
         self,
         p: Position,
@@ -494,6 +494,61 @@ class Undoer:
             c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
             c.recolor()
             w.setFocus()
+
+    # @+node:ekr.20261102022551.1: *5* u._can_merge
+    def _can_merge(
+        self,
+        *,
+        oldSel: tuple[int, int],
+        oldText: str,
+        newSel: tuple[int, int],
+        newText: str,
+    ) -> bool:
+        """
+        Return True if we should merge changes into the previous UndoTyping node.
+        """
+        u = self
+        bead = u.peekBead(u.bead)
+        assert bead is None or isinstance(bead, UndoBead), repr(bead)
+        c = u.c
+        p = c.p
+        if (
+            not isinstance(bead, TypingBead)  # Intervening command.
+            or u.bead != len(u.beads) - 1     # Previous undo.
+            or bead.p.v != p.v                # Changed node.
+            or not c.changed                  # For unit tests.
+        ):  # fmt: skip
+            return False
+
+        # All lines *except* the current line must match.
+        leading, trailing, _, _ = TypingBead.split_patch(oldText, newText)
+        if (leading, trailing) != (bead.leading, bead.trailing):
+            return False
+
+        # The selection ranges must match.
+        if bead.new_sel is None:
+            return False
+        old_start, old_end = oldSel
+        new_start, new_end = newSel
+        if old_start != old_end or new_start != new_end:
+            return False
+
+        # The position of the lines must match.
+        old_row, old_col = g.convertPythonIndexToRowCol(oldText, old_start)
+        new_row, new_col = g.convertPythonIndexToRowCol(newText, new_start)
+        prev_row, prev_col = g.convertPythonIndexToRowCol(oldText, bead.new_sel[0])
+        if (
+            old_col == 0
+            or new_col == 0
+            or old_row != new_row
+            or abs(new_col - prev_col) != 1
+        ):  # fmt: skip
+            return False
+
+        # We must not be starting a new word.
+        old_ch = oldText[old_start - 1]
+        new_ch = newText[new_start - 1]
+        return not (not old_ch.isspace() and new_ch.isspace())
 
     # @+node:ekr.20031218072017.2039: *4* u.undo
     @cmd('undo')
@@ -1134,61 +1189,6 @@ class Undoer:
                 raise AssertionError("Missing call to u.set_command_name")
             # Record partial mutations even if the command raised an exception.
             u.pushBead(b)
-
-    # @+node:ekr.20261102022551.1: *4* u._can_merge
-    def _can_merge(
-        self,
-        *,
-        oldSel: tuple[int, int],
-        oldText: str,
-        newSel: tuple[int, int],
-        newText: str,
-    ) -> bool:
-        """
-        Return True if we should merge changes into the previous UndoTyping node.
-        """
-        u = self
-        bead = u.peekBead(u.bead)
-        assert bead is None or isinstance(bead, UndoBead), repr(bead)
-        c = u.c
-        p = c.p
-        if (
-            not isinstance(bead, TypingBead)  # Intervening command.
-            or u.bead != len(u.beads) - 1     # Previous undo.
-            or bead.p.v != p.v                # Changed node.
-            or not c.changed                  # For unit tests.
-        ):  # fmt: skip
-            return False
-
-        # All lines *except* the current line must match.
-        leading, trailing, _, _ = TypingBead.split_patch(oldText, newText)
-        if (leading, trailing) != (bead.leading, bead.trailing):
-            return False
-
-        # The selection ranges must match.
-        if bead.new_sel is None:
-            return False
-        old_start, old_end = oldSel
-        new_start, new_end = newSel
-        if old_start != old_end or new_start != new_end:
-            return False
-
-        # The position of the lines must match.
-        old_row, old_col = g.convertPythonIndexToRowCol(oldText, old_start)
-        new_row, new_col = g.convertPythonIndexToRowCol(newText, new_start)
-        prev_row, prev_col = g.convertPythonIndexToRowCol(oldText, bead.new_sel[0])
-        if (
-            old_col == 0
-            or new_col == 0
-            or old_row != new_row
-            or abs(new_col - prev_col) != 1
-        ):  # fmt: skip
-            return False
-
-        # We must not be starting a new word.
-        old_ch = oldText[old_start - 1]
-        new_ch = newText[new_start - 1]
-        return not (not old_ch.isspace() and new_ch.isspace())
 
     # @+node:vivainio.202610110004.1: *4* u._require_bead
     def _require_bead(self) -> UndoBead:
