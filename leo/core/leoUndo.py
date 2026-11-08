@@ -33,23 +33,6 @@ def cmd(name: str) -> Callable:
 
 
 # @+others
-# @+node:ekr.20261108045138.1: ** function: split_patch
-def split_patch(old_text: str, new_text: str) -> tuple[int, int, list[str], list[str]]:
-    old, new = old_text.split('\n'), new_text.split('\n')
-    leading = 0
-    while leading < min(len(old), len(new)) and old[leading] == new[leading]:
-        leading += 1
-    trailing = 0
-    while trailing < min(len(old), len(new)) - leading and old[-trailing - 1] == new[-trailing - 1]:
-        trailing += 1
-    return (
-        leading,    # The number of leading lines.
-        trailing,   # the number of trailing lines.
-        old[leading : len(old) - trailing], # The old changed lines.
-        new[leading : len(new) - trailing], # The new changed lines.
-    )  # fmt: skip
-
-
 # @+node:ekr.20261005092455.1: ** class UndoBead
 class UndoBead:
     # @+<< UndoBead: slots >>
