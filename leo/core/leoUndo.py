@@ -33,6 +33,23 @@ def cmd(name: str) -> Callable:
 
 
 # @+others
+# @+node:ekr.20261108045138.1: ** function: split_patch
+def split_patch(old_text: str, new_text: str) -> tuple[int, int, list[str], list[str]]:
+    old, new = old_text.split('\n'), new_text.split('\n')
+    leading = 0
+    while leading < min(len(old), len(new)) and old[leading] == new[leading]:
+        leading += 1
+    trailing = 0
+    while trailing < min(len(old), len(new)) - leading and old[-trailing - 1] == new[-trailing - 1]:
+        trailing += 1
+    return (
+        leading,    # The number of leading lines.
+        trailing,   # the number of trailing lines.
+        old[leading : len(old) - trailing], # The old changed lines.
+        new[leading : len(new) - trailing], # The new changed lines.
+    )  # fmt: skip
+
+
 # @+node:ekr.20261005092455.1: ** class UndoBead
 class UndoBead:
     # @+<< UndoBead: slots >>
@@ -232,42 +249,16 @@ class TypingBead(UndoBead):
         scroll: int | None,
     ) -> None:
         """Init a new Typing bead when a new bead is needed."""
-        super().__init__(undoer)  # Clears self.word_boundary
-        self.command_name = self.undoType = 'Typing'
-        self.p = p.copy()
-        self.old_sel = old_sel
-        self.new_sel = new_sel
-        self.new_ins = new_ins
-        self.scroll = scroll
-        self.marked = p.isMarked()
-        # sets self.leading, self.trailing, self.old_lines, self.new_lines
-        self.update_patch(old_text, new_text)
-
-    # @+node:ekr.20261014100625.1: *3* TypingBead.split_patch
-    @staticmethod
-    def split_patch(old_text: str, new_text: str) -> tuple[int, int, list[str], list[str]]:
-        old, new = old_text.split('\n'), new_text.split('\n')
-        leading = 0
-        while leading < min(len(old), len(new)) and old[leading] == new[leading]:
-            leading += 1
-        trailing = 0
-        while (
-            trailing < min(len(old), len(new)) - leading
-            and old[-trailing - 1] == new[-trailing - 1]
-        ):
-            trailing += 1
-        return (
-            leading,    # The number of leading lines.
-            trailing,   # the number of trailing lines.
-            old[leading : len(old) - trailing], # The old changed lines.
-            new[leading : len(new) - trailing], # The new changed lines.
-        )  # fmt: skip
-
-    # @+node:ekr.20261014100625.2: *3* TypingBead.update_patch
-    def update_patch(self, old_text: str, new_text: str) -> None:
-        self.leading, self.trailing, self.old_lines, self.new_lines = self.split_patch(
-            old_text, new_text
-        )
+        tb = self
+        super().__init__(undoer)  # Clears tb.word_boundary
+        tb.command_name = tb.undoType = 'Typing'
+        tb.p = p.copy()
+        tb.old_sel = old_sel
+        tb.new_sel = new_sel
+        tb.new_ins = new_ins
+        tb.scroll = scroll
+        tb.marked = p.isMarked()
+        tb.leading, tb.trailing, tb.old_lines, tb.new_lines = split_patch(old_text, new_text)
 
     # @+node:ekr.20261014100625.3: *3* TypingBead.replace_middle
     def replace_middle(self, text: str, middle: list[str]) -> str:
@@ -454,15 +445,14 @@ class Undoer:
         newSel = newSel if newSel is not None else w.getSelectionRange()
         newInsert = newInsert if newInsert is not None else w.getInsertPoint()
         scroll = oldYview if oldYview is not None else w.getYScrollPosition()
-        bead = u.peekBead(u.bead)
+        b = u.peekBead(u.bead)
         if u._can_merge(oldText=oldText, newText=newText, oldSel=oldSel, newSel=newSel):
-            original = bead.replace_middle(oldText, bead.old_lines)
-            bead.update_patch(original, newText)
-            assert isinstance(bead, TypingBead)
-            bead.new_sel, bead.new_ins = newSel, newInsert
+            assert isinstance(b, TypingBead)
+            oldText = b.replace_middle(oldText, b.old_lines)
+            b.leading, b.trailing, b.old_lines, b.new_lines = split_patch(oldText, newText)
+            b.new_sel, b.new_ins = newSel, newInsert
         else:
-            bead = TypingBead(u, p, oldText, newText, oldSel, newSel, newInsert, scroll)
-            u.pushBead(bead)
+            u.pushBead(TypingBead(u, p, oldText, newText, oldSel, newSel, newInsert, scroll))
         p.v.b = newText  # Do **not** use p.b = newText!!!
         u._update_after_typing(p, w)
 
@@ -539,7 +529,7 @@ class Undoer:
             return False
 
         # All lines *except* the current line must match.
-        leading, trailing, _, _ = TypingBead.split_patch(oldText, newText)
+        leading, trailing, _, _ = split_patch(oldText, newText)
         if (leading, trailing) != (bead.leading, bead.trailing):
             return False
 
