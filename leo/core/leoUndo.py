@@ -449,12 +449,9 @@ class Undoer:
         b = u.peekBead(u.bead)
         if u._can_merge(oldText=oldText, newText=newText, oldSel=oldSel, newSel=newSel):
             assert isinstance(b, TypingBead)
-            b.replace_middle(oldText, b.old_lines)
-            ###
-            oldText = b.replace_middle(oldText, b.old_lines)
-            ### b.leading, b.trailing, b.old_lines, b.new_lines = split_patch(oldText, newText)
-            b.leading, b.trailing, b.old_lines, _ = split_patch(oldText, newText)
             # b.new_sel, b.new_ins = newSel, newInsert
+            oldText = b.replace_middle(oldText, b.old_lines)
+            b.leading, b.trailing, b.old_lines, b.new_lines = split_patch(oldText, newText)
         else:
             u.pushBead(TypingBead(u, p, oldText, newText, oldSel, newSel, newInsert, scroll))
         p.v.b = newText  # Do **not** use p.b = newText!!!
@@ -525,18 +522,28 @@ class Undoer:
         assert bead is None or isinstance(bead, UndoBead), repr(bead)
         c = u.c
         p = c.p
+
+        def trace(s: str) -> None:
+            if not g.unitTesting:
+                g.trace(s)
+
         if (
             not isinstance(bead, TypingBead)              # Intervening command.
             or u.bead != len(u.beads) - 1                 # Previous undo.
             or bead.p.v != p.v                            # Changed node.
             or oldText.count('\n') != newText.count('\n') # Inserted/deleted lines.
         ):  # fmt: skip
-            if not g.unitTesting:
-                g.trace('False!')
+            trace('False: basic tests')
             return False
-        ### Revert to 'line' granularity, for now
-        if not g.unitTesting:
-            g.trace('True!')
+
+        leading, trailing, old_lines, new_lines = split_patch(oldText, newText)
+        if (leading, trailing) != (bead.leading, bead.trailing):
+            trace('False: leading/trailing')
+            return False
+        if len(old_lines) != 1 or len(new_lines) != 1:
+            trace('False: multi-lines')
+            return False
+        trace('True!')
         return True
 
     # @+node:ekr.20031218072017.2039: *4* u.undo
