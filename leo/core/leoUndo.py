@@ -528,19 +528,27 @@ class Undoer:
 
         # Memory leak! Define vars here, for tracing.
         leading, trailing, old_lines, new_lines = split_patch(oldText, newText)
-        old_s, new_s = old_lines[0], new_lines[0]
-        old_start, new_start = oldSel[0], newSel[0]
-
-        ### Wrong.
         try:
-            old_ch = old_s[old_start - 1]
+            new_s = new_lines[0]
         except IndexError:
-            old_ch = ''
+            new_s = ''
         try:
-            new_ch = new_s[new_start - 1]
+            new_ins = newSel[0]
         except IndexError:
-            new_ch = ''
-        trace(f"True: {oldSel=} {newSel=} {old_ch=} {new_ch=} {new_s=}")
+            new_ins = 0
+        try:
+            ch1 = new_s[new_ins - 2]
+        except IndexError:
+            ch1 = ''
+        try:
+            ch2 = new_s[new_ins - 1]
+        except IndexError:
+            ch2 = ''
+        try:
+            ch3 = new_s[new_ins]
+        except IndexError:
+            ch3 = ''
+        trace(f"True: {new_ins=} {ch1=} {ch2=} {ch3=} {new_s=}")
 
         # Disqualifying conditions.
         if not isinstance(bead, TypingBead):
@@ -563,10 +571,8 @@ class Undoer:
         if len(old_lines) != 1 or len(new_lines) != 1:
             trace('False: multi-lines')
             return False
-        if new_ch == ' ':
-            trace(f"False: {old_ch=} {new_ch=}")
-            return False
-        trace(f"True: {old_ch=} {new_ch=}")
+
+        trace('True!')
         return True
 
     # @+node:ekr.20031218072017.2039: *4* u.undo
