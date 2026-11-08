@@ -48,6 +48,7 @@ class UndoBead:
         'undo_finishers',
         'undo_functions',
         'undoer',
+        'word_boundary',  # For TypingBead
     )
 
     # @-<< UndoBead: slots >>
@@ -70,6 +71,7 @@ class UndoBead:
         self.undo_finishers: list[Callable] = []
         self.undo_functions: list[Callable] = []
         self.undoer = undoer
+        self.word_boundary: tuple[int, int] | None = None
 
     # @+node:ekr.20261014182326.1: *3* undoBead.add_redraw_finishers
     def add_redraw_finishers(
