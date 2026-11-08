@@ -526,7 +526,21 @@ class Undoer:
             if True and not g.unitTesting:
                 g.trace(s)
 
-        # Memory leak! Define vars here, for tracing.
+        # Disqualifying conditions, part 1.
+        if not isinstance(bead, TypingBead):
+            if isinstance(bead, UndoBead):
+                trace(f"UndoBead {bead.undoType=}")
+            else:
+                trace(f"Not a TypingBead: {bead.__class__.__name__}")
+            return False
+        if not u.beads or u.bead != len(u.beads) - 1:
+            trace('Previous undo')
+            return False
+        if bead.p.v != p.v:
+            trace('New node')
+            return False
+
+        # Disqualifying conditions, part 2. Calling split_patch is expensive.
         leading, trailing, old_lines, new_lines = split_patch(oldText, newText)
         try:
             new_s = new_lines[0]
@@ -550,21 +564,9 @@ class Undoer:
             ch3 = ''
         trace(f"True: {new_ins=} {ch1=} {ch2=} {ch3=} {new_s=}")
 
-        # Disqualifying conditions.
-        if not isinstance(bead, TypingBead):
-            trace('Not a TypingBead')
-            return False
-        if u.bead != len(u.beads) - 1:
-            trace('Previous undo')
-            return False
-        if bead.p.v != p.v:
-            trace('New node')
-            return False
         if oldText.count('\n') != newText.count('\n'):
             trace('Inserted/deleted lines')
             return False
-
-        # Return true if we are continuing a word.
         if (leading, trailing) != (bead.leading, bead.trailing):
             trace('False: leading/trailing')
             return False
@@ -572,6 +574,7 @@ class Undoer:
             trace('False: multi-lines')
             return False
 
+        # The challenge: return true if we are continuing a word.
         trace('True!')
         return True
 
