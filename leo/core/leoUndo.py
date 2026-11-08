@@ -65,7 +65,6 @@ class UndoBead:
         'undo_finishers',
         'undo_functions',
         'undoer',
-        'word_boundary',
     )
 
     # @-<< UndoBead: slots >>
@@ -88,7 +87,6 @@ class UndoBead:
         self.undo_finishers: list[Callable] = []
         self.undo_functions: list[Callable] = []
         self.undoer = undoer
-        self.word_boundary: tuple[int, int] | None = None
 
     # @+node:ekr.20261014182326.1: *3* undoBead.add_redraw_finishers
     def add_redraw_finishers(
@@ -221,7 +219,6 @@ class TypingBead(UndoBead):
     # @+node:ekr.20261108044128.1: *3* << TypingBead: slots >>
     __slots__ = (
         # Only the *additional* ivars of the TypingBead class.
-        'leading',
         'marked',
         'new_ins',
         'new_lines',
@@ -231,7 +228,6 @@ class TypingBead(UndoBead):
         'old_sel',
         'p',
         'scroll',
-        'trailing',
     )  # fmt: skip
     # @-<< TypingBead: slots >>
 
@@ -250,7 +246,7 @@ class TypingBead(UndoBead):
     ) -> None:
         """Init a new Typing bead when a new bead is needed."""
         tb = self
-        super().__init__(undoer)  # Clears tb.word_boundary
+        super().__init__(undoer)
         tb.command_name = tb.undoType = 'Typing'
         tb.p = p.copy()
         tb.new_sel = new_sel
@@ -260,52 +256,13 @@ class TypingBead(UndoBead):
         tb.old_sel = old_sel
         tb.scroll = scroll
         tb.marked = p.isMarked()
-        ### tb.leading, tb.trailing, tb.old_lines, tb.new_lines = split_patch(old_text, new_text)
-
-    # @+node:ekr.20261014100625.3: *3* TypingBead.replace_middle (to be deleted)
-    def replace_middle(self, text: str, middle: list[str]) -> str:
-        assert False, g.callers()
-        lines = text.split('\n')
-        trailing_lines = lines[-self.trailing :] if self.trailing else []
-        return '\n'.join(lines[: self.leading] + middle + trailing_lines)
-
-    # @+node:ekr.20261014100625.4: *3* TypingBead.do_undo_redo (to be deleted)
-    def do_undo_redo(
-        self,
-        middle: list[str],
-        sel: tuple[int, int] | None,
-        ins: int | None,
-    ) -> None:
-        assert False, g.callers()
-        c = self.c
-        p = self.p
-        if c.p != p:
-            c.selectPosition(p)
-        p.v.b = self.replace_middle(p.b, middle)
-        p.setDirty()
-        if self.marked:
-            c.setMarked(p)
-        else:
-            c.clearMarked(p)
-        w = c.frame.body.wrapper
-        w.setAllText(p.b)
-        if sel is not None:
-            w.setSelectionRange(*sel, insert=ins)
-        w.setYScrollPosition(self.scroll)
-        c.recolor(p)
-        c.setChanged()
 
     # @+node:ekr.20261014100625.5: *3* TypingBead.undo
     def undo(self) -> None:
-        ###
-        # ins = None if self.old_sel is None else self.old_sel[1]
-        # self.do_undo_redo(self.old_lines, self.old_sel, ins)
-        # return
         c = self.c
         p = self.p
         if c.p != p:
             c.selectPosition(p)
-        # p.v.b = self.replace_middle(p.b, middle)
         p.v.b = self.old_lines
         p.setDirty()
         if self.marked:
@@ -314,10 +271,9 @@ class TypingBead(UndoBead):
             c.clearMarked(p)
         w = c.frame.body.wrapper
         w.setAllText(p.b)
-        # if sel is not None:
-        #     w.setSelectionRange(*sel, insert=ins)
         if self.old_sel is not None:
             old_ins = None if self.old_sel is None else self.old_sel[1]
+            # g.trace(f"{self.old_sel=} {old_ins=}")
             w.setSelectionRange(*self.old_sel, insert=old_ins)
         w.setYScrollPosition(self.scroll)
         c.recolor(p)
@@ -325,12 +281,10 @@ class TypingBead(UndoBead):
 
     # @+node:ekr.20261014100625.6: *3* TypingBead.redo
     def redo(self) -> None:
-        ### self.do_undo_redo(self.new_lines, self.new_sel, self.new_ins)
         c = self.c
         p = self.p
         if c.p != p:
             c.selectPosition(p)
-        # p.v.b = self.replace_middle(p.b, middle)
         p.v.b = self.new_lines
         p.setDirty()
         if self.marked:
@@ -339,10 +293,9 @@ class TypingBead(UndoBead):
             c.clearMarked(p)
         w = c.frame.body.wrapper
         w.setAllText(p.b)
-        # if sel is not None:
-        #     w.setSelectionRange(*sel, insert=ins)
         if self.new_sel is not None:
             new_ins = None if self.new_sel is None else self.new_sel[1]
+            # g.trace(f"{self.new_sel=} {new_ins=}")
             w.setSelectionRange(*self.new_sel, insert=new_ins)
         w.setYScrollPosition(self.scroll)
         c.recolor(p)
@@ -494,19 +447,13 @@ class Undoer:
         newInsert = newInsert if newInsert is not None else w.getInsertPoint()
         scroll = oldYview if oldYview is not None else w.getYScrollPosition()
         b = u.peekBead(u.bead)
-        if not isinstance(b, TypingBead):
-            u.pushBead(TypingBead(u, p, oldText, newText, oldSel, newSel, newInsert, scroll))
-        elif u._can_merge(oldText=oldText, newText=newText, oldSel=oldSel, newSel=newSel):
-            # assert isinstance(b, TypingBead)
-            if 1:  # Experimental.
-                ### b.old_lines = newText
-                b.new_lines = newText
-            else:
-                b.new_sel, b.new_ins = newSel, newInsert
-                oldText = b.replace_middle(oldText, b.old_lines)
-                b.leading, b.trailing, b.old_lines, b.new_lines = split_patch(oldText, newText)
+        if u._can_merge(oldText=oldText, newText=newText, oldSel=oldSel, newSel=newSel):
+            assert isinstance(b, TypingBead), repr(b)
+            b.new_lines = newText
+            b.new_sel = newSel
         else:
-            u.pushBead(TypingBead(u, p, oldText, newText, oldSel, newSel, newInsert, scroll))
+            b = TypingBead(u, p, oldText, newText, oldSel, newSel, newInsert, scroll)
+            u.pushBead(b)
         p.v.b = newText  # Do **not** use p.b = newText!!!
         u._update_after_typing(p, w)
 
@@ -580,54 +527,19 @@ class Undoer:
             if not g.unitTesting:
                 g.trace(s)
 
+        if not isinstance(bead, TypingBead):
+            # trace(f"{bead.__class__.__name__=}")
+            return False
         if not u.beads or u.bead != len(u.beads) - 1:
-            trace('Previous undo')
+            # trace('Previous undo')
             return False
         if bead.p.v != p.v:
-            trace('New node')
+            # trace('New node')
             return False
         if oldText.count('\n') != newText.count('\n'):
-            trace('Inserted/deleted lines')
+            # trace('Inserted/deleted lines')
             return False
-        return True  # revert to line granularity
-
-        # # Disqualifying conditions, part 3. Calling split_patch is expensive.
-        # leading, trailing, old_lines, new_lines = split_patch(oldText, newText)
-        # try:
-        #     new_s = new_lines[0]
-        # except IndexError:
-        #     new_s = ''
-        # try:
-        #     new_ins = newSel[0]
-        # except IndexError:
-        #     new_ins = 0
-        # try:
-        #     ch1 = new_s[new_ins - 2]
-        # except IndexError:
-        #     ch1 = ''
-        # try:
-        #     ch2 = new_s[new_ins - 1]
-        # except IndexError:
-        #     ch2 = ''
-        # try:
-        #     ch3 = new_s[new_ins]
-        # except IndexError:
-        #     ch3 = ''
-        # trace(f"True: {new_ins=} {ch1=} {ch2=} {ch3=} {new_s=}")
-
-        # if oldText.count('\n') != newText.count('\n'):
-        #     trace('Inserted/deleted lines')
-        #     return False
-        # if (leading, trailing) != (bead.leading, bead.trailing):
-        #     trace('False: leading/trailing')
-        #     return False
-        # if len(old_lines) != 1 or len(new_lines) != 1:
-        #     trace('False: multi-lines')
-        #     return False
-
-        # # The challenge: return true if we are continuing a word.
-        # trace('True!')
-        # return True
+        return True  # Line granularity.
 
     # @+node:ekr.20031218072017.2039: *4* u.undo
     @cmd('undo')
