@@ -530,6 +530,8 @@ class Undoer:
         leading, trailing, old_lines, new_lines = split_patch(oldText, newText)
         old_s, new_s = old_lines[0], new_lines[0]
         old_start, new_start = oldSel[0], newSel[0]
+
+        ### Wrong.
         try:
             old_ch = old_s[old_start - 1]
         except IndexError:
@@ -538,11 +540,11 @@ class Undoer:
             new_ch = new_s[new_start - 1]
         except IndexError:
             new_ch = ''
-        trace(f"True: {old_ch=} {new_ch=} {new_s=}")
+        trace(f"True: {oldSel=} {newSel=} {old_ch=} {new_ch=} {new_s=}")
 
         # Disqualifying conditions.
         if not isinstance(bead, TypingBead):
-            trace('Not TypingBead')
+            trace('Not a TypingBead')
             return False
         if u.bead != len(u.beads) - 1:
             trace('Previous undo')
