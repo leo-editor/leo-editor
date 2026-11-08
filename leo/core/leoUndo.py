@@ -33,7 +33,7 @@ def cmd(name: str) -> Callable:
 
 
 # @+others
-# @+node:ekr.20261108045138.1: ** function: split_patch (leave alone??)
+# @+node:ekr.20261108045138.1: ** function: split_patch
 def split_patch(old_text: str, new_text: str) -> tuple[int, int, list[str], list[str]]:
     old, new = old_text.split('\n'), new_text.split('\n')
     leading = 0
@@ -221,17 +221,17 @@ class TypingBead(UndoBead):
     # @+node:ekr.20261108044128.1: *3* << TypingBead: slots >>
     __slots__ = (
         # Only the *additional* ivars of the TypingBead class.
-        'leading',   # *Might* be deleted.
+        'leading',
         'marked',
         'new_ins',
-        'new_lines', # Can *not* be deleted.
+        'new_lines',
         'new_sel',
-        'old_lines', # Can *not* be deleted.
+        'old_lines',
         'old_p',
         'old_sel',
         'p',
         'scroll',
-        'trailing',  # *Might* be deleted.
+        'trailing',
     )  # fmt: skip
     # @-<< TypingBead: slots >>
 
@@ -258,7 +258,6 @@ class TypingBead(UndoBead):
         tb.new_ins = new_ins
         tb.scroll = scroll
         tb.marked = p.isMarked()
-        ### It might be possible to delete tb.leading/tb.trailing
         tb.leading, tb.trailing, tb.old_lines, tb.new_lines = split_patch(old_text, new_text)
 
     # @+node:ekr.20261014100625.3: *3* TypingBead.replace_middle
