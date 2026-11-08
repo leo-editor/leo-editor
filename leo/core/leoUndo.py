@@ -221,18 +221,19 @@ class TypingBead(UndoBead):
     # @+node:ekr.20261108044128.1: *3* << TypingBead: slots >>
     __slots__ = (
         # Only the *additional* ivars of the TypingBead class.
-        'leading',
+        'leading',      ### To be deleted.
         'marked',
         'new_ins',
-        'new_lines',
-        'new_sel',
-        'old_lines',
+        'new_lines',    ### To be deleted.
+        'new_sel',      ### To be deleted.
+        'old_line_number',  ### New
+        'old_lines',    ### To be deleted.
         'old_p',
-        'old_sel',
+        'old_sel',      ### To be deleted.
         'p',
         'scroll',
-        'trailing',
-    )
+        'trailing',     ### To be deleted.
+    )  # fmt: skip
     # @-<< TypingBead: slots >>
 
     # @+others
@@ -517,14 +518,16 @@ class Undoer:
         Return True if we should merge changes into the previous UndoTyping node.
         """
         u = self
+        trace = not g.unitTesting  ###
         bead = u.peekBead(u.bead)
         assert bead is None or isinstance(bead, UndoBead), repr(bead)
         c = u.c
         p = c.p
         if (
-            not isinstance(bead, TypingBead)  # Intervening command.
-            or u.bead != len(u.beads) - 1     # Previous undo.
-            or bead.p.v != p.v                # Changed node.
+            not isinstance(bead, TypingBead)              # Intervening command.
+            or u.bead != len(u.beads) - 1                 # Previous undo.
+            or bead.p.v != p.v                            # Changed node.
+            or oldText.count('\n') != newText.count('\n') # Inserted or deleted lines.
         ):  # fmt: skip
             return False
 
@@ -556,7 +559,10 @@ class Undoer:
         # We must not be starting a new word.
         old_ch = oldText[old_start - 1]
         new_ch = newText[new_start - 1]
-        return not (not old_ch.isspace() and new_ch.isspace())
+        can_merge = not (not old_ch.isspace() and new_ch.isspace())
+        if trace:  ###
+            g.trace(can_merge)
+        return can_merge
 
     # @+node:ekr.20031218072017.2039: *4* u.undo
     @cmd('undo')
