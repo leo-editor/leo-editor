@@ -200,6 +200,24 @@ class UndoBead:
 class TypingBead(UndoBead):
     """An incremental text patch, independent of the legacy Undoer ivars."""
 
+    # @+<< TypingBead: slots >>
+    # @+node:ekr.20261108044128.1: *3* << TypingBead: slots >>
+    __slots__ = (
+        # Only the *additional* ivars of the TypingBead class.
+        'leading',
+        'marked',
+        'new_ins',
+        'new_lines',
+        'new_sel',
+        'old_lines',
+        'old_p',
+        'old_sel',
+        'p',
+        'scroll',
+        'trailing',
+    )
+    # @-<< TypingBead: slots >>
+
     # @+others
     # @+node:ekr.20261014100558.1: *3* TypingBead.__init__
     def __init__(
@@ -222,6 +240,7 @@ class TypingBead(UndoBead):
         self.new_ins = new_ins
         self.scroll = scroll
         self.marked = p.isMarked()
+        # sets self.leading, self.trailing, self.old_lines, self.new_lines
         self.update_patch(old_text, new_text)
 
     # @+node:ekr.20261014100625.1: *3* TypingBead.split_patch
@@ -238,11 +257,11 @@ class TypingBead(UndoBead):
         ):
             trailing += 1
         return (
-            leading,
-            trailing,
-            old[leading : len(old) - trailing],
-            new[leading : len(new) - trailing],
-        )
+            leading,    # The number of leading lines.
+            trailing,   # the number of trailing lines.
+            old[leading : len(old) - trailing], # The old changed lines.
+            new[leading : len(new) - trailing], # The new changed lines.
+        )  # fmt: skip
 
     # @+node:ekr.20261014100625.2: *3* TypingBead.update_patch
     def update_patch(self, old_text: str, new_text: str) -> None:
