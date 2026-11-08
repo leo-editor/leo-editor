@@ -425,9 +425,9 @@ class Undoer:
         u = self
         c = u.c
         w = c.frame.body.wrapper
-        newSel = newSel if newSel is not None else w.getSelectionRange()
-        newInsert = newInsert if newInsert is not None else w.getInsertPoint()
-        scroll = oldYview if oldYview is not None else w.getYScrollPosition()
+        newSel = w.getSelectionRange() if newSel is None else newSel
+        newInsert = w.getInsertPoint() if newInsert is None else newInsert
+        scroll = w.getYScrollPosition() if oldYview is None else oldYview
         b = u.peekBead(u.bead)
         if (
             not isinstance(b, TypingBead)
