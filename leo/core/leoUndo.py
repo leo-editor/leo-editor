@@ -245,17 +245,16 @@ class TypingBead(UndoBead):
         scroll: int | None,
     ) -> None:
         """Init a new Typing bead when a new bead is needed."""
-        tb = self
         super().__init__(undoer)
-        tb.command_name = tb.undoType = 'Typing'
-        tb.p = p.copy()
-        tb.new_sel = new_sel
-        tb.new_ins = new_ins
-        tb.new_lines = new_text
-        tb.old_lines = old_text
-        tb.old_sel = old_sel
-        tb.scroll = scroll
-        tb.marked = p.isMarked()
+        self.command_name = self.undoType = 'Typing'
+        self.p = p.copy()
+        self.new_sel = new_sel
+        self.new_ins = new_ins
+        self.new_lines = new_text
+        self.old_lines = old_text
+        self.old_sel = old_sel
+        self.scroll = scroll
+        self.marked = p.isMarked()
 
     # @+node:ekr.20261014100625.5: *3* TypingBead.undo
     def undo(self) -> None:
