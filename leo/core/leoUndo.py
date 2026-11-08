@@ -402,7 +402,7 @@ class Undoer:
         u.bead += 1
         u.setUndoTypes()
 
-    # @+node:vivainio.202610110002.2: *4* u.type_text and helpers
+    # @+node:vivainio.202610110002.2: *4* u.type_text and helper
     def type_text(
         self,
         p: Position,
@@ -429,13 +429,20 @@ class Undoer:
         newInsert = newInsert if newInsert is not None else w.getInsertPoint()
         scroll = oldYview if oldYview is not None else w.getYScrollPosition()
         b = u.peekBead(u.bead)
-        if u._can_merge(oldText=oldText, newText=newText, oldSel=oldSel, newSel=newSel):
-            assert isinstance(b, TypingBead), repr(b)
-            b.new_lines = newText
-            b.new_sel = newSel
-        else:
+        if (
+            not isinstance(b, TypingBead)
+            or not u.beads
+            or u.bead != len(u.beads) - 1
+            or b.p.v != p.v
+            or oldText.count('\n') != newText.count('\n')
+        ):
+            # Can't merge.
             b = TypingBead(u, p, oldText, newText, oldSel, newSel, newInsert, scroll)
             u.pushBead(b)
+        else:
+            # Can merge.
+            b.new_lines = newText
+            b.new_sel = newSel
         p.v.b = newText  # Do **not** use p.b = newText!!!
         u._update_after_typing(p, w)
 
@@ -486,42 +493,6 @@ class Undoer:
             c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
             c.recolor()
             w.setFocus()
-
-    # @+node:ekr.20261102022551.1: *5* u._can_merge
-    def _can_merge(
-        self,
-        *,
-        oldSel: tuple[int, int],
-        oldText: str,
-        newSel: tuple[int, int],
-        newText: str,
-    ) -> bool:
-        """
-        Return True if we should merge changes into the previous UndoTyping node.
-        """
-        u = self
-        bead = u.peekBead(u.bead)
-        assert bead is None or isinstance(bead, UndoBead), repr(bead)
-        c = u.c
-        p = c.p
-
-        def trace(s: str) -> None:
-            if not g.unitTesting:
-                g.trace(s)
-
-        if not isinstance(bead, TypingBead):
-            # trace(f"{bead.__class__.__name__=}")
-            return False
-        if not u.beads or u.bead != len(u.beads) - 1:
-            # trace('Previous undo')
-            return False
-        if bead.p.v != p.v:
-            # trace('New node')
-            return False
-        if oldText.count('\n') != newText.count('\n'):
-            # trace('Inserted/deleted lines')
-            return False
-        return True  # Line granularity.
 
     # @+node:ekr.20031218072017.2039: *4* u.undo
     @cmd('undo')
