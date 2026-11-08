@@ -436,11 +436,11 @@ class Undoer:
             or b.p.v != p.v
             or oldText.count('\n') != newText.count('\n')
         ):
-            # Can't merge.
+            # Can't merge: create a new TypingBead.
             b = TypingBead(u, p, oldText, newText, oldSel, newSel, newInsert, scroll)
             u.pushBead(b)
         else:
-            # Can merge.
+            # Can merge: use the existing TypingBead.
             b.new_lines = newText
             b.new_sel = newSel
         p.v.b = newText  # Do **not** use p.b = newText!!!
