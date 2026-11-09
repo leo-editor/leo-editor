@@ -226,7 +226,6 @@ class TypingBead(UndoBead):
         *,
         old_sel: tuple[int, int],
         old_text: str,
-        scroll: int | None = None,
         w: QTextMixin,
     ) -> None:
         """Init a new Typing bead when a new bead is needed."""
@@ -236,20 +235,21 @@ class TypingBead(UndoBead):
         w_text = w.getAllText()
         w_ins = w.getInsertPoint()
         w_sel = w.getSelectionRange()
+        w_scroll = w.getYScrollPosition()
 
         # Bind ivars.
         self.command_name = self.undoType = 'Typing'
         self.p = p.copy()
         self.line_number = self.compute_line_number(w_ins, w_text)
-        self.new_sel: tuple[int, int] | None = w_sel
-        self.new_ins: int | None = w_ins
+        self.new_sel: tuple[int, int] = w_sel
+        self.new_ins: int = w_ins
         self.new_lines: str = w_text
         self.old_lines = old_text
         self.old_lines_count = old_text.count('\n')
         self.old_sel = old_sel
-        self.scroll: int | None = w.getYScrollPosition()
+        self.scroll: int = w_scroll
         self.marked = p.isMarked()
-        self.w = None
+        self.w = w
 
     # @+node:ekr.20261109034734.1: *3* TypingBead.compute_line_number
     def compute_line_number(self, ins: int, s: str) -> int:
@@ -264,45 +264,67 @@ class TypingBead(UndoBead):
     def undo(self) -> None:
         c = self.c
         p = self.p
-        if c.p != p:
-            c.selectPosition(p)
+        w = self.w
+
+        # Update p's data.
         p.v.b = self.old_lines
         p.setDirty()
         if self.marked:
             c.setMarked(p)
         else:
             c.clearMarked(p)
-        w = c.frame.body.wrapper
+
+        # Update w's data.
         w.setAllText(p.b)
         if self.old_sel is not None:
             old_ins = None if self.old_sel is None else self.old_sel[1]
             # g.trace(f"{self.old_sel=} {old_ins=}")
             w.setSelectionRange(*self.old_sel, insert=old_ins)
-        w.setYScrollPosition(self.scroll)
+        if self.scroll is not None:
+            w.setYScrollPosition(self.scroll)
+
+        # Update global data.
+        if not c.isChanged():
+            c.setChanged()
+        c.redraw(p)
+        c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
         c.recolor(p)
-        c.setChanged()
+
+        # Ensure focus.
+        w.setFocus()
 
     # @+node:ekr.20261014100625.6: *3* TypingBead.redo
     def redo(self) -> None:
         c = self.c
         p = self.p
-        if c.p != p:
-            c.selectPosition(p)
+        w = self.w
+
+        # Update p's data.
         p.v.b = self.new_lines
         p.setDirty()
         if self.marked:
             c.setMarked(p)
         else:
             c.clearMarked(p)
-        w = c.frame.body.wrapper
+
+        # Update w's data.
         w.setAllText(p.b)
         if self.new_sel is not None:
             new_ins = None if self.new_sel is None else self.new_sel[1]
             # g.trace(f"{self.new_sel=} {new_ins=}")
             w.setSelectionRange(*self.new_sel, insert=new_ins)
-        w.setYScrollPosition(self.scroll)
+        if self.scroll is not None:
+            w.setYScrollPosition(self.scroll)
+
+        # Update global data.
+        if not c.isChanged():
+            c.setChanged()
+        c.redraw(p)
+        c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
         c.recolor(p)
-        c.setChanged()
+
+        # Ensure focus.
+        w.setFocus()
 
     # @-others
 
@@ -471,51 +493,40 @@ class Undoer:
 
     # @+node:ekr.20201127035748.1: *5* u._update_after_typing
     def _update_after_typing(self, p: Position, w: QTextMixin) -> None:
-        """
-        Perform all update tasks after changing body text.
-
-        This is ugly, ad-hoc code, but should be done uniformly.
-        """
+        """Update everything after changing body text."""
         c = self.c
-        if g.isTextWrapper(w):
-            # An important, ever-present unit test.
-            if p == c.p:
-                all = w.getAllText()
-                if g.unitTesting:
-                    assert p.b == all, (w, g.callers())
-                elif p.b != all:
-                    g.trace(
-                        f"\np.b != w.getAllText() p: {p.h} \n"
-                        f"w: {w!r} \n{g.callers()}\n"
-                    )  # fmt: skip
-            p.v.insertSpot = ins = w.getInsertPoint()
-            # From u.doTyping.
-            newSel = w.getSelectionRange()
-            if newSel is None:
-                p.v.selectionStart, p.v.selectionLength = (ins, 0)
-            else:
-                i, j = newSel
-                p.v.selectionStart, p.v.selectionLength = (i, j - i)
-        else:
-            if g.unitTesting:
-                assert False, f"Not a text wrapper: {g.callers()}"  # noqa
-            g.trace('Not a text wrapper')
-            p.v.insertSpot = 0
-            p.v.selectionStart, p.v.selectionLength = (0, 0)
+
+        # An ever-present unit test.
+        assert g.isTextWrapper(w), g.callers()
+
+        # Let block.
+        w_text = w.getAllText()
+        w_ins = w.getInsertPoint()
+        w_sel = w.getSelectionRange()
+
+        # Update p's data.
+        if p == c.p:
+            assert p.b == w_text, (w, g.callers())
+        p.v.insertSpot = w_ins
+        i, j = w_sel
+        p.v.selectionStart, p.v.selectionLength = (i, j - i)
         if not p.isDirty():
             p.setDirty()
-        if not c.isChanged():
-            c.setChanged()
 
         # Update icons.
         val = p.computeIcon()
         if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
             p.v.iconVal = val
+
+        # Update global data.
+        if not c.isChanged():
+            c.setChanged()
         if p == c.p:
-            # Recolor the body.
             c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
             c.recolor()
-            w.setFocus()
+
+        # Ensure focus.
+        w.setFocus()
 
     # @+node:ekr.20031218072017.2039: *4* u.undo
     @cmd('undo')
