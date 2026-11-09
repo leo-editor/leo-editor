@@ -1658,39 +1658,38 @@ class EditCommandsClass:
         ins = w.getInsertPoint()
         i, j = oldSel = w.getSelectionRange()
         if wname.startswith('body'):
-            with u.change_node(p, 'backward-delete-char'):
-                tab_width = c.getTabWidth(c.p)
-                if i != j:
-                    w.delete(i, j)
-                    w.setSelectionRange(i, i, insert=i)
-                elif i == 0:
-                    pass
-                elif tab_width > 0:
-                    w.delete(ins - 1)
-                    w.setSelectionRange(ins - 1, ins - 1, insert=ins - 1)
-                else:
-                    # backspace with negative tab_width
-                    s = prev = w.getAllText()
-                    ins = w.getInsertPoint()
-                    i, j = g.getLine(s, ins)
-                    s = prev = s[i:ins]
-                    n = len(prev)
-                    abs_width = abs(tab_width)
-                    # Delete up to this many spaces.
-                    n2 = (n % abs_width) or abs_width
-                    n2 = min(n, n2)
-                    count = 0
-                    while n2 > 0:
-                        n2 -= 1
-                        ch = prev[n - count - 1]
-                        if ch != ' ':
-                            break
-                        else:
-                            count += 1
-                    # Make sure we actually delete something.
-                    i = ins - (max(1, count))
-                    w.delete(i, ins)
-                    w.setSelectionRange(i, i, insert=i)
+            tab_width = c.getTabWidth(c.p)
+            if i != j:
+                w.delete(i, j)
+                w.setSelectionRange(i, i, insert=i)
+            elif i == 0:
+                pass
+            elif tab_width > 0:
+                w.delete(ins - 1)
+                w.setSelectionRange(ins - 1, ins - 1, insert=ins - 1)
+            else:
+                # backspace with negative tab_width
+                s = prev = w.getAllText()
+                ins = w.getInsertPoint()
+                i, j = g.getLine(s, ins)
+                s = prev = s[i:ins]
+                n = len(prev)
+                abs_width = abs(tab_width)
+                # Delete up to this many spaces.
+                n2 = (n % abs_width) or abs_width
+                n2 = min(n, n2)
+                count = 0
+                while n2 > 0:
+                    n2 -= 1
+                    ch = prev[n - count - 1]
+                    if ch != ' ':
+                        break
+                    else:
+                        count += 1
+                # Make sure we actually delete something.
+                i = ins - (max(1, count))
+                w.delete(i, ins)
+                w.setSelectionRange(i, i, insert=i)
                 u.type_text(p, oldSel=oldSel, oldText=p.b, w=w)
             return
         # No *direct* undo in this widget.
