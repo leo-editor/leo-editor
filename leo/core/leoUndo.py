@@ -453,13 +453,14 @@ class Undoer:
             or not u.beads
             or u.bead != len(u.beads) - 1
             or b.p.v != p.v
-            or b.old_lines_count != w_text.count('\n')
-            or b.line_number != b.compute_line_number(w_ins, w_text)
         ):
             # Can't merge: create a new TypingBead.
             b = TypingBead(u, p, old_sel=oldSel, old_text=oldText, w=w)
             u.pushBead(b)
         else:
+            # Two ever-present unit tests.
+            assert b.old_lines_count == w_text.count('\n'), g.callers()
+            assert b.line_number == b.compute_line_number(w_ins, w_text), g.callers()
             # Can merge: use the existing TypingBead.
             b.new_lines = w_text
             b.new_sel = w_sel
