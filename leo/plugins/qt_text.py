@@ -249,22 +249,12 @@ class QTextMixin:
             return
         if not p:
             return
-
-        ###
-        # newInsert = w.getInsertPoint()
-        # newSel = w.getSelectionRange()
-        # newText = w.getAllText()  # Converts to unicode.
-        # Get the previous values from the VNode.
         oldText = p.b
         if oldText == w.getAllText():
             return
         i, j = p.v.selectionStart, p.v.selectionLength
         oldSel = (i, i + j)
         u.type_text(p, oldSel=oldSel, oldText=oldText, w=w)
-        # newText,
-        # newInsert=newInsert,
-        # newSel=newSel,
-        # )
 
     # @+node:ekr.20140901122110.18734: *3* QTextMixin.Generic high-level interface
     # These call only wrapper methods.
@@ -709,10 +699,6 @@ class LeoQTextBrowser(QtWidgets.QTextBrowser):
                 c.setChanged()
                 w.setInsertPoint(j)
                 u.type_text(p, oldSel=oldSel, oldText=oldText, w=w)
-                # newText=w.getAllText(),
-                # newInsert=w.getInsertPoint(),
-                # newSel=w.getSelectionRange(),
-
             self.end_completer()
 
         # @+node:tbrown.20111011094944.27031: *5* LeoQListWidget.tab_callback

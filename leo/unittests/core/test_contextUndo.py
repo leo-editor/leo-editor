@@ -529,56 +529,6 @@ class TestContextUndo(LeoUnitTest):
             self.assertEqual(w.getSelectionRange(), (2, 4))
             self.assertEqual(w.getInsertPoint(), 4)
 
-    # @+node:ekr.20261014103254.27: *3* TestContextUndo.xxx_test_typing_preserves_text_mark_and_newlines
-    def xxx_test_typing_preserves_text_mark_and_newlines(self):
-        c = self.c
-        p = c.p
-        u = c.undoer
-        for marked in (False, True):
-            for old, new in (('', '\n'), ('a\n\n', 'a\nb\n\n'), ('a\n', ''), ('a\nb', 'a\nb\n')):
-                with self.subTest(marked=marked, old=old, new=new):
-                    u.clearUndoState()
-                    p.b = old
-                    p.setMarked() if marked else p.clearMarked()
-                    w = c.frame.body.wrapper
-                    w.setAllText(new)
-                    w.setSelectionRange(len(new), len(new))
-                    oldSel = (len(old), len(old))
-                    # newSel = (len(new), len(new))
-                    # u.type_text(p, old, new, newInsert=len(new), oldSel=oldSel, newSel=newSel)
-                    u.type_text(p, oldSel=oldSel, oldText=old, w=w)
-                    self.assertIsInstance(u.beads[-1], TypingBead)
-                    self.cycles(
-                        lambda old=old: self.assertEqual(p.b, old),
-                        lambda new=new: self.assertEqual(p.b, new),
-                    )
-                    self.assertEqual(p.isMarked(), marked)
-
-    # @+node:ekr.20261014103254.29: *3* TestContextUndo.xxx_test_typing_word_boundary
-    def xxx_test_typing_word_boundary(self):
-        c = self.c
-        p = c.p
-        u = c.undoer
-        p.b = ''
-        for new in ('a', 'ab', 'ab ', 'ab c', 'ab cd'):
-            old = p.b
-            w = c.frame.body.wrapper
-            w.setAllText(new)
-            w.setSelectionRange(len(new), len(new))
-            oldSel = (len(old), len(old))
-            newSel = (len(new), len(new))
-            newInsert = len(new)
-            # u.type_text(p, old, new, newInsert=newInsert, oldSel=oldSel, newSel=newSel)
-            u.type_text(p, oldText=old, oldSel=oldSel, w=w)
-        self.assertEqual(len(u.beads), 2)
-        u.undo()
-        self.assertEqual(p.b, 'ab')
-        u.undo()
-        self.assertEqual(p.b, '')
-        u.redo()
-        u.redo()
-        self.assertEqual(p.b, 'ab cd')
-
     # @-others
 
 

@@ -878,6 +878,53 @@ def test_typing_granularity_and_save_boundary(self):
     else:
         _run_test_typing_granularity_and_save_boundary('word')
 
+# @+node:ekr.20261014103254.29: *5* TestContextUndo.test_typing_word_boundary
+def test_typing_word_boundary(self):
+    c = self.c
+    p = c.p
+    u = c.undoer
+    p.b = ''
+    for new in ('a', 'ab', 'ab ', 'ab c', 'ab cd'):
+        old = p.b
+        w = c.frame.body.wrapper
+        w.setAllText(new)
+        w.setSelectionRange(len(new), len(new))
+        oldSel = (len(old), len(old))
+        newSel = (len(new), len(new))
+        newInsert = len(new)
+        u.type_text(p, oldText=old, oldSel=oldSel, w=w)
+    self.assertEqual(len(u.beads), 2)
+    u.undo()
+    self.assertEqual(p.b, 'ab')
+    u.undo()
+    self.assertEqual(p.b, '')
+    u.redo()
+    u.redo()
+    self.assertEqual(p.b, 'ab cd')
+
+# @+node:ekr.20261014103254.27: *5* TestContextUndo.xxx_test_typing_preserves_text_mark_and_newlines
+def xxx_test_typing_preserves_text_mark_and_newlines(self):
+    c = self.c
+    p = c.p
+    u = c.undoer
+    for marked in (False, True):
+        for old, new in (('', '\n'), ('a\n\n', 'a\nb\n\n'), ('a\n', ''), ('a\nb', 'a\nb\n')):
+            with self.subTest(marked=marked, old=old, new=new):
+                u.clearUndoState()
+                p.b = old
+                p.setMarked() if marked else p.clearMarked()
+                w = c.frame.body.wrapper
+                w.setAllText(new)
+                w.setSelectionRange(len(new), len(new))
+                oldSel = (len(old), len(old))
+                u.type_text(p, oldSel=oldSel, oldText=old, w=w)
+                self.assertIsInstance(u.beads[-1], TypingBead)
+                self.cycles(
+                    lambda old=old: self.assertEqual(p.b, old),
+                    lambda new=new: self.assertEqual(p.b, new),
+                )
+                self.assertEqual(p.isMarked(), marked)
+
 # @+node:ekr.20261109032253.1: *3* --- deleted undo typing code
 # @+node:ekr.20261109032243.1: *4* --- deleted code re word granularity
 # @+node:ekr.20261108054351.1: *5* from _can_merge 1

@@ -431,9 +431,6 @@ class Undoer:
         oldSel: tuple[int, int],
         oldYview: int | None = None,
         w: QTextMixin,
-        ### newText: str,
-        ### newInsert: int,
-        ### newSel: tuple[int, int],
     ) -> None:
         """
         Handle all undo tasks related to typing in the body pane. Called by:
@@ -451,9 +448,6 @@ class Undoer:
         u = self
         c = u.c
         w = c.frame.body.wrapper
-        # newSel = w.getSelectionRange()  # if newSel is None else newSel
-        # newInsert = w.getInsertPoint() or 0  # if newInsert is None else newInsert
-        # scroll = w.getYScrollPosition()  # if oldYview is None else oldYview
         b = u.peekBead(u.bead)
         if (
             not isinstance(b, TypingBead)
@@ -464,7 +458,6 @@ class Undoer:
             or b.line_number != b.compute_line_number(w_ins, w_text)
         ):
             # Can't merge: create a new TypingBead.
-            # b = TypingBead(u, p, oldText, newText, oldSel, newSel, newInsert, scroll)
             b = TypingBead(u, p, old_sel=oldSel, old_text=oldText, w=w)
             u.pushBead(b)
         else:
