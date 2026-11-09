@@ -260,6 +260,11 @@ class TypingBead(UndoBead):
         i = min(ins, len(s))
         return s.count('\n', 0, i)  # Don't include i.
 
+    # @+node:ekr.20261109151859.1: *3* TypingBead.must_change_word
+    def begins_new_word(self) -> bool:
+        """Return True if the incoming character begins a new word."""
+        return False  # Word granularity.
+
     # @+node:ekr.20261014100625.5: *3* TypingBead.undo
     def undo(self) -> None:
         c = self.c
@@ -478,8 +483,11 @@ class Undoer:
             or u.bead != len(u.beads) - 1
             or b.p.v != p.v
             or b.line_number != b.compute_line_number(w_ins, w_text)
+            or b.begins_new_word()
         ):
             # Can't merge: create a new TypingBead.
+            if not g.unitTesting:  ###
+                g.trace('New bead')
             b = TypingBead(u, p, old_sel=oldSel, old_text=oldText, w=w)
             u.pushBead(b)
         else:
