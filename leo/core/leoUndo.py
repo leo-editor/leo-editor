@@ -202,6 +202,7 @@ class TypingBead(UndoBead):
     # @+node:ekr.20261108044128.1: *3* << TypingBead: slots >>
     __slots__ = (
         # Only the *additional* ivars of the TypingBead class.
+        'line_number',
         'marked',
         'new_ins',
         'new_lines',
@@ -221,25 +222,42 @@ class TypingBead(UndoBead):
         self,
         undoer: Undoer,
         p: Position,
-        old_text: str,
-        new_text: str,
+        *,
         old_sel: tuple[int, int],
-        new_sel: tuple[int, int],
-        new_ins: int | None,
-        scroll: int | None,
+        old_text: str,
+        scroll: int | None = None,
+        w: QTextMixin,
+        #### new_text: str,
+        ### new_sel: tuple[int, int],
+        ### new_ins: int | None,
     ) -> None:
         """Init a new Typing bead when a new bead is needed."""
         super().__init__(undoer)
+
+        # Let block.
+        w_text = w.getAllText()
+        w_ins = w.getInsertPoint()
+        w_sel = w.getSelectionRange()
+
+        # Bind ivars.
         self.command_name = self.undoType = 'Typing'
         self.p = p.copy()
-        self.new_sel = new_sel
-        self.new_ins = new_ins
-        self.new_lines = new_text
+        self.line_number = self.compute_line_number(w_ins, w_text)
+        self.new_sel: tuple[int, int] | None = w_sel
+        self.new_ins: int | None = w_ins
+        self.new_lines: str = w_text
         self.old_lines = old_text
         self.old_lines_count = old_text.count('\n')
         self.old_sel = old_sel
-        self.scroll = scroll
+        self.scroll: int | None = w.getYScrollPosition()
         self.marked = p.isMarked()
+
+    # @+node:ekr.20261109034734.1: *3* TypingBead.compute_line_number
+    def compute_line_number(self, ins: int | None, s: str) -> int:
+        """Return the zeo based number of the line in s containing the given insert point."""
+        if not s:
+            return 0
+        return 0  ### To do
 
     # @+node:ekr.20261014100625.5: *3* TypingBead.undo
     def undo(self) -> None:
@@ -409,12 +427,13 @@ class Undoer:
         self,
         p: Position,
         oldText: str,
-        newText: str,
         *,
-        newInsert: int,
         oldSel: tuple[int, int],
-        newSel: tuple[int, int],
         oldYview: int | None = None,
+        w: QTextMixin,
+        ### newText: str,
+        ### newInsert: int,
+        ### newSel: tuple[int, int],
     ) -> None:
         """
         Handle all undo tasks related to typing in the body pane. Called by:
@@ -422,30 +441,37 @@ class Undoer:
         - LeoQListWidget.select_callback.
         - QTextMixin.onTextChanged.
         """
-        if self.undoing or self.redoing or oldText == newText:
+        # Let block.
+        w_ins = w.getInsertPoint()
+        w_sel = w.getSelectionRange()
+        w_text = w.getAllText()
+
+        if self.undoing or self.redoing or oldText == w_text:
             return
         u = self
         c = u.c
         w = c.frame.body.wrapper
-        newSel = w.getSelectionRange() if newSel is None else newSel
-        newInsert = w.getInsertPoint() if newInsert is None else newInsert
-        scroll = w.getYScrollPosition() if oldYview is None else oldYview
+        # newSel = w.getSelectionRange()  # if newSel is None else newSel
+        # newInsert = w.getInsertPoint() or 0  # if newInsert is None else newInsert
+        # scroll = w.getYScrollPosition()  # if oldYview is None else oldYview
         b = u.peekBead(u.bead)
         if (
             not isinstance(b, TypingBead)
             or not u.beads
             or u.bead != len(u.beads) - 1
             or b.p.v != p.v
-            or b.old_lines_count != newText.count('\n')
+            or b.old_lines_count != w_text.count('\n')
+            or b.line_number != b.compute_line_number(w_ins, w_text)
         ):
             # Can't merge: create a new TypingBead.
-            b = TypingBead(u, p, oldText, newText, oldSel, newSel, newInsert, scroll)
+            # b = TypingBead(u, p, oldText, newText, oldSel, newSel, newInsert, scroll)
+            b = TypingBead(u, p, old_sel=oldSel, old_text=oldText, w=w)
             u.pushBead(b)
         else:
             # Can merge: use the existing TypingBead.
-            b.new_lines = newText
-            b.new_sel = newSel
-        p.v.b = newText  # Do **not** use p.b = newText!!!
+            b.new_lines = w_text
+            b.new_sel = w_sel
+        p.v.b = w_text  # Do **not** use p.b = w_text!!!
         u._update_after_typing(p, w)
 
     # @+node:ekr.20201127035748.1: *5* u._update_after_typing

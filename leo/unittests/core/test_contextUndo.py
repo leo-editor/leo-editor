@@ -544,8 +544,9 @@ class TestContextUndo(LeoUnitTest):
                     w.setAllText(new)
                     w.setSelectionRange(len(new), len(new))
                     oldSel = (len(old), len(old))
-                    newSel = (len(new), len(new))
-                    u.type_text(p, old, new, newInsert=len(new), oldSel=oldSel, newSel=newSel)
+                    # newSel = (len(new), len(new))
+                    # u.type_text(p, old, new, newInsert=len(new), oldSel=oldSel, newSel=newSel)
+                    u.type_text(p, oldSel=oldSel, oldText=old, w=w)
                     self.assertIsInstance(u.beads[-1], TypingBead)
                     self.cycles(
                         lambda old=old: self.assertEqual(p.b, old),
@@ -558,9 +559,6 @@ class TestContextUndo(LeoUnitTest):
         c = self.c
         p = c.p
         u = c.undoer
-        ###
-        # if hasattr(u, 'granularity'):
-        #     u.granularity = 'word'
         p.b = ''
         for new in ('a', 'ab', 'ab ', 'ab c', 'ab cd'):
             old = p.b
@@ -570,7 +568,8 @@ class TestContextUndo(LeoUnitTest):
             oldSel = (len(old), len(old))
             newSel = (len(new), len(new))
             newInsert = len(new)
-            u.type_text(p, old, new, newInsert=newInsert, oldSel=oldSel, newSel=newSel)
+            # u.type_text(p, old, new, newInsert=newInsert, oldSel=oldSel, newSel=newSel)
+            u.type_text(p, oldText=old, oldSel=oldSel, w=w)
         self.assertEqual(len(u.beads), 2)
         u.undo()
         self.assertEqual(p.b, 'ab')
