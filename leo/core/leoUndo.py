@@ -48,6 +48,7 @@ class UndoBead:
         'undo_finishers',
         'undo_functions',
         'undoer',
+        'w',
     )
 
     # @-<< UndoBead: slots >>
@@ -58,7 +59,6 @@ class UndoBead:
     # @+others
     # @+node:ekr.20261007113407.1: *3* UndoBead.__init__
     def __init__(self, undoer: Undoer) -> None:
-        # Let.
         c = undoer.c
         self.c = c
         self.command_name = None
@@ -70,6 +70,7 @@ class UndoBead:
         self.undo_finishers: list[Callable] = []
         self.undo_functions: list[Callable] = []
         self.undoer = undoer
+        self.w: QTextMixin | None = None
 
     # @+node:ekr.20261014182326.1: *3* undoBead.add_redraw_finishers
     def add_redraw_finishers(
@@ -198,95 +199,132 @@ class UndoBead:
 class TypingBead(UndoBead):
     """An incremental text patch, independent of the legacy Undoer ivars."""
 
+    # @+<< TypingBead: slots >>
+    # @+node:ekr.20261108044128.1: *3* << TypingBead: slots >>
+    __slots__ = (
+        # Only the *additional* ivars of the TypingBead class.
+        'line_number',
+        'marked',
+        'new_ins',
+        'new_lines',
+        'new_sel',
+        'old_lines',
+        'old_lines_count',
+        'old_p',
+        'old_sel',
+        'p',
+        'scroll',
+    )  # fmt: skip
+    # @-<< TypingBead: slots >>
+
     # @+others
     # @+node:ekr.20261014100558.1: *3* TypingBead.__init__
     def __init__(
         self,
         undoer: Undoer,
         p: Position,
-        old_text: str,
-        new_text: str,
+        *,
         old_sel: tuple[int, int],
-        new_sel: tuple[int, int],
-        new_ins: int | None,
-        scroll: int | None,
+        old_text: str,
+        w: QTextMixin,
     ) -> None:
         """Init a new Typing bead when a new bead is needed."""
         super().__init__(undoer)
+
+        # Let block.
+        w_text = w.getAllText()
+        w_ins = w.getInsertPoint()
+        w_sel = w.getSelectionRange()
+        w_scroll = w.getYScrollPosition()
+
+        # Bind ivars.
         self.command_name = self.undoType = 'Typing'
         self.p = p.copy()
+        self.line_number = self.compute_line_number(w_ins, w_text)
+        self.new_sel: tuple[int, int] = w_sel
+        self.new_ins: int = w_ins
+        self.new_lines: str = w_text
+        self.old_lines = old_text
+        self.old_lines_count = old_text.count('\n')
         self.old_sel = old_sel
-        self.new_sel = new_sel
-        self.new_ins = new_ins
-        self.scroll = scroll
+        self.scroll: int = w_scroll
         self.marked = p.isMarked()
-        self.update_patch(old_text, new_text)
+        self.w = w
 
-    # @+node:ekr.20261014100625.1: *3* TypingBead.split_patch
-    @staticmethod
-    def split_patch(old_text: str, new_text: str) -> tuple[int, int, list[str], list[str]]:
-        old, new = old_text.split('\n'), new_text.split('\n')
-        leading = 0
-        while leading < min(len(old), len(new)) and old[leading] == new[leading]:
-            leading += 1
-        trailing = 0
-        while (
-            trailing < min(len(old), len(new)) - leading
-            and old[-trailing - 1] == new[-trailing - 1]
-        ):
-            trailing += 1
-        return (
-            leading,
-            trailing,
-            old[leading : len(old) - trailing],
-            new[leading : len(new) - trailing],
-        )
+    # @+node:ekr.20261109034734.1: *3* TypingBead.compute_line_number
+    def compute_line_number(self, ins: int, s: str) -> int:
+        """Return the zeo based number of the line in s containing the given insert point."""
+        # Like g.convertPythonIndexToRowCol.
+        if not s or ins <= 0:
+            return 0
+        i = min(ins, len(s))
+        return s.count('\n', 0, i)  # Don't include i.
 
-    # @+node:ekr.20261014100625.2: *3* TypingBead.update_patch
-    def update_patch(self, old_text: str, new_text: str) -> None:
-        self.leading, self.trailing, self.old_lines, self.new_lines = self.split_patch(
-            old_text, new_text
-        )
-
-    # @+node:ekr.20261014100625.3: *3* TypingBead.replace_middle
-    def replace_middle(self, text: str, middle: list[str]) -> str:
-        lines = text.split('\n')
-        trailing_lines = lines[-self.trailing :] if self.trailing else []
-        return '\n'.join(lines[: self.leading] + middle + trailing_lines)
-
-    # @+node:ekr.20261014100625.4: *3* TypingBead.apply
-    def apply(
-        self,
-        middle: list[str],
-        sel: tuple[int, int] | None,
-        ins: int | None,
-    ) -> None:
+    # @+node:ekr.20261014100625.5: *3* TypingBead.undo
+    def undo(self) -> None:
         c = self.c
         p = self.p
-        if c.p != p:
-            c.selectPosition(p)
-        p.v.b = self.replace_middle(p.b, middle)
+        w = self.w
+
+        # Update p's data.
+        p.v.b = self.old_lines
         p.setDirty()
         if self.marked:
             c.setMarked(p)
         else:
             c.clearMarked(p)
-        w = c.frame.body.wrapper
-        w.setAllText(p.b)
-        if sel is not None:
-            w.setSelectionRange(*sel, insert=ins)
-        w.setYScrollPosition(self.scroll)
-        c.recolor(p)
-        c.setChanged()
 
-    # @+node:ekr.20261014100625.5: *3* TypingBead.undo
-    def undo(self) -> None:
-        ins = None if self.old_sel is None else self.old_sel[1]
-        self.apply(self.old_lines, self.old_sel, ins)
+        # Update w's data.
+        w.setAllText(p.b)
+        if self.old_sel is not None:
+            old_ins = None if self.old_sel is None else self.old_sel[1]
+            # g.trace(f"{self.old_sel=} {old_ins=}")
+            w.setSelectionRange(*self.old_sel, insert=old_ins)
+        if self.scroll is not None:
+            w.setYScrollPosition(self.scroll)
+
+        # Update global data.
+        if not c.isChanged():
+            c.setChanged()
+        c.redraw(p)
+        c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
+        c.recolor(p)
+
+        # Ensure focus.
+        w.setFocus()
 
     # @+node:ekr.20261014100625.6: *3* TypingBead.redo
     def redo(self) -> None:
-        self.apply(self.new_lines, self.new_sel, self.new_ins)
+        c = self.c
+        p = self.p
+        w = self.w
+
+        # Update p's data.
+        p.v.b = self.new_lines
+        p.setDirty()
+        if self.marked:
+            c.setMarked(p)
+        else:
+            c.clearMarked(p)
+
+        # Update w's data.
+        w.setAllText(p.b)
+        if self.new_sel is not None:
+            new_ins = None if self.new_sel is None else self.new_sel[1]
+            # g.trace(f"{self.new_sel=} {new_ins=}")
+            w.setSelectionRange(*self.new_sel, insert=new_ins)
+        if self.scroll is not None:
+            w.setYScrollPosition(self.scroll)
+
+        # Update global data.
+        if not c.isChanged():
+            c.setChanged()
+        c.redraw(p)
+        c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
+        c.recolor(p)
+
+        # Ensure focus.
+        w.setFocus()
 
     # @-others
 
@@ -412,12 +450,10 @@ class Undoer:
         self,
         p: Position,
         oldText: str,
-        newText: str,
         *,
-        newInsert: int,
         oldSel: tuple[int, int],
-        newSel: tuple[int, int],
         oldYview: int | None = None,
+        w: QTextMixin,
     ) -> None:
         """
         Handle all undo tasks related to typing in the body pane. Called by:
@@ -425,73 +461,72 @@ class Undoer:
         - LeoQListWidget.select_callback.
         - QTextMixin.onTextChanged.
         """
-        if self.undoing or self.redoing or oldText == newText:
+        # Let block.
+        w_ins = w.getInsertPoint()
+        w_sel = w.getSelectionRange()
+        w_text = w.getAllText()
+
+        if self.undoing or self.redoing or oldText == w_text:
             return
         u = self
         c = u.c
         w = c.frame.body.wrapper
-        newSel = newSel if newSel is not None else w.getSelectionRange()
-        newInsert = newInsert if newInsert is not None else w.getInsertPoint()
-        scroll = oldYview if oldYview is not None else w.getYScrollPosition()
-        bead = u.peekBead(u.bead)
-        if u._can_merge(oldText=oldText, newText=newText, oldSel=oldSel, newSel=newSel):
-            original = bead.replace_middle(oldText, bead.old_lines)
-            bead.update_patch(original, newText)
-            assert isinstance(bead, TypingBead)
-            bead.new_sel, bead.new_ins = newSel, newInsert
+        b = u.peekBead(u.bead)
+        if (
+            not isinstance(b, TypingBead)
+            or not u.beads
+            or u.bead != len(u.beads) - 1
+            or b.p.v != p.v
+            or b.line_number != b.compute_line_number(w_ins, w_text)
+        ):
+            # Can't merge: create a new TypingBead.
+            b = TypingBead(u, p, old_sel=oldSel, old_text=oldText, w=w)
+            u.pushBead(b)
         else:
-            bead = TypingBead(u, p, oldText, newText, oldSel, newSel, newInsert, scroll)
-            u.pushBead(bead)
-        p.v.b = newText  # Do **not** use p.b = newText!!!
+            # An ever-present unit tests.
+            assert b.old_lines_count == w_text.count('\n'), g.callers()
+            # Can merge: use the existing TypingBead.
+            b.new_lines = w_text
+            b.new_sel = w_sel
+        p.v.b = w_text  # Do **not** use p.b = w_text!!!
         u._update_after_typing(p, w)
 
     # @+node:ekr.20201127035748.1: *5* u._update_after_typing
     def _update_after_typing(self, p: Position, w: QTextMixin) -> None:
-        """
-        Perform all update tasks after changing body text.
-
-        This is ugly, ad-hoc code, but should be done uniformly.
-        """
+        """Update everything after changing body text."""
         c = self.c
-        if g.isTextWrapper(w):
-            # An important, ever-present unit test.
-            if p == c.p:
-                all = w.getAllText()
-                if g.unitTesting:
-                    assert p.b == all, (w, g.callers())
-                elif p.b != all:
-                    g.trace(
-                        f"\np.b != w.getAllText() p: {p.h} \n"
-                        f"w: {w!r} \n{g.callers()}\n"
-                    )  # fmt: skip
-            p.v.insertSpot = ins = w.getInsertPoint()
-            # From u.doTyping.
-            newSel = w.getSelectionRange()
-            if newSel is None:
-                p.v.selectionStart, p.v.selectionLength = (ins, 0)
-            else:
-                i, j = newSel
-                p.v.selectionStart, p.v.selectionLength = (i, j - i)
-        else:
-            if g.unitTesting:
-                assert False, f"Not a text wrapper: {g.callers()}"  # noqa
-            g.trace('Not a text wrapper')
-            p.v.insertSpot = 0
-            p.v.selectionStart, p.v.selectionLength = (0, 0)
+
+        # An ever-present unit test.
+        assert g.isTextWrapper(w), g.callers()
+
+        # Let block.
+        w_text = w.getAllText()
+        w_ins = w.getInsertPoint()
+        w_sel = w.getSelectionRange()
+
+        # Update p's data.
+        if p == c.p:
+            assert p.b == w_text, (w, g.callers())
+        p.v.insertSpot = w_ins
+        i, j = w_sel
+        p.v.selectionStart, p.v.selectionLength = (i, j - i)
         if not p.isDirty():
             p.setDirty()
-        if not c.isChanged():
-            c.setChanged()
 
         # Update icons.
         val = p.computeIcon()
         if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
             p.v.iconVal = val
+
+        # Update global data.
+        if not c.isChanged():
+            c.setChanged()
         if p == c.p:
-            # Recolor the body.
             c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
             c.recolor()
-            w.setFocus()
+
+        # Ensure focus.
+        w.setFocus()
 
     # @+node:ekr.20031218072017.2039: *4* u.undo
     @cmd('undo')
@@ -1132,61 +1167,6 @@ class Undoer:
                 raise AssertionError("Missing call to u.set_command_name")
             # Record partial mutations even if the command raised an exception.
             u.pushBead(b)
-
-    # @+node:ekr.20261102022551.1: *4* u._can_merge
-    def _can_merge(
-        self,
-        *,
-        oldSel: tuple[int, int],
-        oldText: str,
-        newSel: tuple[int, int],
-        newText: str,
-    ) -> bool:
-        """
-        Return True if we should merge changes into the previous UndoTyping node.
-        """
-        u = self
-        bead = u.peekBead(u.bead)
-        assert bead is None or isinstance(bead, UndoBead), repr(bead)
-        c = u.c
-        p = c.p
-        if (
-            not isinstance(bead, TypingBead)  # Intervening command.
-            or u.bead != len(u.beads) - 1     # Previous undo.
-            or bead.p.v != p.v                # Changed node.
-            or not c.changed                  # For unit tests.
-        ):  # fmt: skip
-            return False
-
-        # All lines *except* the current line must match.
-        leading, trailing, _, _ = TypingBead.split_patch(oldText, newText)
-        if (leading, trailing) != (bead.leading, bead.trailing):
-            return False
-
-        # The selection ranges must match.
-        if bead.new_sel is None:
-            return False
-        old_start, old_end = oldSel
-        new_start, new_end = newSel
-        if old_start != old_end or new_start != new_end:
-            return False
-
-        # The position of the lines must match.
-        old_row, old_col = g.convertPythonIndexToRowCol(oldText, old_start)
-        new_row, new_col = g.convertPythonIndexToRowCol(newText, new_start)
-        prev_row, prev_col = g.convertPythonIndexToRowCol(oldText, bead.new_sel[0])
-        if (
-            old_col == 0
-            or new_col == 0
-            or old_row != new_row
-            or abs(new_col - prev_col) != 1
-        ):  # fmt: skip
-            return False
-
-        # We must not be starting a new word.
-        old_ch = oldText[old_start - 1]
-        new_ch = newText[new_start - 1]
-        return not (not old_ch.isspace() and new_ch.isspace())
 
     # @+node:vivainio.202610110004.1: *4* u._require_bead
     def _require_bead(self) -> UndoBead:

@@ -1662,16 +1662,11 @@ class EditCommandsClass:
                 tab_width = c.getTabWidth(c.p)
                 if i != j:
                     w.delete(i, j)
-                    newInsert = i
-                    newSel = i, i
                     w.setSelectionRange(i, i, insert=i)
                 elif i == 0:
-                    newInsert = i
-                    newSel = i, i
+                    pass
                 elif tab_width > 0:
                     w.delete(ins - 1)
-                    newInsert = ins - 1
-                    newSel = ins - 1, ins - 1
                     w.setSelectionRange(ins - 1, ins - 1, insert=ins - 1)
                 else:
                     # backspace with negative tab_width
@@ -1694,18 +1689,9 @@ class EditCommandsClass:
                             count += 1
                     # Make sure we actually delete something.
                     i = ins - (max(1, count))
-                    newInsert = i
-                    newSel = (i, i)
                     w.delete(i, ins)
                     w.setSelectionRange(i, i, insert=i)
-                u.type_text(
-                    p,
-                    oldSel=oldSel,
-                    oldText=p.b,
-                    newSel=newSel,
-                    newInsert=newInsert,
-                    newText=w.getAllText(),
-                )
+                u.type_text(p, oldSel=oldSel, oldText=p.b, w=w)
             return
         # No *direct* undo in this widget.
         # Undo in headlines is handled indirectly.
@@ -2087,10 +2073,10 @@ class EditCommandsClass:
         u = c.undoer
         undoType = 'Typing'
         if not event:
-            return  # PR #4812
+            return
         w = event.w
         if not g.isTextWrapper(w):
-            return  # pragma: no cover (defensive)
+            return
         # @+<< set local vars >>
         # @+node:ekr.20150514063305.269: *5* << set local vars >> (selfInsertCommand)
         stroke = event.stroke
@@ -2137,18 +2123,7 @@ class EditCommandsClass:
         # Update the text and handle undo.
         newText = w.getAllText()
         if newText != oldText:
-            newSel = w.getSelectionRange()
-            newInsert = w.getInsertPoint()
-            newSel = w.getSelectionRange()
-            u.type_text(
-                p,
-                oldText,
-                newText,
-                oldSel=oldSel,
-                oldYview=oldYview,
-                newInsert=newInsert,
-                newSel=newSel,
-            )
+            u.type_text(p, oldSel=oldSel, oldText=oldText, oldYview=oldYview, w=w)
         g.doHook("bodykey2", c=c, p=p, ch=ch, oldSel=oldSel, undoType=undoType)
 
     # @+node:ekr.20160924135613.1: *5* ec.doPlainChar
