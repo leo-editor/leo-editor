@@ -48,6 +48,7 @@ class UndoBead:
         'undo_finishers',
         'undo_functions',
         'undoer',
+        'w',
     )
 
     # @-<< UndoBead: slots >>
@@ -58,7 +59,6 @@ class UndoBead:
     # @+others
     # @+node:ekr.20261007113407.1: *3* UndoBead.__init__
     def __init__(self, undoer: Undoer) -> None:
-        # Let.
         c = undoer.c
         self.c = c
         self.command_name = None
@@ -70,6 +70,7 @@ class UndoBead:
         self.undo_finishers: list[Callable] = []
         self.undo_functions: list[Callable] = []
         self.undoer = undoer
+        self.w: QTextMixin | None = None
 
     # @+node:ekr.20261014182326.1: *3* undoBead.add_redraw_finishers
     def add_redraw_finishers(
@@ -248,6 +249,7 @@ class TypingBead(UndoBead):
         self.old_sel = old_sel
         self.scroll: int | None = w.getYScrollPosition()
         self.marked = p.isMarked()
+        self.w = None
 
     # @+node:ekr.20261109034734.1: *3* TypingBead.compute_line_number
     def compute_line_number(self, ins: int, s: str) -> int:
@@ -453,14 +455,14 @@ class Undoer:
             or not u.beads
             or u.bead != len(u.beads) - 1
             or b.p.v != p.v
+            or b.line_number != b.compute_line_number(w_ins, w_text)
         ):
             # Can't merge: create a new TypingBead.
             b = TypingBead(u, p, old_sel=oldSel, old_text=oldText, w=w)
             u.pushBead(b)
         else:
-            # Two ever-present unit tests.
+            # An ever-present unit tests.
             assert b.old_lines_count == w_text.count('\n'), g.callers()
-            assert b.line_number == b.compute_line_number(w_ins, w_text), g.callers()
             # Can merge: use the existing TypingBead.
             b.new_lines = w_text
             b.new_sel = w_sel
