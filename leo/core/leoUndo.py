@@ -275,22 +275,17 @@ class TypingBead(UndoBead):
         ch = s[max(0, w_ins - 1) : w_ins]
         tail = s[w_ins + 1 : j]
 
-        prev_line = self.new_lines.rstrip()
-        if False and not g.unitTesting:
-            # g.trace(f"{len(prev_line)=} {len(s)=} {self.new_lines=}")
-            is_bs = len(s) < len(prev_line)
-            g.trace(f"{int(is_bs)=} {len(prev_line)=} {len(s)=}")
-
         # Compute the result!
+        prev_line = self.new_lines.rstrip()
+        is_bs = len(s) < len(prev_line)
         result = (
             False if ch in ' \t'
-            ### else False if len(prev_line) < len(s) # backspace.
+            else False if is_bs  # A quirp: backspace isn't undoable.
             else True if head.endswith((' ', '\t'))
             else True if tail.startswith((' ', '\t'))
             else False
         )  # fmt: skip
-        if not g.unitTesting:
-            g.trace(f"new word: {int(result)} {head=} {ch=} {tail=}")
+        # g.trace(f"bs? {int(is_bs)} new word?: {int(result)}")
         return result
 
     # @+node:ekr.20261014100625.5: *3* TypingBead.undo
