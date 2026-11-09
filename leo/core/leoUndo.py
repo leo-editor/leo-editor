@@ -263,20 +263,27 @@ class TypingBead(UndoBead):
     # @+node:ekr.20261109151859.1: *3* TypingBead.must_change_word
     def begins_new_word(self, w: QTextMixin) -> bool:
         """Return True if the incoming character begins a new word."""
-        result = False
         s = w.getAllText()
         w_ins = w.getInsertPoint()
 
-        # Like g.get_line
+        # Get the line per g.get_line.
         i = g.find_line_start(s, w_ins)
         j = g.skip_to_end_of_line(s, w_ins)
+
+        # Compute head, ch, tail.
         head = s[i : max(0, w_ins - 2)]
         ch = s[max(0, w_ins - 1) : w_ins]
         tail = s[w_ins + 1 : j]
+
+        # Compute the result!
+        result = (
+            False if ch in ' \t'
+            else True if head.endswith((' ', '\t'))
+            else True if tail.startswith((' ', '\t'))
+            else False
+        )  # fmt: skip
         if not g.unitTesting:
-            g.trace(f"{head=} {ch=} {tail=}")
-        if result and not g.unitTesting:
-            g.trace('New word!')
+            g.trace(f"{int(result)=} {head=} {ch=} {tail=}")
         return result
 
     # @+node:ekr.20261014100625.5: *3* TypingBead.undo
