@@ -227,9 +227,6 @@ class TypingBead(UndoBead):
         old_text: str,
         scroll: int | None = None,
         w: QTextMixin,
-        #### new_text: str,
-        ### new_sel: tuple[int, int],
-        ### new_ins: int | None,
     ) -> None:
         """Init a new Typing bead when a new bead is needed."""
         super().__init__(undoer)
