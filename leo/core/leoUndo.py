@@ -264,9 +264,17 @@ class TypingBead(UndoBead):
     def begins_new_word(self, w: QTextMixin) -> bool:
         """Return True if the incoming character begins a new word."""
         result = False
-        # w_text = w.getAllText()
-        # w_ins = w.getInsertPoint()
-        ### w_sel = w.getSelectionRange()
+        s = w.getAllText()
+        w_ins = w.getInsertPoint()
+
+        # Like g.get_line
+        i = g.find_line_start(s, w_ins)
+        j = g.skip_to_end_of_line(s, w_ins)
+        head = s[i : max(0, w_ins - 2)]
+        ch = s[max(0, w_ins - 1) : w_ins]
+        tail = s[w_ins + 1 : j]
+        if not g.unitTesting:
+            g.trace(f"{head=} {ch=} {tail=}")
         if result and not g.unitTesting:
             g.trace('New word!')
         return result
