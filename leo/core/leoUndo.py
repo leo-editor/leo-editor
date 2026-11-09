@@ -207,6 +207,7 @@ class TypingBead(UndoBead):
         'new_lines',
         'new_sel',
         'old_lines',
+        'old_lines_count',
         'old_p',
         'old_sel',
         'p',
@@ -235,6 +236,7 @@ class TypingBead(UndoBead):
         self.new_ins = new_ins
         self.new_lines = new_text
         self.old_lines = old_text
+        self.old_lines_count = old_text.count('\n')
         self.old_sel = old_sel
         self.scroll = scroll
         self.marked = p.isMarked()
@@ -434,7 +436,7 @@ class Undoer:
             or not u.beads
             or u.bead != len(u.beads) - 1
             or b.p.v != p.v
-            or oldText.count('\n') != newText.count('\n')
+            or b.old_lines_count != newText.count('\n')
         ):
             # Can't merge: create a new TypingBead.
             b = TypingBead(u, p, oldText, newText, oldSel, newSel, newInsert, scroll)
