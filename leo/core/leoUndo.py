@@ -250,11 +250,13 @@ class TypingBead(UndoBead):
         self.marked = p.isMarked()
 
     # @+node:ekr.20261109034734.1: *3* TypingBead.compute_line_number
-    def compute_line_number(self, ins: int | None, s: str) -> int:
+    def compute_line_number(self, ins: int, s: str) -> int:
         """Return the zeo based number of the line in s containing the given insert point."""
-        if not s:
+        # Like g.convertPythonIndexToRowCol.
+        if not s or ins <= 0:
             return 0
-        return 0  ### To do
+        i = min(ins, len(s))
+        return s.count('\n', 0, i)  # Don't include i.
 
     # @+node:ekr.20261014100625.5: *3* TypingBead.undo
     def undo(self) -> None:
