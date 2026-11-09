@@ -271,19 +271,26 @@ class TypingBead(UndoBead):
         j = g.skip_to_end_of_line(s, w_ins)
 
         # Compute head, ch, tail.
-        head = s[i : max(0, w_ins - 2)]
+        head = s[i : max(0, w_ins - 1)]
         ch = s[max(0, w_ins - 1) : w_ins]
         tail = s[w_ins + 1 : j]
+
+        prev_line = self.new_lines.rstrip()
+        if False and not g.unitTesting:
+            # g.trace(f"{len(prev_line)=} {len(s)=} {self.new_lines=}")
+            is_bs = len(s) < len(prev_line)
+            g.trace(f"{int(is_bs)=} {len(prev_line)=} {len(s)=}")
 
         # Compute the result!
         result = (
             False if ch in ' \t'
+            ### else False if len(prev_line) < len(s) # backspace.
             else True if head.endswith((' ', '\t'))
             else True if tail.startswith((' ', '\t'))
             else False
         )  # fmt: skip
         if not g.unitTesting:
-            g.trace(f"{int(result)=} {head=} {ch=} {tail=}")
+            g.trace(f"new word: {int(result)} {head=} {ch=} {tail=}")
         return result
 
     # @+node:ekr.20261014100625.5: *3* TypingBead.undo
