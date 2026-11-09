@@ -1041,6 +1041,18 @@ def _can_merge(
         return False
     return True  # Line granularity.
 
+# @+node:ekr.20261108164854.1: *3* design of undo typing with word granularity
+@language rest
+
+Note: cut-node and paste-node commands correctly use u.change_node, not u.text_text.
+
+- b.word_boundary will describe the word being accumulated. It's a selection range.
+- b.word_boundary can (and will) change as the user types.
+
+There are three cases to consider, depending on the incoming character:
+    - spaces and tabs.
+    - characters that delete text.
+    - characters that insert text.
 # @-all
 # @@nosearch
 # @-leo
