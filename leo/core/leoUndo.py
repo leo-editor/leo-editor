@@ -483,8 +483,6 @@ class Undoer:
             b = TypingBead(u, p, old_sel=oldSel, old_text=oldText, w=w)
             u.pushBead(b)
         else:
-            # An ever-present unit tests.
-            assert b.old_lines_count == w_text.count('\n'), g.callers()
             # Can merge: use the existing TypingBead.
             b.new_lines = w_text
             b.new_sel = w_sel

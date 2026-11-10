@@ -132,6 +132,7 @@ ignore = [
     "SIM115",   # Use a context manager for opening files
     "SIM117",   # Use a single `with` statement with multiple contexts instead of nested `with` statements
     "SIM118",   # Use `key in dict` instead of `key in dict.keys()`
+    "SIM210",   # Use `bool(...)` instead of `True if ... else False`
     "SIM222",   # Use `True` instead of `True or ...`
     "SIM223",   # Use `False` instead of `False and ...`
     "SIM905",   # Consider using a list literal instead of `str.split`

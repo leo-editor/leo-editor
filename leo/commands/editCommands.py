@@ -1658,39 +1658,38 @@ class EditCommandsClass:
         ins = w.getInsertPoint()
         i, j = oldSel = w.getSelectionRange()
         if wname.startswith('body'):
-            with u.change_node(p, 'backward-delete-char'):
-                tab_width = c.getTabWidth(c.p)
-                if i != j:
-                    w.delete(i, j)
-                    w.setSelectionRange(i, i, insert=i)
-                elif i == 0:
-                    pass
-                elif tab_width > 0:
-                    w.delete(ins - 1)
-                    w.setSelectionRange(ins - 1, ins - 1, insert=ins - 1)
-                else:
-                    # backspace with negative tab_width
-                    s = prev = w.getAllText()
-                    ins = w.getInsertPoint()
-                    i, j = g.getLine(s, ins)
-                    s = prev = s[i:ins]
-                    n = len(prev)
-                    abs_width = abs(tab_width)
-                    # Delete up to this many spaces.
-                    n2 = (n % abs_width) or abs_width
-                    n2 = min(n, n2)
-                    count = 0
-                    while n2 > 0:
-                        n2 -= 1
-                        ch = prev[n - count - 1]
-                        if ch != ' ':
-                            break
-                        else:
-                            count += 1
-                    # Make sure we actually delete something.
-                    i = ins - (max(1, count))
-                    w.delete(i, ins)
-                    w.setSelectionRange(i, i, insert=i)
+            tab_width = c.getTabWidth(c.p)
+            if i != j:
+                w.delete(i, j)
+                w.setSelectionRange(i, i, insert=i)
+            elif i == 0:
+                pass
+            elif tab_width > 0:
+                w.delete(ins - 1)
+                w.setSelectionRange(ins - 1, ins - 1, insert=ins - 1)
+            else:
+                # backspace with negative tab_width
+                s = prev = w.getAllText()
+                ins = w.getInsertPoint()
+                i, j = g.getLine(s, ins)
+                s = prev = s[i:ins]
+                n = len(prev)
+                abs_width = abs(tab_width)
+                # Delete up to this many spaces.
+                n2 = (n % abs_width) or abs_width
+                n2 = min(n, n2)
+                count = 0
+                while n2 > 0:
+                    n2 -= 1
+                    ch = prev[n - count - 1]
+                    if ch != ' ':
+                        break
+                    else:
+                        count += 1
+                # Make sure we actually delete something.
+                i = ins - (max(1, count))
+                w.delete(i, ins)
+                w.setSelectionRange(i, i, insert=i)
                 u.type_text(p, oldSel=oldSel, oldText=p.b, w=w)
             return
         # No *direct* undo in this widget.
@@ -1831,7 +1830,12 @@ class EditCommandsClass:
     # @+node:ekr.20150514063305.259: *4* ec.deleteNextChar
     @cmd('delete-char')
     def deleteNextChar(self, event: LeoKeyEvent | None = None) -> None:
-        """Delete the character to the right of the cursor."""
+        """
+        Delete the character to the right of the cursor.
+
+        If there is no such character, delete the character
+        to the left of the cursor.
+        """
         c = self.c
         p = c.p
         u = c.undoer
@@ -1839,28 +1843,34 @@ class EditCommandsClass:
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        s = w.getAllText()
-        i, j = w.getSelectionRange()
+        w_text = w.getAllText()
+        i, j = w_sel = w.getSelectionRange()
         wname = c.widget_name(w)
         if wname.startswith('body'):
-            with u.change_node(p, 'delete-char'):
-                if i != j:
-                    w.delete(i, j)
-                    w.setInsertPoint(i)
-                elif j < len(s):
-                    w.delete(i)
-                    w.setInsertPoint(i)
-                p.v.b = w.getAllText()
-                c.k.resetLabel()
+            if i != j:
+                w.delete(i, j)
+                w.setInsertPoint(i)
+            elif j < len(w_text):
+                w.delete(i)
+                w.setInsertPoint(i)
+            elif i - 1 >= 0:  # PR #5044
+                w.delete(i - 1)
+                w.setInsertPoint(i - 1)
+            p.v.b = w.getAllText()
+            c.k.resetLabel()
+            u.type_text(p, oldSel=w_sel, oldText=w_text, w=w)
             return
         # No *direct* undo in this widget.
         # Undo in headlines is handled indirectly.
         if i != j:
             w.delete(i, j)
             w.setInsertPoint(i)
-        elif j < len(s):
+        elif j < len(w_text):
             w.delete(i)
             w.setInsertPoint(i)
+        elif i - 1 >= 0:  # PR #5044
+            w.delete(i - 1)
+            w.setInsertPoint(i - 1)
 
     # @+node:ekr.20150514063305.260: *4* ec.deleteSpaces
     @cmd('delete-spaces')
@@ -1895,19 +1905,22 @@ class EditCommandsClass:
     # @+node:ekr.20150514063305.261: *4* ec.insertHardTab
     @cmd('insert-hard-tab')
     def insertHardTab(self, event: LeoKeyEvent | None = None) -> None:
-        """Insert one hard tab."""
+        """Insert one hard tab in the body pane."""
         c = self.c
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        ins = w.getInsertPoint()
-        with u.change_node(p, 'insert-hard-tab'):
-            w.insert(ins, '\t')
-            ins += 1
-            w.setSelectionRange(ins, ins, insert=ins)
-            p.v.b = w.getAllText()
+        w_text = w.getAllText()
+        i, j = w_sel = w.getSelectionRange()
+        if i != j:
+            w.delete(i, j)
+        w.insert(i, '\t')
+        i += 1
+        w.setSelectionRange(i, i, insert=i)
+        p.v.b = w.getAllText()
+        u.type_text(p, oldSel=w_sel, oldText=w_text, w=w)
 
     # @+node:ekr.20150514063305.262: *4* ec.insertNewLine (insert-newline)
     @cmd('insert-newline')
