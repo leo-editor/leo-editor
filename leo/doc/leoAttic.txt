@@ -672,8 +672,113 @@ def peep_hole(self, opcodes):
         result.append(op0)
         i += 1
     return result
+# @+node:ekr.20261109151859.1: *3* TypingBead.must_change_word (deleted)
+def begins_new_word(self, w: QTextMixin) -> bool:
+    """
+    Return True if the incoming character begins a new word.
+    This method handles non-backspace characters in an intuitive manner.
+    
+    Alas, handling backspace or delete can *not* be done intuitively.
+    For details, the discussion in PR #5044.
+    https://github.com/leo-editor/leo-editor/pull/5044
+    """
+    s = w.getAllText()
+    w_ins = w.getInsertPoint()
+
+    # Get the line per g.get_line.
+    i = g.find_line_start(s, w_ins)
+    j = g.skip_to_end_of_line(s, w_ins)
+
+    # Compute head, ch, tail.
+    head = s[i : max(0, w_ins - 1)]
+    ch = s[max(0, w_ins - 1) : w_ins]
+    tail = s[w_ins + 1 : j]
+
+    # Compute the result!
+    prev_line = self.new_lines.rstrip()
+    is_bs = len(s) < len(prev_line)
+    result = (
+        False if ch in ' \t'
+        else False if is_bs  # A quirp: backspace isn't undoable.
+        else True if head.endswith((' ', '\t'))
+        else True if tail.startswith((' ', '\t'))
+        else False
+    )  # fmt: skip
+    # g.trace(f"bs? {int(is_bs)} new word?: {int(result)}")
+    return result
+
 # @+node:ekr.20260820040558.1: ** Temporary attic
-# @+node:ekr.20230714143451.1: *3* TestEditFileCommands.test_diff_two_branches
+# @+node:ekr.20261109032204.1: *3* --- deleted gui code
+# @+node:ekr.20110605121601.18503: *4* LeoQtGui.runScrolledMessageDialog (deleted)
+def runScrolledMessageDialog(
+    self,
+    short_title: str = '',
+    title: str = 'Message',
+    label: str = '',
+    msg: str = '',
+    c: Cmdr | None = None,
+    **keys: Any,
+) -> None:
+    if g.unitTesting:
+        return None
+
+    def send() -> Any:
+        return g.doHook(
+            'scrolledMessage',
+            short_title=short_title,
+            title=title,
+            label=label,
+            msg=msg,
+            c=c,
+            **keys,
+        )
+
+    if not c or not c.exists:
+        << no c error>>
+    else:
+        if retval := send():
+            return retval
+        << load viewrendered plugin >>
+        if retval := send():
+            return retval
+        << no dialog error >>
+    << emergency fallback >>
+
+# @+node:ekr.20110605121601.18504: *5* << no c error>>
+g.es_print_error(
+    '%s\n%s\n\t%s'
+    % (
+        "The qt plugin requires calls to g.app.gui.scrolledMessageDialog to include 'c'",
+        "as a keyword argument",
+        g.callers(),
+    )
+)
+# @+node:ekr.20110605121601.18505: *5* << load viewrendered plugin >>
+pc = g.app.pluginsController
+# Load viewrendered (and call vr.onCreate) *only* if not already loaded.
+if not pc.isLoaded('viewrendered.py') and not pc.isLoaded('viewrendered3.py'):
+    if pc.loadOnePlugin('viewrendered.py'):
+        g.blue('viewrendered plugin loaded.')
+# @+node:ekr.20110605121601.18506: *5* << no dialog error >>
+g.es_print_error(f'No handler for the "scrolledMessage" hook.\n\t{g.callers()}')
+# @+node:ekr.20110605121601.18507: *5* << emergency fallback >>
+dialog = QtWidgets.QMessageBox(None)
+# That is, not a fixed size dialog.
+dialog.setWindowFlags(WindowType.Dialog)
+dialog.setWindowTitle(title)
+if msg:
+    dialog.setText(msg)
+dialog.setIcon(Icon.Information)
+dialog.addButton('Ok', ButtonRole.YesRole)
+try:
+    if c:
+        c.in_qt_dialog = True
+    dialog.exec()
+finally:
+    if c:
+        c.in_qt_dialog = False
+# @+node:ekr.20261109032123.1: *3* --- deleted unit tests
+# @+node:ekr.20230714143451.1: *4* TestEditFileCommands.test_diff_two_branches
 def test_diff_two_branches(self):
     c = self.c
     u = c.undoer
@@ -714,77 +819,9 @@ def test_diff_two_branches(self):
     finally:
         os.chdir(old_dir)
 
-# @+node:ekr.20110605121601.18503: *3* LeoQtGui.runScrolledMessageDialog (deleted)
-def runScrolledMessageDialog(
-    self,
-    short_title: str = '',
-    title: str = 'Message',
-    label: str = '',
-    msg: str = '',
-    c: Cmdr | None = None,
-    **keys: Any,
-) -> None:
-    if g.unitTesting:
-        return None
-
-    def send() -> Any:
-        return g.doHook(
-            'scrolledMessage',
-            short_title=short_title,
-            title=title,
-            label=label,
-            msg=msg,
-            c=c,
-            **keys,
-        )
-
-    if not c or not c.exists:
-        << no c error>>
-    else:
-        if retval := send():
-            return retval
-        << load viewrendered plugin >>
-        if retval := send():
-            return retval
-        << no dialog error >>
-    << emergency fallback >>
-
-# @+node:ekr.20110605121601.18504: *4* << no c error>>
-g.es_print_error(
-    '%s\n%s\n\t%s'
-    % (
-        "The qt plugin requires calls to g.app.gui.scrolledMessageDialog to include 'c'",
-        "as a keyword argument",
-        g.callers(),
-    )
-)
-# @+node:ekr.20110605121601.18505: *4* << load viewrendered plugin >>
-pc = g.app.pluginsController
-# Load viewrendered (and call vr.onCreate) *only* if not already loaded.
-if not pc.isLoaded('viewrendered.py') and not pc.isLoaded('viewrendered3.py'):
-    if pc.loadOnePlugin('viewrendered.py'):
-        g.blue('viewrendered plugin loaded.')
-# @+node:ekr.20110605121601.18506: *4* << no dialog error >>
-g.es_print_error(f'No handler for the "scrolledMessage" hook.\n\t{g.callers()}')
-# @+node:ekr.20110605121601.18507: *4* << emergency fallback >>
-dialog = QtWidgets.QMessageBox(None)
-# That is, not a fixed size dialog.
-dialog.setWindowFlags(WindowType.Dialog)
-dialog.setWindowTitle(title)
-if msg:
-    dialog.setText(msg)
-dialog.setIcon(Icon.Information)
-dialog.addButton('Ok', ButtonRole.YesRole)
-try:
-    if c:
-        c.in_qt_dialog = True
-    dialog.exec()
-finally:
-    if c:
-        c.in_qt_dialog = False
-# @+node:ekr.20261018053649.1: *3* Dual mode unit tests
+# @+node:ekr.20261018053649.1: *4* --- deleted dual mode unit tests
 # An interesting test pattern.
-# @+node:ekr.20261014103254.30: *4* TestContextUndo.test_dual_mode_harness_sets_and_restores_switch
+# @+node:ekr.20261014103254.30: *5* TestContextUndo.test_dual_mode_harness_sets_and_restores_switch
 def test_dual_mode_harness_sets_and_restores_switch(self):
     seen = []
     old = g.new_undoers
@@ -797,7 +834,7 @@ def test_dual_mode_harness_sets_and_restores_switch(self):
     self.assertEqual(seen, [True, False])
     self.assertEqual(g.new_undoers, old)
 
-# @+node:ekr.20261009094252.1: *4*  LeoUnitTest.run_undo_test
+# @+node:ekr.20261009094252.1: *5*  LeoUnitTest.run_undo_test
 def run_undo_test(self, undo_test: Callable) -> None:
 
     class UndoTester(LeoUnitTest):
@@ -835,6 +872,93 @@ def run_undo_test(self, undo_test: Callable) -> None:
         n = len(errs)
         errors = [f"Error {test!r}: {err}" for test, err in errs]
         self.fail(f"{n} Error{g.plural(n)}:\n\n{''.join(errors)}")
+
+# @+node:ekr.20261109032446.1: *4* --- deleted unit test re undo
+# @+node:ekr.20261014103254.28: *5* TestContextUndo.test_typing_granularity_and_save_boundary
+def test_typing_granularity_and_save_boundary(self):
+    c = self.c
+    p = c.p
+    u = c.undoer
+
+    def _run_test_typing_granularity_and_save_boundary(granularity):
+        p.b = ''
+        u.clearUndoState()
+        c.clearChanged()
+        if hasattr(u, 'granularity'):
+            u.granularity = granularity
+        for old, new in (('', 'a'), ('a', 'ab')):
+            w = c.frame.body.wrapper
+            w.setAllText(new)
+            oldSel = (len(old), len(old))
+            newSel = (len(new), len(new))
+            w.setSelectionRange(*newSel)
+            u.type_text(p, old, new, newInsert=len(new), oldSel=oldSel, newSel=newSel)
+        self.assertEqual(len(u.beads), 2 if granularity == 'char' else 1)
+        u.undo()
+        self.assertEqual(p.b, 'a' if granularity == 'char' else '')
+        u.redo()
+        c.clearChanged()
+        w.setAllText('abc')
+        w.setSelectionRange(3, 3)
+        u.type_text(p, 'ab', 'abc', newInsert=3, oldSel=(2, 2), newSel=(3, 3))
+        self.assertEqual(len(u.beads), 3 if granularity == 'char' else 2)
+        u.undo()
+        self.assertEqual(p.b, 'ab')
+        self.assertTrue(c.changed)
+
+    if hasattr(u, 'granularity'):
+        for granularity in ('char', 'line', 'word', 'node'):
+            with self.subTest(granularity=granularity):
+                _run_test_typing_granularity_and_save_boundary(granularity)
+    else:
+        _run_test_typing_granularity_and_save_boundary('word')
+
+# @+node:ekr.20261014103254.29: *5* TestContextUndo.test_typing_word_boundary
+def test_typing_word_boundary(self):
+    c = self.c
+    p = c.p
+    u = c.undoer
+    p.b = ''
+    for new in ('a', 'ab', 'ab ', 'ab c', 'ab cd'):
+        old = p.b
+        w = c.frame.body.wrapper
+        w.setAllText(new)
+        w.setSelectionRange(len(new), len(new))
+        oldSel = (len(old), len(old))
+        newSel = (len(new), len(new))
+        newInsert = len(new)
+        u.type_text(p, oldText=old, oldSel=oldSel, w=w)
+    self.assertEqual(len(u.beads), 2)
+    u.undo()
+    self.assertEqual(p.b, 'ab')
+    u.undo()
+    self.assertEqual(p.b, '')
+    u.redo()
+    u.redo()
+    self.assertEqual(p.b, 'ab cd')
+
+# @+node:ekr.20261014103254.27: *5* TestContextUndo.xxx_test_typing_preserves_text_mark_and_newlines
+def xxx_test_typing_preserves_text_mark_and_newlines(self):
+    c = self.c
+    p = c.p
+    u = c.undoer
+    for marked in (False, True):
+        for old, new in (('', '\n'), ('a\n\n', 'a\nb\n\n'), ('a\n', ''), ('a\nb', 'a\nb\n')):
+            with self.subTest(marked=marked, old=old, new=new):
+                u.clearUndoState()
+                p.b = old
+                p.setMarked() if marked else p.clearMarked()
+                w = c.frame.body.wrapper
+                w.setAllText(new)
+                w.setSelectionRange(len(new), len(new))
+                oldSel = (len(old), len(old))
+                u.type_text(p, oldSel=oldSel, oldText=old, w=w)
+                self.assertIsInstance(u.beads[-1], TypingBead)
+                self.cycles(
+                    lambda old=old: self.assertEqual(p.b, old),
+                    lambda new=new: self.assertEqual(p.b, new),
+                )
+                self.assertEqual(p.isMarked(), marked)
 
 # @-all
 # @@nosearch
