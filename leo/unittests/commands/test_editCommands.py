@@ -78,7 +78,7 @@ class TestEditCommands(LeoUnitTest):
         actual_j = f"{i_row + 1}.{i_col}"
         actual_sel = (actual_i, actual_j)
         if after_sel != actual_sel:  # Good for debugging.
-            print(f"\nFAIL {g.caller():>40} got: {actual_sel}")
+            print(f"\nFAIL {g.caller():>42} got: {actual_sel} {w_sel=}")
         else:
             self.assertEqual(after_sel, actual_sel, msg=command_name)
 
