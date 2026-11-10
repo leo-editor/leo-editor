@@ -1838,28 +1838,34 @@ class EditCommandsClass:
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        s = w.getAllText()
-        i, j = w.getSelectionRange()
+        w_text = w.getAllText()
+        i, j = w_sel = w.getSelectionRange()
         wname = c.widget_name(w)
         if wname.startswith('body'):
-            with u.change_node(p, 'delete-char'):
-                if i != j:
-                    w.delete(i, j)
-                    w.setInsertPoint(i)
-                elif j < len(s):
-                    w.delete(i)
-                    w.setInsertPoint(i)
-                p.v.b = w.getAllText()
-                c.k.resetLabel()
+            if i != j:
+                w.delete(i, j)
+                w.setInsertPoint(i)
+            elif j < len(w_text):
+                w.delete(i)
+                w.setInsertPoint(i)
+            elif i - 1 >= 0:  # PR #5044
+                w.delete(i - 1)
+                w.setInsertPoint(i - 1)
+            p.v.b = w.getAllText()
+            c.k.resetLabel()
+            u.type_text(p, oldSel=w_sel, oldText=w_text, w=w)
             return
         # No *direct* undo in this widget.
         # Undo in headlines is handled indirectly.
         if i != j:
             w.delete(i, j)
             w.setInsertPoint(i)
-        elif j < len(s):
+        elif j < len(w_text):
             w.delete(i)
             w.setInsertPoint(i)
+        elif i - 1 >= 0:  # PR #5044
+            w.delete(i - 1)
+            w.setInsertPoint(i - 1)
 
     # @+node:ekr.20150514063305.260: *4* ec.deleteSpaces
     @cmd('delete-spaces')
