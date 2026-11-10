@@ -25,9 +25,7 @@ class TestEditCommands(LeoUnitTest):
         directives: str = '',
         dedent: bool = True,
     ):
-        """
-        A helper for many commands tests.
-        """
+        """Run a test that covers one of Leo's commands."""
         c = self.c
 
         def toInt(s):
@@ -64,14 +62,13 @@ class TestEditCommands(LeoUnitTest):
             g.printObj(self.tempNode.b)
             g.printObj(self.after_p.b)
             return
-        # The real checks.
+
+        # Test the returned body text.
         w_text = w.getAllText()
         self.assertEqual(w_text, self.tempNode.b, msg=command_name)
         self.assertEqual(self.tempNode.b, self.after_p.b, msg=command_name)
-        if 0:  ### Before Leo 6.8.11.
-            # This test did not test the returned selection range!
-            # Wow: The strict tests below failed for 55 tests!
-            return
+
+        # Test the returned selection range.
         after_i, after_j = w_sel = w.getSelectionRange()
         i = g.find_line_start(w_text, after_i)
         i_row, i_col = g.convertPythonIndexToRowCol(w_text, after_i)
@@ -81,9 +78,7 @@ class TestEditCommands(LeoUnitTest):
         actual_j = f"{i_row + 1}.{i_col}"
         actual_sel = (actual_i, actual_j)
         if after_sel != actual_sel:  # Good for debugging.
-            # f"{before_sel=} {after_sel=} "
-            # f"{w.sel=} {actual_i=} {actual_j=} {actual_sel=}"
-            print(f"\nFAIL {command_name:>35} expected: {after_sel} got: {actual_sel}")
+            print(f"\nFAIL {g.caller():>40} got: {actual_sel}")
         else:
             self.assertEqual(after_sel, actual_sel, msg=command_name)
 
