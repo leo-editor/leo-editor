@@ -1914,9 +1914,7 @@ class EditCommandsClass:
         if wname.startswith('body'):
             if i != j:
                 w.delete(i, j)
-                w.setInsertPoint(i)
-            else:
-                w.insert(i, '\t')
+            w.insert(i, '\t')
             i += 1
             w.setSelectionRange(i, i, insert=i)
             p.v.b = w.getAllText()
@@ -1924,9 +1922,7 @@ class EditCommandsClass:
         else:
             if i != j:
                 w.delete(i, j)
-                w.setInsertPoint(i)
-            else:
-                w.insert(i, '\t')
+            w.insert(i, '\t')
             i += 1
             w.setSelectionRange(i, i, insert=i)
 
