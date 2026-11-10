@@ -1830,7 +1830,12 @@ class EditCommandsClass:
     # @+node:ekr.20150514063305.259: *4* ec.deleteNextChar
     @cmd('delete-char')
     def deleteNextChar(self, event: LeoKeyEvent | None = None) -> None:
-        """Delete the character to the right of the cursor."""
+        """
+        Delete the character to the right of the cursor.
+
+        If there is no such character, delete the character
+        to the left of the cursor.
+        """
         c = self.c
         p = c.p
         u = c.undoer
@@ -1900,31 +1905,22 @@ class EditCommandsClass:
     # @+node:ekr.20150514063305.261: *4* ec.insertHardTab
     @cmd('insert-hard-tab')
     def insertHardTab(self, event: LeoKeyEvent | None = None) -> None:
-        """Insert one hard tab."""
+        """Insert one hard tab in the body pane."""
         c = self.c
         p = c.p
         u = c.undoer
-        # This method *must* work in headlines.
-        w = event.w if event else c.frame.body.wrapper
+        w = c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
-        wname = c.widget_name(w)
         w_text = w.getAllText()
         i, j = w_sel = w.getSelectionRange()
-        if wname.startswith('body'):
-            if i != j:
-                w.delete(i, j)
-            w.insert(i, '\t')
-            i += 1
-            w.setSelectionRange(i, i, insert=i)
-            p.v.b = w.getAllText()
-            u.type_text(p, oldSel=w_sel, oldText=w_text, w=w)
-        else:
-            if i != j:
-                w.delete(i, j)
-            w.insert(i, '\t')
-            i += 1
-            w.setSelectionRange(i, i, insert=i)
+        if i != j:
+            w.delete(i, j)
+        w.insert(i, '\t')
+        i += 1
+        w.setSelectionRange(i, i, insert=i)
+        p.v.b = w.getAllText()
+        u.type_text(p, oldSel=w_sel, oldText=w_text, w=w)
 
     # @+node:ekr.20150514063305.262: *4* ec.insertNewLine (insert-newline)
     @cmd('insert-newline')
