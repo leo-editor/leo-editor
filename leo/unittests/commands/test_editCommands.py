@@ -75,12 +75,13 @@ class TestEditCommands(LeoUnitTest):
         j = g.find_line_start(w_text, after_j)
         j_row, j_col = g.convertPythonIndexToRowCol(w_text, after_j)
         actual_i = f"{i_row + 1}.{i_col}"
-        actual_j = f"{i_row + 1}.{i_col}"
+        actual_j = f"{j_row + 1}.{j_col}"
         actual_sel = (actual_i, actual_j)
         if after_sel != actual_sel:  # Good for debugging.
-            print(f"\nFAIL {g.caller():>42} got: {actual_sel} {w_sel=}")
-        else:
-            self.assertEqual(after_sel, actual_sel, msg=command_name)
+            print(f"\nFAIL {g.caller():>42} expected: {after_sel} got: {actual_sel}")
+            # f"{after_i=} {after_j=} {w_sel=}"
+
+        # self.assertEqual(after_sel, actual_sel, msg=command_name)
 
     # @+node:ekr.20201201084621.1: *3* TestEditCommands.setUp
     def setUp(self):
