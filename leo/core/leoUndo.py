@@ -260,34 +260,6 @@ class TypingBead(UndoBead):
         i = min(ins, len(s))
         return s.count('\n', 0, i)  # Don't include i.
 
-    # @+node:ekr.20261109151859.1: *3* TypingBead.must_change_word
-    def begins_new_word(self, w: QTextMixin) -> bool:
-        """Return True if the incoming character begins a new word."""
-        s = w.getAllText()
-        w_ins = w.getInsertPoint()
-
-        # Get the line per g.get_line.
-        i = g.find_line_start(s, w_ins)
-        j = g.skip_to_end_of_line(s, w_ins)
-
-        # Compute head, ch, tail.
-        head = s[i : max(0, w_ins - 1)]
-        ch = s[max(0, w_ins - 1) : w_ins]
-        tail = s[w_ins + 1 : j]
-
-        # Compute the result!
-        prev_line = self.new_lines.rstrip()
-        is_bs = len(s) < len(prev_line)
-        result = (
-            False if ch in ' \t'
-            else False if is_bs  # A quirp: backspace isn't undoable.
-            else True if head.endswith((' ', '\t'))
-            else True if tail.startswith((' ', '\t'))
-            else False
-        )  # fmt: skip
-        # g.trace(f"bs? {int(is_bs)} new word?: {int(result)}")
-        return result
-
     # @+node:ekr.20261014100625.5: *3* TypingBead.undo
     def undo(self) -> None:
         c = self.c
@@ -506,14 +478,11 @@ class Undoer:
             or u.bead != len(u.beads) - 1
             or b.p.v != p.v
             or b.line_number != b.compute_line_number(w_ins, w_text)
-            or b.begins_new_word(w)
         ):
             # Can't merge: create a new TypingBead.
             b = TypingBead(u, p, old_sel=oldSel, old_text=oldText, w=w)
             u.pushBead(b)
         else:
-            # An ever-present unit tests.
-            assert b.old_lines_count == w_text.count('\n'), g.callers()
             # Can merge: use the existing TypingBead.
             b.new_lines = w_text
             b.new_sel = w_sel
