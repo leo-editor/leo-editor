@@ -45,6 +45,7 @@ class TestEditCommands(LeoUnitTest):
             after_b = textwrap.dedent(after_b)
         else:
             # The unit test is responsible for all indentation.
+            # print(f"\n{command_name}")
             parent_b = directives
         self.parent_p.b = parent_b
         self.tempNode.b = before_b
@@ -63,7 +64,28 @@ class TestEditCommands(LeoUnitTest):
             g.printObj(self.tempNode.b)
             g.printObj(self.after_p.b)
         else:
+            # Consistency check.
+            w_text = w.getAllText()
+            self.assertEqual(w_text, self.tempNode.b, msg=command_name)
+
+            # Actual tests.
             self.assertEqual(self.tempNode.b, self.after_p.b, msg=command_name)
+            after_i, after_j = w_sel = w.getSelectionRange()
+            i = g.find_line_start(w_text, after_i)
+            i_row, i_col = g.convertPythonIndexToRowCol(w_text, after_i)
+            j = g.find_line_start(w_text, after_j)
+            j_row, j_col = g.convertPythonIndexToRowCol(w_text, after_j)
+            actual_i = f"{i_row + 1}.{i_col}"
+            actual_j = f"{i_row + 1}.{i_col}"
+            actual_sel = (actual_i, actual_j)
+            if 0:
+                g.trace(
+                    f"{before_sel=} {after_sel=} {w.sel=} "
+                    f"{actual_i=} {actual_j=} {actual_sel=}"
+                )  # fmt: skip
+
+            # Wow: this fails for 55 legacy tests!
+            # self.assertEqual(after_sel, actual_sel, msg=command_name)
 
     # @+node:ekr.20201201084621.1: *3* TestEditCommands.setUp
     def setUp(self):
@@ -2029,6 +2051,19 @@ class TestEditCommands(LeoUnitTest):
             before_sel=("2.0", "2.0"),
             after_sel=("2.4", "2.4"),
             command_name="indent-to-comment-column",
+        )
+
+    # @+node:ekr.20261110053233.1: *5* test_insert_hard_tab (new)
+    def test_insert_hard_tab(self):
+        """Test case for insert-hard-tab"""
+        before_b = 'test--line'
+        after_b = 'test-\t-line'
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("1.5", "1.5"),
+            after_sel=("1.6", "1.6"),
+            command_name="insert-hard-tab",
         )
 
     # @+node:ekr.20201130090918.71: *5* test_insert-newline
