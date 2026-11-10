@@ -63,29 +63,25 @@ class TestEditCommands(LeoUnitTest):
             print(self.tempNode.b == self.after_p.b)
             g.printObj(self.tempNode.b)
             g.printObj(self.after_p.b)
-        else:
-            # Consistency check.
-            w_text = w.getAllText()
-            self.assertEqual(w_text, self.tempNode.b, msg=command_name)
-
-            # Actual tests.
-            self.assertEqual(self.tempNode.b, self.after_p.b, msg=command_name)
-            after_i, after_j = w_sel = w.getSelectionRange()
-            i = g.find_line_start(w_text, after_i)
-            i_row, i_col = g.convertPythonIndexToRowCol(w_text, after_i)
-            j = g.find_line_start(w_text, after_j)
-            j_row, j_col = g.convertPythonIndexToRowCol(w_text, after_j)
-            actual_i = f"{i_row + 1}.{i_col}"
-            actual_j = f"{i_row + 1}.{i_col}"
-            actual_sel = (actual_i, actual_j)
-            if 0:
-                g.trace(
-                    f"{before_sel=} {after_sel=} {w.sel=} "
-                    f"{actual_i=} {actual_j=} {actual_sel=}"
-                )  # fmt: skip
-
-            # Wow: this fails for 55 legacy tests!
-            # self.assertEqual(after_sel, actual_sel, msg=command_name)
+            return
+        # The real checks.
+        w_text = w.getAllText()
+        self.assertEqual(w_text, self.tempNode.b, msg=command_name)
+        self.assertEqual(self.tempNode.b, self.after_p.b, msg=command_name)
+        if 1:  # Before Leo 6.8.11.
+            # This test did not test the returned selection range!
+            # Wow: The strict tests below failed for 55 tests!
+            return
+        after_i, after_j = w_sel = w.getSelectionRange()
+        i = g.find_line_start(w_text, after_i)
+        i_row, i_col = g.convertPythonIndexToRowCol(w_text, after_i)
+        j = g.find_line_start(w_text, after_j)
+        j_row, j_col = g.convertPythonIndexToRowCol(w_text, after_j)
+        actual_i = f"{i_row + 1}.{i_col}"
+        actual_j = f"{i_row + 1}.{i_col}"
+        actual_sel = (actual_i, actual_j)
+        # g.trace(f"{before_sel=} {after_sel=} {w.sel=} {actual_i=} {actual_j=} {actual_sel=}")
+        self.assertEqual(after_sel, actual_sel, msg=command_name)
 
     # @+node:ekr.20201201084621.1: *3* TestEditCommands.setUp
     def setUp(self):
@@ -526,8 +522,8 @@ class TestEditCommands(LeoUnitTest):
             command_name="backward-delete-char",
         )
 
-    # @+node:ekr.20201130090918.16: *5* test_backward-delete-char  (middle of line)
-    def test_backward_delete_char__middle_of_line(self):
+    # @+node:ekr.20201130090918.16: *5* test_backward_delete_char_middle_of_line
+    def test_backward_delete_char_middle_of_line(self):
         """Test case for backward-delete-char  (middle of line)"""
         before_b = """\
     first line
@@ -545,7 +541,7 @@ class TestEditCommands(LeoUnitTest):
             command_name="backward-delete-char",
         )
 
-    # @+node:ekr.20201130090918.17: *5* test_backward-delete-char (last char)
+    # @+node:ekr.20201130090918.17: *5* test_backward_delete_char_last_char
     def test_backward_delete_char_last_char(self):
         """Test case for backward-delete-char (last char)"""
         before_b = """\
