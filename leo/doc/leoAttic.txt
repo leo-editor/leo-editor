@@ -681,24 +681,6 @@ def begins_new_word(self, w: QTextMixin) -> bool:
     Alas, handling backspace or delete can *not* be done intuitively.
     For details, the discussion in PR #5044.
     https://github.com/leo-editor/leo-editor/pull/5044
-    
-    
-    
-    However, I don't like word granularity.
-    
-    
-    However, handling 
-    For example, vs-code's implementation of word granularity is somewhat clumsy.
-    
-    Furthermore, vs-code issued the following error when I played with undo/redo:
-        
-    Error: Trying to add a disposable to a DisposableMap that has already been disposed of.
-    The added object will be leaked!
-        at St.set (file:///C:/App/vs-code/f6cfa2ea24/resources/app/out/main.js:404:2550)
-        at Ba.queueFor (file:///C:/App/vs-code/f6cfa2ea24/resources/app/out/main.js:406:85895)
-        at xs.doWriteUnbuffered (file:///C:/App/vs-code/f6cfa2ea24/resources/app/out/main.js:541:18887)
-        at xs.writeFile (file:///C:/App/vs-code/f6cfa2ea24/resources/app/out/main.js:541:7799)
-        at async _y.doSave (file:///C:/App/vs-code/f6cfa2ea24/resources/app/out/main.js:414:100358)
     """
     s = w.getAllText()
     w_ins = w.getInsertPoint()
