@@ -672,6 +672,59 @@ def peep_hole(self, opcodes):
         result.append(op0)
         i += 1
     return result
+# @+node:ekr.20261109151859.1: *3* TypingBead.must_change_word (deleted)
+def begins_new_word(self, w: QTextMixin) -> bool:
+    """
+    Return True if the incoming character begins a new word.
+    This method handles non-backspace characters in an intuitive manner.
+    
+    Alas, handling backspace or delete can *not* be done intuitively.
+    For details, the discussion in PR #5044.
+    https://github.com/leo-editor/leo-editor/pull/5044
+    
+    
+    
+    However, I don't like word granularity.
+    
+    
+    However, handling 
+    For example, vs-code's implementation of word granularity is somewhat clumsy.
+    
+    Furthermore, vs-code issued the following error when I played with undo/redo:
+        
+    Error: Trying to add a disposable to a DisposableMap that has already been disposed of.
+    The added object will be leaked!
+        at St.set (file:///C:/App/vs-code/f6cfa2ea24/resources/app/out/main.js:404:2550)
+        at Ba.queueFor (file:///C:/App/vs-code/f6cfa2ea24/resources/app/out/main.js:406:85895)
+        at xs.doWriteUnbuffered (file:///C:/App/vs-code/f6cfa2ea24/resources/app/out/main.js:541:18887)
+        at xs.writeFile (file:///C:/App/vs-code/f6cfa2ea24/resources/app/out/main.js:541:7799)
+        at async _y.doSave (file:///C:/App/vs-code/f6cfa2ea24/resources/app/out/main.js:414:100358)
+    """
+    s = w.getAllText()
+    w_ins = w.getInsertPoint()
+
+    # Get the line per g.get_line.
+    i = g.find_line_start(s, w_ins)
+    j = g.skip_to_end_of_line(s, w_ins)
+
+    # Compute head, ch, tail.
+    head = s[i : max(0, w_ins - 1)]
+    ch = s[max(0, w_ins - 1) : w_ins]
+    tail = s[w_ins + 1 : j]
+
+    # Compute the result!
+    prev_line = self.new_lines.rstrip()
+    is_bs = len(s) < len(prev_line)
+    result = (
+        False if ch in ' \t'
+        else False if is_bs  # A quirp: backspace isn't undoable.
+        else True if head.endswith((' ', '\t'))
+        else True if tail.startswith((' ', '\t'))
+        else False
+    )  # fmt: skip
+    # g.trace(f"bs? {int(is_bs)} new word?: {int(result)}")
+    return result
+
 # @+node:ekr.20260820040558.1: ** Temporary attic
 # @+node:ekr.20261109032204.1: *3* --- deleted gui code
 # @+node:ekr.20110605121601.18503: *4* LeoQtGui.runScrolledMessageDialog (deleted)
