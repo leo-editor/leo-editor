@@ -68,7 +68,7 @@ class TestEditCommands(LeoUnitTest):
         w_text = w.getAllText()
         self.assertEqual(w_text, self.tempNode.b, msg=command_name)
         self.assertEqual(self.tempNode.b, self.after_p.b, msg=command_name)
-        if 1:  # Before Leo 6.8.11.
+        if 0:  ### Before Leo 6.8.11.
             # This test did not test the returned selection range!
             # Wow: The strict tests below failed for 55 tests!
             return
@@ -80,8 +80,12 @@ class TestEditCommands(LeoUnitTest):
         actual_i = f"{i_row + 1}.{i_col}"
         actual_j = f"{i_row + 1}.{i_col}"
         actual_sel = (actual_i, actual_j)
-        # g.trace(f"{before_sel=} {after_sel=} {w.sel=} {actual_i=} {actual_j=} {actual_sel=}")
-        self.assertEqual(after_sel, actual_sel, msg=command_name)
+        if after_sel != actual_sel:  # Good for debugging.
+            # f"{before_sel=} {after_sel=} "
+            # f"{w.sel=} {actual_i=} {actual_j=} {actual_sel=}"
+            print(f"\nFAIL {command_name:>35} expected: {after_sel} got: {actual_sel}")
+        else:
+            self.assertEqual(after_sel, actual_sel, msg=command_name)
 
     # @+node:ekr.20201201084621.1: *3* TestEditCommands.setUp
     def setUp(self):
