@@ -2,7 +2,6 @@
 # @+node:ekr.20201202144422.1: * @file ../unittests/commands/test_editCommands.py
 """Tests of leo.commands.editCommands."""
 
-import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 from leo.core.leoGui import LeoKeyEvent
@@ -1415,7 +1414,7 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.45: *5* test_end_of_line_single_char_last_line
     def test_end_of_line_single_char_last_line(self):
         """Test case for end-of-line (single char last line)"""
-        before_b = textwrap.dedent(
+        before_b = self.prep(
             """
                 first line
                 line 1
@@ -1424,9 +1423,9 @@ class TestEditCommands(LeoUnitTest):
                 line c
                 last non-blank line
                 [space]
-            """).lstrip()  # fmt: skip
+            """)  # fmt: skip
 
-        after_b = textwrap.dedent(
+        after_b = self.prep(
             """
                 first line
                 line 1
@@ -1435,7 +1434,7 @@ class TestEditCommands(LeoUnitTest):
                 line c
                 last non-blank line
                 [space]
-            """).lstrip()  # fmt: skip
+            """)  # fmt: skip
 
         self.run_test(
             before_b=before_b.replace('[space]', ' '),
@@ -1719,7 +1718,7 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.56: *5* test_fill_paragraph
     def test_fill_paragraph(self):
         """Test case for fill-paragraph"""
-        before_b = textwrap.dedent(
+        before_b = self.prep(
     """
     Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Services StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -1737,9 +1736,9 @@ class TestEditCommands(LeoUnitTest):
     emergency managers strengthen local safety programs.
 
     StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """).lstrip()  # fmt: skip
+    """)  # fmt: skip
 
-        after_b = textwrap.dedent(
+        after_b = self.prep(
     """
     Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Services StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -1751,7 +1750,7 @@ class TestEditCommands(LeoUnitTest):
     strengthen local safety programs.
 
     StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """).lstrip()  # fmt: skip
+    """)  # fmt: skip
 
         self.run_test(
             before_b=before_b,
@@ -1765,7 +1764,7 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.53: *5* test_finish-of-line
     def test_finish_of_line(self):
         """Test case for finish-of-line"""
-        before_b = textwrap.dedent(
+        before_b = self.prep(
             """
             first line
             line 1
@@ -1773,10 +1772,9 @@ class TestEditCommands(LeoUnitTest):
                     line b
             line c
             last line
-        """
-        ).lstrip()  # fmt: skip
+        """)  # fmt: skip
 
-        after_b = textwrap.dedent(
+        after_b = self.prep(
             """
             first line
             line 1
@@ -1784,8 +1782,7 @@ class TestEditCommands(LeoUnitTest):
                     line b
             line c
             last line
-        """
-        ).lstrip()  # fmt: skip
+        """)  # fmt: skip
 
         self.run_test(
             before_b=before_b,
@@ -2369,22 +2366,22 @@ class TestEditCommands(LeoUnitTest):
     def test_insert_newline_bug_2230(self):
         """Test case for insert-newline"""
         # Insert newline should insert a newline at the insertion point.
-        before_b = textwrap.dedent(
+        before_b = self.prep(
             """
                 @language python
                 def spam():
                     if 1:  # test
                 # after line
-            """).lstrip()  # fmt: skip
+            """)  # fmt: skip
 
-        after_b = textwrap.dedent(
+        after_b = self.prep(
             """
                 @language python
                 def spam():
                     if 1:  # test
                 [8spaces]
                 # after line
-            """).lstrip()  # fmt: skip
+            """)  # fmt: skip
 
         self.run_test(
             before_b=before_b,
