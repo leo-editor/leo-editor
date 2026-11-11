@@ -1253,7 +1253,7 @@ class TestEditCommands(LeoUnitTest):
             command_name="end-of-line",
         )
 
-    # @+node:ekr.20201130090918.45: *5* test_end_of_line_single_char_last_line (fail)
+    # @+node:ekr.20201130090918.45: *5* test_end_of_line_single_char_last_line
     def test_end_of_line_single_char_last_line(self):
         """Test case for end-of-line (single char last line)"""
         before_b = textwrap.dedent("""\
