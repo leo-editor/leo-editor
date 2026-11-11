@@ -23,32 +23,30 @@ class TestEditCommands(LeoUnitTest):
         after_sel: str,  # before and after selection ranges.
         command_name: str,
         directives: str = '',
-        dedent: bool = True,
     ):
         """Run a test that covers one of Leo's commands."""
         c = self.c
+        # self.command_name = command_name
 
         def toInt(s):
             return g.toPythonIndex(before_b, s)
 
-        # For shortDescription().
-        self.command_name = command_name
         # Compute the result in tempNode.b
         command = c.commandsDict.get(command_name)
         assert command, f"no command: {command_name}"
+
         # Set the text.
-        if dedent:
-            before_b = textwrap.dedent(before_b)
-            after_b = textwrap.dedent(after_b)
         self.parent_p.b = directives
         self.tempNode.b = before_b
         self.before_p.b = before_b
         self.after_p.b = after_b
+
         # Set the selection range and insert point.
         w = c.frame.body.wrapper
         i, j = before_sel
         i, j = toInt(i), toInt(j)
         w.setSelectionRange(i, j, insert=j)
+
         # Run the command!
         event = LeoKeyEvent(c, w=w)  # Leo 6.8.9.
         c.doCommandByName(command_name, event)
@@ -61,7 +59,6 @@ class TestEditCommands(LeoUnitTest):
             g.printObj(self.tempNode.b, tag='self.tempNode.b')
             g.printObj(self.after_p.b, tag='self.after_p.b')
         self.assertEqual(w_text, self.tempNode.b, msg=command_name)
-        # self.assertEqual(self.tempNode.b, self.after_p.b, msg=command_name)
 
         # Test the returned selection range.
         after_i, after_j = w_sel = w.getSelectionRange()
@@ -77,7 +74,6 @@ class TestEditCommands(LeoUnitTest):
             g.printObj(w_text, tag='w_text')
             g.printObj(self.tempNode.b, tag='self.tempNode.b')
             g.printObj(self.after_p.b, tag='self.after_p.b')
-            # f"{after_i=} {after_j=} {w_sel=}"
         self.assertEqual(after_sel, actual_sel, msg=command_name)
 
     # @+node:ekr.20201201084621.1: *3* TestEditCommands.setUp
@@ -1447,7 +1443,6 @@ class TestEditCommands(LeoUnitTest):
             before_sel=("7.0", "7.0"),
             after_sel=("7.1", "7.1"),
             command_name="end-of-line",
-            dedent=False,
         )
 
     # @+node:ekr.20201130090918.42: *5* test_end-of-line 2
@@ -1765,7 +1760,6 @@ class TestEditCommands(LeoUnitTest):
             after_sel=("10.0", "10.0"),
             command_name="fill-paragraph",
             directives="@pagewidth 80",
-            dedent=False,
         )
 
     # @+node:ekr.20201130090918.53: *5* test_finish-of-line
@@ -1799,7 +1793,6 @@ class TestEditCommands(LeoUnitTest):
             before_sel=("3.1", "3.1"),
             after_sel=("3.9", "3.9"),
             command_name="finish-of-line",
-            dedent=False,
         )
 
     # @+node:ekr.20201130090918.54: *5* test_finish-of-line (2)
@@ -2397,7 +2390,6 @@ class TestEditCommands(LeoUnitTest):
             before_sel=("3.17", "3.17"),  # Before the newline.
             after_sel=("4.8", "4.8"),
             command_name="insert-newline",
-            dedent=False,
         )
 
     # @+node:ekr.20201130090918.72: *5* test_insert-parentheses
@@ -3054,7 +3046,6 @@ class TestEditCommands(LeoUnitTest):
             before_sel=("2.6", "2.6"),
             after_sel=("3.4", "3.4"),
             command_name="newline-and-indent",
-            dedent=False,
         )
 
     # @+node:ekr.20201130090918.92: *5* test_next-line
