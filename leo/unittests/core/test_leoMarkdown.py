@@ -48,9 +48,8 @@ class TestMarkdown(LeoUnitTest):
         # @-<< define body >>
         # @+<< define expected >>
         # @+node:ekr.20260916133712.1: *4* << define expected >>
-        expected = self.prep("""\
-
-
+        expected = self.prep(
+        """
             = child
             Some intro text before the first source block.
 
