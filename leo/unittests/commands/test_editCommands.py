@@ -1522,10 +1522,11 @@ class TestEditCommands(LeoUnitTest):
         )
 
     # @+node:ekr.20210829062134.1: *4* Commands F-L
-    # @+node:ekr.20201130090918.56: *5* xxx_test_fill-paragraph (fail)
-    def xxx_test_fill_paragraph(self):
+    # @+node:ekr.20201130090918.56: *5* test_fill_paragraph
+    def test_fill_paragraph(self):
         """Test case for fill-paragraph"""
-        before_b = """\
+        before_b = textwrap.dedent(
+    """
     Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Services StormReady program to help them guard against the ravages of Mother Nature.
 
     Some 90% of all presidentially
@@ -1542,8 +1543,10 @@ class TestEditCommands(LeoUnitTest):
     emergency managers strengthen local safety programs.
 
     StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    """).lstrip()  # fmt: skip
+
+        after_b = textwrap.dedent(
     """
-        after_b = """\
     Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Services StormReady program to help them guard against the ravages of Mother Nature.
 
     Some 90% of all presidentially declared disasters are weather related, leading
@@ -1554,14 +1557,16 @@ class TestEditCommands(LeoUnitTest):
     strengthen local safety programs.
 
     StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
+    """).lstrip()  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
             before_sel=("3.0", "3.7"),
-            after_sel=("10.0", " 10.0"),
+            after_sel=("10.0", "10.0"),
             command_name="fill-paragraph",
             directives="@pagewidth 80",
+            dedent=False,
         )
 
     # @+node:ekr.20201130090918.53: *5* test_finish-of-line
