@@ -1943,7 +1943,8 @@ class TestJupytext(BaseTestImporter):
     # @+node:ekr.20241029092043.1: *3* TestJupytext.test_small_file
     def test_small_ipynb_file(self):
         # Must be in standard form, with a space after '#'.
-        s = """\
+        s = self.prep(
+        """
             # %%
             # A leading (misleading?) comment.
             # %%
@@ -1966,7 +1967,8 @@ class TestJupytext(BaseTestImporter):
             # ## Another markdown cell
 
             # %%
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # check_outlines ignores the first headline.
