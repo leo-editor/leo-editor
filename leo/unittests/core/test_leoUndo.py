@@ -333,6 +333,27 @@ class TestUndo(LeoUnitTest):
         func = c.extract
         self.runTest(before, after, i, j, func)
 
+    # @+node:swot.20261026120000.1: *3* TestUndo.test_extract_blank_line
+    def test_extract_blank_line(self):
+        """extract should do nothing when the selected text is blank."""
+        c, p, w = self.c, self.c.p, self.c.frame.body.wrapper
+        # A blank line and a line containing only whitespace.
+        for before in ('before\n\nafter\n', 'before\n   \nafter\n'):
+            with self.subTest(before=repr(before)):
+                p.b = before
+                self.assertEqual(p.b, w.getAllText())
+                # Select the second line, which is blank.
+                i = before.find('\n') + 1
+                w.setSelectionRange(i, i, insert=i)
+                children = p.numberOfChildren()
+                # Run the command. It should do nothing.
+                c.extract()
+                # The body text should not change.
+                self.assertEqual(p.b, before, msg='extract: blank line')
+                self.assertEqual(w.getAllText(), before, msg='extract: blank line')
+                # No node (with an empty headline) should have been created.
+                self.assertEqual(p.numberOfChildren(), children, msg='extract: blank line')
+
     # @+node:ekr.20210906172626.14: *3* TestUndo.test_line_to_headline
     def test_line_to_headline(self):
         c = self.c
