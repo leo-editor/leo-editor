@@ -57,14 +57,14 @@ class TestEditCommands(LeoUnitTest):
         # Run the command!
         event = LeoKeyEvent(c, w=w)  # Leo 6.8.9.
         c.doCommandByName(command_name, event)
-        if 0:  # Good for debugging.
-            print(self.tempNode.b == self.after_p.b)
-            g.printObj(self.tempNode.b)
-            g.printObj(self.after_p.b)
-            return
 
         # Test the returned body text.
         w_text = w.getAllText()
+        if w_text != self.tempNode.b:
+            print(f"Text mismatch: {self.shortDescription()}")
+            g.printObj(w_text, tag='w_text')
+            g.printObj(self.tempNode.b, tag='self.tempNode.b')
+            g.printObj(self.after_p.b, tag='self.after_p.b')
         self.assertEqual(w_text, self.tempNode.b, msg=command_name)
         self.assertEqual(self.tempNode.b, self.after_p.b, msg=command_name)
 
@@ -80,6 +80,8 @@ class TestEditCommands(LeoUnitTest):
         if after_sel != actual_sel:  # Good for debugging.
             print(f"\nFAIL {g.caller():>42} expected: {after_sel} got: {actual_sel}")
             g.printObj(w_text, tag='w_text')
+            g.printObj(self.tempNode.b, tag='self.tempNode.b')
+            g.printObj(self.after_p.b, tag='self.after_p.b')
             # f"{after_i=} {after_j=} {w_sel=}"
         self.assertEqual(after_sel, actual_sel, msg=command_name)
 
@@ -1251,33 +1253,34 @@ class TestEditCommands(LeoUnitTest):
             command_name="end-of-line",
         )
 
-    # @+node:ekr.20201130090918.45: *5* xxx_test_end-of-line (single char last line) (fail)
-    def xxx_test_end_of_line_single_char_last_line(self):
+    # @+node:ekr.20201130090918.45: *5* test_end_of_line_single_char_last_line (fail)
+    def test_end_of_line_single_char_last_line(self):
         """Test case for end-of-line (single char last line)"""
-        before_b = """\
+        before_b = textwrap.dedent("""\
     first line
     line 1
         line a
             line b
     line c
     last non-blank line
-
-    """
-        after_b = """\
+    [space]
+    """)
+        after_b = textwrap.dedent("""\
     first line
     line 1
         line a
             line b
     line c
     last non-blank line
-
-    """
+    [space]
+    """)
         self.run_test(
-            before_b=before_b,
-            after_b=after_b,
+            before_b=before_b.replace('[space]', ' '),
+            after_b=after_b.replace('[space]', ' '),
             before_sel=("7.0", "7.0"),
             after_sel=("7.1", "7.1"),
             command_name="end-of-line",
+            dedent=False,
         )
 
     # @+node:ekr.20201130090918.42: *5* test_end-of-line 2
