@@ -103,20 +103,24 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.1: *5* test_add-space-to-lines
     def test_add_space_to_lines(self):
         """Test case for add-space-to-lines"""
-        before_b = """\
-    first line
-    line 1
-        line a
-    line b
-    last line
-    """
-        after_b = """\
-    first line
-     line 1
-         line a
-     line b
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			line b
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			 line 1
+    			     line a
+    			 line b
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -128,22 +132,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.2: *5* test_add-tab-to-lines
     def test_add_tab_to_lines(self):
         """Test case for add-tab-to-lines"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-        line 1
-            line a
-                line b
-        line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			    line 1
+    			        line a
+    			            line b
+    			    line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
