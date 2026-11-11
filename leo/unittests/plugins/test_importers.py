@@ -2363,9 +2363,9 @@ class TestMarkdown(BaseTestImporter):
 
     # @+node:ekr.20210904065459.109: *3* TestMarkdown.test_md_import
     def test_md_import(self):
-
         # Must be in standard form, with a space after '#'.
-        s = """\
+        s = self.prep(
+        """
             # Top
             The top section
 
@@ -2387,7 +2387,8 @@ class TestMarkdown(BaseTestImporter):
 
             ## Section 3
             Section 3, line 1
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -2434,8 +2435,8 @@ class TestMarkdown(BaseTestImporter):
 
     # @+node:ekr.20210904065459.110: *3* TestMarkdown.test_md_import_rst_style
     def test_md_import_rst_style(self):
-
-        s = """\
+        s = self.prep(
+        """
             Top
             ====
 
@@ -2468,7 +2469,8 @@ class TestMarkdown(BaseTestImporter):
             ---------
 
             section 3, line 1
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -2655,12 +2657,13 @@ class TestOrg(BaseTestImporter):
 
     # @+node:ekr.20210904065459.43: *3* TestOrg.test_tags
     def test_tags(self):
-
-        s = """\
+        s = self.prep(
+        """
             * Section 1 :tag1:
             * Section 2 :tag2:
             * Section 3 :tag3:tag4:
-        """
+        """)  # fmt: skip
+
         c = self.c
         # Create the TagController by hand.
         from leo.plugins.nodetags import TagController
@@ -4725,7 +4728,8 @@ class TestRst(BaseTestImporter):
             self.skipTest('Requires docutils')
 
         # All heading must be followed by an empty line.
-        s = """\
+        s = self.prep(
+        """
             #########
             Chapter 1
             #########
@@ -4741,7 +4745,8 @@ class TestRst(BaseTestImporter):
             +++++++++
 
             Sec 2.
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
