@@ -37,16 +37,10 @@ class TestEditCommands(LeoUnitTest):
         command = c.commandsDict.get(command_name)
         assert command, f"no command: {command_name}"
         # Set the text.
-        parent_b = directives
         if dedent:
-            # parent_b = textwrap.dedent(directives)
             before_b = textwrap.dedent(before_b)
             after_b = textwrap.dedent(after_b)
-        # else:
-        #     # The unit test is responsible for all indentation.
-        #     # print(f"\n{command_name}")
-        #     parent_b = directives
-        self.parent_p.b = parent_b
+        self.parent_p.b = directives
         self.tempNode.b = before_b
         self.before_p.b = before_b
         self.after_p.b = after_b
