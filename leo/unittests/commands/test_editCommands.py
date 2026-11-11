@@ -2093,10 +2093,10 @@ class TestEditCommands(LeoUnitTest):
             command_name="insert-newline",
         )
 
-    # @+node:ekr.20210926144000.1: *5* xxx_test_insert-newline-bug-2230 (fail)
+    # @+node:ekr.20210926144000.1: *5* test_insert-newline-bug-2230
     def xxx_test_insert_newline_bug_2230(self):
         """Test case for insert-newline"""
-        before_b = self.prep("""
+        before_b = textwrap.dedent("""
             @language python
             def spam():
                 if 1:  # test
@@ -2104,18 +2104,18 @@ class TestEditCommands(LeoUnitTest):
         """)
 
         # There are 8 spaces in the line after "if 1:..."
-        after_b = self.prep(
+        after_b = textwrap.dedent(
             """
             @language python
             def spam():
                 if 1:  # test
-
+            [8spaces]
             # after line
-        """
-        )
+        """)  # fmt: skip
+
         self.run_test(
             before_b=before_b,
-            after_b=after_b,
+            after_b=after_b.replace('[8spaces]', ' ' * 8),
             before_sel=("3.18", "3.18"),
             after_sel=("4.8", "4.8"),
             command_name="insert-newline",
