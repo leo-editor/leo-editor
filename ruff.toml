@@ -20,7 +20,7 @@ quote-style = "preserve"
 # These are ruff's PL* rules that overlap: same message and same numeric id with a `PL` prefix.
 extend-select = [
 
-    "ANN001",   # Missing type annotation for function argument
+    "ANN001", # Missing type annotation for function argument
     "ANN201", # Missing return type annotation for public function
     "ANN202", # Missing return type annotation for private function
     
@@ -63,6 +63,7 @@ extend-select = [
     "PLW0245",  # `super` call is missing parentheses
 
     # imports
+    "F401",     # Unused import.
     "PLC0414",  # Import alias does not rename original package
 
     # typecheck
@@ -137,7 +138,7 @@ ignore = [
     "SIM223",   # Use `False` instead of `False and ...`
     "SIM905",   # Consider using a list literal instead of `str.split`
 
-    "T100",     # Import for `xxx` found
+    "T100",     # Import for `breakpoint` found. For g.pdb.
     "TRY004",   # Prefer `TypeError` exception for invalid type
     "UP028",    # Replace `yield` over `for` loop with `yield from`
     "UP030",    # Use implicit references for positional format fields
