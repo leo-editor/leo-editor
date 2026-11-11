@@ -6,7 +6,6 @@ New unit tests for Leo's outline commands.
 Older tests are in unittests/core/test_leoNodes.py
 """
 
-import textwrap
 from leo.core.leoTest2 import LeoUnitTest
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position
@@ -655,34 +654,32 @@ class TestOutlineCommands(LeoUnitTest):
         eggs_p = spam_p.insertAfter()
         eggs_p.h = 'def eggs'
 
-        promote_p.b = (
-            textwrap.dedent('''
-        ATlanguage python
+        promote_p.b = self.prep(
+            '''
+                ATlanguage python
 
-        # Comment 1.
+                # Comment 1.
 
-        < < section a >>
+                < < section a >>
 
-        # Comment 2.
+                # Comment 2.
 
-        ATothers
+                ATothers
 
-        # Comment 3.
+                # Comment 3.
+            ''').replace('AT', '@').replace('< <', '<<')  # fmt: skip
 
-        ''')
-            .replace('AT', '@')
-            .replace('< <', '<<')
-        )
+        spam_p.b = self.prep(
+            '''
+                def spam():
+                    pass
+            ''')  # fmt: skip
 
-        spam_p.b = textwrap.dedent('''
-        def spam():
-            pass
-        ''')
-
-        eggs_p.b = textwrap.dedent('''
-        def eggs():
-            pass
-        ''')
+        eggs_p.b = self.prep(
+            '''
+                def eggs():
+                    pass
+            ''')  # fmt: skip
         # @-<< create promote-at-others outline >>
         # self.dump_tree(self.root_p)
         # self.dump_headlines(c, tag='1')
