@@ -5,7 +5,6 @@
 # @+<< test_gui imports >>
 # @+node:ekr.20220911102700.1: ** << test_gui imports >>
 import os
-import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest, create_app
 
