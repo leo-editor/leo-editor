@@ -1256,24 +1256,28 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.45: *5* test_end_of_line_single_char_last_line
     def test_end_of_line_single_char_last_line(self):
         """Test case for end-of-line (single char last line)"""
-        before_b = textwrap.dedent("""\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last non-blank line
-    [space]
-    """)
-        after_b = textwrap.dedent("""\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last non-blank line
-    [space]
-    """)
+        before_b = textwrap.dedent(
+            """
+                first line
+                line 1
+                    line a
+                        line b
+                line c
+                last non-blank line
+                [space]
+            """).lstrip()  # fmt: skip
+
+        after_b = textwrap.dedent(
+            """
+                first line
+                line 1
+                    line a
+                        line b
+                line c
+                last non-blank line
+                [space]
+            """).lstrip()  # fmt: skip
+
         self.run_test(
             before_b=before_b.replace('[space]', ' '),
             after_b=after_b.replace('[space]', ' '),
@@ -1581,7 +1585,7 @@ class TestEditCommands(LeoUnitTest):
             line c
             last line
         """
-        ).lstrip()
+        ).lstrip()  # fmt: skip
 
         after_b = textwrap.dedent(
             """
@@ -1592,7 +1596,7 @@ class TestEditCommands(LeoUnitTest):
             line c
             last line
         """
-        ).lstrip()
+        ).lstrip()  # fmt: skip
 
         self.run_test(
             before_b=before_b,
@@ -2117,7 +2121,6 @@ class TestEditCommands(LeoUnitTest):
                 # after line
             """).lstrip()  # fmt: skip
 
-        # There are 8 spaces in the line after "if 1:..."
         after_b = textwrap.dedent(
             """
                 @language python
