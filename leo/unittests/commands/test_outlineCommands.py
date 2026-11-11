@@ -655,7 +655,7 @@ class TestOutlineCommands(LeoUnitTest):
         eggs_p.h = 'def eggs'
 
         promote_p.b = self.prep(
-            '''
+            """
                 ATlanguage python
 
                 # Comment 1.
@@ -667,19 +667,19 @@ class TestOutlineCommands(LeoUnitTest):
                 ATothers
 
                 # Comment 3.
-            ''').replace('AT', '@').replace('< <', '<<')  # fmt: skip
+            """).replace('AT', '@').replace('< <', '<<')  # fmt: skip
 
         spam_p.b = self.prep(
-            '''
+            """
                 def spam():
                     pass
-            ''')  # fmt: skip
+            """)  # fmt: skip
 
         eggs_p.b = self.prep(
-            '''
+            """
                 def eggs():
                     pass
-            ''')  # fmt: skip
+            """)  # fmt: skip
         # @-<< create promote-at-others outline >>
         # self.dump_tree(self.root_p)
         # self.dump_headlines(c, tag='1')
