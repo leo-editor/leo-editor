@@ -2276,14 +2276,16 @@ class TestEditCommands(LeoUnitTest):
     			last line
     		""")  # fmt: skip
 
-        after_b = """\
-    first line
-    TABline 1
-    TAB    line a
-    TAB        line b
-    TABline c
-    last line
-    """.replace('TAB', '\t')
+        after_b = self.prep(
+            """
+                first line
+                TABline 1
+                TAB    line a
+                TAB        line b
+                TABline c
+                last line
+            """).replace('TAB', '\t')  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2927,28 +2929,32 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.88: *5* test_move-lines-up (into docstring)
     def test_move_lines_up_into_docstring(self):
         """Test case for move-lines-up (into docstring)"""
-        before_b = '''\
-    # @@language python
-    def test():
-        """ a
-        b
-        c
-        """
-        print 1
+        before_b = self.prep(
+            '''
+                @language python
+                def test():
+                    """ a
+                    b
+                    c
+                    """
+                    print 1
 
-        print 2
-    '''
-        after_b = '''\
-    # @@language python
-    def test():
-        """ a
-        b
-        c
-        print 1
-        """
+                    print 2
+            ''')  # fmt: skip
 
-        print 2
-    '''
+        after_b = self.prep(
+            '''
+                @language python
+                def test():
+                    """ a
+                    b
+                    c
+                    print 1
+                    """
+
+                    print 2
+            ''')  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3030,8 +3036,7 @@ class TestEditCommands(LeoUnitTest):
                     line b
             line c
             last line
-        """
-        )
+        """)  # fmt: skip
 
         # docstrings strip blank lines, so we can't use a docstring here!
         after_b = ''.join(
@@ -4518,14 +4523,16 @@ class TestEditCommands(LeoUnitTest):
     			last line
     		""")  # fmt: skip
 
-        after_b = """\
-    first line
-    line 1
-    TABline a
-    TABTABline b
-    line c
-    last line
-    """.replace('TAB', '\t')
+        after_b = self.prep(
+            """
+                first line
+                line 1
+                TABline a
+                TABTABline b
+                line c
+                last line
+            """).replace('TAB', '\t')  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -4624,22 +4631,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.119: *5* test_untabify
     def test_untabify(self):
         """Test case for untabify"""
-        before_b = """\
-    first line
-    line 1
-    TABline a
-    TABTABline b
-    line c
-    last line
-    """.replace('TAB', '\t')
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """.replace('TAB', '\t')
+        before_b = self.prep(
+            """
+                first line
+                line 1
+                TABline a
+                TABTABline b
+                line c
+                last line
+            """).replace('TAB', '\t')  # fmt: skip
+
+        after_b = self.prep(
+            """
+                first line
+                line 1
+                    line a
+                        line b
+                line c
+                last line
+            """).replace('TAB', '\t')  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
