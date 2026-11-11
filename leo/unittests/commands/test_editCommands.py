@@ -163,22 +163,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.3: *5* test_back-char
     def test_back_char(self):
         """Test case for back-char"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -190,22 +194,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.4: *5* test_back-char-extend-selection
     def test_back_char_extend_selection(self):
         """Test case for back-char-extend-selection"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -217,46 +225,50 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.5: *5* test_back-paragraph
     def test_back_paragraph(self):
         """Test case for back-paragraph"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year,
-    Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-    tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-    weather impacts every American. Communities can now rely on the National Weather
-    Service’s StormReady program to help them guard against the ravages of Mother
-    Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year,
+    			Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
+    			tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
+    			weather impacts every American. Communities can now rely on the National Weather
+    			Service’s StormReady program to help them guard against the ravages of Mother
+    			Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading
+    			to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
+    			program started in 1999 in Tulsa, OK, helps arm America's communities with the
+    			communication and safety skills needed to save lives and property– before and
+    			during the event. StormReady helps community leaders and emergency managers
+    			strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of
+    			severe weather through better planning, education, and awareness. No community
+    			is storm proof, but StormReady can help communities save lives. Does StormReady
+    			make a difference?
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared disasters are weather related, leading
-    to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-    program started in 1999 in Tulsa, OK, helps arm America's communities with the
-    communication and safety skills needed to save lives and property– before and
-    during the event. StormReady helps community leaders and emergency managers
-    strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year,
+    			Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
+    			tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
+    			weather impacts every American. Communities can now rely on the National Weather
+    			Service’s StormReady program to help them guard against the ravages of Mother
+    			Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading
+    			to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
+    			program started in 1999 in Tulsa, OK, helps arm America's communities with the
+    			communication and safety skills needed to save lives and property– before and
+    			during the event. StormReady helps community leaders and emergency managers
+    			strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of
+    			severe weather through better planning, education, and awareness. No community
+    			is storm proof, but StormReady can help communities save lives. Does StormReady
+    			make a difference?
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of
-    severe weather through better planning, education, and awareness. No community
-    is storm proof, but StormReady can help communities save lives. Does StormReady
-    make a difference?
-    """
-        after_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year,
-    Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-    tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-    weather impacts every American. Communities can now rely on the National Weather
-    Service’s StormReady program to help them guard against the ravages of Mother
-    Nature.
-
-    Some 90% of all presidentially declared disasters are weather related, leading
-    to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-    program started in 1999 in Tulsa, OK, helps arm America's communities with the
-    communication and safety skills needed to save lives and property– before and
-    during the event. StormReady helps community leaders and emergency managers
-    strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of
-    severe weather through better planning, education, and awareness. No community
-    is storm proof, but StormReady can help communities save lives. Does StormReady
-    make a difference?
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -268,46 +280,50 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.6: *5* test_back-paragraph-extend-selection
     def test_back_paragraph_extend_selection(self):
         """Test case for back-paragraph-extend-selection"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year,
-    Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-    tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-    weather impacts every American. Communities can now rely on the National Weather
-    Service’s StormReady program to help them guard against the ravages of Mother
-    Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year,
+    			Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
+    			tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
+    			weather impacts every American. Communities can now rely on the National Weather
+    			Service’s StormReady program to help them guard against the ravages of Mother
+    			Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading
+    			to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
+    			program started in 1999 in Tulsa, OK, helps arm America's communities with the
+    			communication and safety skills needed to save lives and property– before and
+    			during the event. StormReady helps community leaders and emergency managers
+    			strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of
+    			severe weather through better planning, education, and awareness. No community
+    			is storm proof, but StormReady can help communities save lives. Does StormReady
+    			make a difference?
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared disasters are weather related, leading
-    to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-    program started in 1999 in Tulsa, OK, helps arm America's communities with the
-    communication and safety skills needed to save lives and property– before and
-    during the event. StormReady helps community leaders and emergency managers
-    strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year,
+    			Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
+    			tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
+    			weather impacts every American. Communities can now rely on the National Weather
+    			Service’s StormReady program to help them guard against the ravages of Mother
+    			Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading
+    			to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
+    			program started in 1999 in Tulsa, OK, helps arm America's communities with the
+    			communication and safety skills needed to save lives and property– before and
+    			during the event. StormReady helps community leaders and emergency managers
+    			strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of
+    			severe weather through better planning, education, and awareness. No community
+    			is storm proof, but StormReady can help communities save lives. Does StormReady
+    			make a difference?
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of
-    severe weather through better planning, education, and awareness. No community
-    is storm proof, but StormReady can help communities save lives. Does StormReady
-    make a difference?
-    """
-        after_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year,
-    Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-    tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-    weather impacts every American. Communities can now rely on the National Weather
-    Service’s StormReady program to help them guard against the ravages of Mother
-    Nature.
-
-    Some 90% of all presidentially declared disasters are weather related, leading
-    to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-    program started in 1999 in Tulsa, OK, helps arm America's communities with the
-    communication and safety skills needed to save lives and property– before and
-    during the event. StormReady helps community leaders and emergency managers
-    strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of
-    severe weather through better planning, education, and awareness. No community
-    is storm proof, but StormReady can help communities save lives. Does StormReady
-    make a difference?
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -319,20 +335,24 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.7: *5* test_back-sentence
     def test_back_sentence(self):
         """Test case for back-sentence"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
-        after_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -344,20 +364,24 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.8: *5* test_back-sentence-extend-selection
     def test_back_sentence_extend_selection(self):
         """Test case for back-sentence-extend-selection"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
-        after_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -369,14 +393,18 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.12: *5* test_back-to-home (at end of line)
     def test_back_to_home_at_end_of_line(self):
         """Test case for back-to-home (at end of line)"""
-        before_b = """\
-    if a:
-        b = 'xyz'
-    """
-        after_b = """\
-    if a:
-        b = 'xyz'
-    """
+        before_b = self.prep(
+    		"""
+    			if a:
+    			    b = 'xyz'
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			if a:
+    			    b = 'xyz'
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -388,14 +416,18 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.11: *5* test_back-to-home (at indentation
     def test_back_to_home_at_indentation(self):
         """Test case for back-to-home (at indentation"""
-        before_b = """\
-    if a:
-        b = 'xyz'
-    """
-        after_b = """\
-    if a:
-        b = 'xyz'
-    """
+        before_b = self.prep(
+    		"""
+    			if a:
+    			    b = 'xyz'
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			if a:
+    			    b = 'xyz'
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -407,14 +439,18 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.10: *5* test_back-to-home (at start of line)
     def test_back_to_home_at_start_of_line(self):
         """Test case for back-to-home (at start of line)"""
-        before_b = """\
-    if a:
-        b = 'xyz'
-    """
-        after_b = """\
-    if a:
-        b = 'xyz'
-    """
+        before_b = self.prep(
+    		"""
+    			if a:
+    			    b = 'xyz'
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			if a:
+    			    b = 'xyz'
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -426,22 +462,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.9: *5* test_back-to-indentation
     def test_back_to_indentation(self):
         """Test case for back-to-indentation"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -453,20 +493,24 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.13: *5* test_back-word
     def test_back_word(self):
         """Test case for back-word"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
-        after_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -478,20 +522,24 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.14: *5* test_back-word-extend-selection
     def test_back_word_extend_selection(self):
         """Test case for back-word-extend-selection"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
-        after_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -503,22 +551,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.15: *5* test_backward-delete-char
     def test_backward_delete_char(self):
         """Test case for backward-delete-char"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first lie
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first lie
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -530,14 +582,18 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.16: *5* test_backward_delete_char_middle_of_line
     def test_backward_delete_char_middle_of_line(self):
         """Test case for backward-delete-char  (middle of line)"""
-        before_b = """\
-    first line
-    last line
-    """
-        after_b = """\
-    firstline
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			firstline
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -549,14 +605,18 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.17: *5* test_backward_delete_char_last_char
     def test_backward_delete_char_last_char(self):
         """Test case for backward-delete-char (last char)"""
-        before_b = """\
-    first line
-    last line
-    """
-        after_b = """\
-    first line
-    last lin
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			last lin
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -568,12 +628,16 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.18: *5* test_backward-delete-word (no selection)
     def test_backward_delete_word_no_selection(self):
         """Test case for backward-delete-word (no selection)"""
-        before_b = """\
-    aaaa bbbb cccc dddd
-    """
-        after_b = """\
-    aaaa cccc dddd
-    """
+        before_b = self.prep(
+    		"""
+    			aaaa bbbb cccc dddd
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			aaaa cccc dddd
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -585,12 +649,16 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.19: *5* test_backward-delete-word (selection)
     def test_backward_delete_word_selection(self):
         """Test case for backward-delete-word (selection)"""
-        before_b = """\
-    aaaa bbbb cccc dddd
-    """
-        after_b = """\
-    aaaa bbcc dddd
-    """
+        before_b = self.prep(
+    		"""
+    			aaaa bbbb cccc dddd
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			aaaa bbcc dddd
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -602,44 +670,48 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.20: *5* test_backward-kill-paragraph
     def test_backward_kill_paragraph(self):
         """Test case for backward-kill-paragraph"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year,
-    Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-    tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-    weather impacts every American. Communities can now rely on the National Weather
-    Service’s StormReady program to help them guard against the ravages of Mother
-    Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year,
+    			Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
+    			tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
+    			weather impacts every American. Communities can now rely on the National Weather
+    			Service’s StormReady program to help them guard against the ravages of Mother
+    			Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading
+    			to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
+    			program started in 1999 in Tulsa, OK, helps arm America's communities with the
+    			communication and safety skills needed to save lives and property– before and
+    			during the event. StormReady helps community leaders and emergency managers
+    			strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of
+    			severe weather through better planning, education, and awareness. No community
+    			is storm proof, but StormReady can help communities save lives. Does StormReady
+    			make a difference?
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared disasters are weather related, leading
-    to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-    program started in 1999 in Tulsa, OK, helps arm America's communities with the
-    communication and safety skills needed to save lives and property– before and
-    during the event. StormReady helps community leaders and emergency managers
-    strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year,
+    			Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
+    			tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
+    			weather impacts every American. Communities can now rely on the National Weather
+    			Service’s StormReady program to help them guard against the ravages of Mother
+    			Nature.
+    			to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
+    			program started in 1999 in Tulsa, OK, helps arm America's communities with the
+    			communication and safety skills needed to save lives and property– before and
+    			during the event. StormReady helps community leaders and emergency managers
+    			strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of
+    			severe weather through better planning, education, and awareness. No community
+    			is storm proof, but StormReady can help communities save lives. Does StormReady
+    			make a difference?
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of
-    severe weather through better planning, education, and awareness. No community
-    is storm proof, but StormReady can help communities save lives. Does StormReady
-    make a difference?
-    """
-        after_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year,
-    Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-    tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-    weather impacts every American. Communities can now rely on the National Weather
-    Service’s StormReady program to help them guard against the ravages of Mother
-    Nature.
-    to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-    program started in 1999 in Tulsa, OK, helps arm America's communities with the
-    communication and safety skills needed to save lives and property– before and
-    during the event. StormReady helps community leaders and emergency managers
-    strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of
-    severe weather through better planning, education, and awareness. No community
-    is storm proof, but StormReady can help communities save lives. Does StormReady
-    make a difference?
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -651,15 +723,19 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.21: *5* test_backward-kill-sentence
     def test_backward_kill_sentence(self):
         """Test case for backward-kill-sentence"""
-        before_b = """\
-    This is the first sentence.  This
-    is the second sentence.  And
-    this is the last sentence.
-    """
-        after_b = """\
-    This is the first sentence.  This
-    is the second sentence.
-    """
+        before_b = self.prep(
+    		"""
+    			This is the first sentence.  This
+    			is the second sentence.  And
+    			this is the last sentence.
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			This is the first sentence.  This
+    			is the second sentence.
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -671,16 +747,20 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.22: *5* test_backward-kill-word
     def test_backward_kill_word(self):
         """Test case for backward-kill-word"""
-        before_b = """\
-    This is the first sentence.  This
-    is the second sentence.  And
-    this is the last sentence.
-    """
-        after_b = """\
-    This is the first sentence.  This
-    is the second sentence.  And
-    this  the last sentence.
-    """
+        before_b = self.prep(
+    		"""
+    			This is the first sentence.  This
+    			is the second sentence.  And
+    			this is the last sentence.
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			This is the first sentence.  This
+    			is the second sentence.  And
+    			this  the last sentence.
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -692,20 +772,24 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.23: *5* test_beginning-of-buffer
     def test_beginning_of_buffer(self):
         """Test case for beginning-of-buffer"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
-        after_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -717,20 +801,24 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.24: *5* test_beginning-of-buffer-extend-selection
     def test_beginning_of_buffer_extend_selection(self):
         """Test case for beginning-of-buffer-extend-selection"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
-        after_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -742,22 +830,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.25: *5* test_beginning-of-line
     def test_beginning_of_line(self):
         """Test case for beginning-of-line"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -769,22 +861,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.26: *5* test_beginning-of-line-extend-selection
     def test_beginning_of_line_extend_selection(self):
         """Test case for beginning-of-line-extend-selection"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -797,22 +893,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.27: *5* test_capitalize-word
     def test_capitalize_word(self):
         """Test case for capitalize-word"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        Line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    Line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -824,30 +924,34 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.28: *5* test_center-line
     def test_center_line(self):
         """Test case for center-line"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related,
+    			leading to around 500 deaths per year and nearly $14 billion in damage.
+    			StormReady, a program started in 1999 in Tulsa, OK,
+    			helps arm America's communities with the communication and safety
+    			skills needed to save lives and property– before and during the event.
+    			StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared disasters are weather related,
-    leading to around 500 deaths per year and nearly $14 billion in damage.
-    StormReady, a program started in 1999 in Tulsa, OK,
-    helps arm America's communities with the communication and safety
-    skills needed to save lives and property– before and during the event.
-    StormReady helps community leaders and emergency managers strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related,
+    			leading to around 500 deaths per year and nearly $14 billion in damage.
+    			StormReady, a program started in 1999 in Tulsa, OK,
+    			helps arm America's communities with the communication and safety
+    			skills needed to save lives and property– before and during the event.
+    			StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
-        after_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-    Some 90% of all presidentially declared disasters are weather related,
-    leading to around 500 deaths per year and nearly $14 billion in damage.
-    StormReady, a program started in 1999 in Tulsa, OK,
-    helps arm America's communities with the communication and safety
-    skills needed to save lives and property– before and during the event.
-    StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -859,22 +963,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.29: *5* test_center-region
     def test_center_region(self):
         """Test case for center-region"""
-        before_b = """\
-    Some 90% of all presidentially declared disasters are weather related,
-    leading to around 500 deaths per year and nearly $14 billion in damage.
-    StormReady, a program started in 1999 in Tulsa, OK,
-    helps arm America's communities with the communication and safety
-    skills needed to save lives and property– before and during the event.
-    StormReady helps community leaders and emergency managers strengthen local safety programs.
-    """
-        after_b = """\
-    Some 90% of all presidentially declared disasters are weather related,
-    leading to around 500 deaths per year and nearly $14 billion in damage.
-             StormReady, a program started in 1999 in Tulsa, OK,
-      helps arm America's communities with the communication and safety
-    skills needed to save lives and property– before and during the event.
-    StormReady helps community leaders and emergency managers strengthen local safety programs.
-    """
+        before_b = self.prep(
+    		"""
+    			Some 90% of all presidentially declared disasters are weather related,
+    			leading to around 500 deaths per year and nearly $14 billion in damage.
+    			StormReady, a program started in 1999 in Tulsa, OK,
+    			helps arm America's communities with the communication and safety
+    			skills needed to save lives and property– before and during the event.
+    			StormReady helps community leaders and emergency managers strengthen local safety programs.
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			Some 90% of all presidentially declared disasters are weather related,
+    			leading to around 500 deaths per year and nearly $14 billion in damage.
+    			         StormReady, a program started in 1999 in Tulsa, OK,
+    			  helps arm America's communities with the communication and safety
+    			skills needed to save lives and property– before and during the event.
+    			StormReady helps community leaders and emergency managers strengthen local safety programs.
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -916,20 +1024,24 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.31: *5* test_clear-selected-text
     def test_clear_selected_text(self):
         """Test case for clear-selected-text"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line    line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line    line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -941,22 +1053,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.32: *5* test_count-region
     def test_count_region(self):
         """Test case for count-region"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -968,22 +1084,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.33: *5* test_delete-char
     def test_delete_char(self):
         """Test case for delete-char"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    firstline
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			firstline
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -995,16 +1115,20 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.34: *5* test_delete-indentation
     def test_delete_indentation(self):
         """Test case for delete-indentation"""
-        before_b = """\
-    first line
-        line 1
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			    line 1
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1016,22 +1140,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.35: *5* test_delete-spaces
     def test_delete_spaces(self):
         """Test case for delete-spaces"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-    line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1043,22 +1171,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.36: *5* test_do-nothing
     def test_do_nothing(self):
         """Test case for do-nothing"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1070,20 +1202,24 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.37: *5* test_downcase-region
     def test_downcase_region(self):
         """Test case for downcase-region"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. stormready, a program started in 1999 in tulsa, ok, helps arm america's communities with the communication and safety skills needed to save lives and property– before and during the event. stormready helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
-        after_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-    some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. stormready, a program started in 1999 in tulsa, ok, helps arm america's communities with the communication and safety skills needed to save lives and property– before and during the event. stormready helps community leaders and emergency managers strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1095,22 +1231,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.38: *5* test_downcase-word
     def test_downcase_word(self):
         """Test case for downcase-word"""
-        before_b = """\
-    XYZZY line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    xyzzy line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			XYZZY line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			xyzzy line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1122,22 +1262,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.39: *5* test_end-of-buffer
     def test_end_of_buffer(self):
         """Test case for end-of-buffer"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1149,22 +1293,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.40: *5* test_end-of-buffer-extend-selection
     def test_end_of_buffer_extend_selection(self):
         """Test case for end-of-buffer-extend-selection"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1176,22 +1324,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.41: *5* test_end-of-line
     def test_end_of_line(self):
         """Test case for end-of-line"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1203,22 +1355,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.44: *5* test_end-of-line (blank last line)
     def test_end_of_line_blank_last_line(self):
         """Test case for end-of-line (blank last line)"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last non-blank line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last non-blank line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last non-blank line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last non-blank line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1230,24 +1386,28 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.43: *5* test_end-of-line (internal blank line)
     def test_end_of_line_internal_blank_line(self):
         """Test case for end-of-line (internal blank line)"""
-        before_b = """\
-    first line
+        before_b = self.prep(
+    		"""
+    			first line
+    			
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
 
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
+        after_b = self.prep(
+    		"""
+    			first line
+    			
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
 
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1293,22 +1453,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.42: *5* test_end-of-line 2
     def test_end_of_line_2(self):
         """Test case for end-of-line 2"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1320,22 +1484,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.46: *5* test_end-of-line-extend-selection
     def test_end_of_line_extend_selection(self):
         """Test case for end-of-line-extend-selection"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1347,22 +1515,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.47: *5* test_end-of-line-extend-selection (blank last line)
     def test_end_of_line_extend_selection_blank_last_line(self):
         """Test case for end-of-line-extend-selection (blank last line)"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last non-blank line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last non-blank line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last non-blank line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last non-blank line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1374,22 +1546,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.48: *5* test_exchange-point-mark
     def test_exchange_point_mark(self):
         """Test case for exchange-point-mark"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1401,22 +1577,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.49: *5* test_extend-to-line
     def test_extend_to_line(self):
         """Test case for extend-to-line"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1428,46 +1608,50 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.50: *5* test_extend-to-paragraph
     def test_extend_to_paragraph(self):
         """Test case for extend-to-paragraph"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year,
-    Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-    tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-    weather impacts every American. Communities can now rely on the National Weather
-    Service’s StormReady program to help them guard against the ravages of Mother
-    Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year,
+    			Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
+    			tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
+    			weather impacts every American. Communities can now rely on the National Weather
+    			Service’s StormReady program to help them guard against the ravages of Mother
+    			Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading
+    			to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
+    			program started in 1999 in Tulsa, OK, helps arm America's communities with the
+    			communication and safety skills needed to save lives and property– before and
+    			during the event. StormReady helps community leaders and emergency managers
+    			strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of
+    			severe weather through better planning, education, and awareness. No community
+    			is storm proof, but StormReady can help communities save lives. Does StormReady
+    			make a difference?
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared disasters are weather related, leading
-    to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-    program started in 1999 in Tulsa, OK, helps arm America's communities with the
-    communication and safety skills needed to save lives and property– before and
-    during the event. StormReady helps community leaders and emergency managers
-    strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year,
+    			Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
+    			tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
+    			weather impacts every American. Communities can now rely on the National Weather
+    			Service’s StormReady program to help them guard against the ravages of Mother
+    			Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading
+    			to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
+    			program started in 1999 in Tulsa, OK, helps arm America's communities with the
+    			communication and safety skills needed to save lives and property– before and
+    			during the event. StormReady helps community leaders and emergency managers
+    			strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of
+    			severe weather through better planning, education, and awareness. No community
+    			is storm proof, but StormReady can help communities save lives. Does StormReady
+    			make a difference?
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of
-    severe weather through better planning, education, and awareness. No community
-    is storm proof, but StormReady can help communities save lives. Does StormReady
-    make a difference?
-    """
-        after_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year,
-    Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-    tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-    weather impacts every American. Communities can now rely on the National Weather
-    Service’s StormReady program to help them guard against the ravages of Mother
-    Nature.
-
-    Some 90% of all presidentially declared disasters are weather related, leading
-    to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-    program started in 1999 in Tulsa, OK, helps arm America's communities with the
-    communication and safety skills needed to save lives and property– before and
-    during the event. StormReady helps community leaders and emergency managers
-    strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of
-    severe weather through better planning, education, and awareness. No community
-    is storm proof, but StormReady can help communities save lives. Does StormReady
-    make a difference?
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1479,20 +1663,24 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.51: *5* test_extend-to-sentence
     def test_extend_to_sentence(self):
         """Test case for extend-to-sentence"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
-        after_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1504,22 +1692,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.52: *5* test_extend-to-word
     def test_extend_to_word(self):
         """Test case for extend-to-word"""
-        before_b = """\
-    first line
-    line 1
-        line_24a a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        line_24a a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line_24a a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line_24a a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1613,22 +1805,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.54: *5* test_finish-of-line (2)
     def test_finish_of_line_2(self):
         """Test case for finish-of-line (2)"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1640,22 +1836,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.55: *5* test_finish-of-line-extend-selection
     def test_finish_of_line_extend_selection(self):
         """Test case for finish-of-line-extend-selection"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1667,22 +1867,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.57: *5* test_forward-char
     def test_forward_char(self):
         """Test case for forward-char"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1694,22 +1898,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.58: *5* test_forward-char-extend-selection
     def test_forward_char_extend_selection(self):
         """Test case for forward-char-extend-selection"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1721,20 +1929,24 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.59: *5* test_forward-end-word (end of line)
     def test_forward_end_word_end_of_line(self):
         """Test case for forward-end-word (end of line)"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
-        after_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1746,20 +1958,24 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.60: *5* test_forward-end-word (start of word)
     def test_forward_end_word_start_of_word(self):
         """Test case for forward-end-word (start of word)"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
-        after_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1771,20 +1987,24 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.61: *5* test_forward-end-word-extend-selection
     def test_forward_end_word_extend_selection(self):
         """Test case for forward-end-word-extend-selection"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
-        after_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1796,46 +2016,50 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.62: *5* test_forward-paragraph
     def test_forward_paragraph(self):
         """Test case for forward-paragraph"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year,
-    Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-    tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-    weather impacts every American. Communities can now rely on the National Weather
-    Service’s StormReady program to help them guard against the ravages of Mother
-    Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year,
+    			Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
+    			tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
+    			weather impacts every American. Communities can now rely on the National Weather
+    			Service’s StormReady program to help them guard against the ravages of Mother
+    			Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading
+    			to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
+    			program started in 1999 in Tulsa, OK, helps arm America's communities with the
+    			communication and safety skills needed to save lives and property– before and
+    			during the event. StormReady helps community leaders and emergency managers
+    			strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of
+    			severe weather through better planning, education, and awareness. No community
+    			is storm proof, but StormReady can help communities save lives. Does StormReady
+    			make a difference?
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared disasters are weather related, leading
-    to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-    program started in 1999 in Tulsa, OK, helps arm America's communities with the
-    communication and safety skills needed to save lives and property– before and
-    during the event. StormReady helps community leaders and emergency managers
-    strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year,
+    			Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
+    			tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
+    			weather impacts every American. Communities can now rely on the National Weather
+    			Service’s StormReady program to help them guard against the ravages of Mother
+    			Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading
+    			to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
+    			program started in 1999 in Tulsa, OK, helps arm America's communities with the
+    			communication and safety skills needed to save lives and property– before and
+    			during the event. StormReady helps community leaders and emergency managers
+    			strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of
+    			severe weather through better planning, education, and awareness. No community
+    			is storm proof, but StormReady can help communities save lives. Does StormReady
+    			make a difference?
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of
-    severe weather through better planning, education, and awareness. No community
-    is storm proof, but StormReady can help communities save lives. Does StormReady
-    make a difference?
-    """
-        after_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year,
-    Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-    tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-    weather impacts every American. Communities can now rely on the National Weather
-    Service’s StormReady program to help them guard against the ravages of Mother
-    Nature.
-
-    Some 90% of all presidentially declared disasters are weather related, leading
-    to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-    program started in 1999 in Tulsa, OK, helps arm America's communities with the
-    communication and safety skills needed to save lives and property– before and
-    during the event. StormReady helps community leaders and emergency managers
-    strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of
-    severe weather through better planning, education, and awareness. No community
-    is storm proof, but StormReady can help communities save lives. Does StormReady
-    make a difference?
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1847,46 +2071,50 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.63: *5* test_forward-paragraph-extend-selection
     def test_forward_paragraph_extend_selection(self):
         """Test case for forward-paragraph-extend-selection"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year,
-    Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-    tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-    weather impacts every American. Communities can now rely on the National Weather
-    Service’s StormReady program to help them guard against the ravages of Mother
-    Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year,
+    			Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
+    			tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
+    			weather impacts every American. Communities can now rely on the National Weather
+    			Service’s StormReady program to help them guard against the ravages of Mother
+    			Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading
+    			to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
+    			program started in 1999 in Tulsa, OK, helps arm America's communities with the
+    			communication and safety skills needed to save lives and property– before and
+    			during the event. StormReady helps community leaders and emergency managers
+    			strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of
+    			severe weather through better planning, education, and awareness. No community
+    			is storm proof, but StormReady can help communities save lives. Does StormReady
+    			make a difference?
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared disasters are weather related, leading
-    to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-    program started in 1999 in Tulsa, OK, helps arm America's communities with the
-    communication and safety skills needed to save lives and property– before and
-    during the event. StormReady helps community leaders and emergency managers
-    strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year,
+    			Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
+    			tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
+    			weather impacts every American. Communities can now rely on the National Weather
+    			Service’s StormReady program to help them guard against the ravages of Mother
+    			Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading
+    			to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
+    			program started in 1999 in Tulsa, OK, helps arm America's communities with the
+    			communication and safety skills needed to save lives and property– before and
+    			during the event. StormReady helps community leaders and emergency managers
+    			strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of
+    			severe weather through better planning, education, and awareness. No community
+    			is storm proof, but StormReady can help communities save lives. Does StormReady
+    			make a difference?
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of
-    severe weather through better planning, education, and awareness. No community
-    is storm proof, but StormReady can help communities save lives. Does StormReady
-    make a difference?
-    """
-        after_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year,
-    Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-    tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-    weather impacts every American. Communities can now rely on the National Weather
-    Service’s StormReady program to help them guard against the ravages of Mother
-    Nature.
-
-    Some 90% of all presidentially declared disasters are weather related, leading
-    to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-    program started in 1999 in Tulsa, OK, helps arm America's communities with the
-    communication and safety skills needed to save lives and property– before and
-    during the event. StormReady helps community leaders and emergency managers
-    strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of
-    severe weather through better planning, education, and awareness. No community
-    is storm proof, but StormReady can help communities save lives. Does StormReady
-    make a difference?
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1898,20 +2126,24 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.64: *5* test_forward-sentence
     def test_forward_sentence(self):
         """Test case for forward-sentence"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
-        after_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1923,20 +2155,24 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.65: *5* test_forward-sentence-extend-selection
     def test_forward_sentence_extend_selection(self):
         """Test case for forward-sentence-extend-selection"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
-        after_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1948,20 +2184,24 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.66: *5* test_forward-word
     def test_forward_word(self):
         """Test case for forward-word"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
-        after_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1973,20 +2213,24 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.67: *5* test_forward-word-extend-selection
     def test_forward_word_extend_selection(self):
         """Test case for forward-word-extend-selection"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
-        after_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -1998,22 +2242,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.68: *5* test_indent-relative
     def test_indent_relative(self):
         """Test case for indent-relative"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-            line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			        line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2025,14 +2273,16 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.69: *5* test_indent-rigidly
     def test_indent_rigidly(self):
         """Test case for indent-rigidly"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         after_b = """\
     first line
     TABline 1
@@ -2052,16 +2302,20 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.70: *5* test_indent-to-comment-column
     def test_indent_to_comment_column(self):
         """Test case for indent-to-comment-column"""
-        before_b = """\
-    first line
-    line b
-    last line
-    """
-        after_b = """\
-    first line
-        line b
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line b
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			    line b
+    			last line
+    		""")  # fmt: skip
+
         self.c.editCommands.ccolumn = 4  # Set the comment column
         self.run_test(
             before_b=before_b,
@@ -2087,23 +2341,27 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.71: *5* test_insert-newline
     def test_insert_newline(self):
         """Test case for insert-newline"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first li
-    ne
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first li
+    			ne
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2145,22 +2403,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.72: *5* test_insert-parentheses
     def test_insert_parentheses(self):
         """Test case for insert-parentheses"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first() line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first() line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2172,15 +2434,20 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.76: *5* test_kill-line end-body-text
     def test_kill_line_end_body_text(self):
         """Test case for kill-line end-body-text"""
-        before_b = """\
-    line 1
-    line 2
-    line 3
-    """
-        after_b = """\
-    line 1
-    line 2
-    line 3"""
+        before_b = self.prep(
+    		"""
+    			line 1
+    			line 2
+    			line 3
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			line 1
+    			line 2
+    			line 3
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2192,16 +2459,19 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.77: *5* test_kill-line end-line-text
     def test_kill_line_end_line_text(self):
         """Test case for kill-line end-line-text"""
-        before_b = """\
-    line 1
-    line 2
-    line 3
-    """
-        after_b = """\
-    line 1
-    line 2
+        before_b = self.prep(
+    		"""
+    			line 1
+    			line 2
+    			line 3
+    		""")  # fmt: skip
 
-    """
+        after_b = self.prep(
+    		"""
+    			line 1
+    			line 2
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2213,17 +2483,21 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.79: *5* test_kill-line start-blank-line
     def test_kill_line_start_blank_line(self):
         """Test case for kill-line start-blank-line"""
-        before_b = """\
-    line 1
-    line 2
+        before_b = self.prep(
+    		"""
+    			line 1
+    			line 2
+    			
+    			line 4
+    		""")  # fmt: skip
 
-    line 4
-    """
-        after_b = """\
-    line 1
-    line 2
-    line 4
-    """
+        after_b = self.prep(
+    		"""
+    			line 1
+    			line 2
+    			line 4
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2235,18 +2509,22 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.78: *5* test_kill-line start-line
     def test_kill_line_start_line(self):
         """Test case for kill-line start-line"""
-        before_b = """\
-    line 1
-    line 2
-    line 3
-    line 4
-    """
-        after_b = """\
-    line 1
-    line 2
+        before_b = self.prep(
+    		"""
+    			line 1
+    			line 2
+    			line 3
+    			line 4
+    		""")  # fmt: skip
 
-    line 4
-    """
+        after_b = self.prep(
+    		"""
+    			line 1
+    			line 2
+    			
+    			line 4
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2258,41 +2536,45 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.73: *5* test_kill-paragraph
     def test_kill_paragraph(self):
         """Test case for kill-paragraph"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year,
-    Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-    tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-    weather impacts every American. Communities can now rely on the National Weather
-    Service’s StormReady program to help them guard against the ravages of Mother
-    Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year,
+    			Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
+    			tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
+    			weather impacts every American. Communities can now rely on the National Weather
+    			Service’s StormReady program to help them guard against the ravages of Mother
+    			Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading
+    			to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
+    			program started in 1999 in Tulsa, OK, helps arm America's communities with the
+    			communication and safety skills needed to save lives and property– before and
+    			during the event. StormReady helps community leaders and emergency managers
+    			strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of
+    			severe weather through better planning, education, and awareness. No community
+    			is storm proof, but StormReady can help communities save lives. Does StormReady
+    			make a difference?
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared disasters are weather related, leading
-    to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-    program started in 1999 in Tulsa, OK, helps arm America's communities with the
-    communication and safety skills needed to save lives and property– before and
-    during the event. StormReady helps community leaders and emergency managers
-    strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year,
+    			Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
+    			tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
+    			weather impacts every American. Communities can now rely on the National Weather
+    			Service’s StormReady program to help them guard against the ravages of Mother
+    			Nature.
+    			
+    			
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of
+    			severe weather through better planning, education, and awareness. No community
+    			is storm proof, but StormReady can help communities save lives. Does StormReady
+    			make a difference?
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of
-    severe weather through better planning, education, and awareness. No community
-    is storm proof, but StormReady can help communities save lives. Does StormReady
-    make a difference?
-    """
-        after_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year,
-    Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-    tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-    weather impacts every American. Communities can now rely on the National Weather
-    Service’s StormReady program to help them guard against the ravages of Mother
-    Nature.
-
-
-
-    StormReady communities are better prepared to save lives from the onslaught of
-    severe weather through better planning, education, and awareness. No community
-    is storm proof, but StormReady can help communities save lives. Does StormReady
-    make a difference?
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2304,15 +2586,19 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.74: *5* test_kill-sentence
     def test_kill_sentence(self):
         """Test case for kill-sentence"""
-        before_b = """\
-    This is the first sentence.  This
-    is the second sentence.  And
-    this is the last sentence.
-    """
-        after_b = """\
-    This is the first sentence.  And
-    this is the last sentence.
-    """
+        before_b = self.prep(
+    		"""
+    			This is the first sentence.  This
+    			is the second sentence.  And
+    			this is the last sentence.
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			This is the first sentence.  And
+    			this is the last sentence.
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2324,17 +2610,21 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.82: *5* test_kill-to-end-of-line after last visible char
     def test_kill_to_end_of_line_after_last_visible_char(self):
         """Test case for kill-to-end-of-line after last visible char"""
-        before_b = """\
-    line 1
-    # The next line contains two trailing blanks.
-    line 3
-    line 4
-    """
-        after_b = """\
-    line 1
-    # The next line contains two trailing blanks.
-    line 3line 4
-    """
+        before_b = self.prep(
+    		"""
+    			line 1
+    			# The next line contains two trailing blanks.
+    			line 3
+    			line 4
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			line 1
+    			# The next line contains two trailing blanks.
+    			line 3line 4
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2346,15 +2636,20 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.80: *5* test_kill-to-end-of-line end-body-text
     def test_kill_to_end_of_line_end_body_text(self):
         """Test case for kill-to-end-of-line end-body-text"""
-        before_b = """\
-    line 1
-    line 2
-    line 3
-    """
-        after_b = """\
-    line 1
-    line 2
-    line 3"""
+        before_b = self.prep(
+    		"""
+    			line 1
+    			line 2
+    			line 3
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			line 1
+    			line 2
+    			line 3
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2366,15 +2661,19 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.81: *5* test_kill-to-end-of-line end-line
     def test_kill_to_end_of_line_end_line(self):
         """Test case for kill-to-end-of-line end-line"""
-        before_b = """\
-    line 1
-    line 2
-    line 3
-    """
-        after_b = """\
-    line 1
-    line 2line 3
-    """
+        before_b = self.prep(
+    		"""
+    			line 1
+    			line 2
+    			line 3
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			line 1
+    			line 2line 3
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2386,16 +2685,20 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.85: *5* test_kill-to-end-of-line middle-line
     def test_kill_to_end_of_line_middle_line(self):
         """Test case for kill-to-end-of-line middle-line"""
-        before_b = """\
-    line 1
-    line 2
-    line 3
-    """
-        after_b = """\
-    line 1
-    li
-    line 3
-    """
+        before_b = self.prep(
+    		"""
+    			line 1
+    			line 2
+    			line 3
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			line 1
+    			li
+    			line 3
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2407,17 +2710,21 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.84: *5* test_kill-to-end-of-line start-blank-line
     def test_kill_to_end_of_line_start_blank_line(self):
         """Test case for kill-to-end-of-line start-blank-line"""
-        before_b = """\
-    line 1
-    line 2
+        before_b = self.prep(
+    		"""
+    			line 1
+    			line 2
+    			
+    			line 4
+    		""")  # fmt: skip
 
-    line 4
-    """
-        after_b = """\
-    line 1
-    line 2
-    line 4
-    """
+        after_b = self.prep(
+    		"""
+    			line 1
+    			line 2
+    			line 4
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2429,18 +2736,22 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.83: *5* test_kill-to-end-of-line start-line
     def test_kill_to_end_of_line_start_line(self):
         """Test case for kill-to-end-of-line start-line"""
-        before_b = """\
-    line 1
-    line 2
-    line 3
-    line 4
-    """
-        after_b = """\
-    line 1
-    line 2
+        before_b = self.prep(
+    		"""
+    			line 1
+    			line 2
+    			line 3
+    			line 4
+    		""")  # fmt: skip
 
-    line 4
-    """
+        after_b = self.prep(
+    		"""
+    			line 1
+    			line 2
+    			
+    			line 4
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2452,16 +2763,20 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.75: *5* test_kill-word
     def test_kill_word(self):
         """Test case for kill-word"""
-        before_b = """\
-    This is the first sentence.  This
-    is the second sentence.  And
-    this is the last sentence.
-    """
-        after_b = """\
-    This is the first sentence.  This
-    is the  sentence.  And
-    this is the last sentence.
-    """
+        before_b = self.prep(
+    		"""
+    			This is the first sentence.  This
+    			is the second sentence.  And
+    			this is the last sentence.
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			This is the first sentence.  This
+    			is the  sentence.  And
+    			this is the last sentence.
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2558,22 +2873,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.86: *5* test_move-lines-down
     def test_move_lines_down(self):
         """Test case for move-lines-down"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-    line c
-        line a
-            line b
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			line c
+    			    line a
+    			        line b
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2585,22 +2904,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.87: *5* test_move-lines-up
     def test_move_lines_up(self):
         """Test case for move-lines-up"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    line 1
-    first line
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			line 1
+    			first line
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2645,22 +2968,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.89: *5* test_move-past-close
     def test_move_past_close(self):
         """Test case for move-past-close"""
-        before_b = """\
-    first (line)
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first (line)
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first (line)
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first (line)
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2672,22 +2999,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.90: *5* test_move-past-close-extend-selection
     def test_move_past_close_extend_selection(self):
         """Test case for move-past-close-extend-selection"""
-        before_b = """\
-    first line
-    line 1
-        (line )a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        (line )a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    (line )a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    (line )a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2729,16 +3060,20 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.92: *5* test_next-line
     def test_next_line(self):
         """Test case for next-line"""
-        before_b = """\
-    a
+        before_b = self.prep(
+    		"""
+    			a
+    			
+    			b
+    		""")  # fmt: skip
 
-    b
-    """
-        after_b = """\
-    a
+        after_b = self.prep(
+    		"""
+    			a
+    			
+    			b
+    		""")  # fmt: skip
 
-    b
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2750,16 +3085,20 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.93: *5* test_previous-line
     def test_previous_line(self):
         """Test case for previous-line"""
-        before_b = """\
-    a
+        before_b = self.prep(
+    		"""
+    			a
+    			
+    			b
+    		""")  # fmt: skip
 
-    b
-    """
-        after_b = """\
-    a
+        after_b = self.prep(
+    		"""
+    			a
+    			
+    			b
+    		""")  # fmt: skip
 
-    b
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2771,22 +3110,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.94: *5* test_rectangle-clear
     def test_rectangle_clear(self):
         """Test case for rectangle-clear"""
-        before_b = """\
-    before
-    aaaxxxbbb
-    aaaxxxbbb
-    aaaxxxbbb
-    aaaxxxbbb
-    after
-    """
-        after_b = """\
-    before
-    aaa   bbb
-    aaa   bbb
-    aaa   bbb
-    aaa   bbb
-    after
-    """
+        before_b = self.prep(
+    		"""
+    			before
+    			aaaxxxbbb
+    			aaaxxxbbb
+    			aaaxxxbbb
+    			aaaxxxbbb
+    			after
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			before
+    			aaa   bbb
+    			aaa   bbb
+    			aaa   bbb
+    			aaa   bbb
+    			after
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2798,22 +3141,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.95: *5* test_rectangle-close
     def test_rectangle_close(self):
         """Test case for rectangle-close"""
-        before_b = """\
-    before
-    aaa   bbb
-    aaa   bbb
-    aaa   bbb
-    aaa   bbb
-    after
-    """
-        after_b = """\
-    before
-    aaabbb
-    aaabbb
-    aaabbb
-    aaabbb
-    after
-    """
+        before_b = self.prep(
+    		"""
+    			before
+    			aaa   bbb
+    			aaa   bbb
+    			aaa   bbb
+    			aaa   bbb
+    			after
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			before
+    			aaabbb
+    			aaabbb
+    			aaabbb
+    			aaabbb
+    			after
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2825,22 +3172,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.96: *5* test_rectangle-delete
     def test_rectangle_delete(self):
         """Test case for rectangle-delete"""
-        before_b = """\
-    before
-    aaaxxxbbb
-    aaaxxxbbb
-    aaaxxxbbb
-    aaaxxxbbb
-    after
-    """
-        after_b = """\
-    before
-    aaabbb
-    aaabbb
-    aaabbb
-    aaabbb
-    after
-    """
+        before_b = self.prep(
+    		"""
+    			before
+    			aaaxxxbbb
+    			aaaxxxbbb
+    			aaaxxxbbb
+    			aaaxxxbbb
+    			after
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			before
+    			aaabbb
+    			aaabbb
+    			aaabbb
+    			aaabbb
+    			after
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2852,22 +3203,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.97: *5* test_rectangle-kill
     def test_rectangle_kill(self):
         """Test case for rectangle-kill"""
-        before_b = """\
-    before
-    aaaxxxbbb
-    aaaxxxbbb
-    aaaxxxbbb
-    aaaxxxbbb
-    after
-    """
-        after_b = """\
-    before
-    aaabbb
-    aaabbb
-    aaabbb
-    aaabbb
-    after
-    """
+        before_b = self.prep(
+    		"""
+    			before
+    			aaaxxxbbb
+    			aaaxxxbbb
+    			aaaxxxbbb
+    			aaaxxxbbb
+    			after
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			before
+    			aaabbb
+    			aaabbb
+    			aaabbb
+    			aaabbb
+    			after
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2879,22 +3234,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.98: *5* test_rectangle-open
     def test_rectangle_open(self):
         """Test case for rectangle-open"""
-        before_b = """\
-    before
-    aaaxxxbbb
-    aaaxxxbbb
-    aaaxxxbbb
-    aaaxxxbbb
-    after
-    """
-        after_b = """\
-    before
-    aaa   xxxbbb
-    aaa   xxxbbb
-    aaa   xxxbbb
-    aaa   xxxbbb
-    after
-    """
+        before_b = self.prep(
+    		"""
+    			before
+    			aaaxxxbbb
+    			aaaxxxbbb
+    			aaaxxxbbb
+    			aaaxxxbbb
+    			after
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			before
+    			aaa   xxxbbb
+    			aaa   xxxbbb
+    			aaa   xxxbbb
+    			aaa   xxxbbb
+    			after
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2973,38 +3332,42 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.122: *6* test_reformat-paragraph list 1 of 5
     def test_reformat_paragraph_list_1_of_5(self):
         """Test case for reformat-paragraph list 1 of 5"""
-        before_b = """\
-    This paragraph leads of this test.  It is the "lead"
-    paragraph.
+        before_b = self.prep(
+    		"""
+    			This paragraph leads of this test.  It is the "lead"
+    			paragraph.
+    			
+    			  1. This is item
+    			     number 1.  It is the first item in the list.
+    			
+    			  2. This is item
+    			     number 2.  It is the second item in the list.
+    			
+    			  3. This is item
+    			     number 3.  It is the third item in the list.
+    			
+    			This paragraph ends the test.  It is the "final"
+    			paragraph.
+    		""")  # fmt: skip
 
-      1. This is item
-         number 1.  It is the first item in the list.
+        after_b = self.prep(
+    		"""
+    			This paragraph leads of this test. It is
+    			the "lead" paragraph.
+    			
+    			  1. This is item
+    			     number 1.  It is the first item in the list.
+    			
+    			  2. This is item
+    			     number 2.  It is the second item in the list.
+    			
+    			  3. This is item
+    			     number 3.  It is the third item in the list.
+    			
+    			This paragraph ends the test.  It is the "final"
+    			paragraph.
+    		""")  # fmt: skip
 
-      2. This is item
-         number 2.  It is the second item in the list.
-
-      3. This is item
-         number 3.  It is the third item in the list.
-
-    This paragraph ends the test.  It is the "final"
-    paragraph.
-    """
-        after_b = """\
-    This paragraph leads of this test. It is
-    the "lead" paragraph.
-
-      1. This is item
-         number 1.  It is the first item in the list.
-
-      2. This is item
-         number 2.  It is the second item in the list.
-
-      3. This is item
-         number 3.  It is the third item in the list.
-
-    This paragraph ends the test.  It is the "final"
-    paragraph.
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3017,38 +3380,42 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.123: *6* xxx_test_reformat-paragraph list 2 of 5 (fail)
     def xxx_test_reformat_paragraph_list_2_of_5(self):
         """Test case for reformat-paragraph list 2 of 5"""
-        before_b = """\
-    This paragraph leads of this test. It is
-    the "lead" paragraph.
+        before_b = self.prep(
+    		"""
+    			This paragraph leads of this test. It is
+    			the "lead" paragraph.
+    			
+    			  1. This is item number 1. It is the
+    			     first item in the list.
+    			
+    			  2. This is item
+    			     number 2.  It is the second item in the list.
+    			
+    			  3. This is item
+    			     number 3.  It is the third item in the list.
+    			
+    			This paragraph ends the test.  It is the "final"
+    			paragraph.
+    		""")  # fmt: skip
 
-      1. This is item number 1. It is the
-         first item in the list.
+        after_b = self.prep(
+    		"""
+    			This paragraph leads of this test. It is
+    			the "lead" paragraph.
+    			
+    			  1. This is item number 1. It is the
+    			     first item in the list.
+    			
+    			  2. This is item
+    			     number 2.  It is the second item in the list.
+    			
+    			  3. This is item
+    			     number 3.  It is the third item in the list.
+    			
+    			This paragraph ends the test.  It is the "final"
+    			paragraph.
+    		""")  # fmt: skip
 
-      2. This is item
-         number 2.  It is the second item in the list.
-
-      3. This is item
-         number 3.  It is the third item in the list.
-
-    This paragraph ends the test.  It is the "final"
-    paragraph.
-    """
-        after_b = """\
-    This paragraph leads of this test. It is
-    the "lead" paragraph.
-
-      1. This is item number 1. It is the
-         first item in the list.
-
-      2. This is item
-         number 2.  It is the second item in the list.
-
-      3. This is item
-         number 3.  It is the third item in the list.
-
-    This paragraph ends the test.  It is the "final"
-    paragraph.
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3061,38 +3428,42 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.124: *6* test_reformat-paragraph list 3 of 5
     def test_reformat_paragraph_list_3_of_5(self):
         """Test case for reformat-paragraph list 3 of 5"""
-        before_b = """\
-    This paragraph leads of this test. It is
-    the "lead" paragraph.
+        before_b = self.prep(
+    		"""
+    			This paragraph leads of this test. It is
+    			the "lead" paragraph.
+    			
+    			  1. This is item number 1. It is the
+    			     first item in the list.
+    			
+    			  2. This is item
+    			     number 2.  It is the second item in the list.
+    			
+    			  3. This is item
+    			     number 3.  It is the third item in the list.
+    			
+    			This paragraph ends the test.  It is the "final"
+    			paragraph.
+    		""")  # fmt: skip
 
-      1. This is item number 1. It is the
-         first item in the list.
+        after_b = self.prep(
+    		"""
+    			This paragraph leads of this test. It is
+    			the "lead" paragraph.
+    			
+    			  1. This is item number 1. It is the
+    			     first item in the list.
+    			
+    			  2. This is item number 2. It is the
+    			     second item in the list.
+    			
+    			  3. This is item
+    			     number 3.  It is the third item in the list.
+    			
+    			This paragraph ends the test.  It is the "final"
+    			paragraph.
+    		""")  # fmt: skip
 
-      2. This is item
-         number 2.  It is the second item in the list.
-
-      3. This is item
-         number 3.  It is the third item in the list.
-
-    This paragraph ends the test.  It is the "final"
-    paragraph.
-    """
-        after_b = """\
-    This paragraph leads of this test. It is
-    the "lead" paragraph.
-
-      1. This is item number 1. It is the
-         first item in the list.
-
-      2. This is item number 2. It is the
-         second item in the list.
-
-      3. This is item
-         number 3.  It is the third item in the list.
-
-    This paragraph ends the test.  It is the "final"
-    paragraph.
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3105,38 +3476,42 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.125: *6* test_reformat-paragraph list 4 of 5
     def test_reformat_paragraph_list_4_of_5(self):
         """Test case for reformat-paragraph list 4 of 5"""
-        before_b = """\
-    This paragraph leads of this test. It is
-    the "lead" paragraph.
+        before_b = self.prep(
+    		"""
+    			This paragraph leads of this test. It is
+    			the "lead" paragraph.
+    			
+    			  1. This is item number 1. It is the
+    			     first item in the list.
+    			
+    			  2. This is item number 2. It is the
+    			     second item in the list.
+    			
+    			  3. This is item
+    			     number 3.  It is the third item in the list.
+    			
+    			This paragraph ends the test.  It is the "final"
+    			paragraph.
+    		""")  # fmt: skip
 
-      1. This is item number 1. It is the
-         first item in the list.
+        after_b = self.prep(
+    		"""
+    			This paragraph leads of this test. It is
+    			the "lead" paragraph.
+    			
+    			  1. This is item number 1. It is the
+    			     first item in the list.
+    			
+    			  2. This is item number 2. It is the
+    			     second item in the list.
+    			
+    			  3. This is item number 3. It is the
+    			     third item in the list.
+    			
+    			This paragraph ends the test.  It is the "final"
+    			paragraph.
+    		""")  # fmt: skip
 
-      2. This is item number 2. It is the
-         second item in the list.
-
-      3. This is item
-         number 3.  It is the third item in the list.
-
-    This paragraph ends the test.  It is the "final"
-    paragraph.
-    """
-        after_b = """\
-    This paragraph leads of this test. It is
-    the "lead" paragraph.
-
-      1. This is item number 1. It is the
-         first item in the list.
-
-      2. This is item number 2. It is the
-         second item in the list.
-
-      3. This is item number 3. It is the
-         third item in the list.
-
-    This paragraph ends the test.  It is the "final"
-    paragraph.
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3149,38 +3524,42 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.126: *6* xxx_test_reformat-paragraph list 5 of 5 (fail)
     def xxx_test_reformat_paragraph_list_5_of_5(self):
         """Test case for reformat-paragraph list 5 of 5"""
-        before_b = """\
-    This paragraph leads of this test. It is
-    the "lead" paragraph.
+        before_b = self.prep(
+    		"""
+    			This paragraph leads of this test. It is
+    			the "lead" paragraph.
+    			
+    			  1. This is item number 1. It is the
+    			     first item in the list.
+    			
+    			  2. This is item number 2. It is the
+    			     second item in the list.
+    			
+    			  3. This is item number 3. It is the
+    			     third item in the list.
+    			
+    			This paragraph ends the test.  It is the "final"
+    			paragraph.
+    		""")  # fmt: skip
 
-      1. This is item number 1. It is the
-         first item in the list.
+        after_b = self.prep(
+    		"""
+    			This paragraph leads of this test. It is
+    			the "lead" paragraph.
+    			
+    			  1. This is item number 1. It is the
+    			     first item in the list.
+    			
+    			  2. This is item number 2. It is the
+    			     second item in the list.
+    			
+    			  3. This is item number 3. It is the
+    			     third item in the list.
+    			
+    			This paragraph ends the test. It is the
+    			"final" paragraph.
+    		""")  # fmt: skip
 
-      2. This is item number 2. It is the
-         second item in the list.
-
-      3. This is item number 3. It is the
-         third item in the list.
-
-    This paragraph ends the test.  It is the "final"
-    paragraph.
-    """
-        after_b = """\
-    This paragraph leads of this test. It is
-    the "lead" paragraph.
-
-      1. This is item number 1. It is the
-         first item in the list.
-
-      2. This is item number 2. It is the
-         second item in the list.
-
-      3. This is item number 3. It is the
-         third item in the list.
-
-    This paragraph ends the test. It is the
-    "final" paragraph.
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3193,18 +3572,22 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.127: *6* xxx_ test_reformat-paragraph new code 1 of 8 (fail)
     def xxx_test_reformat_paragraph_new_code_1_of_8(self):
         """Test case for reformat-paragraph new code 1 of 8"""
-        before_b = """\
-    # @@pagewidth 40
-    '''
-    docstring.
-    '''
-    """
-        after_b = """\
-    # @@pagewidth 40
-    '''
-    docstring.
-    '''
-    """
+        before_b = self.prep(
+    		"""
+    			@pagewidth 40
+    			'''
+    			docstring.
+    			'''
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			@pagewidth 40
+    			'''
+    			docstring.
+    			'''
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3217,18 +3600,22 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.128: *6* xxx_test_reformat-paragraph new code 2 of 8 (fail)
     def xxx_test_reformat_paragraph_new_code_2_of_8(self):
         """Test case for reformat-paragraph new code 2 of 8"""
-        before_b = """\
-    # @@pagewidth 40
-    '''
-    docstring.
-    '''
-    """
-        after_b = """\
-    # @@pagewidth 40
-    '''
-    docstring.
-    '''
-    """
+        before_b = self.prep(
+    		"""
+    			@pagewidth 40
+    			'''
+    			docstring.
+    			'''
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			@pagewidth 40
+    			'''
+    			docstring.
+    			'''
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3241,19 +3628,23 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.129: *6* test_reformat-paragraph new code 3 of 8
     def test_reformat_paragraph_new_code_3_of_8(self):
         """Test case for reformat-paragraph new code 3 of 8"""
-        before_b = """\
-    # @@pagewidth 40
-    '''
-    docstring.
-    more docstring.
-    '''
-    """
-        after_b = """\
-    # @@pagewidth 40
-    '''
-    docstring. more docstring.
-    '''
-    """
+        before_b = self.prep(
+    		"""
+    			@pagewidth 40
+    			'''
+    			docstring.
+    			more docstring.
+    			'''
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			@pagewidth 40
+    			'''
+    			docstring. more docstring.
+    			'''
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3266,16 +3657,20 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.130: *6* test_reformat-paragraph new code 4 of 8
     def test_reformat_paragraph_new_code_4_of_8(self):
         """Test case for reformat-paragraph new code 4 of 8"""
-        before_b = """\
-    - Point 1. xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    Line 11.
-    A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-    """
-        after_b = """\
-    - Point 1. xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-      Line 11.
-    A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-    """
+        before_b = self.prep(
+    		"""
+    			- Point 1. xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    			Line 11.
+    			A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			- Point 1. xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    			  Line 11.
+    			A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3288,16 +3683,20 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.131: *6* test_reformat-paragraph new code 5 of 8
     def test_reformat_paragraph_new_code_5_of_8(self):
         """Test case for reformat-paragraph new code 5 of 8"""
-        before_b = """\
-    A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-      Line 22.
-    1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-    """
-        after_b = """\
-    A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-       Line 22.
-    1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-    """
+        before_b = self.prep(
+    		"""
+    			A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+    			  Line 22.
+    			1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+    			   Line 22.
+    			1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3310,18 +3709,22 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.132: *6* test_reformat-paragraph new code 6 of 8
     def test_reformat_paragraph_new_code_6_of_8(self):
         """Test case for reformat-paragraph new code 6 of 8"""
-        before_b = """\
-    1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-    Line 32.
+        before_b = self.prep(
+    		"""
+    			1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+    			Line 32.
+    			
+    			2. Point 4  xxxxxxxxxxxxxxxxxxxxxxxxxxx
+    		""")  # fmt: skip
 
-    2. Point 4  xxxxxxxxxxxxxxxxxxxxxxxxxxx
-    """
-        after_b = """\
-    1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-       Line 32.
+        after_b = self.prep(
+    		"""
+    			1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+    			   Line 32.
+    			
+    			2. Point 4  xxxxxxxxxxxxxxxxxxxxxxxxxxx
+    		""")  # fmt: skip
 
-    2. Point 4  xxxxxxxxxxxxxxxxxxxxxxxxxxx
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3334,20 +3737,24 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.133: *6* xxx_test_reformat-paragraph new code 7 of 8 (fail)
     def xxx_test_reformat_paragraph_new_code_7_of_8(self):
         """Test case for reformat-paragraph new code 7 of 8"""
-        before_b = """\
-    1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-       Line 32.
+        before_b = self.prep(
+    		"""
+    			1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+    			   Line 32.
+    			
+    			2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
+    			        Line 41.
+    		""")  # fmt: skip
 
-    2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
-            Line 41.
-    """
-        after_b = """\
-    1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-       Line 32.
+        after_b = self.prep(
+    		"""
+    			1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+    			   Line 32.
+    			
+    			2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
+    			        Line 41.
+    		""")  # fmt: skip
 
-    2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
-            Line 41.
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3360,14 +3767,18 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.134: *6* xxx_test_reformat-paragraph new code 8 of 8 (fail)
     def xxx_test_reformat_paragraph_new_code_8_of_8(self):
         """Test case for reformat-paragraph new code 8 of 8"""
-        before_b = """\
-    2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
-            Line 41.
-    """
-        after_b = """\
-    2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
-            Line 41.
-    """
+        before_b = self.prep(
+    		"""
+    			2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
+    			        Line 41.
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
+    			        Line 41.
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3380,34 +3791,38 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.135: *6* test_reformat-paragraph paragraph 1 of 3
     def test_reformat_paragraph_paragraph_1_of_3(self):
         """Test case for reformat-paragraph paragraph 1 of 3"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    			
+    			Last paragraph.
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe
+    			weather-prone country on Earth. Each
+    			year, Americans cope with an average of
+    			10,000 thunderstorms, 2,500 floods,
+    			1,000 tornadoes, as well as an average
+    			of 6 deadly hurricanes. Potentially
+    			deadly weather impacts every American.
+    			Communities can now rely on the National
+    			Weather Service’s StormReady program to
+    			help them guard against the ravages of
+    			Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    			
+    			Last paragraph.
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-    Last paragraph.
-    """
-        after_b = """\
-    Americans live in the most severe
-    weather-prone country on Earth. Each
-    year, Americans cope with an average of
-    10,000 thunderstorms, 2,500 floods,
-    1,000 tornadoes, as well as an average
-    of 6 deadly hurricanes. Potentially
-    deadly weather impacts every American.
-    Communities can now rely on the National
-    Weather Service’s StormReady program to
-    help them guard against the ravages of
-    Mother Nature.
-
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-    Last paragraph.
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3420,54 +3835,58 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.136: *6* test_reformat-paragraph paragraph 2 of 3
     def test_reformat_paragraph_paragraph_2_of_3(self):
         """Test case for reformat-paragraph paragraph 2 of 3"""
-        before_b = """\
-    Americans live in the most severe
-    weather-prone country on Earth. Each
-    year, Americans cope with an average of
-    10,000 thunderstorms, 2,500 floods,
-    1,000 tornadoes, as well as an average
-    of 6 deadly hurricanes. Potentially
-    deadly weather impacts every American.
-    Communities can now rely on the National
-    Weather Service’s StormReady program to
-    help them guard against the ravages of
-    Mother Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe
+    			weather-prone country on Earth. Each
+    			year, Americans cope with an average of
+    			10,000 thunderstorms, 2,500 floods,
+    			1,000 tornadoes, as well as an average
+    			of 6 deadly hurricanes. Potentially
+    			deadly weather impacts every American.
+    			Communities can now rely on the National
+    			Weather Service’s StormReady program to
+    			help them guard against the ravages of
+    			Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    			
+    			Last paragraph.
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe
+    			weather-prone country on Earth. Each
+    			year, Americans cope with an average of
+    			10,000 thunderstorms, 2,500 floods,
+    			1,000 tornadoes, as well as an average
+    			of 6 deadly hurricanes. Potentially
+    			deadly weather impacts every American.
+    			Communities can now rely on the National
+    			Weather Service’s StormReady program to
+    			help them guard against the ravages of
+    			Mother Nature.
+    			
+    			Some 90% of all presidentially declared
+    			disasters are weather related, leading
+    			to around 500 deaths per year and nearly
+    			$14 billion in damage. StormReady, a
+    			program started in 1999 in Tulsa, OK,
+    			helps arm America's communities with the
+    			communication and safety skills needed
+    			to save lives and property– before and
+    			during the event. StormReady helps
+    			community leaders and emergency managers
+    			strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    			
+    			Last paragraph.
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-    Last paragraph.
-    """
-        after_b = """\
-    Americans live in the most severe
-    weather-prone country on Earth. Each
-    year, Americans cope with an average of
-    10,000 thunderstorms, 2,500 floods,
-    1,000 tornadoes, as well as an average
-    of 6 deadly hurricanes. Potentially
-    deadly weather impacts every American.
-    Communities can now rely on the National
-    Weather Service’s StormReady program to
-    help them guard against the ravages of
-    Mother Nature.
-
-    Some 90% of all presidentially declared
-    disasters are weather related, leading
-    to around 500 deaths per year and nearly
-    $14 billion in damage. StormReady, a
-    program started in 1999 in Tulsa, OK,
-    helps arm America's communities with the
-    communication and safety skills needed
-    to save lives and property– before and
-    during the event. StormReady helps
-    community leaders and emergency managers
-    strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-    Last paragraph.
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3480,71 +3899,75 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.137: *6* test_reformat-paragraph paragraph 3 of 3
     def test_reformat_paragraph_paragraph_3_of_3(self):
         """Test case for reformat-paragraph paragraph 3 of 3"""
-        before_b = """\
-    Americans live in the most severe
-    weather-prone country on Earth. Each
-    year, Americans cope with an average of
-    10,000 thunderstorms, 2,500 floods,
-    1,000 tornadoes, as well as an average
-    of 6 deadly hurricanes. Potentially
-    deadly weather impacts every American.
-    Communities can now rely on the National
-    Weather Service’s StormReady program to
-    help them guard against the ravages of
-    Mother Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe
+    			weather-prone country on Earth. Each
+    			year, Americans cope with an average of
+    			10,000 thunderstorms, 2,500 floods,
+    			1,000 tornadoes, as well as an average
+    			of 6 deadly hurricanes. Potentially
+    			deadly weather impacts every American.
+    			Communities can now rely on the National
+    			Weather Service’s StormReady program to
+    			help them guard against the ravages of
+    			Mother Nature.
+    			
+    			Some 90% of all presidentially declared
+    			disasters are weather related, leading
+    			to around 500 deaths per year and nearly
+    			$14 billion in damage. StormReady, a
+    			program started in 1999 in Tulsa, OK,
+    			helps arm America's communities with the
+    			communication and safety skills needed
+    			to save lives and property– before and
+    			during the event. StormReady helps
+    			community leaders and emergency managers
+    			strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    			
+    			Last paragraph.
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared
-    disasters are weather related, leading
-    to around 500 deaths per year and nearly
-    $14 billion in damage. StormReady, a
-    program started in 1999 in Tulsa, OK,
-    helps arm America's communities with the
-    communication and safety skills needed
-    to save lives and property– before and
-    during the event. StormReady helps
-    community leaders and emergency managers
-    strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe
+    			weather-prone country on Earth. Each
+    			year, Americans cope with an average of
+    			10,000 thunderstorms, 2,500 floods,
+    			1,000 tornadoes, as well as an average
+    			of 6 deadly hurricanes. Potentially
+    			deadly weather impacts every American.
+    			Communities can now rely on the National
+    			Weather Service’s StormReady program to
+    			help them guard against the ravages of
+    			Mother Nature.
+    			
+    			Some 90% of all presidentially declared
+    			disasters are weather related, leading
+    			to around 500 deaths per year and nearly
+    			$14 billion in damage. StormReady, a
+    			program started in 1999 in Tulsa, OK,
+    			helps arm America's communities with the
+    			communication and safety skills needed
+    			to save lives and property– before and
+    			during the event. StormReady helps
+    			community leaders and emergency managers
+    			strengthen local safety programs.
+    			
+    			StormReady communities are better
+    			prepared to save lives from the
+    			onslaught of severe weather through
+    			better planning, education, and
+    			awareness. No community is storm proof,
+    			but StormReady can help communities save
+    			lives. Does StormReady make a
+    			difference?
+    			
+    			Last paragraph.
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-    Last paragraph.
-    """
-        after_b = """\
-    Americans live in the most severe
-    weather-prone country on Earth. Each
-    year, Americans cope with an average of
-    10,000 thunderstorms, 2,500 floods,
-    1,000 tornadoes, as well as an average
-    of 6 deadly hurricanes. Potentially
-    deadly weather impacts every American.
-    Communities can now rely on the National
-    Weather Service’s StormReady program to
-    help them guard against the ravages of
-    Mother Nature.
-
-    Some 90% of all presidentially declared
-    disasters are weather related, leading
-    to around 500 deaths per year and nearly
-    $14 billion in damage. StormReady, a
-    program started in 1999 in Tulsa, OK,
-    helps arm America's communities with the
-    communication and safety skills needed
-    to save lives and property– before and
-    during the event. StormReady helps
-    community leaders and emergency managers
-    strengthen local safety programs.
-
-    StormReady communities are better
-    prepared to save lives from the
-    onslaught of severe weather through
-    better planning, education, and
-    awareness. No community is storm proof,
-    but StormReady can help communities save
-    lives. Does StormReady make a
-    difference?
-
-    Last paragraph.
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3557,21 +3980,25 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.138: *6* test_reformat-paragraph simple hanging indent
     def test_reformat_paragraph_simple_hanging_indent(self):
         """Test case for reformat-paragraph simple hanging indent"""
-        before_b = """\
-    Honor this line that has a hanging indentation, please.  Hanging
-      indentation is valuable for lists of all kinds.  But it is tricky to get right.
+        before_b = self.prep(
+    		"""
+    			Honor this line that has a hanging indentation, please.  Hanging
+    			  indentation is valuable for lists of all kinds.  But it is tricky to get right.
+    			
+    			Next paragraph.
+    		""")  # fmt: skip
 
-    Next paragraph.
-    """
-        after_b = """\
-    Honor this line that has a hanging
-      indentation, please. Hanging
-      indentation is valuable for lists of
-      all kinds. But it is tricky to get
-      right.
+        after_b = self.prep(
+    		"""
+    			Honor this line that has a hanging
+    			  indentation, please. Hanging
+    			  indentation is valuable for lists of
+    			  all kinds. But it is tricky to get
+    			  right.
+    			
+    			Next paragraph.
+    		""")  # fmt: skip
 
-    Next paragraph.
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3584,22 +4011,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.139: *6* test_reformat-paragraph simple hanging indent 2
     def test_reformat_paragraph_simple_hanging_indent_2(self):
         """Test case for reformat-paragraph simple hanging indent 2"""
-        before_b = """\
-    Honor this line that has
-      a hanging indentation, please.  Hanging
-        indentation is valuable for lists of all kinds.  But it is tricky to get right.
+        before_b = self.prep(
+    		"""
+    			Honor this line that has
+    			  a hanging indentation, please.  Hanging
+    			    indentation is valuable for lists of all kinds.  But it is tricky to get right.
+    			
+    			Next paragraph.
+    		""")  # fmt: skip
 
-    Next paragraph.
-    """
-        after_b = """\
-    Honor this line that has a hanging
-      indentation, please. Hanging
-      indentation is valuable for lists of
-      all kinds. But it is tricky to get
-      right.
+        after_b = self.prep(
+    		"""
+    			Honor this line that has a hanging
+    			  indentation, please. Hanging
+    			  indentation is valuable for lists of
+    			  all kinds. But it is tricky to get
+    			  right.
+    			
+    			Next paragraph.
+    		""")  # fmt: skip
 
-    Next paragraph.
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3612,25 +4043,29 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.140: *6* test_reformat-paragraph simple hanging indent 3
     def test_reformat_paragraph_simple_hanging_indent_3(self):
         """Test case for reformat-paragraph simple hanging indent 3"""
-        before_b = """\
-    Honor this line that
-      has a hanging indentation,
-      please.  Hanging
-       indentation is valuable
-        for lists of all kinds.  But
-        it is tricky to get right.
+        before_b = self.prep(
+    		"""
+    			Honor this line that
+    			  has a hanging indentation,
+    			  please.  Hanging
+    			   indentation is valuable
+    			    for lists of all kinds.  But
+    			    it is tricky to get right.
+    			
+    			Next Paragraph.
+    		""")  # fmt: skip
 
-    Next Paragraph.
-    """
-        after_b = """\
-    Honor this line that has a hanging
-      indentation, please. Hanging
-      indentation is valuable for lists of
-      all kinds. But it is tricky to get
-      right.
+        after_b = self.prep(
+    		"""
+    			Honor this line that has a hanging
+    			  indentation, please. Hanging
+    			  indentation is valuable for lists of
+    			  all kinds. But it is tricky to get
+    			  right.
+    			
+    			Next Paragraph.
+    		""")  # fmt: skip
 
-    Next Paragraph.
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3643,24 +4078,28 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.101: *5* test_remove-blank-lines
     def test_remove_blank_lines(self):
         """Test case for remove-blank-lines"""
-        before_b = """\
-    first line
+        before_b = self.prep(
+    		"""
+    			first line
+    			
+    			line 1
+    			    line a
+    			        line b
+    			
+    			line c
+    			last line
+    		""")  # fmt: skip
 
-    line 1
-        line a
-            line b
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
 
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3672,26 +4111,30 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.102: *5* test_remove-space-from-lines
     def test_remove_space_from_lines(self):
         """Test case for remove-space-from-lines"""
-        before_b = """\
-    first line
+        before_b = self.prep(
+    		"""
+    			first line
+    			
+    			line 1
+    			    line a
+    			        line b
+    			
+    			line c
+    			last line
+    		""")  # fmt: skip
 
-    line 1
-        line a
-            line b
+        after_b = self.prep(
+    		"""
+    			first line
+    			
+    			line 1
+    			   line a
+    			       line b
+    			
+    			line c
+    			last line
+    		""")  # fmt: skip
 
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-
-    line 1
-       line a
-           line b
-
-    line c
-    last line
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3703,22 +4146,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.103: *5* test_remove-tab-from-lines
     def test_remove_tab_from_lines(self):
         """Test case for remove-tab-from-lines"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-    line a
-        line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			line a
+    			    line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3730,23 +4177,27 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.104: *5* test_reverse-region
     def test_reverse_region(self):
         """Test case for reverse-region"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
 
-    last line
-    line c
-            line b
-        line a
-    line 1
-    first line
-    """
+        after_b = self.prep(
+    		"""
+    			
+    			last line
+    			line c
+    			        line b
+    			    line a
+    			line 1
+    			first line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3758,20 +4209,24 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.105: *5* test_reverse-sort-lines
     def test_reverse_sort_lines(self):
         """Test case for reverse-sort-lines"""
-        before_b = """\
-    a
-    d
-    e
-    z
-    x
-    """
-        after_b = """\
-    z
-    x
-    e
-    d
-    a
-    """
+        before_b = self.prep(
+    		"""
+    			a
+    			d
+    			e
+    			z
+    			x
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			z
+    			x
+    			e
+    			d
+    			a
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3783,22 +4238,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.106: *5* test_reverse-sort-lines-ignoring-case
     def test_reverse_sort_lines_ignoring_case(self):
         """Test case for reverse-sort-lines-ignoring-case"""
-        before_b = """\
-    c
-    A
-    z
-    X
-    Y
-    b
-    """
-        after_b = """\
-    z
-    Y
-    X
-    c
-    b
-    A
-    """
+        before_b = self.prep(
+    		"""
+    			c
+    			A
+    			z
+    			X
+    			Y
+    			b
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			z
+    			Y
+    			X
+    			c
+    			b
+    			A
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3811,22 +4270,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.107: *5* test_sort-columns
     def test_sort_columns(self):
         """Test case for sort-columns"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-            line b
-        line a
-    first line
-    last line
-    line 1
-    line c
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			        line b
+    			    line a
+    			first line
+    			last line
+    			line 1
+    			line c
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3838,22 +4301,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.108: *5* test_sort-lines
     def test_sort_lines(self):
         """Test case for sort-lines"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-            line b
-        line a
-    line 1
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			        line b
+    			    line a
+    			line 1
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3865,20 +4332,24 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.109: *5* test_sort-lines-ignoring-case
     def test_sort_lines_ignoring_case(self):
         """Test case for sort-lines-ignoring-case"""
-        before_b = """\
-    x
-    z
-    A
-    c
-    B
-    """
-        after_b = """\
-    A
-    B
-    c
-    x
-    z
-    """
+        before_b = self.prep(
+    		"""
+    			x
+    			z
+    			A
+    			c
+    			B
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			A
+    			B
+    			c
+    			x
+    			z
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3890,23 +4361,27 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.110: *5* test_split-line
     def test_split_line(self):
         """Test case for split-line"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first
-     line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first
+    			 line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3918,22 +4393,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.111: *5* test_start-of-line
     def test_start_of_line(self):
         """Test case for start-of-line"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3945,22 +4424,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.112: *5* test_start-of-line (2)
     def test_start_of_line_2(self):
         """Test case for start-of-line (2)"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3972,22 +4455,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.113: *5* test_start-of-line-extend-selection
     def test_start_of_line_extend_selection(self):
         """Test case for start-of-line-extend-selection"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3999,22 +4486,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.114: *5* test_start-of-line-extend-selection (2)
     def test_start_of_line_extend_selection_2(self):
         """Test case for start-of-line-extend-selection (2)"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -4026,14 +4517,16 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.115: *5* test_tabify
     def test_tabify(self):
         """Test case for tabify"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         after_b = """\
     first line
     line 1
@@ -4053,22 +4546,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.116: *5* test_transpose-chars
     def test_transpose_chars(self):
         """Test case for transpose-chars"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    frist line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			frist line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -4080,22 +4577,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.117: *5* test_transpose-lines
     def test_transpose_lines(self):
         """Test case for transpose-lines"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    line 1
-    first line
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			line 1
+    			first line
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -4107,16 +4608,20 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.118: *5* test_transpose-words
     def test_transpose_words(self):
         """Test case for transpose-words"""
-        before_b = """\
-    first line
-    before bar2 += foo after
-    last line
-    """
-        after_b = """\
-    first line
-    before foo += bar2 after
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			before bar2 += foo after
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			before foo += bar2 after
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -4155,20 +4660,24 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.120: *5* test_upcase-region
     def test_upcase_region(self):
         """Test case for upcase-region"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+        before_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+        after_b = self.prep(
+    		"""
+    			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+    			
+    			SOME 90% OF ALL PRESIDENTIALLY DECLARED DISASTERS ARE WEATHER RELATED, LEADING TO AROUND 500 DEATHS PER YEAR AND NEARLY $14 BILLION IN DAMAGE. STORMREADY, A PROGRAM STARTED IN 1999 IN TULSA, OK, HELPS ARM AMERICA'S COMMUNITIES WITH THE COMMUNICATION AND SAFETY SKILLS NEEDED TO SAVE LIVES AND PROPERTY– BEFORE AND DURING THE EVENT. STORMREADY HELPS COMMUNITY LEADERS AND EMERGENCY MANAGERS STRENGTHEN LOCAL SAFETY PROGRAMS.
+    			
+    			StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    		""")  # fmt: skip
 
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
-        after_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-    SOME 90% OF ALL PRESIDENTIALLY DECLARED DISASTERS ARE WEATHER RELATED, LEADING TO AROUND 500 DEATHS PER YEAR AND NEARLY $14 BILLION IN DAMAGE. STORMREADY, A PROGRAM STARTED IN 1999 IN TULSA, OK, HELPS ARM AMERICA'S COMMUNITIES WITH THE COMMUNICATION AND SAFETY SKILLS NEEDED TO SAVE LIVES AND PROPERTY– BEFORE AND DURING THE EVENT. STORMREADY HELPS COMMUNITY LEADERS AND EMERGENCY MANAGERS STRENGTHEN LOCAL SAFETY PROGRAMS.
-
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -4180,22 +4689,26 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20201130090918.121: *5* test_upcase-word
     def test_upcase_word(self):
         """Test case for upcase-word"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        LINE a
-            line b
-    line c
-    last line
-    """
+        before_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    line a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
+        after_b = self.prep(
+    		"""
+    			first line
+    			line 1
+    			    LINE a
+    			        line b
+    			line c
+    			last line
+    		""")  # fmt: skip
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
