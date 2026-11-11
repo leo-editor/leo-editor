@@ -113,7 +113,7 @@ class BaseTestImporter(LeoUnitTest):
 
         if not expected_s:  # Leo 6.8.7.
             # Define the *strict* expected results.
-            expected_s = textwrap.dedent(s).strip() + '\n'
+            expected_s = self.prep(s)
         p = self.run_test(s)
         self.check_round_trip(p, expected_s, strict=strict)
 
@@ -138,7 +138,7 @@ class BaseTestImporter(LeoUnitTest):
         parent.h = f"{kind} {self.short_id}"
 
         # Leo 6.8.7. Do *not* strip trailing ws!
-        test_s = textwrap.dedent(s).lstrip()
+        test_s = textwrap.dedent(s).lstrip()  # Don't use self.prep.
 
         # Leo 6.8.7:
         c.importCommands.createOutline(parent.copy(), ext, test_s, treeType='@clean')
@@ -170,8 +170,7 @@ class BaseTestImporter(LeoUnitTest):
         id_parts = self.id().split('.')
         self.short_id = f"{id_parts[-2]}.{id_parts[-1]}"
         parent.h = f"{kind} {self.short_id}"
-
-        test_s = textwrap.dedent(s).strip() + '\n'
+        test_s = self.prep(s)
         c.importCommands.createOutline(parent.copy(), ext, test_s)
         return parent
 
@@ -1929,7 +1928,7 @@ class TestJupytext(BaseTestImporter):
         # Create the @jupytext node.
         parent = p.insertAsLastChild()
         parent.h = f"@jupytext {self.short_id}"
-        parent.b = textwrap.dedent(s).strip() + '\n'
+        parent.b = self.prep(s)
 
         # Execute the code under test.
         g.app.jupytextManager.create_outline(c, parent)
