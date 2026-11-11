@@ -1564,31 +1564,38 @@ class TestEditCommands(LeoUnitTest):
             directives="@pagewidth 80",
         )
 
-    # @+node:ekr.20201130090918.53: *5* xxx_test_finish-of-line (fail)
-    def xxx_test_finish_of_line(self):
+    # @+node:ekr.20201130090918.53: *5* test_finish-of-line
+    def test_finish_of_line(self):
         """Test case for finish-of-line"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """
+        before_b = textwrap.dedent(
+            """
+            first line
+            line 1
+                line a
+                    line b
+            line c
+            last line
+        """
+        ).lstrip()
+
+        after_b = textwrap.dedent(
+            """
+            first line
+            line 1
+                line a
+                    line b
+            line c
+            last line
+        """
+        ).lstrip()
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
-            before_sel=("3.12", "3.12"),
+            before_sel=("3.1", "3.1"),
             after_sel=("3.9", "3.9"),
             command_name="finish-of-line",
+            dedent=False,
         )
 
     # @+node:ekr.20201130090918.54: *5* test_finish-of-line (2)
