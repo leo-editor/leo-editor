@@ -823,8 +823,6 @@ class Undoer:
                 u.node_captures.remove(p.v)
                 new_p = c.p
                 new_state = u.capture_node(p.v)
-                changed = new_state != old_state
-                ### g.trace(f"{changed=}")
                 if old_state != new_state:
                     u._redraw(new_p)  # PR #5027 Redraw only if node has changed.
                     new_ui = u.capture_ui()
@@ -1085,6 +1083,7 @@ class Undoer:
         c.recolor(c.p)
         w = c.frame.body.wrapper
         w.setSelectionRange(*sel, insert=ins)
+        ### w.setAllText(p.b)  ### Breaks unit tests.
         ### w.setYScrollPosition(scroll)
 
     # @+node:ekr.20261015041852.1: *4* u: redrawers & finishers

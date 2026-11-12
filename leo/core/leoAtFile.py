@@ -2704,7 +2704,7 @@ class AtFile:
                 c.p.b = new_text
                 w.setAllText(new_text)
                 w.setSelectionRange(w_ins, w_ins, insert=w_ins)
-                w.see(w_ins)
+                ### w.see(w_ins)
         return True
 
     # @+node:vv.20260807130000.1: *6* at.runRuff
