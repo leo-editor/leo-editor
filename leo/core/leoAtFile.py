@@ -2702,7 +2702,7 @@ class AtFile:
             with u.change_node(old_p, 'ruff-format'):
                 g.trace(f"Update body text! {c.p.h}")
                 w.setAllText(new_text)
-                w.setSelectionRange(w_ins, w_ins, insert=w_ins)
+                w.setSelectionRange(w_ins, w_ins, insert=w_ins)  # Not perfect.
         return True
 
     # @+node:vv.20260807130000.1: *6* at.runRuff

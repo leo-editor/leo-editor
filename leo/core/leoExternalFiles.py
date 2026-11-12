@@ -199,11 +199,7 @@ class ExternalFilesController:
             self.set_time(path)
             self.checksum_d[path] = self.checksum(path)
             # Check file.
-            if (
-                p.isAtAsisFileNode()
-                or p.isAtEditNode()  # PR #5050
-                or p.isAtNoSentFileNode()
-            ):
+            if p.isAtAsisFileNode() or p.isAtEditNode() or p.isAtNoSentFileNode():
                 # #1081: issue a warning.
                 self.warn(c, path, p=p)
                 continue

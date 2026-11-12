@@ -451,7 +451,7 @@ def refreshFromDisk(
     """
     Refresh an @<file> node from disk.
 
-    This command is not undoable.
+    This command is not undoable directly, but callers may make (parts of it) undoable.
     """
     c = self
     at = c.atFileCommands
