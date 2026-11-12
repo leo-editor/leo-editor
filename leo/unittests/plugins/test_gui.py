@@ -5,7 +5,6 @@
 # @+<< test_gui imports >>
 # @+node:ekr.20220911102700.1: ** << test_gui imports >>
 import os
-import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest, create_app
 
@@ -100,70 +99,6 @@ class TestQtGui(LeoUnitTest):
         # Test the Qt6 flag.
         option = QtGui.QTextOption()
         assert hasattr(option.Flag, 'ShowTabsAndSpaces')
-
-    # @+node:ekr.20260423040149.1: *3* TestQtGui.test_bug_4626
-    def test_bug_4626(self):
-        # https://github.com/leo-editor/leo-editor/issues/4626
-        self.skipTest('Can hang depending clipboard contents')
-        c = self.c
-        gui = g.app.gui
-        k = c.k
-        log = c.frame.log
-        qtApp = gui.qtApp
-        old_log = g.app.log
-        old_clipboard_contents = gui.getTextFromClipboard()
-        try:
-            # Part 1: Create the 'Completion' tab, and copy it's contents to the clipboard.
-            # Force g.es to print to the log.
-            event = LeoKeyEvent(c, char='a')
-            k.fullCommand(event=event)
-            k.extendLabel('a')
-            g.app.log = log
-            k.doTabCompletion(['a', 'ab', 'abc'])
-            wrapper = log.logCtrl
-            s = wrapper.getAllText()
-            dedent_s = textwrap.dedent(s)
-            assert dedent_s == 'a\nab\nabc\n', repr(s)
-            wrapper.selectAllText()
-            # Part 2: Test copyText directly.
-            event2 = LeoKeyEvent(c, w=wrapper)
-            c.frame.copyText(event2)
-            s2 = gui.getTextFromClipboard()
-            k.keyboardQuit()
-            assert s2 == s, (repr(s), repr(s2))
-            # Part 3: Test Ctrl-C in all text widgets.
-            # @+<< Construct two Qt events >>
-            # @+node:ekr.20260426165432.1: *4* << Construct two Qt events >>
-            c_key = QtCore.Qt.Key.Key_C
-            ctrl_mod = QtCore.Qt.KeyboardModifier.ControlModifier
-            key_press_t = QtCore.QEvent.Type.KeyPress
-            key_release_t = QtCore.QEvent.Type.KeyRelease
-            key_press_event = QtGui.QKeyEvent(key_press_t, c_key, ctrl_mod, '')
-            key_release_event = QtGui.QKeyEvent(key_release_t, c_key, ctrl_mod, '')
-            # @-<< Construct two Qt events >>
-
-            def oops(why, w):
-                print(f"{why} {id(w)} {gui.widget_name(w)} {w.__class__.__name__}")
-
-            wrapper_table = (
-                # (c.frame.body, c.frame.body.widget),  # Fails.
-                (c.frame.log, c.frame.log.logCtrl.widget),  # Good.
-            )
-            for wrapper, widget in wrapper_table:
-                # g.trace(f"widget: {id(widget)} {gui.widget_name(widget)} {widget.__class__.__name__}")
-                if hasattr(wrapper, 'ev_filter'):
-                    filter_ = wrapper.ev_filter
-                    d = filter_.key_count_dict = {}
-                    # Test actual Qt Key events.
-                    for key_event in (key_press_event, key_release_event):
-                        qtApp.sendEvent(widget, key_event)
-                        if d.get(id(wrapper)) == 0:
-                            oops('Fail 1', wrapper)
-                else:
-                    oops('Fail 2', wrapper)
-        finally:
-            gui.replaceClipboardWith(old_clipboard_contents)
-            g.app.log = old_log
 
     # @+node:ekr.20220411165627.1: *3* TestQtGui.test_put_html_links
     def test_put_html_links(self):

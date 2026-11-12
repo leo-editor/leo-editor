@@ -4,7 +4,6 @@
 
 import io
 from shutil import which
-import textwrap
 
 # from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
@@ -28,7 +27,8 @@ class TestMarkdown(LeoUnitTest):
         p = c.p
         # @+<< define body >>
         # @+node:ekr.20260916133329.1: *4* << define body >>
-        body = textwrap.dedent("""\
+        body = self.prep(
+        """
             Some intro text before the first source block.
 
             .App.svelte parent component
@@ -44,13 +44,12 @@ class TestMarkdown(LeoUnitTest):
             ATlanguage html
             <input bind:value={value} />
             ----
-        """).replace('AT', '@')
+        """).replace('AT', '@')  # fmt: skip
         # @-<< define body >>
         # @+<< define expected >>
         # @+node:ekr.20260916133712.1: *4* << define expected >>
-        expected = textwrap.dedent("""\
-
-
+        expected = self.prep(
+        """
             = child
             Some intro text before the first source block.
 
@@ -65,8 +64,7 @@ class TestMarkdown(LeoUnitTest):
             ----
             <input bind:value={value} />
             ----
-
-        """)
+        """)  # fmt: skip
         # @-<< define expected >>
         p.h = '@adoc dummy'
         p.b = '@language asciidoc\n'

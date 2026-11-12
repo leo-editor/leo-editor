@@ -4,7 +4,6 @@
 
 import glob
 import importlib
-import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoJupytext import JupytextManager
 from leo.core.leoNodes import Position
@@ -113,12 +112,18 @@ class BaseTestImporter(LeoUnitTest):
 
         if not expected_s:  # Leo 6.8.7.
             # Define the *strict* expected results.
-            expected_s = textwrap.dedent(s).strip() + '\n'
+            expected_s = self.prep(s)
         p = self.run_test(s)
         self.check_round_trip(p, expected_s, strict=strict)
 
     # @+node:ekr.20230526124600.1: *3* BaseTestImporter.new_run_test
-    def new_run_test(self, s: str, expected_results: tuple, *, check: bool = True) -> None:
+    def new_run_test(
+        self,
+        s: str,
+        expected_results: tuple,
+        *,
+        check: bool = True,
+    ) -> None:
         """
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
@@ -136,9 +141,7 @@ class BaseTestImporter(LeoUnitTest):
         id_parts = self.id().split('.')
         self.short_id = f"{id_parts[-2]}.{id_parts[-1]}"
         parent.h = f"{kind} {self.short_id}"
-
-        # Leo 6.8.7. Do *not* strip trailing ws!
-        test_s = textwrap.dedent(s).lstrip()
+        test_s = s
 
         # Leo 6.8.7:
         c.importCommands.createOutline(parent.copy(), ext, test_s, treeType='@clean')
@@ -170,8 +173,7 @@ class BaseTestImporter(LeoUnitTest):
         id_parts = self.id().split('.')
         self.short_id = f"{id_parts[-2]}.{id_parts[-1]}"
         parent.h = f"{kind} {self.short_id}"
-
-        test_s = textwrap.dedent(s).strip() + '\n'
+        test_s = self.prep(s)
         c.importCommands.createOutline(parent.copy(), ext, test_s)
         return parent
 
@@ -201,7 +203,8 @@ class TestC(BaseTestImporter):
     # @+others
     # @+node:ekr.20210904065459.3: *3* TestC.test_c_class_1
     def test_c_class_1(self):
-        s = """
+        s = self.prep(
+    	"""
             class cTestClass1 {
 
                 int foo (int a) {
@@ -212,7 +215,8 @@ class TestC(BaseTestImporter):
                     ;
                 }
             }
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -245,8 +249,8 @@ class TestC(BaseTestImporter):
 
     # @+node:ekr.20210904065459.4: *3* TestC.test_class_underindented_line
     def test_class_underindented_line(self):
-
-        s = """
+        s = self.prep(
+    	"""
             class cTestClass1 {
 
                 int foo (int a) {
@@ -260,7 +264,8 @@ class TestC(BaseTestImporter):
                     ;
                 }
             }
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -298,7 +303,8 @@ class TestC(BaseTestImporter):
 
     # @+node:ekr.20210904065459.5: *3* TestC.test_open_curly_bracket_on_next_line
     def test_open_curly_bracket_on_next_line(self):
-        s = """
+        s = self.prep(
+    	"""
             void
             aaa::bbb::doit(awk* b)
             {
@@ -310,7 +316,8 @@ class TestC(BaseTestImporter):
             {
                 return true;
             } // comment
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -339,14 +346,16 @@ class TestC(BaseTestImporter):
 
     # @+node:ekr.20210904065459.10: *3* TestC.test_extern
     def test_extern(self):
-        s = """
+        s = self.prep(
+    	"""
             extern "C"
             {
             #include "stuff.h"
             void    init(void);
             #include "that.h"
             }
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -364,7 +373,8 @@ class TestC(BaseTestImporter):
 
     # @+node:ekr.20210904065459.8: *3* TestC.test_old_style_decl_1
     def test_old_style_decl_1(self):
-        s = """
+        s = self.prep(
+    	"""
             static void
             ReleaseCharSet(cset)
                 CharSet *cset;
@@ -374,7 +384,8 @@ class TestC(BaseTestImporter):
                 ckfree((char *)cset->ranges);
                 }
             }
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -395,7 +406,8 @@ class TestC(BaseTestImporter):
 
     # @+node:ekr.20210904065459.9: *3* TestC.test_old_style_decl_2
     def test_old_style_decl_2(self):
-        s = """
+        s = self.prep(
+    	"""
             Tcl_Obj *
             Tcl_NewLongObj(longValue)
                 register long longValue; /* Long integer used to initialize the
@@ -403,7 +415,8 @@ class TestC(BaseTestImporter):
             {
                 return Tcl_DbNewLongObj(longValue, "unknown", 0);
             }
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -422,14 +435,16 @@ class TestC(BaseTestImporter):
 
     # @+node:ekr.20220812232648.1: *3* TestC.test_template
     def test_template(self):
-        s = """
+        s = self.prep(
+    	"""
             template <class T>
             T GetMax (T a, T b) {
               T result;
               result = (a>b)? a : b;
               return (result);
             }
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0,
@@ -490,40 +505,36 @@ class TestC(BaseTestImporter):
     def test_find_blocks(self):
 
         importer = C_Importer(self.c)
-        lines = g.splitLines(
-            self.prep(
-                """
+        lines = g.splitLines(self.prep(
+            """
+                # enable-trace
 
-            # enable-trace
+                namespace {
+                    n1;
+                }
 
-            namespace {
-                n1;
-            }
+                namespace outer {
+                    n2;
+                }
 
-            namespace outer {
-                n2;
-            }
+                int foo () {
+                    foo1;
+                    foo2;
+                }
 
-            int foo () {
-                foo1;
-                foo2;
-            }
+                class class1 {
+                    class1;
+                }
 
-            class class1 {
-                class1;
-            }
-
-            class class2 {
-                x = 2;
-                int bar (a, b) {
-                    if (0) {
-                        a = 1;
+                class class2 {
+                    x = 2;
+                    int bar (a, b) {
+                        if (0) {
+                            a = 1;
+                        }
                     }
                 }
-            }
-        """
-            )
-        )
+            """))  # fmt: skip
         importer.lines = lines
         importer.guide_lines = importer.make_guide_lines(lines)
         blocks = importer.find_blocks(i1=0, i2=len(lines))
@@ -537,18 +548,20 @@ class TestC(BaseTestImporter):
     # @+node:ekr.20230607164309.1: *3* TestC.test_struct
     def test_struct(self):
         # From codon sources.
-        s = """
-        struct SrcInfoAttribute : public Attribute {
-          static const std::string AttributeName;
+        s = self.prep(
+    	"""
+            struct SrcInfoAttribute : public Attribute {
+              static const std::string AttributeName;
 
-          std::unique_ptr<Attribute> clone(util::CloneVisitor &cv) const override {
-            return std::make_unique<SrcInfoAttribute>(*this);
-          }
+              std::unique_ptr<Attribute> clone(util::CloneVisitor &cv) const override {
+                return std::make_unique<SrcInfoAttribute>(*this);
+              }
 
-        private:
-          std::ostream &doFormat(std::ostream &os) const override { return os << info; }
-        };
-        """
+            private:
+              std::ostream &doFormat(std::ostream &os) const override { return os << info; }
+            };
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -585,20 +598,21 @@ class TestCoffeescript(BaseTestImporter):
     # @@tabwidth -2 # Required
 
     def test_coffeescript_1(self):
-        s = r"""
-        # Js2coffee relies on Narcissus's parser.
+        s = self.prep(
+        r"""
+          # Js2coffee relies on Narcissus's parser.
 
-        {parser} = @Narcissus or require('./narcissus_packed')
+          {parser} = @Narcissus or require('./narcissus_packed')
 
-        # Main entry point
+          # Main entry point
 
-        buildCoffee = (str) ->
-          str  = str.replace /\r/g, ''
-          str += "\n"
+          buildCoffee = (str) ->
+            str  = str.replace /\r/g, ''
+            str += "\n"
 
-          builder    = new Builder
-          scriptNode = parser.parse str
-        """
+            builder    = new Builder
+            scriptNode = parser.parse str
+        """)  # fmt: skip
 
         expected_results = (
             (
@@ -629,7 +643,8 @@ class TestCoffeescript(BaseTestImporter):
     # @@tabwidth -2 # Required
 
     def test_coffeescript_2(self):
-        s = """
+        s = self.prep(
+    	"""
           class Builder
             constructor: ->
               @transformer = new Transformer
@@ -658,8 +673,8 @@ class TestCoffeescript(BaseTestImporter):
               str = blockTrim(str)
               str = unshift(str)
               if str.length > 0 then str else ""
+          """)  # fmt: skip
 
-          """
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -706,7 +721,6 @@ class TestCoffeescript(BaseTestImporter):
                 '  str = blockTrim(str)\n'
                 '  str = unshift(str)\n'
                 '  if str.length > 0 then str else ""\n'
-                '\n'
             ),
         )  # fmt: skip
         self.new_run_test(s, expected_results)
@@ -733,14 +747,15 @@ class TestCSharp(BaseTestImporter):
     # @+others
     # @+node:ekr.20210904065459.12: *3* TestCSharp.test_namespace_indent
     def test_namespace_indent(self):
-
-        s = """
+        s = self.prep(
+    	"""
             namespace {
                 class cTestClass1 {
                     ;
                 }
             }
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -761,13 +776,15 @@ class TestCSharp(BaseTestImporter):
 
     # @+node:ekr.20210904065459.13: *3* TestCSharp.test_namespace_no_indent
     def test_namespace_no_indent(self):
-        s = """
+        s = self.prep(
+    	"""
             namespace {
             class cTestClass1 {
                 ;
             }
             }
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -797,8 +814,8 @@ class TestCython(BaseTestImporter):
     # @+others
     # @+node:ekr.20210904065459.11: *3* TestCython.test_cython_importer
     def test_cython_importer(self):
-
-        s = '''
+        s = self.prep(
+        '''
             from libc.math cimport pow
 
             cdef double square_and_add (double x):
@@ -812,7 +829,8 @@ class TestCython(BaseTestImporter):
             cpdef print_result (double x):
                 """This is a cpdef function that can be called from Python."""
                 print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))
-        '''
+        ''')  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # check_outlines ignores the first headline.
@@ -854,25 +872,26 @@ class TestDart(BaseTestImporter):
     # @+others
     # @+node:ekr.20210904065459.17: *3* TestDart.test_hello_world
     def test_hello_world(self):
+        s = self.prep(
+        r'''
+            var name = 'Bob';
 
-        s = r'''
-        var name = 'Bob';
+            hello() {
+              print('Hello, World!');
+            }
 
-        hello() {
-          print('Hello, World!');
-        }
+            // Define a function.
+            printNumber(num aNumber) {
+              print('The number is $aNumber.'); // Print to console.
+            }
 
-        // Define a function.
-        printNumber(num aNumber) {
-          print('The number is $aNumber.'); // Print to console.
-        }
+            // This is where the app starts executing.
+            void main() {
+              var number = 42; // Declare and initialize a variable.
+              printNumber(number); // Call a function.
+            }
+        ''')  # fmt: skip
 
-        // This is where the app starts executing.
-        void main() {
-          var number = 42; // Declare and initialize a variable.
-          printNumber(number); // Call a function.
-        }
-        '''
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -917,9 +936,9 @@ class TestElisp(BaseTestImporter):
     # @+others
     # @+node:ekr.20210904065459.18: *3* TestElisp.test_elisp_1
     def test_elisp_1(self):
-
         # Add weird assignments for coverage.
-        s = """
+        s = self.prep(
+    	"""
             ;;; comment
             ;;; continue
             ;;;
@@ -932,7 +951,8 @@ class TestElisp(BaseTestImporter):
             ; comment re cde
             (defun cde (a b)
                (+ 1 2 3))
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -979,9 +999,9 @@ class TestHtml(BaseTestImporter):
     # @+others
     # @+node:ekr.20210904065459.28: *3* TestHtml.test_brython
     def test_brython(self):
-
         # https://github.com/leo-editor/leo-editor/issues/479
-        s = '''
+        s = self.prep(
+    	'''
             <!DOCTYPE html>
             <html>
             <head>
@@ -998,7 +1018,7 @@ class TestHtml(BaseTestImporter):
             <!-- comment -->
             </body>
             </html>
-        '''
+        ''')  # fmt: skip
 
         expected_results = (
             (
@@ -1042,8 +1062,8 @@ class TestHtml(BaseTestImporter):
 
     # @+node:ekr.20210904065459.25: *3* TestHtml.test_improperly_nested_tags
     def test_improperly_nested_tags(self):
-
-        s = """
+        s = self.prep(
+    	"""
             <body>
 
             <!-- OOPS: the div and p elements not properly nested.-->
@@ -1058,7 +1078,8 @@ class TestHtml(BaseTestImporter):
             </p> <!-- orphan -->
 
             </body>
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -1096,8 +1117,8 @@ class TestHtml(BaseTestImporter):
 
     # @+node:ekr.20210904065459.26: *3* TestHtml.test_improperly_terminated_tags
     def test_improperly_terminated_tags(self):
-
-        s = '''
+        s = self.prep(
+    	'''
             <html>
 
             <head>
@@ -1110,7 +1131,8 @@ class TestHtml(BaseTestImporter):
                 <title>TITLE</title>
 
             <!-- oops: missing tags. -->
-        '''
+        ''')  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -1136,8 +1158,8 @@ class TestHtml(BaseTestImporter):
 
     # @+node:ekr.20210904065459.19: *3* TestHtml.test_mixed_case_tags
     def test_mixed_case_tags(self):
-
-        s = """
+        s = self.prep(
+    	"""
             <html>
             <HEAD>
                 <title>Bodystring</title>
@@ -1146,7 +1168,8 @@ class TestHtml(BaseTestImporter):
             <div id='bodydisplay'></div>
             </body>
             </HTML>
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -1180,7 +1203,8 @@ class TestHtml(BaseTestImporter):
         # @+node:ekr.20230126042723.1: *4* << define s >>
         # tags that cause nodes: html, head, body, div, table, nodeA, nodeB
         # NOT: tr, td, tbody, etc.
-        s = """
+        s = self.prep(
+        """
             <html>
             <body>
                 <table id="0">
@@ -1232,7 +1256,7 @@ class TestHtml(BaseTestImporter):
                 <noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>
             </body>
             </html>
-        """
+        """)  # fmt: skip
         # @-<< define s >>
 
         # xml.preprocess_lines inserts several newlines.
@@ -1248,11 +1272,11 @@ class TestHtml(BaseTestImporter):
 
     # @+node:ekr.20210904065459.21: *3* TestHtml.test_multple_node_completed_on_a_line
     def test_multple_node_completed_on_a_line(self):
-
-        s = """
+        s = self.prep(
+    	"""
             <!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->
             <html><head>headline</head><body>body</body></html>
-        """
+        """)  # fmt: skip
 
         # xml.preprocess_lines inserts a newline between </head> and <body>.
 
@@ -1276,13 +1300,14 @@ class TestHtml(BaseTestImporter):
 
     # @+node:ekr.20210904065459.22: *3* TestHtml.test_multple_node_starts_on_a_line
     def test_multple_node_starts_on_a_line(self):
-
-        s = '''
+        s = self.prep(
+    	'''
             <html>
             <head>headline</head>
             <body>body</body>
             </html>
-        '''
+        ''')  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -1302,8 +1327,8 @@ class TestHtml(BaseTestImporter):
 
     # @+node:ekr.20230123162321.1: *3* TestHtml.test_structure
     def test_structure(self):
-
-        s = '''
+        s = self.prep(
+    	'''
             <html>
             <head>
                 <meta charset="utf-8" />
@@ -1316,7 +1341,8 @@ class TestHtml(BaseTestImporter):
                 </div>
             </body>
             </html>
-        '''
+        ''')  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -1357,8 +1383,8 @@ class TestHtml(BaseTestImporter):
 
     # @+node:ekr.20210904065459.23: *3* TestHtml.test_underindented_comment
     def test_underindented_comment(self):
-
-        s = r'''
+        s = self.prep(
+        r'''
             <table cellspacing="0" cellpadding="0" width="600" border="0">
                 <!-- The indentation of this element causes the problem. -->
                 <table>
@@ -1368,7 +1394,8 @@ class TestHtml(BaseTestImporter):
             </table>
             </table>
             <p>Paragraph</p>
-        '''
+        ''')  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -1401,8 +1428,8 @@ class TestHtml(BaseTestImporter):
 
     # @+node:ekr.20210904065459.24: *3* TestHtml.test_uppercase_tags
     def test_uppercase_tags(self):
-
-        s = """
+        s = self.prep(
+    	"""
             <HTML>
             <HEAD>
                 <title>Bodystring</title>
@@ -1411,7 +1438,8 @@ class TestHtml(BaseTestImporter):
             <DIV id='bodydisplay'></DIV>
             </BODY>
             </HTML>
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -1451,60 +1479,61 @@ class TestIni(BaseTestImporter):
     # @+node:ekr.20220813054952.1: *3* TestIni.test_1
     def test_1(self):
         # This is just a coverage test for the importer.
-        s = """
-                ATlanguage ini
-                # Config file for mypy
+        s = self.prep(
+    	"""
+            ATlanguage ini
+            # Config file for mypy
 
-                # Note: Do not put comments after settings.
+            # Note: Do not put comments after settings.
 
-                [mypy]
-                python_version = 3.9
-                ignore_missing_imports  = True
-                incremental = True
-                # cache_dir=nul
-                cache_dir = mypy_stubs
-                show_error_codes = True
-                check_untyped_defs = True
-                strict_optional = False
-                disable_error_code=attr-defined
+            [mypy]
+            python_version = 3.9
+            ignore_missing_imports  = True
+            incremental = True
+            # cache_dir=nul
+            cache_dir = mypy_stubs
+            show_error_codes = True
+            check_untyped_defs = True
+            strict_optional = False
+            disable_error_code=attr-defined
 
-                # For v0.931, per https://github.com/python/mypy/issues/11936
+            # For v0.931, per https://github.com/python/mypy/issues/11936
 
-                exclude =
+            exclude =
 
-                    # The first line must *not* start with |.
-                    # Thereafter, each line *must* start with |.
-                    # No trailing '|' on last entry!
+                # The first line must *not* start with |.
+                # Thereafter, each line *must* start with |.
+                # No trailing '|' on last entry!
 
-                    # Directories...
-                    doc/|dist/|editpane/|examples/|extensions/|external/|modes/|obsolete/|scripts/|themes/|unittests/|www/|
+                # Directories...
+                doc/|dist/|editpane/|examples/|extensions/|external/|modes/|obsolete/|scripts/|themes/|unittests/|www/|
 
 
-                # Settings for particular files...
+            # Settings for particular files...
 
-                # Core files that should be fully annotated...
-                [mypy-leo.core.leoGlobals,leo.core.leoNodes,leo.core.leoAst,leo.core.leoBackground]
-                disallow_untyped_defs = True
-                disallow_incomplete_defs = False
+            # Core files that should be fully annotated...
+            [mypy-leo.core.leoGlobals,leo.core.leoNodes,leo.core.leoAst,leo.core.leoBackground]
+            disallow_untyped_defs = True
+            disallow_incomplete_defs = False
 
-                # Importer and writer plugins should be fully annotated...
-                [mypy-leo.plugins.importers.*,leo.plugins.writers.*]
-                disallow_untyped_defs = True
-                disallow_incomplete_defs = True
+            # Importer and writer plugins should be fully annotated...
+            [mypy-leo.plugins.importers.*,leo.plugins.writers.*]
+            disallow_untyped_defs = True
+            disallow_incomplete_defs = True
 
-                # mypy generates lots of useless errors for leoQt.py
-                [mypy-leo.core.leoQt,leo.core.leoQt5,leo.core.leoQt6]
-                follow_imports = skip
-                ignore_missing_imports  = True
+            # mypy generates lots of useless errors for leoQt.py
+            [mypy-leo.core.leoQt,leo.core.leoQt5,leo.core.leoQt6]
+            follow_imports = skip
+            ignore_missing_imports  = True
 
-                # don't require annotations for leo/modes
-                [mypy-leo.modes]
-                follow_imports = skip
-                ignore_missing_imports  = True
-                disallow_untyped_defs = False
-                disallow_incomplete_defs = False
+            # don't require annotations for leo/modes
+            [mypy-leo.modes]
+            follow_imports = skip
+            ignore_missing_imports  = True
+            disallow_untyped_defs = False
+            disallow_incomplete_defs = False
+        """).replace('AT', '@')  # fmt: skip
 
-        """.replace('AT', '@')
         self.run_test(s)
 
     # @-others
@@ -1518,7 +1547,8 @@ class TestJava(BaseTestImporter):
     # @+node:ekr.20260417191631.34: *3* TestJava.test_compound_statements
     def test_compound_statements(self):
         # From https://www.cs.utexas.edu/~scottm/cs307/javacode/codeSamples/EightQueens.java
-        s = """
+        s = self.prep(
+    	"""
             public class EightQueens {
 
                 public static void solveAllNQueens(char[][] board, int col, ArrayList<char[][]> solutions){
@@ -1534,7 +1564,8 @@ class TestJava(BaseTestImporter):
                     }
                 }
             }
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -1569,9 +1600,9 @@ class TestJava(BaseTestImporter):
 
     # @+node:ekr.20210904065459.30: *3* TestJava.test_from_AdminPermission_java
     def test_from_AdminPermission_java(self):
-
         # To do: allow '{' on following line.
-        s = """
+        s = self.prep(
+    	"""
             /**
              * Indicates the caller's authority to perform lifecycle operations on
              */
@@ -1584,7 +1615,8 @@ class TestJava(BaseTestImporter):
                     super("AdminPermission");
                 }
             }
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -1616,8 +1648,8 @@ class TestJava(BaseTestImporter):
 
     # @+node:ekr.20210904065459.31: *3* TestJava.test_from_BundleException_java
     def test_from_BundleException_java(self):
-
-        s = """
+        s = self.prep(
+    	"""
             /*
              * $Header: /cvs/leo/test/unitTest.leo,v 1.247 2008/02/14 14:59:04 edream Exp $
              *
@@ -1637,8 +1669,8 @@ class TestJava(BaseTestImporter):
                     this.cause = cause;
                 }
             }
+        """)  # fmt: skip
 
-        """
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -1650,7 +1682,6 @@ class TestJava(BaseTestImporter):
                 'package org.osgi.framework;\n'
                 '\n'
                 '@others\n'
-                '\n'
                 '@language java\n'
                 '@tabwidth -4\n'
             ),
@@ -1678,13 +1709,14 @@ class TestJava(BaseTestImporter):
 
     # @+node:ekr.20210904065459.32: *3* TestJava.test_interface_test1
     def test_interface_test1(self):
-
-        s = """
+        s = self.prep(
+    	"""
             interface Bicycle {
                 void changeCadence(int newValue);
                 void changeGear(int newValue);
             }
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -1704,13 +1736,14 @@ class TestJava(BaseTestImporter):
 
     # @+node:ekr.20210904065459.33: *3* TestJava.test_interface_test2
     def test_interface_test2(self):
-
-        s = """
+        s = self.prep(
+    	"""
             interface Bicycle {
             void changeCadence(int newValue);
             void changeGear(int newValue);
             }
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -1730,14 +1763,11 @@ class TestJava(BaseTestImporter):
 
     # @+node:ekr.20231225065750.1: *3* TestJava.test_round_trip
     def test_round_trip(self):
-
         c = self.c
         at = c.atFileCommands
         root = c.p
-        # @+<< define contents: test_round_trip >>
-        # @+node:ekr.20231225065840.1: *4* << define contents: test_round_trip >>
-        contents = (
-            """
+        contents = self.prep(
+        """
             public class Main {
                 public static void main(String[] args) {
                     myMethod();
@@ -1746,12 +1776,8 @@ class TestJava(BaseTestImporter):
                 static void myMethod() {
                     System.out.println("I just got executed!");
                 }
-
             }
-        """.strip()
-            + '\n'
-        )
-        # @-<< define contents: test_round_trip >>
+        """)  # fmt: skip
 
         # Import contents into root's tree.
         importer = Java_Importer(c)
@@ -1784,8 +1810,8 @@ class TestJavascript(BaseTestImporter):
     # @+others
     # @+node:ekr.20210904065459.35: *3* TestJavascript.test_plain_function
     def test_plain_function(self):
-
-        s = """
+        s = self.prep(
+    	"""
             // Restarting
             function restart() {
                 invokeParamifier(params,"onstart");
@@ -1797,7 +1823,7 @@ class TestJavascript(BaseTestImporter):
                 }
                 window.scrollTo(0,0);
             }
-        """
+        """)  # fmt: skip
 
         expected_results = (
             (
@@ -1825,8 +1851,8 @@ class TestJavascript(BaseTestImporter):
 
     # @+node:ekr.20210904065459.36: *3* TestJavascript.test_var_equal_function
     def test_var_equal_function(self):
-
-        s = """
+        s = self.prep(
+    	"""
             var c3 = (function () {
                 "use strict";
 
@@ -1839,7 +1865,7 @@ class TestJavascript(BaseTestImporter):
 
                 return c3;
             }());
-        """
+        """)  # fmt: skip
 
         expected_results = (
             (
@@ -1872,25 +1898,27 @@ class TestJavascript(BaseTestImporter):
 
     # @+node:ekr.20220814014851.1: *3* TestJavascript.test_comments
     def test_comments(self):
-
-        s = """
+        s = self.prep(
+    	"""
             /* Test of multi-line comments.
              * line 2.
              */
-        """
+        """)  # fmt: skip
+
         self.new_round_trip_test(s)
 
     # @+node:ekr.20210904065459.34: *3* TestJavascript.test_regex
     def test_regex(self):
-
-        s = """
+        s = self.prep(
+    	"""
             String.prototype.toJSONString = function() {
                 if(/["\\\\\\x00-\\x1f]/.test(this))
                     return '"' + this.replace(/([\\x00-\\x1f\\"])/g,replaceFn) + '"';
 
                 return '"' + this + '"';
             };
-            """
+        """)  # fmt: skip
+
         self.new_round_trip_test(s)
 
     # @+node:ekr.20231023061407.1: *3* TestJavascript.test_guide_lines
@@ -1929,7 +1957,7 @@ class TestJupytext(BaseTestImporter):
         # Create the @jupytext node.
         parent = p.insertAsLastChild()
         parent.h = f"@jupytext {self.short_id}"
-        parent.b = textwrap.dedent(s).strip() + '\n'
+        parent.b = self.prep(s)
 
         # Execute the code under test.
         g.app.jupytextManager.create_outline(c, parent)
@@ -1943,7 +1971,8 @@ class TestJupytext(BaseTestImporter):
     # @+node:ekr.20241029092043.1: *3* TestJupytext.test_small_file
     def test_small_ipynb_file(self):
         # Must be in standard form, with a space after '#'.
-        s = """\
+        s = self.prep(
+        """
             # %%
             # A leading (misleading?) comment.
             # %%
@@ -1966,7 +1995,8 @@ class TestJupytext(BaseTestImporter):
             # ## Another markdown cell
 
             # %%
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # check_outlines ignores the first headline.
@@ -2023,8 +2053,8 @@ class TestLua(BaseTestImporter):
     # @+others
     # @+node:ekr.20220816082722.1: *3* TestLua.test_1
     def test_lua_1(self):
-
-        s = """
+        s = self.prep(
+    	"""
              function foo (a)
                print("foo", a)
                return coroutine.yield(2*a)
@@ -2043,7 +2073,8 @@ class TestLua(BaseTestImporter):
              print("main", coroutine.resume(co, "r"))
              print("main", coroutine.resume(co, "x", "y"))
              print("main", coroutine.resume(co, "x", "y"))
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -2133,9 +2164,9 @@ class TestMarkdown(BaseTestImporter):
 
     # @+node:ekr.20210904065459.114: *3* TestMarkdown.test_markdown_github_syntax
     def test_markdown_github_syntax(self):
-
         # Must be in standard form, with a space after '#'.
-        s = """
+        s = self.prep(
+    	"""
             Decl line.
             # Header
 
@@ -2146,7 +2177,8 @@ class TestMarkdown(BaseTestImporter):
             }
             ```
             # Last header
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -2173,9 +2205,9 @@ class TestMarkdown(BaseTestImporter):
 
     # @+node:ekr.20210904065459.111: *3* TestMarkdown.test_markdown_importer_basic
     def test_markdown_importer_basic(self):
-
         # Must be in standard form, with a space after '#'.
-        s = """
+        s = self.prep(
+    	"""
             Decl line.
             # Header
 
@@ -2190,7 +2222,8 @@ class TestMarkdown(BaseTestImporter):
             After subheader text
 
             # Last header: no text
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -2221,7 +2254,8 @@ class TestMarkdown(BaseTestImporter):
     # @+node:ekr.20260417141040.7: *3* TestMarkdown.test_markdown_importer_blank_lines
     def test_markdown_importer_blank_lines(self):
         # Must be in standard form, with a space after '#'.
-        s = """
+        s = self.prep(
+    	"""
             # Chapter 1: one
 
             This is the first chapter
@@ -2233,7 +2267,8 @@ class TestMarkdown(BaseTestImporter):
             # Chapter 2: two
 
             Welcome to chapter 2
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -2262,7 +2297,8 @@ class TestMarkdown(BaseTestImporter):
 
     # @+node:axk.20260709133000.4: *3* TestMarkdown.test_markdown_importer_noheader_marker
     def test_markdown_importer_noheader_marker(self):
-        s = """
+        s = self.prep(
+    	"""
             <!-- leo-noheader level=1 headline=First%20hidden -->
             First body
             <!-- leo-noheader level=1 headline=Second%20hidden -->
@@ -2271,7 +2307,8 @@ class TestMarkdown(BaseTestImporter):
             Child body
             # Visible sibling
             Sibling body
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -2303,8 +2340,8 @@ class TestMarkdown(BaseTestImporter):
 
     # @+node:ekr.20210904065459.112: *3* TestMarkdown.test_markdown_importer_implicit_section
     def test_markdown_importer_implicit_section(self):
-
-        s = """
+        s = self.prep(
+    	"""
             Decl line.
             #Header
 
@@ -2322,7 +2359,8 @@ class TestMarkdown(BaseTestImporter):
             After subheader text
 
             #Last header: no text
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -2361,9 +2399,9 @@ class TestMarkdown(BaseTestImporter):
 
     # @+node:ekr.20210904065459.109: *3* TestMarkdown.test_md_import
     def test_md_import(self):
-
         # Must be in standard form, with a space after '#'.
-        s = """\
+        s = self.prep(
+        """
             # Top
             The top section
 
@@ -2385,7 +2423,8 @@ class TestMarkdown(BaseTestImporter):
 
             ## Section 3
             Section 3, line 1
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -2432,8 +2471,8 @@ class TestMarkdown(BaseTestImporter):
 
     # @+node:ekr.20210904065459.110: *3* TestMarkdown.test_md_import_rst_style
     def test_md_import_rst_style(self):
-
-        s = """\
+        s = self.prep(
+        """
             Top
             ====
 
@@ -2466,7 +2505,8 @@ class TestMarkdown(BaseTestImporter):
             ---------
 
             section 3, line 1
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -2505,8 +2545,8 @@ class TestOrg(BaseTestImporter):
     # @+others
     # @+node:ekr.20210904065459.42: *3* TestOrg.test_1
     def test_1(self):
-
-        s = """
+        s = self.prep(
+    	"""
             * Section 1
             Sec 1.
             * Section 2
@@ -2518,7 +2558,8 @@ class TestOrg(BaseTestImporter):
             * Section 3
             ** Section 3.1
             Sec 3.1
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -2536,11 +2577,12 @@ class TestOrg(BaseTestImporter):
 
     # @+node:ekr.20210904065459.46: *3* TestOrg.test_1074
     def test_1074(self):
-
-        s = """
+        s = self.prep(
+    	"""
             *  Test
             First line.
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -2552,19 +2594,21 @@ class TestOrg(BaseTestImporter):
                 'First line.\n'
             ),
         )  # fmt: skip
+
         self.new_run_test(s, expected_results)
 
     # @+node:ekr.20210904065459.45: *3* TestOrg.test_552
     def test_552(self):
-
-        s = """
+        s = self.prep(
+    	"""
             * Events
               :PROPERTIES:
               :CATEGORY: events
               :END:
             ** 整理个人生活
             *** 每周惯例
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -2589,14 +2633,15 @@ class TestOrg(BaseTestImporter):
 
     # @+node:ekr.20210904065459.44: *3* TestOrg.test_intro
     def test_intro(self):
-
-        s = """
+        s = self.prep(
+    	"""
             Intro line.
             * Section 1
             Sec 1.
             * Section 2
             Sec 2.
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -2611,9 +2656,9 @@ class TestOrg(BaseTestImporter):
 
     # @+node:ekr.20210904065459.47: *3* TestOrg.test_placeholder
     def test_placeholder(self):
-
         # insert test for org here.
-        s = """
+        s = self.prep(
+    	"""
             * Section 1
             Sec 1.
             * Section 2
@@ -2627,7 +2672,8 @@ class TestOrg(BaseTestImporter):
             : Sec 3-1-1-1-1-1
             ** Section 3.1
             Sec 3.1
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -2653,12 +2699,13 @@ class TestOrg(BaseTestImporter):
 
     # @+node:ekr.20210904065459.43: *3* TestOrg.test_tags
     def test_tags(self):
-
-        s = """\
+        s = self.prep(
+        """
             * Section 1 :tag1:
             * Section 2 :tag2:
             * Section 3 :tag3:tag4:
-        """
+        """)  # fmt: skip
+
         c = self.c
         # Create the TagController by hand.
         from leo.plugins.nodetags import TagController
@@ -2688,8 +2735,8 @@ class TestOtl(BaseTestImporter):
     # @+others
     # @+node:ekr.20210904065459.49: *3* TestOtl.test_otl_1
     def test_otl_1(self):
-
-        s = """
+        s = self.prep(
+    	"""
             preamble.
             Section 1
             : Sec 1.
@@ -2703,7 +2750,8 @@ class TestOtl(BaseTestImporter):
             : Sec 3
             \tSection 3.1
             : Sec 3.1
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -2723,15 +2771,16 @@ class TestOtl(BaseTestImporter):
 
     # @+node:ekr.20220804040446.1: *3* TestOtl.test_otl_placeholder
     def test_otl_placeholder(self):
-
-        s = """
+        s = self.prep(
+    	"""
             Section 1
             : Sec 1.
             Section 2
             : Sec 2.
             \t\tSection 3
             : Sec 3.
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -2770,7 +2819,6 @@ class TestPascal(BaseTestImporter):
     # @+others
     # @+node:ekr.20210904065459.50: *3* TestPascal.test_delphi_interface
     def test_delphi_interface(self):
-
         # @+<< define s >>
         # @+node:ekr.20230518071612.1: *4* << define s >>
         s = self.prep(
@@ -2810,8 +2858,7 @@ class TestPascal(BaseTestImporter):
             end;
 
             end. // interface
-        """
-        )
+        """)  # fmt: skip
         # @-<< define s >>
 
         expected_results = (
@@ -2871,81 +2918,79 @@ class TestPascal(BaseTestImporter):
 
     # @+node:ekr.20220829221825.1: *3* TestPascal.test_indentation
     def test_indentation(self):
-
         # From GSTATOBJ.PAS
         # @+<< define s >>
         # @+node:ekr.20220830112013.1: *4* << define s >>
         s = self.prep(
-            """
-        unit gstatobj;
-
-        {$F+,R-,S+}
-        {$I numdirect.inc}
-
-        interface
-        uses gf2obj1;
-
-        implementation
-
-        procedure statObj.scale(factor: float);
-        var i: integer;
-        begin
-           for i := 1 to num do
-              with data^[i] do y := factor * y;
-        end;
-
-        procedure statObj.multiplyGraph(var source: pGraphObj);
-        var i, max: integer;
-        begin
-        max := source^.getNum;
-        if max < num then num := max;
-        for i := 1 to max do
-            data^[i].y := data^[i].y * pstatObj(source)^.data^[i].y;
-        end;
-
-        function statObj.divideGraph(var numerator: pGraphObj): boolean;
-        var zerodata: boolean;
-        i, j, max: integer;
-        yy: float;
-        pg: pStatObj;
-        begin
-        if numerator = nil then begin
-            divideGraph := false;
-            exit;
-         end;
-        zerodata:= false;
-        new(pg,init);
-        if pg = nil then begin
-           divideGraph := false;
-           exit;
-         end;
-        max := numerator^.getNum;
-        if max < num then num := max;
-        pg^.importData(@self);
-        j := 0;
-        for i := 1 to max do begin
-            yy := pg^.sendYData(i);
-            if yy <> 0 then begin
-               inc(j);
-               getYData(j, numerator^.sendYData(i)/yy);
-               getXData(j, pg^.sendXData(i));
-             end else zeroData := true;
-         end;
-        setNum(j);
-        dispose(pg, byebye);
-        divideGraph := not zeroData;
-        end;
-
-        procedure statObj.addGraph(var source: pgraphObj);
-        var i, max: integer;
-        begin
-        max := source^.getNum;
-        if max < num then num := max;
-        for i := 1 to max do
-            data^[i].y := data^[i].y + pstatObj(source)^.data^[i].y;
-        end;
         """
-        )
+            unit gstatobj;
+
+            {$F+,R-,S+}
+            {$I numdirect.inc}
+
+            interface
+            uses gf2obj1;
+
+            implementation
+
+            procedure statObj.scale(factor: float);
+            var i: integer;
+            begin
+               for i := 1 to num do
+                  with data^[i] do y := factor * y;
+            end;
+
+            procedure statObj.multiplyGraph(var source: pGraphObj);
+            var i, max: integer;
+            begin
+            max := source^.getNum;
+            if max < num then num := max;
+            for i := 1 to max do
+                data^[i].y := data^[i].y * pstatObj(source)^.data^[i].y;
+            end;
+
+            function statObj.divideGraph(var numerator: pGraphObj): boolean;
+            var zerodata: boolean;
+            i, j, max: integer;
+            yy: float;
+            pg: pStatObj;
+            begin
+            if numerator = nil then begin
+                divideGraph := false;
+                exit;
+             end;
+            zerodata:= false;
+            new(pg,init);
+            if pg = nil then begin
+               divideGraph := false;
+               exit;
+             end;
+            max := numerator^.getNum;
+            if max < num then num := max;
+            pg^.importData(@self);
+            j := 0;
+            for i := 1 to max do begin
+                yy := pg^.sendYData(i);
+                if yy <> 0 then begin
+                   inc(j);
+                   getYData(j, numerator^.sendYData(i)/yy);
+                   getXData(j, pg^.sendXData(i));
+                 end else zeroData := true;
+             end;
+            setNum(j);
+            dispose(pg, byebye);
+            divideGraph := not zeroData;
+            end;
+
+            procedure statObj.addGraph(var source: pgraphObj);
+            var i, max: integer;
+            begin
+            max := source^.getNum;
+            if max < num then num := max;
+            for i := 1 to max do
+                data^[i].y := data^[i].y + pstatObj(source)^.data^[i].y;
+            end;
+        """)  # fmt: skip
         # @-<< define s >>
         expected_results = (
             (
@@ -3052,8 +3097,8 @@ class TestPerl(BaseTestImporter):
     # @+others
     # @+node:ekr.20210904065459.51: *3* TestPerl.test_1
     def test_1(self):
-
-        s = """
+        s = self.prep(
+    	"""
             #!/usr/bin/perl
 
             # Function definition
@@ -3075,7 +3120,8 @@ class TestPerl(BaseTestImporter):
 
             # Function call
             Hello();
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -3119,8 +3165,8 @@ class TestPerl(BaseTestImporter):
 
     # @+node:ekr.20210904065459.53: *3* TestPerl.test_multi_line_string
     def test_multi_line_string(self):
-
-        s = """
+        s = self.prep(
+    	"""
             #!/usr/bin/perl
 
             # This would print with a line break in the middle
@@ -3131,7 +3177,8 @@ class TestPerl(BaseTestImporter):
             }
 
             world\n";
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -3154,8 +3201,8 @@ class TestPerl(BaseTestImporter):
 
     # @+node:ekr.20210904065459.52: *3* TestPerl.test_perlpod_comment
     def test_perlpod_comment(self):
-
-        s = """
+        s = self.prep(
+    	"""
             #!/usr/bin/perl
 
             sub Test{
@@ -3172,7 +3219,8 @@ class TestPerl(BaseTestImporter):
             sub Hello{
                print "Hello, World!\n";
             }
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -3212,8 +3260,8 @@ class TestPerl(BaseTestImporter):
 
     # @+node:ekr.20210904065459.55: *3* TestPerl.test_regex
     def test_regex(self):
-
-        s = """
+        s = self.prep(
+    	"""
             #!/usr/bin/perl
 
             sub test1 {
@@ -3231,7 +3279,8 @@ class TestPerl(BaseTestImporter):
             sub test4 {
                 s = tr///}/;
             }
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -3279,8 +3328,8 @@ class TestPhp(BaseTestImporter):
     # @+others
     # @+node:ekr.20210904065459.56: *3* TestPhp.test_import_class
     def test_import_class(self):
-
-        s = """
+        s = self.prep(
+    	"""
             <?php
 
             $type = 'cc';
@@ -3293,13 +3342,14 @@ class TestPhp(BaseTestImporter):
             }
 
             ?>
-        """
+        """)  # fmt: skip
+
         self.run_test(s)
 
     # @+node:ekr.20210904065459.57: *3* TestPhp.test_import_conditional_class
     def test_import_conditional_class(self):
-
-        s = """
+        s = self.prep(
+    	"""
             <?php
 
             if (expr) {
@@ -3313,13 +3363,14 @@ class TestPhp(BaseTestImporter):
             }
 
             ?>
-        """
+        """)  # fmt: skip
+
         self.new_round_trip_test(s)
 
     # @+node:ekr.20210904065459.58: *3* TestPhp.test_import_classes__functions
     def test_import_classes__functions(self):
-
-        s = """
+        s = self.prep(
+    	"""
             <?php
             class Enum {
                 protected $self = array();
@@ -3356,13 +3407,14 @@ class TestPhp(BaseTestImporter):
                 }
             }
             ?>
-        """
+        """)  # fmt: skip
+
         self.new_round_trip_test(s)
 
     # @+node:ekr.20210904065459.59: *3* TestPhp.test_here_doc
     def test_here_doc(self):
-
-        s = """
+        s = self.prep(
+    	"""
             <?php
             class foo {
                 public $bar = <<<EOT
@@ -3371,7 +3423,8 @@ class TestPhp(BaseTestImporter):
             EOT;
             }
             ?>
-        """
+        """)  # fmt: skip
+
         self.new_round_trip_test(s)
 
     # @-others
@@ -3384,8 +3437,8 @@ class TestPython(BaseTestImporter):
     # @+others
     # @+node:ekr.20240219045037.1: *3* TestPython.test_almost_empty_defs
     def test_almost_empty_defs(self):
-
-        s = '''
+        s = self.prep(
+    	'''
             class TracerCore:
 
                 def start(self):
@@ -3400,7 +3453,7 @@ class TestPython(BaseTestImporter):
 
             if __name__ == '__main__':
                 main()
-            '''
+        ''')  # fmt: skip
 
         expected_results = (
             (
@@ -3440,10 +3493,10 @@ class TestPython(BaseTestImporter):
 
     # @+node:ekr.20250814083817.1: *3* TestPython.test_class_docstring
     def test_class_docstring(self):
-
         # Test that docstrings contain no whitespace in otherwise blank lines.
         # To do: Test generation of @others.
-        s = '''
+        s = self.prep(
+    	'''
             class RefactoringChecker(checkers.BaseTokenChecker):
                 """Looks for code which can be refactored.
 
@@ -3481,7 +3534,7 @@ class TestPython(BaseTestImporter):
                     self._init()
                     self._never_returning_functions: set[str] = set()
                     self._suggest_join_with_non_empty_separator: bool = False
-            '''
+        ''')  # fmt: skip
 
         expected_results = (
             (
@@ -3580,8 +3633,8 @@ class TestPython(BaseTestImporter):
 
     # @+node:ekr.20241127163654.1: *3* TestPython.test_delete_comments_and_strings2
     def test_delete_comments_and_strings2(self):
-
-        s = r'''
+        s = self.prep(
+    	r'''
             """
             An application for managing IPython history.
 
@@ -3590,7 +3643,8 @@ class TestPython(BaseTestImporter):
             print(
                 "end\n"
             )
-        '''
+        ''')  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -3611,46 +3665,46 @@ class TestPython(BaseTestImporter):
 
     # @+node:vitalije.20211206201240.1: *3* TestPython.test_general_test_1
     def test_general_test_1(self):
+        s = self.prep(
+        """
+            import sys
+            def f1():
+                pass
 
-        s = """
-                import sys
-                def f1():
+            class Class1:
+                def method11():
+                    pass
+                def method12():
                     pass
 
-                class Class1:
-                    def method11():
-                        pass
-                    def method12():
-                        pass
+            #
+            # Define a = 2
+            a = 2
 
-                #
-                # Define a = 2
-                a = 2
+            def f2():
+                pass
 
-                def f2():
+            # An outer comment
+            ATmyClassDecorator
+            class Class2:
+                def method21():
+                    print(1)
+                    print(2)
+                    print(3)
+                ATmyDecorator
+                def method22():
+                    pass
+                def method23():
                     pass
 
-                # An outer comment
-                ATmyClassDecorator
-                class Class2:
-                    def method21():
-                        print(1)
-                        print(2)
-                        print(3)
-                    ATmyDecorator
-                    def method22():
-                        pass
-                    def method23():
-                        pass
+            # About main.
 
-                # About main.
+            def main():
+                pass
 
-                def main():
-                    pass
-
-                if __name__ == '__main__':
-                    main()
-            """.replace('AT', '@')
+            if __name__ == '__main__':
+                main()
+        """).replace('AT', '@')  # fmt: skip
 
         expected_results = (
             (
@@ -3732,52 +3786,53 @@ class TestPython(BaseTestImporter):
 
     # @+node:ekr.20241126104128.1: *3* TestPython.test_ipython_idiom
     def test_ipython_idiom(self):
+        s = self.prep(
+        r'''
+            # test_ipython_idiom
+            class HistoryTrim(BaseIPythonApplication):
 
-        s = r'''
-    # test_ipython_idiom
-    class HistoryTrim(BaseIPythonApplication):
+                description = trim_hist_help
 
-        description = trim_hist_help
-
-        backup = Bool(False, help="Keep the old history file as history.sqlite.<N>").tag(
-            config=True
-        )
-
-        def start(self):
-            new_db.execute("""CREATE TABLE IF NOT EXISTS output_history
-                            (session integer, line integer, output text,
-                            PRIMARY KEY (session, line))""")
-            new_db.commit()
-            new_hist_file.rename(hist_file)
-
-
-    class HistoryClear(HistoryTrim):
-
-        def start(self):
-            if self.force or ask_yes_no(
-                "Really delete all ipython history?", default="no", interrupt="no"
-            ):
-                HistoryTrim.start(self)
-
-
-    class HistoryApp(Application):
-
-        subcommands = dict(dict(
-            trim = (HistoryTrim, HistoryTrim.description.splitlines()[0]),
-            clear = (HistoryClear, HistoryClear.description.splitlines()[0]),
-        ))
-
-        def start(self):
-            if self.subapp is None:
-                print(
-                    "No subcommand specified. Must specify one of: "
-                    + ", ".join(map(repr, self.subcommands))
-                    + ".\n"
+                backup = Bool(False, help="Keep the old history file as history.sqlite.<N>").tag(
+                    config=True
                 )
-                self.print_description()
-            else:
-                return self.subapp.start()
-    '''
+
+                def start(self):
+                    new_db.execute("""CREATE TABLE IF NOT EXISTS output_history
+                                    (session integer, line integer, output text,
+                                    PRIMARY KEY (session, line))""")
+                    new_db.commit()
+                    new_hist_file.rename(hist_file)
+
+
+            class HistoryClear(HistoryTrim):
+
+                def start(self):
+                    if self.force or ask_yes_no(
+                        "Really delete all ipython history?", default="no", interrupt="no"
+                    ):
+                        HistoryTrim.start(self)
+
+
+            class HistoryApp(Application):
+
+                subcommands = dict(dict(
+                    trim = (HistoryTrim, HistoryTrim.description.splitlines()[0]),
+                    clear = (HistoryClear, HistoryClear.description.splitlines()[0]),
+                ))
+
+                def start(self):
+                    if self.subapp is None:
+                        print(
+                            "No subcommand specified. Must specify one of: "
+                            + ", ".join(map(repr, self.subcommands))
+                            + ".\n"
+                        )
+                        self.print_description()
+                    else:
+                        return self.subapp.start()
+        ''')  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -3856,20 +3911,21 @@ class TestPython(BaseTestImporter):
 
     # @+node:ekr.20230612072414.1: *3* TestPython.test_long_declaration
     def test_long_declaration(self):
-
         # ekr-mypy2/mypy/applytype.py
-        s = """
-        def get_target_type(
-            tvar: TypeVarLikeType,
-            type: Type,
-            callable: CallableType,
-        ) -> Type | None:
-            if isinstance(tvar, ParamSpecType):
+        s = self.prep(
+    	"""
+            def get_target_type(
+                tvar: TypeVarLikeType,
+                type: Type,
+                callable: CallableType,
+            ) -> Type | None:
+                if isinstance(tvar, ParamSpecType):
+                    return type
+                if isinstance(tvar, TypeVarTupleType):
+                    return type
                 return type
-            if isinstance(tvar, TypeVarTupleType):
-                return type
-            return type
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -3895,8 +3951,8 @@ class TestPython(BaseTestImporter):
 
     # @+node:ekr.20250813150236.1: *3* TestPython.test_long_defs
     def test_long_defs(self):
-
-        s = '''
+        s = self.prep(
+    	'''
             def iter_spurious_suppression_messages(
                 self,
                 msgs_store: MessageDefinitionStore,
@@ -3917,7 +3973,7 @@ class TestPython(BaseTestImporter):
                             yield "useless-suppression", line, (
                                 msgs_store.get_msg_display_string(warning),
                             )
-            '''
+        ''')  # fmt: skip
 
         expected_results = (
             (
@@ -3954,8 +4010,8 @@ class TestPython(BaseTestImporter):
 
     # @+node:ekr.20230929051304.1: *3* TestPython.test_long_outer_docstring
     def test_long_outer_docstring(self):
-
-        s = '''
+        s = self.prep(
+    	'''
             """
             Multi-line module-level docstring
 
@@ -3972,8 +4028,7 @@ class TestPython(BaseTestImporter):
 
             def f1():
                 pass
-
-            '''
+        ''')  # fmt: skip
 
         expected_results = (
             (
@@ -4007,14 +4062,14 @@ class TestPython(BaseTestImporter):
                 1, 'function: f1',
                 'def f1():\n'
                 '    pass\n'
-                '\n'
             ),
         )  # fmt: skip
         self.new_run_test(s, expected_results)
 
     # @+node:ekr.20211202064822.1: *3* TestPython.test_nested_classes
     def test_nested_classes(self):
-        s = """
+        s = self.prep(
+    	"""
             class TestCopyFile(unittest.TestCase):
                 _delete = False
                 a00 = 1
@@ -4022,7 +4077,8 @@ class TestPython(BaseTestImporter):
                     _entered = False
                     _exited_with = None # type: tuple
                     _raised = False
-            """
+        """)  # fmt: skip
+
         # mypy/test-data/stdlib-samples/3.2/test/shutil.py
         expected_results = (
             (
@@ -4053,7 +4109,8 @@ class TestPython(BaseTestImporter):
         # See #3517
 
         # A simplified version of code in mypy/build.py.
-        s = '''
+        s = self.prep(
+    	'''
             def load_plugins_from_config(
                 options: Options, errors: Errors, stdout: TextIO
             ) -> tuple[list[Plugin], dict[str, str]]:
@@ -4066,7 +4123,7 @@ class TestPython(BaseTestImporter):
                     errors.raise_error(use_stdout=False)
 
                 custom_plugins: list[Plugin] = []
-        '''
+        ''')  # fmt: skip
 
         expected_results = (
             (
@@ -4095,13 +4152,14 @@ class TestPython(BaseTestImporter):
 
     # @+node:vitalije.20211207200701.1: *3* TestPython.test_no_methods
     def test_no_methods(self):
-
-        s = """
+        s = self.prep(
+    	"""
             class A:
                 a=1
                 b=2
                 c=3
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -4121,7 +4179,8 @@ class TestPython(BaseTestImporter):
 
     # @+node:vitalije.20211206212507.1: *3* TestPython.test_oneliners
     def test_oneliners(self):
-        s = """
+        s = self.prep(
+    	"""
             import sys
             def f1():
                 pass
@@ -4136,7 +4195,7 @@ class TestPython(BaseTestImporter):
 
             if __name__ == '__main__':
                 main()
-        """
+        """)  # fmt: skip
 
         expected_results = (
             (
@@ -4176,8 +4235,8 @@ class TestPython(BaseTestImporter):
 
     # @+node:ekr.20230825071437.1: *3* TestPython.test_post_process
     def test_post_process(self):
-
-        s = '''
+        s = self.prep(
+    	'''
             """Module-level docstring"""
 
             from __future__ import annotations
@@ -4190,8 +4249,7 @@ class TestPython(BaseTestImporter):
 
             def f1():
                 pass
-
-            '''
+        ''')  # fmt: skip
 
         expected_results = (
             (
@@ -4221,17 +4279,16 @@ class TestPython(BaseTestImporter):
                 1, 'function: f1',
                 'def f1():\n'
                 '    pass\n'
-                '\n'
             ),
         )  # fmt: skip
         self.new_run_test(s, expected_results)
 
     # @+node:ekr.20250813102014.1: *3* TestPython.test_python_reference_test
     def test_python_reference_test(self):
-
         # A reference unit test to test experimental test.
         # This test should contain all edge cases of the Python importer.
-        s = '''
+        s = self.prep(
+        '''
             class MyClass:
                 """MyClass: docstring"""
 
@@ -4252,9 +4309,9 @@ class TestPython(BaseTestImporter):
 
             if __name__ == '__main__':
                 main()
-
-
-            '''  # Leo 6.8.7: Two blank lines: trailing ws is *significant*.
+            [blank-line]
+            [blank-line]
+        ''').replace('[blank-line]\n', '\n')  # fmt: skip # trailing ws is *significant*.
 
         expected_results = (
             (
@@ -4298,7 +4355,8 @@ class TestPython(BaseTestImporter):
 
     # @+node:vitalije.20211207183645.1: *3* TestPython.test_strange_indentation
     def test_strange_indentation(self):
-        s = """
+        s = self.prep(
+    	"""
             a = 1
             if 1:
              print('1')
@@ -4324,7 +4382,8 @@ class TestPython(BaseTestImporter):
                 print('11')
             if 12:
                 print('12')
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -4361,23 +4420,23 @@ class TestPython(BaseTestImporter):
 
     # @+node:ekr.20240219133748.1: *3* TestPython.test_underindented_lines
     def test_underindented_lines(self):
-
-        s = '''
-                class Class3:
-                    """Docstring"""
-                # Outer underindented comment
-                    def u1():
-                    # Underindented comment in u1.
-                        pass
-
-                # About main.
-
-                def main():
+        s = self.prep(
+    	'''
+            class Class3:
+                """Docstring"""
+            # Outer underindented comment
+                def u1():
+                # Underindented comment in u1.
                     pass
 
-                if __name__ == '__main__':
-                    main()
-            '''
+            # About main.
+
+            def main():
+                pass
+
+            if __name__ == '__main__':
+                main()
+        ''')  # fmt: skip
 
         expected_results = (
             (
@@ -4433,7 +4492,8 @@ class TestRst(BaseTestImporter):
         except Exception:  # pragma: no cover
             self.skipTest('Requires docutils')
 
-        s = """
+        s = self.prep(
+    	"""
             .. toc
 
             ====
@@ -4473,7 +4533,8 @@ class TestRst(BaseTestImporter):
             .............
 
             section 3.1.1, line 1
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -4502,7 +4563,8 @@ class TestRst(BaseTestImporter):
         except Exception:  # pragma: no cover
             self.skipTest('Requires docutils')
 
-        s = """
+        s = self.prep(
+    	"""
             .. toc
 
             .. The section name contains trailing whitespace.
@@ -4512,7 +4574,8 @@ class TestRst(BaseTestImporter):
             =======
 
             The top chapter.
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -4541,7 +4604,8 @@ class TestRst(BaseTestImporter):
         except Exception:  # pragma: no cover
             self.skipTest('Requires docutils')
 
-        s = """
+        s = self.prep(
+    	"""
             .. toc
 
             top
@@ -4580,7 +4644,8 @@ class TestRst(BaseTestImporter):
             .............
 
             section 3.1.1, line 1
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -4609,14 +4674,16 @@ class TestRst(BaseTestImporter):
         except Exception:  # pragma: no cover
             self.skipTest('Requires docutils')
 
-        s = """
+        s = self.prep(
+    	"""
             .. toc
 
             top
             -------------
 
             The top section
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -4645,7 +4712,8 @@ class TestRst(BaseTestImporter):
         except Exception:  # pragma: no cover
             self.skipTest('Requires docutils')
 
-        s = """
+        s = self.prep(
+    	"""
             .. toc
 
             ======
@@ -4653,7 +4721,8 @@ class TestRst(BaseTestImporter):
             ======
 
             The top section
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -4682,7 +4751,8 @@ class TestRst(BaseTestImporter):
         except Exception:  # pragma: no cover
             self.skipTest('Requires docutils')
 
-        s = """
+        s = self.prep(
+    	"""
             .. toc
 
             .. The section name contains trailing whitespace.
@@ -4692,7 +4762,8 @@ class TestRst(BaseTestImporter):
             ======
 
             The top section.
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -4723,7 +4794,8 @@ class TestRst(BaseTestImporter):
             self.skipTest('Requires docutils')
 
         # All heading must be followed by an empty line.
-        s = """\
+        s = self.prep(
+        """
             #########
             Chapter 1
             #########
@@ -4739,7 +4811,8 @@ class TestRst(BaseTestImporter):
             +++++++++
 
             Sec 2.
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -4776,8 +4849,8 @@ class TestRust(BaseTestImporter):
     # @+others
     # @+node:ekr.20220814095025.1: *3* TestRust.test_rust_1
     def test_rust_1(self):
-
-        s = """
+        s = self.prep(
+    	"""
             fn main() {
                 let width1 = 30;
                 let height1 = 50;
@@ -4791,7 +4864,8 @@ class TestRust(BaseTestImporter):
             fn area(width: u32, height: u32) -> u32 {
                 width * height
             }
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -4822,33 +4896,32 @@ class TestRust(BaseTestImporter):
 
     # @+node:ekr.20231030054735.1: *3* TestRust.test_rust_import_fails
     def test_rust_import_fails(self):
-
         # From ruff/crates/ruff_formatter/shared_traits.rs
         s = self.prep(
-            """
-                /// Used to get an object that knows how to format this object.
-                pub trait AsFormat<Context> {
-                    type Format<'a>: ruff_formatter::Format<Context>
-                    where
-                        Self: 'a;
-
-                    /// Returns an object that is able to format this object.
-                    fn format(&self) -> Self::Format<'_>;
-                }
-
-                /// Implement [`AsFormat`] for references to types that implement [`AsFormat`].
-                impl<T, C> AsFormat<C> for &T
+        """
+            /// Used to get an object that knows how to format this object.
+            pub trait AsFormat<Context> {
+                type Format<'a>: ruff_formatter::Format<Context>
                 where
-                    T: AsFormat<C>,
-                {
-                    type Format<'a> = T::Format<'a> where Self: 'a;
+                    Self: 'a;
 
-                    fn format(&self) -> Self::Format<'_> {
-                        AsFormat::format(&**self)
-                    }
+                /// Returns an object that is able to format this object.
+                fn format(&self) -> Self::Format<'_>;
+            }
+
+            /// Implement [`AsFormat`] for references to types that implement [`AsFormat`].
+            impl<T, C> AsFormat<C> for &T
+            where
+                T: AsFormat<C>,
+            {
+                type Format<'a> = T::Format<'a> where Self: 'a;
+
+                fn format(&self) -> Self::Format<'_> {
+                    AsFormat::format(&**self)
                 }
-            """
-        )
+            }
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -4892,9 +4965,9 @@ class TestRust(BaseTestImporter):
 
     # @+node:ekr.20231031161514.1: *3* TestRust.test_rust_postpass
     def test_rust_postpass(self):
-
         # Modified from ruff/crates/ruff_formatter/src/arguments.rs
-        s = """
+        s = self.prep(
+    	"""
             use super::{Buffer, Format, Formatter};
             use crate::FormatResult;
 
@@ -4913,7 +4986,8 @@ class TestRust(BaseTestImporter):
                 /// The function pointer to `value`'s `Format::format` method
                 formatter: fn(*const c_void, &mut Formatter<'_, Context>) -> FormatResult<()>,
             }
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -4947,16 +5021,17 @@ class TestRust(BaseTestImporter):
 
     # @+node:ekr.20231113092341.1: *3* TestRust.test_invalid_runon_string
     def test_invalid_runon_string(self):
-
         # From ruff_linter/src/rules/eradicate/detection.rs
-        s = """
+        s = self.prep(
+    	"""
             #[test]
             fn comment_contains_code_basic() {
                 assert!(comment_contains_code("#import eradicate", &[]));
                 assert!(comment_contains_code(r#"#"key": value,"#, &[]));
                 assert!(comment_contains_code(r#"#"key": "value","#, &[]));
             }
-    """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -4978,14 +5053,15 @@ class TestRust(BaseTestImporter):
 
     # @+node:ekr.20250113015615.1: *3* TestRust.test_rust_form_feed
     def test_rust_form_feed(self):
-
-        s = """
+        s = self.prep(
+    	"""
             let contents = r"
             class FormFeedIndent:
                \fdef __init__(self, a=[]):
                     print(a)
             ";
-        """.replace(' print', '\fprint')
+        """).replace(' print', '\fprint')  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -5010,9 +5086,9 @@ class TestScheme(BaseTestImporter):
     # @+others
     # @+node:ekr.20231012142113.2: *3* TestScheme.test_scheme_1
     def test_scheme_1(self):
-
         # Add weird assignments for coverage.
-        s = """
+        s = self.prep(
+    	"""
             ;;; comment
             ;;; continue
             ;;;
@@ -5025,7 +5101,8 @@ class TestScheme(BaseTestImporter):
             ; comment re cde
             (define cde (a b)
                (+ 1 2 3))
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -5064,8 +5141,8 @@ class TestTcl(BaseTestImporter):
     # @+others
     # @+node:ekr.20220813174721.1: *3* TestTcl.test_1
     def test_1(self):
-
-        s = r"""
+        s = self.prep(
+        r"""
             proc dumpFile { fileName { channel stdout } } {
 
                  # Open the file, and set up to process it in binary mode.
@@ -5087,7 +5164,8 @@ class TestTcl(BaseTestImporter):
                      dumpFile $file
                  }
              }
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -5135,7 +5213,8 @@ class TestTreepad(BaseTestImporter):
         # 5P9i0s8y19Z is a magic number.
         # The treepad writer always writes '<Treepad version 3.0>',
         # but any version should work.
-        s = """
+        s = self.prep(
+    	"""
             <Treepad version 2.7>
             dt=Text
             <node> 5P9i0s8y19Z
@@ -5171,7 +5250,7 @@ class TestTreepad(BaseTestImporter):
             node 2.1.1, line 1
             node 2.1.1, line 2
             <end node> 5P9i0s8y19Z
-        """
+        """)  # fmt: skip
 
         expected_results = (
             (
@@ -5226,8 +5305,8 @@ class TestTypescript(BaseTestImporter):
     # @+others
     # @+node:ekr.20210904065459.103: *3* TestTypescript.test_class
     def test_class(self):
-
-        s = '''
+        s = self.prep(
+    	'''
             class Greeter {
                 greeting: string;
                 constructor (message: string) {
@@ -5248,12 +5327,13 @@ class TestTypescript(BaseTestImporter):
 
             document.body.appendChild(button)
 
-        '''
+        ''')  # fmt: skip
         self.new_round_trip_test(s)
 
     # @+node:ekr.20210904065459.104: *3* TestTypescript.test_module
     def test_module(self):
-        s = '''
+        s = self.prep(
+    	'''
             module Sayings {
                 export class Greeter {
                     greeting: string;
@@ -5274,7 +5354,8 @@ class TestTypescript(BaseTestImporter):
             }
 
             document.body.appendChild(button)
-        '''
+        ''')  # fmt: skip
+
         self.new_round_trip_test(s)
 
     # @-others
@@ -5296,7 +5377,8 @@ class TestXML(BaseTestImporter):
     # @+others
     # @+node:ekr.20210904065459.105: *3* TestXml.test_standard_opening_elements
     def test_standard_opening_elements(self):
-        s = """
+        s = self.prep(
+    	"""
             <?xml version="1.0" encoding="UTF-8"?>
             <!DOCTYPE note SYSTEM "Note.dtd">
             <html>
@@ -5307,7 +5389,7 @@ class TestXML(BaseTestImporter):
             <div id='bodydisplay'></div>
             </body>
             </html>
-        """
+        """)  # fmt: skip
 
         expected_results = (
             (
@@ -5341,7 +5423,8 @@ class TestXML(BaseTestImporter):
 
     # @+node:ekr.20210904065459.106: *3* TestXml.test_xml_1
     def test_xml_1(self):
-        s = """
+        s = self.prep(
+    	"""
             <html>
             <head>
                 <title>Bodystring</title>
@@ -5352,7 +5435,8 @@ class TestXML(BaseTestImporter):
             </div>
             </body>
             </html>
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore level 0 headlines.
@@ -5388,11 +5472,13 @@ class TestXML(BaseTestImporter):
 
     # @+node:ekr.20210904065459.108: *3* TestXml.test_non_ascii_tags
     def test_non_ascii_tags(self):
-        s = """
+        s = self.prep(
+    	"""
             <:À.Ç>
             <Ì>
             <_.ÌÑ>
-        """
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore level 0 headlines.
