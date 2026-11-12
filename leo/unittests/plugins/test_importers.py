@@ -4,7 +4,6 @@
 
 import glob
 import importlib
-import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoJupytext import JupytextManager
 from leo.core.leoNodes import Position
@@ -118,7 +117,14 @@ class BaseTestImporter(LeoUnitTest):
         self.check_round_trip(p, expected_s, strict=strict)
 
     # @+node:ekr.20230526124600.1: *3* BaseTestImporter.new_run_test
-    def new_run_test(self, s: str, expected_results: tuple, *, check: bool = True) -> None:
+    def new_run_test(
+        self,
+        s: str,
+        expected_results: tuple,
+        *,
+        check: bool = True,
+        prep=True,
+    ) -> None:
         """
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
@@ -136,7 +142,8 @@ class BaseTestImporter(LeoUnitTest):
         id_parts = self.id().split('.')
         self.short_id = f"{id_parts[-2]}.{id_parts[-1]}"
         parent.h = f"{kind} {self.short_id}"
-        test_s = self.prep(s)  ### textwrap.dedent(s).lstrip()  # Don't use self.prep.
+        test_s = self.prep(s) if prep else s
+        ### test_s = self.prep(s)  ### textwrap.dedent(s).lstrip()  # Don't use self.prep.
 
         # Leo 6.8.7:
         c.importCommands.createOutline(parent.copy(), ext, test_s, treeType='@clean')
@@ -1633,7 +1640,6 @@ class TestJava(BaseTestImporter):
                     this.cause = cause;
                 }
             }
-
         """
         expected_results = (
             (
@@ -1646,7 +1652,6 @@ class TestJava(BaseTestImporter):
                 'package org.osgi.framework;\n'
                 '\n'
                 '@others\n'
-                '\n'
                 '@language java\n'
                 '@tabwidth -4\n'
             ),
@@ -3973,7 +3978,6 @@ class TestPython(BaseTestImporter):
 
             def f1():
                 pass
-
             '''
 
         expected_results = (
@@ -4008,7 +4012,6 @@ class TestPython(BaseTestImporter):
                 1, 'function: f1',
                 'def f1():\n'
                 '    pass\n'
-                '\n'
             ),
         )  # fmt: skip
         self.new_run_test(s, expected_results)
@@ -4227,10 +4230,9 @@ class TestPython(BaseTestImporter):
 
     # @+node:ekr.20250813102014.1: *3* TestPython.test_python_reference_test
     def test_python_reference_test(self):
-
         # A reference unit test to test experimental test.
         # This test should contain all edge cases of the Python importer.
-        s = '''
+        s = self.prep('''
             class MyClass:
                 """MyClass: docstring"""
 
@@ -4251,9 +4253,9 @@ class TestPython(BaseTestImporter):
 
             if __name__ == '__main__':
                 main()
-
-
-            '''  # Leo 6.8.7: Two blank lines: trailing ws is *significant*.
+            [blank-line]
+            [blank-line]
+            ''').replace('[blank-line]\n', '\n')  # fmt: skip # trailing ws is *significant*.
 
         expected_results = (
             (
@@ -4293,7 +4295,7 @@ class TestPython(BaseTestImporter):
                 '    pass\n'
             ),
         )  # fmt: skip
-        self.new_run_test(s, expected_results)
+        self.new_run_test(s, expected_results, prep=False)
 
     # @+node:vitalije.20211207183645.1: *3* TestPython.test_strange_indentation
     def test_strange_indentation(self):
