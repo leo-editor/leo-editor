@@ -2594,6 +2594,7 @@ class TestOrg(BaseTestImporter):
                 'First line.\n'
             ),
         )  # fmt: skip
+
         self.new_run_test(s, expected_results)
 
     # @+node:ekr.20210904065459.45: *3* TestOrg.test_552
@@ -2818,7 +2819,6 @@ class TestPascal(BaseTestImporter):
     # @+others
     # @+node:ekr.20210904065459.50: *3* TestPascal.test_delphi_interface
     def test_delphi_interface(self):
-
         # @+<< define s >>
         # @+node:ekr.20230518071612.1: *4* << define s >>
         s = self.prep(
@@ -2858,8 +2858,7 @@ class TestPascal(BaseTestImporter):
             end;
 
             end. // interface
-        """
-        )
+        """)  # fmt: skip
         # @-<< define s >>
 
         expected_results = (
@@ -2919,81 +2918,79 @@ class TestPascal(BaseTestImporter):
 
     # @+node:ekr.20220829221825.1: *3* TestPascal.test_indentation
     def test_indentation(self):
-
         # From GSTATOBJ.PAS
         # @+<< define s >>
         # @+node:ekr.20220830112013.1: *4* << define s >>
         s = self.prep(
-            """
-        unit gstatobj;
-
-        {$F+,R-,S+}
-        {$I numdirect.inc}
-
-        interface
-        uses gf2obj1;
-
-        implementation
-
-        procedure statObj.scale(factor: float);
-        var i: integer;
-        begin
-           for i := 1 to num do
-              with data^[i] do y := factor * y;
-        end;
-
-        procedure statObj.multiplyGraph(var source: pGraphObj);
-        var i, max: integer;
-        begin
-        max := source^.getNum;
-        if max < num then num := max;
-        for i := 1 to max do
-            data^[i].y := data^[i].y * pstatObj(source)^.data^[i].y;
-        end;
-
-        function statObj.divideGraph(var numerator: pGraphObj): boolean;
-        var zerodata: boolean;
-        i, j, max: integer;
-        yy: float;
-        pg: pStatObj;
-        begin
-        if numerator = nil then begin
-            divideGraph := false;
-            exit;
-         end;
-        zerodata:= false;
-        new(pg,init);
-        if pg = nil then begin
-           divideGraph := false;
-           exit;
-         end;
-        max := numerator^.getNum;
-        if max < num then num := max;
-        pg^.importData(@self);
-        j := 0;
-        for i := 1 to max do begin
-            yy := pg^.sendYData(i);
-            if yy <> 0 then begin
-               inc(j);
-               getYData(j, numerator^.sendYData(i)/yy);
-               getXData(j, pg^.sendXData(i));
-             end else zeroData := true;
-         end;
-        setNum(j);
-        dispose(pg, byebye);
-        divideGraph := not zeroData;
-        end;
-
-        procedure statObj.addGraph(var source: pgraphObj);
-        var i, max: integer;
-        begin
-        max := source^.getNum;
-        if max < num then num := max;
-        for i := 1 to max do
-            data^[i].y := data^[i].y + pstatObj(source)^.data^[i].y;
-        end;
         """
-        )
+            unit gstatobj;
+
+            {$F+,R-,S+}
+            {$I numdirect.inc}
+
+            interface
+            uses gf2obj1;
+
+            implementation
+
+            procedure statObj.scale(factor: float);
+            var i: integer;
+            begin
+               for i := 1 to num do
+                  with data^[i] do y := factor * y;
+            end;
+
+            procedure statObj.multiplyGraph(var source: pGraphObj);
+            var i, max: integer;
+            begin
+            max := source^.getNum;
+            if max < num then num := max;
+            for i := 1 to max do
+                data^[i].y := data^[i].y * pstatObj(source)^.data^[i].y;
+            end;
+
+            function statObj.divideGraph(var numerator: pGraphObj): boolean;
+            var zerodata: boolean;
+            i, j, max: integer;
+            yy: float;
+            pg: pStatObj;
+            begin
+            if numerator = nil then begin
+                divideGraph := false;
+                exit;
+             end;
+            zerodata:= false;
+            new(pg,init);
+            if pg = nil then begin
+               divideGraph := false;
+               exit;
+             end;
+            max := numerator^.getNum;
+            if max < num then num := max;
+            pg^.importData(@self);
+            j := 0;
+            for i := 1 to max do begin
+                yy := pg^.sendYData(i);
+                if yy <> 0 then begin
+                   inc(j);
+                   getYData(j, numerator^.sendYData(i)/yy);
+                   getXData(j, pg^.sendXData(i));
+                 end else zeroData := true;
+             end;
+            setNum(j);
+            dispose(pg, byebye);
+            divideGraph := not zeroData;
+            end;
+
+            procedure statObj.addGraph(var source: pgraphObj);
+            var i, max: integer;
+            begin
+            max := source^.getNum;
+            if max < num then num := max;
+            for i := 1 to max do
+                data^[i].y := data^[i].y + pstatObj(source)^.data^[i].y;
+            end;
+        """)  # fmt: skip
         # @-<< define s >>
         expected_results = (
             (
@@ -3669,44 +3666,44 @@ class TestPython(BaseTestImporter):
     # @+node:vitalije.20211206201240.1: *3* TestPython.test_general_test_1
     def test_general_test_1(self):
         s = self.prep(
-            """
-                import sys
-                def f1():
+        """
+            import sys
+            def f1():
+                pass
+
+            class Class1:
+                def method11():
+                    pass
+                def method12():
                     pass
 
-                class Class1:
-                    def method11():
-                        pass
-                    def method12():
-                        pass
+            #
+            # Define a = 2
+            a = 2
 
-                #
-                # Define a = 2
-                a = 2
+            def f2():
+                pass
 
-                def f2():
+            # An outer comment
+            ATmyClassDecorator
+            class Class2:
+                def method21():
+                    print(1)
+                    print(2)
+                    print(3)
+                ATmyDecorator
+                def method22():
+                    pass
+                def method23():
                     pass
 
-                # An outer comment
-                ATmyClassDecorator
-                class Class2:
-                    def method21():
-                        print(1)
-                        print(2)
-                        print(3)
-                    ATmyDecorator
-                    def method22():
-                        pass
-                    def method23():
-                        pass
+            # About main.
 
-                # About main.
+            def main():
+                pass
 
-                def main():
-                    pass
-
-                if __name__ == '__main__':
-                    main()
+            if __name__ == '__main__':
+                main()
         """).replace('AT', '@')  # fmt: skip
 
         expected_results = (
@@ -3917,16 +3914,16 @@ class TestPython(BaseTestImporter):
         # ekr-mypy2/mypy/applytype.py
         s = self.prep(
     	"""
-        def get_target_type(
-            tvar: TypeVarLikeType,
-            type: Type,
-            callable: CallableType,
-        ) -> Type | None:
-            if isinstance(tvar, ParamSpecType):
+            def get_target_type(
+                tvar: TypeVarLikeType,
+                type: Type,
+                callable: CallableType,
+            ) -> Type | None:
+                if isinstance(tvar, ParamSpecType):
+                    return type
+                if isinstance(tvar, TypeVarTupleType):
+                    return type
                 return type
-            if isinstance(tvar, TypeVarTupleType):
-                return type
-            return type
         """)  # fmt: skip
 
         expected_results = (
@@ -4290,7 +4287,8 @@ class TestPython(BaseTestImporter):
     def test_python_reference_test(self):
         # A reference unit test to test experimental test.
         # This test should contain all edge cases of the Python importer.
-        s = self.prep('''
+        s = self.prep(
+        '''
             class MyClass:
                 """MyClass: docstring"""
 
@@ -4313,7 +4311,7 @@ class TestPython(BaseTestImporter):
                 main()
             [blank-line]
             [blank-line]
-            ''').replace('[blank-line]\n', '\n')  # fmt: skip # trailing ws is *significant*.
+        ''').replace('[blank-line]\n', '\n')  # fmt: skip # trailing ws is *significant*.
 
         expected_results = (
             (
@@ -4424,20 +4422,20 @@ class TestPython(BaseTestImporter):
     def test_underindented_lines(self):
         s = self.prep(
     	'''
-                class Class3:
-                    """Docstring"""
-                # Outer underindented comment
-                    def u1():
-                    # Underindented comment in u1.
-                        pass
-
-                # About main.
-
-                def main():
+            class Class3:
+                """Docstring"""
+            # Outer underindented comment
+                def u1():
+                # Underindented comment in u1.
                     pass
 
-                if __name__ == '__main__':
-                    main()
+            # About main.
+
+            def main():
+                pass
+
+            if __name__ == '__main__':
+                main()
         ''')  # fmt: skip
 
         expected_results = (
@@ -4898,33 +4896,32 @@ class TestRust(BaseTestImporter):
 
     # @+node:ekr.20231030054735.1: *3* TestRust.test_rust_import_fails
     def test_rust_import_fails(self):
-
         # From ruff/crates/ruff_formatter/shared_traits.rs
         s = self.prep(
-            """
-                /// Used to get an object that knows how to format this object.
-                pub trait AsFormat<Context> {
-                    type Format<'a>: ruff_formatter::Format<Context>
-                    where
-                        Self: 'a;
-
-                    /// Returns an object that is able to format this object.
-                    fn format(&self) -> Self::Format<'_>;
-                }
-
-                /// Implement [`AsFormat`] for references to types that implement [`AsFormat`].
-                impl<T, C> AsFormat<C> for &T
+        """
+            /// Used to get an object that knows how to format this object.
+            pub trait AsFormat<Context> {
+                type Format<'a>: ruff_formatter::Format<Context>
                 where
-                    T: AsFormat<C>,
-                {
-                    type Format<'a> = T::Format<'a> where Self: 'a;
+                    Self: 'a;
 
-                    fn format(&self) -> Self::Format<'_> {
-                        AsFormat::format(&**self)
-                    }
+                /// Returns an object that is able to format this object.
+                fn format(&self) -> Self::Format<'_>;
+            }
+
+            /// Implement [`AsFormat`] for references to types that implement [`AsFormat`].
+            impl<T, C> AsFormat<C> for &T
+            where
+                T: AsFormat<C>,
+            {
+                type Format<'a> = T::Format<'a> where Self: 'a;
+
+                fn format(&self) -> Self::Format<'_> {
+                    AsFormat::format(&**self)
                 }
-            """
-        )
+            }
+        """)  # fmt: skip
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
