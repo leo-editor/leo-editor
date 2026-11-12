@@ -203,7 +203,7 @@ class ExternalFilesController:
                 p.isAtAsisFileNode()
                 or p.isAtEditNode()  # PR #5050
                 or p.isAtNoSentFileNode()
-            ):  # fmt: skip
+            ):
                 # #1081: issue a warning.
                 self.warn(c, path, p=p)
                 continue
