@@ -2698,11 +2698,11 @@ class AtFile:
         g.es(f"beautified: {g.shortFileName(filename)}", color='blue')
         c.refreshFromDisk(root, redraw_flag=False)
         c.contractAllHeadlines()
-        c.p = old_p
+        ### c.p = old_p
         c.redraw(old_p)
         new_text = c.p.b
         if w_old_text != new_text:
-            w.setYScrollPosition(w_yscroll)
+            ### w.setYScrollPosition(w_yscroll)
             c.p.b = w_old_text  # A required hack.
             with u.change_node(old_p, 'ruff-format'):
                 c.p.b = new_text
@@ -2710,7 +2710,7 @@ class AtFile:
                 w.setSelectionRange(w_ins, w_ins, insert=w_ins)
                 ### w.setYScrollPosition(w_yscroll)
                 w.see(w_ins)
-                g.trace('after', c.p.h, w.getYScrollPosition())
+                ### g.trace('after', c.p.h, w.getYScrollPosition())
         return True
 
     # @+node:vv.20260807130000.1: *6* at.runRuff

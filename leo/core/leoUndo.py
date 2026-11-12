@@ -1042,8 +1042,6 @@ class Undoer:
     def capture_ui(self) -> tuple:
         c = self.c
         w = c.frame.body.wrapper
-        if not g.unitTesting:
-            g.trace(w.getYScrollPosition(), g.callers(2))  ###
         return c.p.copy(), w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
 
     # @+node:ekr.20261015041620.1: *6* u.restore_node
@@ -1082,16 +1080,13 @@ class Undoer:
     def restore_ui(self, state: tuple) -> None:
         c = self.c
         p, sel, ins, scroll = state
-        if not g.unitTesting:
-            g.trace(f"{ins=}", g.callers(2))  ###
         c.p = p
-        c.selectPosition(p)
+        ### c.selectPosition(p)
         c.frame.scanForTabWidth(c.p)
         c.recolor(c.p)
         w = c.frame.body.wrapper
         w.setSelectionRange(*sel, insert=ins)
-        g.trace(scroll, g.callers(2))
-        w.setYScrollPosition(scroll)
+        ### w.setYScrollPosition(scroll)
 
     # @+node:ekr.20261015041852.1: *4* u: redrawers & finishers
     # @+node:ekr.20261025152930.1: *5* u._redraw
