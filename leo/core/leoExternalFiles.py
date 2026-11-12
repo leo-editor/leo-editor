@@ -192,6 +192,8 @@ class ExternalFilesController:
         for p in c.all_unique_positions():
             if not p.isAnyAtFileNode():
                 continue
+            if p.isAtEditNode() or p.isAtNoSentinelsFileNode():
+                continue  ###
             path = c.fullPath(p)
             if not self.has_changed(path):
                 continue
