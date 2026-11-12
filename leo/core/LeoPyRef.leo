@@ -109,6 +109,7 @@
 </v>
 <v t="ekr.20200222151754.1"><vh>script: yoton "other end"</vh></v>
 </v>
+<v t="ekr.20261111095001.1"><vh>script: remove-backslash-newlines</vh></v>
 </v>
 <v t="ekr.20150425145248.1"></v>
 </v>
@@ -331,6 +332,7 @@
 <v t="ekr.20091118065749.5261"><vh>@file ../plugins/ctagscompleter.py</vh></v>
 </v>
 <v t="edream.110203113231.667"><vh>Commands &amp; directives</vh>
+<v t="ekr.20230917013414.1"><vh>@file ../plugins/indented_languages.py</vh></v>
 <v t="edream.110203113231.741"><vh>@file ../plugins/add_directives.py</vh></v>
 <v t="ekr.20101110084839.5682"><vh>@file ../plugins/bzr_qcommands.py</vh></v>
 <v t="EKR.20040517080049.1"><vh>@file ../plugins/empty_leo_file.py</vh></v>
@@ -2028,7 +2030,7 @@ x.node_history(path, gnxs, limit=60)
 </t>
 <t tx="ekr.20231107062256.1">"""Ensure that all expected @&lt;file&gt; nodes exist."""
 g.cls()
-import glob  #noqa  # Because of g.cls()
+import glob  #no-qa  # Because of g.cls()
 import os
 join, sep = os.path.join, os.sep
 
@@ -3480,19 +3482,21 @@ strict-equality-semantics = true
 
 &lt;&lt; ty.toml: rules &gt;&gt;
 </t>
-<t tx="ekr.20260902044553.1"># Like `disable_error_code=attr-defined` in .mypy.ini.
-unresolved-attribute = "ignore"
+<t tx="ekr.20260902044553.1">missing-attribute = "ignore"
+missing-union-attribute = "ignore"
 
-# Like `ignore_missing_imports = True` in .mypy.ini.
 # EKR's environment does not specify a path to python, so this suppression is required.
 import-not-found = "ignore"  # Do not delete this.
 
 # Warn about unused suppressions.
-unused-ignore-comment = "ignore"  # Python 3.14 and 3.15 differ.
+unused-ignore-comment = "ignore"       # Python 3.14 and 3.15 differ.
 unused-type-ignore-comment = "ignore"  # Python 3.14 and 3.15 differ.
 
 # Ignore warnings about overridden methods.
-invalid-method-override = "ignore"
+incompatible-method-override = "ignore"
+
+# For now.
+lost-keyword-for-regular-parameter = "ignore"
 </t>
 <t tx="ekr.20260902044618.1">    # Mirrors the [mypy] exclude list in .mypy.ini.
     "leo/doc",
@@ -3818,5 +3822,45 @@ char granularity: start a new undo unit for each character typed.
 
 Leo used char granularity for all version prior to 4.3. char granularity is not
 recommended; it is clumsy and wasteful of computer memory.</t>
+<t tx="ekr.20261111095001.1">"""
+Script used in PR #5048
+https://github.com/leo-editor/leo-editor/pull/5048
+"""
+g.cls()
+u = c.undoer
+h = 'Found 132:"""\\'
+pat1 = '"""\\\n'
+pat2 = '"""\n'
+p = g.findTopLevelNode(c, h)
+with u.change_outline('remove-bs'):
+    for child in p.children():
+        s = child.b
+        found = False  # Testing.
+        start = 0
+        while start &gt; -1 and start &lt; len(s):
+            i = s.find(pat1, start)
+            if i == -1:
+                break
+            start = i + len(pat1)
+            j = s.find(pat2, start)
+            if j == -1:
+                break
+            found = True
+            # print(child.h, i, j)
+            # found_s = s[i: j + len(pat2)]
+            # g.printObj(found_s, tag='found')
+            inner_lines = g.splitLines(s[i + len(pat1) : j])
+            indented_inner_lines = [f"\t\t\t{z}" for z in inner_lines]
+            indented_inner_s = ''.join(indented_inner_lines)
+            repl = 'self.prep(\n\t\t"""\n' + indented_inner_s.rstrip() + '\n\t\t""")  # fmt: skip\n\n'
+            # g.printObj(repl, tag='repl')
+            s = s[:i] + repl + s[j+len(pat2):]
+            # g.printObj(s, tag='new s')
+            child.b = s
+            start = i + len(repl)
+        if found:
+            print(f"Converted {child.h}")
+            # break  ###
+            </t>
 </tnodes>
 </leo_file>
