@@ -2680,6 +2680,7 @@ class AtFile:
         c = self.c
         old_p = c.p
         u = c.undoer
+        w = c.frame.body.wrapper
         efc = g.app.externalFilesController
         if not os.path.exists(filename):
             return False
@@ -2689,11 +2690,19 @@ class AtFile:
         if contents == results:
             return True
 
-        with u.change_outline('ruff-format'):
+        # PR #5050: only changes to c.p.b are undoable!
+        w_old_text = w.getAllText()
+        w_ins = w.getInsertPoint()
+        with u.change_node(old_p, 'ruff-format'):
             g.es(f"beautified: {g.shortFileName(filename)}", color='blue')
             c.refreshFromDisk(root)
             c.contractAllHeadlines()
             c.p = old_p
+        new_text = c.p.b
+        if w_old_text != new_text:
+            g.trace(f"Update body text! {c.p.h}")
+            w.setAllText(new_text)
+            w.setSelectionRange(w_ins, w_ins, insert=w_ins)
         return True
 
     # @+node:vv.20260807130000.1: *6* at.runRuff
