@@ -192,8 +192,6 @@ class ExternalFilesController:
         for p in c.all_unique_positions():
             if not p.isAnyAtFileNode():
                 continue
-            if p.isAtEditNode() or p.isAtNoSentinelsFileNode():
-                continue  ###
             path = c.fullPath(p)
             if not self.has_changed(path):
                 continue
@@ -201,7 +199,11 @@ class ExternalFilesController:
             self.set_time(path)
             self.checksum_d[path] = self.checksum(path)
             # Check file.
-            if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
+            if (
+                p.isAtAsisFileNode()
+                or p.isAtEditNode()  # PR #5050
+                or p.isAtNoSentFileNode()
+            ):  # fmt: skip
                 # #1081: issue a warning.
                 self.warn(c, path, p=p)
                 continue
