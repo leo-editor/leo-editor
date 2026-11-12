@@ -1023,6 +1023,14 @@ def xxx_test_typing_preserves_text_mark_and_newlines(self):
                 )
                 self.assertEqual(p.isMarked(), marked)
 
+# @+node:ekr.20210905064816.5: *4* test_dynamicExpandHelper
+def test_dynamicExpandHelper(self):
+    c = self.c
+    # A totally wimpy test.
+    # And it somehow prints a newline to the console.
+    if 0:
+        c.abbrevCommands.dynamicExpandHelper(event=None, prefix='', aList=[], w=None)
+
 # @-all
 # @@nosearch
 # @-leo

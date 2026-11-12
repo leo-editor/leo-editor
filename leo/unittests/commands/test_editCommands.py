@@ -1552,7 +1552,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.50: *5* test_extend-to-paragraph
     def test_extend_to_paragraph(self):
-        """Test case for extend-to-paragraph"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe weather-prone country on Earth. Each year,
@@ -1607,7 +1606,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.51: *5* test_extend-to-sentence
     def test_extend_to_sentence(self):
-        """Test case for extend-to-sentence"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
@@ -1636,7 +1634,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.52: *5* test_extend-to-word
     def test_extend_to_word(self):
-        """Test case for extend-to-word"""
         before_b = self.prep(
     		"""
     			first line
@@ -1668,7 +1665,6 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20210829062134.1: *4* Commands F-L
     # @+node:ekr.20201130090918.56: *5* test_fill_paragraph
     def test_fill_paragraph(self):
-        """Test case for fill-paragraph"""
         before_b = self.prep(
     """
         Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Services StormReady program to help them guard against the ravages of Mother Nature.
@@ -1714,16 +1710,15 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.53: *5* test_finish-of-line
     def test_finish_of_line(self):
-        """Test case for finish-of-line"""
         before_b = self.prep(
             """
-            first line
-            line 1
-                line a
-                    line b
-            line c
-            last line
-        """)  # fmt: skip
+                first line
+                line 1
+                    line a
+                        line b
+                line c
+                last line
+            """)  # fmt: skip
 
         after_b = self.prep(
             """
@@ -1745,7 +1740,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.54: *5* test_finish-of-line (2)
     def test_finish_of_line_2(self):
-        """Test case for finish-of-line (2)"""
         before_b = self.prep(
     		"""
     			first line
@@ -1776,7 +1770,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.55: *5* test_finish-of-line-extend-selection
     def test_finish_of_line_extend_selection(self):
-        """Test case for finish-of-line-extend-selection"""
         before_b = self.prep(
     		"""
     			first line
@@ -1807,7 +1800,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.57: *5* test_forward-char
     def test_forward_char(self):
-        """Test case for forward-char"""
         before_b = self.prep(
     		"""
     			first line
@@ -1838,7 +1830,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.58: *5* test_forward-char-extend-selection
     def test_forward_char_extend_selection(self):
-        """Test case for forward-char-extend-selection"""
         before_b = self.prep(
     		"""
     			first line
@@ -1869,7 +1860,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.59: *5* test_forward-end-word (end of line)
     def test_forward_end_word_end_of_line(self):
-        """Test case for forward-end-word (end of line)"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
@@ -1898,7 +1888,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.60: *5* test_forward-end-word (start of word)
     def test_forward_end_word_start_of_word(self):
-        """Test case for forward-end-word (start of word)"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
@@ -1927,7 +1916,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.61: *5* test_forward-end-word-extend-selection
     def test_forward_end_word_extend_selection(self):
-        """Test case for forward-end-word-extend-selection"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
@@ -1956,7 +1944,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.62: *5* test_forward-paragraph
     def test_forward_paragraph(self):
-        """Test case for forward-paragraph"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe weather-prone country on Earth. Each year,
@@ -2011,7 +1998,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.63: *5* test_forward-paragraph-extend-selection
     def test_forward_paragraph_extend_selection(self):
-        """Test case for forward-paragraph-extend-selection"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe weather-prone country on Earth. Each year,
@@ -2066,7 +2052,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.64: *5* test_forward-sentence
     def test_forward_sentence(self):
-        """Test case for forward-sentence"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
@@ -2095,7 +2080,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.65: *5* test_forward-sentence-extend-selection
     def test_forward_sentence_extend_selection(self):
-        """Test case for forward-sentence-extend-selection"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
@@ -2124,7 +2108,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.66: *5* test_forward-word
     def test_forward_word(self):
-        """Test case for forward-word"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
@@ -2153,7 +2136,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.67: *5* test_forward-word-extend-selection
     def test_forward_word_extend_selection(self):
-        """Test case for forward-word-extend-selection"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
@@ -2182,7 +2164,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.68: *5* test_indent-relative
     def test_indent_relative(self):
-        """Test case for indent-relative"""
         before_b = self.prep(
     		"""
     			first line
@@ -2213,7 +2194,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.69: *5* test_indent-rigidly
     def test_indent_rigidly(self):
-        """Test case for indent-rigidly"""
         before_b = self.prep(
     		"""
     			first line
@@ -2244,7 +2224,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.70: *5* test_indent-to-comment-column
     def test_indent_to_comment_column(self):
-        """Test case for indent-to-comment-column"""
         before_b = self.prep(
     		"""
     			first line
@@ -2270,7 +2249,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20261110053233.1: *5* test_insert_hard_tab (new)
     def test_insert_hard_tab(self):
-        """Test case for insert-hard-tab"""
         before_b = 'test--line'
         after_b = 'test-\t-line'
         self.run_test(
@@ -2283,7 +2261,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.71: *5* test_insert-newline
     def test_insert_newline(self):
-        """Test case for insert-newline"""
         before_b = self.prep(
     		"""
     			first line
@@ -2315,7 +2292,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20210926144000.1: *5* test_insert-newline-bug-2230
     def test_insert_newline_bug_2230(self):
-        """Test case for insert-newline"""
         # Insert newline should insert a newline at the insertion point.
         before_b = self.prep(
             """
@@ -2344,7 +2320,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.72: *5* test_insert-parentheses
     def test_insert_parentheses(self):
-        """Test case for insert-parentheses"""
         before_b = self.prep(
     		"""
     			first line
@@ -2375,7 +2350,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.76: *5* test_kill-line end-body-text
     def test_kill_line_end_body_text(self):
-        """Test case for kill-line end-body-text"""
         before_b = self.prep(
     		"""
     			line 1
@@ -2400,7 +2374,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.77: *5* test_kill-line end-line-text
     def test_kill_line_end_line_text(self):
-        """Test case for kill-line end-line-text"""
         before_b = self.prep(
     		"""
     			line 1
@@ -2424,7 +2397,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.79: *5* test_kill-line start-blank-line
     def test_kill_line_start_blank_line(self):
-        """Test case for kill-line start-blank-line"""
         before_b = self.prep(
     		"""
     			line 1
@@ -2450,7 +2422,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.78: *5* test_kill-line start-line
     def test_kill_line_start_line(self):
-        """Test case for kill-line start-line"""
         before_b = self.prep(
     		"""
     			line 1
@@ -2477,7 +2448,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.73: *5* test_kill-paragraph
     def test_kill_paragraph(self):
-        """Test case for kill-paragraph"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe weather-prone country on Earth. Each year,
@@ -2527,7 +2497,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.74: *5* test_kill-sentence
     def test_kill_sentence(self):
-        """Test case for kill-sentence"""
         before_b = self.prep(
     		"""
     			This is the first sentence.  This
@@ -2551,7 +2520,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.82: *5* test_kill-to-end-of-line after last visible char
     def test_kill_to_end_of_line_after_last_visible_char(self):
-        """Test case for kill-to-end-of-line after last visible char"""
         before_b = self.prep(
     		"""
     			line 1
@@ -2577,7 +2545,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.80: *5* test_kill-to-end-of-line end-body-text
     def test_kill_to_end_of_line_end_body_text(self):
-        """Test case for kill-to-end-of-line end-body-text"""
         before_b = self.prep(
     		"""
     			line 1
@@ -2602,7 +2569,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.81: *5* test_kill-to-end-of-line end-line
     def test_kill_to_end_of_line_end_line(self):
-        """Test case for kill-to-end-of-line end-line"""
         before_b = self.prep(
     		"""
     			line 1
@@ -2626,7 +2592,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.85: *5* test_kill-to-end-of-line middle-line
     def test_kill_to_end_of_line_middle_line(self):
-        """Test case for kill-to-end-of-line middle-line"""
         before_b = self.prep(
     		"""
     			line 1
@@ -2651,7 +2616,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.84: *5* test_kill-to-end-of-line start-blank-line
     def test_kill_to_end_of_line_start_blank_line(self):
-        """Test case for kill-to-end-of-line start-blank-line"""
         before_b = self.prep(
     		"""
     			line 1
@@ -2677,7 +2641,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.83: *5* test_kill-to-end-of-line start-line
     def test_kill_to_end_of_line_start_line(self):
-        """Test case for kill-to-end-of-line start-line"""
         before_b = self.prep(
     		"""
     			line 1
@@ -2704,7 +2667,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.75: *5* test_kill-word
     def test_kill_word(self):
-        """Test case for kill-word"""
         before_b = self.prep(
     		"""
     			This is the first sentence.  This
@@ -2774,16 +2736,14 @@ class TestEditCommands(LeoUnitTest):
         u = c.undoer
         prev_b = self.prep(
             """
-            def spam():
-                pass
-        """
-        )
+                def spam():
+                    pass
+            """)  # fmt: skip
 
         next_b = self.prep(
             """
-            spam2 = spam
-        """
-        )
+                spam2 = spam
+            """)  # fmt: skip
 
         result_b = self.prep(
             """
@@ -2814,7 +2774,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.86: *5* test_move-lines-down
     def test_move_lines_down(self):
-        """Test case for move-lines-down"""
         before_b = self.prep(
     		"""
     			first line
@@ -2845,7 +2804,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.87: *5* test_move-lines-up
     def test_move_lines_up(self):
-        """Test case for move-lines-up"""
         before_b = self.prep(
     		"""
     			first line
@@ -2876,7 +2834,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.88: *5* test_move-lines-up (into docstring)
     def test_move_lines_up_into_docstring(self):
-        """Test case for move-lines-up (into docstring)"""
         before_b = self.prep(
             '''
                 @language python
@@ -2913,7 +2870,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.89: *5* test_move-past-close
     def test_move_past_close(self):
-        """Test case for move-past-close"""
         before_b = self.prep(
     		"""
     			first (line)
@@ -2944,7 +2900,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.90: *5* test_move-past-close-extend-selection
     def test_move_past_close_extend_selection(self):
-        """Test case for move-past-close-extend-selection"""
         before_b = self.prep(
     		"""
     			first line
@@ -2975,16 +2930,15 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.91: *5* test_newline-and-indent
     def test_newline_and_indent(self):
-        """Test case for newline-and-indent"""
         before_b = self.prep(
             """
-            first line
-            line 1
-                line a
-                    line b
-            line c
-            last line
-        """)  # fmt: skip
+                first line
+                line 1
+                    line a
+                        line b
+                line c
+                last line
+            """)  # fmt: skip
 
         # docstrings strip blank lines, so we can't use a docstring here!
         after_b = ''.join(
@@ -3003,7 +2957,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.92: *5* test_next-line
     def test_next_line(self):
-        """Test case for next-line"""
         before_b = self.prep(
     		"""
     			a
@@ -3028,7 +2981,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.93: *5* test_previous-line
     def test_previous_line(self):
-        """Test case for previous-line"""
         before_b = self.prep(
     		"""
     			a
@@ -3053,7 +3005,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.94: *5* test_rectangle-clear
     def test_rectangle_clear(self):
-        """Test case for rectangle-clear"""
         before_b = self.prep(
     		"""
     			before
@@ -3084,7 +3035,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.95: *5* test_rectangle-close
     def test_rectangle_close(self):
-        """Test case for rectangle-close"""
         before_b = self.prep(
     		"""
     			before
@@ -3115,7 +3065,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.96: *5* test_rectangle-delete
     def test_rectangle_delete(self):
-        """Test case for rectangle-delete"""
         before_b = self.prep(
     		"""
     			before
@@ -3146,7 +3095,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.97: *5* test_rectangle-kill
     def test_rectangle_kill(self):
-        """Test case for rectangle-kill"""
         before_b = self.prep(
     		"""
     			before
@@ -3177,7 +3125,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.98: *5* test_rectangle-open
     def test_rectangle_open(self):
-        """Test case for rectangle-open"""
         before_b = self.prep(
     		"""
     			before
@@ -3208,27 +3155,25 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.99: *5* test_test_rectangle-string
     def test_rectangle_string(self):
-        """Test case for rectangle-string"""
         before_b = self.prep(
             """
-            before
-            aaaxxxbbb
-            aaaxxxbbb
-            aaaxxxbbb
-            aaaxxxbbb
-            after
-        """
-        )
+                before
+                aaaxxxbbb
+                aaaxxxbbb
+                aaaxxxbbb
+                aaaxxxbbb
+                after
+            """)  # fmt: skip
+
         after_b = self.prep(
             """
-            before
-            aaas...sbbb
-            aaas...sbbb
-            aaas...sbbb
-            aaas...sbbb
-            after
-        """
-        )
+                before
+                aaas...sbbb
+                aaas...sbbb
+                aaas...sbbb
+                aaas...sbbb
+                after
+            """)  # fmt: skip
 
         # A hack. The command tests for g.unitTesting!
         self.run_test(
@@ -3241,28 +3186,25 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.100: *5* test_test_rectangle-yank
     def test_rectangle_yank(self):
-        """Test case for rectangle-yank"""
         before_b = self.prep(
             """
-            before
-            aaaxxxbbb
-            aaaxxxbbb
-            aaaxxxbbb
-            aaaxxxbbb
-            after
-        """
-        )
+                before
+                aaaxxxbbb
+                aaaxxxbbb
+                aaaxxxbbb
+                aaaxxxbbb
+                after
+            """)  # fmt: skip
 
         after_b = self.prep(
             """
-            before
-            aaaY1Ybbb
-            aaaY2Ybbb
-            aaaY3Ybbb
-            aaaY4Ybbb
-            after
-        """
-        )
+                before
+                aaaY1Ybbb
+                aaaY2Ybbb
+                aaaY3Ybbb
+                aaaY4Ybbb
+                after
+            """)  # fmt: skip
 
         self.run_test(
             before_b=before_b,
@@ -3275,7 +3217,6 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20261111032331.1: *5* --- test reformat-paragraph
     # @+node:ekr.20201130090918.122: *6* test_reformat-paragraph list 1 of 5
     def test_reformat_paragraph_list_1_of_5(self):
-        """Test case for reformat-paragraph list 1 of 5"""
         before_b = self.prep(
     		"""
     			This paragraph leads of this test.  It is the "lead"
@@ -3323,7 +3264,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.123: *6* xxx_test_reformat-paragraph list 2 of 5 (fail)
     def xxx_test_reformat_paragraph_list_2_of_5(self):
-        """Test case for reformat-paragraph list 2 of 5"""
         before_b = self.prep(
     		"""
     			This paragraph leads of this test. It is
@@ -3371,7 +3311,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.124: *6* test_reformat-paragraph list 3 of 5
     def test_reformat_paragraph_list_3_of_5(self):
-        """Test case for reformat-paragraph list 3 of 5"""
         before_b = self.prep(
     		"""
     			This paragraph leads of this test. It is
@@ -3419,7 +3358,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.125: *6* test_reformat-paragraph list 4 of 5
     def test_reformat_paragraph_list_4_of_5(self):
-        """Test case for reformat-paragraph list 4 of 5"""
         before_b = self.prep(
     		"""
     			This paragraph leads of this test. It is
@@ -3467,7 +3405,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.126: *6* xxx_test_reformat-paragraph list 5 of 5 (fail)
     def xxx_test_reformat_paragraph_list_5_of_5(self):
-        """Test case for reformat-paragraph list 5 of 5"""
         before_b = self.prep(
     		"""
     			This paragraph leads of this test. It is
@@ -3515,7 +3452,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.127: *6* xxx_ test_reformat-paragraph new code 1 of 8 (fail)
     def xxx_test_reformat_paragraph_new_code_1_of_8(self):
-        """Test case for reformat-paragraph new code 1 of 8"""
         before_b = self.prep(
     		"""
     			@pagewidth 40
@@ -3543,7 +3479,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.128: *6* xxx_test_reformat-paragraph new code 2 of 8 (fail)
     def xxx_test_reformat_paragraph_new_code_2_of_8(self):
-        """Test case for reformat-paragraph new code 2 of 8"""
         before_b = self.prep(
     		"""
     			@pagewidth 40
@@ -3571,7 +3506,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.129: *6* test_reformat-paragraph new code 3 of 8
     def test_reformat_paragraph_new_code_3_of_8(self):
-        """Test case for reformat-paragraph new code 3 of 8"""
         before_b = self.prep(
     		"""
     			@pagewidth 40
@@ -3600,7 +3534,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.130: *6* test_reformat-paragraph new code 4 of 8
     def test_reformat_paragraph_new_code_4_of_8(self):
-        """Test case for reformat-paragraph new code 4 of 8"""
         before_b = self.prep(
     		"""
     			- Point 1. xxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -3626,7 +3559,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.131: *6* test_reformat-paragraph new code 5 of 8
     def test_reformat_paragraph_new_code_5_of_8(self):
-        """Test case for reformat-paragraph new code 5 of 8"""
         before_b = self.prep(
     		"""
     			A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -3652,7 +3584,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.132: *6* test_reformat-paragraph new code 6 of 8
     def test_reformat_paragraph_new_code_6_of_8(self):
-        """Test case for reformat-paragraph new code 6 of 8"""
         before_b = self.prep(
     		"""
     			1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -3680,7 +3611,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.133: *6* xxx_test_reformat-paragraph new code 7 of 8 (fail)
     def xxx_test_reformat_paragraph_new_code_7_of_8(self):
-        """Test case for reformat-paragraph new code 7 of 8"""
         before_b = self.prep(
     		"""
     			1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -3710,7 +3640,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.134: *6* xxx_test_reformat-paragraph new code 8 of 8 (fail)
     def xxx_test_reformat_paragraph_new_code_8_of_8(self):
-        """Test case for reformat-paragraph new code 8 of 8"""
         before_b = self.prep(
     		"""
     			2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -3734,7 +3663,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.135: *6* test_reformat-paragraph paragraph 1 of 3
     def test_reformat_paragraph_paragraph_1_of_3(self):
-        """Test case for reformat-paragraph paragraph 1 of 3"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
@@ -3778,7 +3706,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.136: *6* test_reformat-paragraph paragraph 2 of 3
     def test_reformat_paragraph_paragraph_2_of_3(self):
-        """Test case for reformat-paragraph paragraph 2 of 3"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe
@@ -3842,7 +3769,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.137: *6* test_reformat-paragraph paragraph 3 of 3
     def test_reformat_paragraph_paragraph_3_of_3(self):
-        """Test case for reformat-paragraph paragraph 3 of 3"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe
@@ -3923,7 +3849,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.138: *6* test_reformat-paragraph simple hanging indent
     def test_reformat_paragraph_simple_hanging_indent(self):
-        """Test case for reformat-paragraph simple hanging indent"""
         before_b = self.prep(
     		"""
     			Honor this line that has a hanging indentation, please.  Hanging
@@ -3954,7 +3879,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.139: *6* test_reformat-paragraph simple hanging indent 2
     def test_reformat_paragraph_simple_hanging_indent_2(self):
-        """Test case for reformat-paragraph simple hanging indent 2"""
         before_b = self.prep(
     		"""
     			Honor this line that has
@@ -3986,7 +3910,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.140: *6* test_reformat-paragraph simple hanging indent 3
     def test_reformat_paragraph_simple_hanging_indent_3(self):
-        """Test case for reformat-paragraph simple hanging indent 3"""
         before_b = self.prep(
     		"""
     			Honor this line that
@@ -4021,7 +3944,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.101: *5* test_remove-blank-lines
     def test_remove_blank_lines(self):
-        """Test case for remove-blank-lines"""
         before_b = self.prep(
     		"""
     			first line
@@ -4054,7 +3976,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.102: *5* test_remove-space-from-lines
     def test_remove_space_from_lines(self):
-        """Test case for remove-space-from-lines"""
         before_b = self.prep(
     		"""
     			first line
@@ -4089,7 +4010,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.103: *5* test_remove-tab-from-lines
     def test_remove_tab_from_lines(self):
-        """Test case for remove-tab-from-lines"""
         before_b = self.prep(
     		"""
     			first line
@@ -4120,7 +4040,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.104: *5* test_reverse-region
     def test_reverse_region(self):
-        """Test case for reverse-region"""
         before_b = self.prep(
     		"""
     			first line
@@ -4152,7 +4071,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.105: *5* test_reverse-sort-lines
     def test_reverse_sort_lines(self):
-        """Test case for reverse-sort-lines"""
         before_b = self.prep(
     		"""
     			a
@@ -4181,7 +4099,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.106: *5* test_reverse-sort-lines-ignoring-case
     def test_reverse_sort_lines_ignoring_case(self):
-        """Test case for reverse-sort-lines-ignoring-case"""
         before_b = self.prep(
     		"""
     			c
@@ -4213,7 +4130,6 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20210829062731.1: *4* Commands S-Z
     # @+node:ekr.20201130090918.107: *5* test_sort-columns
     def test_sort_columns(self):
-        """Test case for sort-columns"""
         before_b = self.prep(
     		"""
     			first line
@@ -4244,7 +4160,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.108: *5* test_sort-lines
     def test_sort_lines(self):
-        """Test case for sort-lines"""
         before_b = self.prep(
     		"""
     			first line
@@ -4275,7 +4190,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.109: *5* test_sort-lines-ignoring-case
     def test_sort_lines_ignoring_case(self):
-        """Test case for sort-lines-ignoring-case"""
         before_b = self.prep(
     		"""
     			x
@@ -4304,7 +4218,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.110: *5* test_split-line
     def test_split_line(self):
-        """Test case for split-line"""
         before_b = self.prep(
     		"""
     			first line
@@ -4336,7 +4249,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.111: *5* test_start-of-line
     def test_start_of_line(self):
-        """Test case for start-of-line"""
         before_b = self.prep(
     		"""
     			first line
@@ -4367,7 +4279,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.112: *5* test_start-of-line (2)
     def test_start_of_line_2(self):
-        """Test case for start-of-line (2)"""
         before_b = self.prep(
     		"""
     			first line
@@ -4398,7 +4309,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.113: *5* test_start-of-line-extend-selection
     def test_start_of_line_extend_selection(self):
-        """Test case for start-of-line-extend-selection"""
         before_b = self.prep(
     		"""
     			first line
@@ -4429,7 +4339,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.114: *5* test_start-of-line-extend-selection (2)
     def test_start_of_line_extend_selection_2(self):
-        """Test case for start-of-line-extend-selection (2)"""
         before_b = self.prep(
     		"""
     			first line
@@ -4460,7 +4369,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.115: *5* test_tabify
     def test_tabify(self):
-        """Test case for tabify"""
         before_b = self.prep(
     		"""
     			first line
@@ -4491,7 +4399,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.116: *5* test_transpose-chars
     def test_transpose_chars(self):
-        """Test case for transpose-chars"""
         before_b = self.prep(
     		"""
     			first line
@@ -4522,7 +4429,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.117: *5* test_transpose-lines
     def test_transpose_lines(self):
-        """Test case for transpose-lines"""
         before_b = self.prep(
     		"""
     			first line
@@ -4553,7 +4459,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.118: *5* test_transpose-words
     def test_transpose_words(self):
-        """Test case for transpose-words"""
         before_b = self.prep(
     		"""
     			first line
@@ -4578,7 +4483,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.119: *5* test_untabify
     def test_untabify(self):
-        """Test case for untabify"""
         before_b = self.prep(
             """
                 first line
@@ -4609,7 +4513,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.120: *5* test_upcase-region
     def test_upcase_region(self):
-        """Test case for upcase-region"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
@@ -4638,7 +4541,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.121: *5* test_upcase-word
     def test_upcase_word(self):
-        """Test case for upcase-word"""
         before_b = self.prep(
     		"""
     			first line
@@ -4725,14 +4627,6 @@ class TestEditCommands(LeoUnitTest):
             if 1:
                 c.setHeadString(p, h)  # Essential
                 c.redraw(p)
-
-    # @+node:ekr.20210905064816.5: *4* test_dynamicExpandHelper
-    def test_dynamicExpandHelper(self):
-        c = self.c
-        # A totally wimpy test.
-        # And it somehow prints a newline to the console.
-        if 0:
-            c.abbrevCommands.dynamicExpandHelper(event=None, prefix='', aList=[], w=None)
 
     # @+node:ekr.20210905064816.6: *4* test_extendHelper
     def test_extendHelper(self):
