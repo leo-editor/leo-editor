@@ -505,40 +505,36 @@ class TestC(BaseTestImporter):
     def test_find_blocks(self):
 
         importer = C_Importer(self.c)
-        lines = g.splitLines(
-            self.prep(
-                """
+        lines = g.splitLines(self.prep(
+            """
+                # enable-trace
 
-            # enable-trace
+                namespace {
+                    n1;
+                }
 
-            namespace {
-                n1;
-            }
+                namespace outer {
+                    n2;
+                }
 
-            namespace outer {
-                n2;
-            }
+                int foo () {
+                    foo1;
+                    foo2;
+                }
 
-            int foo () {
-                foo1;
-                foo2;
-            }
+                class class1 {
+                    class1;
+                }
 
-            class class1 {
-                class1;
-            }
-
-            class class2 {
-                x = 2;
-                int bar (a, b) {
-                    if (0) {
-                        a = 1;
+                class class2 {
+                    x = 2;
+                    int bar (a, b) {
+                        if (0) {
+                            a = 1;
+                        }
                     }
                 }
-            }
-        """
-            )
-        )
+            """))  # fmt: skip
         importer.lines = lines
         importer.guide_lines = importer.make_guide_lines(lines)
         blocks = importer.find_blocks(i1=0, i2=len(lines))
@@ -554,16 +550,16 @@ class TestC(BaseTestImporter):
         # From codon sources.
         s = self.prep(
     	"""
-        struct SrcInfoAttribute : public Attribute {
-          static const std::string AttributeName;
+            struct SrcInfoAttribute : public Attribute {
+              static const std::string AttributeName;
 
-          std::unique_ptr<Attribute> clone(util::CloneVisitor &cv) const override {
-            return std::make_unique<SrcInfoAttribute>(*this);
-          }
+              std::unique_ptr<Attribute> clone(util::CloneVisitor &cv) const override {
+                return std::make_unique<SrcInfoAttribute>(*this);
+              }
 
-        private:
-          std::ostream &doFormat(std::ostream &os) const override { return os << info; }
-        };
+            private:
+              std::ostream &doFormat(std::ostream &os) const override { return os << info; }
+            };
         """)  # fmt: skip
 
         expected_results = (
@@ -1767,14 +1763,11 @@ class TestJava(BaseTestImporter):
 
     # @+node:ekr.20231225065750.1: *3* TestJava.test_round_trip
     def test_round_trip(self):
-
         c = self.c
         at = c.atFileCommands
         root = c.p
-        # @+<< define contents: test_round_trip >>
-        # @+node:ekr.20231225065840.1: *4* << define contents: test_round_trip >>
-        contents = (
-            """
+        contents = self.prep(
+        """
             public class Main {
                 public static void main(String[] args) {
                     myMethod();
@@ -1783,12 +1776,8 @@ class TestJava(BaseTestImporter):
                 static void myMethod() {
                     System.out.println("I just got executed!");
                 }
-
             }
-        """.strip()
-            + '\n'
-        )
-        # @-<< define contents: test_round_trip >>
+        """)  # fmt: skip
 
         # Import contents into root's tree.
         importer = Java_Importer(c)
