@@ -446,6 +446,8 @@ def refreshFromDisk(
     self: Self,
     p: Position | None = None,
     event: LeoKeyEvent | None = None,
+    *,
+    redraw_flag: bool = True,
     silent: bool = True,  # Not used.
 ) -> None:
     """
@@ -491,7 +493,9 @@ def refreshFromDisk(
     at.changed_roots = []
     c.fileCommands.handleNodeConflicts()
     c.setChanged()
-    c.redraw(update_p)  # Select a valid position!
+    c.p = update_p  # Select a valid position!
+    if redraw_flag:
+        c.redraw(update_p)
     u.clearAndWarn('refresh-from-disk')
 
 

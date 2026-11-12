@@ -2694,9 +2694,10 @@ class AtFile:
         w_old_text = w.getAllText()
         w_ins = w.getInsertPoint()
         g.es(f"beautified: {g.shortFileName(filename)}", color='blue')
-        c.refreshFromDisk(root)
+        c.refreshFromDisk(root, redraw_flag=False)
         c.contractAllHeadlines()
         c.p = old_p
+        c.redraw(old_p)
         new_text = c.p.b
         if w_old_text != new_text:
             with u.change_node(old_p, 'ruff-format'):
