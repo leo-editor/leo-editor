@@ -143,7 +143,6 @@ class BaseTestImporter(LeoUnitTest):
         self.short_id = f"{id_parts[-2]}.{id_parts[-1]}"
         parent.h = f"{kind} {self.short_id}"
         test_s = self.prep(s) if prep else s
-        ### test_s = self.prep(s)  ### textwrap.dedent(s).lstrip()  # Don't use self.prep.
 
         # Leo 6.8.7:
         c.importCommands.createOutline(parent.copy(), ext, test_s, treeType='@clean')
