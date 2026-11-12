@@ -2671,7 +2671,7 @@ class AtFile:
             else:
                 g.es_print(f"{j + 1:5}: {line}")
 
-    # @+node:ekr.20240926044644.1: *6* at.runRuffFormat
+    # @+node:ekr.20240926044644.1: *6* at.runRuffFormat (changed)
     def runRuffFormat(self, contents: str, root: Position, filename: str) -> bool:
         """
         Run ruff format on the selected position.
@@ -2693,6 +2693,8 @@ class AtFile:
         # PR #5050: only changes to c.p.b are undoable!
         w_old_text = w.getAllText()
         w_ins = w.getInsertPoint()
+        w_yscroll = w.getYScrollPosition()
+        g.trace('before', c.p.h, w_yscroll)
         g.es(f"beautified: {g.shortFileName(filename)}", color='blue')
         c.refreshFromDisk(root, redraw_flag=False)
         c.contractAllHeadlines()
@@ -2700,10 +2702,15 @@ class AtFile:
         c.redraw(old_p)
         new_text = c.p.b
         if w_old_text != new_text:
+            w.setYScrollPosition(w_yscroll)
+            c.p.b = w_old_text  # A required hack.
             with u.change_node(old_p, 'ruff-format'):
-                g.trace(f"Update body text! {c.p.h}")
+                c.p.b = new_text
                 w.setAllText(new_text)
-                w.setSelectionRange(w_ins, w_ins, insert=w_ins)  # Not perfect.
+                w.setSelectionRange(w_ins, w_ins, insert=w_ins)
+                ### w.setYScrollPosition(w_yscroll)
+                w.see(w_ins)
+                g.trace('after', c.p.h, w.getYScrollPosition())
         return True
 
     # @+node:vv.20260807130000.1: *6* at.runRuff

@@ -823,6 +823,9 @@ class Undoer:
                 u.node_captures.remove(p.v)
                 new_p = c.p
                 new_state = u.capture_node(p.v)
+                changed = new_state != old_state
+                if not g.unitTesting:
+                    g.trace(f"{changed=}")
                 if old_state != new_state:
                     u._redraw(new_p)  # PR #5027 Redraw only if node has changed.
                     new_ui = u.capture_ui()
@@ -836,12 +839,12 @@ class Undoer:
                     u.undoBead.add_helpers(change_node_redoer, change_node_undoer)
 
                     def change_node_ui_redoer() -> None:
-                        u.restore_ui(new_ui)
                         u._redraw(new_p)
+                        u.restore_ui(new_ui)
 
                     def change_node_ui_undoer() -> None:
-                        u.restore_ui(old_ui)
                         u._redraw(old_p)
+                        u.restore_ui(old_ui)
 
                     u.undoBead.add_finishers(change_node_ui_redoer, change_node_ui_undoer)
 
@@ -1039,6 +1042,7 @@ class Undoer:
     def capture_ui(self) -> tuple:
         c = self.c
         w = c.frame.body.wrapper
+        g.trace(w.getYScrollPosition(), g.callers(2))  ###
         return c.p.copy(), w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
 
     # @+node:ekr.20261015041620.1: *6* u.restore_node
@@ -1083,6 +1087,7 @@ class Undoer:
         c.recolor(c.p)
         w = c.frame.body.wrapper
         w.setSelectionRange(*sel, insert=ins)
+        g.trace(scroll, g.callers(2))
         w.setYScrollPosition(scroll)
 
     # @+node:ekr.20261015041852.1: *4* u: redrawers & finishers
