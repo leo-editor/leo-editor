@@ -97,7 +97,6 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20210829061326.1: *4* Commands A-B
     # @+node:ekr.20201130090918.1: *5* test_add-space-to-lines
     def test_add_space_to_lines(self):
-        """Test case for add-space-to-lines"""
         before_b = self.prep(
     		"""
     			first line
@@ -126,7 +125,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.2: *5* test_add-tab-to-lines
     def test_add_tab_to_lines(self):
-        """Test case for add-tab-to-lines"""
         before_b = self.prep(
     		"""
     			first line
@@ -157,7 +155,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.3: *5* test_back-char
     def test_back_char(self):
-        """Test case for back-char"""
         before_b = self.prep(
     		"""
     			first line
@@ -188,7 +185,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.4: *5* test_back-char-extend-selection
     def test_back_char_extend_selection(self):
-        """Test case for back-char-extend-selection"""
         before_b = self.prep(
     		"""
     			first line
@@ -219,7 +215,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.5: *5* test_back-paragraph
     def test_back_paragraph(self):
-        """Test case for back-paragraph"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe weather-prone country on Earth. Each year,
@@ -274,7 +269,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.6: *5* test_back-paragraph-extend-selection
     def test_back_paragraph_extend_selection(self):
-        """Test case for back-paragraph-extend-selection"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe weather-prone country on Earth. Each year,
@@ -329,7 +323,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.7: *5* test_back-sentence
     def test_back_sentence(self):
-        """Test case for back-sentence"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
@@ -358,7 +351,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.8: *5* test_back-sentence-extend-selection
     def test_back_sentence_extend_selection(self):
-        """Test case for back-sentence-extend-selection"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
@@ -387,7 +379,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.12: *5* test_back-to-home (at end of line)
     def test_back_to_home_at_end_of_line(self):
-        """Test case for back-to-home (at end of line)"""
         before_b = self.prep(
     		"""
     			if a:
@@ -410,7 +401,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.11: *5* test_back-to-home (at indentation
     def test_back_to_home_at_indentation(self):
-        """Test case for back-to-home (at indentation"""
         before_b = self.prep(
     		"""
     			if a:
@@ -433,7 +423,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.10: *5* test_back-to-home (at start of line)
     def test_back_to_home_at_start_of_line(self):
-        """Test case for back-to-home (at start of line)"""
         before_b = self.prep(
     		"""
     			if a:
@@ -456,7 +445,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.9: *5* test_back-to-indentation
     def test_back_to_indentation(self):
-        """Test case for back-to-indentation"""
         before_b = self.prep(
     		"""
     			first line
@@ -487,7 +475,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.13: *5* test_back-word
     def test_back_word(self):
-        """Test case for back-word"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
@@ -516,7 +503,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.14: *5* test_back-word-extend-selection
     def test_back_word_extend_selection(self):
-        """Test case for back-word-extend-selection"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
@@ -545,7 +531,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.15: *5* test_backward-delete-char
     def test_backward_delete_char(self):
-        """Test case for backward-delete-char"""
         before_b = self.prep(
     		"""
     			first line
@@ -576,7 +561,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.16: *5* test_backward_delete_char_middle_of_line
     def test_backward_delete_char_middle_of_line(self):
-        """Test case for backward-delete-char  (middle of line)"""
         before_b = self.prep(
     		"""
     			first line
@@ -599,7 +583,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.17: *5* test_backward_delete_char_last_char
     def test_backward_delete_char_last_char(self):
-        """Test case for backward-delete-char (last char)"""
         before_b = self.prep(
     		"""
     			first line
@@ -622,7 +605,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.18: *5* test_backward-delete-word (no selection)
     def test_backward_delete_word_no_selection(self):
-        """Test case for backward-delete-word (no selection)"""
         before_b = self.prep(
     		"""
     			aaaa bbbb cccc dddd
@@ -643,7 +625,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.19: *5* test_backward-delete-word (selection)
     def test_backward_delete_word_selection(self):
-        """Test case for backward-delete-word (selection)"""
         before_b = self.prep(
     		"""
     			aaaa bbbb cccc dddd
@@ -664,7 +645,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.20: *5* test_backward-kill-paragraph
     def test_backward_kill_paragraph(self):
-        """Test case for backward-kill-paragraph"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe weather-prone country on Earth. Each year,
@@ -717,7 +697,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.21: *5* test_backward-kill-sentence
     def test_backward_kill_sentence(self):
-        """Test case for backward-kill-sentence"""
         before_b = self.prep(
     		"""
     			This is the first sentence.  This
@@ -741,7 +720,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.22: *5* test_backward-kill-word
     def test_backward_kill_word(self):
-        """Test case for backward-kill-word"""
         before_b = self.prep(
     		"""
     			This is the first sentence.  This
@@ -766,7 +744,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.23: *5* test_beginning-of-buffer
     def test_beginning_of_buffer(self):
-        """Test case for beginning-of-buffer"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
@@ -795,7 +772,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.24: *5* test_beginning-of-buffer-extend-selection
     def test_beginning_of_buffer_extend_selection(self):
-        """Test case for beginning-of-buffer-extend-selection"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
@@ -824,7 +800,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.25: *5* test_beginning-of-line
     def test_beginning_of_line(self):
-        """Test case for beginning-of-line"""
         before_b = self.prep(
     		"""
     			first line
@@ -855,7 +830,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.26: *5* test_beginning-of-line-extend-selection
     def test_beginning_of_line_extend_selection(self):
-        """Test case for beginning-of-line-extend-selection"""
         before_b = self.prep(
     		"""
     			first line
@@ -887,7 +861,6 @@ class TestEditCommands(LeoUnitTest):
     # @+node:ekr.20210829061337.1: *4* Commands C-E
     # @+node:ekr.20201130090918.27: *5* test_capitalize-word
     def test_capitalize_word(self):
-        """Test case for capitalize-word"""
         before_b = self.prep(
     		"""
     			first line
@@ -918,7 +891,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.28: *5* test_center-line
     def test_center_line(self):
-        """Test case for center-line"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
@@ -957,7 +929,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.29: *5* test_center-region
     def test_center_region(self):
-        """Test case for center-region"""
         before_b = self.prep(
     		"""
     			Some 90% of all presidentially declared disasters are weather related,
@@ -989,20 +960,19 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.30: *5* test_clean-lines
     def test_clean_lines(self):
-        """Test case for clean-lines"""
         before_b = self.prep(
             """
-            # Should remove all trailing whitespace.
+                # Should remove all trailing whitespace.
 
-            a = 2
+                a = 2
 
-                b = 3
-                c  = 4
-            d = 5
-            e = 6
-            x
-        """
-        )
+                    b = 3
+                    c  = 4
+                d = 5
+                e = 6
+                x
+            """)  # fmt: skip
+
         after_b = before_b
         # Add some trailing ws to before_b
         i = 1 + before_b.find('3')
@@ -1018,7 +988,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.31: *5* test_clear-selected-text
     def test_clear_selected_text(self):
-        """Test case for clear-selected-text"""
         before_b = self.prep(
     		"""
     			first line
@@ -1047,7 +1016,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.32: *5* test_count-region
     def test_count_region(self):
-        """Test case for count-region"""
         before_b = self.prep(
     		"""
     			first line
@@ -1078,7 +1046,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.33: *5* test_delete-char
     def test_delete_char(self):
-        """Test case for delete-char"""
         before_b = self.prep(
     		"""
     			first line
@@ -1109,7 +1076,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.34: *5* test_delete-indentation
     def test_delete_indentation(self):
-        """Test case for delete-indentation"""
         before_b = self.prep(
     		"""
     			first line
@@ -1134,7 +1100,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.35: *5* test_delete-spaces
     def test_delete_spaces(self):
-        """Test case for delete-spaces"""
         before_b = self.prep(
     		"""
     			first line
@@ -1165,7 +1130,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.36: *5* test_do-nothing
     def test_do_nothing(self):
-        """Test case for do-nothing"""
         before_b = self.prep(
     		"""
     			first line
@@ -1196,7 +1160,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.37: *5* test_downcase-region
     def test_downcase_region(self):
-        """Test case for downcase-region"""
         before_b = self.prep(
     		"""
     			Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
@@ -1225,7 +1188,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.38: *5* test_downcase-word
     def test_downcase_word(self):
-        """Test case for downcase-word"""
         before_b = self.prep(
     		"""
     			XYZZY line
@@ -1256,7 +1218,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.39: *5* test_end-of-buffer
     def test_end_of_buffer(self):
-        """Test case for end-of-buffer"""
         before_b = self.prep(
     		"""
     			first line
@@ -1287,7 +1248,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.40: *5* test_end-of-buffer-extend-selection
     def test_end_of_buffer_extend_selection(self):
-        """Test case for end-of-buffer-extend-selection"""
         before_b = self.prep(
     		"""
     			first line
@@ -1318,7 +1278,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.41: *5* test_end-of-line
     def test_end_of_line(self):
-        """Test case for end-of-line"""
         before_b = self.prep(
     		"""
     			first line
@@ -1349,7 +1308,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.44: *5* test_end-of-line (blank last line)
     def test_end_of_line_blank_last_line(self):
-        """Test case for end-of-line (blank last line)"""
         before_b = self.prep(
     		"""
     			first line
@@ -1380,7 +1338,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.43: *5* test_end-of-line (internal blank line)
     def test_end_of_line_internal_blank_line(self):
-        """Test case for end-of-line (internal blank line)"""
         before_b = self.prep(
     		"""
     			first line
@@ -1413,7 +1370,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.45: *5* test_end_of_line_single_char_last_line
     def test_end_of_line_single_char_last_line(self):
-        """Test case for end-of-line (single char last line)"""
         before_b = self.prep(
             """
                 first line
@@ -1446,7 +1402,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.42: *5* test_end-of-line 2
     def test_end_of_line_2(self):
-        """Test case for end-of-line 2"""
         before_b = self.prep(
     		"""
     			first line
@@ -1477,7 +1432,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.46: *5* test_end-of-line-extend-selection
     def test_end_of_line_extend_selection(self):
-        """Test case for end-of-line-extend-selection"""
         before_b = self.prep(
     		"""
     			first line
@@ -1508,7 +1462,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.47: *5* test_end-of-line-extend-selection (blank last line)
     def test_end_of_line_extend_selection_blank_last_line(self):
-        """Test case for end-of-line-extend-selection (blank last line)"""
         before_b = self.prep(
     		"""
     			first line
@@ -1539,7 +1492,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.48: *5* test_exchange-point-mark
     def test_exchange_point_mark(self):
-        """Test case for exchange-point-mark"""
         before_b = self.prep(
     		"""
     			first line
@@ -1570,7 +1522,6 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20201130090918.49: *5* test_extend-to-line
     def test_extend_to_line(self):
-        """Test case for extend-to-line"""
         before_b = self.prep(
     		"""
     			first line
@@ -1720,36 +1671,36 @@ class TestEditCommands(LeoUnitTest):
         """Test case for fill-paragraph"""
         before_b = self.prep(
     """
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Services StormReady program to help them guard against the ravages of Mother Nature.
+        Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Services StormReady program to help them guard against the ravages of Mother Nature.
 
-    Some 90% of all presidentially
-    declared disasters are weather related,
-    leading to around 500 deaths per year
-    and nearly $14 billion in damage.
-    StormReady, a program
-    started in 1999 in Tulsa, OK,
-    helps arm America's
-    communities with the communication and
-    safety skills needed to save lives and
-    property--before and during the event.
-    StormReady helps community leaders and
-    emergency managers strengthen local safety programs.
+        Some 90% of all presidentially
+        declared disasters are weather related,
+        leading to around 500 deaths per year
+        and nearly $14 billion in damage.
+        StormReady, a program
+        started in 1999 in Tulsa, OK,
+        helps arm America's
+        communities with the communication and
+        safety skills needed to save lives and
+        property--before and during the event.
+        StormReady helps community leaders and
+        emergency managers strengthen local safety programs.
 
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+        StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
     """)  # fmt: skip
 
         after_b = self.prep(
     """
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Services StormReady program to help them guard against the ravages of Mother Nature.
+        Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Services StormReady program to help them guard against the ravages of Mother Nature.
 
-    Some 90% of all presidentially declared disasters are weather related, leading
-    to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-    program started in 1999 in Tulsa, OK, helps arm America's communities with the
-    communication and safety skills needed to save lives and property--before and
-    during the event. StormReady helps community leaders and emergency managers
-    strengthen local safety programs.
+        Some 90% of all presidentially declared disasters are weather related, leading
+        to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
+        program started in 1999 in Tulsa, OK, helps arm America's communities with the
+        communication and safety skills needed to save lives and property--before and
+        during the event. StormReady helps community leaders and emergency managers
+        strengthen local safety programs.
 
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+        StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
     """)  # fmt: skip
 
         self.run_test(
