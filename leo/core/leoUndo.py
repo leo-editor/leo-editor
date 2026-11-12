@@ -824,8 +824,7 @@ class Undoer:
                 new_p = c.p
                 new_state = u.capture_node(p.v)
                 changed = new_state != old_state
-                if not g.unitTesting:
-                    g.trace(f"{changed=}")
+                ### g.trace(f"{changed=}")
                 if old_state != new_state:
                     u._redraw(new_p)  # PR #5027 Redraw only if node has changed.
                     new_ui = u.capture_ui()
