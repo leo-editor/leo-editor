@@ -136,9 +136,7 @@ class BaseTestImporter(LeoUnitTest):
         id_parts = self.id().split('.')
         self.short_id = f"{id_parts[-2]}.{id_parts[-1]}"
         parent.h = f"{kind} {self.short_id}"
-
-        # Leo 6.8.7. Do *not* strip trailing ws!
-        test_s = textwrap.dedent(s).lstrip()  # Don't use self.prep.
+        test_s = self.prep(s)  ### textwrap.dedent(s).lstrip()  # Don't use self.prep.
 
         # Leo 6.8.7:
         c.importCommands.createOutline(parent.copy(), ext, test_s, treeType='@clean')
@@ -657,8 +655,8 @@ class TestCoffeescript(BaseTestImporter):
               str = blockTrim(str)
               str = unshift(str)
               if str.length > 0 then str else ""
-
           """
+
         expected_results = (
             (
                 0, '',  # Ignore the first headline.
@@ -705,7 +703,6 @@ class TestCoffeescript(BaseTestImporter):
                 '  str = blockTrim(str)\n'
                 '  str = unshift(str)\n'
                 '  if str.length > 0 then str else ""\n'
-                '\n'
             ),
         )  # fmt: skip
         self.new_run_test(s, expected_results)
@@ -4194,7 +4191,6 @@ class TestPython(BaseTestImporter):
 
             def f1():
                 pass
-
             '''
 
         expected_results = (
@@ -4225,7 +4221,6 @@ class TestPython(BaseTestImporter):
                 1, 'function: f1',
                 'def f1():\n'
                 '    pass\n'
-                '\n'
             ),
         )  # fmt: skip
         self.new_run_test(s, expected_results)
