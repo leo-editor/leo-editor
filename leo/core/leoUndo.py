@@ -1078,7 +1078,6 @@ class Undoer:
         c = self.c
         p, sel, ins, scroll = state
         c.p = p
-        ### c.selectPosition(p)
         c.frame.scanForTabWidth(c.p)
         c.recolor(c.p)
         w = c.frame.body.wrapper
