@@ -493,7 +493,8 @@ def refreshFromDisk(
     at.changed_roots = []
     c.fileCommands.handleNodeConflicts()
     c.setChanged()
-    c.p = update_p  # Select a valid position!
+    # Select a valid position!
+    c.p = update_p if c.positionExists(update_p) else c.rootPosition()
     if redraw_flag:
         c.redraw(update_p)
     u.clearAndWarn('refresh-from-disk')
