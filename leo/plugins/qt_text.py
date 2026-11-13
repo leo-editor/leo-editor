@@ -1672,12 +1672,16 @@ class QTextEditWrapper(QTextMixin):
         p = c.p
         w = self.widget
 
-        # PR #5051 # Based on LeoQtBody.setWrap.
-        wrap = c.getWrap(p)
-        policy = ScrollBarPolicy.ScrollBarAlwaysOff if wrap else ScrollBarPolicy.ScrollBarAsNeeded
-        w.setHorizontalScrollBarPolicy(policy)
-        wrap_setting = WrapMode.WrapAtWordBoundaryOrAnywhere if wrap else WrapMode.NoWrap
-        w.setWordWrapMode(wrap_setting)
+        # PR #5051: Like LeoQtBody.setWrap.
+        if p and not self.useScintilla:
+            wrap = c.getWrap(p)
+            policy = (
+                ScrollBarPolicy.ScrollBarAlwaysOff if wrap
+                else ScrollBarPolicy.ScrollBarAsNeeded
+            )  # fmt: skip
+            w.setHorizontalScrollBarPolicy(policy)
+            wrap_setting = WrapMode.WrapAtWordBoundaryOrAnywhere if wrap else WrapMode.NoWrap
+            w.setWordWrapMode(wrap_setting)
 
         # tab stop in pixels - no config for this (yet)
         w.setTabStopDistance(24)
