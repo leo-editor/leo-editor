@@ -812,6 +812,8 @@ class Undoer:
         """
         u = self
         c = u.c
+        w = c.frame.body.wrapper  # for traces
+        assert w
         if u.undoing or u.redoing:
             yield u
             return
@@ -825,6 +827,7 @@ class Undoer:
             old_p = c.p
             old_state = u.capture_node(p.v)
             old_ui = u.capture_ui()
+            # g.trace(f"{old_ui[1]=} {old_ui[2]=} {old_p.h=}")  ###
             u.node_captures.add(p.v)
             if old_p.v != c.p.v:
                 message = f"u.change_node changed p.v: {p.v.h=} {g.callers()=}"
@@ -835,6 +838,8 @@ class Undoer:
                 u.node_captures.remove(p.v)
                 new_p = c.p
                 new_state = u.capture_node(p.v)
+                # g.trace(f"changed? {old_state != new_state}", w.getInsertPoint())  ###
+
                 if old_state != new_state:
                     u._redraw(new_p)  # PR #5027 Redraw only if node has changed.
                     new_ui = u.capture_ui()
@@ -850,10 +855,12 @@ class Undoer:
                     def change_node_ui_redoer() -> None:
                         u._redraw(new_p)
                         u.restore_ui(new_ui)
+                        # g.trace(new_ui[2])  ###
 
                     def change_node_ui_undoer() -> None:
                         u._redraw(old_p)
                         u.restore_ui(old_ui)
+                        # g.trace(old_ui[2])  ###
 
                     u.undoBead.add_finishers(change_node_ui_redoer, change_node_ui_undoer)
 
@@ -1089,14 +1096,15 @@ class Undoer:
     # @+node:ekr.20261015041620.5: *6* u.restore_ui
     def restore_ui(self, state: tuple) -> None:
         c = self.c
-        p, sel, ins, scroll = state
+        p, sel, ins, _scroll = state
         c.p = p
         c.frame.scanForTabWidth(c.p)
         c.recolor(c.p)
         w = c.frame.body.wrapper
         w.setSelectionRange(*sel, insert=ins)
-        ### w.setAllText(p.b)  ### Breaks unit tests.
-        ### w.setYScrollPosition(scroll)
+        #  w.setYScrollPosition(scroll)
+
+        # Do *not* call w.setAllText here!
 
     # @+node:ekr.20261015041852.1: *4* u: redrawers & finishers
     # @+node:ekr.20261025152930.1: *5* u._redraw
