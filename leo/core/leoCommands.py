@@ -4406,7 +4406,7 @@ class Commands:
         c.enableRedrawFlag = True
 
     # @+node:ekr.20090110073010.1: *6* c.redraw
-    redraw_count = 0  # For unit tests.
+    redraw_count = 0  # For unit tests and undo.
 
     def redraw(self, p: Position | None = None) -> None:
         """

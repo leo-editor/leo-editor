@@ -214,6 +214,7 @@ class TypingBead(UndoBead):
         'old_p',
         'old_sel',
         'p',
+        'redraw_count',
         'scroll',
     )  # fmt: skip
     # @-<< TypingBead: slots >>
@@ -232,6 +233,8 @@ class TypingBead(UndoBead):
     ) -> None:
         """Init a new Typing bead when a new bead is needed."""
         super().__init__(undoer)
+        c = self.c
+        # g.trace(f"{c.redraw_count=}")
 
         # Let block.
         w_text = w.getAllText()
@@ -250,6 +253,7 @@ class TypingBead(UndoBead):
         self.old_lines = old_text
         self.old_lines_count = old_text.count('\n')
         self.old_sel = old_sel
+        self.redraw_count = c.redraw_count
         self.scroll: int = w_scroll
         self.marked = p.isMarked()
         self.w = w
@@ -475,7 +479,9 @@ class Undoer:
             or u.bead != len(u.beads) - 1
             or b.p.v != p.v
             or b.line_number != b.compute_line_number(w_ins, w_text)
-        ):
+            or c.redraw_count != b.redraw_count  # PR #5052
+            or abs(w_ins - oldIns) > 1           # PR #5052
+        ):  # fmt: skip
             # Can't merge: create a new TypingBead.
 
             # This is the only instantiation of TypingBead in Leo.
