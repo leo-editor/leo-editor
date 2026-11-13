@@ -208,7 +208,7 @@ class TypingBead(UndoBead):
         'new_ins',
         'new_lines',
         'new_sel',
-        # 'old_ins',  ### Maybe.
+        'old_ins',
         'old_lines',
         'old_lines_count',
         'old_p',
@@ -225,6 +225,7 @@ class TypingBead(UndoBead):
         undoer: Undoer,
         p: Position,
         *,
+        old_ins: int,
         old_sel: tuple[int, int],
         old_text: str,
         w: QTextMixin,
@@ -245,6 +246,7 @@ class TypingBead(UndoBead):
         self.new_sel: tuple[int, int] = w_sel
         self.new_ins: int = w_ins
         self.new_lines: str = w_text
+        self.old_ins = old_ins
         self.old_lines = old_text
         self.old_lines_count = old_text.count('\n')
         self.old_sel = old_sel
@@ -463,6 +465,7 @@ class Undoer:
         p: Position,
         oldText: str,
         *,
+        oldIns: int,
         oldSel: tuple[int, int],
         oldYview: int | None = None,
         w: QTextMixin,
@@ -492,7 +495,10 @@ class Undoer:
             or b.line_number != b.compute_line_number(w_ins, w_text)
         ):
             # Can't merge: create a new TypingBead.
-            b = TypingBead(u, p, old_sel=oldSel, old_text=oldText, w=w)
+
+            # Test.
+            # This is the only instantiation of TypingBead in Leo.
+            b = TypingBead(u, p, old_ins=oldIns, old_sel=oldSel, old_text=oldText, w=w)
             u.pushBead(b)
         else:
             # Can merge: use the existing TypingBead.

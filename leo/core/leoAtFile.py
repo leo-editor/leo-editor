@@ -2711,10 +2711,7 @@ class AtFile:
             with u.change_node(old_p, 'ruff-format'):
                 c.p.b = new_text
                 w.setAllText(new_text)
-                ### w.setSelectionRange(w_ins, w_ins, insert=w_ins)
                 w.setInsertPoint(w_old_ins)
-                w.setSelectionRange(w_old_ins, w_old_ins, insert=w_old_ins)
-                ### w.see(w_ins)
         return True
 
     # @+node:vv.20260807130000.1: *6* at.runRuff
