@@ -1075,13 +1075,13 @@ class Undoer:
     # @+node:ekr.20261015041620.5: *6* u.restore_ui
     def restore_ui(self, state: tuple) -> None:
         c = self.c
-        p, sel, ins, _scroll = state
+        p, sel, ins, scroll = state
         c.p = p
         c.frame.scanForTabWidth(c.p)
         c.recolor(c.p)
         w = c.frame.body.wrapper
         w.setSelectionRange(*sel, insert=ins)
-        #  w.setYScrollPosition(scroll)
+        w.setYScrollPosition(scroll)
 
         # Do *not* call w.setAllText here!
 
