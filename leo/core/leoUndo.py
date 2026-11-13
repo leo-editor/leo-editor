@@ -466,7 +466,6 @@ class Undoer:
         w_ins = w.getInsertPoint()
         w_sel = w.getSelectionRange()
         w_text = w.getAllText()
-
         if self.undoing or self.redoing or oldText == w_text:
             return
         u = self
