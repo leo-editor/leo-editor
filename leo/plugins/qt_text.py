@@ -11,6 +11,7 @@ from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, Qsci, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier
 from leo.core.leoQt import MouseButton, MoveMode, MoveOperation
+from leo.core.leoQt import ScrollBarPolicy  # PR #5050  ###
 from leo.core.leoQt import Shadow, Shape, SliderAction, SolidLine, WindowType, WrapMode
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -1667,8 +1668,17 @@ class QTextEditWrapper(QTextMixin):
     # @+node:ekr.20110605121601.18076: *4* QTextEditWrapper.set_config
     def set_config(self) -> None:
         """Set configuration options for QTextEdit."""
+        c = self.c
+        p = c.p
         w = self.widget
-        w.setWordWrapMode(WrapMode.NoWrap)
+
+        # PR #5051 # Based on LeoQtBody.setWrap.
+        wrap = c.getWrap(p)
+        policy = ScrollBarPolicy.ScrollBarAlwaysOff if wrap else ScrollBarPolicy.ScrollBarAsNeeded
+        w.setHorizontalScrollBarPolicy(policy)
+        wrap_setting = WrapMode.WrapAtWordBoundaryOrAnywhere if wrap else WrapMode.NoWrap
+        w.setWordWrapMode(wrap_setting)
+
         # tab stop in pixels - no config for this (yet)
         w.setTabStopDistance(24)
 
