@@ -559,6 +559,50 @@ class Undoer:
         u.setUndoTypes()
 
     # @+node:ekr.20261015042013.1: *4* u: actions
+    # @+node:ekr.20261009185938.1: *5* u.change_headline
+    def change_headline(self, p: Position, new_h: str, *, ch: str = '') -> None:
+        """
+        Change a headline and preserve directives, dirty bits and editor state.
+
+        Called *only* from LeoTree.onHeadChanged
+
+        This method should *not* have an @contextmanager decorator:
+        it is never called from within other @contextmanager methods.
+        """
+        u = self
+        b = u._require_bead()
+        c = u.c
+        old_h = p.h
+        if old_h == new_h:
+            return
+
+        p = p.copy()
+
+        def update(head: str) -> None:
+            c.p = p
+            p.initHeadString(head)
+            p.setDirty()  # Call p.v.setAllAncestorAtFileNodesDirty()
+            c.frame.tree.setHeadline(p, head)
+
+        # Do the action.
+        # Leave the live editor alone: it may contain multiline abbreviation text.
+        p.initHeadString(new_h)
+        p.setDirty()  # Call p.v.setAllAncestorAtFileNodesDirty()
+        c.frame.scanForTabWidth(p)
+        c.recolor(p)
+        g.doHook('headkey2', c=c, p=p, ch=ch, changed=True)
+
+        # Add helpers
+
+        def change_headline_redoer() -> None:
+            update(new_h)
+
+        def change_headline_undoer() -> None:
+            update(old_h)
+
+        b.add_helpers(change_headline_redoer, change_headline_undoer)
+        b.add_recolor(p, p)
+
     # @+node:ekr.20261006155509.1: *5* u.clone_node
     def clone_node(self, p: Position) -> Position:
         """Clone p, returning and selecting the new occurrence."""
@@ -745,50 +789,6 @@ class Undoer:
             # Menu labels are updated when the completed bead is pushed.
 
     # @+node:ekr.20261015042249.1: *4* u: contexts
-    # @+node:ekr.20261009185938.1: *5* u.change_headline
-    def change_headline(self, p: Position, new_h: str, *, ch: str = '') -> None:
-        """
-        Change a headline and preserve directives, dirty bits and editor state.
-
-        Called *only* from LeoTree.onHeadChanged
-
-        This method should *not* have an @contextmanager decorator:
-        it is never called from within other @contextmanager methods.
-        """
-        u = self
-        b = u._require_bead()
-        c = u.c
-        old_h = p.h
-        if old_h == new_h:
-            return
-
-        p = p.copy()
-
-        def update(head: str) -> None:
-            c.p = p
-            p.initHeadString(head)
-            p.setDirty()  # Call p.v.setAllAncestorAtFileNodesDirty()
-            c.frame.tree.setHeadline(p, head)
-
-        # Do the action.
-        # Leave the live editor alone: it may contain multiline abbreviation text.
-        p.initHeadString(new_h)
-        p.setDirty()  # Call p.v.setAllAncestorAtFileNodesDirty()
-        c.frame.scanForTabWidth(p)
-        c.recolor(p)
-        g.doHook('headkey2', c=c, p=p, ch=ch, changed=True)
-
-        # Add helpers
-
-        def change_headline_redoer() -> None:
-            update(new_h)
-
-        def change_headline_undoer() -> None:
-            update(old_h)
-
-        b.add_helpers(change_headline_redoer, change_headline_undoer)
-        b.add_recolor(p, p)
-
     # @+node:vivainio.202610110001.1: *5* u.change_node
     @contextmanager
     def change_node(self, p: Position, command_name: str) -> Generator[Undoer]:
