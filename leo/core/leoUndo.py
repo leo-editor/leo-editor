@@ -208,6 +208,7 @@ class TypingBead(UndoBead):
         'new_ins',
         'new_lines',
         'new_sel',
+        # 'old_ins',  ### Maybe.
         'old_lines',
         'old_lines_count',
         'old_p',
@@ -1050,6 +1051,7 @@ class Undoer:
     def capture_ui(self) -> tuple:
         c = self.c
         w = c.frame.body.wrapper
+        # g.trace(f"{id(w)=} {len(w.getAllText())=}", w.getInsertPoint(), c.p.h)  ###
         return c.p.copy(), w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
 
     # @+node:ekr.20261015041620.1: *6* u.restore_node

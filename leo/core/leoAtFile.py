@@ -2687,7 +2687,7 @@ class AtFile:
 
         # PR #5050: Capture insert *before* the beautify.
         w_old_ins = w.getInsertPoint()
-        g.trace(f"{id(w)=} {w_old_ins=} {len(w.getAllText())=} {old_p.h=}")
+        # g.trace(f"{id(w)=} {w_old_ins=} {len(w.getAllText())=} {old_p.h=}")
         w_old_text = w.getAllText()
         results = c.beautify_with_ruff(contents, root, filename)
         efc.set_time(filename)  # Always suppress the reload prompt.
