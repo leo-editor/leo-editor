@@ -11,7 +11,7 @@ from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, Qsci, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier
 from leo.core.leoQt import MouseButton, MoveMode, MoveOperation
-from leo.core.leoQt import ScrollBarPolicy  # PR #5050  ###
+from leo.core.leoQt import ScrollBarPolicy  # PR #5051.
 from leo.core.leoQt import Shadow, Shape, SliderAction, SolidLine, WindowType, WrapMode
 
 if TYPE_CHECKING:  # pragma: no cover
