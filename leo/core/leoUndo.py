@@ -309,9 +309,7 @@ class TypingBead(UndoBead):
 
         # Update w's data.
         w.setAllText(p.b)
-        if self.new_sel is not None:
-            new_ins = None if self.new_sel is None else self.new_sel[1]
-            w.setSelectionRange(*self.new_sel, insert=new_ins)
+        w.setSelectionRange(*self.new_sel, insert=self.new_ins)
         if self.scroll is not None:
             w.setYScrollPosition(self.scroll)
 
