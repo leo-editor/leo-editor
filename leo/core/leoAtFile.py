@@ -2685,7 +2685,7 @@ class AtFile:
         if not os.path.exists(filename):
             return False
 
-        # PR #5050: Capture insert *before* the beautify.
+        # PR #5050: Capture old data *before* the beautify.
         w_old_ins = w.getInsertPoint()
         w_old_sel = w.getSelectionRange()
         w_old_text = w.getAllText()
@@ -2700,13 +2700,12 @@ class AtFile:
         g.es_print(f"beautified: {g.shortFileName(filename)}", color='blue')
         c.refreshFromDisk(root, redraw_flag=False)
         c.contractAllHeadlines()
-        c.redraw(old_p)
+        c.redraw(old_p)  # Required.
 
         # PR #5050: only changes to the current node (c.p.b) are undoable.
-        new_text = c.p.b
-        if w_old_text != new_text:
+        if w_old_text != c.p.b:
             u.type_text(old_p, oldText=w_old_text, oldIns=w_old_ins, oldSel=w_old_sel, w=w)
-            c.redraw(old_p)
+            c.redraw(old_p)  # Required.
         return True
 
     # @+node:vv.20260807130000.1: *6* at.runRuff
