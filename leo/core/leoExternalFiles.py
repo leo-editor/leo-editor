@@ -174,7 +174,7 @@ class ExternalFilesController:
             self.unchecked_commanders = [z for z in g.app.commanders() if self.is_enabled(z)]
             self.unchecked_files = [z for z in self.files if z.exists()]
 
-    # @+node:ekr.20150404045115.1: *5* efc.idle_check_commander (test)
+    # @+node:ekr.20150404045115.1: *5* efc.idle_check_commander
     def idle_check_commander(self, c: Cmdr) -> None:
         """
         Check all external files corresponding to @<file> nodes in c for
