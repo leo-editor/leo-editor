@@ -413,6 +413,17 @@ class Undoer:
         u.beads = []
         u.bead = -1
 
+    # @+node:ekr.20261113020001.1: *4* u.dump_beads (new)
+    def dump_beads(self) -> None:
+        u = self
+
+        def dump(bead: UndoBead) -> str:
+            return f"{bead.__class__.__name__} old_ins: {bead.old_ins} new_ins: {bead.new_ins}"
+
+        g.trace('Dump of u.beads')
+        for i, bead in enumerate(u.beads):
+            print(f"i: {i} {dump(bead)}")
+
     # @+node:ekr.20031218072017.2030: *4* u.redo
     @cmd('redo')
     def redo(self, event: LeoKeyEvent | None = None) -> None:
