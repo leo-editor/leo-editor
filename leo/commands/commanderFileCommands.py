@@ -446,12 +446,14 @@ def refreshFromDisk(
     self: Self,
     p: Position | None = None,
     event: LeoKeyEvent | None = None,
+    *,
+    redraw_flag: bool = True,
     silent: bool = True,  # Not used.
 ) -> None:
     """
     Refresh an @<file> node from disk.
 
-    This command is not undoable.
+    This command is not undoable directly, but callers may make (parts of it) undoable.
     """
     c = self
     at = c.atFileCommands
@@ -491,7 +493,10 @@ def refreshFromDisk(
     at.changed_roots = []
     c.fileCommands.handleNodeConflicts()
     c.setChanged()
-    c.redraw(update_p)  # Select a valid position!
+    # Select a valid position!
+    c.p = update_p if c.positionExists(update_p) else c.rootPosition()
+    if redraw_flag:
+        c.redraw(update_p)
     u.clearAndWarn('refresh-from-disk')
 
 

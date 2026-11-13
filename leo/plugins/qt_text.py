@@ -254,7 +254,7 @@ class QTextMixin:
             return
         i, j = p.v.selectionStart, p.v.selectionLength
         oldSel = (i, i + j)
-        u.type_text(p, oldSel=oldSel, oldText=oldText, w=w)
+        u.type_text(p, oldIns=i, oldSel=oldSel, oldText=oldText, w=w)
 
     # @+node:ekr.20140901122110.18734: *3* QTextMixin.Generic high-level interface
     # These call only wrapper methods.
@@ -680,6 +680,7 @@ class LeoQTextBrowser(QtWidgets.QTextBrowser):
             p = c.p
             u = c.undoer
             w = c.k.autoCompleter.w or c.frame.body.wrapper
+            oldIns = w.getInsertPoint()
             oldSel = w.getSelectionRange()
             oldText = w.getAllText()
             # Replace the tail of the prefix with the completion.
@@ -698,7 +699,7 @@ class LeoQTextBrowser(QtWidgets.QTextBrowser):
                 j = i + len(completion)
                 c.setChanged()
                 w.setInsertPoint(j)
-                u.type_text(p, oldSel=oldSel, oldText=oldText, w=w)
+                u.type_text(p, oldIns=oldIns, oldSel=oldSel, oldText=oldText, w=w)
             self.end_completer()
 
         # @+node:tbrown.20111011094944.27031: *5* LeoQListWidget.tab_callback

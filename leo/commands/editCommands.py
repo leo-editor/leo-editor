@@ -1690,7 +1690,8 @@ class EditCommandsClass:
                 i = ins - (max(1, count))
                 w.delete(i, ins)
                 w.setSelectionRange(i, i, insert=i)
-                u.type_text(p, oldSel=oldSel, oldText=p.b, w=w)
+            # PR #5050: *always* call u.type_text!
+            u.type_text(p, oldIns=i, oldSel=oldSel, oldText=p.b, w=w)
             return
         # No *direct* undo in this widget.
         # Undo in headlines is handled indirectly.
@@ -1844,6 +1845,7 @@ class EditCommandsClass:
         if not g.isTextWrapper(w):
             return
         w_text = w.getAllText()
+        w_ins = w.getInsertPoint()
         i, j = w_sel = w.getSelectionRange()
         wname = c.widget_name(w)
         if wname.startswith('body'):
@@ -1858,7 +1860,7 @@ class EditCommandsClass:
                 w.setInsertPoint(i - 1)
             p.v.b = w.getAllText()
             c.k.resetLabel()
-            u.type_text(p, oldSel=w_sel, oldText=w_text, w=w)
+            u.type_text(p, oldIns=w_ins, oldSel=w_sel, oldText=w_text, w=w)
             return
         # No *direct* undo in this widget.
         # Undo in headlines is handled indirectly.
@@ -1913,6 +1915,7 @@ class EditCommandsClass:
         if not g.isTextWrapper(w):
             return
         w_text = w.getAllText()
+        w_ins = w.getInsertPoint()
         i, j = w_sel = w.getSelectionRange()
         if i != j:
             w.delete(i, j)
@@ -1920,7 +1923,7 @@ class EditCommandsClass:
         i += 1
         w.setSelectionRange(i, i, insert=i)
         p.v.b = w.getAllText()
-        u.type_text(p, oldSel=w_sel, oldText=w_text, w=w)
+        u.type_text(p, oldIns=w_ins, oldSel=w_sel, oldText=w_text, w=w)
 
     # @+node:ekr.20150514063305.262: *4* ec.insertNewLine (insert-newline)
     @cmd('insert-newline')
@@ -2136,7 +2139,7 @@ class EditCommandsClass:
         # Update the text and handle undo.
         newText = w.getAllText()
         if newText != oldText:
-            u.type_text(p, oldSel=oldSel, oldText=oldText, oldYview=oldYview, w=w)
+            u.type_text(p, oldIns=oldIns, oldSel=oldSel, oldText=oldText, oldYview=oldYview, w=w)
         g.doHook("bodykey2", c=c, p=p, ch=ch, oldSel=oldSel, undoType=undoType)
 
     # @+node:ekr.20160924135613.1: *5* ec.doPlainChar

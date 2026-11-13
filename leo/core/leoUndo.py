@@ -208,6 +208,7 @@ class TypingBead(UndoBead):
         'new_ins',
         'new_lines',
         'new_sel',
+        'old_ins',
         'old_lines',
         'old_lines_count',
         'old_p',
@@ -224,6 +225,7 @@ class TypingBead(UndoBead):
         undoer: Undoer,
         p: Position,
         *,
+        old_ins: int,
         old_sel: tuple[int, int],
         old_text: str,
         w: QTextMixin,
@@ -244,6 +246,7 @@ class TypingBead(UndoBead):
         self.new_sel: tuple[int, int] = w_sel
         self.new_ins: int = w_ins
         self.new_lines: str = w_text
+        self.old_ins = old_ins
         self.old_lines = old_text
         self.old_lines_count = old_text.count('\n')
         self.old_sel = old_sel
@@ -276,10 +279,7 @@ class TypingBead(UndoBead):
 
         # Update w's data.
         w.setAllText(p.b)
-        if self.old_sel is not None:
-            old_ins = None if self.old_sel is None else self.old_sel[1]
-            # g.trace(f"{self.old_sel=} {old_ins=}")
-            w.setSelectionRange(*self.old_sel, insert=old_ins)
+        w.setSelectionRange(*self.old_sel, insert=self.old_ins)
         if self.scroll is not None:
             w.setYScrollPosition(self.scroll)
 
@@ -309,10 +309,7 @@ class TypingBead(UndoBead):
 
         # Update w's data.
         w.setAllText(p.b)
-        if self.new_sel is not None:
-            new_ins = None if self.new_sel is None else self.new_sel[1]
-            # g.trace(f"{self.new_sel=} {new_ins=}")
-            w.setSelectionRange(*self.new_sel, insert=new_ins)
+        w.setSelectionRange(*self.new_sel, insert=self.new_ins)
         if self.scroll is not None:
             w.setYScrollPosition(self.scroll)
 
@@ -451,6 +448,7 @@ class Undoer:
         p: Position,
         oldText: str,
         *,
+        oldIns: int,
         oldSel: tuple[int, int],
         oldYview: int | None = None,
         w: QTextMixin,
@@ -465,7 +463,6 @@ class Undoer:
         w_ins = w.getInsertPoint()
         w_sel = w.getSelectionRange()
         w_text = w.getAllText()
-
         if self.undoing or self.redoing or oldText == w_text:
             return
         u = self
@@ -480,7 +477,9 @@ class Undoer:
             or b.line_number != b.compute_line_number(w_ins, w_text)
         ):
             # Can't merge: create a new TypingBead.
-            b = TypingBead(u, p, old_sel=oldSel, old_text=oldText, w=w)
+
+            # This is the only instantiation of TypingBead in Leo.
+            b = TypingBead(u, p, old_ins=oldIns, old_sel=oldSel, old_text=oldText, w=w)
             u.pushBead(b)
         else:
             # Can merge: use the existing TypingBead.
@@ -836,12 +835,12 @@ class Undoer:
                     u.undoBead.add_helpers(change_node_redoer, change_node_undoer)
 
                     def change_node_ui_redoer() -> None:
-                        u.restore_ui(new_ui)
                         u._redraw(new_p)
+                        u.restore_ui(new_ui)
 
                     def change_node_ui_undoer() -> None:
-                        u.restore_ui(old_ui)
                         u._redraw(old_p)
+                        u.restore_ui(old_ui)
 
                     u.undoBead.add_finishers(change_node_ui_redoer, change_node_ui_undoer)
 
@@ -1078,12 +1077,13 @@ class Undoer:
         c = self.c
         p, sel, ins, scroll = state
         c.p = p
-        c.selectPosition(p)
         c.frame.scanForTabWidth(c.p)
         c.recolor(c.p)
         w = c.frame.body.wrapper
         w.setSelectionRange(*sel, insert=ins)
         w.setYScrollPosition(scroll)
+
+        # Do *not* call w.setAllText here!
 
     # @+node:ekr.20261015041852.1: *4* u: redrawers & finishers
     # @+node:ekr.20261025152930.1: *5* u._redraw
