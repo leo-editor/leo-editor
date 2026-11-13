@@ -2687,8 +2687,10 @@ class AtFile:
 
         # PR #5050: Capture insert *before* the beautify.
         w_old_ins = w.getInsertPoint()
-        # g.trace(f"{id(w)=} {w_old_ins=} {len(w.getAllText())=} {old_p.h=}")
+        w_old_sel = w.getSelectionRange()
         w_old_text = w.getAllText()
+
+        # Beautify.
         results = c.beautify_with_ruff(contents, root, filename)
         efc.set_time(filename)  # Always suppress the reload prompt.
         if contents == results:
@@ -2701,17 +2703,10 @@ class AtFile:
         c.redraw(old_p)
 
         # PR #5050: only changes to the current node (c.p.b) are undoable.
-        assert w == c.frame.body.wrapper  # Changes??
         new_text = c.p.b
         if w_old_text != new_text:
-            # A hack. Reset all the "old" values here.
-            w.setInsertPoint(w_old_ins)
-            w.setSelectionRange(w_old_ins, w_old_ins, insert=w_old_ins)
-            c.p.b = w_old_text  # A required hack.
-            with u.change_node(old_p, 'ruff-format'):
-                c.p.b = new_text
-                w.setAllText(new_text)
-                w.setInsertPoint(w_old_ins)
+            u.type_text(old_p, oldText=w_old_text, oldIns=w_old_ins, oldSel=w_old_sel, w=w)
+            c.redraw(old_p)
         return True
 
     # @+node:vv.20260807130000.1: *6* at.runRuff
