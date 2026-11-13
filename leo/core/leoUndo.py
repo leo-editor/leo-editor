@@ -281,7 +281,6 @@ class TypingBead(UndoBead):
         w.setAllText(p.b)
         if self.old_sel is not None:
             old_ins = None if self.old_sel is None else self.old_sel[1]
-            # g.trace(f"{self.old_sel=} {old_ins=}")
             w.setSelectionRange(*self.old_sel, insert=old_ins)
         if self.scroll is not None:
             w.setYScrollPosition(self.scroll)
@@ -314,7 +313,6 @@ class TypingBead(UndoBead):
         w.setAllText(p.b)
         if self.new_sel is not None:
             new_ins = None if self.new_sel is None else self.new_sel[1]
-            # g.trace(f"{self.new_sel=} {new_ins=}")
             w.setSelectionRange(*self.new_sel, insert=new_ins)
         if self.scroll is not None:
             w.setYScrollPosition(self.scroll)
@@ -485,7 +483,6 @@ class Undoer:
         ):
             # Can't merge: create a new TypingBead.
 
-            # Test.
             # This is the only instantiation of TypingBead in Leo.
             b = TypingBead(u, p, old_ins=oldIns, old_sel=oldSel, old_text=oldText, w=w)
             u.pushBead(b)

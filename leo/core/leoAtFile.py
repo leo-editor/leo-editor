@@ -2671,7 +2671,7 @@ class AtFile:
             else:
                 g.es_print(f"{j + 1:5}: {line}")
 
-    # @+node:ekr.20240926044644.1: *6* at.runRuffFormat (changed)
+    # @+node:ekr.20240926044644.1: *6* at.runRuffFormat
     def runRuffFormat(self, contents: str, root: Position, filename: str) -> bool:
         """
         Run ruff format on the selected position.
