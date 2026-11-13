@@ -1690,6 +1690,7 @@ class EditCommandsClass:
                 i = ins - (max(1, count))
                 w.delete(i, ins)
                 w.setSelectionRange(i, i, insert=i)
+            # PR #5050: *always* call u.type_text!
             u.type_text(p, oldIns=i, oldSel=oldSel, oldText=p.b, w=w)
             return
         # No *direct* undo in this widget.
