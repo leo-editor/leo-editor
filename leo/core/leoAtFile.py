@@ -2685,25 +2685,35 @@ class AtFile:
         if not os.path.exists(filename):
             return False
 
+        # PR #5050: Capture insert *before* the beautify.
+        w_old_ins = w.getInsertPoint()
+        g.trace(f"{id(w)=} {w_old_ins=} {len(w.getAllText())=} {old_p.h=}")
+        w_old_text = w.getAllText()
         results = c.beautify_with_ruff(contents, root, filename)
         efc.set_time(filename)  # Always suppress the reload prompt.
         if contents == results:
             return True
 
-        # PR #5050: only changes to the current node (c.p.b) are undoable.
-        w_old_text = w.getAllText()
-        w_ins = w.getInsertPoint()
-        g.es(f"beautified: {g.shortFileName(filename)}", color='blue')
+        # Careful: refresh-from-disk clears the u.beads!
+        g.es_print(f"beautified: {g.shortFileName(filename)}", color='blue')
         c.refreshFromDisk(root, redraw_flag=False)
         c.contractAllHeadlines()
         c.redraw(old_p)
+
+        # PR #5050: only changes to the current node (c.p.b) are undoable.
+        assert w == c.frame.body.wrapper  # Changes??
         new_text = c.p.b
         if w_old_text != new_text:
+            # A hack. Reset all the "old" values here.
+            w.setInsertPoint(w_old_ins)
+            w.setSelectionRange(w_old_ins, w_old_ins, insert=w_old_ins)
             c.p.b = w_old_text  # A required hack.
             with u.change_node(old_p, 'ruff-format'):
                 c.p.b = new_text
                 w.setAllText(new_text)
-                w.setSelectionRange(w_ins, w_ins, insert=w_ins)
+                ### w.setSelectionRange(w_ins, w_ins, insert=w_ins)
+                w.setInsertPoint(w_old_ins)
+                w.setSelectionRange(w_old_ins, w_old_ins, insert=w_old_ins)
                 ### w.see(w_ins)
         return True
 
