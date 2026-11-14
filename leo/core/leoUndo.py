@@ -449,7 +449,7 @@ class Undoer:
         w_ins = w.getInsertPoint()
         w_sel = w.getSelectionRange()
         w_text = w.getAllText()
-        if self.undoing or self.redoing or oldText == w_text:
+        if self.undoing or self.redoing or oldText == w_text:  # pragma: no cover
             return
         u = self
         c = u.c
@@ -628,7 +628,7 @@ class Undoer:
         old_p = p.copy()
         old_back, old_parent = p.back(), p.parent()
         new_p = p.visBack(c) if p.hasVisBack(c) else p.next()
-        if not new_p:
+        if not new_p:  # pragma: no cover
             g.trace("Can not delete the outline's only node")
             return
 

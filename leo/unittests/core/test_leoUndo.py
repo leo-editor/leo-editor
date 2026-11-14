@@ -415,6 +415,29 @@ class TestUndo(LeoUnitTest):
             assert p.b == 'before'
             assert not c.p.isCloned()
 
+    # @+node:ekr.20261114085127.1: *3* TestUndo.test_u_delete_node (new)
+    def test_u_delete_node(self):
+        c = self.c
+        p = c.p
+        u = c.undoer
+
+        old_p = p.copy()
+        old_h = p.h
+
+        def delete_node() -> None:
+            with u:
+                u.set_command_name(g.my_name())
+                u.delete_node(old_p)
+
+        delete_node()
+        new_h = c.p.h
+        assert new_h != old_h
+        for _i in range(3):
+            u.undo()
+            assert c.p.h == old_h, c.p.h
+            u.redo()
+            assert c.p.h == new_h, new_p.h
+
     # @+node:ekr.20261114073916.1: *3* TestUndo.test_u_insert_node (new)
     def test_u_insert_node(self):
         c = self.c
@@ -494,6 +517,49 @@ class TestUndo(LeoUnitTest):
         for _i in range(3):
             u.undo()
             u.redo()
+
+    # @+node:ekr.20261114090239.1: *3* TestUndo.test_u_type_text (new)
+    def test_u_type_text(self):
+        c = self.c
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
+
+        old_ins = w.getInsertPoint()
+        old_sel = w.getSelectionRange()
+        old_text = w.getAllText()
+
+        new_text = 'New text'
+        assert new_text != old_text
+        new_ins = len(new_text)
+        assert new_ins != old_ins
+        new_sel = (0, len(new_text))
+        assert new_sel != old_sel
+        ### g.trace(f"{old_ins=} {new_ins=} {old_sel=} {new_sel=}")
+
+        def test_type_text() -> None:
+            w.setAllText(new_text)
+            w.setSelectionRange(*new_sel, insert=new_ins)
+            ### g.trace(w.getInsertPoint(), w.getSelectionRange())
+            ### w.setInsertPoint(new_ins)
+            p.v.b = new_text
+            u.type_text(p, oldIns=old_ins, oldSel=old_sel, oldText=old_text, w=w)
+
+        test_type_text()
+        assert w.getAllText() == new_text, w.getAllText()  # Test 1
+        assert w.getInsertPoint() == new_ins, w.getInsertPoint()  # Test 1.
+        assert w.getSelectionRange() == new_sel, w.getSelectionRange()  # Test 1.
+        for _i in range(3):
+            u.undo()
+            assert w.getAllText() == old_text, w.getAllText()
+            # assert w.getInsertPoint() == old_ins, w.getInsertPoint()  # Test 2.
+            # assert w.getSelectionRange() == old_sel, w.getSelectionRange()  # Test 2.
+            u.redo()
+            assert w.getAllText() == new_text, w.getAllText()
+            # assert w.getInsertPoint() == new_ins, w.getInsertPoint()  # Test 3.
+            # assert w.getSelectionRange() == new_sel, w.getSelectionRange()  # Test 3.
+            u.undo()
+            assert w.getAllText() == old_text, w.getAllText()  # Test 4
 
     # @-others
 
