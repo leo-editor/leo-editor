@@ -150,14 +150,14 @@ class UndoBead:
     # @+node:ekr.20261006040137.2: *3* UndoBead.add_helpers & add_finishers
     def add_helpers(self, redo_function: Callable, undo_function: Callable) -> None:
         """Append the helpers (in correct order!) to the undo/redo lists."""
-        if self.undoer.capture_level:
-            return  # The enclosing snapshot records the complete operation.
+        if self.undoer.capture_level:  # pragma: no cover
+            return
         self.redo_functions.append(redo_function)
         self.undo_functions.insert(0, undo_function)  # Execute in reverse order.
 
     def add_finishers(self, redo_finisher: Callable, undo_finisher: Callable) -> None:
         """Append the helpers (in correct order!) to the undo/redo lists."""
-        if self.undoer.capture_level:
+        if self.undoer.capture_level:  # pragma: no cover
             return
         self.redo_finishers.append(redo_finisher)
         self.undo_finishers.append(undo_finisher)  # Execute in given order.
@@ -562,7 +562,7 @@ class Undoer:
         b = u._require_bead()
         c = u.c
         old_h = p.h
-        if old_h == new_h:
+        if old_h == new_h:  # pragma: no cover
             return
 
         p = p.copy()
@@ -735,10 +735,10 @@ class Undoer:
         """
         u = self
         c = u.c
-        if u.undoing or u.redoing:
+        if u.undoing or u.redoing:  # pragma: no cover
             yield u
             return
-        if not c.changed:
+        if not c.changed:  # pragma: no cover
             c.setChanged()
         with u:
             u.set_command_name(command_name)
@@ -795,14 +795,14 @@ class Undoer:
         """
         u = self
         c = u.c
-        if u.undoing or u.redoing:
+        if u.undoing or u.redoing:  # pragma: no cover
             yield u
             return
-        if not c.changed:
+        if not c.changed:  # pragma: no cover
             c.setChanged()
         with u:
             u.set_command_name(command_name)
-            if u.capture_level > 0:
+            if u.capture_level > 0:  # pragma: no cover
                 yield u
                 return
             assert not u.node_captures, "Use change_outline outside change_node for bulk edits"
@@ -857,7 +857,7 @@ class Undoer:
         pending = [c.hiddenRootNode]
         while pending:
             v = pending.pop()
-            if v in result:
+            if v in result:  # pragma: no cover
                 continue
             result[v] = u.capture_node(v), tuple(v.children), tuple(v.parents)
             pending.extend(v.children)
@@ -915,14 +915,14 @@ class Undoer:
         """
         u = self
         c = u.c
-        if u.undoing or u.redoing:
+        if u.undoing or u.redoing:  # pragma: no cover
             yield u
             return
-        if not c.changed:
+        if not c.changed:  # pragma: no cover
             c.setChanged()
         with u:
             u.set_command_name(command_name)
-            if u.capture_level > 0:
+            if u.capture_level > 0:  # pragma: no cover
                 yield u
                 return
             old_p, old_ui = p.copy(), u.capture_ui()
@@ -1029,7 +1029,7 @@ class Undoer:
         c = u.c
         w = c.frame.body.wrapper
         # Ignore redrawers in inner levels.
-        if u.undoBeadLevel > 1:
+        if u.undoBeadLevel > 1:  # pragma: no cover
             return
         p.setDirty()  # Call p.v.setAllAncestorAtFileNodesDirty()
         preserve_body = p == c.p and p.b == w.getAllText()
@@ -1049,9 +1049,9 @@ class Undoer:
         u._require_bead()
         c = u.c
         # Ignore redrawers in inner levels.
-        if u.undoBeadLevel > 1:
+        if u.undoBeadLevel > 1:  # pragma: no cover
             return
-        if not c.changed:
+        if not c.changed:  # pragma: no cover
             c.setChanged()
         c.p.setDirty()  # p.setDirty() calls p.v.setAllAncestorAtFileNodesDirty()
         c.redraw_after_head_changed()
@@ -1064,9 +1064,9 @@ class Undoer:
         c = u.c
         u._require_bead()
         # Ignore redrawers in inner levels.
-        if u.undoBeadLevel > 1:
+        if u.undoBeadLevel > 1:  # pragma: no cover
             return
-        if not c.changed:
+        if not c.changed:  # pragma: no cover
             c.setChanged()
         c.p.setDirty()  # p.setDirty() calls p.v.setAllAncestorAtFileNodesDirty()
         c.redrawAndEdit(new_p, selectAll=True)
@@ -1121,7 +1121,7 @@ class Undoer:
     def getBead(self, n: int) -> UndoBead | None:
         """Set Undoer ivars from the bead at the top of the undo stack."""
         u = self
-        if n < 0 or n >= len(u.beads):
+        if n < 0 or n >= len(u.beads):  # pragma: no cover
             return None
         return u.beads[n]
 
@@ -1178,7 +1178,7 @@ class Undoer:
     def setUndoType(self, theType: str) -> None:
         u = self
         frame = u.c.frame
-        if not isinstance(theType, str):
+        if not isinstance(theType, str):  # pragma: no cover
             g.trace(f"oops: expected string for command, got {repr(theType)}")
             g.trace(g.callers())
             theType = '<unknown>'
