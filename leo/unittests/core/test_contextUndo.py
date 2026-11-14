@@ -345,38 +345,6 @@ class TestContextUndo(LeoUnitTest):
             lambda: self.assertEqual(tuple(c.all_unique_nodes()), after),
         )
 
-    # @+node:ekr.20261014103254.20: *3* TestContextUndo.test_nested_bulk_and_action_helpers_make_one_record
-    def test_nested_bulk_and_action_helpers_make_one_record(self):
-        c = self.c
-        p = c.p
-        u = c.undoer
-        p.b = 'before'
-        v = p.v
-
-        def test() -> None:
-            with u.change_node(p, 'my-command'):
-                p.b = 'after'
-                clone = u.clone_node(p)
-                assert clone.v == v
-
-        for _i in range(3):
-            test()
-            assert len(u.beads) == 1
-            assert p.b == 'after'
-            assert c.p.isCloned()
-            u.undo()
-            assert len(u.beads) == 1
-            assert p.b == 'before'
-            assert not c.p.isCloned()
-            u.redo()
-            assert len(u.beads) == 1
-            assert p.b == 'after'
-            assert c.p.isCloned()
-            u.undo()
-            assert len(u.beads) == 1
-            assert p.b == 'before'
-            assert not c.p.isCloned()
-
     # @+node:ekr.20261014103254.2: *3* TestContextUndo.test_nested_context_composes_helpers_after_inner_exit
     def test_nested_context_composes_helpers_after_inner_exit(self):
         c = self.c

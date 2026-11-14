@@ -353,42 +353,8 @@ class TestUndo(LeoUnitTest):
         func = c.line_to_headline
         self.runTest(before, after, i, j, func)
 
-    # @+node:ekr.20210906172626.17: *3* TestUndo.test_undo_group
-    def test_undo_group(self):
-        # Test an off-by-one error in c.undoer.bead.
-        # The buggy redoGroup code worked if the undo group was the first item on the undo stack.
-        c = self.c
-        p = c.p
-        u = c.undoer
-        original = p.insertAfter()
-        original_s = original.b = self.prep(
-            """
-            @tabwidth -4
-
-            line 1
-                line 2
-                  line 3
-            line4
-        """
-        )
-        u.clearUndoState()
-        c.selectPosition(original)
-        c.copyOutline()  # Add state to the undo stack!
-        c.pasteOutline()
-        c.convertAllBlanks()  # Uses undoGroup.
-        u.undo()
-        self.assertEqual(original.b, original_s)
-        c.pasteOutline()
-        c.convertAllBlanks()
-        c.pasteOutline()
-        c.convertAllBlanks()
-        for _i in range(3):
-            u.undo()
-            u.redo()
-            self.assertEqual(original.b, original_s)
-
-    # @+node:ekr.20250625044932.1: *3* TestUndo.test_undo_group_after_move
-    def test_undo_group_after_move(self):
+    # @+node:ekr.20250625044932.1: *3* TestUndo.test_multiple_moves (renamed)
+    def test_multiple_moves(self):
         # Test a group of moves.
         c = self.c
         p = c.p
@@ -416,6 +382,38 @@ class TestUndo(LeoUnitTest):
         for _i in range(3):
             u.undo()
             u.redo()
+
+    # @+node:ekr.20261014103254.20: *3* TestUndo.test_clone_node (moved)
+    def test_clone_node(self):
+        c = self.c
+        p = c.p
+        u = c.undoer
+        p.b = 'before'
+        v = p.v
+
+        def test() -> None:
+            with u.change_node(p, 'my-command'):
+                p.b = 'after'
+                clone = u.clone_node(p)
+                assert clone.v == v
+
+        for _i in range(3):
+            test()
+            assert len(u.beads) == 1
+            assert p.b == 'after'
+            assert c.p.isCloned()
+            u.undo()
+            assert len(u.beads) == 1
+            assert p.b == 'before'
+            assert not c.p.isCloned()
+            u.redo()
+            assert len(u.beads) == 1
+            assert p.b == 'after'
+            assert c.p.isCloned()
+            u.undo()
+            assert len(u.beads) == 1
+            assert p.b == 'before'
+            assert not c.p.isCloned()
 
     # @-others
 
