@@ -417,7 +417,7 @@ class Undoer:
             if isinstance(obj, UndoBead):
                 obj.redo()
             else:  # pragma: no cover
-                g.es_print_unique_message(f"no redo helper for {u.kind} {u.undoType}")
+                g.es_print_unique_message(f"no redo helper for {u.undoType}")
             c.checkOutline()
         finally:
             u.redoing = False
@@ -538,7 +538,7 @@ class Undoer:
             if isinstance(obj, UndoBead):
                 obj.undo()
             else:  # pragma: no cover
-                g.es_print_unique_message(f"no undo helper for {u.kind} {u.undoType}")
+                g.es_print_unique_message(f"no undo helper for {u.undoType}")
             c.checkOutline()
         finally:
             u.undoing = False
