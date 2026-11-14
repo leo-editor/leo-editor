@@ -535,13 +535,11 @@ class TestUndo(LeoUnitTest):
         assert new_ins != old_ins
         new_sel = (0, len(new_text))
         assert new_sel != old_sel
-        ### g.trace(f"{old_ins=} {new_ins=} {old_sel=} {new_sel=}")
+        # g.trace(f"{old_ins=} {new_ins=} {old_sel=} {new_sel=}")
 
         def test_type_text() -> None:
             w.setAllText(new_text)
             w.setSelectionRange(*new_sel, insert=new_ins)
-            ### g.trace(w.getInsertPoint(), w.getSelectionRange())
-            ### w.setInsertPoint(new_ins)
             p.v.b = new_text
             u.type_text(p, oldIns=old_ins, oldSel=old_sel, oldText=old_text, w=w)
 
@@ -552,12 +550,12 @@ class TestUndo(LeoUnitTest):
         for _i in range(3):
             u.undo()
             assert w.getAllText() == old_text, w.getAllText()
-            # assert w.getInsertPoint() == old_ins, w.getInsertPoint()  # Test 2.
-            # assert w.getSelectionRange() == old_sel, w.getSelectionRange()  # Test 2.
+            assert w.getInsertPoint() == old_ins, w.getInsertPoint()  # Test 2.
+            assert w.getSelectionRange() == old_sel, w.getSelectionRange()  # Test 2.
             u.redo()
             assert w.getAllText() == new_text, w.getAllText()
-            # assert w.getInsertPoint() == new_ins, w.getInsertPoint()  # Test 3.
-            # assert w.getSelectionRange() == new_sel, w.getSelectionRange()  # Test 3.
+            assert w.getInsertPoint() == new_ins, w.getInsertPoint()  # Test 3.
+            assert w.getSelectionRange() == new_sel, w.getSelectionRange()  # Test 3.
             u.undo()
             assert w.getAllText() == old_text, w.getAllText()  # Test 4
 

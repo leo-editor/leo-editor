@@ -263,12 +263,6 @@ class TypingBead(UndoBead):
         else:
             c.clearMarked(p)
 
-        # Update w's data.
-        w.setAllText(p.b)
-        w.setSelectionRange(*self.old_sel, insert=self.old_ins)
-        if self.scroll is not None:
-            w.setYScrollPosition(self.scroll)
-
         # Update global data.
         if not c.isChanged():
             c.setChanged()
@@ -276,7 +270,11 @@ class TypingBead(UndoBead):
         c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
         c.recolor(p)
 
-        # Ensure focus.
+        # Update w *last*.
+        w.setAllText(p.b)
+        w.setSelectionRange(*self.old_sel, insert=self.old_ins)
+        if self.scroll is not None:
+            w.setYScrollPosition(self.scroll)
         w.setFocus()
 
     # @+node:ekr.20261014100625.6: *3* TypingBead.redo
@@ -293,12 +291,6 @@ class TypingBead(UndoBead):
         else:
             c.clearMarked(p)
 
-        # Update w's data.
-        w.setAllText(p.b)
-        w.setSelectionRange(*self.new_sel, insert=self.new_ins)
-        if self.scroll is not None:
-            w.setYScrollPosition(self.scroll)
-
         # Update global data.
         if not c.isChanged():
             c.setChanged()
@@ -306,7 +298,11 @@ class TypingBead(UndoBead):
         c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
         c.recolor(p)
 
-        # Ensure focus.
+        # Update w *last*.
+        w.setAllText(p.b)
+        w.setSelectionRange(*self.new_sel, insert=self.new_ins)
+        if self.scroll is not None:
+            w.setYScrollPosition(self.scroll)
         w.setFocus()
 
     # @-others
@@ -440,6 +436,8 @@ class Undoer:
         w: QTextMixin,
     ) -> None:
         """
+        Push a new UndoTyping bead or merge the incoming changes to the top UndoTyping bead.
+
         Handle all undo tasks related to typing in the body pane. Called by:
         - ec.selfInsertCommand.
         - LeoQListWidget.select_callback.
