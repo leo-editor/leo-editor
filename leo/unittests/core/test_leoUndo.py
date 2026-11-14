@@ -383,8 +383,8 @@ class TestUndo(LeoUnitTest):
             u.undo()
             u.redo()
 
-    # @+node:ekr.20261014103254.20: *3* TestUndo.test_clone_node (moved)
-    def test_clone_node(self):
+    # @+node:ekr.20261014103254.20: *3* TestUndo.test_undoer_clone_node (moved, renamed)
+    def test_undoer_clone_node(self):
         c = self.c
         p = c.p
         u = c.undoer
@@ -414,6 +414,35 @@ class TestUndo(LeoUnitTest):
             assert len(u.beads) == 1
             assert p.b == 'before'
             assert not c.p.isCloned()
+
+    # @+node:ekr.20261114073916.1: *3* TestUndo.test_undoer_insert_node_and_redraw_and_edit (new)
+    def test_undoer_insert_node_and_redraw_and_edit(self):
+        c = self.c
+        p = c.p
+        u = c.undoer
+
+        old_p = p.copy()
+        old_h = p.h
+        inserted_h = 'Test node'
+        cloned_h = 'Clone of test node'
+
+        def test() -> Position:
+            # From 'insert-as-first-child.
+            with u:
+                u.set_command_name('test_undoer_insert_node_and_redraw_and_edit')
+                new_p = u.insert_node(c.p, as_child=True, index=0)
+                new_p.h = inserted_h
+                u.redraw_and_edit(new_p)
+                new_p.h = cloned_h
+                return new_p
+
+        new_p = test()
+        assert new_p.h == cloned_h, new_p.h
+        for _i in range(3):
+            u.undo()
+            assert c.p.h == old_h, c.p.h
+            u.redo()
+            assert new_p.h == cloned_h, new_p.h
 
     # @-others
 
