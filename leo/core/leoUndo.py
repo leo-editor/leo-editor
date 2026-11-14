@@ -18,7 +18,7 @@ from types import TracebackType
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position, VNode
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.plugins.qt_text import QTextMixin
@@ -104,24 +104,6 @@ class UndoBead:
             c.recolor(old_p)
 
         self.add_finishers(recolor_redoer, recolor_undoer)
-
-    # @+node:ekr.20261010150247.9: *3* undoBead.add_redraw
-    def add_redraw(self, new_p: Position, old_p: Position) -> None:
-        """
-        Add finishers that will call c.redraw.
-        The caller chooses the final redraw for the entire command.
-        """
-        c = self.c
-        new_p = new_p.copy()
-        old_p = old_p.copy()
-
-        def redraw_redoer() -> None:
-            c.redraw(new_p)
-
-        def redraw_undoer() -> None:
-            c.redraw(old_p)
-
-        self.add_redraw_finishers(redraw_redoer, redraw_undoer)
 
     # @+node:ekr.20261010150247.10: *3* undoBead.add_redraw_and_edit
     def add_redraw_and_edit(self, new_p: Position, old_p: Position) -> None:
