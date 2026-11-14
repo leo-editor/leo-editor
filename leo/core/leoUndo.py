@@ -53,7 +53,7 @@ class UndoBead:
 
     # @-<< UndoBead: slots >>
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: no cover
         return f"UndoBead: {self.command_name or '<no command_name>'}"
 
     # @+others
@@ -79,7 +79,7 @@ class UndoBead:
         undo_redraw_finisher: Callable,
     ) -> None:
 
-        if self.redraw_finishers is not None:
+        if self.redraw_finishers is not None:  # pragma: no cover
             message = f"u.redraw_finishers already exist: {g.callers()=}\n"
             if g.unitTesting:
                 assert False, message
