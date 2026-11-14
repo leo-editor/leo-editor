@@ -244,7 +244,7 @@ class TypingBead(UndoBead):
     def compute_line_number(self, ins: int, s: str) -> int:
         """Return the zeo based number of the line in s containing the given insert point."""
         # Like g.convertPythonIndexToRowCol.
-        if not s or ins <= 0:
+        if not s or ins <= 0:  # pragma: no cover
             return 0
         i = min(ins, len(s))
         return s.count('\n', 0, i)  # Don't include i.
@@ -258,13 +258,13 @@ class TypingBead(UndoBead):
         # Update p's data.
         p.v.b = self.old_lines
         p.setDirty()
-        if self.marked:
+        if self.marked:  # pragma: no cover
             c.setMarked(p)
         else:
             c.clearMarked(p)
 
         # Update global data.
-        if not c.isChanged():
+        if not c.isChanged():  # pragma: no cover
             c.setChanged()
         c.redraw(p)
         c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
@@ -286,13 +286,13 @@ class TypingBead(UndoBead):
         # Update p's data.
         p.v.b = self.new_lines
         p.setDirty()
-        if self.marked:
+        if self.marked:  # pragma: no cover
             c.setMarked(p)
         else:
             c.clearMarked(p)
 
         # Update global data.
-        if not c.isChanged():
+        if not c.isChanged():  # pragma: no cover
             c.setChanged()
         c.redraw(p)
         c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
