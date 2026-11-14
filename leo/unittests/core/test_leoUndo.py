@@ -2,7 +2,7 @@
 # @+node:ekr.20210906141410.1: * @file ../unittests/core/test_leoUndo.py
 """Tests of leoUndo.py"""
 
-# from leo.core import leoGlobals as g
+from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 
 
@@ -383,8 +383,8 @@ class TestUndo(LeoUnitTest):
             u.undo()
             u.redo()
 
-    # @+node:ekr.20261014103254.20: *3* TestUndo.test_undoer_clone_node (moved, renamed)
-    def test_undoer_clone_node(self):
+    # @+node:ekr.20261014103254.20: *3* TestUndo.test_u_clone_node (moved, renamed)
+    def test_u_clone_node(self):
         c = self.c
         p = c.p
         u = c.undoer
@@ -415,8 +415,8 @@ class TestUndo(LeoUnitTest):
             assert p.b == 'before'
             assert not c.p.isCloned()
 
-    # @+node:ekr.20261114073916.1: *3* TestUndo.test_undoer_insert_node_and_redraw_and_edit (new)
-    def test_undoer_insert_node_and_redraw_and_edit(self):
+    # @+node:ekr.20261114073916.1: *3* TestUndo.test_u_insert_node (new)
+    def test_u_insert_node(self):
         c = self.c
         p = c.p
         u = c.undoer
@@ -426,23 +426,74 @@ class TestUndo(LeoUnitTest):
         inserted_h = 'Test node'
         cloned_h = 'Clone of test node'
 
-        def test() -> Position:
-            # From 'insert-as-first-child.
+        def insert_as_first_child() -> Position:
             with u:
-                u.set_command_name('test_undoer_insert_node_and_redraw_and_edit')
+                u.set_command_name(g.my_name())
                 new_p = u.insert_node(c.p, as_child=True, index=0)
                 new_p.h = inserted_h
                 u.redraw_and_edit(new_p)
                 new_p.h = cloned_h
                 return new_p
 
-        new_p = test()
+        new_p = insert_as_first_child()
         assert new_p.h == cloned_h, new_p.h
         for _i in range(3):
             u.undo()
             assert c.p.h == old_h, c.p.h
             u.redo()
             assert new_p.h == cloned_h, new_p.h
+
+    # @+node:ekr.20261114081317.1: *3* TestUndo.test_u_insert_node_after (new)
+    def test_u_insert_node_after(self):
+        c = self.c
+        p = c.p
+        u = c.undoer
+
+        old_p = p.copy()
+        old_h = p.h
+        inserted_h = 'Test node'
+        cloned_h = 'Clone of test node'
+
+        after_p = self.root_p.insertAfter()
+        after_p.h = 'after node'
+
+        def insert_before() -> Position:
+            with u:
+                u.set_command_name(g.my_name())
+                new_p = u.insert_node(c.p, before=True)
+                new_p.h = inserted_h
+                u.redraw_and_edit(new_p)
+                new_p.h = cloned_h
+                return new_p
+
+        new_p = insert_before()
+        assert new_p.h == cloned_h, new_p.h
+        for _i in range(3):
+            u.undo()
+            assert c.p.h == old_h, c.p.h
+            u.redo()
+            assert new_p.h == cloned_h, new_p.h
+
+    # @+node:ekr.20261114080738.1: *3* TestUndo.test_u_redraw_and_edit (new)
+    def test_u_redraw_and_edit(self):
+        c = self.c
+        p = c.p
+        u = c.undoer
+
+        old_h = c.p.h
+        new_h = 'changed node'
+
+        def redraw_and_edit() -> None:
+            with u:
+                u.set_command_name('test_u_redraw_and_edit')
+                p.h = new_h
+                u.redraw_and_edit(p)
+
+        redraw_and_edit()
+        assert c.p.h == new_h, c.p.h
+        for _i in range(3):
+            u.undo()
+            u.redo()
 
     # @-others
 
