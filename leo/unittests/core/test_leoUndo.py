@@ -544,20 +544,61 @@ class TestUndo(LeoUnitTest):
             u.type_text(p, oldIns=old_ins, oldSel=old_sel, oldText=old_text, w=w)
 
         test_type_text()
-        assert w.getAllText() == new_text, w.getAllText()  # Test 1
-        assert w.getInsertPoint() == new_ins, w.getInsertPoint()  # Test 1.
-        assert w.getSelectionRange() == new_sel, w.getSelectionRange()  # Test 1.
         for _i in range(3):
+            assert w.getAllText() == new_text, w.getAllText()  # Test 1
+            assert w.getInsertPoint() == new_ins, w.getInsertPoint()  # Test 1.
+            assert w.getSelectionRange() == new_sel, w.getSelectionRange()  # Test 1.
             u.undo()
             assert w.getAllText() == old_text, w.getAllText()
             assert w.getInsertPoint() == old_ins, w.getInsertPoint()  # Test 2.
             assert w.getSelectionRange() == old_sel, w.getSelectionRange()  # Test 2.
             u.redo()
-            assert w.getAllText() == new_text, w.getAllText()
+            assert w.getAllText() == new_text, w.getAllText()  # Test 3.
             assert w.getInsertPoint() == new_ins, w.getInsertPoint()  # Test 3.
             assert w.getSelectionRange() == new_sel, w.getSelectionRange()  # Test 3.
+
+    # @+node:ekr.20261114100249.1: *3* TestUndo.test_u_type_text_with_merge (new)
+    def test_u_type_text_with_merge(self):
+        c = self.c
+        ec = c.editCommands
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
+
+        # Setup.
+        old_text = 'original text'
+        old_ins = len(old_text)
+        old_sel = (old_ins, old_ins)
+
+        def merge_beads() -> None:
+            # Rename to avoid changing outer vars.
+            oldIns = old_ins
+            oldSel = old_sel
+            oldText = old_text
+            p.b = old_text
+            w.setAllText(p.b)
+
+            # Delete one character.
+            w.setInsertPoint(oldIns)
+            ec.backwardDeleteCharacter()
+            assert w.getAllText() == 'original tex'
+            u.type_text(p, oldIns=oldIns, oldSel=oldSel, oldText=oldText, w=w)
+            assert len(u.beads) == 1
+
+            # Insert three characters.
+            oldIns -= 1
+            oldSel = (oldIns, oldIns)
+            p.b = oldText = w.getAllText() + 'XXX'
+            w.setAllText(p.b)
+            u.type_text(p, oldIns=oldIns, oldSel=oldSel, oldText=oldText, w=w)
+            assert len(u.beads) == 1
+
+        merge_beads()
+        for _i in range(3):
+            assert len(u.beads) == 1
             u.undo()
-            assert w.getAllText() == old_text, w.getAllText()  # Test 4
+            assert len(u.beads) == 1
+            u.redo()
 
     # @-others
 
