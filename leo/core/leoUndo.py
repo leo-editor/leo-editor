@@ -479,9 +479,9 @@ class Undoer:
             or u.bead != len(u.beads) - 1
             or b.p.v != p.v
             or b.line_number != b.compute_line_number(w_ins, w_text)
-            or c.redraw_count != b.redraw_count  # PR #5052
-            or abs(w_ins - oldIns) > 1           # PR #5052
-        ):  # fmt: skip
+            or c.redraw_count != b.redraw_count
+            or abs(w_ins - oldIns) > 1
+        ):
             # Can't merge: create a new TypingBead.
 
             # This is the only instantiation of TypingBead in Leo.
@@ -491,6 +491,7 @@ class Undoer:
             # Can merge: use the existing TypingBead.
             b.new_lines = w_text
             b.new_sel = w_sel
+            b.new_ins = w_ins
         p.v.b = w_text  # Do **not** use p.b = w_text!!!
         u._update_after_typing(p, w)
 
