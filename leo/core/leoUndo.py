@@ -268,10 +268,10 @@ class TypingBead(UndoBead):
             c.setChanged()
         c.redraw(p)
         c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
-        c.recolor(p)
+        c.recolor(p)  # Trigger pygments colorizing.
 
         # Update w *last*.
-        w.setAllText(p.b)
+        w.setAllText(p.b)  # Trigger jEdit colorizing.
         w.setSelectionRange(*self.old_sel, insert=self.old_ins)
         if self.scroll is not None:
             w.setYScrollPosition(self.scroll)
@@ -296,10 +296,10 @@ class TypingBead(UndoBead):
             c.setChanged()
         c.redraw(p)
         c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
-        c.recolor(p)
+        c.recolor(p)  # Trigger pygments colorizing.
 
         # Update w *last*.
-        w.setAllText(p.b)
+        w.setAllText(p.b)  # Trigger jEdit colorizing.
         w.setSelectionRange(*self.new_sel, insert=self.new_ins)
         if self.scroll is not None:
             w.setYScrollPosition(self.scroll)
@@ -494,7 +494,7 @@ class Undoer:
         p.v.insertSpot = w_ins
         i, j = w_sel
         p.v.selectionStart, p.v.selectionLength = (i, j - i)
-        if not p.isDirty():
+        if not p.isDirty():  # pragma: no cover
             p.setDirty()
 
         # Update icons.
