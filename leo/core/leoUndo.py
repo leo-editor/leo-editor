@@ -402,14 +402,14 @@ class Undoer:
         """Redo the operation undone by the last undo."""
         u = self
         c = u.c
-        if not c.p:
+        if not c.p:  # pragma: no cover
             return
         # End editing *before* getting state.
         c.endEditing()
         if not u.canRedo():
             return
         obj = u.getBead(u.bead + 1)
-        if not obj:
+        if not obj:  # pragma: no cover
             return
 
         # Init status.
@@ -420,7 +420,7 @@ class Undoer:
         try:
             if isinstance(obj, UndoBead):
                 obj.redo()
-            else:
+            else:  # pragma: no cover
                 g.es_print_unique_message(f"no redo helper for {u.kind} {u.undoType}")
             c.checkOutline()
         finally:
@@ -520,7 +520,7 @@ class Undoer:
         """Undo the operation described by the undo parameters."""
         u = self
         c = u.c
-        if not c.p:
+        if not c.p:  # pragma: no cover
             g.trace('no current position')
             return
         # End editing *before* getting state.
@@ -528,7 +528,7 @@ class Undoer:
         if not u.canUndo():
             return
         obj = u.getBead(u.bead)
-        if not obj:
+        if not obj:  # pragma: no cover
             return
 
         # Init status.
@@ -539,7 +539,7 @@ class Undoer:
         try:
             if isinstance(obj, UndoBead):
                 obj.undo()
-            else:
+            else:  # pragma: no cover
                 g.es_print_unique_message(f"no undo helper for {u.kind} {u.undoType}")
             c.checkOutline()
         finally:
@@ -802,7 +802,7 @@ class Undoer:
             old_state = u.capture_node(p.v)
             old_ui = u.capture_ui()
             u.node_captures.add(p.v)
-            if old_p.v != c.p.v:
+            if old_p.v != c.p.v:  # pragma: no cover
                 message = f"u.change_node changed p.v: {p.v.h=} {g.callers()=}"
                 g.es_print_unique_message(message)
             try:
@@ -983,7 +983,7 @@ class Undoer:
                 yield u
             finally:
                 new_p = p.copy()
-                if old_p.v != c.p.v:
+                if old_p.v != c.p.v:  # pragma: no cover
                     message = f"u.move_node changed p.v: {p.v.h=} {g.callers()=}"
                     g.es_print_unique_message(message)
                 if old_p != new_p:
