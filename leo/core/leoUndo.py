@@ -714,59 +714,6 @@ class Undoer:
         g.doHook('create-node', c=c, p=new_p)
         return new_p
 
-    # @+node:ekr.20261005140833.1: *5* u.set_body
-    def set_body(
-        self,
-        new_p: Position,
-        new_body: str,
-        *,
-        old_body: str | None = None,
-    ) -> None:
-        """Change p.b"""
-        u = self
-        b = u._require_bead()
-        c = u.c
-        w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
-            g.error(f"Not a text wrapper: {w=} {g.callers()}")
-            return
-
-        new_p = new_p.copy()
-        if old_body is None:
-            old_body = new_p.b
-        if old_body == new_body:
-            return
-
-        def set_body_update(p: Position, body: str) -> None:
-            """Update p's data."""
-            # Set p.v.b, not p.b! The p.b setter clears the selection!
-            p.v.b = body
-            p.setDirty()
-            val = p.computeIcon()
-            if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
-                p.v.iconVal = val
-            c.recolor(p)  # Only for QScintilla.
-            p.setAllAncestorAtFileNodesDirty()
-
-        # Do the action!
-        set_body_update(new_p, new_body)
-
-        if c.p == new_p and w.getAllText() != new_body:
-            sel, ins = w.getSelectionRange(), w.getInsertPoint()
-            w.setAllText(new_body)
-            w.setSelectionRange(*sel, insert=ins)
-
-        # Add helpers. Use distinct names for debugging.
-
-        def set_body_redoer() -> None:
-            set_body_update(new_p, new_body)
-
-        def set_body_undoer() -> None:
-            set_body_update(new_p, old_body)
-
-        if new_p.v not in u.node_captures:
-            b.add_helpers(set_body_redoer, set_body_undoer)
-
     # @+node:ekr.20261005094529.2: *5* u.set_command_name
     def set_command_name(self, command_name: str) -> None:
         u = self
