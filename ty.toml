@@ -56,4 +56,4 @@ incompatible-method-override = "ignore"
 
 # For now.
 lost-keyword-for-regular-parameter = "ignore"
-### invalid-argument-type = "ignore"  ###
+invalid-argument-type = "ignore"
