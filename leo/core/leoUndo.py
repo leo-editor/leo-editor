@@ -1108,6 +1108,7 @@ class Undoer:
 
     # @+node:ekr.20060127052111.1: *4* u.cutStack
     def cutStack(self) -> None:
+        """Cut the stack back to u.max_undo_stack_size entries."""
         u = self
         n = u.max_undo_stack_size
         if u.bead >= n > 0:

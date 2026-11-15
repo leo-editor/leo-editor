@@ -426,6 +426,18 @@ class TestUndo(LeoUnitTest):
         u = c.undoer
         u.clearAndWarn(g.my_name())
 
+    # @+node:ekr.20261115011130.1: *3* TestUndo.test_u_cutStack (new)
+    def test_u_cutStack(self):
+        c = self.c
+        p = c.p
+        u = c.undoer
+
+        # Give cutStack something to cut.
+        u.max_undo_stack_size = 2
+        for _i in range(4):
+            c.insertHeadline()
+        u.cutStack()
+
     # @+node:ekr.20261114085127.1: *3* TestUndo.test_u_delete_node (new)
     def test_u_delete_node(self):
         c = self.c
