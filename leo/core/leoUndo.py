@@ -787,7 +787,7 @@ class Undoer:
         if u.undoing or u.redoing:  # pragma: no cover
             yield u
             return
-        if not c.changed:  ###
+        if not c.changed:
             c.setChanged()
         with u:
             u.set_command_name(command_name)
@@ -908,7 +908,7 @@ class Undoer:
         if u.undoing or u.redoing:  # pragma: no cover
             yield u
             return
-        if not c.changed:  ####
+        if not c.changed:
             c.setChanged()
         with u:
             u.set_command_name(command_name)
@@ -1041,7 +1041,7 @@ class Undoer:
         # Ignore redrawers in inner levels.
         if u.undoBeadLevel > 1:  # pragma: no cover
             return
-        if not c.changed:  ###
+        if not c.changed:
             c.setChanged()
         c.p.setDirty()  # p.setDirty() calls p.v.setAllAncestorAtFileNodesDirty()
         c.redraw_after_head_changed()
@@ -1056,7 +1056,7 @@ class Undoer:
         # Ignore redrawers in inner levels.
         if u.undoBeadLevel > 1:  # pragma: no cover
             return
-        if not c.changed:  ###
+        if not c.changed:
             c.setChanged()
         c.p.setDirty()  # p.setDirty() calls p.v.setAllAncestorAtFileNodesDirty()
         c.redrawAndEdit(new_p, selectAll=True)
