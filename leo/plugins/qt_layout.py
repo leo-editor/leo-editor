@@ -516,7 +516,7 @@ class LayoutCacheWidget(QWidget):
     """
 
     def __init__(self, c: Cmdr, parent: QWidget | None) -> None:
-        super().__init__(parent)
+        super().__init__(parent)  # ty:ignore
         self.c = c
         self.setObjectName('leo-layout-cache')
         self.layout_dict: dict | None = None

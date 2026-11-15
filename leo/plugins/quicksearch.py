@@ -318,7 +318,7 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):
     # @+others
     # @+node:ekr.20111015194452.15695: *3* quick_w.ctor
     def __init__(self, c: Cmdr, mode: str = "nav", parent: QWidget | None = None) -> None:
-        super().__init__(parent)
+        super().__init__(parent)  # ty:ignore
         self.ui: Any = qt_quicksearch.Ui_LeoQuickSearchWidget()
         self.ui.setupUi(self)
         self.frozen = False  # True: disable live updates.
