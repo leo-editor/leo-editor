@@ -455,11 +455,22 @@ class TestUndo(LeoUnitTest):
         p = c.p
         u = c.undoer
 
+        def dump_beads(beads: list[str], tag: str) -> None:
+            g.printObj([id(z) for z in beads], tag=tag)
+
         # Give cutStack something to cut.
         u.max_undo_stack_size = 2
+        all_beads = []
         for _i in range(4):
             c.insertHeadline()
+            all_beads.append(u.beads[-1])
+
+        # dump_beads(all_beads, 'all_beads')
         u.cutStack()
+        # dump_beads(u.beads, 'u.beads')
+
+        # u.cutStack must cut the *bottom* of the stack.
+        assert u.beads == all_beads[2:]
 
     # @+node:ekr.20261114085127.1: *3* TestUndo.test_u_delete_node (new)
     def test_u_delete_node(self):
