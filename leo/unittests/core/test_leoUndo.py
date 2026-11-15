@@ -523,21 +523,22 @@ class TestUndo(LeoUnitTest):
         # u.cutStack must cut the *bottom* of the stack.
         assert u.beads == all_beads[2:]
 
-    # @+node:ekr.20261114085127.1: *3* TestUndo.test_u_delete_node
-    def test_u_delete_node(self):
+    # @+node:ekr.20261114085127.1: *3* TestUndo.test_u_delete_node_case_root
+    def test_u_delete_node_case_root(self):
         c = self.c
         p = c.p
         u = c.undoer
 
         old_p = p.copy()
         old_h = p.h
+        assert not p.back()
 
-        def delete_node() -> None:
+        def delete_root() -> None:
             with u:
                 u.set_command_name(g.my_name())
                 u.delete_node(old_p)
 
-        delete_node()
+        delete_root()
         new_h = c.p.h
         assert new_h != old_h
         for _i in range(3):
