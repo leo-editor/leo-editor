@@ -4,12 +4,13 @@
 
 # @+<< leoQt.py: imports >>
 # @+node:ekr.20260505180734.1: ** << leoQt.py: imports >>
+from __future__ import annotations
 from typing import Any
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import Qt, QUrl
 from PyQt6.QtGui import QAction, QActionGroup, QCloseEvent
 
-# To placate pyflakes.
+# To placate checkers.
 assert QUrl is not None
 assert QAction is not None
 assert QActionGroup is not None

@@ -26,6 +26,7 @@ Notes:
 
 # As in leo.py we must be very careful about imports.
 
+from __future__ import annotations
 from typing import Any
 
 g = None  # set by init: do *not* import it here!
