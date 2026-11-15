@@ -745,9 +745,6 @@ class Undoer:
             old_state = u.capture_node(p.v)
             old_ui = u.capture_ui()
             u.node_captures.add(p.v)
-            if old_p.v != c.p.v:  # pragma: no cover
-                message = f"u.change_node changed p.v: {p.v.h=} {g.callers()=}"
-                g.es_print_unique_message(message)
             try:
                 yield u
             finally:
