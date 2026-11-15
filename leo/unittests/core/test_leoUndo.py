@@ -525,6 +525,7 @@ class TestUndo(LeoUnitTest):
 
     # @+node:ekr.20261114085127.1: *3* TestUndo.test_u_delete_node_case_root
     def test_u_delete_node_case_root(self):
+        # Test the `else` clause of the delete_node_undoer function.
         c = self.c
         p = c.p
         u = c.undoer
@@ -539,6 +540,57 @@ class TestUndo(LeoUnitTest):
                 u.delete_node(old_p)
 
         delete_root()
+        new_h = c.p.h
+        assert new_h != old_h
+        for _i in range(3):
+            u.undo()
+            assert c.p.h == old_h, c.p.h
+            u.redo()
+            assert c.p.h == new_h, new_p.h
+
+    # @+node:ekr.20261115090134.1: *3* TestUndo.test_u_delete_node_case_old_back
+    def test_u_delete_node_case_old_back(self):
+        # Test the old_back clause of the delete_node_undoer function.
+        c = self.c
+        p = c.p
+        u = c.undoer
+
+        # Move to c.p.next().
+        old_p = p.next()
+        old_h = old_p.h
+        assert old_p.back()
+
+        def delete() -> None:
+            with u:
+                u.set_command_name(g.my_name())
+                u.delete_node(old_p)
+
+        delete()
+        new_h = c.p.h
+        assert new_h != old_h
+        for _i in range(3):
+            u.undo()
+            assert c.p.h == old_h, c.p.h
+            u.redo()
+            assert c.p.h == new_h, new_p.h
+
+    # @+node:ekr.20261115090134.2: *3* TestUndo.test_u_delete_node_case_old_parent
+    def test_u_delete_node_case_old_parent(self):
+        # Test the `old_parent` clause of the delete_node_undoer function.
+        c = self.c
+        p = c.p
+        u = c.undoer
+
+        old_h = f"child of {c.p.h}"
+        old_p = p.insertAsLastChild()
+        old_p.h = old_h
+
+        def delete_child() -> None:
+            with u:
+                u.set_command_name(g.my_name())
+                u.delete_node(old_p)
+
+        delete_child()
         new_h = c.p.h
         assert new_h != old_h
         for _i in range(3):
