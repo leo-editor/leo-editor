@@ -388,34 +388,6 @@ class TestUndo(LeoUnitTest):
             u.undo()
             u.redo()
 
-    # @+node:ekr.20261115072801.1: *3* TestUndo.test_status_bits
-    def test_status_bits(self) -> None:
-        c = self.c
-        p = c.p
-        u = c.undoer
-
-        # old_p = p.copy()
-        # old_h = p.h
-        # inserted_h = 'Test node'
-        # added_h = 'Clone of test node'
-
-        # def insert_as_first_child() -> Position:
-        #     with u:
-        #         u.set_command_name(g.my_name())
-        #         new_p = u.insert_node(c.p, as_child=True, index=0)
-        #         new_p.h = inserted_h
-        #         u.redraw_and_edit(new_p)
-        #         new_p.h = added_h
-        #         return new_p
-
-        # new_p = insert_as_first_child()
-        # assert new_p.h == added_h, new_p.h
-        # for _i in range(3):
-        #     u.undo()
-        #     assert c.p.h == old_h, c.p.h
-        #     u.redo()
-        #     assert new_p.h == added_h, new_p.h
-
     # @+node:ekr.20261115065006.1: *3* TestUndo.test_u_change_outline
     def test_u_change_outline(self):
         c = self.c
