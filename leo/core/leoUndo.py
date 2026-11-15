@@ -673,11 +673,9 @@ class Undoer:
             # Inserting before p changes p's original index.
         elif (
             as_child
-            or p.hasChildren()
-            and p.isExpanded()
-            or c.hoistStack
-            and p == c.hoistStack[-1].p
-        ):
+            or p.hasChildren() and p.isExpanded()
+            or c.hoistStack and p == c.hoistStack[-1].p
+        ):  # fmt: skip
             if index is None:
                 insert_at_end = c.config.getBool('insert-new-nodes-at-end')
                 index = p.numberOfChildren() if insert_at_end else 0
@@ -992,7 +990,7 @@ class Undoer:
         v.initHeadString(head)
         v.setBodyString(body)
         v.u = deepcopy(ua)
-        if marked:
+        if marked:  # pragma: no cover
             v.setMarked()
         else:
             v.clearMarked()

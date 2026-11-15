@@ -388,29 +388,6 @@ class TestUndo(LeoUnitTest):
             u.undo()
             u.redo()
 
-    # @+node:ekr.20261115013308.1: *3* TestUndo.test_u_change_recent_files
-    def test_u_change_recent_files(self):
-        c = self.c
-        menu = c.frame.menu
-        rf = g.app.recentFilesManager
-        u = c.undoer
-
-        g.app.windowList = [g.NullObject()]
-
-        def change_recent_files() -> None:
-            # Like rf.clearRecentFiles.
-            with u.change_recent_files():
-                recentFilesMenu = menu.getMenu('Recent Files')
-                menu.deleteRecentFilesMenuItems(recentFilesMenu)
-                rf.recentFiles = ['test file']
-                # for frame in g.app.windowList:
-                #     rf.createRecentFilesMenuItems(frame.c)
-
-        change_recent_files()
-        for _i in range(3):
-            u.undo()
-            u.redo()
-
     # @+node:ekr.20261115065006.1: *3* TestUndo.test_u_change_outline
     def test_u_change_outline(self):
         c = self.c
@@ -439,6 +416,35 @@ class TestUndo(LeoUnitTest):
         for _i in range(3):
             u.undo()
             u.redo()
+
+    # @+node:ekr.20261115013308.1: *3* TestUndo.test_u_change_recent_files
+    def test_u_change_recent_files(self):
+        c = self.c
+        menu = c.frame.menu
+        rf = g.app.recentFilesManager
+        u = c.undoer
+
+        g.app.windowList = [g.NullObject()]
+
+        def change_recent_files() -> None:
+            # Like rf.clearRecentFiles.
+            with u.change_recent_files():
+                recentFilesMenu = menu.getMenu('Recent Files')
+                menu.deleteRecentFilesMenuItems(recentFilesMenu)
+                rf.recentFiles = ['test file']
+                # for frame in g.app.windowList:
+                #     rf.createRecentFilesMenuItems(frame.c)
+
+        change_recent_files()
+        for _i in range(3):
+            u.undo()
+            u.redo()
+
+    # @+node:ekr.20261115010623.1: *3* TestUndo.test_u_clearAndWarn
+    def test_u_clearAndWarn(self):
+        c = self.c
+        u = c.undoer
+        u.clearAndWarn(g.my_name())
 
     # @+node:ekr.20261014103254.20: *3* TestUndo.test_u_clone_node
     def test_u_clone_node(self):
@@ -471,12 +477,6 @@ class TestUndo(LeoUnitTest):
             assert len(u.beads) == 1
             assert p.b == 'before'
             assert not c.p.isCloned()
-
-    # @+node:ekr.20261115010623.1: *3* TestUndo.test_u_clearAndWarn
-    def test_u_clearAndWarn(self):
-        c = self.c
-        u = c.undoer
-        u.clearAndWarn(g.my_name())
 
     # @+node:ekr.20261115011130.1: *3* TestUndo.test_u_cutStack
     def test_u_cutStack(self):
@@ -533,7 +533,7 @@ class TestUndo(LeoUnitTest):
         old_p = p.copy()
         old_h = p.h
         inserted_h = 'Test node'
-        cloned_h = 'Clone of test node'
+        added_h = 'Clone of test node'
 
         def insert_as_first_child() -> Position:
             with u:
@@ -541,16 +541,16 @@ class TestUndo(LeoUnitTest):
                 new_p = u.insert_node(c.p, as_child=True, index=0)
                 new_p.h = inserted_h
                 u.redraw_and_edit(new_p)
-                new_p.h = cloned_h
+                new_p.h = added_h
                 return new_p
 
         new_p = insert_as_first_child()
-        assert new_p.h == cloned_h, new_p.h
+        assert new_p.h == added_h, new_p.h
         for _i in range(3):
             u.undo()
             assert c.p.h == old_h, c.p.h
             u.redo()
-            assert new_p.h == cloned_h, new_p.h
+            assert new_p.h == added_h, new_p.h
 
     # @+node:ekr.20261114081317.1: *3* TestUndo.test_u_insert_node_after
     def test_u_insert_node_after(self):
@@ -561,27 +561,61 @@ class TestUndo(LeoUnitTest):
         old_p = p.copy()
         old_h = p.h
         inserted_h = 'Test node'
-        cloned_h = 'Clone of test node'
+        added_h = 'Clone of test node'
 
         after_p = self.root_p.insertAfter()
         after_p.h = 'after node'
 
-        def insert_before() -> Position:
+        def insert_after() -> Position:
             with u:
                 u.set_command_name(g.my_name())
                 new_p = u.insert_node(c.p, before=True)
                 new_p.h = inserted_h
                 u.redraw_and_edit(new_p)
-                new_p.h = cloned_h
+                new_p.h = added_h
                 return new_p
 
-        new_p = insert_before()
-        assert new_p.h == cloned_h, new_p.h
+        new_p = insert_after()
+        assert new_p.h == added_h, new_p.h
         for _i in range(3):
             u.undo()
             assert c.p.h == old_h, c.p.h
             u.redo()
-            assert new_p.h == cloned_h, new_p.h
+            assert new_p.h == added_h, new_p.h
+
+    # @+node:ekr.20261115070542.1: *3* TestUndo.test_u_insert_node_no_kwargs
+    def test_u_insert_node_no_kwargs(self):
+        c = self.c
+        p = c.p
+        u = c.undoer
+
+        old_p = p.copy()
+        old_h = p.h
+        inserted_h = 'Test node'
+        added_h = 'Added node'
+
+        # To cover the desired code, p must have children and must be expanded.
+        child = p.insertAsLastChild()
+        child.h = 'child of root'
+        p.expand()
+        c.redraw(p)
+
+        def insert_no_kwargs() -> Position:
+            with u:
+                u.set_command_name(g.my_name())
+                new_p = u.insert_node(c.p)
+                new_p.h = inserted_h
+                u.redraw_and_edit(new_p)
+                new_p.h = added_h
+                return new_p
+
+        new_p = insert_no_kwargs()
+        assert new_p.h == added_h, new_p.h
+        for _i in range(3):
+            u.undo()
+            assert c.p.h == old_h, c.p.h
+            u.redo()
+            assert new_p.h == added_h, new_p.h
 
     # @+node:ekr.20261114080738.1: *3* TestUndo.test_u_redraw_and_edit
     def test_u_redraw_and_edit(self):
