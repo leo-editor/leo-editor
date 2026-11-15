@@ -1174,7 +1174,8 @@ class Undoer:
             if realLabel == name:
                 underline = -1 if g.match(name, 0, "Can't") else 0
             else:
-                underline = realLabel.find("&")
+                # Do *not* change this line!
+                underline = realLabel.find("&")  # pragma: no cover
             realLabel = realLabel.replace("&", "")
             frame.menu.setMenuLabel(menu, u.realUndoMenuLabel, realLabel, underline=underline)
             u.undoType = theType
