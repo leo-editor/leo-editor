@@ -388,6 +388,29 @@ class TestUndo(LeoUnitTest):
             u.undo()
             u.redo()
 
+    # @+node:ekr.20261115013308.1: *3* TestUndo.test_u_change_recent_files (new)
+    def test_u_change_recent_files(self):
+        c = self.c
+        menu = c.frame.menu
+        rf = g.app.recentFilesManager
+        u = c.undoer
+
+        g.app.windowList = [g.NullObject()]
+
+        def change_recent_files() -> None:
+            # Like rf.clearRecentFiles.
+            with u.change_recent_files():
+                recentFilesMenu = menu.getMenu('Recent Files')
+                menu.deleteRecentFilesMenuItems(recentFilesMenu)
+                rf.recentFiles = ['test file']
+                # for frame in g.app.windowList:
+                #     rf.createRecentFilesMenuItems(frame.c)
+
+        change_recent_files()
+        for _i in range(3):
+            u.undo()
+            u.redo()
+
     # @+node:ekr.20261014103254.20: *3* TestUndo.test_u_clone_node (moved, renamed)
     def test_u_clone_node(self):
         c = self.c
