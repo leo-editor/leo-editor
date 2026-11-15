@@ -1095,7 +1095,7 @@ class Undoer:
             return
         u.undoBead = None
         if b.undo_functions and not (u.undoing or u.redoing):
-            if not b.command_name:
+            if not b.command_name:  # pragma: no cover
                 raise AssertionError("Missing call to u.set_command_name")
             # Record partial mutations even if the command raised an exception.
             u.pushBead(b)
@@ -1158,7 +1158,7 @@ class Undoer:
             realLabel = frame.menu.getRealMenuName(name)
             if realLabel == name:
                 underline = -1 if g.match(name, 0, "Can't") else 0
-            else:
+            else:  # pragma: no cover
                 underline = realLabel.find("&")
             realLabel = realLabel.replace("&", "")
             frame.menu.setMenuLabel(menu, u.realRedoMenuLabel, realLabel, underline=underline)

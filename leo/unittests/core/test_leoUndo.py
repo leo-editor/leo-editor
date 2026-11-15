@@ -420,6 +420,12 @@ class TestUndo(LeoUnitTest):
             assert p.b == 'before'
             assert not c.p.isCloned()
 
+    # @+node:ekr.20261115010623.1: *3* TestUndo.test_u_clearAndWarn (new)
+    def test_u_clearAndWarn(self):
+        c = self.c
+        u = c.undoer
+        u.clearAndWarn(g.my_name())
+
     # @+node:ekr.20261114085127.1: *3* TestUndo.test_u_delete_node (new)
     def test_u_delete_node(self):
         c = self.c
