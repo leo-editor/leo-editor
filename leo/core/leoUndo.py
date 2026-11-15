@@ -588,7 +588,17 @@ class Undoer:
 
     # @+node:ekr.20261006155509.1: *5* u.clone_node
     def clone_node(self, p: Position) -> Position:
-        """Clone p, returning and selecting the new occurrence."""
+        """
+        Clone p, returning and selecting the new occurrence.
+
+        Example usage, from Leo's clone-node command:
+
+        with u.change_outline('clone-node'):
+            clone = u.clone_node(c.p)  # Cloning a node is *always* valid.
+            c.p = clone
+            c.treeWantsFocus()
+            return clone
+        """
         u = self
         b = u._require_bead()
         c = u.c
@@ -615,7 +625,14 @@ class Undoer:
 
     # @+node:ekr.20261005143707.1: *5* u.delete_node
     def delete_node(self, p: Position) -> None:
-        """Delete p without scheduling a redraw; retain its original links."""
+        """
+        Delete node p.
+
+        Example usage, from Leo's delete-node command:
+
+        with u.change_outline(op_name):
+            u.delete_node(p)  # Calculates new c.p.
+        """
         u = self
         b = u._require_bead()
         c = u.c
@@ -659,7 +676,17 @@ class Undoer:
         index: int | None = None,
         before: bool = False,
     ) -> Position:
-        """Insert a node once; redo relinks that same vnode, including its subtree."""
+        """
+        Insert a node, at the position given by the kwargs.
+
+        For example usage, see the source code for the following Leo commands:
+
+        - insert-as-first-child.
+        - insert-as-last-child.
+        - insert-child
+        - insert-node
+        - insert-node-before.
+        """
         u = self
         b = u._require_bead()
         c = u.c
@@ -723,7 +750,10 @@ class Undoer:
         """
         Handle doing, undoing, and redoing changes to one node.
 
-        u.restore_node does the heavy lifting.
+        Example usage, from Leo's promote-bodies command:
+
+        with u.change_node(p, 'promote-bodies'):
+            p.b = ''.join(result).rstrip() + '\n\n'
         """
         u = self
         c = u.c
@@ -780,7 +810,24 @@ class Undoer:
         This method scans the entire outline, but creates minimal undo/redo data.
         Despite the scan, this method is fast, taking about 0.04 sec. to scan LeoPyRef.leo.
 
-        u.restore_node does the heavy lifting of restoring all data.
+        For example usage, look for calls to this method.
+
+        Here is a relatively straightforward example from c.dragCloneAfter:
+
+        with u.change_outline('c.dragCloneAfter'):
+            clone = p.clone()
+            if (
+                c.checkDrag(p, after) and
+                c.checkMoveWithParentWithWarning(clone, after.parent(), True)
+            ):  # fmt: skip
+                clone.setDirty()
+                clone.moveAfter(after)
+                clone.setDirty()
+                p = clone
+            else:
+                # Destroys clone and makes p the current node.
+                clone.doDelete(newNode=p)
+            c.p = p
         """
         u = self
         c = u.c
@@ -901,7 +948,13 @@ class Undoer:
         """
         Handle doing, undoing, and redoing moving a node.
 
-        The internal move function does the heavy lifting.
+        Example usage, from Leo's move-outline-to-last-child command:
+
+        with u.move_node(p, 'move-outline-to-last-child'):
+            p.setDirty()
+            p.moveToNthChildOf(parent, len(parent.v.children) - 1)
+            p.setDirty()
+            c.p = p
         """
         u = self
         c = u.c
