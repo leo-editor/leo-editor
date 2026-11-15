@@ -3263,8 +3263,8 @@ class TestEditCommands(LeoUnitTest):
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
 
-    # @+node:ekr.20201130090918.123: *6* xxx_test_reformat-paragraph list 2 of 5 (fail)
-    def xxx_test_reformat_paragraph_list_2_of_5(self):
+    # @+node:ekr.20201130090918.123: *6* test_reformat-paragraph list 2 of 5
+    def test_reformat_paragraph_list_2_of_5(self):
         before_b = self.prep(
     		"""
     			This paragraph leads of this test. It is
@@ -3305,7 +3305,7 @@ class TestEditCommands(LeoUnitTest):
             before_b=before_b,
             after_b=after_b,
             before_sel=("4.0", "4.0"),
-            after_sel=("7.0", "7.0"),
+            after_sel=("4.0", "4.0"),
             command_name="reformat-paragraph",
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
@@ -3404,8 +3404,8 @@ class TestEditCommands(LeoUnitTest):
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
 
-    # @+node:ekr.20201130090918.126: *6* xxx_test_reformat-paragraph list 5 of 5 (fail)
-    def xxx_test_reformat_paragraph_list_5_of_5(self):
+    # @+node:ekr.20201130090918.126: *6* test_reformat-paragraph list 5 of 5
+    def test_reformat_paragraph_list_5_of_5(self):
         before_b = self.prep(
     		"""
     			This paragraph leads of this test. It is
@@ -3446,13 +3446,13 @@ class TestEditCommands(LeoUnitTest):
             before_b=before_b,
             after_b=after_b,
             before_sel=("13.0", "13.0"),
-            after_sel=("15.1", "15.1"),
+            after_sel=("15.0", "15.0"),
             command_name="reformat-paragraph",
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
 
-    # @+node:ekr.20201130090918.127: *6* xxx_ test_reformat-paragraph new code 1 of 8 (fail)
-    def xxx_test_reformat_paragraph_new_code_1_of_8(self):
+    # @+node:ekr.20201130090918.127: *6* test_reformat-paragraph new code 1 of 8
+    def test_reformat_paragraph_new_code_1_of_8(self):
         before_b = self.prep(
     		"""
     			@pagewidth 40
@@ -3473,13 +3473,13 @@ class TestEditCommands(LeoUnitTest):
             before_b=before_b,
             after_b=after_b,
             before_sel=("1.0", "1.0"),
-            after_sel=("2.0", "2.0"),
+            after_sel=("1.0", "1.0"),
             command_name="reformat-paragraph",
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
 
-    # @+node:ekr.20201130090918.128: *6* xxx_test_reformat-paragraph new code 2 of 8 (fail)
-    def xxx_test_reformat_paragraph_new_code_2_of_8(self):
+    # @+node:ekr.20201130090918.128: *6* test_reformat-paragraph new code 2 of 8
+    def test_reformat_paragraph_new_code_2_of_8(self):
         before_b = self.prep(
     		"""
     			@pagewidth 40
@@ -3500,7 +3500,7 @@ class TestEditCommands(LeoUnitTest):
             before_b=before_b,
             after_b=after_b,
             before_sel=("2.0", "2.0"),
-            after_sel=("3.0", "3.0"),
+            after_sel=("2.0", "2.0"),
             command_name="reformat-paragraph",
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
@@ -3610,8 +3610,8 @@ class TestEditCommands(LeoUnitTest):
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
 
-    # @+node:ekr.20201130090918.133: *6* xxx_test_reformat-paragraph new code 7 of 8 (fail)
-    def xxx_test_reformat_paragraph_new_code_7_of_8(self):
+    # @+node:ekr.20201130090918.133: *6* test_reformat-paragraph new code 7 of 8
+    def test_reformat_paragraph_new_code_7_of_8(self):
         before_b = self.prep(
     		"""
     			1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -3634,13 +3634,13 @@ class TestEditCommands(LeoUnitTest):
             before_b=before_b,
             after_b=after_b,
             before_sel=("2.11", "2.11"),
-            after_sel=("3.1", "3.1"),
+            after_sel=("2.11", "2.11"),
             command_name="reformat-paragraph",
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
 
-    # @+node:ekr.20201130090918.134: *6* xxx_test_reformat-paragraph new code 8 of 8 (fail)
-    def xxx_test_reformat_paragraph_new_code_8_of_8(self):
+    # @+node:ekr.20201130090918.134: *6* test_reformat-paragraph new code 8 of 8
+    def test_reformat_paragraph_new_code_8_of_8(self):
         before_b = self.prep(
     		"""
     			2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -3657,7 +3657,7 @@ class TestEditCommands(LeoUnitTest):
             before_b=before_b,
             after_b=after_b,
             before_sel=("1.0", "1.0"),
-            after_sel=("3.0", "3.0"),
+            after_sel=("1.0", "1.0"),
             command_name="reformat-paragraph",
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
