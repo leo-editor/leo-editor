@@ -487,6 +487,7 @@ class TestUndo(LeoUnitTest):
                 p.b = 'after'
                 clone = u.clone_node(p)
                 assert clone.v == v
+                clone.setMarked()  # For coverage testing.
 
         for _i in range(3):
             test()

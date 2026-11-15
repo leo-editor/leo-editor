@@ -258,14 +258,12 @@ class TypingBead(UndoBead):
         # Update p's data.
         p.v.b = self.old_lines
         p.setDirty()
-        if self.marked:  # pr--agma: no cover
+        if self.marked:
             c.setMarked(p)
         else:
             c.clearMarked(p)
 
         # Update global data.
-        if not c.isChanged():  # pr--agma: no cover
-            c.setChanged()
         c.redraw(p)
         c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
         c.recolor(p)  # Trigger pygments colorizing.
@@ -286,14 +284,12 @@ class TypingBead(UndoBead):
         # Update p's data.
         p.v.b = self.new_lines
         p.setDirty()
-        if self.marked:  # pr--agma: no cover
+        if self.marked:
             c.setMarked(p)
         else:
             c.clearMarked(p)
 
         # Update global data.
-        if not c.isChanged():  # pr--agma: no cover
-            c.setChanged()
         c.redraw(p)
         c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
         c.recolor(p)  # Trigger pygments colorizing.
@@ -494,7 +490,7 @@ class Undoer:
         p.v.insertSpot = w_ins
         i, j = w_sel
         p.v.selectionStart, p.v.selectionLength = (i, j - i)
-        if not p.isDirty():  # pr--agma: no cover
+        if not p.isDirty():
             p.setDirty()
 
         # Update icons.
@@ -791,7 +787,7 @@ class Undoer:
         if u.undoing or u.redoing:  # pragma: no cover
             yield u
             return
-        if not c.changed:  # pr--agma: no cover
+        if not c.changed:  ###
             c.setChanged()
         with u:
             u.set_command_name(command_name)
@@ -912,7 +908,7 @@ class Undoer:
         if u.undoing or u.redoing:  # pragma: no cover
             yield u
             return
-        if not c.changed:  # pr--agma: no cover
+        if not c.changed:  ####
             c.setChanged()
         with u:
             u.set_command_name(command_name)
@@ -987,7 +983,7 @@ class Undoer:
         v.initHeadString(head)
         v.setBodyString(body)
         v.u = deepcopy(ua)
-        if marked:  # pr--agma: no cover
+        if marked:
             v.setMarked()
         else:
             v.clearMarked()
@@ -1045,7 +1041,7 @@ class Undoer:
         # Ignore redrawers in inner levels.
         if u.undoBeadLevel > 1:  # pragma: no cover
             return
-        if not c.changed:  # pr--agma: no cover
+        if not c.changed:  ###
             c.setChanged()
         c.p.setDirty()  # p.setDirty() calls p.v.setAllAncestorAtFileNodesDirty()
         c.redraw_after_head_changed()
@@ -1060,7 +1056,7 @@ class Undoer:
         # Ignore redrawers in inner levels.
         if u.undoBeadLevel > 1:  # pragma: no cover
             return
-        if not c.changed:  # pr--agma: no cover
+        if not c.changed:  ###
             c.setChanged()
         c.p.setDirty()  # p.setDirty() calls p.v.setAllAncestorAtFileNodesDirty()
         c.redrawAndEdit(new_p, selectAll=True)
