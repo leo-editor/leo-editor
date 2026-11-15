@@ -452,7 +452,7 @@ class Undoer:
         u = self
         c = u.c
         w = c.frame.body.wrapper
-        b = u.peekBead(u.bead)
+        b = u.getBead(u.bead)
         if (
             not isinstance(b, TypingBead)
             or not u.beads
@@ -1123,12 +1123,7 @@ class Undoer:
             return None
         return u.beads[n]
 
-    # @+node:EKR.20040526150818.1: *4* u.peekBead
-    def peekBead(self, n: int) -> UndoBead | None:
-        u = self
-        if n < 0 or n >= len(u.beads):
-            return None
-        return u.beads[n]
+    peekBead = getBead  # Compatibility
 
     # @+node:ekr.20060127113243: *4* u.pushBead
     def pushBead(self, bead: UndoBead) -> None:
@@ -1199,12 +1194,12 @@ class Undoer:
     def setUndoTypes(self) -> None:
         u = self
         # Set the undo type and undo menu label.
-        if bead := u.peekBead(u.bead):
+        if bead := u.getBead(u.bead):
             u.setUndoType(bead.undoType)
         else:
             u.setUndoType("Can't Undo")
         # Set only the redo menu label.
-        if bead := u.peekBead(u.bead + 1):
+        if bead := u.getBead(u.bead + 1):
             u.setRedoType(bead.undoType)
         else:
             u.setRedoType("Can't Redo")
