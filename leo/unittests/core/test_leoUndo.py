@@ -417,6 +417,27 @@ class TestUndo(LeoUnitTest):
             u.undo()
             u.redo()
 
+    # @+node:ekr.20261115084008.1: *3* TestUndo.test_u_change_headline
+    def test_u_change_headline(self):
+        # Cover u.restore_node with a changed headline.
+        c = self.c
+        p = c.p
+        u = c.undoer
+
+        old_h = p.h
+        new_h = 'new_headline'
+
+        def change_headline() -> None:
+            with u.change_node(p, g.my_name()):
+                c.p.h = new_h
+
+        change_headline()
+        for _i in range(3):
+            assert p.h == new_h
+            u.undo()
+            assert p.h == old_h
+            u.redo()
+
     # @+node:ekr.20261115013308.1: *3* TestUndo.test_u_change_recent_files
     def test_u_change_recent_files(self):
         c = self.c
