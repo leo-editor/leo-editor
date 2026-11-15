@@ -820,9 +820,10 @@ class Undoer:
                     old = old_state.get(v)
                     new = new_state.get(v)
                     if old is None:
-                        # Preserve the detached subtree's internal links on undo.
+                        # A node was inserted.
                         old = (*new[:2], tuple(p for p in new[2] if p not in old_state))  # type:ignore
                     if new is None:
+                        # A node was deleted.
                         new = (*old[:2], tuple(p for p in old[2] if p not in new_state))
                     if old != new:
                         old_delta[v], new_delta[v] = old, new

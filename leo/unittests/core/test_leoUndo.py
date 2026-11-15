@@ -358,7 +358,7 @@ class TestUndo(LeoUnitTest):
         func = c.line_to_headline
         self.runTest(before, after, i, j, func)
 
-    # @+node:ekr.20250625044932.1: *3* TestUndo.test_multiple_moves (renamed)
+    # @+node:ekr.20250625044932.1: *3* TestUndo.test_multiple_moves
     def test_multiple_moves(self):
         # Test a group of moves.
         c = self.c
@@ -388,7 +388,7 @@ class TestUndo(LeoUnitTest):
             u.undo()
             u.redo()
 
-    # @+node:ekr.20261115013308.1: *3* TestUndo.test_u_change_recent_files (new)
+    # @+node:ekr.20261115013308.1: *3* TestUndo.test_u_change_recent_files
     def test_u_change_recent_files(self):
         c = self.c
         menu = c.frame.menu
@@ -411,7 +411,36 @@ class TestUndo(LeoUnitTest):
             u.undo()
             u.redo()
 
-    # @+node:ekr.20261014103254.20: *3* TestUndo.test_u_clone_node (moved, renamed)
+    # @+node:ekr.20261115065006.1: *3* TestUndo.test_u_change_outline
+    def test_u_change_outline(self):
+        c = self.c
+        p = c.p
+        u = c.undoer
+
+        old_p = p.copy()
+        old_h = p.h
+
+        def delete_node() -> None:
+            c.deleteOutline()
+
+        def insert_node() -> None:
+            c.insertHeadline()
+
+        # These tests are just coverage tests.
+
+        # Test 1:
+        delete_node()
+        for _i in range(3):
+            u.undo()
+            u.redo()
+
+        # Test 2:
+        insert_node()
+        for _i in range(3):
+            u.undo()
+            u.redo()
+
+    # @+node:ekr.20261014103254.20: *3* TestUndo.test_u_clone_node
     def test_u_clone_node(self):
         c = self.c
         p = c.p
@@ -443,13 +472,13 @@ class TestUndo(LeoUnitTest):
             assert p.b == 'before'
             assert not c.p.isCloned()
 
-    # @+node:ekr.20261115010623.1: *3* TestUndo.test_u_clearAndWarn (new)
+    # @+node:ekr.20261115010623.1: *3* TestUndo.test_u_clearAndWarn
     def test_u_clearAndWarn(self):
         c = self.c
         u = c.undoer
         u.clearAndWarn(g.my_name())
 
-    # @+node:ekr.20261115011130.1: *3* TestUndo.test_u_cutStack (new)
+    # @+node:ekr.20261115011130.1: *3* TestUndo.test_u_cutStack
     def test_u_cutStack(self):
         c = self.c
         p = c.p
@@ -472,7 +501,7 @@ class TestUndo(LeoUnitTest):
         # u.cutStack must cut the *bottom* of the stack.
         assert u.beads == all_beads[2:]
 
-    # @+node:ekr.20261114085127.1: *3* TestUndo.test_u_delete_node (new)
+    # @+node:ekr.20261114085127.1: *3* TestUndo.test_u_delete_node
     def test_u_delete_node(self):
         c = self.c
         p = c.p
@@ -495,7 +524,7 @@ class TestUndo(LeoUnitTest):
             u.redo()
             assert c.p.h == new_h, new_p.h
 
-    # @+node:ekr.20261114073916.1: *3* TestUndo.test_u_insert_node (new)
+    # @+node:ekr.20261114073916.1: *3* TestUndo.test_u_insert_node
     def test_u_insert_node(self):
         c = self.c
         p = c.p
@@ -523,7 +552,7 @@ class TestUndo(LeoUnitTest):
             u.redo()
             assert new_p.h == cloned_h, new_p.h
 
-    # @+node:ekr.20261114081317.1: *3* TestUndo.test_u_insert_node_after (new)
+    # @+node:ekr.20261114081317.1: *3* TestUndo.test_u_insert_node_after
     def test_u_insert_node_after(self):
         c = self.c
         p = c.p
@@ -554,7 +583,7 @@ class TestUndo(LeoUnitTest):
             u.redo()
             assert new_p.h == cloned_h, new_p.h
 
-    # @+node:ekr.20261114080738.1: *3* TestUndo.test_u_redraw_and_edit (new)
+    # @+node:ekr.20261114080738.1: *3* TestUndo.test_u_redraw_and_edit
     def test_u_redraw_and_edit(self):
         c = self.c
         p = c.p
@@ -575,7 +604,7 @@ class TestUndo(LeoUnitTest):
             u.undo()
             u.redo()
 
-    # @+node:ekr.20261114090239.1: *3* TestUndo.test_u_type_text (new)
+    # @+node:ekr.20261114090239.1: *3* TestUndo.test_u_type_text
     def test_u_type_text(self):
         c = self.c
         p = c.p
@@ -614,7 +643,7 @@ class TestUndo(LeoUnitTest):
             assert w.getInsertPoint() == new_ins, w.getInsertPoint()  # Test 3.
             assert w.getSelectionRange() == new_sel, w.getSelectionRange()  # Test 3.
 
-    # @+node:ekr.20261114100249.1: *3* TestUndo.test_u_type_text_with_merge (new)
+    # @+node:ekr.20261114100249.1: *3* TestUndo.test_u_type_text_with_merge
     def test_u_type_text_with_merge(self):
         c = self.c
         ec = c.editCommands
