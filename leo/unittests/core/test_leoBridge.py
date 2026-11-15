@@ -2,6 +2,7 @@
 # @+node:ekr.20210903153138.1: * @file ../unittests/core/test_leoBridge.py
 """Tests of leoBridge.py"""
 
+from __future__ import annotations
 import os
 from leo.core import leoBridge
 from leo.core.leoTest2 import LeoUnitTest

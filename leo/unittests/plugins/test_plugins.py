@@ -2,8 +2,7 @@
 # @+node:ekr.20210907081548.1: * @file ../unittests/plugins/test_plugins.py
 """General tests of plugins."""
 
-# @+<< test_plugins: imports >>
-# @+node:ekr.20260802082604.1: ** << test_plugins: imports >>
+from __future__ import annotations
 import glob
 import os
 import re
@@ -11,7 +10,6 @@ from leo.core import leoGlobals as g
 from leo.core.leoPlugins import LeoPluginsController
 from leo.core.leoTest2 import LeoUnitTest
 from leo.plugins import indented_languages
-# @-<< test_plugins: imports >>
 
 
 # @+others

@@ -2,6 +2,7 @@
 # @+node:ekr.20210926044012.1: * @file ../unittests/misc_tests/test_doctests.py
 """Run all doctests."""
 
+from __future__ import annotations
 import doctest
 import glob
 import os

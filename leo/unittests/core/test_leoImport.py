@@ -2,6 +2,7 @@
 # @+node:ekr.20220822082042.1: * @file ../unittests/core/test_leoImport.py
 """Tests of leoImport.py"""
 
+from __future__ import annotations
 import io
 import os
 from leo.unittests.plugins.test_importers import BaseTestImporter

@@ -2,6 +2,7 @@
 # @+node:ekr.20210901172411.1: * @file ../unittests/core/test_leoAtFile.py
 """Tests of leoAtFile.py"""
 
+from __future__ import annotations
 import os
 import tempfile
 from leo.core import leoGlobals as g

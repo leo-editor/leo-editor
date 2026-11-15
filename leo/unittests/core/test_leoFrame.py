@@ -2,6 +2,7 @@
 # @+node:ekr.20210903161742.1: * @file ../unittests/core/test_leoFrame.py
 """Tests of leoFrame.py"""
 
+from __future__ import annotations
 from leo.core.leoTest2 import LeoUnitTest
 
 

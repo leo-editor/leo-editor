@@ -2,6 +2,7 @@
 # @+node:ekr.20230705083159.1: * @file ../unittests/commands/test_editFileCommands.py
 """Tests of leo.commands.editFileCommands."""
 
+from __future__ import annotations
 import os
 import sys
 from leo.core import leoGlobals as g

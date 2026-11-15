@@ -2,6 +2,7 @@
 # @+node:ekr.20220812224747.1: * @file ../unittests/plugins/test_writers.py
 """Tests of leo/plugins/writers"""
 
+from __future__ import annotations
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 from leo.plugins.importers.markdown import Markdown_Importer

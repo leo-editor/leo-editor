@@ -2,6 +2,7 @@
 # @+node:ekr.20210820203000.1: * @file ../unittests/core/test_leoserver.py
 """Tests of leoserver.py"""
 
+from __future__ import annotations
 import json
 import os
 
