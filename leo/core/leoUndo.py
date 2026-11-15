@@ -1119,9 +1119,7 @@ class Undoer:
     def getBead(self, n: int) -> UndoBead | None:
         """Set Undoer ivars from the bead at the top of the undo stack."""
         u = self
-        if n < 0 or n >= len(u.beads):  # pragma: no cover
-            return None
-        return u.beads[n]
+        return u.beads[n] if 0 <= n < len(u.beads) else None
 
     peekBead = getBead  # Compatibility
 
