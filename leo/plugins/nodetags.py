@@ -286,7 +286,7 @@ if QtWidgets:
         # @+others
         # @+node:peckj.20140804114520.15200: *3* tag_w.__init__
         def __init__(self, c: Cmdr, parent: QtWidgets.QWidget | None = None) -> None:
-            super().__init__(parent)
+            super().__init__(parent)  # ty:ignore
             self.c = c
             self.tc = self.c.theTagController
             self.initUI()

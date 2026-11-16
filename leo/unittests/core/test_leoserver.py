@@ -2,6 +2,7 @@
 # @+node:ekr.20210820203000.1: * @file ../unittests/core/test_leoserver.py
 """Tests of leoserver.py"""
 
+from __future__ import annotations
 import json
 import os
 
@@ -120,6 +121,7 @@ class TestLeoServer(LeoUnitTest):
             'paste_as_template',  # New exclusion.
             'save_file',  # way too dangerous!
             # 'set_selection',  # Not ready yet.
+            'set_body',  # Removed.
             'open_file',
             'close_file',
             'open_at_leo_file',  # Done by hand.
@@ -138,7 +140,7 @@ class TestLeoServer(LeoUnitTest):
             # "apply_config": {"config": {"whatever": True}},
             "do_arrow": {"char": "Up"},
             "get_focus": {"log": False},
-            "set_body": {"body": "new body\n", 'gnx': "ekr.20061008140603"},
+            # "set_body": {"body": "new body\n", 'gnx': "ekr.20061008140603"},
             "set_headline": {"name": "new headline"},
             "get_all_server_commands": {"log": False},
             "get_all_leo_commands": {"log": False},

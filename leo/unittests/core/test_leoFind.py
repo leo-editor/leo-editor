@@ -2,6 +2,7 @@
 # @+node:ekr.20210829124658.1: * @file ../unittests/core/test_leoFind.py
 """Tests of leoFind.py"""
 
+from __future__ import annotations
 import re
 from leo.core import leoGlobals as g
 from leo.core.leoGui import StringFindTabManager

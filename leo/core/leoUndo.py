@@ -18,7 +18,7 @@ from types import TracebackType
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position, VNode
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.plugins.qt_text import QTextMixin
@@ -53,7 +53,7 @@ class UndoBead:
 
     # @-<< UndoBead: slots >>
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: no cover
         return f"UndoBead: {self.command_name or '<no command_name>'}"
 
     # @+others
@@ -79,7 +79,7 @@ class UndoBead:
         undo_redraw_finisher: Callable,
     ) -> None:
 
-        if self.redraw_finishers is not None:
+        if self.redraw_finishers is not None:  # pragma: no cover
             message = f"u.redraw_finishers already exist: {g.callers()=}\n"
             if g.unitTesting:
                 assert False, message
@@ -104,24 +104,6 @@ class UndoBead:
             c.recolor(old_p)
 
         self.add_finishers(recolor_redoer, recolor_undoer)
-
-    # @+node:ekr.20261010150247.9: *3* undoBead.add_redraw
-    def add_redraw(self, new_p: Position, old_p: Position) -> None:
-        """
-        Add finishers that will call c.redraw.
-        The caller chooses the final redraw for the entire command.
-        """
-        c = self.c
-        new_p = new_p.copy()
-        old_p = old_p.copy()
-
-        def redraw_redoer() -> None:
-            c.redraw(new_p)
-
-        def redraw_undoer() -> None:
-            c.redraw(old_p)
-
-        self.add_redraw_finishers(redraw_redoer, redraw_undoer)
 
     # @+node:ekr.20261010150247.10: *3* undoBead.add_redraw_and_edit
     def add_redraw_and_edit(self, new_p: Position, old_p: Position) -> None:
@@ -168,14 +150,14 @@ class UndoBead:
     # @+node:ekr.20261006040137.2: *3* UndoBead.add_helpers & add_finishers
     def add_helpers(self, redo_function: Callable, undo_function: Callable) -> None:
         """Append the helpers (in correct order!) to the undo/redo lists."""
-        if self.undoer.capture_level:
-            return  # The enclosing snapshot records the complete operation.
+        if self.undoer.capture_level:  # pragma: no cover
+            return
         self.redo_functions.append(redo_function)
         self.undo_functions.insert(0, undo_function)  # Execute in reverse order.
 
     def add_finishers(self, redo_finisher: Callable, undo_finisher: Callable) -> None:
         """Append the helpers (in correct order!) to the undo/redo lists."""
-        if self.undoer.capture_level:
+        if self.undoer.capture_level:  # pragma: no cover
             return
         self.redo_finishers.append(redo_finisher)
         self.undo_finishers.append(undo_finisher)  # Execute in given order.
@@ -262,7 +244,7 @@ class TypingBead(UndoBead):
     def compute_line_number(self, ins: int, s: str) -> int:
         """Return the zeo based number of the line in s containing the given insert point."""
         # Like g.convertPythonIndexToRowCol.
-        if not s or ins <= 0:
+        if not s or ins <= 0:  # pragma: no cover
             return 0
         i = min(ins, len(s))
         return s.count('\n', 0, i)  # Don't include i.
@@ -281,20 +263,16 @@ class TypingBead(UndoBead):
         else:
             c.clearMarked(p)
 
-        # Update w's data.
-        w.setAllText(p.b)
+        # Update global data.
+        c.redraw(p)
+        c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
+        c.recolor(p)  # Trigger pygments colorizing.
+
+        # Update w *last*.
+        w.setAllText(p.b)  # Trigger jEdit colorizing.
         w.setSelectionRange(*self.old_sel, insert=self.old_ins)
         if self.scroll is not None:
             w.setYScrollPosition(self.scroll)
-
-        # Update global data.
-        if not c.isChanged():
-            c.setChanged()
-        c.redraw(p)
-        c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
-        c.recolor(p)
-
-        # Ensure focus.
         w.setFocus()
 
     # @+node:ekr.20261014100625.6: *3* TypingBead.redo
@@ -311,20 +289,16 @@ class TypingBead(UndoBead):
         else:
             c.clearMarked(p)
 
-        # Update w's data.
-        w.setAllText(p.b)
+        # Update global data.
+        c.redraw(p)
+        c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
+        c.recolor(p)  # Trigger pygments colorizing.
+
+        # Update w *last*.
+        w.setAllText(p.b)  # Trigger jEdit colorizing.
         w.setSelectionRange(*self.new_sel, insert=self.new_ins)
         if self.scroll is not None:
             w.setYScrollPosition(self.scroll)
-
-        # Update global data.
-        if not c.isChanged():
-            c.setChanged()
-        c.redraw(p)
-        c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
-        c.recolor(p)
-
-        # Ensure focus.
         w.setFocus()
 
     # @-others
@@ -420,14 +394,14 @@ class Undoer:
         """Redo the operation undone by the last undo."""
         u = self
         c = u.c
-        if not c.p:
+        if not c.p:  # pragma: no cover
             return
         # End editing *before* getting state.
         c.endEditing()
         if not u.canRedo():
             return
         obj = u.getBead(u.bead + 1)
-        if not obj:
+        if not obj:  # pragma: no cover
             return
 
         # Init status.
@@ -438,8 +412,8 @@ class Undoer:
         try:
             if isinstance(obj, UndoBead):
                 obj.redo()
-            else:
-                g.es_print_unique_message(f"no redo helper for {u.kind} {u.undoType}")
+            else:  # pragma: no cover
+                g.es_print_unique_message(f"no redo helper for {u.undoType}")
             c.checkOutline()
         finally:
             u.redoing = False
@@ -458,6 +432,8 @@ class Undoer:
         w: QTextMixin,
     ) -> None:
         """
+        Push a new UndoTyping bead or merge the incoming changes to the top UndoTyping bead.
+
         Handle all undo tasks related to typing in the body pane. Called by:
         - ec.selfInsertCommand.
         - LeoQListWidget.select_callback.
@@ -467,12 +443,12 @@ class Undoer:
         w_ins = w.getInsertPoint()
         w_sel = w.getSelectionRange()
         w_text = w.getAllText()
-        if self.undoing or self.redoing or oldText == w_text:
+        if self.undoing or self.redoing or oldText == w_text:  # pragma: no cover
             return
         u = self
         c = u.c
         w = c.frame.body.wrapper
-        b = u.peekBead(u.bead)
+        b = u.getBead(u.bead)
         if (
             not isinstance(b, TypingBead)
             or not u.beads
@@ -538,7 +514,7 @@ class Undoer:
         """Undo the operation described by the undo parameters."""
         u = self
         c = u.c
-        if not c.p:
+        if not c.p:  # pragma: no cover
             g.trace('no current position')
             return
         # End editing *before* getting state.
@@ -546,7 +522,7 @@ class Undoer:
         if not u.canUndo():
             return
         obj = u.getBead(u.bead)
-        if not obj:
+        if not obj:  # pragma: no cover
             return
 
         # Init status.
@@ -557,8 +533,8 @@ class Undoer:
         try:
             if isinstance(obj, UndoBead):
                 obj.undo()
-            else:
-                g.es_print_unique_message(f"no undo helper for {u.kind} {u.undoType}")
+            else:  # pragma: no cover
+                g.es_print_unique_message(f"no undo helper for {u.undoType}")
             c.checkOutline()
         finally:
             u.undoing = False
@@ -580,7 +556,7 @@ class Undoer:
         b = u._require_bead()
         c = u.c
         old_h = p.h
-        if old_h == new_h:
+        if old_h == new_h:  # pragma: no cover
             return
 
         p = p.copy()
@@ -612,7 +588,17 @@ class Undoer:
 
     # @+node:ekr.20261006155509.1: *5* u.clone_node
     def clone_node(self, p: Position) -> Position:
-        """Clone p, returning and selecting the new occurrence."""
+        """
+        Clone p, returning and selecting the new occurrence.
+
+        Example usage, from Leo's clone-node command:
+
+        with u.change_outline('clone-node'):
+            clone = u.clone_node(c.p)  # Cloning a node is *always* valid.
+            c.p = clone
+            c.treeWantsFocus()
+            return clone
+        """
         u = self
         b = u._require_bead()
         c = u.c
@@ -639,14 +625,21 @@ class Undoer:
 
     # @+node:ekr.20261005143707.1: *5* u.delete_node
     def delete_node(self, p: Position) -> None:
-        """Delete p without scheduling a redraw; retain its original links."""
+        """
+        Delete node p.
+
+        Example usage, from Leo's delete-node command:
+
+        with u.change_outline(op_name):
+            u.delete_node(p)  # Calculates new c.p.
+        """
         u = self
         b = u._require_bead()
         c = u.c
         old_p = p.copy()
         old_back, old_parent = p.back(), p.parent()
         new_p = p.visBack(c) if p.hasVisBack(c) else p.next()
-        if not new_p:
+        if not new_p:  # pragma: no cover
             g.trace("Can not delete the outline's only node")
             return
 
@@ -683,7 +676,17 @@ class Undoer:
         index: int | None = None,
         before: bool = False,
     ) -> Position:
-        """Insert a node once; redo relinks that same vnode, including its subtree."""
+        """
+        Insert a node, at the position given by the kwargs.
+
+        For example usage, see the source code for the following Leo commands:
+
+        - insert-as-first-child.
+        - insert-as-last-child.
+        - insert-child
+        - insert-node
+        - insert-node-before.
+        """
         u = self
         b = u._require_bead()
         c = u.c
@@ -693,11 +696,9 @@ class Undoer:
             # Inserting before p changes p's original index.
         elif (
             as_child
-            or p.hasChildren()
-            and p.isExpanded()
-            or c.hoistStack
-            and p == c.hoistStack[-1].p
-        ):
+            or p.hasChildren() and p.isExpanded()
+            or c.hoistStack and p == c.hoistStack[-1].p
+        ):  # fmt: skip
             if index is None:
                 insert_at_end = c.config.getBool('insert-new-nodes-at-end')
                 index = p.numberOfChildren() if insert_at_end else 0
@@ -732,59 +733,6 @@ class Undoer:
         g.doHook('create-node', c=c, p=new_p)
         return new_p
 
-    # @+node:ekr.20261005140833.1: *5* u.set_body
-    def set_body(
-        self,
-        new_p: Position,
-        new_body: str,
-        *,
-        old_body: str | None = None,
-    ) -> None:
-        """Change p.b"""
-        u = self
-        b = u._require_bead()
-        c = u.c
-        w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
-            g.error(f"Not a text wrapper: {w=} {g.callers()}")
-            return
-
-        new_p = new_p.copy()
-        if old_body is None:
-            old_body = new_p.b
-        if old_body == new_body:
-            return
-
-        def set_body_update(p: Position, body: str) -> None:
-            """Update p's data."""
-            # Set p.v.b, not p.b! The p.b setter clears the selection!
-            p.v.b = body
-            p.setDirty()
-            val = p.computeIcon()
-            if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
-                p.v.iconVal = val
-            c.recolor(p)  # Only for QScintilla.
-            p.setAllAncestorAtFileNodesDirty()
-
-        # Do the action!
-        set_body_update(new_p, new_body)
-
-        if c.p == new_p and w.getAllText() != new_body:
-            sel, ins = w.getSelectionRange(), w.getInsertPoint()
-            w.setAllText(new_body)
-            w.setSelectionRange(*sel, insert=ins)
-
-        # Add helpers. Use distinct names for debugging.
-
-        def set_body_redoer() -> None:
-            set_body_update(new_p, new_body)
-
-        def set_body_undoer() -> None:
-            set_body_update(new_p, old_body)
-
-        if new_p.v not in u.node_captures:
-            b.add_helpers(set_body_redoer, set_body_undoer)
-
     # @+node:ekr.20261005094529.2: *5* u.set_command_name
     def set_command_name(self, command_name: str) -> None:
         u = self
@@ -802,14 +750,17 @@ class Undoer:
         """
         Handle doing, undoing, and redoing changes to one node.
 
-        u.restore_node does the heavy lifting.
+        Example usage, from Leo's promote-bodies command:
+
+        with u.change_node(p, 'promote-bodies'):
+            p.b = ''.join(result).rstrip() + '\n\n'
         """
         u = self
         c = u.c
-        if u.undoing or u.redoing:
+        if u.undoing or u.redoing:  # pragma: no cover
             yield u
             return
-        if not c.changed:
+        if not c.changed:  # pragma: no cover
             c.setChanged()
         with u:
             u.set_command_name(command_name)
@@ -820,9 +771,6 @@ class Undoer:
             old_state = u.capture_node(p.v)
             old_ui = u.capture_ui()
             u.node_captures.add(p.v)
-            if old_p.v != c.p.v:
-                message = f"u.change_node changed p.v: {p.v.h=} {g.callers()=}"
-                g.es_print_unique_message(message)
             try:
                 yield u
             finally:
@@ -862,18 +810,35 @@ class Undoer:
         This method scans the entire outline, but creates minimal undo/redo data.
         Despite the scan, this method is fast, taking about 0.04 sec. to scan LeoPyRef.leo.
 
-        u.restore_node does the heavy lifting of restoring all data.
+        For example usage, look for calls to this method.
+
+        Here is a relatively straightforward example from c.dragCloneAfter:
+
+        with u.change_outline('c.dragCloneAfter'):
+            clone = p.clone()
+            if (
+                c.checkDrag(p, after) and
+                c.checkMoveWithParentWithWarning(clone, after.parent(), True)
+            ):  # fmt: skip
+                clone.setDirty()
+                clone.moveAfter(after)
+                clone.setDirty()
+                p = clone
+            else:
+                # Destroys clone and makes p the current node.
+                clone.doDelete(newNode=p)
+            c.p = p
         """
         u = self
         c = u.c
-        if u.undoing or u.redoing:
+        if u.undoing or u.redoing:  # pragma: no cover
             yield u
             return
         if not c.changed:
             c.setChanged()
         with u:
             u.set_command_name(command_name)
-            if u.capture_level > 0:
+            if u.capture_level > 0:  # pragma: no cover
                 yield u
                 return
             assert not u.node_captures, "Use change_outline outside change_node for bulk edits"
@@ -893,9 +858,10 @@ class Undoer:
                     old = old_state.get(v)
                     new = new_state.get(v)
                     if old is None:
-                        # Preserve the detached subtree's internal links on undo.
+                        # A node was inserted.
                         old = (*new[:2], tuple(p for p in new[2] if p not in old_state))  # type:ignore
                     if new is None:
+                        # A node was deleted.
                         new = (*old[:2], tuple(p for p in old[2] if p not in new_state))
                     if old != new:
                         old_delta[v], new_delta[v] = old, new
@@ -928,7 +894,7 @@ class Undoer:
         pending = [c.hiddenRootNode]
         while pending:
             v = pending.pop()
-            if v in result:
+            if v in result:  # pragma: no cover
                 continue
             result[v] = u.capture_node(v), tuple(v.children), tuple(v.parents)
             pending.extend(v.children)
@@ -982,18 +948,24 @@ class Undoer:
         """
         Handle doing, undoing, and redoing moving a node.
 
-        The internal move function does the heavy lifting.
+        Example usage, from Leo's move-outline-to-last-child command:
+
+        with u.move_node(p, 'move-outline-to-last-child'):
+            p.setDirty()
+            p.moveToNthChildOf(parent, len(parent.v.children) - 1)
+            p.setDirty()
+            c.p = p
         """
         u = self
         c = u.c
-        if u.undoing or u.redoing:
+        if u.undoing or u.redoing:  # pragma: no cover
             yield u
             return
         if not c.changed:
             c.setChanged()
         with u:
             u.set_command_name(command_name)
-            if u.capture_level > 0:
+            if u.capture_level > 0:  # pragma: no cover
                 yield u
                 return
             old_p, old_ui = p.copy(), u.capture_ui()
@@ -1001,7 +973,7 @@ class Undoer:
                 yield u
             finally:
                 new_p = p.copy()
-                if old_p.v != c.p.v:
+                if old_p.v != c.p.v:  # pragma: no cover
                     message = f"u.move_node changed p.v: {p.v.h=} {g.callers()=}"
                     g.es_print_unique_message(message)
                 if old_p != new_p:
@@ -1100,7 +1072,7 @@ class Undoer:
         c = u.c
         w = c.frame.body.wrapper
         # Ignore redrawers in inner levels.
-        if u.undoBeadLevel > 1:
+        if u.undoBeadLevel > 1:  # pragma: no cover
             return
         p.setDirty()  # Call p.v.setAllAncestorAtFileNodesDirty()
         preserve_body = p == c.p and p.b == w.getAllText()
@@ -1120,7 +1092,7 @@ class Undoer:
         u._require_bead()
         c = u.c
         # Ignore redrawers in inner levels.
-        if u.undoBeadLevel > 1:
+        if u.undoBeadLevel > 1:  # pragma: no cover
             return
         if not c.changed:
             c.setChanged()
@@ -1135,7 +1107,7 @@ class Undoer:
         c = u.c
         u._require_bead()
         # Ignore redrawers in inner levels.
-        if u.undoBeadLevel > 1:
+        if u.undoBeadLevel > 1:  # pragma: no cover
             return
         if not c.changed:
             c.setChanged()
@@ -1168,7 +1140,7 @@ class Undoer:
             return
         u.undoBead = None
         if b.undo_functions and not (u.undoing or u.redoing):
-            if not b.command_name:
+            if not b.command_name:  # pragma: no cover
                 raise AssertionError("Missing call to u.set_command_name")
             # Record partial mutations even if the command raised an exception.
             u.pushBead(b)
@@ -1181,6 +1153,7 @@ class Undoer:
 
     # @+node:ekr.20060127052111.1: *4* u.cutStack
     def cutStack(self) -> None:
+        """Cut the stack back to u.max_undo_stack_size entries."""
         u = self
         n = u.max_undo_stack_size
         if u.bead >= n > 0:
@@ -1192,16 +1165,9 @@ class Undoer:
     def getBead(self, n: int) -> UndoBead | None:
         """Set Undoer ivars from the bead at the top of the undo stack."""
         u = self
-        if n < 0 or n >= len(u.beads):
-            return None
-        return u.beads[n]
+        return u.beads[n] if 0 <= n < len(u.beads) else None
 
-    # @+node:EKR.20040526150818.1: *4* u.peekBead
-    def peekBead(self, n: int) -> UndoBead | None:
-        u = self
-        if n < 0 or n >= len(u.beads):
-            return None
-        return u.beads[n]
+    peekBead = getBead  # Compatibility
 
     # @+node:ekr.20060127113243: *4* u.pushBead
     def pushBead(self, bead: UndoBead) -> None:
@@ -1238,7 +1204,7 @@ class Undoer:
             realLabel = frame.menu.getRealMenuName(name)
             if realLabel == name:
                 underline = -1 if g.match(name, 0, "Can't") else 0
-            else:
+            else:  # pragma: no cover
                 underline = realLabel.find("&")
             realLabel = realLabel.replace("&", "")
             frame.menu.setMenuLabel(menu, u.realRedoMenuLabel, realLabel, underline=underline)
@@ -1249,7 +1215,7 @@ class Undoer:
     def setUndoType(self, theType: str) -> None:
         u = self
         frame = u.c.frame
-        if not isinstance(theType, str):
+        if not isinstance(theType, str):  # pragma: no cover
             g.trace(f"oops: expected string for command, got {repr(theType)}")
             g.trace(g.callers())
             theType = '<unknown>'
@@ -1261,7 +1227,8 @@ class Undoer:
             if realLabel == name:
                 underline = -1 if g.match(name, 0, "Can't") else 0
             else:
-                underline = realLabel.find("&")
+                # Do *not* change this line!
+                underline = realLabel.find("&")  # pragma: no cover
             realLabel = realLabel.replace("&", "")
             frame.menu.setMenuLabel(menu, u.realUndoMenuLabel, realLabel, underline=underline)
             u.undoType = theType
@@ -1272,12 +1239,12 @@ class Undoer:
     def setUndoTypes(self) -> None:
         u = self
         # Set the undo type and undo menu label.
-        if bead := u.peekBead(u.bead):
+        if bead := u.getBead(u.bead):
             u.setUndoType(bead.undoType)
         else:
             u.setUndoType("Can't Undo")
         # Set only the redo menu label.
-        if bead := u.peekBead(u.bead + 1):
+        if bead := u.getBead(u.bead + 1):
             u.setRedoType(bead.undoType)
         else:
             u.setRedoType("Can't Redo")

@@ -2,6 +2,7 @@
 # @+node:ekr.20210904022712.2: * @file ../unittests/commands/test_checkerCommands.py
 """Tests of leo.commands.leoCheckerCommands."""
 
+from __future__ import annotations
 from leo.core.leoTest2 import LeoUnitTest
 
 

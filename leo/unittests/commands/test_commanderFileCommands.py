@@ -2,6 +2,7 @@
 # @+node:ekr.20230710105542.1: * @file ../unittests/commands/test_commanderFileCommands.py
 """Tests of leo.commands.leoConvertCommands."""
 
+from __future__ import annotations
 import os
 import tempfile
 

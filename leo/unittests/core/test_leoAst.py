@@ -4,6 +4,7 @@
 
 # @+<< test_leoAst imports >>
 # @+node:ekr.20210902074548.1: ** << test_leoAst imports >>
+from __future__ import annotations
 import ast
 from collections.abc import Callable
 import os

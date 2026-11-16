@@ -2,8 +2,7 @@
 # @+node:ekr.20210907081548.1: * @file ../unittests/plugins/test_plugins.py
 """General tests of plugins."""
 
-# @+<< test_plugins: imports >>
-# @+node:ekr.20260802082604.1: ** << test_plugins: imports >>
+from __future__ import annotations
 import glob
 import os
 import re
@@ -11,7 +10,6 @@ from leo.core import leoGlobals as g
 from leo.core.leoPlugins import LeoPluginsController
 from leo.core.leoTest2 import LeoUnitTest
 from leo.plugins import indented_languages
-# @-<< test_plugins: imports >>
 
 
 # @+others
@@ -155,13 +153,13 @@ class TestPlugins(LeoUnitTest):
     # @-others
 
 
-# @+node:ekr.20230917015008.1: ** class TestIndentedTypescript(LeoUnitTest)
+# @+node:ekr.20230917015008.1: ** class TestIndentedTypesScript(LeoUnitTest)
 class TestIndentedTypeScript(LeoUnitTest):
     """Tests for typescript-related code in the indented_languages plugin."""
 
     # @+others
-    # @+node:ekr.20230919025755.1: *3* test_its.xxx_test_typescript
-    def xxx_test_typescript(self):
+    # @+node:ekr.20230919025755.1: *3* test_its.test_typescript
+    def test_typescript(self):
         c = self.c
         p = c.p
 
@@ -237,8 +235,8 @@ class TestIndentedLisp(LeoUnitTest):
     """Tests for lisp-related code in the indented_languages plugin."""
 
     # @+others
-    # @+node:ekr.20231025174704.1: *3* test_ilisp.xxx_test_lisp_reduce_fraction
-    def xxx_test_lisp_reduce_fraction(self):
+    # @+node:ekr.20231025174704.1: *3* test_ilisp.test_lisp_reduce_fraction
+    def test_lisp_reduce_fraction(self):
         c = self.c
         p = c.p
         contents = """

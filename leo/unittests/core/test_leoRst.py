@@ -2,6 +2,8 @@
 # @+node:ekr.20210902055206.1: * @file ../unittests/core/test_leoRst.py
 """Tests of leoRst.py"""
 
+from __future__ import annotations
+
 try:
     import docutils
 except Exception:  # pragma: no cover

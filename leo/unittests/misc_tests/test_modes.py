@@ -2,6 +2,7 @@
 # @+node:ekr.20250109055422.1: * @file ../unittests/misc_tests/test_modes.py
 """Tests of files in leo/modes"""
 
+from __future__ import annotations
 import importlib
 import glob
 import os

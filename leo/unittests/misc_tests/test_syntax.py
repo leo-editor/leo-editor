@@ -2,8 +2,8 @@
 # @+node:ekr.20210901140718.1: * @file ../unittests/misc_tests/test_syntax.py
 """Syntax tests, including a check that Leo will continue to load!"""
 
+from __future__ import annotations
 import glob
-
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 

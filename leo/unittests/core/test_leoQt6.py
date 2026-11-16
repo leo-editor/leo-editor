@@ -2,6 +2,7 @@
 # @+node:ekr.20220911163718.1: * @file ../unittests/core/test_leoQt6.py
 """Tests of Qt6 methods and attributes."""
 
+from __future__ import annotations
 from leo.unittests.plugins.test_importers import BaseTestImporter
 from leo.core import leoGlobals as g
 

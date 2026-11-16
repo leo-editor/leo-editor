@@ -74,7 +74,7 @@ def detach_editor(c: Cmdr) -> None:
         wdg.show()
     else:
         c.frame.detached_body_info = parent, parent.sizes()
-        wdg.setParent(None)
+        wdg.setParent(None)  # ty:ignore
         sheets: list[str] = c.config.getData('qt-gui-plugin-style-sheet')
         if sheets:
             sheet = '\n'.join(sheets)
