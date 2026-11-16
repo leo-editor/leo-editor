@@ -163,8 +163,8 @@
 </v>
 <v t="ekr.20101115152915.4937"><vh>Backup of wikipedia entry</vh></v>
 <v t="ekr.20100122073254.11655"><vh>Writing new importers</vh></v>
-</v>
 <v t="matt.20200331213038.1"><vh>PyPi install caveat</vh></v>
+</v>
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ekr.20090428133936.2"><vh>@edit html/conf.py</vh></v>
 <v t="ekr.20241124083101.1"><vh>@edit _static/custom.css</vh></v>
@@ -2177,16 +2177,16 @@
 </v>
 </v>
 </v>
-<v t="ekr.20261116101436.1"></v>
-<v t="ekr.20260716061125.1"></v>
-<v t="ekr.20190101093224.1"></v>
+<v t="ekr.20261116142437.1"><vh>------</vh></v>
 <v t="ekr.20261018090533.1"></v>
+<v t="ekr.20190101093224.1"></v>
+<v t="ekr.20261116142444.1"><vh>------</vh></v>
+<v t="ekr.20260810021658.1"></v>
+<v t="ekr.20261116101436.1"></v>
 <v t="ekr.20261116101656.1"></v>
-<v t="ekr.20261116100828.1"><vh>=== Leo 6.9.0: completed</vh>
-<v t="ekr.20261116100828.2"><vh>=== PR #4824: annotate generators</vh></v>
-<v t="ekr.20261116100828.4"><vh>=== PR #4940: show-settings-outline</vh></v>
-<v t="ekr.20261116100828.26"><vh>=== PR #4942: ty command</vh></v>
-<v t="ekr.20261116100828.207"><vh>=== PR #4943 ty suppressions only</vh></v>
+<v t="ekr.20261116135350.1"><vh>----</vh></v>
+<v t="ekr.20261116134653.1"><vh>individual</vh>
+<v t="ekr.20261116100828.207"><vh>=== PR #4943 remove mypy-only suppressions</vh></v>
 <v t="ekr.20261116100828.209"><vh>=== PR #4946: crashers</vh></v>
 <v t="ekr.20261116100828.242"><vh>=== PR #4955: strict-equality</vh></v>
 <v t="ekr.20261116100828.243"><vh>=== PR #4957: all commands should have a docstring</vh></v>
@@ -28394,7 +28394,6 @@ Undoer beads are instances of ``UndoBead`` or ``TypingBead``.
         # call w.setInsertPoint() or w.setSelectionRange() as desired.
         # Do *not* call c.redraw!
 </t>
-<t tx="ekr.20261116100828.1"></t>
 <t tx="ekr.20261116100828.1064">@language rest
 @wrap
 @nosearch
@@ -28516,8 +28515,6 @@ PR: https://github.com/leo-editor/leo-editor/pull/5030
 https://github.com/leo-editor/leo-editor/issues/5032
 PR: https://github.com/leo-editor/leo-editor/pull/5033
 
-@language python
-
 </t>
 <t tx="ekr.20261116100828.1467">@language rest
 
@@ -28547,15 +28544,6 @@ PR: https://github.com/leo-editor/leo-editor/pull/5037
 
 https://github.com/leo-editor/leo-editor/pull/5038
 
-</t>
-<t tx="ekr.20261116100828.2">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/4757
-PR: https://github.com/leo-editor/leo-editor/pull/4824
-
-@language python
 </t>
 <t tx="ekr.20261116100828.207">https://github.com/leo-editor/leo-editor/pull/4943
 </t>
@@ -28594,22 +28582,6 @@ https://github.com/leo-editor/leo-editor/issues/4949
 PR: https://github.com/leo-editor/leo-editor/pull/4958
 
 @language python
-</t>
-<t tx="ekr.20261116100828.26">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/4941
-PR: https://github.com/leo-editor/leo-editor/pull/4942
-
-@language python
-
-# Possible, but not useful
-roots = [
-    p for p in c.all_unique_positions()
-    if p.h.endswith(('py', 'pyw')) and p.isAnyAtFileNode()
-]
-
 </t>
 <t tx="ekr.20261116100828.290">https://github.com/leo-editor/leo-editor/pull/4967
 </t>
@@ -28707,15 +28679,6 @@ PR: https://github.com/leo-editor/leo-editor/pull/4982
 
 @language python
 </t>
-<t tx="ekr.20261116100828.4">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/4936
-PR: https://github.com/leo-editor/leo-editor/pull/4940
-
-@language python
-</t>
 <t tx="ekr.20261116100828.402">@language rest
 @wrap
 @nosearch
@@ -28782,10 +28745,86 @@ PR: https://github.com/leo-editor/leo-editor/pull/5050
 <t tx="ekr.20261116101222.1"></t>
 <t tx="ekr.20261116101359.1">.. Use the link-pr abbreviation to create these links.</t>
 <t tx="ekr.20261116101436.1">.. Use the link-pr abbreviation to create these links.
+.. _`PR #4940`: https://github.com/leo-editor/leo-editor/pull/4940
+.. _`PR #4942`: https://github.com/leo-editor/leo-editor/pull/4942
+.. _`PR #4943`: https://github.com/leo-editor/leo-editor/pull/4943
+.. _`PR #4946`: https://github.com/leo-editor/leo-editor/pull/4946
+.. _`PR #4955`: https://github.com/leo-editor/leo-editor/pull/4955
+.. _`PR #4957`: https://github.com/leo-editor/leo-editor/pull/4957
+.. _`PR #4958`: https://github.com/leo-editor/leo-editor/pull/4958
+.. _`PR #4971`: https://github.com/leo-editor/leo-editor/pull/4971
+.. _`PR #4975`: https://github.com/leo-editor/leo-editor/pull/4975
+.. _`PR #4981`: https://github.com/leo-editor/leo-editor/pull/4981
+.. _`PR #4982`: https://github.com/leo-editor/leo-editor/pull/4982
+.. _`PR #4983`: https://github.com/leo-editor/leo-editor/pull/4983
+.. _`PR #4991`: https://github.com/leo-editor/leo-editor/pull/4991
+.. _`PR #4994`: https://github.com/leo-editor/leo-editor/pull/4994
+.. _`PR #4996`: https://github.com/leo-editor/leo-editor/pull/4996
+.. _`PR #5001`: https://github.com/leo-editor/leo-editor/pull/5001
+.. _`PR #5004`: https://github.com/leo-editor/leo-editor/pull/5004
+.. _`PR #5009`: https://github.com/leo-editor/leo-editor/pull/5009
+.. _`PR #5015`: https://github.com/leo-editor/leo-editor/pull/5015
+.. _`PR #5017`: https://github.com/leo-editor/leo-editor/pull/5017
+.. _`PR #5020`: https://github.com/leo-editor/leo-editor/pull/5020
+.. _`PR #5025`: https://github.com/leo-editor/leo-editor/pull/5025
+.. _`PR #5026`: https://github.com/leo-editor/leo-editor/pull/5026
+.. _`PR #5027`: https://github.com/leo-editor/leo-editor/pull/5027
+.. _`PR #5030`: https://github.com/leo-editor/leo-editor/pull/5030
+.. _`PR #5033`: https://github.com/leo-editor/leo-editor/pull/5033
+.. _`PR #5034`: https://github.com/leo-editor/leo-editor/pull/5034
+.. _`PR #5035`: https://github.com/leo-editor/leo-editor/pull/5035
+.. _`PR #5037`: https://github.com/leo-editor/leo-editor/pull/5037
+.. _`PR #5038`: https://github.com/leo-editor/leo-editor/pull/5038
+.. _`PR #5039`: https://github.com/leo-editor/leo-editor/pull/5039
+.. _`PR #5043`: https://github.com/leo-editor/leo-editor/pull/5043
+.. _`PR #5044`: https://github.com/leo-editor/leo-editor/pull/5044
+.. _`PR #5046`: https://github.com/leo-editor/leo-editor/pull/5046
+.. _`PR #5047`: https://github.com/leo-editor/leo-editor/pull/5047
+.. _`PR #5048`: https://github.com/leo-editor/leo-editor/pull/5048
+.. _`PR #5050`: https://github.com/leo-editor/leo-editor/pull/5050
+.. _`PR #5052`: https://github.com/leo-editor/leo-editor/pull/5052
+.. _`PR #5053`: https://github.com/leo-editor/leo-editor/pull/5053
 
-.. _`PR #xxxx`: https://github.com/leo-editor/leo-editor/pull/xxxx
-
-- `PR #xxxx`_: Description</t>
+- `PR #4940`_: crash in show-settings-outline
+- `PR #4942`_: ty command
+- `PR #4943`_: remove mypy-only suppressions
+- `PR #4946`_: description
+- `PR #4955`_: description
+- `PR #4957`_: description
+- `PR #4958`_: description
+- `PR #4971`_: description
+- `PR #4975`_: description
+- `PR #4981`_: description
+- `PR #4982`_: description
+- `PR #4983`_: description
+- `PR #4991`_: description
+- `PR #4994`_: description
+- `PR #4996`_: description
+- `PR #5001`_: description
+- `PR #5004`_: description
+- `PR #5009`_: description
+- `PR #5015`_: description
+- `PR #5017`_: description
+- `PR #5020`_: description
+- `PR #5025`_: description
+- `PR #5026`_: description
+- `PR #5027`_: description
+- `PR #5030`_: description
+- `PR #5033`_: description
+- `PR #5034`_: description
+- `PR #5035`_: description
+- `PR #5037`_: description
+- `PR #5038`_: description
+- `PR #5039`_: description
+- `PR #5043`_: description
+- `PR #5044`_: description
+- `PR #5046`_: description
+- `PR #5047`_: description
+- `PR #5048`_: description
+- `PR #5050`_: description
+- `PR #5052`_: description
+- `PR #5053`_: description
+</t>
 <t tx="ekr.20261116101656.1">Leo https://leo-editor.github.io/leo-editor/ 6.9.0 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor/preface.html).
@@ -28809,6 +28848,10 @@ Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 </t>
+<t tx="ekr.20261116134653.1"></t>
+<t tx="ekr.20261116135350.1"></t>
+<t tx="ekr.20261116142437.1"></t>
+<t tx="ekr.20261116142444.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
