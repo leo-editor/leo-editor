@@ -2184,51 +2184,7 @@
 <v t="ekr.20260810021658.1"></v>
 <v t="ekr.20261116101436.1"></v>
 <v t="ekr.20261116101656.1"></v>
-<v t="ekr.20261116135350.1"><vh>----</vh></v>
-<v t="ekr.20261116134653.1"><vh>individual</vh>
-<v t="ekr.20261116100828.207"><vh>=== PR #4943 remove mypy-only suppressions</vh></v>
-<v t="ekr.20261116100828.209"><vh>=== PR #4946: crashers</vh></v>
-<v t="ekr.20261116100828.242"><vh>=== PR #4955: strict-equality</vh></v>
-<v t="ekr.20261116100828.243"><vh>=== PR #4957: all commands should have a docstring</vh></v>
-<v t="ekr.20261116100828.245"><vh>=== PR #4958: qt_layout menu</vh></v>
-<v t="ekr.20261116100828.290"><vh>=== PR #4967: import VR only in on_create</vh></v>
-<v t="ekr.20261116100828.349"><vh>=== PR #4969: free_layout &amp; nested_splitter</vh></v>
-<v t="ekr.20261116100828.354"><vh>=== PR #4971: Python 3.15</vh></v>
-<v t="ekr.20261116100828.367"><vh>=== PR #4975: declutter</vh></v>
-<v t="ekr.20261116100828.372"><vh>=== PR #4981: Improve rust importer</vh></v>
-<v t="ekr.20261116100828.384"><vh>=== PR #4982: optional modules</vh></v>
-<v t="ekr.20261116100828.402"><vh>=== PR #4983: adoc drops text</vh></v>
-<v t="ekr.20261116100828.440"><vh>=== PR #4985: visual glitch</vh></v>
-<v t="ekr.20261116100828.670"><vh>=== PR #4986: visual glitch 2</vh></v>
-<v t="ekr.20261116100828.718"><vh>=== PR #4991: promote commands</vh></v>
-<v t="ekr.20261116100828.1064"><vh>=== PR #4994: new undo</vh></v>
-<v t="ekr.20261116100828.1077"><vh>=== PR #4996: new undoers</vh></v>
-<v t="ekr.20261116100828.1089"><vh>=== PR #5000: Python 3.15</vh></v>
-<v t="ekr.20261116100828.1093"><vh>=== PR #5004: zap-to-character</vh></v>
-<v t="ekr.20261116100828.1095"><vh>=== PR #5009: clean new undoers</vh></v>
-<v t="ekr.20261116100828.1129"><vh>=== PR #5015: code cleanups</vh></v>
-<v t="ekr.20261116100828.1145"><vh>=== PR #5017: fix serious undo bugs!</vh></v>
-<v t="ekr.20261116100828.1160"><vh>=== PR #5020: retire old undoers</vh></v>
-<v t="ekr.20261116100828.1265"><vh>=== PR #5025: retire typing</vh></v>
-<v t="ekr.20261116100828.1340"><vh>=== PR #5026: log version</vh></v>
-<v t="ekr.20261116100828.1344"><vh>=== PR #5027: headline abbreviations</vh></v>
-<v t="ekr.20261116100828.1364"><vh>=== PR #5030: more undo changes</vh></v>
-<v t="ekr.20261116100828.1440"><vh>=== PR #5033: not found: c.c</vh></v>
-<v t="ekr.20261116100828.1467"><vh>=== PR #5034: not found: reverse c.c</vh></v>
-<v t="ekr.20261116100828.1496"><vh>=== PR #5035: Crash in nav_qt plugin</vh></v>
-<v t="ekr.20261116100828.1498"><vh>=== PR #5037: next/previous-line</vh></v>
-<v t="ekr.20261116100828.1505"><vh>=== PR #5038: Remove all references to pylint</vh></v>
-<v t="ekr.20261116100828.3333"><vh>=== PR #5039: require prototypes</vh></v>
-<v t="ekr.20261116100828.3352"><vh>=== PR #5043: undo typing</vh></v>
-<v t="ekr.20261116100828.3443"><vh>=== PR #5044: word granularity</vh></v>
-<v t="ekr.20261116100828.3517"><vh>=== PR #5046: crash in quicksearch plugin</vh></v>
-<v t="ekr.20261116100828.3519"><vh>=== PR #5047: fix hole in unit tests</vh></v>
-<v t="ekr.20261116100828.3554"><vh>=== PR #5048: clean unit tests</vh></v>
-<v t="ekr.20261116100829.87"><vh>=== PR #5050: text reversion</vh></v>
-<v t="ekr.20261116100829.281"><vh>=== PR #5051: word wrap</vh></v>
-<v t="ekr.20261116100829.325"><vh>=== PR #5052: improve undo typing</vh></v>
-<v t="ekr.20261116100829.392"><vh>=== PR #5053: cover leoUndo.py &amp; leo/commands</vh></v>
-</v>
+<v t="ekr.20261116145617.1"><vh>gh pr list</vh></v>
 </vnodes>
 <tnodes>
 <t tx=".20260810204531.45">Leo: organize code and ideas your way
@@ -28394,353 +28350,6 @@ Undoer beads are instances of ``UndoBead`` or ``TypingBead``.
         # call w.setInsertPoint() or w.setSelectionRange() as desired.
         # Do *not* call c.redraw!
 </t>
-<t tx="ekr.20261116100828.1064">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/4993
-PR: https://github.com/leo-editor/leo-editor/pull/4994
-
-@language python
-</t>
-<t tx="ekr.20261116100828.1077">@language rest
-@nosearch
-
-.. Completed/merged
-https://github.com/leo-editor/leo-editor/issues/4993
-Old PR #4996 (Merged):      https://github.com/leo-editor/leo-editor/pull/4996 
-Ville's PR #4997 (Merged):  https://github.com/leo-editor/leo-editor/pull/4997 
-New PR #4996 (Merged):      https://github.com/leo-editor/leo-editor/pull/4996
-
-.. New
-PR: Cleanups    https://github.com/leo-editor/leo-editor/pull/5001
-
-@language python
-</t>
-<t tx="ekr.20261116100828.1089">https://github.com/leo-editor/leo-editor/pull/5000</t>
-<t tx="ekr.20261116100828.1093">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/4998
-PR: https://github.com/leo-editor/leo-editor/pull/5004
-
-@language python
-</t>
-<t tx="ekr.20261116100828.1095">@nosearch
-@language rest
-
-PR: https://github.com/leo-editor/leo-editor/pull/5001
-PR: https://github.com/leo-editor/leo-editor/pull/5009
-
-@language python
-</t>
-<t tx="ekr.20261116100828.1129">@language rest
-
-PR: https://github.com/leo-editor/leo-editor/pull/5015
-
-Code cleanups and important improvements to the undoer code.
-
-@language python
-@nosearch
-</t>
-<t tx="ekr.20261116100828.1145">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/5016
-PR: https://github.com/leo-editor/leo-editor/pull/5017
-
-
-@language python
-</t>
-<t tx="ekr.20261116100828.1160">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/5018
-PR: https://github.com/leo-editor/leo-editor/pull/5020
-
-*** u_change_outline: restore outline y_scroll
-
-* Examine the diffs to make sure w is assigned correctly.
-- Docstring for contexts.
-- Check @button check-leoPy.leo
-*** Issue document how to kill a binding.
-
-ENB: Designing type undoers.
-- coalesce if c.p changes and the top bead is a TypingBead.
-
-@language python
-</t>
-<t tx="ekr.20261116100828.1265">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/5024
-PR: https://github.com/leo-editor/leo-editor/pull/5025
-
-@language python
-</t>
-<t tx="ekr.20261116100828.1340">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/5010
-PR: https://github.com/leo-editor/leo-editor/pull/5026
-@language python
-</t>
-<t tx="ekr.20261116100828.1344">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/5021
-PR: https://github.com/leo-editor/leo-editor/pull/5027
-
-@language python
-</t>
-<t tx="ekr.20261116100828.1364">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/5028
-PR: https://github.com/leo-editor/leo-editor/pull/5030
-
-@language python
-</t>
-<t tx="ekr.20261116100828.1440">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/5032
-PR: https://github.com/leo-editor/leo-editor/pull/5033
-
-</t>
-<t tx="ekr.20261116100828.1467">@language rest
-
-https://github.com/leo-editor/leo-editor/issues/5032
-https://github.com/leo-editor/leo-editor/pull/5034
-
-@language python
-</t>
-<t tx="ekr.20261116100828.1496">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/5019
-PR: https://github.com/leo-editor/leo-editor/pull/5035
-
-@language python
-</t>
-<t tx="ekr.20261116100828.1498">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/4802
-PR: https://github.com/leo-editor/leo-editor/pull/5037
-
-@language python</t>
-<t tx="ekr.20261116100828.1505">@nosearch
-
-https://github.com/leo-editor/leo-editor/pull/5038
-
-</t>
-<t tx="ekr.20261116100828.207">https://github.com/leo-editor/leo-editor/pull/4943
-</t>
-<t tx="ekr.20261116100828.209">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/4944 show-status-bar
-https://github.com/leo-editor/leo-editor/issues/4945 expand-log-pane
-PR: https://github.com/leo-editor/leo-editor/pull/4946
-
-@language python
-</t>
-<t tx="ekr.20261116100828.242">@language rest
-@wrap
-@nosearch
-
-PR: https://github.com/leo-editor/leo-editor/pull/4955
-
-@language python
-</t>
-<t tx="ekr.20261116100828.243">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/4956
-PR: https://github.com/leo-editor/leo-editor/pull/4957
-
-@language python
-</t>
-<t tx="ekr.20261116100828.245">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/4949
-PR: https://github.com/leo-editor/leo-editor/pull/4958
-
-@language python
-</t>
-<t tx="ekr.20261116100828.290">https://github.com/leo-editor/leo-editor/pull/4967
-</t>
-<t tx="ekr.20261116100828.3333">@language rest
-@wrap
-@nosearch
-
-PR: https://github.com/leo-editor/leo-editor/pull/5039
-
-* New PR: remove coverage pragmas.
-
-@language python
-</t>
-<t tx="ekr.20261116100828.3352">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/5040
-PR: https://github.com/leo-editor/leo-editor/pull/5043
-
-@language python
-</t>
-<t tx="ekr.20261116100828.3443">@language rest
-@nosearch
-
-https://github.com/leo-editor/leo-editor/pull/5044
-    
-@language python
-</t>
-<t tx="ekr.20261116100828.349">@nosearch
-
-https://github.com/leo-editor/leo-editor/pull/4969
-</t>
-<t tx="ekr.20261116100828.3517">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/5041
-PR: https://github.com/leo-editor/leo-editor/pull/5046
-
-@language python
-</t>
-<t tx="ekr.20261116100828.3519">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/5031
-PR: https://github.com/leo-editor/leo-editor/pull/5047
-
-.. LeoUnitTest.prep was a faux helper in the changed tests.
-
-@language python
-</t>
-<t tx="ekr.20261116100828.354">@nosearch
-
-PR: https://github.com/leo-editor/leo-editor/pull/4971
-RFC: https://github.com/leo-editor/leo-editor/issues/4891
-matplotlib issues: https://github.com/matplotlib/matplotlib/issues
-
-- Post: pip choices.
-- Can pymanager make it possible to use the latest version of Leo?</t>
-<t tx="ekr.20261116100828.3554">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/5045
-PR: https://github.com/leo-editor/leo-editor/pull/5048
-
-@language python
-</t>
-<t tx="ekr.20261116100828.367">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/4973
-PR: https://github.com/leo-editor/leo-editor/pull/4975
-
-@language python
-</t>
-<t tx="ekr.20261116100828.372">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/4977
-PR: https://github.com/leo-editor/leo-editor/pull/4981
-
-@language python
-</t>
-<t tx="ekr.20261116100828.384">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/4978
-PR: https://github.com/leo-editor/leo-editor/pull/4982
-
-@language python
-</t>
-<t tx="ekr.20261116100828.402">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/4979
-PR: https://github.com/leo-editor/leo-editor/pull/4983
-
-
-
-@language python
-</t>
-<t tx="ekr.20261116100828.440">@language rest
-@nosearch
-
-https://github.com/leo-editor/leo-editor/pull/4985
-
-@language python
-</t>
-<t tx="ekr.20261116100828.670">https://github.com/leo-editor/leo-editor/pull/4986</t>
-<t tx="ekr.20261116100828.718">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/4990
-PR: https://github.com/leo-editor/leo-editor/pull/4991
-
-@language python
-</t>
-<t tx="ekr.20261116100829.281">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/4988
-PR: https://github.com/leo-editor/leo-editor/pull/yyy
-
-@language python
-</t>
-<t tx="ekr.20261116100829.325">@nosearch
-https://github.com/leo-editor/leo-editor/pull/5052</t>
-<t tx="ekr.20261116100829.392">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/5045
-PR: https://github.com/leo-editor/leo-editor/pull/5053
-
-.. BUG: saving an outline when focus is in tree is sometimes ugly.
-
-.. Expect Leo 6.9.0 in a day or three.
-
-@language python
-</t>
-<t tx="ekr.20261116100829.87">@language rest
-@wrap
-@nosearch
-
-https://github.com/leo-editor/leo-editor/issues/5049
-PR: https://github.com/leo-editor/leo-editor/pull/5050
-
-*** Enhancement: cff report subtree if not entire tree.
-
-@language python</t>
 <t tx="ekr.20261116101143.1"></t>
 <t tx="ekr.20261116101222.1"></t>
 <t tx="ekr.20261116101359.1">.. Use the link-pr abbreviation to create these links.</t>
@@ -28848,10 +28457,71 @@ Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 </t>
-<t tx="ekr.20261116134653.1"></t>
-<t tx="ekr.20261116135350.1"></t>
 <t tx="ekr.20261116142437.1"></t>
 <t tx="ekr.20261116142444.1"></t>
+<t tx="ekr.20261116145617.1">.. C:\Repos\leo-editor&gt;gh pr list --limit 100 --state merged --search milestone:6.9.0 --json number,title
+.. gh help filtering
+
+.. Convert json to single line
+.. find ^\{\n"number": ([0-9]+),\n"title": "(.*?)"\n}(,)?
+.. repl PR #\1: \2
+
+PR #4931: soften the lion on Leo's website
+PR #4937: autocompleter crash
+PR #4939: git-diff-pr
+PR #4940: crash in show-settings-outline command
+PR #4942: add ty command
+PR #4943: remove mypy-only suppressions
+PR #4946: PR fixes #4944 and #4945
+PR #4954: Add lxml and PyYAML as declared dependencies
+PR #4955: Require strict-equality-semantics
+PR #4957: all commands should have docstrings
+PR #4958: qt layout menu
+PR #4967: enable VR commands for c only if the VR plugin is enabled for c
+PR #4970: Move three plugins to the attic.
+PR #4971: Prepare for Python 3.15
+PR #4975: fix decluttering
+PR #4976: update docs for Python 3.15 and new workflows
+PR #4981: improve rust importer
+PR #4982: optional dependencies
+PR #4983: adoc command drops text
+PR #4985: fix visual glitch during startup
+PR #4986: Fix flashes in tree pane and log panes
+PR #4991: add two promote commands
+PR #4994: Incrementally revise undo
+PR #4995: Drop support for 3.10. Add support for 3.14
+PR #4996: PR2 for #4993: complete new helpers
+PR #4997: Complete composable undo migration on top of #4996
+PR #5000: Add support for Python 3.15
+PR #5001: PR fixes  #4999: clean undo
+PR #5003: Problems with non-BMP characters such as emoji
+PR #5004: PR Fixes #4998: zap-to-character
+PR #5009: More changes to the undoer
+PR #5012: Ekr no redraw
+PR #5015: Clean code and improve unit tests
+PR #5017: fix recent (serious!) undo bugs
+PR #5020: Retire old undo code
+PR #5025: retire legacy undo typing
+PR #5026: restore log version
+PR #5027: abbreviations in headlines
+PR #5030: more undo changes
+PR #5033: find failure!
+PR #5034: reverse search fail.
+PR #5035: Fix crasher in nav_qt.py
+PR #5036: fix boltex's suggestions in PR #5030
+PR #5037: improve next/prev-line
+PR #5038: remove all pylint suppressions
+PR #5039: Require full annotations in leo/core, leo/commands, and leo/plugins/qt*.py
+PR #5043: fix undo typing
+PR #5044: retain \"line\" undo granularity
+PR #5046: crash in quicksearch.py
+PR #5047: Fix hole in unit tests for commands
+PR #5048: clean all unit tests
+PR #5050: text reversion
+PR #5051: Control-click disables word wrap
+PR #5052: improve undo/redo typing
+PR #5053: Improve tests and coverage for leoUndo.py
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
