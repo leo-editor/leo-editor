@@ -2,6 +2,7 @@
 # @+node:ekr.20210904064440.2: * @file ../unittests/plugins/test_importers.py
 """Tests of leo/plugins/importers"""
 
+from __future__ import annotations
 import glob
 import importlib
 from leo.core import leoGlobals as g

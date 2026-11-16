@@ -2,6 +2,7 @@
 # @+node:ekr.20210902092024.1: * @file ../unittests/core/test_leoShadow.py
 """Tests of leoShadow.py"""
 
+from __future__ import annotations
 import glob
 import os
 import textwrap

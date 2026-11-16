@@ -2,6 +2,7 @@
 # @+node:ekr.20140526082700.18440: * @file leoRope.py
 # @+<< leoRope imports >>
 # @+node:ekr.20140525065558.15807: ** << leoRope imports >>
+from __future__ import annotations
 import time
 import importlib
 from typing import Any

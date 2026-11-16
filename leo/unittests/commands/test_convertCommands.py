@@ -2,6 +2,7 @@
 # @+node:ekr.20211013081056.1: * @file ../unittests/commands/test_convertCommands.py
 """Tests of leo.commands.leoConvertCommands."""
 
+from __future__ import annotations
 import os
 import re
 from leo.core import leoGlobals as g

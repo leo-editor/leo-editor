@@ -2,6 +2,7 @@
 # @+node:ekr.20260915043529.1: * @file ../unittests/core/test_leoMarkdown.py
 """Tests of leoMarkdown.py"""
 
+from __future__ import annotations
 import io
 from shutil import which
 

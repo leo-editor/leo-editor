@@ -4,6 +4,7 @@
 
 # @+<< test_gui imports >>
 # @+node:ekr.20220911102700.1: ** << test_gui imports >>
+from __future__ import annotations
 import os
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest, create_app

@@ -2,6 +2,7 @@
 # @+node:ekr.20140907103315.18777: * @file ../plugins/qt_idle_time.py
 """Leo's Qt idle-time code."""
 
+from __future__ import annotations
 import time
 from collections.abc import Callable
 from leo.core import leoGlobals as g

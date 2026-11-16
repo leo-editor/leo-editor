@@ -591,7 +591,7 @@ class ViewRenderedController(QtWidgets.QWidget):
         """Ctor for ViewRenderedController class."""
         self.c = c
         # Create the widget.
-        super().__init__(parent)
+        super().__init__(parent)  # ty:ignore
         self.create_pane(parent)
         # Ivars set by reloadSettings.
         self.auto_create: bool = False

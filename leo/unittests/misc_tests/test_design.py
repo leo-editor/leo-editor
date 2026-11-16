@@ -4,6 +4,7 @@
 
 # @+<< test_design imports >>
 # @+node:ekr.20230507094414.1: ** << test_design imports >>
+from __future__ import annotations
 import ast
 from ast import NodeVisitor
 import glob

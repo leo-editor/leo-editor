@@ -125,21 +125,18 @@ class Indented_Importer:
 
         # Undoably create top-level organizer node and import all files.
         try:
-            ### g.app.disable_redraw = True
             last = c.lastTopLevel()
             c.selectPosition(last)
-            undoData = u.beforeInsertNode(last)
-            # Always create a new last top-level node.
-            parent = last.insertAfter()
-            parent.v.h = 'indented files'
-            for root in roots:
-                self.import_one_file(root, parent)
-            u.afterInsertNode(parent, 'recursive-import', undoData)
+            with u.change_outline('Import Indented Language'):
+                # Always create a new last top-level node.
+                parent = last.insertAfter()
+                parent.v.h = 'indented files'
+                for root in roots:
+                    self.import_one_file(root, parent)
         except Exception:
             g.es_print(f"Exception in {self.__class__.__name__}")
             g.es_exception()
         finally:
-            ### g.app.disable_redraw = False
             for p2 in parent.self_and_subtree(copy=False):
                 p2.contract()
             c.redraw(parent)

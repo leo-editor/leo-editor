@@ -23,14 +23,16 @@ exclude = [
     "leo/plugins/xdb_pane.py",
     "leo/test/scriptFile.py",
     "leo/plugins/beautify_node.py",
+    "leo/plugins/viewrendered",  ###
     "leo/plugins/viewrendered3*",
     "leo/plugins/leo_pdf*",
     "leo/plugins/leo_to_rtf*",
     "leo/plugins/mnplugins*",
     "leo/plugins/mod_speedups*",
+    "leo/plugins/qt_main*",
     "leo/plugins/settings_finder*",
     "leo/plugins/stickynotes_plus*",
-    "leo/plugins/qt_main*",
+    "leo/plugins/threadutil.py",
 ]
 
 [analysis]
@@ -54,3 +56,4 @@ incompatible-method-override = "ignore"
 
 # For now.
 lost-keyword-for-regular-parameter = "ignore"
+# invalid-argument-type = "ignore"

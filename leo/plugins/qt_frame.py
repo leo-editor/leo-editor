@@ -4367,7 +4367,7 @@ class TabbedFrameFactory:
     def detachTab(self, wdg: DynamicWindow) -> None:
         """Detach specified tab as individual toplevel window"""
         del self.leoFrames[wdg]
-        wdg.setParent(None)
+        wdg.setParent(None)  # ty:ignore
         wdg.show()
 
     def createTabCommands(self) -> None:
