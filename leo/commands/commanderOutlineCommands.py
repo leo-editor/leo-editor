@@ -1205,12 +1205,13 @@ def insertChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None
 def insertNodeAsFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Insert a node as the first child of the previous node."""
     c = self
-    if not c.p:
+    p = c.p
+    u = c.undoer
+    if not p:
         return None
     c.endEditing()
-    with c.undoer as u:
-        u.set_command_name('insert-as-first-child')
-        new_p = u.insert_node(c.p, as_child=True, index=0)
+    with u.change_node(p, 'insert-as-first-child'):
+        new_p = u.insert_node(p, as_child=True, index=0)
         u.redraw_and_edit(new_p)
         return new_p
 
