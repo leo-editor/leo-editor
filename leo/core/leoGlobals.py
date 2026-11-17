@@ -60,12 +60,13 @@ StringIO = io.StringIO
 # @+<< leoGlobals: annotations >>
 # @+node:ekr.20220824084642.1: ** << leoGlobals: annotations >>
 if TYPE_CHECKING:  # pragma: no cover
-    from leo.core import LeoGlobals
+    from leo.core import LeoGlobals  # ty:ignore  # Required.
     from leo.core.leoApp import LeoApp
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoGui, LeoKeyEvent, LeoFrame
+    from leo.core.leoFrame import LeoFrame
+    from leo.core.leoGui import LeoGui, LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
-    from leo.core.leoQt import QMouseEvent, QWidget, QEvent
+    from leo.plugins.qt_frame import QMouseEvent, QWidget, QEvent
     from leo.plugins.qt_idle_time import IdleTime as QtIdleTime
 
     Args = Any
@@ -6510,11 +6511,9 @@ def es(*args, **kwargs) -> None:
             if ch == '\n':
                 log.newlines += 1
             else:
-                log.newlines = 0
+                log.newlines = 0  # ty:ignore  # ty bug.
     else:
-        app.logWaiting.append(
-            (s, color, newline, d),
-        )
+        app.logWaiting.append((s, color, newline, d))
 
 
 log = es

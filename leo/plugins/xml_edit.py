@@ -98,7 +98,7 @@ These commands attempt to deal with all of this.
 import os
 import traceback  # for XML parse error display
 from typing import Any
-from lxml import etree
+from lxml import etree  # ty:ignore
 from leo.core import leoGlobals as g
 
 # top level entry in uA
