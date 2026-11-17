@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 # @+node:ekr.20210906141410.2: ** class TestUndo (LeoUnitTest)
 class TestUndo(LeoUnitTest):
     # @+others
-    # @+node:ekr.20210906141410.9: *3* TestUndo.runTest (Test)
+    # @+node:ekr.20210906141410.9: *3* TestUndo.runTest
     def runTest(self, before, after, i, j, func):
         """TestUndo.runTest."""
         c = self.c
@@ -482,8 +482,9 @@ class TestUndo(LeoUnitTest):
                 assert clone.v == v
                 clone.setMarked()  # For coverage testing.
 
+        test()
+
         for _i in range(3):
-            test()
             assert len(u.beads) == 1
             assert p.b == 'after'
             assert c.p.isCloned()
@@ -492,13 +493,6 @@ class TestUndo(LeoUnitTest):
             assert p.b == 'before'
             assert not c.p.isCloned()
             u.redo()
-            assert len(u.beads) == 1
-            assert p.b == 'after'
-            assert c.p.isCloned()
-            u.undo()
-            assert len(u.beads) == 1
-            assert p.b == 'before'
-            assert not c.p.isCloned()
 
     # @+node:ekr.20261115011130.1: *3* TestUndo.test_u_cutStack
     def test_u_cutStack(self):
@@ -540,13 +534,13 @@ class TestUndo(LeoUnitTest):
                 u.delete_node(old_p)
 
         delete_root()
-        new_h = c.p.h
-        assert new_h != old_h
+
         for _i in range(3):
+            new_h = c.p.h
+            assert new_h != old_h
             u.undo()
             assert c.p.h == old_h, c.p.h
             u.redo()
-            assert c.p.h == new_h, new_p.h
 
     # @+node:ekr.20261115090134.1: *3* TestUndo.test_u_delete_node_case_old_back
     def test_u_delete_node_case_old_back(self):
@@ -566,13 +560,12 @@ class TestUndo(LeoUnitTest):
                 u.delete_node(old_p)
 
         delete()
-        new_h = c.p.h
-        assert new_h != old_h
         for _i in range(3):
+            new_h = c.p.h
+            assert new_h != old_h
             u.undo()
             assert c.p.h == old_h, c.p.h
             u.redo()
-            assert c.p.h == new_h, new_p.h
 
     # @+node:ekr.20261115090134.2: *3* TestUndo.test_u_delete_node_case_old_parent
     def test_u_delete_node_case_old_parent(self):
@@ -591,13 +584,14 @@ class TestUndo(LeoUnitTest):
                 u.delete_node(old_p)
 
         delete_child()
-        new_h = c.p.h
-        assert new_h != old_h
+
         for _i in range(3):
+            new_h = c.p.h
+            assert new_h != old_h
+            assert c.p.h == new_h, new_p.h
             u.undo()
             assert c.p.h == old_h, c.p.h
             u.redo()
-            assert c.p.h == new_h, new_p.h
 
     # @+node:ekr.20261114073916.1: *3* TestUndo.test_u_insert_node
     def test_u_insert_node(self):
@@ -620,12 +614,12 @@ class TestUndo(LeoUnitTest):
                 return new_p
 
         new_p = insert_as_first_child()
-        assert new_p.h == added_h, new_p.h
+
         for _i in range(3):
+            assert new_p.h == added_h, new_p.h
             u.undo()
             assert c.p.h == old_h, c.p.h
             u.redo()
-            assert new_p.h == added_h, new_p.h
 
     # @+node:ekr.20261114081317.1: *3* TestUndo.test_u_insert_node_after
     def test_u_insert_node_after(self):
@@ -651,12 +645,12 @@ class TestUndo(LeoUnitTest):
                 return new_p
 
         new_p = insert_after()
-        assert new_p.h == added_h, new_p.h
+
         for _i in range(3):
+            assert new_p.h == added_h, new_p.h
             u.undo()
             assert c.p.h == old_h, c.p.h
             u.redo()
-            assert new_p.h == added_h, new_p.h
 
     # @+node:ekr.20261115070542.1: *3* TestUndo.test_u_insert_node_no_kwargs
     def test_u_insert_node_no_kwargs(self):
@@ -685,12 +679,12 @@ class TestUndo(LeoUnitTest):
                 return new_p
 
         new_p = insert_no_kwargs()
-        assert new_p.h == added_h, new_p.h
+
         for _i in range(3):
+            assert new_p.h == added_h, new_p.h
             u.undo()
             assert c.p.h == old_h, c.p.h
             u.redo()
-            assert new_p.h == added_h, new_p.h
 
     # @+node:ekr.20261114080738.1: *3* TestUndo.test_u_redraw_and_edit
     def test_u_redraw_and_edit(self):
@@ -708,8 +702,9 @@ class TestUndo(LeoUnitTest):
                 u.redraw_and_edit(p)
 
         redraw_and_edit()
-        assert c.p.h == new_h, c.p.h
+
         for _i in range(3):
+            assert c.p.h == new_h, c.p.h
             u.undo()
             u.redo()
 
@@ -741,6 +736,7 @@ class TestUndo(LeoUnitTest):
             u.type_text(p, oldIns=old_ins, oldSel=old_sel, oldText=old_text, w=w)
 
         test_type_text()
+
         for _i in range(3):
             assert w.getAllText() == new_text, w.getAllText()  # Test 1
             assert w.getInsertPoint() == new_ins, w.getInsertPoint()  # Test 1.
@@ -750,9 +746,6 @@ class TestUndo(LeoUnitTest):
             assert w.getInsertPoint() == old_ins, w.getInsertPoint()  # Test 2.
             assert w.getSelectionRange() == old_sel, w.getSelectionRange()  # Test 2.
             u.redo()
-            assert w.getAllText() == new_text, w.getAllText()  # Test 3.
-            assert w.getInsertPoint() == new_ins, w.getInsertPoint()  # Test 3.
-            assert w.getSelectionRange() == new_sel, w.getSelectionRange()  # Test 3.
 
     # @+node:ekr.20261114100249.1: *3* TestUndo.test_u_type_text_with_merge
     def test_u_type_text_with_merge(self):
@@ -791,6 +784,7 @@ class TestUndo(LeoUnitTest):
             assert len(u.beads) == 1
 
         merge_beads()
+
         for _i in range(3):
             assert len(u.beads) == 1
             u.undo()

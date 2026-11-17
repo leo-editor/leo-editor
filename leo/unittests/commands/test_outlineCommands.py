@@ -384,15 +384,14 @@ class TestOutlineCommands(LeoUnitTest):
         original_children = [z.h for z in self.root_p.v.children]
         sorted_children = sorted(original_children)
         c.sortChildren()
-        result_children = [z.h for z in self.root_p.v.children]
-        self.assertEqual(result_children, sorted_children)
+
         for _i in range(3):
+            result_children = [z.h for z in self.root_p.v.children]
+            self.assertEqual(result_children, sorted_children)
             u.undo()
             result_children = [z.h for z in self.root_p.v.children]
             self.assertEqual(result_children, original_children)
             u.redo()
-            result_children = [z.h for z in self.root_p.v.children]
-            self.assertEqual(result_children, sorted_children)
 
     # @+node:ekr.20221112051650.1: *3* TestOutlineCommands.test_sort_siblings
     def test_sort_siblings(self):
@@ -404,15 +403,14 @@ class TestOutlineCommands(LeoUnitTest):
         sorted_children = sorted(original_children)
         c.selectPosition(self.root_p.firstChild())
         c.sortSiblings()
-        result_children = [z.h for z in self.root_p.v.children]
-        self.assertEqual(result_children, sorted_children)
+
         for _i in range(3):
+            result_children = [z.h for z in self.root_p.v.children]
+            self.assertEqual(result_children, sorted_children)
             u.undo()
             result_children = [z.h for z in self.root_p.v.children]
             self.assertEqual(result_children, original_children)
             u.redo()
-            result_children = [z.h for z in self.root_p.v.children]
-            self.assertEqual(result_children, sorted_children)
 
     # @+node:ekr.20230902053728.1: *3* TestOutlineCommands.test_move_outline_to_first_child
     def test_move_outline_to_first_child(self):
@@ -426,21 +424,22 @@ class TestOutlineCommands(LeoUnitTest):
         last_child = root.lastChild()
         assert last_child
         last_gnx = last_child.gnx
+
         # Move.
         c.selectPosition(last_child)
         c.moveOutlineToFirstChild()
+
         # Tests.
-        assert c.checkOutline() == 0
-        first_child = root.firstChild()
-        assert first_child
-        first_gnx = first_child.gnx
-        assert first_gnx == last_gnx, (first_gnx, last_gnx)
         for _i in range(3):
+            first_child = root.firstChild()
+            first_gnx = first_child.gnx
+            assert c.checkOutline() == 0
+            assert first_gnx == last_gnx, (first_gnx, last_gnx)
+            assert first_child
             u.undo()
             assert c.checkOutline() == 0
             assert root.v.children == original_children
             u.redo()
-            assert c.checkOutline() == 0
 
     # @+node:ekr.20230902053751.1: *3* TestOutlineCommands.test_move_outline_to_last_child
     def test_move_outline_to_last_child(self):
@@ -454,22 +453,22 @@ class TestOutlineCommands(LeoUnitTest):
         first_child = root.firstChild()
         assert first_child
         first_gnx = first_child.gnx
+
         # Move.
-        # c.selectPosition(first_child)
         c.selectPosition(first_child)
         c.moveOutlineToLastChild()
+
         # Tests.
-        assert c.checkOutline() == 0
-        last_child = root.lastChild()
-        assert first_child
-        last_gnx = last_child.gnx
-        assert first_gnx == last_gnx, (first_gnx, last_gnx)
         for _i in range(3):
+            assert c.checkOutline() == 0
+            last_child = root.lastChild()
+            assert first_child
+            last_gnx = last_child.gnx
+            assert first_gnx == last_gnx, (first_gnx, last_gnx)
             u.undo()
             assert c.checkOutline() == 0
             assert root.v.children == original_children
             u.redo()
-            assert c.checkOutline() == 0
 
     # @+node:ekr.20261011034851.1: *3* TestOutlineCommands.test_promote_at_others
     def test_promote_at_others(self):

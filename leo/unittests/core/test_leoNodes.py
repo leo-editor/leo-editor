@@ -566,20 +566,17 @@ class TestNodes(LeoUnitTest):
         c.p = p3
         c.moveOutlineDown()
         moved = c.p
-        self.assertEqual(moved.h, 'B')
-        self.assertEqual(moved.back().h, 'C')
-        self.assertEqual(moved.next().h, 'D')
-        self.assertEqual(moved.next(), p5)
         for _i in range(3):
+            self.assertEqual(moved.h, 'B')
+            self.assertEqual(moved.back().h, 'C')
+            self.assertEqual(moved.next().h, 'D')
+            self.assertEqual(moved.next(), p5)
             u.undo()
             moved = c.p
             self.assertEqual(moved.back(), p2)
             self.assertEqual(moved.next(), p4)
             u.redo()
             moved = c.p
-            self.assertEqual(moved.h, 'B')
-            self.assertEqual(moved.back().h, 'C')
-            self.assertEqual(moved.next().h, 'D')
 
     # @+node:ekr.20210830095545.48: *4* TestNodes.test_move_outline_left
     def test_move_outline_left(self):
@@ -592,12 +589,11 @@ class TestNodes(LeoUnitTest):
         c.p = p2
         c.moveOutlineLeft()
         moved = c.p
-        self.assertEqual(moved.h, 'A')
-        self.assertEqual(moved.back(), p)
         for _i in range(3):
+            self.assertEqual(moved.h, 'A')
+            self.assertEqual(moved.back(), p)
             u.undo()
             u.redo()
-        moved.doDelete(newNode=p)
 
     # @+node:ekr.20210830095545.49: *4* TestNodes.test_move_outline_right
     def test_move_outline_right(self):
@@ -614,9 +610,9 @@ class TestNodes(LeoUnitTest):
         c.p = p3
         c.moveOutlineRight()
         moved = c.p
-        self.assertEqual(moved.h, 'B')
-        self.assertEqual(moved.parent(), p2)
         for _i in range(3):
+            self.assertEqual(moved.h, 'B')
+            self.assertEqual(moved.parent(), p2)
             u.undo()
             u.redo()
 
@@ -708,13 +704,13 @@ class TestNodes(LeoUnitTest):
         self.assertEqual(p.firstChild().h, 'child 1')
         self.assertEqual(p.firstChild().next().h, 'child 2')
         u.redo()
-        p = c.p
-        self.assertEqual(p, p3)
-        self.assertEqual(p.h, 'B')
-        self.assertEqual(p.next().h, 'child 1')
-        self.assertEqual(p.next().next().h, 'child 2')
-        self.assertEqual(p.next().next().next().h, 'C')
         for _i in range(3):
+            p = c.p
+            self.assertEqual(p, p3)
+            self.assertEqual(p.h, 'B')
+            self.assertEqual(p.next().h, 'child 1')
+            self.assertEqual(p.next().next().h, 'child 2')
+            self.assertEqual(p.next().next().next().h, 'C')
             u.undo()
             p = c.p
             self.assertEqual(p, p3)
@@ -723,12 +719,6 @@ class TestNodes(LeoUnitTest):
             self.assertEqual(p.firstChild().h, 'child 1')
             self.assertEqual(p.firstChild().next().h, 'child 2')
             u.redo()
-            p = c.p
-            self.assertEqual(p, p3)
-            self.assertEqual(p.h, 'B')
-            self.assertEqual(p.next().h, 'child 1')
-            self.assertEqual(p.next().next().h, 'child 2')
-            self.assertEqual(p.next().next().next().h, 'C')
 
     # @+node:ekr.20220708131426.1: *3* TestNodes: Getters
     # @+node:ekr.20220307043449.1: *4* TestNodes.test_p_getters

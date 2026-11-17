@@ -2717,19 +2717,16 @@ class TestEditCommands(LeoUnitTest):
         c.selectPosition(self.before_p)
         # Delete 'before', select 'after'
         c.doCommandByName('merge-node-with-next-node')
-        self.assertEqual(c.p.h, 'after')
-        self.assertEqual(c.p.b, result_b)
-        self.assertFalse(c.p.next())
         for _i in range(3):
+            self.assertEqual(c.p.h, 'after')
+            self.assertEqual(c.p.b, result_b)
+            self.assertFalse(c.p.next())
             u.undo()
             self.assertEqual(c.p.h, 'before')
             self.assertEqual(c.p.b, prev_b)
             self.assertEqual(c.p.next().h, 'after')
             self.assertEqual(c.p.next().b, next_b)
             u.redo()
-            self.assertEqual(c.p.h, 'after')
-            self.assertEqual(c.p.b, result_b)
-            self.assertFalse(c.p.next())
 
     # @+node:ekr.20220517064507.1: *5* test_merge-node-with-prev-node
     def test_merge_node_with_prev_node(self):
@@ -2759,19 +2756,16 @@ class TestEditCommands(LeoUnitTest):
         c.selectPosition(self.after_p)
         # Delete 'after', select 'before'
         c.doCommandByName('merge-node-with-prev-node')
-        self.assertEqual(c.p.h, 'before')
-        self.assertEqual(c.p.b, result_b)
-        self.assertFalse(c.p.next())
         for _i in range(3):
+            self.assertEqual(c.p.h, 'before')
+            self.assertEqual(c.p.b, result_b)
+            self.assertFalse(c.p.next())
             u.undo()
             self.assertEqual(c.p.h, 'after')
             self.assertEqual(c.p.b, next_b)
             self.assertEqual(c.p.back().h, 'before')
             self.assertEqual(c.p.back().b, prev_b)
             u.redo()
-            self.assertEqual(c.p.h, 'before')
-            self.assertEqual(c.p.b, result_b)
-            self.assertFalse(c.p.next())
 
     # @+node:ekr.20201130090918.86: *5* test_move-lines-down
     def test_move_lines_down(self):
@@ -4948,11 +4942,11 @@ class TestEditCommands(LeoUnitTest):
         for _i in range(3):
             self.assertEqual(p.h, expected)
             self.assertEqual(u.undoMenuLabel, 'Undo Typing')
+            self.assertEqual(u.redoMenuLabel, "Can't Redo")
             u.undo()
             self.assertEqual(p.h, h)
             self.assertEqual(u.redoMenuLabel, 'Redo Typing')
             u.redo()
-            self.assertEqual(u.redoMenuLabel, "Can't Redo")
 
     # @+node:ekr.20210905064816.13: *4* test_setMoveCol
     def test_setMoveCol(self):
