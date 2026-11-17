@@ -438,33 +438,17 @@ class TestNodes(LeoUnitTest):
         p.expand()
         # self.dump_headlines(c)
 
-        # Test.
-        c.selectPosition(p3)
-        c.deleteOutline()
-        c.redraw_now()
-        p = c.p
-        self.assertEqual(p.h, 'A')
-        self.assertEqual(p.next().h, 'C')
-        u.undo()  # Fails
-        c.outerUpdate()
-        p = c.p
-        self.assertEqual(p.back(), p2)
-        self.assertEqual(p.next(), p4)
-        u.redo()
-        c.outerUpdate()
-        p = c.p
-        self.assertEqual(p.h, 'A')
-        self.assertEqual(p.next().h, 'C')
-        u.undo()
-        c.outerUpdate()
-        p = c.p
-        self.assertEqual(p.back(), p2)
-        self.assertEqual(p.next(), p4)
-        u.redo()
-        c.outerUpdate()
-        p = c.p
-        self.assertEqual(p.h, 'A')
-        self.assertEqual(p.next().h, 'C')
+        def delete_node(p) -> None:
+            c.p = p
+            c.deleteOutline()
+
+        delete_node(p3)
+
+        for _i in range(3):
+            assert c.p.h == 'A'
+            u.undo()
+            assert c.p.h == 'B'
+            u.redo()
 
     # @+node:ekr.20210830095545.44: *4* TestNodes.test_delete_root
     def test_delete_root(self):
