@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
-      - run: pip install "ruff"
+      - run: pip install "ruff==0.17.5"
       - run: ruff check leo --output-format=github
       - run: ruff format --check leo
 
@@ -91,7 +91,7 @@ jobs:
         with:
           python-version: "3.15"
           cache: pip
-      - run: pip install "ty==0.0.100"
+      - run: pip install "ty==0.0.105"
           "PyQt6>=6.6" PyQt6-QScintilla PyQt6-WebEngine
           # Install optional packages that Leo's devs should have installed,
           # so ty resolves their imports the same way it does on devs' machines.
