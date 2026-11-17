@@ -432,6 +432,7 @@ class TestUndo(LeoUnitTest):
                 c.p.h = new_h
 
         change_headline()
+
         for _i in range(3):
             assert p.h == new_h
             u.undo()
@@ -457,6 +458,7 @@ class TestUndo(LeoUnitTest):
                 #     rf.createRecentFilesMenuItems(frame.c)
 
         change_recent_files()
+
         for _i in range(3):
             u.undo()
             u.redo()
@@ -560,6 +562,7 @@ class TestUndo(LeoUnitTest):
                 u.delete_node(old_p)
 
         delete()
+
         for _i in range(3):
             new_h = c.p.h
             assert new_h != old_h
