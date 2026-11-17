@@ -2691,7 +2691,7 @@ class TestEditCommands(LeoUnitTest):
         )
 
     # @+node:ekr.20210829062149.1: *4* Commands M-R
-    # @+node:ekr.20220517064432.1: *5* test_merge-node-with-next-node
+    # @+node:ekr.20220517064432.1: *5* TestEditCommands.test_merge-node-with-next-node
     def test_merge_node_with_next_node(self):
         c = self.c
         u = c.undoer
@@ -2728,7 +2728,7 @@ class TestEditCommands(LeoUnitTest):
             self.assertEqual(c.p.next().b, next_b)
             u.redo()
 
-    # @+node:ekr.20220517064507.1: *5* test_merge-node-with-prev-node
+    # @+node:ekr.20220517064507.1: *5* TestEditCommands.test_merge-node-with-prev-node
     def test_merge_node_with_prev_node(self):
         c = self.c
         u = c.undoer
@@ -4920,7 +4920,7 @@ class TestEditCommands(LeoUnitTest):
             u.redo()
             self.assertEqual(p.h, h + paste)
 
-    # @+node:ekr.20210905064816.27: *4* test_selecting_new_node_retains_typing_in_headline
+    # @+node:ekr.20210905064816.27: *4* TestEditCommands.test_selecting_new_node_retains_typing_in_headline
     def test_selecting_new_node_retains_typing_in_headline(self):
         c = self.c
         u = c.undoer
@@ -5060,7 +5060,7 @@ class TestEditCommands(LeoUnitTest):
         n2 = c.frame.tree.redrawCount
         self.assertEqual(n2, n)
 
-    # @+node:ekr.20210905064816.30: *4* test_undoing_insert_node_restores_previous_node_s_body_text
+    # @+node:ekr.20210905064816.30: *4* TestEditCommands.test_undoing_insert_node_restores_previous_node_s_body_text
     def test_undoing_insert_node_restores_previous_node_s_body_text(self):
         c = self.c
         u = c.undoer

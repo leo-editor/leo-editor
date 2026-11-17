@@ -630,8 +630,9 @@ class Undoer:
 
         Example usage, from Leo's delete-node command:
 
-        with u.change_outline(op_name):
+        with u.change_node(op_name):
             u.delete_node(p)  # Calculates new c.p.
+            c.redraw(p)
         """
         u = self
         b = u._require_bead()
@@ -644,18 +645,23 @@ class Undoer:
             return
 
         # Do the action.
+        old_ui = u.capture_ui()  ### Experimental.
         old_p.doDelete(new_p)
+        new_ui = u.capture_ui()
         c.p = new_p
         new_p.setDirty()
         c.p.setAllAncestorAtFileNodesDirty()
         c.checkOutline()
 
         def delete_node_redoer() -> None:
+            g.trace()  ###
             old_p.doDelete()
             c.p = new_p
             u._redraw(new_p)
+            u.restore_ui(new_ui)
 
         def delete_node_undoer() -> None:
+            g.trace()  ###
             if old_back:
                 old_p._linkAfter(old_back)
             elif old_parent:
@@ -665,8 +671,19 @@ class Undoer:
             old_p.setDirty()
             c.p = old_p
             u._redraw(old_p)
+            u.restore_ui(old_ui)
 
         b.add_helpers(delete_node_redoer, delete_node_undoer)
+
+        # def delete_node_ui_redoer() -> None:
+        #     u._redraw(new_p)
+        #     ### u.restore_ui(new_ui)
+
+        # def delete_node_ui_undoer() -> None:
+        #     u._redraw(old_p)
+        #     ### u.restore_ui(old_ui)
+
+        # u.undoBead.add_finishers(delete_node_ui_redoer, delete_node_ui_undoer)
 
     # @+node:ekr.20261006155622.1: *5* u.insert_node
     def insert_node(
