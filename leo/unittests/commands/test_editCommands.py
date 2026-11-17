@@ -4718,7 +4718,7 @@ class TestEditCommands(LeoUnitTest):
             u.redo()
 
     # @+node:ekr.20261117154843.1: *4* TestEditCommands.test_undo_insertNodeAsFirstChild
-    def test_undo_insert_node(self):
+    def test_undo_insertNodeAsFirstChild(self):
         c = self.c
         old_p = c.p.copy()
         u = c.undoer
