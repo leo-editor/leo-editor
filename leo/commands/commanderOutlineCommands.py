@@ -1201,7 +1201,7 @@ def insertChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None
         return new_p
 
 
-# @+node:ekr.20261008042700.1: *3* c_oc:insert-as-first-child
+# @+node:ekr.20261008042700.1: *3* c_oc:insert-as-first-child (not used in Leo's core)
 @g.commander_command('insert-as-first-child')
 def insertNodeAsFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Insert a node as the first child of the previous node."""
@@ -1214,10 +1214,10 @@ def insertNodeAsFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Posi
     with u.change_node(p, 'insert-as-first-child'):
         new_p = u.insert_node(p, as_child=True, index=0)
         u.redraw_and_edit(new_p)
-        return new_p
+        return new_p  # For unit tests.
 
 
-# @+node:ekr.20261008042932.1: *3* c_oc:insert-as-last-child
+# @+node:ekr.20261008042932.1: *3* c_oc:insert-as-last-child (not used in Leo's core)
 @g.commander_command('insert-as-last-child')
 def insertNodeAsLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Insert a node as the last child of the previous node."""
@@ -1229,7 +1229,7 @@ def insertNodeAsLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Posit
         u.set_command_name('insert-as-last-child')
         new_p = u.insert_node(c.p, as_child=True, index=c.p.numberOfChildren())
         u.redraw_and_edit(new_p)
-        return new_p
+        return new_p  # For unit tests.
 
 
 # @+node:ekr.20261008042653.1: *3* c_oc:insert-node
@@ -1251,7 +1251,7 @@ def insertHeadline(
         u.set_command_name(op_name)
         new_p = u.insert_node(c.p)
         u.redraw_and_edit(new_p)
-        return new_p
+        return new_p  # For unit tests.
 
 
 # @+node:ekr.20130922133218.11540: *3* c_oc:insert-node-before

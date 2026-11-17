@@ -4693,12 +4693,42 @@ class TestEditCommands(LeoUnitTest):
     def test_undo_insert_node(self):
         c = self.c
         u = c.undoer
-        assert u
-        c.insertHeadline()
+        old_p = c.p.copy()
+        new_p = c.insertHeadline()
         for _i in range(3):
+            assert c.p == new_p
             self.assertEqual(u.undoMenuLabel, 'Undo Insert Node')
             u.undo()
+            assert c.p == old_p
             self.assertEqual(u.redoMenuLabel, 'Redo Insert Node')
+            u.redo()
+
+    # @+node:ekr.20261117154843.1: *4* TestEditCommands.test_undo_insertNodeAsFirstChild
+    def test_undo_insert_node(self):
+        c = self.c
+        old_p = c.p.copy()
+        u = c.undoer
+        new_p = c.insertNodeAsFirstChild()
+        for _i in range(3):
+            assert c.p == new_p
+            self.assertEqual(u.undoMenuLabel, 'Undo insert-as-first-child')
+            u.undo()
+            assert c.p == old_p
+            self.assertEqual(u.redoMenuLabel, 'Redo insert-as-first-child')
+            u.redo()
+
+    # @+node:ekr.20261117154938.1: *4* TestEditCommands.test_undo_insertNodeAsLastChild
+    def test_undo_insert_node(self):
+        c = self.c
+        old_p = c.p.copy()
+        u = c.undoer
+        new_p = c.insertNodeAsLastChild()
+        for _i in range(3):
+            assert c.p == new_p
+            self.assertEqual(u.undoMenuLabel, 'Undo insert-as-last-child')
+            u.undo()
+            assert c.p == old_p
+            self.assertEqual(u.redoMenuLabel, 'Redo insert-as-last-child')
             u.redo()
 
     # @+node:ekr.20210905064816.20: *4* test_inserting_a_new_node_draws_the_screen_exactly_once
