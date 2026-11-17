@@ -1234,7 +1234,7 @@ def insertNodeAsLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Posit
         return new_p  # For unit tests.
 
 
-# @+node:ekr.20261008042653.1: *3* c_oc:insert-node (to do)
+# @+node:ekr.20261008042653.1: *3* c_oc:insert-node
 @g.commander_command('insert-node')
 def insertHeadline(
     self: Cmdr, event: LeoKeyEvent | None = None, op_name: str = "Insert Node"
@@ -1246,32 +1246,34 @@ def insertHeadline(
     If c.p is not expanded, insert a new node after c.p.
     """
     c = self
-    if not c.p:
+    p = c.p
+    u = c.undoer
+    if not p:
         return None
     c.endEditing()
-    with c.undoer as u:
-        u.set_command_name(op_name)
+    with u.change_node(p, op_name):
         new_p = u.insert_node(c.p)
         u.redraw_and_edit(new_p)
         return new_p  # For unit tests.
 
 
-# @+node:ekr.20130922133218.11540: *3* c_oc:insert-node-before (to do)
+# @+node:ekr.20130922133218.11540: *3* c_oc:insert-node-before
 @g.commander_command('insert-node-before')
 def insertHeadlineBefore(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Insert a node before the presently selected node."""
     c = self
-    if not c.p:
+    p = c.p
+    u = c.undoer
+    if not p:
         return None
     if c.hoistStack and c.p == c.hoistStack[-1].p:
         g.warning('can not insert a node before the base of a hoist')
         return None
     c.endEditing()
-    with c.undoer as u:
-        u.set_command_name('insert-node-before')
+    with u.change_node(p, 'insert-node-before'):
         new_p = u.insert_node(c.p, before=True)
         u.redraw_and_edit(new_p)
-        return new_p
+        return new_p  # For unit tests.
 
 
 # @+node:ekr.20031218072017.2922: ** c_oc.Mark commands
