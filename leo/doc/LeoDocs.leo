@@ -28366,6 +28366,8 @@ Undoer beads are instances of ``UndoBead`` or ``TypingBead``.
 .. _`PR #4957`: https://github.com/leo-editor/leo-editor/pull/4957
 .. _`PR #4958`: https://github.com/leo-editor/leo-editor/pull/4958
 
+.. _`PR #4967`: https://github.com/leo-editor/leo-editor/pull/4967
+
 .. _`PR #4970`: https://github.com/leo-editor/leo-editor/pull/4970
 .. _`PR #4971`: https://github.com/leo-editor/leo-editor/pull/4971
 .. _`PR #4975`: https://github.com/leo-editor/leo-editor/pull/4975
@@ -28402,6 +28404,7 @@ Undoer beads are instances of ``UndoBead`` or ``TypingBead``.
 .. _`PR #5033`: https://github.com/leo-editor/leo-editor/pull/5033
 .. _`PR #5034`: https://github.com/leo-editor/leo-editor/pull/5034
 .. _`PR #5035`: https://github.com/leo-editor/leo-editor/pull/5035
+.. _`PR #5036`: https://github.com/leo-editor/leo-editor/pull/5036
 .. _`PR #5037`: https://github.com/leo-editor/leo-editor/pull/5037
 .. _`PR #5038`: https://github.com/leo-editor/leo-editor/pull/5038
 .. _`PR #5039`: https://github.com/leo-editor/leo-editor/pull/5039
@@ -28418,66 +28421,77 @@ Undoer beads are instances of ``UndoBead`` or ``TypingBead``.
 .. _`PR #5053`: https://github.com/leo-editor/leo-editor/pull/5053
 
 .. C:\Repos\leo-editor&gt;gh pr list --limit 100 --state merged --search milestone:6.9.0 --json number,title
-.. Convert json to single line
+
+.. Convert json to single line:
 .. find ^\{\n"number": ([0-9]+),\n"title": "(.*?)"\n}(,)?
 .. repl PR #\1: \2
 
+Enhancements
 - `PR #4931`_: soften the lion on Leo's website
-- `PR #4937`_: autocompleter crash
-- `PR #4939`_: git-diff-pr
-- `PR #4940`_: crash in show-settings-outline command
-- `PR #4942`_: add ty command
-- `PR #4943`_: remove mypy-only suppressions
-- `PR #4946`_: PR fixes #4944 and #4945
-- `PR #4954`_: Add lxml and PyYAML as declared dependencies
-- `PR #4955`_: Require strict-equality-semantics
-- `PR #4957`_: all commands should have docstrings
-- `PR #4958`_: qt layout menu
-- `PR #4967`_: enable VR commands for c only if the VR plugin is enabled for c
-- `PR #4970`_: Move three plugins to the attic.
-- `PR #4971`_: Prepare for Python 3.15
-- `PR #4975`_: fix decluttering
-- `PR #4976`_: update docs for Python 3.15 and new workflows
-- `PR #4981`_: improve rust importer
-- `PR #4982`_: optional dependencies
-- `PR #4983`_: adoc command drops text
-- `PR #4985`_: fix visual glitch during startup
-- `PR #4986`_: Fix flashes in tree pane and log panes
-- `PR #4991`_: add two promote commands
+- `PR #5037`_: Improve next/prev-line commands
+- `PR #4942`_: Add ty command
+- `PR #4957`_: All commands should have docstrings
+- `PR #4981`_: Improve rust importer
+- `PR #4991`_: Add two promote commands
+
+Simplify Leo's API for undo
 - `PR #4994`_: Incrementally revise undo
-- `PR #4995`_: Drop support for 3.10. Add support for 3.14
-- `PR #4996`_: PR2 for #4993: complete new helpers
-- `PR #4997`_: Complete composable undo migration on top of #4996
-- `PR #5000`_: Add support for Python 3.15
-- `PR #5001`_: PR fixes  #4999: clean undo
-- `PR #5003`_: Problems with non-BMP characters such as emoji
-- `PR #5004`_: PR Fixes #4998: zap-to-character
+- `PR #4996`_: Complete new helpers
+- `PR #4997`_: Complete composable undo migration
+- `PR #5001`_: Clean undo
 - `PR #5009`_: More changes to the undoer
-- `PR #5012`_: Ekr no redraw
+- `PR #5012`_: Rename u.redraw to u._redraw
 - `PR #5015`_: Clean code and improve unit tests
-- `PR #5017`_: fix recent (serious!) undo bugs
+- `PR #5017`_: Fix recent (serious!) undo bugs
 - `PR #5020`_: Retire old undo code
 - `PR #5025`_: retire legacy undo typing
-- `PR #5026`_: restore log version
-- `PR #5027`_: abbreviations in headlines
-- `PR #5030`_: more undo changes
-- `PR #5033`_: find failure!
-- `PR #5034`_: reverse search fail.
+- `PR #5030`_: More undo changes
+- `PR #5036`_: Fix boltex's suggestions
+- `PR #5043`_: Fix undo typing
+- `PR #5044`_: Retain "line" undo granularity
+- `PR #5050`_: Text reversion
+- `PR #5052`_: Improve undo/redo typing
+
+Fix bugs
+- `PR #4937`_: Autocompleter crash
+- `PR #4939`_: Fix git-diff-pr
+- `PR #4940`_: Crash in show-settings-outline command
+- `PR #4946`_: Fix crashers
+- `PR #4958`_: Qt layout menu
+- `PR #4967`_: Enable VR commands for c only if the VR plugin is enabled for c
+- `PR #4975`_: Fix decluttering
+- `PR #4983`_: Adoc command drops text
+- `PR #4985`_: Fix visual glitch during startup
+- `PR #4986`_: Fix flashes in tree pane and log panes
+- `PR #5003`_: Problems with non-BMP characters such as emoji
+- `PR #5004`_: Fix zap-to-character
+- `PR #5026`_: Restore log version
+- `PR #5027`_: Abbreviations in headlines
+- `PR #5033`_: Find failure!
+- `PR #5034`_: Reverse search fail.
 - `PR #5035`_: Fix crasher in nav_qt.py
-- `PR #5036`_: fix boltex's suggestions in - `PR #5030`_
-- `PR #5037`_: improve next/prev-line
+- `PR #5046`_: crash in quicksearch.py
+- `PR #5051`_: Control-click disables word wrap
+
+Plugins
+- `PR #4970`_: Move three plugins to the attic.
+
+Distribution
+- `PR #4954`_: Add lxml and PyYAML as declared dependencies
+- `PR #4971`_: Prepare for Python 3.15
+- `PR #4976`_: Update docs for Python 3.15 and new workflows
+- `PR #4982`_: Optional dependencies
+- `PR #4995`_: Drop support for 3.10. Add support for 3.14
+- `PR #5000`_: Add support for Python 3.15
+
+Testing
+- `PR #4943`_: remove mypy-only suppressions
+- `PR #4955`_: Require strict-equality-semantics
 - `PR #5038`_: remove all pylint suppressions
 - `PR #5039`_: Require full annotations in leo/core, leo/commands, and leo/plugins/qt*.py
-- `PR #5043`_: fix undo typing
-- `PR #5044`_: retain \"line\" undo granularity
-- `PR #5046`_: crash in quicksearch.py
 - `PR #5047`_: Fix hole in unit tests for commands
 - `PR #5048`_: clean all unit tests
-- `PR #5050`_: text reversion
-- `PR #5051`_: Control-click disables word wrap
-- `PR #5052`_: improve undo/redo typing
-- `PR #5053`_: Improve tests and coverage for leoUndo.py
-</t>
+- `PR #5053`_: Improve tests and coverage for leoUndo.py</t>
 <t tx="ekr.20261116101656.1">Leo https://leo-editor.github.io/leo-editor/ 6.9.0 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor/preface.html).
