@@ -1191,14 +1191,15 @@ def deleteOutline(
 def insertChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Insert a node as a child of presently selected node."""
     c = self
-    if not c.p:
+    p = c.p
+    u = c.undoer
+    if not p:
         return None
     c.endEditing()
-    with c.undoer as u:
-        u.set_command_name('insert-child')
+    with u.change_node(p, 'insert-child'):
         new_p = u.insert_node(c.p, as_child=True)
         u.redraw_and_edit(new_p)
-        return new_p
+        return new_p  # For unit tests.
 
 
 # @+node:ekr.20261008042700.1: *3* c_oc:insert-as-first-child (not used in Leo's core)
@@ -1222,17 +1223,18 @@ def insertNodeAsFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Posi
 def insertNodeAsLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Insert a node as the last child of the previous node."""
     c = self
+    p = c.p
+    u = c.undoer
     if not c.p:
         return None
     c.endEditing()
-    with c.undoer as u:
-        u.set_command_name('insert-as-last-child')
+    with u.change_node(p, 'insert-as-last-child'):
         new_p = u.insert_node(c.p, as_child=True, index=c.p.numberOfChildren())
         u.redraw_and_edit(new_p)
         return new_p  # For unit tests.
 
 
-# @+node:ekr.20261008042653.1: *3* c_oc:insert-node
+# @+node:ekr.20261008042653.1: *3* c_oc:insert-node (to do)
 @g.commander_command('insert-node')
 def insertHeadline(
     self: Cmdr, event: LeoKeyEvent | None = None, op_name: str = "Insert Node"
@@ -1254,7 +1256,7 @@ def insertHeadline(
         return new_p  # For unit tests.
 
 
-# @+node:ekr.20130922133218.11540: *3* c_oc:insert-node-before
+# @+node:ekr.20130922133218.11540: *3* c_oc:insert-node-before (to do)
 @g.commander_command('insert-node-before')
 def insertHeadlineBefore(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Insert a node before the presently selected node."""

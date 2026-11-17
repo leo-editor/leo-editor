@@ -4703,6 +4703,20 @@ class TestEditCommands(LeoUnitTest):
             self.assertEqual(u.redoMenuLabel, 'Redo Insert Node')
             u.redo()
 
+    # @+node:ekr.20261117160626.1: *4* TestEditCommands.test_undo_insertChild
+    def test_undo_insertChild(self):
+        c = self.c
+        u = c.undoer
+        old_p = c.p.copy()
+        new_p = c.insertChild()
+        for _i in range(3):
+            assert c.p == new_p
+            self.assertEqual(u.undoMenuLabel, 'Undo insert-child')
+            u.undo()
+            assert c.p == old_p
+            self.assertEqual(u.redoMenuLabel, 'Redo insert-child')
+            u.redo()
+
     # @+node:ekr.20261117154843.1: *4* TestEditCommands.test_undo_insertNodeAsFirstChild
     def test_undo_insert_node(self):
         c = self.c
