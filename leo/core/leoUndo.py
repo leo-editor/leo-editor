@@ -648,11 +648,13 @@ class Undoer:
         c.p = new_p
         new_p.setDirty()
         c.p.setAllAncestorAtFileNodesDirty()
+        c.redraw()
         c.checkOutline()
 
         def delete_node_redoer() -> None:
             old_p.doDelete()
             c.p = new_p
+            u._redraw(new_p)
 
         def delete_node_undoer() -> None:
             if old_back:
@@ -663,9 +665,9 @@ class Undoer:
                 old_p._linkAsRoot()
             old_p.setDirty()
             c.p = old_p
+            u._redraw(old_p)
 
-        if old_p.v not in u.node_captures:
-            b.add_helpers(delete_node_redoer, delete_node_undoer)
+        b.add_helpers(delete_node_redoer, delete_node_undoer)
 
     # @+node:ekr.20261006155622.1: *5* u.insert_node
     def insert_node(

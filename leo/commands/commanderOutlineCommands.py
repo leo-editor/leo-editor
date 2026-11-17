@@ -1181,7 +1181,7 @@ def deleteOutline(
     if not p:
         return
     c.endEditing()
-    with u.change_outline(op_name):
+    with u.change_node(p, op_name):
         u.delete_node(p)  # Calculates new c.p.
 
 
