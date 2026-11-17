@@ -648,7 +648,6 @@ class Undoer:
         c.p = new_p
         new_p.setDirty()
         c.p.setAllAncestorAtFileNodesDirty()
-        c.redraw()
         c.checkOutline()
 
         def delete_node_redoer() -> None:
