@@ -257,6 +257,32 @@ class TestUndo(LeoUnitTest):
         func = c.dedentBody
         self.runTest(before, after, i, j, func)
 
+    # @+node:ekr.20261014103254.17: *3* TestUndo.test_delete_root
+    def test_delete_root(self):
+        c = self.c
+        u = c.undoer
+        root = c.rootPosition()
+
+        # Setup.
+        root_v = root.v
+        assert root.h == 'root'
+        next = root.next()
+        next_h = next.h
+        next_v = next.v
+
+        # Delete.
+        c.deleteOutline()
+
+        for _i in range(3):
+            root = c.rootPosition()
+            assert root.h == next_h
+            assert root.v == next_v
+            u.undo()
+            root = c.rootPosition()
+            assert root.h == 'root'
+            assert root.v == root_v
+            u.redo()
+
     # @+node:ekr.20210906172626.8: *3* TestUndo.test_deleteComments
     def test_deleteComments(self):
         c = self.c
