@@ -183,6 +183,71 @@ class TestUndo(LeoUnitTest):
         func = c.convertTabs
         self.runTest(before, after, i, j, func)
 
+    # @+node:ekr.20261118102844.1: *3* TestUndo.test_cutText (new)
+    def test_cutText(self):
+
+        from leo.core.leoGui import LeoKeyEvent
+
+        c = self.c
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
+        before = 'abcdef'
+        after = 'aef'
+
+        # select and cut 'bcd'
+        p.b = before
+        w.setSelectionRange(1, 4, insert=1)
+        c.frame.cutText(event=LeoKeyEvent(c, w=w))
+
+        for _i in range(3):
+            w_s = w.getAllText()
+            w_sel = w.getSelectionRange()
+            assert p.b == after, repr(p.b)
+            assert w_s == after, repr(w_s)
+            assert w_sel == (1, 1), repr(w_sel)
+            u.undo()
+            w_s = w.getAllText()
+            w_sel = w.getSelectionRange()
+            assert p.b == before, repr(p.b)
+            assert w_s == before, repr(w_s)
+            assert w_sel == (1, 4), repr(w_sel)
+            u.redo()
+
+    # @+node:ekr.20261118103021.1: *3* TestUndo.test_pasteText (new)
+    def test_pasteText(self):
+
+        from leo.core.leoGui import LeoKeyEvent
+
+        c = self.c
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
+        before = 'abcdef'
+        after = 'aXYZef'
+
+        # Init the clipboard.
+        g.app.gui.replaceClipboardWith('XYZ')
+
+        # select and paste.
+        p.b = before
+        w.setSelectionRange(1, 4, insert=1)
+        c.frame.pasteText(event=LeoKeyEvent(c, w=w))
+
+        for _i in range(3):
+            w_s = w.getAllText()
+            w_sel = w.getSelectionRange()
+            assert p.b == after, repr(p.b)
+            assert w_s == after, repr(w_s)
+            assert w_sel == (4, 4), repr(w_sel)
+            u.undo()
+            w_s = w.getAllText()
+            w_sel = w.getSelectionRange()
+            assert p.b == before, repr(p.b)
+            assert w_s == before, repr(w_s)
+            assert w_sel == (1, 4), repr(w_sel)
+            u.redo()
+
     # @+node:ekr.20210906172626.7: *3* TestUndo.test_dedentBody
     def test_dedentBody(self):
         c = self.c
