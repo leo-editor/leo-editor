@@ -1621,7 +1621,7 @@ def test_diff_two_branches(self):
     finally:
         os.chdir(old_dir)
 
-# @+node:ekr.20261117233629.1: *3* --- deleted from pasterRetainingclones
+# @+node:ekr.20261117233629.1: *3* --- deleted from paste-retaining-clones
 # @+node:ekr.20050418084539.2: *4* def computeCopiedBunchList
 def computeCopiedBunchList(
     c: Cmdr,

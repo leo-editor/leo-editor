@@ -542,7 +542,9 @@ class Undoer:
         u.setUndoTypes()
 
     # @+node:ekr.20261015042013.1: *4* u: actions
-    # These methods must *not* have an @contextmanager decorator.
+    # These methods:
+    # Must *not* have an @contextmanager decorator.
+    # Must *not* have ui finishers: they must *not* call UndoBead.add_finishers.
     # @+node:ekr.20261009185938.1: *5* u.change_headline
     def change_headline(self, p: Position, new_h: str, *, ch: str = '') -> None:
         """
@@ -747,7 +749,9 @@ class Undoer:
             # Menu labels are updated when the completed bead is pushed.
 
     # @+node:ekr.20261015042249.1: *4* u: contexts
-    # These all must have @contextmanager decorators.
+    # These methods:
+    # Must have @contextmanager decorators.
+    # Must have ui finishers: they must call UndoBead.add_finishers.
     # @+node:vivainio.202610110001.1: *5* u.change_node
     @contextmanager
     def change_node(self, p: Position, command_name: str) -> Generator[Undoer]:
