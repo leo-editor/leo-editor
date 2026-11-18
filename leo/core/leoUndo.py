@@ -576,9 +576,6 @@ class Undoer:
         Change a headline and preserve directives, dirty bits and editor state.
 
         Called *only* from LeoTree.onHeadChanged
-
-        This method should *not* have an @contextmanager decorator:
-        it is never called from within other @contextmanager methods.
         """
         u = self
         b = u._require_bead()
@@ -963,7 +960,8 @@ class Undoer:
     @contextmanager
     def change_recent_files(self, command_name: str = 'Clear Recent Files') -> Generator[Undoer]:
         """
-        Handling doing, undoing and redoing for the 'Clear Recent Files' menu item."""
+        Handling doing, undoing and redoing for the 'Clear Recent Files' menu item.
+        """
         u = self
         rf = g.app.recentFilesManager
         old_files = rf.recentFiles[:]
