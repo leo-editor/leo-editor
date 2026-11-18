@@ -380,29 +380,6 @@ class TestUndo(LeoUnitTest):
         func = c.deleteComments
         self.runTest(before, after, i, j, func)
 
-    # @+node:ekr.20261014103254.35: *3* TestUndo.test_drag_clone
-    def test_drag_clone(self):
-        c = self.c
-        p = c.p
-        u = c.undoer
-
-        # Setup.
-        target = p.next()
-        assert target.h == '@settings'
-        before_children = c.hiddenRootNode.children[:]
-
-        # Clone and drag.
-        c.dragCloneToNthChildOf(p, target, 0)
-
-        for _i in range(3):
-            assert c.p.isCloned(), c.p
-            assert target.firstChild().v == p.v
-            u.undo()
-            assert not c.p.isCloned(), c.p
-            assert c.hiddenRootNode.children == before_children
-            assert not target.hasChildren()
-            u.redo()
-
     # @+node:ekr.20210906172626.16: *3* TestUndo.test_edit_headline
     def test_edit_headline(self):
         # Brian Theado.

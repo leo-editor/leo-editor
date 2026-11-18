@@ -877,6 +877,47 @@ def computeVnodeInfoDict(c: Cmdr) -> dict[VNode, g.Bunch]:
 
 
 # @+node:ekr.20261118083833.1: *3* --- deleted unit tests
+# @+node:ekr.20230714143451.1: *4* TestEditFileCommands.test_diff_two_branches (deleted)
+def test_diff_two_branches(self):
+    c = self.c
+    u = c.undoer
+    x = GitDiffController(c=c)
+
+    # Setup the outline.
+    root = c.rootPosition()
+    root.h = '@file leoGlobals.py'
+    root.deleteAllChildren()
+    while root.hasNext():
+        root.next().doDelete()
+    c.selectPosition(root)
+
+    # Run the test in the leo-editor directory (the parent of the .git directory).
+    new_dir = g.finalize_join(g.app.loadDir, '..', '..')
+    old_dir = os.getcwd()
+    os.chdir(new_dir)
+    try:
+        # Run the command, suppressing output from git.
+        expected_last_headline = 'git-diff-branches 6.8.10 6.8.10.dev1'
+        try:
+            sys.stdout = open(os.devnull, 'w')
+            x.diff_two_branches(
+                branch1='main',
+                branch2='devel',
+                fn='leo/core/leoGlobals.py',  # Don't use backslashes.
+            )
+        finally:
+            sys.stdout = sys.__stdout__
+        # #3497: Silently skip the test if nothing has changed.
+        if c.lastTopLevel() == root:
+            return
+        self.assertEqual(c.lastTopLevel().h, expected_last_headline)
+        u.undo()
+        self.assertEqual(c.lastTopLevel(), root)
+        u.redo()
+        self.assertEqual(c.lastTopLevel().h, expected_last_headline)
+    finally:
+        os.chdir(old_dir)
+
 # @+node:ekr.20230724130924.1: *4* TestOutlineCommands.test_paste_as_template (deleted)
 def test_paste_as_template(self):
     c = self.c
@@ -1031,46 +1072,28 @@ def test_tree(pasted_flag: bool, tag: str) -> None:
         # g.printObj([f"{z.gnx:30} {' '*z.level()}{z.h:10} {z.b!r}" for z in c.all_positions()], tag='bodies')
         self.fail(message)  # This throws another exception!
 
-# @+node:ekr.20230714143451.1: *4* TestEditFileCommands.test_diff_two_branches (deleted)
-def test_diff_two_branches(self):
+# @+node:ekr.20261118172131.29: *4* TestUndo.test_drag_clone
+def test_drag_clone(self):
     c = self.c
+    p = c.p
     u = c.undoer
-    x = GitDiffController(c=c)
 
-    # Setup the outline.
-    root = c.rootPosition()
-    root.h = '@file leoGlobals.py'
-    root.deleteAllChildren()
-    while root.hasNext():
-        root.next().doDelete()
-    c.selectPosition(root)
+    # Setup.
+    target = p.next()
+    assert target.h == '@settings'
+    before_children = c.hiddenRootNode.children[:]
 
-    # Run the test in the leo-editor directory (the parent of the .git directory).
-    new_dir = g.finalize_join(g.app.loadDir, '..', '..')
-    old_dir = os.getcwd()
-    os.chdir(new_dir)
-    try:
-        # Run the command, suppressing output from git.
-        expected_last_headline = 'git-diff-branches 6.8.10 6.8.10.dev1'
-        try:
-            sys.stdout = open(os.devnull, 'w')
-            x.diff_two_branches(
-                branch1='main',
-                branch2='devel',
-                fn='leo/core/leoGlobals.py',  # Don't use backslashes.
-            )
-        finally:
-            sys.stdout = sys.__stdout__
-        # #3497: Silently skip the test if nothing has changed.
-        if c.lastTopLevel() == root:
-            return
-        self.assertEqual(c.lastTopLevel().h, expected_last_headline)
+    # Clone and drag.
+    c.dragCloneToNthChildOf(p, target, 0)
+
+    for _i in range(3):
+        assert c.p.isCloned(), c.p
+        assert target.firstChild().v == p.v
         u.undo()
-        self.assertEqual(c.lastTopLevel(), root)
+        assert not c.p.isCloned(), c.p
+        assert c.hiddenRootNode.children == before_children
+        assert not target.hasChildren()
         u.redo()
-        self.assertEqual(c.lastTopLevel().h, expected_last_headline)
-    finally:
-        os.chdir(old_dir)
 
 # @+node:ekr.20261118170200.1: *3* --- deleted c.drag methods
 # @+node:ekr.20261014103254.35: *4* TestUndo.test_drag_clone (not used)
