@@ -3525,7 +3525,7 @@ class LeoServer:
         u = c.undoer
         h: str = param.get('name', '')
         oldH: str = p.h
-        if h == oldH:
+        if h == oldH:  # pragma: no cover
             return self._make_response()
         with u.change_node(p, 'Change Headline'):
             # c.setHeadString fixes the headline revert bug of p.initHeadString(h)

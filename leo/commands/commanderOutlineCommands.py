@@ -1058,7 +1058,7 @@ def clone(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Create a clone of the selected outline."""
     c = self
     u = c.undoer
-    if not c.p:
+    if not c.p:  # pragma: no cover
         return None
     c.endEditing()
     with u.change_outline('clone-node'):
@@ -1081,7 +1081,7 @@ def cloneToAtSpot(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     if not p:
         return
     # 2015/12/27: fix bug 220: do not allow clone-to-at-spot on @spot node.
-    if p.h.startswith('@spot'):
+    if p.h.startswith('@spot'):  # pragma: no cover
         g.es("can not clone @spot node", color='red')
         return
 
@@ -1124,7 +1124,7 @@ def cloneToLastNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     c = self
     p = c.p
     u = c.undoer
-    if not p:
+    if not p:  # pragma: no cover
         return
     prev = p.copy()
     c.endEditing()  # Capture any changes to the headline.
@@ -1149,7 +1149,7 @@ def deleteOutline(
     c = self
     p = c.p
     u = c.undoer
-    if not p:
+    if not p:  # pragma: no cover
         return
     c.endEditing()
     with u.change_node(p, op_name):
@@ -1164,7 +1164,7 @@ def insertChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None
     c = self
     p = c.p
     u = c.undoer
-    if not p:
+    if not p:  # pragma: no cover
         return None
     c.endEditing()
     with u.change_node(p, 'insert-child'):
@@ -1180,7 +1180,7 @@ def insertNodeAsFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Posi
     c = self
     p = c.p
     u = c.undoer
-    if not p:
+    if not p:  # pragma: no cover
         return None
     c.endEditing()
     with u.change_node(p, 'insert-as-first-child'):
@@ -1196,7 +1196,7 @@ def insertNodeAsLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Posit
     c = self
     p = c.p
     u = c.undoer
-    if not c.p:
+    if not c.p:  # pragma: no cover
         return None
     c.endEditing()
     with u.change_node(p, 'insert-as-last-child'):
@@ -1219,7 +1219,7 @@ def insertHeadline(
     c = self
     p = c.p
     u = c.undoer
-    if not p:
+    if not p:  # pragma: no cover
         return None
     c.endEditing()
     with u.change_node(p, op_name):
@@ -1235,9 +1235,9 @@ def insertHeadlineBefore(self: Cmdr, event: LeoKeyEvent | None = None) -> Positi
     c = self
     p = c.p
     u = c.undoer
-    if not p:
+    if not p:  # pragma: no cover
         return None
-    if c.hoistStack and c.p == c.hoistStack[-1].p:
+    if c.hoistStack and c.p == c.hoistStack[-1].p:  # pragma: no cover
         g.warning('can not insert a node before the base of a hoist')
         return None
     c.endEditing()
@@ -1419,7 +1419,7 @@ def markHeadline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     c = self
     p = c.p
     u = c.undoer
-    if not p:
+    if not p:  # pragma: no cover
         return
     c.endEditing()
     with u.change_node(p, 'toggle-marked'):

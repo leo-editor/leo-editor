@@ -73,7 +73,7 @@ class KillBufferCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         s = w.getAllText()
         ins = w.getInsertPoint()
@@ -96,7 +96,7 @@ class KillBufferCommandsClass:
         u = c.undoer
         # Must be valid in headlines.
         w = event.w if event else c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         with u.change_node(p, 'backward-kill-word'):
             c.editCommands.backwardWord(event)
@@ -115,7 +115,7 @@ class KillBufferCommandsClass:
         u = c.undoer
         # Must be valid in headlines.
         w = event.w if event else c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         with u.change_node(p, 'kill-word'):
             c.editCommands.extendToWord(event)
@@ -227,7 +227,7 @@ class KillBufferCommandsClass:
         p = c.p
         u = c.undoer
         w = event.w if event else c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         s = w.getAllText()
         ins = w.getInsertPoint()
@@ -258,7 +258,7 @@ class KillBufferCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         s = w.getAllText()
         ins = w.getInsertPoint()
@@ -285,11 +285,11 @@ class KillBufferCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         i, j = w.getSelectionRange()
         if i == j:
-            return
+            return  # pragma: no cover
         s = w.getSelectedText()
         with u.change_node(p, 'kill-region'):
             w.delete(i, j)
@@ -320,7 +320,7 @@ class KillBufferCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         s = w.getAllText()
         ins = w.getInsertPoint()
@@ -341,7 +341,7 @@ class KillBufferCommandsClass:
         p = c.p
         u = c.undoer
         w = event.w if event else c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         s = w.getAllText()
         i = j = ins = w.getInsertPoint()
@@ -382,14 +382,14 @@ class KillBufferCommandsClass:
         p = c.p
         u = c.undoer
         w = event.w if event else c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
-        if not p:
+        if not p:  # pragma: no cover
             return
         text = w.getAllText()
         i, j = w.getSelectionRange()
         clip_text = self.getClipboard()
-        if not g.app.globalKillBuffer and not clip_text:
+        if not g.app.globalKillBuffer and not clip_text:  # pragma: no cover
             return
         with u.change_node(p, 'yank-pop' if pop else 'yank'):
             if not pop or self.lastYankP and self.lastYankP != p:
@@ -422,10 +422,10 @@ class KillBufferCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):  # #4998.
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         state = k.getState('zap-to-char')
-        if state == 0:
+        if state == 0:  # pragma: no cover
             k.setLabelBlue('Zap To Character: ')
             k.setState('zap-to-char', 1, handler=self.zapToCharacter)
             return

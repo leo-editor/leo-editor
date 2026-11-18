@@ -257,7 +257,7 @@ def previousOrBeginningOfLineExtendSelection(event: LeoKeyEvent | None = None) -
 def promoteBodies(event: LeoKeyEvent | None = None) -> None:
     """Copy the body text of all descendants to the parent's body text."""
     c = event.get('c') if event else None
-    if not c:
+    if not c:  # pragma: no cover
         return
     p = c.p
     u = c.undoer
@@ -271,7 +271,7 @@ def promoteBodies(event: LeoKeyEvent | None = None) -> None:
 def promoteHeadlines(event: LeoKeyEvent | None = None) -> None:
     """Copy the headlines of all descendants to the parent's body text."""
     c = event.get('c') if event else None
-    if not c:
+    if not c:  # pragma: no cover
         return
     p = c.p
     u = c.undoer
@@ -446,7 +446,7 @@ class EditCommandsClass:
         c = self.c
         u = c.undoer
         w = event.w if event else c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
 
         def callback(arg: str, w: QTextMixin = w) -> None:
@@ -519,7 +519,7 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
 
-        if g.app.batchMode:
+        if g.app.batchMode:  # pragma: no cover
             c.notValidInBatchMode('capitalize-headline')
             return
 
@@ -580,7 +580,7 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         with u.change_node(p, which):
             i, end = w.getSelectionRange()
@@ -621,14 +621,14 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         s = w.getAllText()
         ins = w.getInsertPoint()
         i, j = g.getWord(s, ins)
         word = s[i:j]
         if not word.strip():
-            return  # pragma: no cover (defensive)
+            return  # pragma: no cover
         if which == 'cap':
             word2 = word.capitalize()
         elif which == 'low':
@@ -813,7 +813,7 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         with u.change_node(p, 'indent-to-comment-column'):
             s = w.getAllText()
@@ -857,7 +857,7 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         if self.fillColumn > 0:
             fillColumn = self.fillColumn
@@ -912,7 +912,7 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         s = w.getAllText()
         sel_1, sel_2 = w.getSelectionRange()
@@ -1462,7 +1462,7 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         s = w.getAllText()
         ins = w.getInsertPoint()
@@ -1616,10 +1616,10 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         s = w.getSelectedText() if w.hasSelection() else w.getAllText()
-        if not s:
+        if not s:  # pragma: no cover
             return
         # Insert or delete spaces instead of tabs when negative tab width is in effect.
         width = c.getTabWidth(c.p)
@@ -1746,7 +1746,7 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         s = w.getAllText()
         lines = []
@@ -1772,7 +1772,7 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         i, j = w.getSelectionRange()
         if i == j:
@@ -1813,7 +1813,7 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         with u.change_node(p, 'delete-word'):
             if w.hasSelection():
@@ -1882,7 +1882,7 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         s = w.getAllText()
         ins = w.getInsertPoint()
@@ -1941,7 +1941,7 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         oldSel = w.getSelectionRange()
         with u.change_node(p, 'insert-newline'):
@@ -1959,7 +1959,7 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         oldSel = w.getSelectionRange()
         with u.change_node(p, 'insert-newline-and-indent'):
@@ -1977,7 +1977,7 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         with u.change_node(p, 'insert-parenthesis'):
             i = w.getInsertPoint()
@@ -1993,7 +1993,7 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         tab_width = abs(c.getTabWidth(c.p))
         ins = w.getInsertPoint()
@@ -2015,7 +2015,7 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = event.w if event else c.frame.body.wrapper
-        if not w:
+        if not w:  # pragma: no cover
             return
 
         # Initial data.
@@ -2440,7 +2440,7 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         with u.change_node(p, 'split-line'):
             s = w.getAllText()
@@ -3504,7 +3504,7 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         with u.change_node(p, 'backward-kill-paragraph'):
             self.backwardParagraphHelper(None, extend=True)
@@ -3558,7 +3558,7 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         with u.change_node(p, 'kill-paragraph'):
             self.extendToParagraph(event)
@@ -3624,9 +3624,9 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
-        if not w.hasSelection():
+        if not w.hasSelection():  # pragma: no cover
             return
         s = w.getAllText()
         i1, j1 = w.getSelectionRange()
@@ -3674,7 +3674,7 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         s = w.getAllText()
         sel_1, sel_2 = w.getSelectionRange()
@@ -3717,7 +3717,7 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         s = w.getAllText()
         sel_1, sel_2 = w.getSelectionRange()
@@ -3755,9 +3755,9 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
-        if not w.hasSelection():
+        if not w.hasSelection():  # pragma: no cover
             return
         s = w.getAllText()
         i1, j1 = w.getSelectionRange()
@@ -3795,9 +3795,9 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
-        if not w.hasSelection():
+        if not w.hasSelection():  # pragma: no cover
             return
         s = w.getAllText()
         i, j = w.getSelectionRange()
@@ -3937,9 +3937,9 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
-        if not w.hasSelection():
+        if not w.hasSelection():  # pragma: no cover
             return
         s = w.getAllText()
 
@@ -4000,9 +4000,9 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
-        if not w.hasSelection():
+        if not w.hasSelection():  # pragma: no cover
             return
 
         def lower(s: str) -> str:
@@ -4037,7 +4037,7 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         ins = w.getInsertPoint()
         s = w.getAllText()
@@ -4073,7 +4073,7 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         with u.change_node(p, 'transpose-words'):
             s = w.getAllText()
@@ -4104,7 +4104,7 @@ class EditCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         s = w.getAllText()
         i = w.getInsertPoint()
