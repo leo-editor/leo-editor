@@ -1072,6 +1072,110 @@ def test_diff_two_branches(self):
     finally:
         os.chdir(old_dir)
 
+# @+node:ekr.20261118170200.1: *3* --- deleted c.drag methods
+# @+node:ekr.20261014103254.35: *4* TestUndo.test_drag_clone (not used)
+def test_drag_clone(self):
+    c = self.c
+    p = c.p
+    u = c.undoer
+
+    # Setup.
+    target = p.next()
+    assert target.h == '@settings'
+    before_children = c.hiddenRootNode.children[:]
+
+    # Clone and drag.
+    c.dragCloneToNthChildOf(p, target, 0)
+
+    for _i in range(3):
+        assert c.p.isCloned(), c.p
+        assert target.firstChild().v == p.v
+        u.undo()
+        assert not c.p.isCloned(), c.p
+        assert c.hiddenRootNode.children == before_children
+        assert not target.hasChildren()
+        u.redo()
+
+# @+node:ekr.20031218072017.2946: *4* c.dragCloneToNthChildOf (not used)
+def dragCloneToNthChildOf(self, p: Position, parent: Position, n: int) -> None:
+    """Drag a clone of p to the n'th child of parent."""
+    c = self
+    u = c.undoer
+    c.endEditing()
+
+    def oops(message: str) -> None:
+        if not g.unitTesting:
+            c.alert(f"Illegal clone-drag: {message}")
+
+    # Like c.checkDrag.
+    if any(z.v == p.v for z in p.subtree()):
+        oops('Dragging a clone into its descendant tree')
+        return
+    # Like ccheckMoveWithParentWithWarning.
+    if any(z.v == p.v for z in parent.self_and_subtree()):
+        oops('Dragging a clone into its ancestor')
+        return
+
+    with u.change_outline('c.dragCloneToNthChildOf'):
+        clone = p.clone()
+        clone.setDirty()
+        clone.moveToNthChildOf(parent, n)
+        clone.setDirty()
+        c.p = clone
+
+# @+node:ekr.20031218072017.2353: *4* c.dragAfter (not used)
+def dragAfter(self, p: Position, after: Position) -> None:
+    c = self
+    p = c.p
+    u = c.undoer
+    if not c.checkDrag(p, after):
+        return
+    if not c.checkMoveWithParentWithWarning(p, after.parent(), True):
+        return
+    assert p.v
+    c.endEditing()
+    with u.move_node(p, 'Drag'):
+        p.setDirty()
+        p.moveAfter(after)
+        p.setDirty()
+        c.p = p
+
+# @+node:ekr.20031218072017.2948: *4* c.dragCloneAfter (not used)
+def dragCloneAfter(self, p: Position, after: Position) -> None:
+    c = self
+    u = c.undoer
+    c.endEditing()
+    with u.change_outline('c.dragCloneAfter'):
+        clone = p.clone()
+        if (
+            c.checkDrag(p, after) and
+            c.checkMoveWithParentWithWarning(clone, after.parent(), True)
+        ):  # fmt: skip
+            clone.setDirty()
+            clone.moveAfter(after)
+            clone.setDirty()
+            p = clone
+        else:
+            # Destroys clone and makes p the current node.
+            clone.doDelete(newNode=p)
+        c.p = p
+
+# @+node:ekr.20031218072017.2947: *4* c.dragToNthChildOf (not used)
+def dragToNthChildOf(self, p: Position, parent: Position, n: int) -> None:
+    c = self
+    p = c.p
+    u = c.undoer
+    if not c.checkDrag(p, parent):
+        return
+    if not c.checkMoveWithParentWithWarning(p, parent, True):
+        return
+    c.endEditing()
+    with u.move_node(p, 'Drag'):
+        p.setDirty()
+        p.moveToNthChildOf(parent, n)
+        p.setDirty()
+        c.p = p
+
 # @-all
 # @@nosearch
 # @-leo
