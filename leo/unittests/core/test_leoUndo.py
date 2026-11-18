@@ -183,7 +183,7 @@ class TestUndo(LeoUnitTest):
         func = c.convertTabs
         self.runTest(before, after, i, j, func)
 
-    # @+node:ekr.20261118102844.1: *3* TestUndo.test_cutText (new)
+    # @+node:ekr.20261118102844.1: *3* TestUndo.test_cutText
     def test_cutText(self):
 
         from leo.core.leoGui import LeoKeyEvent
@@ -214,7 +214,7 @@ class TestUndo(LeoUnitTest):
             assert w_sel == (1, 4), repr(w_sel)
             u.redo()
 
-    # @+node:ekr.20261118103021.1: *3* TestUndo.test_pasteText (new)
+    # @+node:ekr.20261118103021.1: *3* TestUndo.test_pasteText
     def test_pasteText(self):
 
         from leo.core.leoGui import LeoKeyEvent
