@@ -432,9 +432,12 @@ class Undoer:
         w: QTextMixin,
     ) -> None:
         """
+        Handle all undo tasks related to typing in the body pane.
         Push a new UndoTyping bead or merge the incoming changes to the top UndoTyping bead.
 
-        Handle all undo tasks related to typing in the body pane. Called by:
+        This method is neither an action nor a context.
+
+        Called by:
         - ec.selfInsertCommand.
         - LeoQListWidget.select_callback.
         - QTextMixin.onTextChanged.
@@ -545,6 +548,13 @@ class Undoer:
     # These methods:
     # Must *not* have an @contextmanager decorator.
     # Must *not* have ui finishers: they must *not* call UndoBead.add_finishers.
+    # Must be nested in a context.
+
+    # By convention, actions should be nexted in a context *method* instead of:
+
+    # with c.undoer:
+    #     u.set_command_name('command name')
+    #     # An action
     # @+node:ekr.20261009185938.1: *5* u.change_headline
     def change_headline(self, p: Position, new_h: str, *, ch: str = '') -> None:
         """
@@ -752,6 +762,7 @@ class Undoer:
     # These methods:
     # Must have @contextmanager decorators.
     # Must have ui finishers: they must call UndoBead.add_finishers.
+    # May be nested (directly or indirectly) in other contexts.
     # @+node:vivainio.202610110001.1: *5* u.change_node
     @contextmanager
     def change_node(self, p: Position, command_name: str) -> Generator[Undoer]:
