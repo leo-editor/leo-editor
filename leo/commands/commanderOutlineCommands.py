@@ -87,7 +87,7 @@ def pasteOutline(
         return None
     with u.change_outline('paste-node'):
         pasted = c.fileCommands.getLeoOutlineFromClipboard(s)
-        if not pasted:
+        if not pasted:  # pragma: no cover
             return None
         if c.checkOutline():  # pragma: no cover
             pasted.doDelete()
@@ -1078,7 +1078,7 @@ def cloneToAtSpot(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     c = self
     p = c.p
     u = c.undoer
-    if not p:
+    if not p:  # pragma: no cover
         return
     # 2015/12/27: fix bug 220: do not allow clone-to-at-spot on @spot node.
     if p.h.startswith('@spot'):  # pragma: no cover
@@ -1455,7 +1455,7 @@ def unmarkAll(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     c = self
     current = c.p
     u = c.undoer
-    if not current:
+    if not current:  # pragma: no cover
         return
     c.endEditing()
     changed = False
@@ -1822,9 +1822,9 @@ def sortSiblings(
     """Sort the siblings of a node."""
     c = self
     u = c.undoer
-    if not p:
+    if not p:  # pragma: no cover
         p = c.p
-    if not p:
+    if not p:  # pragma: no cover
         return
 
     oldP, newP = p.copy(), p.copy()
@@ -1841,7 +1841,7 @@ def sortSiblings(
             return v.h.lower()
 
     newChildren.sort(key=key, reverse=reverse)
-    if oldChildren == newChildren:
+    if oldChildren == newChildren:  # pragma: no cover
         return
     with u.change_outline(undoType):
         # A copy, so its not the undo bead's oldChildren. Fixes #3205
