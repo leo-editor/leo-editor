@@ -782,9 +782,8 @@ class Undoer:
             try:
                 yield u
             finally:
-                pass
+                u.node_captures.remove(p.v)
 
-            u.node_captures.remove(p.v)
             new_p = c.p
             new_state = u.capture_node(p.v)
             if old_state == new_state:
@@ -861,9 +860,8 @@ class Undoer:
             try:
                 yield u
             finally:
-                pass
+                u.capture_level -= 1
 
-            u.capture_level -= 1
             new_p = c.p  # PR #5005
             u._redraw(new_p)  # PR #5005: calls new_p.setDirty()
             new_state = u.capture_outline()
