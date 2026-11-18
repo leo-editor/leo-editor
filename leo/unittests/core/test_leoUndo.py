@@ -413,6 +413,35 @@ class TestUndo(LeoUnitTest):
             assert p.v.children != new_children
             u.redo()
 
+    # @+node:ekr.20261118090710.1: *3* TestUndo.test_sort_siblings
+    def test_sort_siblings(self):
+        c = self.c
+        p = c.p
+        u = c.undoer
+
+        # Setup.
+        first = p.insertAsLastChild()
+        first.h = 'Z'
+        second = first.insertAfter()
+        second.h = 'A'
+
+        # self.dump_headlines(c)
+        old_p = p.copy()
+        c.p = p = p.firstChild()
+        assert p.h == 'Z', p.h
+        new_p = c.sortSiblings()
+        assert old_p != new_p
+        # self.dump_headlines(c)
+
+        for _i in range(3):
+            p = old_p
+            child = p.firstChild()
+            assert child.h == 'A', child.h
+            u.undo()
+            child = p.firstChild()
+            assert child.h == 'Z', child.h
+            u.redo()
+
     # @+node:ekr.20261115084008.1: *3* TestUndo.test_u_change_headline
     def test_u_change_headline(self):
         # Cover u.restore_node with a changed headline.
@@ -511,15 +540,20 @@ class TestUndo(LeoUnitTest):
 
         test()
 
+        n = 1
         for _i in range(3):
+            assert c.redraw_count == n, f"1: {c.redraw_count=}"
             assert len(u.beads) == 1
             assert p.b == 'after'
             assert c.p.isCloned()
             u.undo()
+            n += 1
+            assert c.redraw_count == n, f"2: {c.redraw_count=}"
             assert len(u.beads) == 1
             assert p.b == 'before'
             assert not c.p.isCloned()
             u.redo()
+            n += 1
 
     # @+node:ekr.20261115011130.1: *3* TestUndo.test_u_cutStack
     def test_u_cutStack(self):
