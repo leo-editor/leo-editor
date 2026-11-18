@@ -214,40 +214,6 @@ class TestUndo(LeoUnitTest):
             assert w_sel == (1, 4), repr(w_sel)
             u.redo()
 
-    # @+node:ekr.20261118103021.1: *3* TestUndo.test_pasteText
-    def test_pasteText(self):
-
-        from leo.core.leoGui import LeoKeyEvent
-
-        c = self.c
-        p = c.p
-        u = c.undoer
-        w = c.frame.body.wrapper
-        before = 'abcdef'
-        after = 'aXYZef'
-
-        # Init the clipboard.
-        g.app.gui.replaceClipboardWith('XYZ')
-
-        # select and paste.
-        p.b = before
-        w.setSelectionRange(1, 4, insert=1)
-        c.frame.pasteText(event=LeoKeyEvent(c, w=w))
-
-        for _i in range(3):
-            w_s = w.getAllText()
-            w_sel = w.getSelectionRange()
-            assert p.b == after, repr(p.b)
-            assert w_s == after, repr(w_s)
-            assert w_sel == (4, 4), repr(w_sel)
-            u.undo()
-            w_s = w.getAllText()
-            w_sel = w.getSelectionRange()
-            assert p.b == before, repr(p.b)
-            assert w_s == before, repr(w_s)
-            assert w_sel == (1, 4), repr(w_sel)
-            u.redo()
-
     # @+node:ekr.20210906172626.7: *3* TestUndo.test_dedentBody
     def test_dedentBody(self):
         c = self.c
@@ -451,6 +417,67 @@ class TestUndo(LeoUnitTest):
         # Undo and redo thrice.
         for _i in range(3):
             u.undo()
+            u.redo()
+
+    # @+node:ekr.20261118103021.1: *3* TestUndo.test_pasteText
+    def test_pasteText(self):
+
+        from leo.core.leoGui import LeoKeyEvent
+
+        c = self.c
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
+        before = 'abcdef'
+        after = 'aXYZef'
+
+        # Init the clipboard.
+        g.app.gui.replaceClipboardWith('XYZ')
+
+        # select and paste.
+        p.b = before
+        w.setSelectionRange(1, 4, insert=1)
+        c.frame.pasteText(event=LeoKeyEvent(c, w=w))
+
+        for _i in range(3):
+            w_s = w.getAllText()
+            w_sel = w.getSelectionRange()
+            assert p.b == after, repr(p.b)
+            assert w_s == after, repr(w_s)
+            assert w_sel == (4, 4), repr(w_sel)
+            u.undo()
+            w_s = w.getAllText()
+            w_sel = w.getSelectionRange()
+            assert p.b == before, repr(p.b)
+            assert w_s == before, repr(w_s)
+            assert w_sel == (1, 4), repr(w_sel)
+            u.redo()
+
+    # @+node:ekr.20261014103254.7: *3* TestUndo.test_selection_range
+    def test_selection_range(self):
+        c = self.c
+        p = c.p
+        u = c.undoer
+        p.b = 'before'
+        w = c.frame.body.wrapper
+        w.setSelectionRange(1, 3, insert=1)
+
+        with u.change_node(p, 'edit'):
+            p.b = 'after'
+            w.setSelectionRange(2, 4, insert=4)
+
+        for _i in range(3):
+            w_ins = w.getInsertPoint()
+            w_sel = w.getSelectionRange()
+            assert p.b == 'after', repr(p.b)
+            assert w_ins == 4, repr(w_ins)
+            assert w_sel == (2, 4), repr(w_sel)
+            u.undo()
+            w_ins = w.getInsertPoint()
+            w_sel = w.getSelectionRange()
+            assert p.b == 'before', repr(p.b)
+            assert w_ins == 1, repr(w_ins)
+            assert w_sel == (1, 3), repr(w_sel)
             u.redo()
 
     # @+node:ekr.20261014103254.33: *3* TestUndo.test_sort_children
