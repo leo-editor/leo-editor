@@ -545,14 +545,29 @@ class Undoer:
         u.setUndoTypes()
 
     # @+node:ekr.20261015042013.1: *4* u: actions
-    # These methods:
-    # Must *not* have an @contextmanager decorator.
-    # Must *not* have ui finishers: they must *not* call UndoBead.add_finishers.
-    # Must be nested in a context.
+    # These are Leo's **undo action** methods. They:
+    #
+    # - Must *not* have an @contextmanager decorator.
+    # - Must *not* have ui finishers: they must *not* call UndoBead.add_finishers.
+    # - Must appear in an undo context.
 
-    # By convention, actions should be nexted in a context *method* instead of:
+    # Client code should create undo contexts using u.move_node, u.change_node, or u.change_outline.
+    # Use u.move_node if possible. Use u.change_outline only if u.change_node won't work.
 
-    # with c.undoer:
+    # Examples:
+
+    # with u.move_node(p, 'command name'):
+    #     # An action
+
+    # with u.change_node(p, 'command name'):
+    #     # An action
+
+    # with u.change_outline(p, 'command name'):
+    #     # An action
+
+    # Don't create "bare" undo contexts:
+
+    # with c.undoer:  # Discouraged, even in unit tests.
     #     u.set_command_name('command name')
     #     # An action
     # @+node:ekr.20261009185938.1: *5* u.change_headline
@@ -759,10 +774,17 @@ class Undoer:
             # Menu labels are updated when the completed bead is pushed.
 
     # @+node:ekr.20261015042249.1: *4* u: contexts
-    # These methods:
-    # Must have @contextmanager decorators.
-    # Must have ui finishers: they must call UndoBead.add_finishers.
-    # May be nested (directly or indirectly) in other contexts.
+    # These are Leo's **undo context** methods. They:
+    #
+    # - Create an **undo context**.
+    # - Must have @contextmanager decorators.
+    # - Must have ui finishers: they must call UndoBead.add_finishers.
+    # - May be nested (directly or indirectly) in other undo contexts.
+
+    # Client code:
+    #
+    # - Should use u.change_node, u.change_outline, or u.move_node.
+    # - Should never need to call u.change_recent_files.
     # @+node:vivainio.202610110001.1: *5* u.change_node
     @contextmanager
     def change_node(self, p: Position, command_name: str) -> Generator[Undoer]:
