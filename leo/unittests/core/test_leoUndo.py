@@ -183,6 +183,25 @@ class TestUndo(LeoUnitTest):
         func = c.convertTabs
         self.runTest(before, after, i, j, func)
 
+    # @+node:ekr.20261014103254.34: *3* TestUndo.test_copy_marked
+    def test_copy_marked(self):
+        c = self.c
+        p = c.p
+        u = c.undoer
+
+        before = c.hiddenRootNode.children[:]
+        child = p.insertAsLastChild()
+        child.setMarked()
+        after = c.hiddenRootNode.children[:]
+
+        for _i in range(3):
+            assert c.p == p, c.p.h
+            assert c.hiddenRootNode.children == after
+            u.undo()
+            assert c.p == p, c.p.h
+            assert c.hiddenRootNode.children == before
+            u.redo()
+
     # @+node:ekr.20261118102844.1: *3* TestUndo.test_cutText
     def test_cutText(self):
 
@@ -368,6 +387,52 @@ class TestUndo(LeoUnitTest):
         j = before.find('line 3')
         func = c.extract
         self.runTest(before, after, i, j, func)
+
+    # @+node:ekr.20261103072930.1: *3* TestUndo.test_headline_expansion
+    def test_headline_expansion(self):
+
+        from leo.core.leoGui import LeoKeyEvent
+
+        c = self.c
+        p = c.p
+        u = c.undoer
+        x = c.abbrevCommands
+
+        # Setup.
+        x.abbrevs = {}
+        definition = 'det;;=<details><summary><|Title|></summary></details>'
+        x.addAbbrevHelper(definition)
+        i = definition.find(';=')
+        contents = definition[:i]
+        expected = definition[i + 2 :]
+        assert contents.strip()
+        assert expected.strip()
+
+        # Setup.
+        c.editHeadline()
+        w = c.headline_wrapper(p)
+        p.h = contents
+        w.setAllText(contents)
+        w.setInsertPoint(len(contents), contents)
+        event = LeoKeyEvent(c, char=';', binding=';', w=w)
+        self.assertTrue(x.expandAbbrev(event=event, stroke=None))
+
+        # Check the headline wrapper.
+        w2 = c.headline_wrapper(p)
+        assert w2 is not None
+
+        # The headline becomes official when the editor closes.
+        c.endEditing()
+        for _i in range(3):
+            w_text = w2.getAllText()
+            assert w_text == expected, (repr(w_text), repr(expected))
+            assert p.h == expected, (p.h, expected)
+            self.assertEqual(p.h, expected)
+            u.undo()
+            w_text = w2.getAllText()
+            assert w_text == contents, (repr(w_text), repr(contents))
+            assert p.h == contents, (p.h, contents)
+            u.redo()
 
     # @+node:ekr.20210906172626.14: *3* TestUndo.test_line_to_headline
     def test_line_to_headline(self):
