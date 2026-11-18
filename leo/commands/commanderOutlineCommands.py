@@ -138,41 +138,6 @@ def pasteOutlineRetainingClones(
         return pasted
 
 
-# @+node:ekr.20050418084539.2: *4* def computeCopiedBunchList
-def computeCopiedBunchList(
-    c: Cmdr,
-    pasted: Position,
-    vnodeInfoDict: dict[VNode, g.Bunch],
-) -> list[g.Bunch]:
-    """Create a dict containing only copied vnodes."""
-    d = {}
-    for p in pasted.self_and_subtree(copy=False):
-        d[p.v] = p.v
-    aList = []
-    for v in vnodeInfoDict:
-        if d.get(v):
-            if bunch := vnodeInfoDict.get(v):
-                aList.append(bunch)
-    return aList
-
-
-# @+node:ekr.20050418084539: *4* def computeVnodeInfoDict
-def computeVnodeInfoDict(c: Cmdr) -> dict[VNode, g.Bunch]:
-    """
-    We don't know yet which nodes will be affected by the paste, so we remember
-    everything. This is expensive, but foolproof.
-
-    The alternative is to try to remember the 'before' values of nodes in the
-    FileCommands read logic. Several experiments failed, and the code is very ugly.
-    In short, it seems wise to do things the foolproof way.
-    """
-    d = {}
-    for v in c.all_unique_nodes():
-        if v not in d:
-            d[v] = g.Bunch(v=v, head=v.h, body=v.b)
-    return d
-
-
 # @+node:vitalije.20200529105105.1: *3* c_oc.pasteAsTemplate
 @g.commander_command('paste-as-template')
 def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
