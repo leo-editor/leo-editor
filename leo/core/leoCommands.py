@@ -4276,6 +4276,7 @@ class Commands:
     # @+node:ekr.20031218072017.2946: *5* c.dragCloneToNthChildOf
     def dragCloneToNthChildOf(self, p: Position, parent: Position, n: int) -> None:
         c = self
+        old_p = c.p
         u = c.undoer
         c.endEditing()
         with u.change_outline('c.dragCloneToNthChildOf'):
@@ -4287,10 +4288,9 @@ class Commands:
                 clone.setDirty()
                 clone.moveToNthChildOf(parent, n)
                 clone.setDirty()
-                p = clone
+                c.p = clone
             else:
-                clone.doDelete(newNode=p)
-            c.p = clone
+                clone.doDelete(newNode=old_p)
 
     # @+node:ekr.20031218072017.2948: *5* c.dragCloneAfter
     def dragCloneAfter(self, p: Position, after: Position) -> None:
