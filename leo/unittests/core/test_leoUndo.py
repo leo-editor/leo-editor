@@ -75,6 +75,29 @@ class TestUndo(LeoUnitTest):
         func = c.addComments
         self.runTest(before, after, i, j, func)
 
+    # @+node:ekr.20261014103254.4: *3* TestUndo.test_bead_sharing
+    def test_bead_sharing(self):
+        c = self.c
+        p = c.p
+        u = c.undoer
+
+        before = tuple(v for v in c.all_unique_nodes())
+        with c.undoer as u:
+            u.set_command_name('two inserts')
+            first = u.insert_node(p)
+            second = u.insert_node(first)
+        after = tuple(v for v in c.all_unique_nodes())
+
+        for _i in range(3):
+            assert len(u.beads) == 1
+            assert first.v in after
+            assert second.v in after
+            assert tuple(c.all_unique_nodes()) == after
+            u.undo()
+            assert len(u.beads) == 1
+            assert tuple(c.all_unique_nodes()) == before
+            u.redo()
+
     # @+node:ekr.20210906172626.3: *3* TestUndo.test_convertAllBlanks
     def test_convertAllBlanks(self):
         c = self.c
