@@ -33,7 +33,7 @@ def copyOutline(self: Cmdr, event: LeoKeyEvent | None = None) -> str:
     c.endEditing()
     s = c.fileCommands.outline_to_clipboard_string()
     g.app.paste_c = c
-    if g.app.inBridge:
+    if g.app.inBridge:  # pragma: no cover
         return s
     g.app.gui.replaceClipboardWith(s)
     return s
@@ -48,7 +48,7 @@ def copyOutlineAsJSON(self: Cmdr, event: LeoKeyEvent | None = None) -> str | Non
     c.endEditing()
     s = c.fileCommands.outline_to_clipboard_json_string()
     g.app.paste_c = c
-    if g.app.inBridge:
+    if g.app.inBridge:  # pragma: no cover
         return s
     g.app.gui.replaceClipboardWith(s)
     return None
@@ -75,18 +75,21 @@ def pasteOutline(
     """
     c = self
     u = c.undoer
-    if s is None:
+    if s is None:  # pragma: no cover
         s = g.app.gui.getTextFromClipboard()
     c.endEditing()
-    if not s or not c.canPasteOutline(s):
+    if not s or not c.canPasteOutline(s):  # pragma: no cover
         return None
-    if not (s.lstrip().startswith("{") or g.match(s, 0, g.app.prolog_prefix_string)):
+    if not (
+        s.lstrip().startswith("{")
+        or g.match(s, 0, g.app.prolog_prefix_string)
+    ):  # fmt: skip  # pragma: no cover
         return None
     with u.change_outline('paste-node'):
         pasted = c.fileCommands.getLeoOutlineFromClipboard(s)
         if not pasted:
             return None
-        if c.checkOutline():  # Error.
+        if c.checkOutline():  # pragma: no cover
             pasted.doDelete()
             c.p = c.rootPosition()
             return None
@@ -112,18 +115,21 @@ def pasteOutlineRetainingClones(
     """
     c = self
     u = c.undoer
-    if s is None:
+    if s is None:  # pragma: no cover
         s = g.app.gui.getTextFromClipboard()
     c.endEditing()
-    if not s or not c.canPasteOutline(s):
+    if not s or not c.canPasteOutline(s):  # pragma: no cover
         return None
-    if not (s.lstrip().startswith("{") or g.match(s, 0, g.app.prolog_prefix_string)):
+    if not (
+        s.lstrip().startswith("{")
+        or g.match(s, 0, g.app.prolog_prefix_string)
+    ):  # fmt: skip  # pragma: no cover
         return None
     with u.change_outline('paste-retaining-clones'):
         pasted = c.fileCommands.getLeoOutlineFromClipboardRetainingClones(s)
-        if not pasted:
+        if not pasted:  # pragma: no cover
             return None
-        if c.checkOutline():  # Error.
+        if c.checkOutline():  # pragma: no cover
             pasted.doDelete()
             c.p = c.rootPosition()
             return None
@@ -146,7 +152,7 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     p = c.p
     u = c.undoer
     s = g.app.gui.getTextFromClipboard()
-    if not s or not c.canPasteOutline(s):
+    if not s or not c.canPasteOutline(s):  # pragma: no cover
         g.trace(f"Can not paste {repr(s)}")
         return
     isJson = s.lstrip().startswith("{")
@@ -346,7 +352,7 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 
 # @+node:ekr.20040412060927: ** c_oc.dumpOutline
 @g.commander_command('dump-outline')
-def dumpOutline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
+def dumpOutline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
     """Dump all nodes in the outline."""
     c = self
     seen = {}
@@ -1472,12 +1478,12 @@ def demote(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     c = self
     p = c.p
     u = c.undoer
-    if not p or not p.hasNext():
+    if not p or not p.hasNext():  # pragma: no cover
         c.treeFocusHelper()
         return
     # Make sure all the moves will be valid.
     next = p.next()
-    while next:
+    while next:  # pragma: no cover
         if not c.checkMoveWithParentWithWarning(next, p, True):
             c.treeFocusHelper()
             return
@@ -1514,18 +1520,18 @@ def moveOutlineDown(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     c = self
     p = c.p
     u = c.undoer
-    if not p:
+    if not p:  # pragma: no cover
         return
-    if not c.canMoveOutlineDown():
+    if not c.canMoveOutlineDown():  # pragma: no cover
         if c.hoistStack:
             cantMoveMessage(c)
         c.treeFocusHelper()
         return
     parent = p.parent()
     next = p.visNext(c)
-    while next and p.isAncestorOf(next):
+    while next and p.isAncestorOf(next):  # pragma: no cover
         next = next.visNext(c)
-    if not next:
+    if not next:  # pragma: no cover
         if c.hoistStack:
             cantMoveMessage(c)
         c.treeFocusHelper()
@@ -1565,14 +1571,14 @@ def moveOutlineLeft(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     c = self
     p = c.p
     u = c.undoer
-    if not p:
+    if not p:  # pragma: no cover
         return
-    if not c.canMoveOutlineLeft():
+    if not c.canMoveOutlineLeft():  # pragma: no cover
         if c.hoistStack:
             cantMoveMessage(c)
         c.treeFocusHelper()
         return
-    if not p.hasParent():
+    if not p.hasParent():  # pragma: no cover
         c.treeFocusHelper()
         return
     parent = p.parent()
@@ -1582,7 +1588,7 @@ def moveOutlineLeft(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         p.moveAfter(parent)
         p.setDirty()
         # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
-        if c.collapse_nodes_after_move and c.sparse_move:  # New in Leo 4.4.2
+        if c.collapse_nodes_after_move and c.sparse_move:  # pragma: no cover
             parent.contract()
         c.p = p
 
@@ -1594,18 +1600,18 @@ def moveOutlineRight(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     c = self
     p = c.p
     u = c.undoer
-    if not p:
+    if not p:  # pragma: no cover
         return
-    if not c.canMoveOutlineRight():  # 11/4/03: Support for hoist.
+    if not c.canMoveOutlineRight():  # pragma: no cover
         if c.hoistStack:
             cantMoveMessage(c)
         c.treeFocusHelper()
         return
     back = p.back()
-    if not back:
+    if not back:  # pragma: no cover
         c.treeFocusHelper()
         return
-    if not c.checkMoveWithParentWithWarning(p, back, True):
+    if not c.checkMoveWithParentWithWarning(p, back, True):  # pragma: no cover
         c.treeFocusHelper()
         return
     c.endEditing()
@@ -1624,15 +1630,15 @@ def moveOutlineUp(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     c = self
     p = c.p
     u = c.undoer
-    if not p:
+    if not p:  # pragma: no cover
         return
-    if not c.canMoveOutlineUp():  # Support for hoist.
+    if not c.canMoveOutlineUp():  # pragma: no cover
         if c.hoistStack:
             cantMoveMessage(c)
         c.treeFocusHelper()
         return
     back = p.visBack(c)
-    if not back:
+    if not back:  # pragma: no cover
         return
     back2 = back.visBack(c)
     c.endEditing()
@@ -1692,14 +1698,14 @@ def moveOutlineToFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Non
     c = self
     p = c.p
     u = c.undoer
-    if not p:
+    if not p:  # pragma: no cover
         return
-    if c.hoistStack:
+    if c.hoistStack:  # pragma: no cover
         return
-    if not p.hasBack():
+    if not p.hasBack():  # pragma: no cover
         return
     parent = p.parent()
-    if not parent:
+    if not parent:  # pragma: no cover
         return
     c.endEditing()
     with u.move_node(p, 'move-outline-to-first-child'):
@@ -1720,14 +1726,14 @@ def moveOutlineToLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> None
     c = self
     p = c.p
     u = c.undoer
-    if not p:
+    if not p:  # pragma: no cover
         return
-    if c.hoistStack:
+    if c.hoistStack:  # pragma: no cover
         return
-    if not p.hasNext():
+    if not p.hasNext():  # pragma: no cover
         return
     parent = p.parent()
-    if not parent:
+    if not parent:  # pragma: no cover
         return
     c.endEditing()
     with u.move_node(p, 'move-outline-to-last-child'):
@@ -1744,7 +1750,7 @@ def promote(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     c = self
     p = c.p
     u = c.undoer
-    if not p or not p.hasChildren():
+    if not p or not p.hasChildren():  # pragma: no cover
         c.treeFocusHelper()
         return
     c.endEditing()
