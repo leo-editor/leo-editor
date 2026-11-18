@@ -936,11 +936,7 @@ class Undoer:
         old_files = rf.recentFiles[:]
         with u:
             u.set_command_name(command_name)
-            try:
-                yield u
-            finally:
-                pass
-
+            yield u
             new_files = rf.recentFiles[:]
             if old_files == new_files:
                 return
@@ -986,11 +982,7 @@ class Undoer:
                 yield u
                 return
             old_p, old_ui = p.copy(), u.capture_ui()
-            try:
-                yield u
-            finally:
-                pass
-
+            yield u
             new_p = p.copy()
             if old_p.v != c.p.v:  # pragma: no cover
                 message = f"u.move_node changed p.v: {p.v.h=} {g.callers()=}"
