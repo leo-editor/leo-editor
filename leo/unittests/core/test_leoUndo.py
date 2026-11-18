@@ -388,6 +388,53 @@ class TestUndo(LeoUnitTest):
             u.undo()
             u.redo()
 
+    # @+node:ekr.20261014103254.33: *3* TestUndo.test_sort_children
+    def test_sort_children(self):
+        c = self.c
+        p = c.p
+        u = c.undoer
+
+        # Setup.
+        first = p.insertAsLastChild()
+        first.h = 'Z'
+        second = first.insertAfter()
+        second.h = 'A'
+
+        # c.sortChildren calls c.sortSiblings, which handles undo.
+        old_children = p.v.children[:]
+        c.sortChildren()
+        new_children = p.v.children[:]
+
+        for _i in range(3):
+            assert p.v.children == new_children
+            assert p.v.children != old_children
+            u.undo()
+            assert p.v.children == old_children
+            assert p.v.children != new_children
+            u.redo()
+
+    # @+node:ekr.20261115084008.1: *3* TestUndo.test_u_change_headline
+    def test_u_change_headline(self):
+        # Cover u.restore_node with a changed headline.
+        c = self.c
+        p = c.p
+        u = c.undoer
+
+        old_h = p.h
+        new_h = 'new_headline'
+
+        def change_headline() -> None:
+            with u.change_node(p, g.my_name()):
+                c.p.h = new_h
+
+        change_headline()
+
+        for _i in range(3):
+            assert p.h == new_h
+            u.undo()
+            assert p.h == old_h
+            u.redo()
+
     # @+node:ekr.20261115065006.1: *3* TestUndo.test_u_change_outline
     def test_u_change_outline(self):
         c = self.c
@@ -415,28 +462,6 @@ class TestUndo(LeoUnitTest):
         insert_node()
         for _i in range(3):
             u.undo()
-            u.redo()
-
-    # @+node:ekr.20261115084008.1: *3* TestUndo.test_u_change_headline
-    def test_u_change_headline(self):
-        # Cover u.restore_node with a changed headline.
-        c = self.c
-        p = c.p
-        u = c.undoer
-
-        old_h = p.h
-        new_h = 'new_headline'
-
-        def change_headline() -> None:
-            with u.change_node(p, g.my_name()):
-                c.p.h = new_h
-
-        change_headline()
-
-        for _i in range(3):
-            assert p.h == new_h
-            u.undo()
-            assert p.h == old_h
             u.redo()
 
     # @+node:ekr.20261115013308.1: *3* TestUndo.test_u_change_recent_files
@@ -519,31 +544,6 @@ class TestUndo(LeoUnitTest):
         # u.cutStack must cut the *bottom* of the stack.
         assert u.beads == all_beads[2:]
 
-    # @+node:ekr.20261114085127.1: *3* TestUndo.test_u_delete_node_case_root
-    def test_u_delete_node_case_root(self):
-        # Test the `else` clause of the delete_node_undoer function.
-        c = self.c
-        p = c.p
-        u = c.undoer
-
-        old_p = p.copy()
-        old_h = p.h
-        assert not p.back()
-
-        def delete_root() -> None:
-            with u:
-                u.set_command_name(g.my_name())
-                u.delete_node(old_p)
-
-        delete_root()
-
-        for _i in range(3):
-            new_h = c.p.h
-            assert new_h != old_h
-            u.undo()
-            assert c.p.h == old_h, c.p.h
-            u.redo()
-
     # @+node:ekr.20261115090134.1: *3* TestUndo.test_u_delete_node_case_old_back
     def test_u_delete_node_case_old_back(self):
         # Test the old_back clause of the delete_node_undoer function.
@@ -592,6 +592,31 @@ class TestUndo(LeoUnitTest):
             new_h = c.p.h
             assert new_h != old_h
             assert c.p.h == new_h, new_p.h
+            u.undo()
+            assert c.p.h == old_h, c.p.h
+            u.redo()
+
+    # @+node:ekr.20261114085127.1: *3* TestUndo.test_u_delete_node_case_root
+    def test_u_delete_node_case_root(self):
+        # Test the `else` clause of the delete_node_undoer function.
+        c = self.c
+        p = c.p
+        u = c.undoer
+
+        old_p = p.copy()
+        old_h = p.h
+        assert not p.back()
+
+        def delete_root() -> None:
+            with u:
+                u.set_command_name(g.my_name())
+                u.delete_node(old_p)
+
+        delete_root()
+
+        for _i in range(3):
+            new_h = c.p.h
+            assert new_h != old_h
             u.undo()
             assert c.p.h == old_h, c.p.h
             u.redo()
