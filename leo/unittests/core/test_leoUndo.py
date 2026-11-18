@@ -510,6 +510,35 @@ class TestUndo(LeoUnitTest):
             u.undo()
             u.redo()
 
+    # @+node:ekr.20261014103254.21: *3* TestUndo.test_paste_retaining_clones
+    def test_paste_retaining_clones(self):
+        c = self.c
+        p = c.p
+        u = c.undoer
+
+        assert c.p.h == 'root'
+        hidden_root = c.hiddenRootNode
+        child = p.insertAsLastChild()
+        child.h, child.b = 'child', 'child body'
+        c.copyOutline()
+
+        before_children = c.hiddenRootNode.children[:]
+        pasted = c.pasteOutlineRetainingClones()
+        assert pasted == c.p
+        pasted_v = pasted.v
+        after_children = c.hiddenRootNode.children[:]
+
+        # g.printObj(before_children, tag='before')
+        # g.printObj(after_children, tag='after')
+        for _i in range(3):
+            assert c.p.h == 'root'
+            assert len(hidden_root.children) == 3
+            assert hidden_root.children[0] == hidden_root.children[1]
+            u.undo()
+            assert c.p.h == 'root'
+            assert len(hidden_root.children) == 2
+            u.redo()
+
     # @+node:ekr.20261118103021.1: *3* TestUndo.test_pasteText
     def test_pasteText(self):
 
