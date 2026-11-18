@@ -522,7 +522,7 @@ class LeoFrame:
         p = c.p
         u = c.undoer
         w = event.w
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         # Set the clipboard text.
         i, j = w.getSelectionRange()
@@ -559,7 +559,7 @@ class LeoFrame:
         p = c.p
         u = c.undoer
         w = event.w
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         wname = c.widget_name(w)
 

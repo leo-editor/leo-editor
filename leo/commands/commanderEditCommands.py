@@ -29,7 +29,7 @@ def addComments(self: Self, event: LeoKeyEvent | None = None) -> None:
     u = c.undoer
     w = c.frame.body.wrapper
     head, lines, tail, _old_sel, old_y_scroll = self.getBodyLines()
-    if not lines:
+    if not lines:  # pragma: no cover
         g.warning('no text selected')
         return
 
@@ -162,7 +162,7 @@ def convertBlanks(self: Self, event: LeoKeyEvent | None = None) -> bool:
         if s != line:
             changed = True
         result.append(s)
-    if not changed:
+    if not changed:  # pragma: no cover
         return False
     middle = ''.join(result)
     with u.change_node(p, 'convert-blanks'):
@@ -190,7 +190,7 @@ def convertTabs(self: Self, event: LeoKeyEvent | None = None) -> bool:
         if s != line:
             changed = True
         result.append(s)
-    if not changed:
+    if not changed:  # pragma: no cover
         return False
     # Calculate the proper selection range (i, j, ins).
     middle = ''.join(result)
@@ -314,7 +314,7 @@ def deleteComments(self: Self, event: LeoKeyEvent | None = None) -> None:
                 changed = True
             else:
                 result.append(s)
-    if not changed:
+    if not changed:  # pragma: no cover
         return
 
     middle = ''.join(result)
@@ -580,11 +580,11 @@ def alwaysIndentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     p = c.p
     u = c.undoer
     w = c.frame.body.wrapper
-    if not event:
+    if not event:  # pragma: no cover
         return
     # #1801: Don't rely on bindings to ensure that we are editing the body.
     event_w = event and event.w
-    if event_w != w:
+    if event_w != w:  # pragma: no cover
         c.insertCharFromEvent(event)
         return
     # Initial data.
@@ -661,7 +661,7 @@ def insertBodyTime(self: Self, event: LeoKeyEvent | None = None) -> None:
     p = c.p
     u = c.undoer
     w = c.frame.body.wrapper
-    if g.app.batchMode:
+    if g.app.batchMode:  # pragma: no cover
         c.notValidInBatchMode('insert-body-time')
         return
     s = self.getTime(body=True)
@@ -1131,12 +1131,12 @@ def reformatSelection(
     """
     c = self
     p, u, w = c.p, c.undoer, c.frame.body.wrapper
-    if g.app.batchMode:
+    if g.app.batchMode:  # pragma: no cover
         c.notValidInBatchMode(undoType)
         return
     head, middle, tail = c.frame.body.getSelectionLines()
     lines = g.splitLines(middle)
-    if not lines:
+    if not lines:  # pragma: no cover
         return
     _old_sel, _old_y_scroll, old_s, pageWidth, tabWidth = rp_get_args(c)
     indents, leading_ws = rp_get_leading_ws(c, lines, tabWidth)
@@ -1203,7 +1203,7 @@ def toggleAngleBrackets(self: Self, event: LeoKeyEvent | None = None) -> None:
     c = self
     p = c.p
     u = c.undoer
-    if g.app.batchMode:
+    if g.app.batchMode:  # pragma: no cover
         c.notValidInBatchMode('toggle-angle-brackets')
         return
     c.endEditing()
@@ -1314,7 +1314,7 @@ def insert_toc(c: Cmdr, kind: str) -> None:
     p, u = c.p, c.undoer
     w = c.frame.body.wrapper
     undoType = f"Insert {kind.capitalize()} TOC"
-    if g.app.batchMode:
+    if g.app.batchMode:  # pragma: no cover
         c.notValidInBatchMode(undoType)
         return
     s = make_toc(c, kind=kind, root=c.p)

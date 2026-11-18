@@ -89,17 +89,14 @@ class TestLeoImport(BaseTestImporter):
             (0, 'def eggs', 'def eggs():\n    pass\n\n'),
             (0, 'class NewClass', 'class NewClass\n    def f1(self):\n        pass\n'),
         )
-        # Don't call run_test.
-        self.check_outline(target, expected_results)
 
-        # Test undo
+        # Test undo/redo.
         for _i in range(3):
+            self.check_outline(target, expected_results)
             u.undo()
             self.assertEqual(target.b, body_1, msg='undo test')
             self.assertFalse(target.hasChildren(), msg='undo test')
-            # Test redo
             u.redo()
-            self.check_outline(target, expected_results)
 
     # @+node:ekr.20250807095221.1: *3* TestLeoImport.test_rust_importer_parse_body
     def test_rust_importer_parse_body(self):
@@ -130,17 +127,14 @@ class TestLeoImport(BaseTestImporter):
             (0, 'fn spam', '@language rust\n\nfn spam() {\n    println!("spam");\n}\n\n'),
             (0, 'fn eggs', 'fn eggs() {\n    println!("eggs");\n}\n\n'),
         )
-        # Don't call run_test.
-        self.check_outline(target, expected_results)
 
-        # Test undo
+        # Test undo/redo.
         for _i in range(3):
+            self.check_outline(target, expected_results)
             u.undo()
             self.assertEqual(target.b, body_1, msg='undo test')
             self.assertFalse(target.hasChildren(), msg='undo test')
-            # Test redo
             u.redo()
-            self.check_outline(target, expected_results)
 
     # @+node:ekr.20230715004610.1: *3* TestLeoImport.slow_test_ric_run
     def slow_test_ric_run(self):
@@ -221,17 +215,15 @@ class TestLeoImport(BaseTestImporter):
                 '\tpass\n'
             ),
         )  # fmt: skip
-        # Don't call run_test.
-        self.check_outline(target, expected_results)
 
         # Test undo
         for _i in range(3):
+            self.check_outline(target, expected_results)
             u.undo()
             self.assertEqual(target.b, body_1, msg='undo test')
             self.assertFalse(target.hasChildren(), msg='undo test')
             # Test redo
             u.redo()
-            self.check_outline(target, expected_results)
 
     # @+node:vv.20260808220000.1: *3* TestLeoImport.test_languageForExtension
     def test_languageForExtension(self):

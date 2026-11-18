@@ -39,8 +39,9 @@ if TYPE_CHECKING:  # pragma: no cover
     from types import ModuleType
 
     # Do not import these at the top level: they would cause circular imports.
-    from leo.core.leoGui import LeoKeyEvent, LeoFrame, LeoGui
-    from leo.commands.spellCommands import SqlitePickleShare
+    from leo.core.leoFrame import LeoFrame
+    from leo.core.leoGui import LeoKeyEvent, LeoGui
+    from leo.commands.leoCache import SqlitePickleShare
 
     StringIO = io.StringIO
     SpellDict = Any  # dict[str, list[str]]
@@ -272,7 +273,7 @@ class LeoApp:
         # @+<< LeoApp: the global log >>
         # @+node:ekr.20161028040141.1: *5* << LeoApp: the global log >>
         # The LeoFrame containing the present log.
-        self.log: LeoFrame = None
+        self.log: LeoFrame | None = None
         # False: all log message go to logWaiting list.
         self.logInited = False
         # True: no changes to log are allowed.
@@ -1318,7 +1319,7 @@ class LeoApp:
     # @+node:ekr.20180924093227.1: *3* app.c property
     @property
     def c(self) -> Cmdr | None:
-        return self.log and self.log.c
+        return self.log.c if self.log else None
 
     # @+node:ekr.20171127111053.1: *3* app.Closing
     # @+node:ekr.20031218072017.2609: *4* app.closeLeoWindow

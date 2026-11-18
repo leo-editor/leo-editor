@@ -67,7 +67,8 @@ from leo.plugins.qt_layout import LayoutCacheWidget
 if TYPE_CHECKING:  # pragma: no cover
     from typing import TypeAlias  # Requires Python 3.12+
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoGui, LeoKeyEvent, NullFrame
+    from leo.core.leoFrame import NullFrame
+    from leo.core.leoGui import LeoGui, LeoKeyEvent
     from leo.core.leoNodes import Position
     from leo.plugins.leoFrame import LeoLog
     from leo.plugins.mod_scripting import ScriptingController

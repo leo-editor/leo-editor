@@ -432,9 +432,12 @@ class Undoer:
         w: QTextMixin,
     ) -> None:
         """
+        Handle all undo tasks related to typing in the body pane.
         Push a new UndoTyping bead or merge the incoming changes to the top UndoTyping bead.
 
-        Handle all undo tasks related to typing in the body pane. Called by:
+        This method is neither an action nor a context.
+
+        Called by:
         - ec.selfInsertCommand.
         - LeoQListWidget.select_callback.
         - QTextMixin.onTextChanged.
@@ -542,15 +545,37 @@ class Undoer:
         u.setUndoTypes()
 
     # @+node:ekr.20261015042013.1: *4* u: actions
+    # These are Leo's **undo action** methods. They:
+    #
+    # - Must *not* have an @contextmanager decorator.
+    # - Must *not* have ui finishers: they must *not* call UndoBead.add_finishers.
+    # - Must appear in an undo context.
+
+    # Client code should create undo contexts using u.move_node, u.change_node, or u.change_outline.
+    # Use u.move_node if possible. Use u.change_outline only if u.change_node won't work.
+
+    # Examples:
+
+    # with u.move_node(p, 'command name'):
+    #     # An action
+
+    # with u.change_node(p, 'command name'):
+    #     # An action
+
+    # with u.change_outline(p, 'command name'):
+    #     # An action
+
+    # Don't create "bare" undo contexts:
+
+    # with c.undoer:  # Discouraged, even in unit tests.
+    #     u.set_command_name('command name')
+    #     # An action
     # @+node:ekr.20261009185938.1: *5* u.change_headline
     def change_headline(self, p: Position, new_h: str, *, ch: str = '') -> None:
         """
         Change a headline and preserve directives, dirty bits and editor state.
 
         Called *only* from LeoTree.onHeadChanged
-
-        This method should *not* have an @contextmanager decorator:
-        it is never called from within other @contextmanager methods.
         """
         u = self
         b = u._require_bead()
@@ -630,8 +655,9 @@ class Undoer:
 
         Example usage, from Leo's delete-node command:
 
-        with u.change_outline(op_name):
+        with u.change_node(op_name):
             u.delete_node(p)  # Calculates new c.p.
+            c.redraw(p)
         """
         u = self
         b = u._require_bead()
@@ -643,7 +669,7 @@ class Undoer:
             g.trace("Can not delete the outline's only node")
             return
 
-        # Do the action.
+        # Do the action. The calling undoer (u.change_node) saves/restores the ui.
         old_p.doDelete(new_p)
         c.p = new_p
         new_p.setDirty()
@@ -653,6 +679,7 @@ class Undoer:
         def delete_node_redoer() -> None:
             old_p.doDelete()
             c.p = new_p
+            u._redraw(new_p)
 
         def delete_node_undoer() -> None:
             if old_back:
@@ -663,9 +690,9 @@ class Undoer:
                 old_p._linkAsRoot()
             old_p.setDirty()
             c.p = old_p
+            u._redraw(old_p)
 
-        if old_p.v not in u.node_captures:
-            b.add_helpers(delete_node_redoer, delete_node_undoer)
+        b.add_helpers(delete_node_redoer, delete_node_undoer)
 
     # @+node:ekr.20261006155622.1: *5* u.insert_node
     def insert_node(
@@ -744,6 +771,17 @@ class Undoer:
             # Menu labels are updated when the completed bead is pushed.
 
     # @+node:ekr.20261015042249.1: *4* u: contexts
+    # These are Leo's **undo context** methods. They:
+    #
+    # - Create an **undo context**.
+    # - Must have @contextmanager decorators.
+    # - Must have ui finishers: they must call UndoBead.add_finishers.
+    # - May be nested (directly or indirectly) in other undo contexts.
+
+    # Client code:
+    #
+    # - Should use u.change_node, u.change_outline, or u.move_node.
+    # - Should never need to call u.change_recent_files.
     # @+node:vivainio.202610110001.1: *5* u.change_node
     @contextmanager
     def change_node(self, p: Position, command_name: str) -> Generator[Undoer]:
@@ -775,29 +813,32 @@ class Undoer:
                 yield u
             finally:
                 u.node_captures.remove(p.v)
-                new_p = c.p
-                new_state = u.capture_node(p.v)
-                if old_state != new_state:
-                    u._redraw(new_p)  # PR #5027 Redraw only if node has changed.
-                    new_ui = u.capture_ui()
 
-                    def change_node_redoer() -> None:
-                        u.restore_node(p.v, new_state)
+            new_p = c.p
+            new_state = u.capture_node(p.v)
+            if old_state == new_state:
+                return
 
-                    def change_node_undoer() -> None:
-                        u.restore_node(p.v, old_state)
+            u._redraw(new_p)  # PR #5027 Redraw only if node has changed.
+            new_ui = u.capture_ui()
 
-                    u.undoBead.add_helpers(change_node_redoer, change_node_undoer)
+            def change_node_redoer() -> None:
+                u.restore_node(p.v, new_state)
 
-                    def change_node_ui_redoer() -> None:
-                        u._redraw(new_p)
-                        u.restore_ui(new_ui)
+            def change_node_undoer() -> None:
+                u.restore_node(p.v, old_state)
 
-                    def change_node_ui_undoer() -> None:
-                        u._redraw(old_p)
-                        u.restore_ui(old_ui)
+            u.undoBead.add_helpers(change_node_redoer, change_node_undoer)
 
-                    u.undoBead.add_finishers(change_node_ui_redoer, change_node_ui_undoer)
+            def change_node_ui_redoer() -> None:
+                u._redraw(new_p)
+                u.restore_ui(new_ui)
+
+            def change_node_ui_undoer() -> None:
+                u._redraw(old_p)
+                u.restore_ui(old_ui)
+
+            u.undoBead.add_finishers(change_node_ui_redoer, change_node_ui_undoer)
 
     # @+node:vivainio.202610110001.2: *5* u.change_outline & helpers
     @contextmanager
@@ -850,41 +891,44 @@ class Undoer:
                 yield u
             finally:
                 u.capture_level -= 1
-                new_p = c.p  # PR #5005
-                u._redraw(new_p)  # PR #5005: calls new_p.setDirty()
-                new_state = u.capture_outline()
-                old_delta, new_delta = {}, {}
-                for v in old_state.keys() | new_state.keys():
-                    old = old_state.get(v)
-                    new = new_state.get(v)
-                    if old is None:
-                        # A node was inserted.
-                        old = (*new[:2], tuple(p for p in new[2] if p not in old_state))  # type:ignore
-                    if new is None:
-                        # A node was deleted.
-                        new = (*old[:2], tuple(p for p in old[2] if p not in new_state))
-                    if old != new:
-                        old_delta[v], new_delta[v] = old, new
-                if old_delta:
-                    new_ui = u.capture_ui()
 
-                    def change_outline_redoer() -> None:
-                        u.restore_outline(new_delta)
+            new_p = c.p  # PR #5005
+            u._redraw(new_p)  # PR #5005: calls new_p.setDirty()
+            new_state = u.capture_outline()
+            old_delta, new_delta = {}, {}
+            for v in old_state.keys() | new_state.keys():
+                old = old_state.get(v)
+                new = new_state.get(v)
+                if old is None:
+                    # A node was inserted.
+                    old = (*new[:2], tuple(p for p in new[2] if p not in old_state))  # type:ignore
+                if new is None:
+                    # A node was deleted.
+                    new = (*old[:2], tuple(p for p in old[2] if p not in new_state))
+                if old != new:
+                    old_delta[v], new_delta[v] = old, new
+            if not old_delta:
+                return
 
-                    def change_outline_undoer() -> None:
-                        u.restore_outline(old_delta)
+            new_ui = u.capture_ui()
 
-                    u.undoBead.add_helpers(change_outline_redoer, change_outline_undoer)
+            def change_outline_redoer() -> None:
+                u.restore_outline(new_delta)
 
-                    def change_outline_ui_redoer() -> None:
-                        u.restore_ui(new_ui)
-                        u._redraw(new_p)  # Calls new_p.setDirty()
+            def change_outline_undoer() -> None:
+                u.restore_outline(old_delta)
 
-                    def change_outline_ui_undoer() -> None:
-                        u.restore_ui(old_ui)
-                        u._redraw(old_p)  # Calls old_p.setDirty()
+            u.undoBead.add_helpers(change_outline_redoer, change_outline_undoer)
 
-                    u.undoBead.add_finishers(change_outline_ui_redoer, change_outline_ui_undoer)
+            def change_outline_ui_redoer() -> None:
+                u.restore_ui(new_ui)
+                u._redraw(new_p)  # Calls new_p.setDirty()
+
+            def change_outline_ui_undoer() -> None:
+                u.restore_ui(old_ui)
+                u._redraw(old_p)  # Calls old_p.setDirty()
+
+            u.undoBead.add_finishers(change_outline_ui_redoer, change_outline_ui_undoer)
 
     # @+node:ekr.20261015041620.2: *6* u.capture_outline
     def capture_outline(self) -> dict:
@@ -916,31 +960,31 @@ class Undoer:
     @contextmanager
     def change_recent_files(self, command_name: str = 'Clear Recent Files') -> Generator[Undoer]:
         """
-        Handling doing, undoing and redoing for the 'Clear Recent Files' menu item."""
+        Handling doing, undoing and redoing for the 'Clear Recent Files' menu item.
+        """
         u = self
         rf = g.app.recentFilesManager
         old_files = rf.recentFiles[:]
         with u:
             u.set_command_name(command_name)
-            try:
-                yield u
-            finally:
-                new_files = rf.recentFiles[:]
-                if old_files != new_files:
+            yield u
+            new_files = rf.recentFiles[:]
+            if old_files == new_files:
+                return
 
-                    def restore_recent_files(files: list[str]) -> None:
-                        rf.recentFiles = files[:]
-                        for frame in g.app.windowList:
-                            rf.createRecentFilesMenuItems(frame.c)
-                        rf.writeRecentFilesFile(u.c)
+            def restore_recent_files(files: list[str]) -> None:
+                rf.recentFiles = files[:]
+                for frame in g.app.windowList:
+                    rf.createRecentFilesMenuItems(frame.c)
+                rf.writeRecentFilesFile(u.c)
 
-                    def change_recent_files_redoer() -> None:
-                        restore_recent_files(new_files)
+            def change_recent_files_redoer() -> None:
+                restore_recent_files(new_files)
 
-                    def change_recent_files_undoer() -> None:
-                        restore_recent_files(old_files)
+            def change_recent_files_undoer() -> None:
+                restore_recent_files(old_files)
 
-                    u.undoBead.add_helpers(change_recent_files_redoer, change_recent_files_undoer)
+            u.undoBead.add_helpers(change_recent_files_redoer, change_recent_files_undoer)
 
     # @+node:vivainio.202610110003.1: *5* u.move_node
     @contextmanager
@@ -969,41 +1013,42 @@ class Undoer:
                 yield u
                 return
             old_p, old_ui = p.copy(), u.capture_ui()
-            try:
-                yield u
-            finally:
-                new_p = p.copy()
-                if old_p.v != c.p.v:  # pragma: no cover
-                    message = f"u.move_node changed p.v: {p.v.h=} {g.callers()=}"
-                    g.es_print_unique_message(message)
-                if old_p != new_p:
-                    new_ui = u.capture_ui()
-                    u._redraw(new_p)  # PR #5005: calls new_p.setDirty()
+            yield u
+            new_p = p.copy()
+            if old_p.v != c.p.v:  # pragma: no cover
+                message = f"u.move_node changed p.v: {p.v.h=} {g.callers()=}"
+                g.es_print_unique_message(message)
 
-                    def move(source: Position, target: Position) -> None:
-                        source.v._cutLink(source.childIndex(), source._parentVnode())
-                        target.v._addLink(target.childIndex(), target._parentVnode())
-                        # These call p.v.setAllAncestorAtFileNodesDirty()
-                        source.setDirty()
-                        target.setDirty()
+            if old_p == new_p:
+                return
 
-                    def move_position_redoer() -> None:
-                        move(old_p, new_p)
+            new_ui = u.capture_ui()
+            u._redraw(new_p)  # PR #5005: calls new_p.setDirty()
 
-                    def move_position_undoer() -> None:
-                        move(new_p, old_p)
+            def move(source: Position, target: Position) -> None:
+                source.v._cutLink(source.childIndex(), source._parentVnode())
+                target.v._addLink(target.childIndex(), target._parentVnode())
+                # These call p.v.setAllAncestorAtFileNodesDirty()
+                source.setDirty()
+                target.setDirty()
 
-                    u.undoBead.add_helpers(move_position_redoer, move_position_undoer)
+            def move_position_redoer() -> None:
+                move(old_p, new_p)
 
-                    def restore_ui_redoer() -> None:
-                        u.restore_ui(new_ui)
-                        u._redraw(new_p)
+            def move_position_undoer() -> None:
+                move(new_p, old_p)
 
-                    def restore_ui_undoer() -> None:
-                        u.restore_ui(old_ui)
-                        u._redraw(old_p)
+            u.undoBead.add_helpers(move_position_redoer, move_position_undoer)
 
-                    u.undoBead.add_finishers(restore_ui_redoer, restore_ui_undoer)
+            def restore_ui_redoer() -> None:
+                u.restore_ui(new_ui)
+                u._redraw(new_p)
+
+            def restore_ui_undoer() -> None:
+                u.restore_ui(old_ui)
+                u._redraw(old_p)
+
+            u.undoBead.add_finishers(restore_ui_redoer, restore_ui_undoer)
 
     # @+node:ekr.20261018041400.1: *5* u:common context helpers
     # @+node:vivainio.202610110001.3: *6* u.capture_node

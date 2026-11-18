@@ -2691,7 +2691,7 @@ class TestEditCommands(LeoUnitTest):
         )
 
     # @+node:ekr.20210829062149.1: *4* Commands M-R
-    # @+node:ekr.20220517064432.1: *5* test_merge-node-with-next-node
+    # @+node:ekr.20220517064432.1: *5* TestEditCommands.test_merge-node-with-next-node
     def test_merge_node_with_next_node(self):
         c = self.c
         u = c.undoer
@@ -2717,21 +2717,18 @@ class TestEditCommands(LeoUnitTest):
         c.selectPosition(self.before_p)
         # Delete 'before', select 'after'
         c.doCommandByName('merge-node-with-next-node')
-        self.assertEqual(c.p.h, 'after')
-        self.assertEqual(c.p.b, result_b)
-        self.assertFalse(c.p.next())
         for _i in range(3):
+            self.assertEqual(c.p.h, 'after')
+            self.assertEqual(c.p.b, result_b)
+            self.assertFalse(c.p.next())
             u.undo()
             self.assertEqual(c.p.h, 'before')
             self.assertEqual(c.p.b, prev_b)
             self.assertEqual(c.p.next().h, 'after')
             self.assertEqual(c.p.next().b, next_b)
             u.redo()
-            self.assertEqual(c.p.h, 'after')
-            self.assertEqual(c.p.b, result_b)
-            self.assertFalse(c.p.next())
 
-    # @+node:ekr.20220517064507.1: *5* test_merge-node-with-prev-node
+    # @+node:ekr.20220517064507.1: *5* TestEditCommands.test_merge-node-with-prev-node
     def test_merge_node_with_prev_node(self):
         c = self.c
         u = c.undoer
@@ -2759,19 +2756,16 @@ class TestEditCommands(LeoUnitTest):
         c.selectPosition(self.after_p)
         # Delete 'after', select 'before'
         c.doCommandByName('merge-node-with-prev-node')
-        self.assertEqual(c.p.h, 'before')
-        self.assertEqual(c.p.b, result_b)
-        self.assertFalse(c.p.next())
         for _i in range(3):
+            self.assertEqual(c.p.h, 'before')
+            self.assertEqual(c.p.b, result_b)
+            self.assertFalse(c.p.next())
             u.undo()
             self.assertEqual(c.p.h, 'after')
             self.assertEqual(c.p.b, next_b)
             self.assertEqual(c.p.back().h, 'before')
             self.assertEqual(c.p.back().b, prev_b)
             u.redo()
-            self.assertEqual(c.p.h, 'before')
-            self.assertEqual(c.p.b, result_b)
-            self.assertFalse(c.p.next())
 
     # @+node:ekr.20201130090918.86: *5* test_move-lines-down
     def test_move_lines_down(self):
@@ -4699,12 +4693,56 @@ class TestEditCommands(LeoUnitTest):
     def test_undo_insert_node(self):
         c = self.c
         u = c.undoer
-        assert u
-        c.insertHeadline()
+        old_p = c.p.copy()
+        new_p = c.insertHeadline()
         for _i in range(3):
+            assert c.p == new_p
             self.assertEqual(u.undoMenuLabel, 'Undo Insert Node')
             u.undo()
+            assert c.p == old_p
             self.assertEqual(u.redoMenuLabel, 'Redo Insert Node')
+            u.redo()
+
+    # @+node:ekr.20261117160626.1: *4* TestEditCommands.test_undo_insertChild
+    def test_undo_insertChild(self):
+        c = self.c
+        u = c.undoer
+        old_p = c.p.copy()
+        new_p = c.insertChild()
+        for _i in range(3):
+            assert c.p == new_p
+            self.assertEqual(u.undoMenuLabel, 'Undo insert-child')
+            u.undo()
+            assert c.p == old_p
+            self.assertEqual(u.redoMenuLabel, 'Redo insert-child')
+            u.redo()
+
+    # @+node:ekr.20261117154843.1: *4* TestEditCommands.test_undo_insertNodeAsFirstChild
+    def test_undo_insertNodeAsFirstChild(self):
+        c = self.c
+        old_p = c.p.copy()
+        u = c.undoer
+        new_p = c.insertNodeAsFirstChild()
+        for _i in range(3):
+            assert c.p == new_p
+            self.assertEqual(u.undoMenuLabel, 'Undo insert-as-first-child')
+            u.undo()
+            assert c.p == old_p
+            self.assertEqual(u.redoMenuLabel, 'Redo insert-as-first-child')
+            u.redo()
+
+    # @+node:ekr.20261117154938.1: *4* TestEditCommands.test_undo_insertNodeAsLastChild
+    def test_undo_insert_node(self):
+        c = self.c
+        old_p = c.p.copy()
+        u = c.undoer
+        new_p = c.insertNodeAsLastChild()
+        for _i in range(3):
+            assert c.p == new_p
+            self.assertEqual(u.undoMenuLabel, 'Undo insert-as-last-child')
+            u.undo()
+            assert c.p == old_p
+            self.assertEqual(u.redoMenuLabel, 'Redo insert-as-last-child')
             u.redo()
 
     # @+node:ekr.20210905064816.20: *4* test_inserting_a_new_node_draws_the_screen_exactly_once
@@ -4926,7 +4964,7 @@ class TestEditCommands(LeoUnitTest):
             u.redo()
             self.assertEqual(p.h, h + paste)
 
-    # @+node:ekr.20210905064816.27: *4* test_selecting_new_node_retains_typing_in_headline
+    # @+node:ekr.20210905064816.27: *4* TestEditCommands.test_selecting_new_node_retains_typing_in_headline
     def test_selecting_new_node_retains_typing_in_headline(self):
         c = self.c
         u = c.undoer
@@ -4948,11 +4986,11 @@ class TestEditCommands(LeoUnitTest):
         for _i in range(3):
             self.assertEqual(p.h, expected)
             self.assertEqual(u.undoMenuLabel, 'Undo Typing')
+            self.assertEqual(u.redoMenuLabel, "Can't Redo")
             u.undo()
             self.assertEqual(p.h, h)
             self.assertEqual(u.redoMenuLabel, 'Redo Typing')
             u.redo()
-            self.assertEqual(u.redoMenuLabel, "Can't Redo")
 
     # @+node:ekr.20210905064816.13: *4* test_setMoveCol
     def test_setMoveCol(self):
@@ -5066,7 +5104,7 @@ class TestEditCommands(LeoUnitTest):
         n2 = c.frame.tree.redrawCount
         self.assertEqual(n2, n)
 
-    # @+node:ekr.20210905064816.30: *4* test_undoing_insert_node_restores_previous_node_s_body_text
+    # @+node:ekr.20210905064816.30: *4* TestEditCommands.test_undoing_insert_node_restores_previous_node_s_body_text
     def test_undoing_insert_node_restores_previous_node_s_body_text(self):
         c = self.c
         u = c.undoer
