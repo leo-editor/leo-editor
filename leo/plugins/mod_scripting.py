@@ -462,9 +462,7 @@ class ScriptingController:
                 g.app.scriptDict = {'script_gnx': p.gnx}
                 if 'leoScriptModule' in sys.modules.keys():
                     del sys.modules['leoScriptModule']  # Essential.
-                from leo.core import leoScriptModule
-
-                assert leoScriptModule  # for pyflakes.
+                from leo.core import leoScriptModule  # ty:ignore
             else:
                 g.error('No debugger active')
         c.bodyWantsFocus()

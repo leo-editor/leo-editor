@@ -11,7 +11,7 @@ from leo.core import leoGlobals as g
 from leo.core.leoQt import FocusPolicy
 
 try:
-    from matplotlib.backends.backend_qtagg import FigureCanvas, FigureManager
+    from matplotlib.backends.backend_qtagg import FigureCanvas, FigureManager  # ty:ignore
     from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
     from matplotlib.backends.qt_compat import QtWidgets
     from matplotlib.figure import Figure

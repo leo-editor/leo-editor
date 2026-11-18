@@ -62,9 +62,9 @@ class RectangleCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
-        if not w.hasSelection():
+        if not w.hasSelection():  # pragma: no cover
             return
 
         def toInt(index: str) -> int:
@@ -87,9 +87,9 @@ class RectangleCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
-        if not w.hasSelection():
+        if not w.hasSelection():  # pragma: no cover
             return
 
         def toInt(index: str) -> int:
@@ -117,9 +117,9 @@ class RectangleCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
-        if not w.hasSelection():
+        if not w.hasSelection():  # pragma: no cover
             return
 
         def toInt(index: str) -> int:
@@ -142,9 +142,9 @@ class RectangleCommandsClass:
         w = c.frame.body.wrapper
         p = c.p
         u = c.undoer
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
-        if not w.hasSelection():
+        if not w.hasSelection():  # pragma: no cover
             return
 
         def toInt(index: str) -> int:
@@ -174,9 +174,9 @@ class RectangleCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
-        if not w.hasSelection():
+        if not w.hasSelection():  # pragma: no cover
             return
 
         def toInt(index: str) -> int:
@@ -202,9 +202,9 @@ class RectangleCommandsClass:
         c = self.c
         k = c.k
         w = self.w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
-        if not w.hasSelection():
+        if not w.hasSelection():  # pragma: no cover
             return
 
         if g.unitTesting:
@@ -247,7 +247,7 @@ class RectangleCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         killRect = self.theKillRectangle
 

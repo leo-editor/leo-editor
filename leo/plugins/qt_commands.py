@@ -158,7 +158,7 @@ def showColorWheel(self: Any, event: LeoKeyEvent | None = None) -> None:
         g.trace('error caught', e)
 
     result = picker.exec()
-    if not result:
+    if not result:  # pragma: no cover
         g.es("No color selected")
     elif in_color_setting:
         with u.change_node(p, 'show-color-wheel'):
@@ -199,20 +199,20 @@ def showFonts(self: Any, event: LeoKeyEvent | None = None) -> None:
     except Exception:
         g.es_exception()
     result = picker.exec()
-    if not result:
+    if not result:  # pragma: no cover
         g.es("No font selected")
-    else:
-        font = picker.selectedFont()
-        comments = [x for x in g.splitLines(p.b) if x.strip().startswith('#')]
-        defs = [
-            '\n' if comments else '',
-            f"{name}_family = {font.family()}\n",
-            f"{name}_weight = {'bold' if font.bold() else 'normal'}\n",
-            f"{name}_slant = {'italic' if font.italic() else 'roman'}\n",
-            f"{name}_size = {font.pointSizeF()}\n",
-        ]
-        with u.change_node(p, 'show-fonts'):
-            p.b = ''.join(comments + defs)
+        return
+    font = picker.selectedFont()
+    comments = [x for x in g.splitLines(p.b) if x.strip().startswith('#')]
+    defs = [
+        '\n' if comments else '',
+        f"{name}_family = {font.family()}\n",
+        f"{name}_weight = {'bold' if font.bold() else 'normal'}\n",
+        f"{name}_slant = {'italic' if font.italic() else 'roman'}\n",
+        f"{name}_size = {font.pointSizeF()}\n",
+    ]
+    with u.change_node(p, 'show-fonts'):
+        p.b = ''.join(comments + defs)
 
 
 # @+node:ekr.20140918124632.17893: ** qt: show-style-sheet

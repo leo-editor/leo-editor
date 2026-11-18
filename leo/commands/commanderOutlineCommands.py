@@ -33,7 +33,7 @@ def copyOutline(self: Cmdr, event: LeoKeyEvent | None = None) -> str:
     c.endEditing()
     s = c.fileCommands.outline_to_clipboard_string()
     g.app.paste_c = c
-    if g.app.inBridge:
+    if g.app.inBridge:  # pragma: no cover
         return s
     g.app.gui.replaceClipboardWith(s)
     return s
@@ -48,7 +48,7 @@ def copyOutlineAsJSON(self: Cmdr, event: LeoKeyEvent | None = None) -> str | Non
     c.endEditing()
     s = c.fileCommands.outline_to_clipboard_json_string()
     g.app.paste_c = c
-    if g.app.inBridge:
+    if g.app.inBridge:  # pragma: no cover
         return s
     g.app.gui.replaceClipboardWith(s)
     return None
@@ -75,18 +75,21 @@ def pasteOutline(
     """
     c = self
     u = c.undoer
-    if s is None:
+    if s is None:  # pragma: no cover
         s = g.app.gui.getTextFromClipboard()
     c.endEditing()
-    if not s or not c.canPasteOutline(s):
+    if not s or not c.canPasteOutline(s):  # pragma: no cover
         return None
-    if not (s.lstrip().startswith("{") or g.match(s, 0, g.app.prolog_prefix_string)):
+    if not (
+        s.lstrip().startswith("{")
+        or g.match(s, 0, g.app.prolog_prefix_string)
+    ):  # fmt: skip  # pragma: no cover
         return None
     with u.change_outline('paste-node'):
         pasted = c.fileCommands.getLeoOutlineFromClipboard(s)
-        if not pasted:
+        if not pasted:  # pragma: no cover
             return None
-        if c.checkOutline():  # Error.
+        if c.checkOutline():  # pragma: no cover
             pasted.doDelete()
             c.p = c.rootPosition()
             return None
@@ -112,18 +115,21 @@ def pasteOutlineRetainingClones(
     """
     c = self
     u = c.undoer
-    if s is None:
+    if s is None:  # pragma: no cover
         s = g.app.gui.getTextFromClipboard()
     c.endEditing()
-    if not s or not c.canPasteOutline(s):
+    if not s or not c.canPasteOutline(s):  # pragma: no cover
         return None
-    if not (s.lstrip().startswith("{") or g.match(s, 0, g.app.prolog_prefix_string)):
+    if not (
+        s.lstrip().startswith("{")
+        or g.match(s, 0, g.app.prolog_prefix_string)
+    ):  # fmt: skip  # pragma: no cover
         return None
     with u.change_outline('paste-retaining-clones'):
         pasted = c.fileCommands.getLeoOutlineFromClipboardRetainingClones(s)
-        if not pasted:
+        if not pasted:  # pragma: no cover
             return None
-        if c.checkOutline():  # Error.
+        if c.checkOutline():  # pragma: no cover
             pasted.doDelete()
             c.p = c.rootPosition()
             return None
@@ -138,41 +144,6 @@ def pasteOutlineRetainingClones(
         return pasted
 
 
-# @+node:ekr.20050418084539.2: *4* def computeCopiedBunchList
-def computeCopiedBunchList(
-    c: Cmdr,
-    pasted: Position,
-    vnodeInfoDict: dict[VNode, g.Bunch],
-) -> list[g.Bunch]:
-    """Create a dict containing only copied vnodes."""
-    d = {}
-    for p in pasted.self_and_subtree(copy=False):
-        d[p.v] = p.v
-    aList = []
-    for v in vnodeInfoDict:
-        if d.get(v):
-            if bunch := vnodeInfoDict.get(v):
-                aList.append(bunch)
-    return aList
-
-
-# @+node:ekr.20050418084539: *4* def computeVnodeInfoDict
-def computeVnodeInfoDict(c: Cmdr) -> dict[VNode, g.Bunch]:
-    """
-    We don't know yet which nodes will be affected by the paste, so we remember
-    everything. This is expensive, but foolproof.
-
-    The alternative is to try to remember the 'before' values of nodes in the
-    FileCommands read logic. Several experiments failed, and the code is very ugly.
-    In short, it seems wise to do things the foolproof way.
-    """
-    d = {}
-    for v in c.all_unique_nodes():
-        if v not in d:
-            d[v] = g.Bunch(v=v, head=v.h, body=v.b)
-    return d
-
-
 # @+node:vitalije.20200529105105.1: *3* c_oc.pasteAsTemplate
 @g.commander_command('paste-as-template')
 def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
@@ -181,7 +152,7 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     p = c.p
     u = c.undoer
     s = g.app.gui.getTextFromClipboard()
-    if not s or not c.canPasteOutline(s):
+    if not s or not c.canPasteOutline(s):  # pragma: no cover
         g.trace(f"Can not paste {repr(s)}")
         return
     isJson = s.lstrip().startswith("{")
@@ -381,7 +352,7 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 
 # @+node:ekr.20040412060927: ** c_oc.dumpOutline
 @g.commander_command('dump-outline')
-def dumpOutline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
+def dumpOutline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
     """Dump all nodes in the outline."""
     c = self
     seen = {}
@@ -1087,7 +1058,7 @@ def clone(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Create a clone of the selected outline."""
     c = self
     u = c.undoer
-    if not c.p:
+    if not c.p:  # pragma: no cover
         return None
     c.endEditing()
     with u.change_outline('clone-node'):
@@ -1107,10 +1078,10 @@ def cloneToAtSpot(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     c = self
     p = c.p
     u = c.undoer
-    if not p:
+    if not p:  # pragma: no cover
         return
     # 2015/12/27: fix bug 220: do not allow clone-to-at-spot on @spot node.
-    if p.h.startswith('@spot'):
+    if p.h.startswith('@spot'):  # pragma: no cover
         g.es("can not clone @spot node", color='red')
         return
 
@@ -1153,7 +1124,7 @@ def cloneToLastNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     c = self
     p = c.p
     u = c.undoer
-    if not p:
+    if not p:  # pragma: no cover
         return
     prev = p.copy()
     c.endEditing()  # Capture any changes to the headline.
@@ -1178,11 +1149,12 @@ def deleteOutline(
     c = self
     p = c.p
     u = c.undoer
-    if not p:
+    if not p:  # pragma: no cover
         return
     c.endEditing()
-    with u.change_outline(op_name):
+    with u.change_node(p, op_name):
         u.delete_node(p)  # Calculates new c.p.
+        c.redraw()
 
 
 # @+node:ekr.20071005173203.1: *3* c_oc:insert-child
@@ -1190,44 +1162,47 @@ def deleteOutline(
 def insertChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Insert a node as a child of presently selected node."""
     c = self
-    if not c.p:
+    p = c.p
+    u = c.undoer
+    if not p:  # pragma: no cover
         return None
     c.endEditing()
-    with c.undoer as u:
-        u.set_command_name('insert-child')
+    with u.change_node(p, 'insert-child'):
         new_p = u.insert_node(c.p, as_child=True)
         u.redraw_and_edit(new_p)
-        return new_p
+        return new_p  # For unit tests.
 
 
-# @+node:ekr.20261008042700.1: *3* c_oc:insert-as-first-child
+# @+node:ekr.20261008042700.1: *3* c_oc:insert-as-first-child (not used in Leo's core)
 @g.commander_command('insert-as-first-child')
 def insertNodeAsFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Insert a node as the first child of the previous node."""
     c = self
-    if not c.p:
+    p = c.p
+    u = c.undoer
+    if not p:  # pragma: no cover
         return None
     c.endEditing()
-    with c.undoer as u:
-        u.set_command_name('insert-as-first-child')
-        new_p = u.insert_node(c.p, as_child=True, index=0)
+    with u.change_node(p, 'insert-as-first-child'):
+        new_p = u.insert_node(p, as_child=True, index=0)
         u.redraw_and_edit(new_p)
-        return new_p
+        return new_p  # For unit tests.
 
 
-# @+node:ekr.20261008042932.1: *3* c_oc:insert-as-last-child
+# @+node:ekr.20261008042932.1: *3* c_oc:insert-as-last-child (not used in Leo's core)
 @g.commander_command('insert-as-last-child')
 def insertNodeAsLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Insert a node as the last child of the previous node."""
     c = self
-    if not c.p:
+    p = c.p
+    u = c.undoer
+    if not c.p:  # pragma: no cover
         return None
     c.endEditing()
-    with c.undoer as u:
-        u.set_command_name('insert-as-last-child')
+    with u.change_node(p, 'insert-as-last-child'):
         new_p = u.insert_node(c.p, as_child=True, index=c.p.numberOfChildren())
         u.redraw_and_edit(new_p)
-        return new_p
+        return new_p  # For unit tests.
 
 
 # @+node:ekr.20261008042653.1: *3* c_oc:insert-node
@@ -1242,14 +1217,15 @@ def insertHeadline(
     If c.p is not expanded, insert a new node after c.p.
     """
     c = self
-    if not c.p:
+    p = c.p
+    u = c.undoer
+    if not p:  # pragma: no cover
         return None
     c.endEditing()
-    with c.undoer as u:
-        u.set_command_name(op_name)
+    with u.change_node(p, op_name):
         new_p = u.insert_node(c.p)
         u.redraw_and_edit(new_p)
-        return new_p
+        return new_p  # For unit tests.
 
 
 # @+node:ekr.20130922133218.11540: *3* c_oc:insert-node-before
@@ -1257,17 +1233,18 @@ def insertHeadline(
 def insertHeadlineBefore(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Insert a node before the presently selected node."""
     c = self
-    if not c.p:
+    p = c.p
+    u = c.undoer
+    if not p:  # pragma: no cover
         return None
-    if c.hoistStack and c.p == c.hoistStack[-1].p:
+    if c.hoistStack and c.p == c.hoistStack[-1].p:  # pragma: no cover
         g.warning('can not insert a node before the base of a hoist')
         return None
     c.endEditing()
-    with c.undoer as u:
-        u.set_command_name('insert-node-before')
+    with u.change_node(p, 'insert-node-before'):
         new_p = u.insert_node(c.p, before=True)
         u.redraw_and_edit(new_p)
-        return new_p
+        return new_p  # For unit tests.
 
 
 # @+node:ekr.20031218072017.2922: ** c_oc.Mark commands
@@ -1442,7 +1419,7 @@ def markHeadline(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     c = self
     p = c.p
     u = c.undoer
-    if not p:
+    if not p:  # pragma: no cover
         return
     c.endEditing()
     with u.change_node(p, 'toggle-marked'):
@@ -1478,7 +1455,7 @@ def unmarkAll(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     c = self
     current = c.p
     u = c.undoer
-    if not current:
+    if not current:  # pragma: no cover
         return
     c.endEditing()
     changed = False
@@ -1501,12 +1478,12 @@ def demote(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     c = self
     p = c.p
     u = c.undoer
-    if not p or not p.hasNext():
+    if not p or not p.hasNext():  # pragma: no cover
         c.treeFocusHelper()
         return
     # Make sure all the moves will be valid.
     next = p.next()
-    while next:
+    while next:  # pragma: no cover
         if not c.checkMoveWithParentWithWarning(next, p, True):
             c.treeFocusHelper()
             return
@@ -1543,18 +1520,18 @@ def moveOutlineDown(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     c = self
     p = c.p
     u = c.undoer
-    if not p:
+    if not p:  # pragma: no cover
         return
-    if not c.canMoveOutlineDown():
+    if not c.canMoveOutlineDown():  # pragma: no cover
         if c.hoistStack:
             cantMoveMessage(c)
         c.treeFocusHelper()
         return
     parent = p.parent()
     next = p.visNext(c)
-    while next and p.isAncestorOf(next):
+    while next and p.isAncestorOf(next):  # pragma: no cover
         next = next.visNext(c)
-    if not next:
+    if not next:  # pragma: no cover
         if c.hoistStack:
             cantMoveMessage(c)
         c.treeFocusHelper()
@@ -1594,14 +1571,14 @@ def moveOutlineLeft(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     c = self
     p = c.p
     u = c.undoer
-    if not p:
+    if not p:  # pragma: no cover
         return
-    if not c.canMoveOutlineLeft():
+    if not c.canMoveOutlineLeft():  # pragma: no cover
         if c.hoistStack:
             cantMoveMessage(c)
         c.treeFocusHelper()
         return
-    if not p.hasParent():
+    if not p.hasParent():  # pragma: no cover
         c.treeFocusHelper()
         return
     parent = p.parent()
@@ -1611,7 +1588,7 @@ def moveOutlineLeft(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         p.moveAfter(parent)
         p.setDirty()
         # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
-        if c.collapse_nodes_after_move and c.sparse_move:  # New in Leo 4.4.2
+        if c.collapse_nodes_after_move and c.sparse_move:  # pragma: no cover
             parent.contract()
         c.p = p
 
@@ -1623,18 +1600,18 @@ def moveOutlineRight(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     c = self
     p = c.p
     u = c.undoer
-    if not p:
+    if not p:  # pragma: no cover
         return
-    if not c.canMoveOutlineRight():  # 11/4/03: Support for hoist.
+    if not c.canMoveOutlineRight():  # pragma: no cover
         if c.hoistStack:
             cantMoveMessage(c)
         c.treeFocusHelper()
         return
     back = p.back()
-    if not back:
+    if not back:  # pragma: no cover
         c.treeFocusHelper()
         return
-    if not c.checkMoveWithParentWithWarning(p, back, True):
+    if not c.checkMoveWithParentWithWarning(p, back, True):  # pragma: no cover
         c.treeFocusHelper()
         return
     c.endEditing()
@@ -1653,15 +1630,15 @@ def moveOutlineUp(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     c = self
     p = c.p
     u = c.undoer
-    if not p:
+    if not p:  # pragma: no cover
         return
-    if not c.canMoveOutlineUp():  # Support for hoist.
+    if not c.canMoveOutlineUp():  # pragma: no cover
         if c.hoistStack:
             cantMoveMessage(c)
         c.treeFocusHelper()
         return
     back = p.visBack(c)
-    if not back:
+    if not back:  # pragma: no cover
         return
     back2 = back.visBack(c)
     c.endEditing()
@@ -1721,14 +1698,14 @@ def moveOutlineToFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> Non
     c = self
     p = c.p
     u = c.undoer
-    if not p:
+    if not p:  # pragma: no cover
         return
-    if c.hoistStack:
+    if c.hoistStack:  # pragma: no cover
         return
-    if not p.hasBack():
+    if not p.hasBack():  # pragma: no cover
         return
     parent = p.parent()
-    if not parent:
+    if not parent:  # pragma: no cover
         return
     c.endEditing()
     with u.move_node(p, 'move-outline-to-first-child'):
@@ -1749,14 +1726,14 @@ def moveOutlineToLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> None
     c = self
     p = c.p
     u = c.undoer
-    if not p:
+    if not p:  # pragma: no cover
         return
-    if c.hoistStack:
+    if c.hoistStack:  # pragma: no cover
         return
-    if not p.hasNext():
+    if not p.hasNext():  # pragma: no cover
         return
     parent = p.parent()
-    if not parent:
+    if not parent:  # pragma: no cover
         return
     c.endEditing()
     with u.move_node(p, 'move-outline-to-last-child'):
@@ -1773,7 +1750,7 @@ def promote(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     c = self
     p = c.p
     u = c.undoer
-    if not p or not p.hasChildren():
+    if not p or not p.hasChildren():  # pragma: no cover
         c.treeFocusHelper()
         return
     c.endEditing()
@@ -1845,9 +1822,9 @@ def sortSiblings(
     """Sort the siblings of a node."""
     c = self
     u = c.undoer
-    if not p:
+    if not p:  # pragma: no cover
         p = c.p
-    if not p:
+    if not p:  # pragma: no cover
         return
 
     oldP, newP = p.copy(), p.copy()
@@ -1864,7 +1841,7 @@ def sortSiblings(
             return v.h.lower()
 
     newChildren.sort(key=key, reverse=reverse)
-    if oldChildren == newChildren:
+    if oldChildren == newChildren:  # pragma: no cover
         return
     with u.change_outline(undoType):
         # A copy, so its not the undo bead's oldChildren. Fixes #3205

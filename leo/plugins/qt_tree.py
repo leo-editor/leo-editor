@@ -22,10 +22,9 @@ from leo.plugins import qt_text
 if TYPE_CHECKING:  # pragma: no cover
     from typing import TypeAlias  # Requires Python 3.12+
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoFrame import LeoQTreeWidget
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
-    from leo.plugins.qt_frame import LeoQtFrame
+    from leo.plugins.qt_frame import LeoQtFrame, LeoQTreeWidget
     from leo.plugins.qt_text import QHeadlineWrapper
 
     QLineEdit = QtWidgets.QLineEdit
@@ -65,7 +64,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self.reloadSettings()
         # Components...
         self.canvas = self  # Required! An official ivar used by Leo's core.
-        self.treeWidget: LeoQTreeWidget = frame.top.treeWidget
+        self.treeWidget: LeoQTreeWidget = frame.top.treeWidget  # ty:ignore
         w = self.treeWidget
         # Declutter data...
         # list of pairs of patterns for decluttering
@@ -247,7 +246,7 @@ class LeoQtTree(leoFrame.LeoTree):
                     g.app.log(
                         f'Error in declutter: {e!r}"\n  REPLACE:{arg!r}\n  HEADLINE:{text!r}',
                         color='error',
-                    )
+                    )  # ty:ignore
             elif cmd == 'REPLACE-HEAD':
                 s = text[: m.start()].rstrip()
             elif cmd == 'REPLACE-TAIL':
@@ -503,6 +502,7 @@ class LeoQtTree(leoFrame.LeoTree):
         patterns: list[Any] = []
         warned = False
         lines = c.config.getData("tree-declutter-patterns")
+        oops = g.es_print_unique_message
         for line in lines:
             try:
                 cmd, arg = line.split(None, 1)
@@ -516,14 +516,14 @@ class LeoQtTree(leoFrame.LeoTree):
                 try:
                     patterns.append((re.compile(arg), []))
                 except re.error:
-                    g.app.log('Invalid declutter pattern: %r' % (arg,), color='error')
+                    oops(f"Invalid declutter pattern: {arg!r}")
                     patterns.append((re.compile('a^'), []))  # create a rule that matches nothing
             else:
                 if patterns:
                     patterns[-1][1].append((cmd, arg))
                 elif not warned:
                     warned = True
-                    g.app.log('Declutter patterns must start with RULE*', color='error')
+                    oops('Declutter patterns must start with RULE*')
         self.declutter_patterns = patterns
         return patterns
 
@@ -982,7 +982,7 @@ class LeoQtTree(leoFrame.LeoTree):
         return item
 
     # @+node:ekr.20110605121601.18423: *4* LeoQtTree.getCurrentItem
-    def getCurrentItem(self) -> QTreeWidgetItem:
+    def getCurrentItem(self) -> QTreeWidgetItem | None:
         w = self.treeWidget
         return w.currentItem()
 
@@ -1001,8 +1001,9 @@ class LeoQtTree(leoFrame.LeoTree):
         return w.selectedItems()
 
     # @+node:ekr.20110605121601.18427: *4* LeoQtTree.getTreeEditorForItem
-    def getTreeEditorForItem(self, item: QTreeWidgetItem) -> QLineEdit:
-        """Return the edit widget if it exists.
+    def getTreeEditorForItem(self, item: QTreeWidgetItem) -> QWidget | None:
+        """
+        Return the edit widget if it exists.
         Do *not* create one if it does not exist.
         """
         w = self.treeWidget
@@ -1174,7 +1175,7 @@ class LeoQtTree(leoFrame.LeoTree):
         item: QTreeWidgetItem,
         selectAll: bool = False,
         selection: tuple | None = None,
-    ) -> tuple[QLineEdit, QHeadlineWrapper | None]:
+    ) -> tuple[QWidget | None, QHeadlineWrapper | None]:
         """Helper for qtree.editLabel."""
         c = self.c
         vc = c.vimCommands

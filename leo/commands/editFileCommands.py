@@ -572,7 +572,7 @@ class EditFileCommandsClass:
         p = c.p
         u = c.undoer
         w = c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not g.isTextWrapper(w):  # pragma: no cover
             return
         fn = self.getReadableTextFile()
         if not fn:
