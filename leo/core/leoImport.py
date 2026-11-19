@@ -1622,7 +1622,7 @@ class MORE_Importer:
                         if n != index - 1:
                             body += "\n"
                         n += 1
-                    p.setBodyString(body)
+                    p.b = body
                 # @-<< Add the lines to the body text of p >>
                 p.setDirty()
             else:
