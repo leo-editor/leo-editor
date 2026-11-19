@@ -991,7 +991,8 @@ def readAtFileNodes(self: Self, event: LeoKeyEvent | None = None) -> None:
     c.atFileCommands.readAllSelected(p)
 
     # Force an update of the body pane.
-    c.setBodyString(p, p.b)  # Not a do-nothing!
+    ### c.setBodyString(p, p.b)  # Not a do-nothing!
+    p.b = p.b  # Not a do-nothing!
     c.redraw()
     c.undoer.clearAndWarn('read-at-file-nodes')
 

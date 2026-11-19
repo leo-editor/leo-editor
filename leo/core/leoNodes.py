@@ -1900,7 +1900,7 @@ class Position:
         p = self
         return p.bodyString()
 
-    def __set_b(self, s: str) -> None:
+    def __set_b(self, s: str | bytes) -> None:
         """
         Set the body text of a position.
 
