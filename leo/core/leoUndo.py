@@ -1124,7 +1124,7 @@ class Undoer:
             return
 
         p.setDirty()  # Call p.v.setAllAncestorAtFileNodesDirty()
-        preserve_body = p == c.p
+        preserve_body = p == c.p  # PR #5059.
         if preserve_body:
             sel, ins, scroll = w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
         c.updateSyntaxColorer(p)
