@@ -840,591 +840,83 @@ try:
 finally:
     if c:
         c.in_qt_dialog = False
-# @+node:ekr.20261109032123.1: *3* --- deleted unit tests
-# @+node:ekr.20261014103356.1: *4* class TestContextUndo(LeoUnitTest)
-class TestContextUndo(LeoUnitTest):
-    @others
+# @+node:ekr.20261117233629.1: *3* --- deleted from paste-retaining-clones
+# @+node:ekr.20050418084539.2: *4* def computeCopiedBunchList
+def computeCopiedBunchList(
+    c: Cmdr,
+    pasted: Position,
+    vnodeInfoDict: dict[VNode, g.Bunch],
+) -> list[g.Bunch]:
+    """Create a dict containing only copied vnodes."""
+    d = {}
+    for p in pasted.self_and_subtree(copy=False):
+        d[p.v] = p.v
+    aList = []
+    for v in vnodeInfoDict:
+        if d.get(v):
+            if bunch := vnodeInfoDict.get(v):
+                aList.append(bunch)
+    return aList
 
 
-# @+node:ekr.20261014103254.1: *5* TestContextUndo.cycles
-def cycles(self, before, after):
+# @+node:ekr.20050418084539: *4* def computeVnodeInfoDict
+def computeVnodeInfoDict(c: Cmdr) -> dict[VNode, g.Bunch]:
+    """
+    We don't know yet which nodes will be affected by the paste, so we remember
+    everything. This is expensive, but foolproof.
+
+    The alternative is to try to remember the 'before' values of nodes in the
+    FileCommands read logic. Several experiments failed, and the code is very ugly.
+    In short, it seems wise to do things the foolproof way.
+    """
+    d = {}
+    for v in c.all_unique_nodes():
+        if v not in d:
+            d[v] = g.Bunch(v=v, head=v.h, body=v.b)
+    return d
+
+
+# @+node:ekr.20261118083833.1: *3* --- deleted unit tests
+# @+node:ekr.20230714143451.1: *4* TestEditFileCommands.test_diff_two_branches (deleted)
+def test_diff_two_branches(self):
     c = self.c
     u = c.undoer
-    for _ in range(3):
-        u.undo()
-        before()
-        self.assertEqual(c.checkOutline(), 0)
-        u.redo()
-        after()
-        self.assertEqual(c.checkOutline(), 0)
+    x = GitDiffController(c=c)
 
-# @+node:ekr.20261014103223.1: *5* TestContextUndo.setUp
-def setUp(self):
-    super().setUp()
-    self.c.undoer.clearUndoState()
-    self.c.clearChanged()
+    # Setup the outline.
+    root = c.rootPosition()
+    root.h = '@file leoGlobals.py'
+    root.deleteAllChildren()
+    while root.hasNext():
+        root.next().doDelete()
+    c.selectPosition(root)
 
-# @+node:ekr.20261014103254.15: *5* TestContextUndo.test_all_insert_commands_repeat
-def test_all_insert_commands_repeat(self):
-    for command in (
-        'insertChild',
-        'insertNodeAsFirstChild',
-        'insertNodeAsLastChild',
-        'insertHeadlineBefore',
-    ):
-        with self.subTest(command=command):
-            self.setUp()
-            c, u = self.c, self.c.undoer
-            original = c.p.copy()
-            inserted = getattr(c, command)()
-            self.assertIsNotNone(inserted)
-            vnode = inserted.v
-            self.assertTrue(c.changed)
-            self.cycles(
-                lambda c=c, original=original: self.assertEqual(c.p, original),
-                lambda c=c, vnode=vnode: self.assertIs(c.p.v, vnode),
+    # Run the test in the leo-editor directory (the parent of the .git directory).
+    new_dir = g.finalize_join(g.app.loadDir, '..', '..')
+    old_dir = os.getcwd()
+    os.chdir(new_dir)
+    try:
+        # Run the command, suppressing output from git.
+        expected_last_headline = 'git-diff-branches 6.8.10 6.8.10.dev1'
+        try:
+            sys.stdout = open(os.devnull, 'w')
+            x.diff_two_branches(
+                branch1='main',
+                branch2='devel',
+                fn='leo/core/leoGlobals.py',  # Don't use backslashes.
             )
-            u.undo()
-
-# @+node:ekr.20261014103254.23: *5* TestContextUndo.test_bulk_context_releases_state_after_exception_and_can_undo_partial_work
-def test_bulk_context_releases_state_after_exception_and_can_undo_partial_work(self):
-    c = self.c
-    p = c.p
-    u = c.undoer
-    with self.assertRaisesRegex(RuntimeError, 'partial'):
-        with u.change_outline('partial bulk'):
-            p.b = 'partial edit'
-            raise RuntimeError('partial')
-    self.assertIsNone(u.undoBead)
-    self.assertEqual(u.undoBeadLevel, 0)
-    self.assertEqual(u.capture_level, 0)
-    u.undo()
-    self.assertEqual(p.b, '')
-    with u.change_node(p, 'next edit'):
-        p.b = 'next'
-    self.assertEqual(p.b, 'next')
-
-# @+node:ekr.20261014103254.33: *5* TestContextUndo.test_bulk_marks_and_sort_keep_vnode_identity
-def test_bulk_marks_and_sort_keep_vnode_identity(self):
-    c = self.c
-    p = c.p
-    u = c.undoer
-    first = p.insertAsLastChild()
-    first.h = 'Z'
-    second = first.insertAfter()
-    second.h = 'A'
-    c.sortChildren()
-    self.cycles(
-        lambda: self.assertEqual(p.v.children, [first.v, second.v]),
-        lambda: self.assertEqual(p.v.children, [second.v, first.v]),
-    )
-    u.clearUndoState()
-    c.markSubheads()
-    self.cycles(
-        lambda: self.assertFalse(first.isMarked() or second.isMarked()),
-        lambda: self.assertTrue(first.isMarked() and second.isMarked()),
-    )
-
-# @+node:ekr.20261027134713.1: *5* TestContextUndo.test_clone_node
-def test_clone_node(self):
-    # Test the changes in PR #5015.
-    c = self.c
-    p = c.p
-    u = c.undoer
-    v = p.v
-    assert not p.isCloned()
-    for _i in range(3):
-        c.redraw_count = 0
-        clone = c.clone()
-        assert c.redraw_count == 1, f"{c.redraw_count=}"
-        assert clone == c.p
-        assert clone.v == v
-        assert clone.isCloned()
-        assert c.p.isCloned()
+        finally:
+            sys.stdout = sys.__stdout__
+        # #3497: Silently skip the test if nothing has changed.
+        if c.lastTopLevel() == root:
+            return
+        self.assertEqual(c.lastTopLevel().h, expected_last_headline)
         u.undo()
-        assert c.redraw_count == 2, f"{c.redraw_count=}"
-        assert c.p.v == v
-        assert c.p == p, f"\n{c.p=}\n  {p=}\n"
-        assert not c.p.isCloned()
+        self.assertEqual(c.lastTopLevel(), root)
         u.redo()
-        assert c.redraw_count == 3, f"{c.redraw_count=}"
-        assert clone.v == v
-        assert c.p.isCloned()
-        u.undo()
-        assert c.redraw_count == 4, f"{c.redraw_count=}"
-        assert c.p.v == v
-        assert c.p == p, f"\n{c.p=}\n  {p=}\n"
-        assert not c.p.isCloned()
-
-# @+node:ekr.20261014103254.16: *5* TestContextUndo.test_clone_returns_position_and_selects_it_on_redo
-def test_clone_returns_position_and_selects_it_on_redo(self):
-    c = self.c
-    p = c.p
-    clone = c.clone()
-    self.assertEqual(clone, c.p)
-
-    def before():
-        self.assertFalse(p.isCloned())
-        self.assertEqual(c.p, p)
-
-    def after():
-        self.assertTrue(p.isCloned())
-        self.assertEqual(c.p, clone)
-
-    self.cycles(before, after)
-
-# @+node:ekr.20261014103254.34: *5* TestContextUndo.test_copy_marked_repeats
-def test_copy_marked_repeats(self):
-    self.setUp()
-    c = self.c
-    p = c.p
-    child = p.insertAsLastChild()
-    child.setMarked()
-    before = c.hiddenRootNode.children[:]
-    container = c.p.copy()
-    result_child = container.firstChild().v
-    self.cycles(
-        lambda c=c, before=before: self.assertEqual(c.hiddenRootNode.children, before),
-        lambda c=c, container=container, result_child=result_child: (
-            self.assertEqual(c.p, container),
-            self.assertIs(c.p.firstChild().v, result_child),
-        ),
-    )
-
-# @+node:ekr.20261014103254.38: *5* TestContextUndo.test_core_callers_do_not_use_legacy_undo_api
-def test_core_callers_do_not_use_legacy_undo_api(self):
-    root = Path(g.__file__).parents[1]
-    legacy = {
-        name
-        for name in dir(self.c.undoer)
-        if name.startswith(('before', 'after')) and name[6:7].isupper()
-    }
-    # Match all public before/after methods, including aliases.
-    legacy.update(
-        name for name in dir(self.c.undoer) if name.startswith('after') and name[5:6].isupper()
-    )
-    for directory in ('core', 'commands'):
-        for path in (root / directory).glob('*.py'):
-            if path.name == 'leoUndo.py':
-                continue
-            for node in ast.walk(ast.parse(path.read_text(encoding='utf-8'))):
-                if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
-                    self.assertNotIn(node.func.attr, legacy, f'{path}:{node.lineno}')
-
-# @+node:ekr.20261014103254.11: *5* TestContextUndo.test_cut_and_paste_mark_clean_document_changed_and_restore_selection
-def test_cut_and_paste_mark_clean_document_changed_and_restore_selection(self):
-    for command in ('cutText', 'pasteText'):
-        with self.subTest(command=command):
-            c, p, u = self.c, self.c.p, self.c.undoer
-            u.clearUndoState()
-            p.b = 'abcdef'
-            w = c.frame.body.wrapper
-            w.setSelectionRange(1, 4, insert=1)
-            c.clearChanged()
-            g.app.gui.replaceClipboardWith('XYZ')
-            getattr(c.frame, command)(LeoKeyEvent(c, w=w))
-            after = 'aef' if command == 'cutText' else 'aXYZef'
-            self.assertEqual(p.b, after)
-            self.assertTrue(c.changed)
-
-            def before(p=p, w=w):
-                self.assertEqual(p.b, 'abcdef')
-                self.assertEqual(w.getAllText(), p.b)
-                self.assertEqual(w.getSelectionRange(), (1, 4))
-                self.assertEqual(w.getInsertPoint(), 1)
-
-            self.cycles(before, lambda p=p, after=after: self.assertEqual(p.b, after))
-
-# @+node:ekr.20261014103254.17: *5* TestContextUndo.test_delete_first_root_adjusts_following_selection
-def test_delete_first_root_adjusts_following_selection(self):
-    c = self.c
-    first = c.p.copy()
-    second = first.next().copy()
-    c.deleteOutline()
-    self.assertIs(c.p.v, second.v)
-
-    def before():
-        self.assertEqual(c.p, first)
-        self.assertIs(c.rootPosition().next().v, second.v)
-
-    def after():
-        self.assertIs(c.p.v, second.v)
-        self.assertEqual(c.p.childIndex(), 0)
-
-    self.cycles(before, after)
-
-# @+node:ekr.20261014103254.18: *5* TestContextUndo.test_delete_selected_subtree_preserves_children
-def test_delete_selected_subtree_preserves_children(self):
-    c = self.c
-    p = c.p
-    child = p.insertAsLastChild()
-    grandchild = child.insertAsLastChild()
-    grandchild.h = 'grandchild'
-    p.expand()
-    c.selectPosition(child)
-    c.deleteOutline()
-    self.cycles(
-        lambda: self.assertIs(c.p.firstChild().v, grandchild.v),
-        lambda: self.assertFalse(c.positionExists(child)),
-    )
-
-# @+node:ekr.20261014103254.35: *5* TestContextUndo.test_drag_clone_is_removed_on_undo
-def test_drag_clone_is_removed_on_undo(self):
-    c = self.c
-    p = c.p
-    target = p.next()
-    before = c.hiddenRootNode.children[:]
-    c.dragCloneToNthChildOf(p, target, 0)
-    clone = c.p.copy()
-    self.assertTrue(p.isCloned())
-    self.cycles(
-        lambda: (
-            self.assertEqual(c.hiddenRootNode.children, before),
-            self.assertFalse(p.isCloned()),
-        ),
-        lambda: (self.assertEqual(c.p, clone), self.assertTrue(p.isCloned())),
-    )
-
-# @+node:ekr.20261014103254.30: *5* TestContextUndo.test_dual_mode_harness_sets_and_restores_switch
-def test_dual_mode_harness_sets_and_restores_switch(self):
-    seen = []
-    old = g.new_undoers
-
-    def exercise(test):
-        seen.append(g.new_undoers)
-        test.assertIsNotNone(test.c)
-
-    self.run_undo_test(exercise)
-    self.assertEqual(seen, [True, False])
-    self.assertEqual(g.new_undoers, old)
-
-# @+node:ekr.20261103072930.1: *5* TestContextUndo.test_headline_expansion_survives_a_redraw
-def test_headline_expansion_survives_a_redraw(self):
-    c = self.c
-    p = c.p
-    u = c.undoer
-    x = c.abbrevCommands
-    x.abbrevs = {}
-    definition = 'det;;=<details><summary><|Title|></summary></details>'
-    x.addAbbrevHelper(definition)
-    i = definition.find(';=')
-    contents = definition[:i]
-    expected = definition[i + 2 :]
-
-    # Setup.
-    c.editHeadline()
-    w = c.headline_wrapper(p)
-    p.h = contents
-    w.setAllText(contents)
-    w.setInsertPoint(len(contents), contents)
-    event = LeoKeyEvent(c, char=';', binding=';', w=w)
-    self.assertTrue(x.expandAbbrev(event=event, stroke=None))
-
-    # Check the headline wrapper.
-    w2 = c.headline_wrapper(p)
-    self.assertIsNotNone(w2)
-    self.assertEqual(w2.getAllText(), expected)
-
-    # The headline becomes official when the editor closes.
-    c.endEditing()
-    for _i in range(3):
-        self.assertEqual(p.h, expected)
-        u.undo()
-        self.assertEqual(p.h, contents)
-        u.redo()
-        self.assertEqual(p.h, expected)
-
-# @+node:ekr.20261014103254.6: *5* TestContextUndo.test_insert_command_redraw_and_edit_replays_once
-def test_insert_command_redraw_and_edit_replays_once(self):
-    c = self.c
-    p = c.p
-    u = c.undoer
-    with patch.object(c, 'redrawAndEdit', wraps=c.redrawAndEdit) as edit:
-        inserted = c.insertHeadline()
-        edit.assert_called_once_with(inserted, selectAll=True)
-        edit.reset_mock()
-        u.undo()
-        edit.assert_called_once_with(p, selectAll=True)
-        edit.reset_mock()
-        u.redo()
-        edit.assert_called_once_with(inserted, selectAll=True)
-
-# @+node:ekr.20261014103254.14: *5* TestContextUndo.test_insert_reuses_vnode_and_preserves_later_contents
-def test_insert_reuses_vnode_and_preserves_later_contents(self):
-    c = self.c
-    original = c.p.copy()
-    inserted = c.insertHeadline()
-    vnode = inserted.v
-    inserted.h = 'renamed directly'
-    inserted.b = 'body added directly'
-    child = inserted.insertAsLastChild()
-    child.h = 'child'
-
-    def before():
-        self.assertEqual(c.p, original)
-        self.assertFalse(c.positionExists(inserted))
-
-    def after():
-        self.assertIs(c.p.v, vnode)
-        self.assertEqual(c.p.h, 'renamed directly')
-        self.assertEqual(c.p.b, 'body added directly')
-        self.assertIs(c.p.firstChild().v, child.v)
-
-    self.cycles(before, after)
-
-# @+node:ekr.20261014103254.4: *5* TestContextUndo.test_multiple_insert_helpers_share_one_bead
-def test_multiple_insert_helpers_share_one_bead(self):
-    c = self.c
-    p = c.p
-    before = tuple(v for v in c.all_unique_nodes())
-    with c.undoer as u:
-        u.set_command_name('two inserts')
-        first = u.insert_node(p)
-        second = u.insert_node(first)
-    after = tuple(v for v in c.all_unique_nodes())
-    self.assertIn(second.v, after)
-    self.cycles(
-        lambda: self.assertEqual(tuple(c.all_unique_nodes()), before),
-        lambda: self.assertEqual(tuple(c.all_unique_nodes()), after),
-    )
-
-# @+node:ekr.20261014103254.2: *5* TestContextUndo.test_nested_context_composes_helpers_after_inner_exit
-def test_nested_context_composes_helpers_after_inner_exit(self):
-    c = self.c
-    p = c.p
-    u = c.undoer
-
-    def inner() -> None:
-        with u.change_node(c.p, 'inner'):
-            p.b = 'inner'
-        self.assertTrue(len(u.beads) in (0, 1))
-
-    def outer() -> None:
-        with u.change_node(c.p, 'outer'):
-            p.b = 'outer'
-            inner()
-
-    p.b = 'original'
-    for _i in range(3):
-        outer()
-        assert p.b == 'inner'
-        assert len(u.beads) == 1
-        assert u.beads[0].command_name == 'outer'
-        u.undo()
-        assert p.b == 'original'
-        assert len(u.beads) == 1
-        assert u.beads[0].command_name == 'outer'
-        u.redo()
-        assert p.b == 'inner'
-        assert len(u.beads) == 1
-        assert u.beads[0].command_name == 'outer'
-        u.undo()
-        assert p.b == 'original'
-        assert len(u.beads) == 1
-        assert u.beads[0].command_name == 'outer'
-
-# @+node:ekr.20261014103254.3: *5* TestContextUndo.test_nested_node_contexts_capture_distinct_nodes_and_same_node_once
-def test_nested_node_contexts_capture_distinct_nodes_and_same_node_once(self):
-    c = self.c
-    u = c.undoer
-    p = c.p.copy()
-    q = p.insertAfter()
-    p.b, q.b = 'p original', 'q original'
-    with u.change_node(p, 'nested edits'):
-        p.b = 'p intermediate'
-        with u.change_node(p, 'same node'):
-            p.b = 'p final'
-        with u.change_node(q, 'other node'):
-            q.b = 'q final'
-    self.cycles(
-        lambda: self.assertEqual((p.b, q.b), ('p original', 'q original')),
-        lambda: self.assertEqual((p.b, q.b), ('p final', 'q final')),
-    )
-
-# @+node:ekr.20261014103254.9: *5* TestContextUndo.test_noop_context_preserves_redo
-def test_noop_context_preserves_redo(self):
-    c = self.c
-    p = c.p
-    u = c.undoer
-
-    def edit() -> None:
-        with u.change_node(p, 'edit'):
-            p.b = 'changed'
-
-    def noop() -> None:
-        with u.change_node(p, 'noop'):
-            pass
-
-    p.b = 'original'
-    noop()
-    edit()
-    noop()
-    for _i in range(3):
-        assert p.b == 'changed', repr(p.b)
-        u.undo()
-        assert u.canRedo()
-        u.redo()
-        assert p.b == 'changed', repr(p.b)
-        u.undo()
-        u.undo()
-        assert p.b == 'original', repr(p.b)
-        u.redo()
-        u.redo()
-
-# @+node:ekr.20261014103254.19: *5* TestContextUndo.test_outline_context_preserves_clones_and_nested_user_attributes
-def test_outline_context_preserves_clones_and_nested_user_attributes(self):
-    c = self.c
-    p = c.p
-    u = c.undoer
-    child = p.insertAsLastChild()
-    clone = child.clone()
-    child.v.u = {'nested': {'items': [1]}}
-    with u.change_outline('bulk'):
-        clone.doDelete()
-        child.v.u['nested']['items'].append(2)
-        child.b = 'new body'
-        c.redraw(child)
-
-    def before():
-        self.assertTrue(child.isCloned())
-        self.assertEqual(child.v.u, {'nested': {'items': [1]}})
-        self.assertEqual(child.b, '')
-
-    def after():
-        self.assertFalse(child.isCloned())
-        self.assertEqual(child.v.u, {'nested': {'items': [1, 2]}})
-        self.assertEqual(child.b, 'new body')
-
-    self.cycles(before, after)
-
-# @+node:ekr.20261014103254.21: *5* TestContextUndo.test_plain_and_clone_preserving_paste_repeat
-def test_plain_and_clone_preserving_paste_repeat(self):
-    for retain in (False, True):
-        with self.subTest(retain=retain):
-            self.setUp()
-            c = self.c
-            p = c.p
-            child = p.insertAsLastChild()
-            child.h, child.b = 'child', 'child body'
-            c.copyOutline()
-            before = list(c.hiddenRootNode.children)
-            pasted = c.pasteOutlineRetainingClones() if retain else c.pasteOutline()
-            vnode = pasted.v
-            pasted_child = pasted.firstChild().v
-            self.assertEqual(vnode is p.v, retain)
-            self.assertEqual(pasted_child is child.v, retain)
-            self.cycles(
-                lambda c=c, before=before: self.assertEqual(c.hiddenRootNode.children, before),
-                lambda c=c, vnode=vnode, pasted_child=pasted_child: (
-                    self.assertIs(c.p.v, vnode),
-                    self.assertIs(c.p.firstChild().v, pasted_child),
-                ),
-            )
-
-# @+node:ekr.20261014103254.7: *5* TestContextUndo.test_snapshot_redraw_restores_body_selection_after_refresh
-def test_snapshot_redraw_restores_body_selection_after_refresh(self):
-    c = self.c
-    p = c.p
-    u = c.undoer
-    p.b = 'before'
-    w = c.frame.body.wrapper
-    w.setSelectionRange(1, 3, insert=1)
-    with u.change_node(p, 'edit'):
-        p.b = 'after'
-        w.setSelectionRange(2, 4, insert=4)
-    for _i in range(3):
-        u.undo()
-        self.assertEqual(w.getSelectionRange(), (1, 3))
-        self.assertEqual(w.getInsertPoint(), 1)
-        u.redo()
-        self.assertEqual(w.getSelectionRange(), (2, 4))
-        self.assertEqual(w.getInsertPoint(), 4)
-
-# @+node:ekr.20261014103254.28: *5* TestContextUndo.test_typing_granularity_and_save_boundary
-def test_typing_granularity_and_save_boundary(self):
-    c = self.c
-    p = c.p
-    u = c.undoer
-
-    def _run_test_typing_granularity_and_save_boundary(granularity):
-        p.b = ''
-        u.clearUndoState()
-        c.clearChanged()
-        if hasattr(u, 'granularity'):
-            u.granularity = granularity
-        for old, new in (('', 'a'), ('a', 'ab')):
-            w = c.frame.body.wrapper
-            w.setAllText(new)
-            oldSel = (len(old), len(old))
-            newSel = (len(new), len(new))
-            w.setSelectionRange(*newSel)
-            u.type_text(p, old, new, newInsert=len(new), oldSel=oldSel, newSel=newSel)
-        self.assertEqual(len(u.beads), 2 if granularity == 'char' else 1)
-        u.undo()
-        self.assertEqual(p.b, 'a' if granularity == 'char' else '')
-        u.redo()
-        c.clearChanged()
-        w.setAllText('abc')
-        w.setSelectionRange(3, 3)
-        u.type_text(p, 'ab', 'abc', newInsert=3, oldSel=(2, 2), newSel=(3, 3))
-        self.assertEqual(len(u.beads), 3 if granularity == 'char' else 2)
-        u.undo()
-        self.assertEqual(p.b, 'ab')
-        self.assertTrue(c.changed)
-
-    if hasattr(u, 'granularity'):
-        for granularity in ('char', 'line', 'word', 'node'):
-            with self.subTest(granularity=granularity):
-                _run_test_typing_granularity_and_save_boundary(granularity)
-    else:
-        _run_test_typing_granularity_and_save_boundary('word')
-
-# @+node:ekr.20261014103254.27: *5* TestContextUndo.test_typing_preserves_text_mark_and_newlines
-def test_typing_preserves_text_mark_and_newlines(self):
-    c = self.c
-    p = c.p
-    u = c.undoer
-    for marked in (False, True):
-        for old, new in (('', '\n'), ('a\n\n', 'a\nb\n\n'), ('a\n', ''), ('a\nb', 'a\nb\n')):
-            with self.subTest(marked=marked, old=old, new=new):
-                u.clearUndoState()
-                p.b = old
-                p.setMarked() if marked else p.clearMarked()
-                w = c.frame.body.wrapper
-                w.setAllText(new)
-                w.setSelectionRange(len(new), len(new))
-                oldSel = (len(old), len(old))
-                u.type_text(p, oldSel=oldSel, oldText=old, w=w)
-                self.assertIsInstance(u.beads[-1], TypingBead)
-                self.cycles(
-                    lambda old=old: self.assertEqual(p.b, old),
-                    lambda new=new: self.assertEqual(p.b, new),
-                )
-                self.assertEqual(p.isMarked(), marked)
-
-# @+node:ekr.20261014103254.29: *5* TestContextUndo.test_typing_word_boundary
-def test_typing_word_boundary(self):
-    c = self.c
-    p = c.p
-    u = c.undoer
-    p.b = ''
-    for new in ('a', 'ab', 'ab ', 'ab c', 'ab cd'):
-        old = p.b
-        w = c.frame.body.wrapper
-        w.setAllText(new)
-        w.setSelectionRange(len(new), len(new))
-        oldSel = (len(old), len(old))
-        newSel = (len(new), len(new))
-        newInsert = len(new)
-        u.type_text(p, oldText=old, oldSel=oldSel, w=w)
-    self.assertEqual(len(u.beads), 2)
-    u.undo()
-    self.assertEqual(p.b, 'ab')
-    u.undo()
-    self.assertEqual(p.b, '')
-    u.redo()
-    u.redo()
-    self.assertEqual(p.b, 'ab cd')
+        self.assertEqual(c.lastTopLevel().h, expected_last_headline)
+    finally:
+        os.chdir(old_dir)
 
 # @+node:ekr.20230724130924.1: *4* TestOutlineCommands.test_paste_as_template (deleted)
 def test_paste_as_template(self):
@@ -1580,82 +1072,132 @@ def test_tree(pasted_flag: bool, tag: str) -> None:
         # g.printObj([f"{z.gnx:30} {' '*z.level()}{z.h:10} {z.b!r}" for z in c.all_positions()], tag='bodies')
         self.fail(message)  # This throws another exception!
 
-# @+node:ekr.20230714143451.1: *4* TestEditFileCommands.test_diff_two_branches (deleted)
-def test_diff_two_branches(self):
+# @+node:ekr.20261118172131.29: *4* TestUndo.test_drag_clone
+def test_drag_clone(self):
     c = self.c
+    p = c.p
     u = c.undoer
-    x = GitDiffController(c=c)
 
-    # Setup the outline.
-    root = c.rootPosition()
-    root.h = '@file leoGlobals.py'
-    root.deleteAllChildren()
-    while root.hasNext():
-        root.next().doDelete()
-    c.selectPosition(root)
+    # Setup.
+    target = p.next()
+    assert target.h == '@settings'
+    before_children = c.hiddenRootNode.children[:]
 
-    # Run the test in the leo-editor directory (the parent of the .git directory).
-    new_dir = g.finalize_join(g.app.loadDir, '..', '..')
-    old_dir = os.getcwd()
-    os.chdir(new_dir)
-    try:
-        # Run the command, suppressing output from git.
-        expected_last_headline = 'git-diff-branches 6.8.10 6.8.10.dev1'
-        try:
-            sys.stdout = open(os.devnull, 'w')
-            x.diff_two_branches(
-                branch1='main',
-                branch2='devel',
-                fn='leo/core/leoGlobals.py',  # Don't use backslashes.
-            )
-        finally:
-            sys.stdout = sys.__stdout__
-        # #3497: Silently skip the test if nothing has changed.
-        if c.lastTopLevel() == root:
-            return
-        self.assertEqual(c.lastTopLevel().h, expected_last_headline)
+    # Clone and drag.
+    c.dragCloneToNthChildOf(p, target, 0)
+
+    for _i in range(3):
+        assert c.p.isCloned(), c.p
+        assert target.firstChild().v == p.v
         u.undo()
-        self.assertEqual(c.lastTopLevel(), root)
+        assert not c.p.isCloned(), c.p
+        assert c.hiddenRootNode.children == before_children
+        assert not target.hasChildren()
         u.redo()
-        self.assertEqual(c.lastTopLevel().h, expected_last_headline)
-    finally:
-        os.chdir(old_dir)
 
-# @+node:ekr.20261117233629.1: *3* --- deleted from paste-retaining-clones
-# @+node:ekr.20050418084539.2: *4* def computeCopiedBunchList
-def computeCopiedBunchList(
-    c: Cmdr,
-    pasted: Position,
-    vnodeInfoDict: dict[VNode, g.Bunch],
-) -> list[g.Bunch]:
-    """Create a dict containing only copied vnodes."""
-    d = {}
-    for p in pasted.self_and_subtree(copy=False):
-        d[p.v] = p.v
-    aList = []
-    for v in vnodeInfoDict:
-        if d.get(v):
-            if bunch := vnodeInfoDict.get(v):
-                aList.append(bunch)
-    return aList
+# @+node:ekr.20261118170200.1: *3* --- deleted c.drag methods
+# @+node:ekr.20261014103254.35: *4* TestUndo.test_drag_clone (not used)
+def test_drag_clone(self):
+    c = self.c
+    p = c.p
+    u = c.undoer
 
+    # Setup.
+    target = p.next()
+    assert target.h == '@settings'
+    before_children = c.hiddenRootNode.children[:]
 
-# @+node:ekr.20050418084539: *4* def computeVnodeInfoDict
-def computeVnodeInfoDict(c: Cmdr) -> dict[VNode, g.Bunch]:
-    """
-    We don't know yet which nodes will be affected by the paste, so we remember
-    everything. This is expensive, but foolproof.
+    # Clone and drag.
+    c.dragCloneToNthChildOf(p, target, 0)
 
-    The alternative is to try to remember the 'before' values of nodes in the
-    FileCommands read logic. Several experiments failed, and the code is very ugly.
-    In short, it seems wise to do things the foolproof way.
-    """
-    d = {}
-    for v in c.all_unique_nodes():
-        if v not in d:
-            d[v] = g.Bunch(v=v, head=v.h, body=v.b)
-    return d
+    for _i in range(3):
+        assert c.p.isCloned(), c.p
+        assert target.firstChild().v == p.v
+        u.undo()
+        assert not c.p.isCloned(), c.p
+        assert c.hiddenRootNode.children == before_children
+        assert not target.hasChildren()
+        u.redo()
 
+# @+node:ekr.20031218072017.2946: *4* c.dragCloneToNthChildOf (not used)
+def dragCloneToNthChildOf(self, p: Position, parent: Position, n: int) -> None:
+    """Drag a clone of p to the n'th child of parent."""
+    c = self
+    u = c.undoer
+    c.endEditing()
+
+    def oops(message: str) -> None:
+        if not g.unitTesting:
+            c.alert(f"Illegal clone-drag: {message}")
+
+    # Like c.checkDrag.
+    if any(z.v == p.v for z in p.subtree()):
+        oops('Dragging a clone into its descendant tree')
+        return
+    # Like ccheckMoveWithParentWithWarning.
+    if any(z.v == p.v for z in parent.self_and_subtree()):
+        oops('Dragging a clone into its ancestor')
+        return
+
+    with u.change_outline('c.dragCloneToNthChildOf'):
+        clone = p.clone()
+        clone.setDirty()
+        clone.moveToNthChildOf(parent, n)
+        clone.setDirty()
+        c.p = clone
+
+# @+node:ekr.20031218072017.2353: *4* c.dragAfter (not used)
+def dragAfter(self, p: Position, after: Position) -> None:
+    c = self
+    p = c.p
+    u = c.undoer
+    if not c.checkDrag(p, after):
+        return
+    if not c.checkMoveWithParentWithWarning(p, after.parent(), True):
+        return
+    assert p.v
+    c.endEditing()
+    with u.move_node(p, 'Drag'):
+        p.setDirty()
+        p.moveAfter(after)
+        p.setDirty()
+        c.p = p
+
+# @+node:ekr.20031218072017.2948: *4* c.dragCloneAfter (not used)
+def dragCloneAfter(self, p: Position, after: Position) -> None:
+    c = self
+    u = c.undoer
+    c.endEditing()
+    with u.change_outline('c.dragCloneAfter'):
+        clone = p.clone()
+        if (
+            c.checkDrag(p, after) and
+            c.checkMoveWithParentWithWarning(clone, after.parent(), True)
+        ):  # fmt: skip
+            clone.setDirty()
+            clone.moveAfter(after)
+            clone.setDirty()
+            p = clone
+        else:
+            # Destroys clone and makes p the current node.
+            clone.doDelete(newNode=p)
+        c.p = p
+
+# @+node:ekr.20031218072017.2947: *4* c.dragToNthChildOf (not used)
+def dragToNthChildOf(self, p: Position, parent: Position, n: int) -> None:
+    c = self
+    p = c.p
+    u = c.undoer
+    if not c.checkDrag(p, parent):
+        return
+    if not c.checkMoveWithParentWithWarning(p, parent, True):
+        return
+    c.endEditing()
+    with u.move_node(p, 'Drag'):
+        p.setDirty()
+        p.moveToNthChildOf(parent, n)
+        p.setDirty()
+        c.p = p
 
 # @-all
 # @@nosearch

@@ -162,6 +162,8 @@ class StringTextWrapper(QTextMixin):
         """Return the selected range of the widget."""
         sel = self.sel
 
+        ### g.trace(f"{sel=} {g.callers(2)}")
+
         # Check if sel contains None values (can be set by leoFind.py's 'save' and 'restore' methods).
         if len(sel) == 2 and (sel[0] is None or sel[1] is None):
             return 0, 0
@@ -201,6 +203,9 @@ class StringTextWrapper(QTextMixin):
 
         Set the text and set the insert point to len(s).
         """
+
+        ### g.trace(f"StringTextWrapper: {len(s)=} {s=} {g.callers(4)}")
+
         self.s = s
         i = len(self.s)
         self.ins = i
