@@ -2191,7 +2191,9 @@ class Commands:
         if not c or not v:
             return
         s = g.toUnicode(s)
+
         ### g.trace(f"{(p.v == c.p.v)=}")
+
         if c.p and p.v == c.p.v:
             w = c.frame.body.wrapper
             w.setAllText(s)
