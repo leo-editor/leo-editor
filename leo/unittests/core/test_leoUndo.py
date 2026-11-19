@@ -625,7 +625,7 @@ class TestUndo(LeoUnitTest):
             assert w_sel == (1, 4), repr(w_sel)
             u.redo()
 
-    # @+node:ekr.20261014103254.7: *3* TestUndo.xxx_test_selection_range FAILS
+    # @+node:ekr.20261014103254.7: *3* TestUndo.xxx_test_selection_range (new, fails)
     def xxx_test_selection_range(self):
         c = self.c
         p = c.p

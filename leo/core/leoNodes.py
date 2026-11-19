@@ -1894,7 +1894,7 @@ class Position:
         return result
 
     # @+node:ekr.20090128083459.74: *3* p.Properties
-    # @+node:ekr.20090128083459.75: *4* p.b property
+    # @+node:ekr.20090128083459.75: *4* p.b property (horrible test!)
     def __get_b(self) -> str:
         """Return the body text of a position."""
         p = self
