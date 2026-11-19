@@ -625,28 +625,32 @@ class TestUndo(LeoUnitTest):
             assert w_sel == (1, 4), repr(w_sel)
             u.redo()
 
-    # @+node:ekr.20261014103254.7: *3* TestUndo.test_selection_range (new, fails)
+    # @+node:ekr.20261014103254.7: *3* TestUndo.test_selection_range
     def test_selection_range(self):
         c = self.c
         p = c.p
         u = c.undoer
         p.b = 'before'
         w = c.frame.body.wrapper
+
+        # Setup.
         w.setSelectionRange(1, 3, insert=1)
+
+        # Test.
         with u.change_node(p, 'edit'):
-            p.b = 'after'  # p.b works. p.v.b doesn't
+            p.v.b = 'after'
             w.setSelectionRange(2, 4, insert=4)
 
         for _i in range(3):
+            assert p.v.b == 'after', repr(p.b)
             w_ins = w.getInsertPoint()
             w_sel = w.getSelectionRange()
-            assert p.v.b == 'after', repr(p.b)
             assert w_ins == 4, repr(w_ins)
             assert w_sel == (2, 4), repr(w_sel)
             u.undo()
+            assert p.v.b == 'before', repr(p.b)
             w_ins = w.getInsertPoint()
             w_sel = w.getSelectionRange()
-            assert p.v.b == 'before', repr(p.b)
             assert w_ins == 1, repr(w_ins)
             assert w_sel == (1, 3), repr(w_sel)
             u.redo()

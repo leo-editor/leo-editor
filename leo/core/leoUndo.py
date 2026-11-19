@@ -1118,11 +1118,13 @@ class Undoer:
         u = self
         c = u.c
         w = c.frame.body.wrapper
+
         # Ignore redrawers in inner levels.
         if u.undoBeadLevel > 1:  # pragma: no cover
             return
+
         p.setDirty()  # Call p.v.setAllAncestorAtFileNodesDirty()
-        preserve_body = p == c.p and p.b == w.getAllText()
+        preserve_body = p == c.p
         if preserve_body:
             sel, ins, scroll = w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
         c.updateSyntaxColorer(p)
