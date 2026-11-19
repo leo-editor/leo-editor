@@ -1900,7 +1900,7 @@ class Position:
         p = self
         return p.bodyString()
 
-    def __set_b(self, val: str) -> None:
+    def __set_b(self, s: str) -> None:
         """
         Set the body text of a position.
 
@@ -1920,9 +1920,20 @@ class Position:
         c = p.v.context
         if c != p.v.context:
             raise ValueError(f"p.b setter: {c=} != {p.v.context=}")
-
-        # Warning: c.setBodyString is *expensive*.
-        c.setBodyString(p, val)
+        v = p.v
+        s = g.toUnicode(s)
+        if c.p and p.v == c.p.v:
+            w = c.frame.body.wrapper
+            w.setAllText(s)
+            v.setSelection(0, 0)  ### Legacy.
+            c.recolor()
+        # Keep the body text in the VNode up-to-date.
+        if v.b != s:
+            v.setBodyString(s)
+            v.setSelection(0, 0)
+            p.setDirty()
+            if not c.isChanged():
+                c.setChanged()
 
     b = property(__get_b, __set_b, doc="position body string property")
 
