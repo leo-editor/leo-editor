@@ -1916,6 +1916,7 @@ class Position:
         use p.v.b instead of p.b.
         """
         p = self
+        ### g.trace(f"{p.v=} {p.v.context=}")
         if p.v and (c := p.v.context):
             c.setBodyString(p, val)
             # Warning: c.setBodyString is *expensive*.

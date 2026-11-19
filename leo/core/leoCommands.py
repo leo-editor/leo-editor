@@ -2181,7 +2181,7 @@ class Commands:
         p.v.clearMarked()
         g.doHook("clear-mark", c=c, p=p)
 
-    # @+node:ekr.20040305223522: *5* c.setBodyString
+    # @+node:ekr.20040305223522: *5* c.setBodyString (trace, don't change??)
     def setBodyString(self, p: Position, s: bytes | str) -> None:
         """
         This is equivalent to p.b = s.
@@ -2191,10 +2191,11 @@ class Commands:
         if not c or not v:
             return
         s = g.toUnicode(s)
+        ### g.trace(f"{(p.v == c.p.v)=}")
         if c.p and p.v == c.p.v:
             w = c.frame.body.wrapper
             w.setAllText(s)
-            v.setSelection(0, 0)
+            v.setSelection(0, 0)  ### Legacy.
             c.recolor()
 
         # Keep the body text in the VNode up-to-date.
