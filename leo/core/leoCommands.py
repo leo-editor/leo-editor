@@ -2183,8 +2183,8 @@ class Commands:
 
     # @+node:ekr.20040305223522: *5* c.setBodyString
     def setBodyString(self, p: Position, s: bytes | str) -> None:
-        """Set p.b. Retained for compatibility."""
-        p.b = s  # PR #5058
+        """Set p.b Retained for compatibility."""
+        p.b = s  # Do *not* set p.v.b here!
 
     # @+node:ekr.20031218072017.2989: *5* c.setChanged
     def setChanged(self, *, force: bool = False) -> None:
