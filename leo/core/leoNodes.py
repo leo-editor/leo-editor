@@ -1894,7 +1894,7 @@ class Position:
         return result
 
     # @+node:ekr.20090128083459.74: *3* p.Properties
-    # @+node:ekr.20090128083459.75: *4* p.b property
+    # @+node:ekr.20090128083459.75: *4* p.b property (to do)
     def __get_b(self) -> str:
         """Return the body text of a position."""
         p = self
@@ -1918,8 +1918,6 @@ class Position:
         if not p.v:
             raise ValueError(f"p.b setter: no p.v {g.callers()=}")
         c = p.v.context
-        if c != p.v.context:
-            raise ValueError(f"p.b setter: {c=} != {p.v.context=}")
         v = p.v
         s = g.toUnicode(s)
         if c.p and p.v == c.p.v:
