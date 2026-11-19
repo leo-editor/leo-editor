@@ -1894,7 +1894,7 @@ class Position:
         return result
 
     # @+node:ekr.20090128083459.74: *3* p.Properties
-    # @+node:ekr.20090128083459.75: *4* p.b property (horrible test!)
+    # @+node:ekr.20090128083459.75: *4* p.b property
     def __get_b(self) -> str:
         """Return the body text of a position."""
         p = self
@@ -1916,12 +1916,14 @@ class Position:
         use p.v.b instead of p.b.
         """
         p = self
+        if not p.v:
+            raise ValueError(f"p.b setter: no p.v {g.callers()=}")
+        c = p.v.context
+        if c != p.v.context:
+            raise ValueError(f"p.b setter: {c=} != {p.v.context=}")
 
-        ### g.trace(f"{p.v=} {p.v.context=}")
-
-        if p.v and (c := p.v.context):
-            c.setBodyString(p, val)
-            # Warning: c.setBodyString is *expensive*.
+        # Warning: c.setBodyString is *expensive*.
+        c.setBodyString(p, val)
 
     b = property(__get_b, __set_b, doc="position body string property")
 
