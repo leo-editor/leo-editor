@@ -1904,10 +1904,9 @@ class Position:
         """
         Set the body text of a position.
 
-        **Warning: the p.b = whatever is *expensive* because it calls
-        c.setBodyString().
+        **Warning: the p.b = whatever is *expensive*.
 
-        Usually, code *should* use this setter, despite its cost, because it
+        But usually code *should* use this setter, despite its cost, because it
         update's Leo's outline pane properly. Calling c.redraw() is *not*
         enough.
 
