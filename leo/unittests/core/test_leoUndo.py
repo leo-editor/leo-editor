@@ -462,7 +462,7 @@ class TestUndo(LeoUnitTest):
         w = c.headline_wrapper(p)
         p.h = contents
         w.setAllText(contents)
-        w.setInsertPoint(len(contents), contents)
+        w.setInsertPoint(len(contents))
         event = LeoKeyEvent(c, char=';', binding=';', w=w)
         self.assertTrue(x.expandAbbrev(event=event, stroke=None))
 

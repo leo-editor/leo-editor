@@ -212,7 +212,7 @@ class StringTextWrapper(QTextMixin):
         self.sel = i, i
 
     # @+node:ekr.20140903172510.18587: *4* StringTextWrapper.setInsertPoint
-    def setInsertPoint(self, i: int, s: str | None = None) -> None:
+    def setInsertPoint(self, i: int) -> None:
         """StringTextWrapper."""
         self.virtualInsertPoint = i
         self.ins = i

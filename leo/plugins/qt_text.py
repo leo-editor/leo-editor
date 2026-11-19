@@ -481,13 +481,12 @@ class QLineEditWrapper(QTextMixin):
             g.app.gui.set_focus(self.c, self.widget)
 
     # @+node:ekr.20110605121601.18129: *4* QLineEditWrapper.setInsertPoint
-    def setInsertPoint(self, i: int, s: str | None = None) -> None:
+    def setInsertPoint(self, i: int) -> None:
         """QHeadlineWrapper."""
         if not self.check():
             return
         w = self.widget
-        if s is None:
-            s = w.text()
+        s = w.text()
         i = max(0, min(i, len(s)))
         w.setCursorPosition(i)
 
@@ -1614,7 +1613,7 @@ class QScintillaWrapper(QTextMixin):
         # w.update()
 
     # @+node:ekr.20110605121601.18114: *4* QScintillaWrapper.setInsertPoint
-    def setInsertPoint(self, i: int, s: str | None = None) -> None:
+    def setInsertPoint(self, i: int) -> None:
         """Set the insertion point in a QsciScintilla widget."""
         w = self.widget
         # w.SendScintilla(w.SCI_SETCURRENTPOS,i)
