@@ -2129,9 +2129,11 @@ class Position:
 
     # @+node:ekr.20040315034158: *4* p.setBodyString & setHeadString
     def setBodyString(self, s: bytes | str) -> None:
+        """Call p.b setter. Retained for compatibility."""
         p = self
-        assert p.v  # PR #4767: suppress mypy warning.
-        p.v.setBodyString(s)
+        ### assert p.v  # PR #4767: suppress mypy warning.
+        ### p.v.setBodyString(s)
+        p.b = s
 
     initBodyString = setBodyString
     setTnodeText = setBodyString
