@@ -137,7 +137,6 @@ def convertAllTabs(self: Self, event: LeoKeyEvent | None = None) -> None:
                 if changed:
                     count += 1
                     p.setDirty()
-                    # p.setBodyString('\n'.join(result))
                     p.b = '\n'.join(result)
         if not g.unitTesting:
             g.es("tabs converted to blanks in", count, "nodes")
