@@ -3202,8 +3202,9 @@ class LoadManager:
                 if not c.positionExists(c.p):
                     c.p = c.rootPosition()
                 return c
-        except Exception as e:
-            g.trace(f"Unexpected exception: {e} opening {file_name!r}")
+        except Exception:
+            g.trace(f"Unexpected exception: opening {file_name!r}")
+            g.es_exception()
 
         # The default: open an empty Leo file.
         return self.openEmptyLeoFile(file_name, gui, old_c)
