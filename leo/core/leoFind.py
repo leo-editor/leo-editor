@@ -1231,7 +1231,6 @@ class LeoFind:
                 return 0
             if not self.search_headline and not self.search_body:  # pragma: no cover
                 return 0
-            ### self.find_text = self.replace_back_slashes(self.find_text)  # #4609
             self.change_text = self.change_text
             matches_dict: list[dict[str, Any]] = []
             if self.pattern_match:
