@@ -3604,20 +3604,23 @@ class Commands:
             return None
         if not aList:
             return None
-        p = c.rootPosition()
-        level = 0
-        while level < len(aList):
-            i = aList[level]
-            while i > 0:
-                if p.hasNext():
-                    p.moveToNext()
-                    i -= 1
-                else:
-                    return None
-            level += 1
-            if level < len(aList):
-                p.moveToFirstChild()
-        return p
+        try:  # PR #5061.
+            p = c.rootPosition()
+            level = 0
+            while level < len(aList):
+                i = aList[level]
+                while i > 0:
+                    if p.hasNext():  # Might raise AttributeError!
+                        p.moveToNext()
+                        i -= 1
+                    else:
+                        return None
+                level += 1
+                if level < len(aList):
+                    p.moveToFirstChild()
+            return p
+        except AttributeError:
+            return None
 
     # @+node:ekr.20150422080541.1: *4* c.backup
     def backup(
