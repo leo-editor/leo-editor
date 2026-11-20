@@ -503,33 +503,18 @@ class TestFind(LeoUnitTest):
 
         def test(replacements: tuple[str, str]) -> int:
             return x.batch_change(
-                root=c.rootPosition(),
-                replacements=replacements,
-                settings=settings,
+                root=c.rootPosition(), replacements=replacements, settings=settings
             )
 
         assert test([(r'^def\b', 'DEF')]) > 3
+        assert test([(r'^Node\b', 'DEF')]) == 2
 
-        # Test 2: Match in headline.
-        n = x.batch_change(
-            root=c.rootPosition(), replacements=((r'^Node\b', 'DEF'),), settings=settings
-        )
-        self.assertEqual(n, 2)
-
-        # Test 3: node-only.
         settings['node_only'] = True
-        n = x.batch_change(
-            root=c.rootPosition(), replacements=((r'^DEF\b', 'def'),), settings=settings
-        )
-        self.assertEqual(n, 1)
+        assert test([(r'^DEF\b', 'def')]) == 1
 
-        # Test 4: suboutline-only.
         settings['node_only'] = False
         settings['suboutline_only'] = True
-        n = x.batch_change(
-            root=c.rootPosition(), replacements=((r'^def\b', 'DEF'),), settings=settings
-        )
-        self.assertEqual(n, 1)
+        assert test([(r'^def\b', 'DEF')]) == 1
 
     # @+node:ekr.20210219175850.1: *4* testFind.test_batch_change_word
     def test_batch_change_word(self):
