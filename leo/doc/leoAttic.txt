@@ -771,6 +771,214 @@ key_release_t = QtCore.QEvent.Type.KeyRelease
 key_press_event = QtGui.QKeyEvent(key_press_t, c_key, ctrl_mod, '')
 key_release_event = QtGui.QKeyEvent(key_release_t, c_key, ctrl_mod, '')
 # @+node:ekr.20260820040558.1: ** Temporary attic
+# @+node:ekr.20261118170200.1: *3* --- deleted c.drag methods
+# @+node:ekr.20261014103254.35: *4* TestUndo.test_drag_clone (not used)
+def test_drag_clone(self):
+    c = self.c
+    p = c.p
+    u = c.undoer
+
+    # Setup.
+    target = p.next()
+    assert target.h == '@settings'
+    before_children = c.hiddenRootNode.children[:]
+
+    # Clone and drag.
+    c.dragCloneToNthChildOf(p, target, 0)
+
+    for _i in range(3):
+        assert c.p.isCloned(), c.p
+        assert target.firstChild().v == p.v
+        u.undo()
+        assert not c.p.isCloned(), c.p
+        assert c.hiddenRootNode.children == before_children
+        assert not target.hasChildren()
+        u.redo()
+
+# @+node:ekr.20031218072017.2946: *4* c.dragCloneToNthChildOf (not used)
+def dragCloneToNthChildOf(self, p: Position, parent: Position, n: int) -> None:
+    """Drag a clone of p to the n'th child of parent."""
+    c = self
+    u = c.undoer
+    c.endEditing()
+
+    def oops(message: str) -> None:
+        if not g.unitTesting:
+            c.alert(f"Illegal clone-drag: {message}")
+
+    # Like c.checkDrag.
+    if any(z.v == p.v for z in p.subtree()):
+        oops('Dragging a clone into its descendant tree')
+        return
+    # Like ccheckMoveWithParentWithWarning.
+    if any(z.v == p.v for z in parent.self_and_subtree()):
+        oops('Dragging a clone into its ancestor')
+        return
+
+    with u.change_outline('c.dragCloneToNthChildOf'):
+        clone = p.clone()
+        clone.setDirty()
+        clone.moveToNthChildOf(parent, n)
+        clone.setDirty()
+        c.p = clone
+
+# @+node:ekr.20031218072017.2353: *4* c.dragAfter (not used)
+def dragAfter(self, p: Position, after: Position) -> None:
+    c = self
+    p = c.p
+    u = c.undoer
+    if not c.checkDrag(p, after):
+        return
+    if not c.checkMoveWithParentWithWarning(p, after.parent(), True):
+        return
+    assert p.v
+    c.endEditing()
+    with u.move_node(p, 'Drag'):
+        p.setDirty()
+        p.moveAfter(after)
+        p.setDirty()
+        c.p = p
+
+# @+node:ekr.20031218072017.2948: *4* c.dragCloneAfter (not used)
+def dragCloneAfter(self, p: Position, after: Position) -> None:
+    c = self
+    u = c.undoer
+    c.endEditing()
+    with u.change_outline('c.dragCloneAfter'):
+        clone = p.clone()
+        if (
+            c.checkDrag(p, after) and
+            c.checkMoveWithParentWithWarning(clone, after.parent(), True)
+        ):  # fmt: skip
+            clone.setDirty()
+            clone.moveAfter(after)
+            clone.setDirty()
+            p = clone
+        else:
+            # Destroys clone and makes p the current node.
+            clone.doDelete(newNode=p)
+        c.p = p
+
+# @+node:ekr.20031218072017.2947: *4* c.dragToNthChildOf (not used)
+def dragToNthChildOf(self, p: Position, parent: Position, n: int) -> None:
+    c = self
+    p = c.p
+    u = c.undoer
+    if not c.checkDrag(p, parent):
+        return
+    if not c.checkMoveWithParentWithWarning(p, parent, True):
+        return
+    c.endEditing()
+    with u.move_node(p, 'Drag'):
+        p.setDirty()
+        p.moveToNthChildOf(parent, n)
+        p.setDirty()
+        c.p = p
+
+# @+node:ekr.20261120072244.1: *3* --- deleted find methods
+# @+node:ekr.20210110073117.49: *4* find.replace_back_slashes
+def replace_back_slashes(self, s: str) -> str:
+    """
+    Replace backslash-n with a newline and backslash-t with a tab.
+    """
+    # Compare: https://docs.python.org/3/library/ast.html#ast.literal_eval
+    i, result = 0, []
+    while i < len(s):
+        progress = i
+        ch = s[i]
+        i += 1
+        if ch != '\\' or i >= len(s):
+            result.append(ch)
+            continue
+        ch = s[i]
+        i += 1
+        if ch == 'n':
+            result.append('\n')
+        elif ch == 't':
+            result.append('\t')
+        elif ch == 'f':
+            result.append('\f')
+        elif ch == '\\':
+            # #4601 Replace two backslashes with a single backslash.
+            result.append(ch)
+        else:
+            # #4601: A backslash followed by some other characters.
+            result.append('\\')
+            result.append(ch)
+        assert progress < i
+    return ''.join(result)
+
+# @+node:ekr.20210829203927.14: *4* TestFind.test_replace_back_slashes
+def test_replace_back_slashes(self):
+    x = self.x
+    table = (
+        # Replace \n, \t, and \f by newline, tab, and form-feed.
+        ('\\f',      '\f'),
+        ('\\n',      '\n'),
+        ('\\t',      '\t'),
+        ('a\\n',     'a\n'),
+        ('a\\tc',    'a\tc'),
+        ('a\\t\\fc', 'a\t\fc'),
+        ('a\\nc',    'a\nc'),
+        # #4609: Replace one *or* two backslashes in the find string
+        #        with a single backslash in the change string.
+        ('\\',      '\\'),
+        ('\\\\',    '\\'),
+        ('\\\n',    '\\\n'),
+        ('\\\\n',   '\\n'),
+        ('\\\t',    '\\\t'),
+        ('\\\\t',   '\\t'),
+        ('\\\f',    '\\\f'),
+        ('\\\\f',   '\\f'),
+        (r'b\\\\nd', r'b\\nd'),
+        (r'a\bc',    r'a\bc'),
+        (r'a\\bc',   r'a\bc'),
+        (r'a\\\\bc', r'a\\bc'),
+        (r'a \ b',   r'a \ b'),
+        (r'a \\ b',  r'a \ b'),
+        (r'a \\\ b', r'a \\ b'),
+        (r'a \\\\ b', r'a \\ b'),
+    )  # fmt: skip
+    for input_s, expected_output_s in table:
+        got = x.replace_back_slashes(input_s)
+        self.assertEqual(got, expected_output_s, msg=input_s)
+
+# @+node:ekr.20261117233629.1: *3* --- deleted from paste-retaining-clones
+# @+node:ekr.20050418084539.2: *4* def computeCopiedBunchList
+def computeCopiedBunchList(
+    c: Cmdr,
+    pasted: Position,
+    vnodeInfoDict: dict[VNode, g.Bunch],
+) -> list[g.Bunch]:
+    """Create a dict containing only copied vnodes."""
+    d = {}
+    for p in pasted.self_and_subtree(copy=False):
+        d[p.v] = p.v
+    aList = []
+    for v in vnodeInfoDict:
+        if d.get(v):
+            if bunch := vnodeInfoDict.get(v):
+                aList.append(bunch)
+    return aList
+
+
+# @+node:ekr.20050418084539: *4* def computeVnodeInfoDict
+def computeVnodeInfoDict(c: Cmdr) -> dict[VNode, g.Bunch]:
+    """
+    We don't know yet which nodes will be affected by the paste, so we remember
+    everything. This is expensive, but foolproof.
+
+    The alternative is to try to remember the 'before' values of nodes in the
+    FileCommands read logic. Several experiments failed, and the code is very ugly.
+    In short, it seems wise to do things the foolproof way.
+    """
+    d = {}
+    for v in c.all_unique_nodes():
+        if v not in d:
+            d[v] = g.Bunch(v=v, head=v.h, body=v.b)
+    return d
+
+
 # @+node:ekr.20261109032204.1: *3* --- deleted gui code
 # @+node:ekr.20110605121601.18503: *4* LeoQtGui.runScrolledMessageDialog (deleted)
 def runScrolledMessageDialog(
@@ -840,42 +1048,6 @@ try:
 finally:
     if c:
         c.in_qt_dialog = False
-# @+node:ekr.20261117233629.1: *3* --- deleted from paste-retaining-clones
-# @+node:ekr.20050418084539.2: *4* def computeCopiedBunchList
-def computeCopiedBunchList(
-    c: Cmdr,
-    pasted: Position,
-    vnodeInfoDict: dict[VNode, g.Bunch],
-) -> list[g.Bunch]:
-    """Create a dict containing only copied vnodes."""
-    d = {}
-    for p in pasted.self_and_subtree(copy=False):
-        d[p.v] = p.v
-    aList = []
-    for v in vnodeInfoDict:
-        if d.get(v):
-            if bunch := vnodeInfoDict.get(v):
-                aList.append(bunch)
-    return aList
-
-
-# @+node:ekr.20050418084539: *4* def computeVnodeInfoDict
-def computeVnodeInfoDict(c: Cmdr) -> dict[VNode, g.Bunch]:
-    """
-    We don't know yet which nodes will be affected by the paste, so we remember
-    everything. This is expensive, but foolproof.
-
-    The alternative is to try to remember the 'before' values of nodes in the
-    FileCommands read logic. Several experiments failed, and the code is very ugly.
-    In short, it seems wise to do things the foolproof way.
-    """
-    d = {}
-    for v in c.all_unique_nodes():
-        if v not in d:
-            d[v] = g.Bunch(v=v, head=v.h, body=v.b)
-    return d
-
-
 # @+node:ekr.20261118083833.1: *3* --- deleted unit tests
 # @+node:ekr.20230714143451.1: *4* TestEditFileCommands.test_diff_two_branches (deleted)
 def test_diff_two_branches(self):
@@ -1094,110 +1266,6 @@ def test_drag_clone(self):
         assert c.hiddenRootNode.children == before_children
         assert not target.hasChildren()
         u.redo()
-
-# @+node:ekr.20261118170200.1: *3* --- deleted c.drag methods
-# @+node:ekr.20261014103254.35: *4* TestUndo.test_drag_clone (not used)
-def test_drag_clone(self):
-    c = self.c
-    p = c.p
-    u = c.undoer
-
-    # Setup.
-    target = p.next()
-    assert target.h == '@settings'
-    before_children = c.hiddenRootNode.children[:]
-
-    # Clone and drag.
-    c.dragCloneToNthChildOf(p, target, 0)
-
-    for _i in range(3):
-        assert c.p.isCloned(), c.p
-        assert target.firstChild().v == p.v
-        u.undo()
-        assert not c.p.isCloned(), c.p
-        assert c.hiddenRootNode.children == before_children
-        assert not target.hasChildren()
-        u.redo()
-
-# @+node:ekr.20031218072017.2946: *4* c.dragCloneToNthChildOf (not used)
-def dragCloneToNthChildOf(self, p: Position, parent: Position, n: int) -> None:
-    """Drag a clone of p to the n'th child of parent."""
-    c = self
-    u = c.undoer
-    c.endEditing()
-
-    def oops(message: str) -> None:
-        if not g.unitTesting:
-            c.alert(f"Illegal clone-drag: {message}")
-
-    # Like c.checkDrag.
-    if any(z.v == p.v for z in p.subtree()):
-        oops('Dragging a clone into its descendant tree')
-        return
-    # Like ccheckMoveWithParentWithWarning.
-    if any(z.v == p.v for z in parent.self_and_subtree()):
-        oops('Dragging a clone into its ancestor')
-        return
-
-    with u.change_outline('c.dragCloneToNthChildOf'):
-        clone = p.clone()
-        clone.setDirty()
-        clone.moveToNthChildOf(parent, n)
-        clone.setDirty()
-        c.p = clone
-
-# @+node:ekr.20031218072017.2353: *4* c.dragAfter (not used)
-def dragAfter(self, p: Position, after: Position) -> None:
-    c = self
-    p = c.p
-    u = c.undoer
-    if not c.checkDrag(p, after):
-        return
-    if not c.checkMoveWithParentWithWarning(p, after.parent(), True):
-        return
-    assert p.v
-    c.endEditing()
-    with u.move_node(p, 'Drag'):
-        p.setDirty()
-        p.moveAfter(after)
-        p.setDirty()
-        c.p = p
-
-# @+node:ekr.20031218072017.2948: *4* c.dragCloneAfter (not used)
-def dragCloneAfter(self, p: Position, after: Position) -> None:
-    c = self
-    u = c.undoer
-    c.endEditing()
-    with u.change_outline('c.dragCloneAfter'):
-        clone = p.clone()
-        if (
-            c.checkDrag(p, after) and
-            c.checkMoveWithParentWithWarning(clone, after.parent(), True)
-        ):  # fmt: skip
-            clone.setDirty()
-            clone.moveAfter(after)
-            clone.setDirty()
-            p = clone
-        else:
-            # Destroys clone and makes p the current node.
-            clone.doDelete(newNode=p)
-        c.p = p
-
-# @+node:ekr.20031218072017.2947: *4* c.dragToNthChildOf (not used)
-def dragToNthChildOf(self, p: Position, parent: Position, n: int) -> None:
-    c = self
-    p = c.p
-    u = c.undoer
-    if not c.checkDrag(p, parent):
-        return
-    if not c.checkMoveWithParentWithWarning(p, parent, True):
-        return
-    c.endEditing()
-    with u.move_node(p, 'Drag'):
-        p.setDirty()
-        p.moveToNthChildOf(parent, n)
-        p.setDirty()
-        c.p = p
 
 # @-all
 # @@nosearch

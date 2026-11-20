@@ -292,7 +292,7 @@ class LeoFind:
                 return 0
         # Init...
         self.find_text = find_text
-        self.change_text = self.replace_back_slashes(change_text)
+        self.change_text = change_text
         positions: list | Generator[Position, None, None]
         if self.node_only:
             positions = [p1]
@@ -1231,8 +1231,8 @@ class LeoFind:
                 return 0
             if not self.search_headline and not self.search_body:  # pragma: no cover
                 return 0
-            self.find_text = self.replace_back_slashes(self.find_text)  # #4609
-            self.change_text = self.replace_back_slashes(self.change_text)
+            ### self.find_text = self.replace_back_slashes(self.find_text)  # #4609
+            self.change_text = self.change_text
             matches_dict: list[dict[str, Any]] = []
             if self.pattern_match:
                 ok = self.compile_pattern()
@@ -1338,7 +1338,7 @@ class LeoFind:
         find, change = self.find_text, self.change_text
         # #1166: s0 and find0 aren't affected by ignore-case.
         s0 = s
-        find0 = self.replace_back_slashes(find)
+        find0 = find
         if self.ignore_case:
             s = s0.lower()
             find = find0.lower()
@@ -1396,7 +1396,7 @@ class LeoFind:
         find, change = self.find_text, self.change_text
         # #1166: s0 and find0 aren't affected by ignore-case.
         s0 = s
-        find0 = self.replace_back_slashes(find)
+        find0 = find
         if self.ignore_case:
             s = s0.lower()
             find = find0.lower()
@@ -1892,7 +1892,7 @@ class LeoFind:
             s = s.replace('\r', '')
         if not s.strip():
             return []
-        find_s = self.replace_back_slashes(self.find_text)
+        find_s = self.find_text
         f = self.find_all_regex if self.pattern_match else self.find_all_plain
         return f(find_s, s)
 
@@ -2529,14 +2529,15 @@ class LeoFind:
         if start == end:  # pragma: no cover
             g.es("no text selected")
             return False
+
         start, end = old_sel
         change_text = self.change_text
+
         # Perform regex substitutions of \1, \2, ...\9 in the change text.
         if self.pattern_match and self.match_obj:
             groups = self.match_obj.groups()
             if groups:
                 change_text = self.make_regex_subs(change_text, groups)
-        change_text = self.replace_back_slashes(change_text)
 
         with u.change_node(p, 'change-selection'):
             # Update both the gui widget and the work "widget"
@@ -2784,8 +2785,8 @@ class LeoFind:
         if nocase:
             s = s.lower()
             pattern = pattern.lower()
-        pattern = self.replace_back_slashes(pattern)
         n = len(pattern)
+
         # Put the indices in range.  Indices can get out of range
         # because the search code strips '\r' characters when searching @edit nodes.
         i = max(0, i)
@@ -2826,7 +2827,6 @@ class LeoFind:
         word: bool,
     ) -> tuple[int, int]:
         """Do a plain search."""
-        pattern = self.replace_back_slashes(pattern)  # #4660: Do this first.
         if nocase:
             s = s.lower()
             pattern = pattern.lower()
@@ -2881,8 +2881,8 @@ class LeoFind:
 
     # @+node:ekr.20210110073117.48: *4* find.make_regex_subs
     def make_regex_subs(self, change_text: str, groups: tuple) -> str:
-        """
-        Substitute group[i-1] for \\i strings in change_text.
+        r"""
+        Substitute group[i-1] for \i strings in change_text.
 
         Groups is a tuple of strings, one for every matched group.
         """
@@ -2906,38 +2906,6 @@ class LeoFind:
             return match_object.group(0)
 
         return re.sub(r'\\([0-9])', repl, change_text)
-
-    # @+node:ekr.20210110073117.49: *4* find.replace_back_slashes
-    def replace_back_slashes(self, s: str) -> str:
-        """
-        Replace backslash-n with a newline and backslash-t with a tab.
-        """
-        # Compare: https://docs.python.org/3/library/ast.html#ast.literal_eval
-        i, result = 0, []
-        while i < len(s):
-            progress = i
-            ch = s[i]
-            i += 1
-            if ch != '\\' or i >= len(s):
-                result.append(ch)
-                continue
-            ch = s[i]
-            i += 1
-            if ch == 'n':
-                result.append('\n')
-            elif ch == 't':
-                result.append('\t')
-            elif ch == 'f':
-                result.append('\f')
-            elif ch == '\\':
-                # #4601 Replace two backslashes with a single backslash.
-                result.append(ch)
-            else:
-                # #4601: A backslash followed by some other characters.
-                result.append('\\')
-                result.append(ch)
-            assert progress < i
-        return ''.join(result)
 
     # @+node:ekr.20031218072017.3082: *3* LeoFind.Initing & finalizing
     # @+node:ekr.20031218072017.3086: *4* find.init_in_headline & helper
