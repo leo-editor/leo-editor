@@ -761,8 +761,8 @@ def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
                 results.append((i, m.group(1)))
         if len(results) == 1:
             return results[0]
-        g.error('c.p.b must contain exactly one @others directive')
-        return -1, ''
+        g.error('c.p.b must contain exactly one @others directive')  # pragma: no cover
+        return -1, ''  # pragma: no cover
 
     # @+node:ekr.20261004172905.1: *3* function: find_promotable_children
     section_def_pat = re.compile(r'\s*\<\<(.*?)\>\>')
@@ -785,10 +785,10 @@ def promoteToAtOthers(self: Self, event: LeoKeyEvent | None = None) -> None:
     # @-others
 
     i, indent = find_at_others(old_p)
-    if indent == -1:
+    if i == -1:  # pragma: no cover
         return
     children = find_promotable_children(old_p)
-    if not children:
+    if not children:  # pragma: no cover
         g.error('No promotable children')
         return
     new_body = compute_new_body(i, old_p, children)
