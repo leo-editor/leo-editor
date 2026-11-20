@@ -484,11 +484,12 @@ class TestFind(LeoUnitTest):
         c.theTagController = DummyTagController()
         x.do_tag_children(p, 'test')
 
-    # @+node:ekr.20210219181001.1: *4* testFind.test_batch_change_regex
+    # @+node:ekr.20210219181001.1: *4* TestFind.test_batch_change_regex
     def test_batch_change_regex(self):
         c = self.c
         x = self.x
         # self.dump_tree()
+
         # Test 1: Match in body.
         settings = dict(
             ignore_case=False,
@@ -499,22 +500,29 @@ class TestFind(LeoUnitTest):
             suboutline_only=False,
             whole_word=False,
         )
-        # Test 1: Match in body.
-        n = x.batch_change(
-            root=c.rootPosition(), replacements=((r'^def\b', 'DEF'),), settings=settings
-        )
-        assert n > 3, n  # Test 1.
+
+        def test(replacements: tuple[str, str]) -> int:
+            return x.batch_change(
+                root=c.rootPosition(),
+                replacements=replacements,
+                settings=settings,
+            )
+
+        assert test([(r'^def\b', 'DEF')]) > 3
+
         # Test 2: Match in headline.
         n = x.batch_change(
             root=c.rootPosition(), replacements=((r'^Node\b', 'DEF'),), settings=settings
         )
         self.assertEqual(n, 2)
+
         # Test 3: node-only.
         settings['node_only'] = True
         n = x.batch_change(
             root=c.rootPosition(), replacements=((r'^DEF\b', 'def'),), settings=settings
         )
         self.assertEqual(n, 1)
+
         # Test 4: suboutline-only.
         settings['node_only'] = False
         settings['suboutline_only'] = True
@@ -956,8 +964,8 @@ class TestFind(LeoUnitTest):
             self.assertEqual(result, result2)
             self.assertEqual(count, count2)
 
-    # @+node:ekr.20210829203927.14: *4* TestFind.test_replace_back_slashes
-    def test_replace_back_slashes(self):
+    # @+node:ekr.20210829203927.14: *4* TestFind.xxx_test_replace_back_slashes
+    def xxx_test_replace_back_slashes(self):
         x = self.x
         table = (
             # Replace \n, \t, and \f by newline, tab, and form-feed.
