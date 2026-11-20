@@ -1894,7 +1894,7 @@ class Position:
         return result
 
     # @+node:ekr.20090128083459.74: *3* p.Properties
-    # @+node:ekr.20090128083459.75: *4* p.b property (to do)
+    # @+node:ekr.20090128083459.75: *4* p.b property
     def __get_b(self) -> str:
         """Return the body text of a position."""
         p = self
@@ -1923,7 +1923,7 @@ class Position:
         if c.p and p.v == c.p.v:
             w = c.frame.body.wrapper
             w.setAllText(s)
-            v.setSelection(0, 0)  ### Legacy.
+            v.setSelection(0, 0)
             c.recolor()
         # Keep the body text in the VNode up-to-date.
         if v.b != s:
