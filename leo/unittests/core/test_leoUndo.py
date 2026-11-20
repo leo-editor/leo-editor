@@ -633,27 +633,31 @@ class TestUndo(LeoUnitTest):
         p.b = 'before'
         w = c.frame.body.wrapper
 
-        # Setup.
-        w.setSelectionRange(1, 3, insert=1)
+        for use_vnode_setter in (True, False):
+            # Setup.
+            w.setSelectionRange(1, 3, insert=1)
 
-        # Test.
-        with u.change_node(p, 'edit'):
-            p.v.b = 'after'
-            w.setSelectionRange(2, 4, insert=4)
+            # Test.
+            with u.change_node(p, 'edit'):
+                if use_vnode_setter:
+                    p.v.b = 'after'
+                else:
+                    p.b = 'after'
+                w.setSelectionRange(2, 4, insert=4)
 
-        for _i in range(3):
-            assert p.v.b == 'after', repr(p.b)
-            w_ins = w.getInsertPoint()
-            w_sel = w.getSelectionRange()
-            assert w_ins == 4, repr(w_ins)
-            assert w_sel == (2, 4), repr(w_sel)
-            u.undo()
-            assert p.v.b == 'before', repr(p.b)
-            w_ins = w.getInsertPoint()
-            w_sel = w.getSelectionRange()
-            assert w_ins == 1, repr(w_ins)
-            assert w_sel == (1, 3), repr(w_sel)
-            u.redo()
+            for _i in range(3):
+                assert p.v.b == 'after', repr(p.b)
+                w_ins = w.getInsertPoint()
+                w_sel = w.getSelectionRange()
+                assert w_ins == 4, repr(w_ins)
+                assert w_sel == (2, 4), repr(w_sel)
+                u.undo()
+                assert p.v.b == 'before', repr(p.b)
+                w_ins = w.getInsertPoint()
+                w_sel = w.getSelectionRange()
+                assert w_ins == 1, repr(w_ins)
+                assert w_sel == (1, 3), repr(w_sel)
+                u.redo()
 
     # @+node:ekr.20261014103254.33: *3* TestUndo.test_sort_children
     def test_sort_children(self):
