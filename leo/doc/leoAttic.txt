@@ -875,7 +875,7 @@ def dragToNthChildOf(self, p: Position, parent: Position, n: int) -> None:
         p.setDirty()
         c.p = p
 
-# @+node:ekr.20261120072244.1: *3* --- deleted find method
+# @+node:ekr.20261120072244.1: *3* --- deleted find methods
 # @+node:ekr.20210110073117.49: *4* find.replace_back_slashes
 def replace_back_slashes(self, s: str) -> str:
     """
@@ -907,6 +907,41 @@ def replace_back_slashes(self, s: str) -> str:
             result.append(ch)
         assert progress < i
     return ''.join(result)
+
+# @+node:ekr.20210829203927.14: *4* TestFind.test_replace_back_slashes
+def test_replace_back_slashes(self):
+    x = self.x
+    table = (
+        # Replace \n, \t, and \f by newline, tab, and form-feed.
+        ('\\f',      '\f'),
+        ('\\n',      '\n'),
+        ('\\t',      '\t'),
+        ('a\\n',     'a\n'),
+        ('a\\tc',    'a\tc'),
+        ('a\\t\\fc', 'a\t\fc'),
+        ('a\\nc',    'a\nc'),
+        # #4609: Replace one *or* two backslashes in the find string
+        #        with a single backslash in the change string.
+        ('\\',      '\\'),
+        ('\\\\',    '\\'),
+        ('\\\n',    '\\\n'),
+        ('\\\\n',   '\\n'),
+        ('\\\t',    '\\\t'),
+        ('\\\\t',   '\\t'),
+        ('\\\f',    '\\\f'),
+        ('\\\\f',   '\\f'),
+        (r'b\\\\nd', r'b\\nd'),
+        (r'a\bc',    r'a\bc'),
+        (r'a\\bc',   r'a\bc'),
+        (r'a\\\\bc', r'a\\bc'),
+        (r'a \ b',   r'a \ b'),
+        (r'a \\ b',  r'a \ b'),
+        (r'a \\\ b', r'a \\ b'),
+        (r'a \\\\ b', r'a \\ b'),
+    )  # fmt: skip
+    for input_s, expected_output_s in table:
+        got = x.replace_back_slashes(input_s)
+        self.assertEqual(got, expected_output_s, msg=input_s)
 
 # @+node:ekr.20261117233629.1: *3* --- deleted from paste-retaining-clones
 # @+node:ekr.20050418084539.2: *4* def computeCopiedBunchList

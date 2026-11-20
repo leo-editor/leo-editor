@@ -949,41 +949,6 @@ class TestFind(LeoUnitTest):
             self.assertEqual(result, result2)
             self.assertEqual(count, count2)
 
-    # @+node:ekr.20210829203927.14: *4* TestFind.xxx_test_replace_back_slashes
-    def xxx_test_replace_back_slashes(self):
-        x = self.x
-        table = (
-            # Replace \n, \t, and \f by newline, tab, and form-feed.
-            ('\\f',      '\f'),
-            ('\\n',      '\n'),
-            ('\\t',      '\t'),
-            ('a\\n',     'a\n'),
-            ('a\\tc',    'a\tc'),
-            ('a\\t\\fc', 'a\t\fc'),
-            ('a\\nc',    'a\nc'),
-            # #4609: Replace one *or* two backslashes in the find string
-            #        with a single backslash in the change string.
-            ('\\',      '\\'),
-            ('\\\\',    '\\'),
-            ('\\\n',    '\\\n'),
-            ('\\\\n',   '\\n'),
-            ('\\\t',    '\\\t'),
-            ('\\\\t',   '\\t'),
-            ('\\\f',    '\\\f'),
-            ('\\\\f',   '\\f'),
-            (r'b\\\\nd', r'b\\nd'),
-            (r'a\bc',    r'a\bc'),
-            (r'a\\bc',   r'a\bc'),
-            (r'a\\\\bc', r'a\\bc'),
-            (r'a \ b',   r'a \ b'),
-            (r'a \\ b',  r'a \ b'),
-            (r'a \\\ b', r'a \\ b'),
-            (r'a \\\\ b', r'a \\ b'),
-        )  # fmt: skip
-        for input_s, expected_output_s in table:
-            got = x.replace_back_slashes(input_s)
-            self.assertEqual(got, expected_output_s, msg=input_s)
-
     # @+node:ekr.20210110073117.89: *4* TestFind.test_switch_style
     def test_switch_style(self):
         x = self.x
