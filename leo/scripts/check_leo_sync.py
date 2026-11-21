@@ -1,3 +1,5 @@
+# @+leo-ver=5-thin
+# @+node:ekr.20261030054958.1: * @file ../scripts/check_leo_sync.py
 """
 check_leo_sync.py: Verify that LeoPyRef.leo is in sync with the plain
 files it mirrors.
@@ -54,7 +56,6 @@ def main() -> int:
         if not p.isAnyAtFileNode():
             continue
         h = p.h.strip()
-        # at-auto or at-edit files don't have a stable round-trip to compare.
         if h.startswith(('@auto', '@edit')):
             continue
         if not h.startswith(('@file', '@clean', '@thin', '@shadow', '@nosent')):
@@ -100,3 +101,4 @@ def main() -> int:
 
 if __name__ == '__main__':
     sys.exit(main())
+# @-leo
