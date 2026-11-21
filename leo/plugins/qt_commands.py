@@ -212,7 +212,7 @@ def showFonts(self: Any, event: LeoKeyEvent | None = None) -> None:
         f"{name}_size = {font.pointSizeF()}\n",
     ]
     with u.change_node(p, 'show-fonts'):
-        p.b = ''.join(comments + defs)
+        p.v.b = ''.join(comments + defs)
 
 
 # @+node:ekr.20140918124632.17893: ** qt: show-style-sheet

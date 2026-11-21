@@ -55,7 +55,8 @@ class TestAbbrev(LeoUnitTest):
                 contents = definition[:i]
                 expected = definition[i + 2 :]
                 p.b = contents
-                w.setInsertPoint(len(contents), contents)
+                w.setAllText(contents)
+                w.setInsertPoint(len(contents))
                 event = LeoKeyEvent(c, char=';', binding=';', w=w)
                 x.expandAbbrev(event=event, stroke=None)
                 test('body', p.b, expected)
@@ -70,7 +71,8 @@ class TestAbbrev(LeoUnitTest):
                 contents = definition[:i]
                 expected = definition[i + 2 :]
                 p.h = contents
-                w.setInsertPoint(len(contents), contents)
+                w.setAllText(contents)
+                w.setInsertPoint(len(contents))
                 event = LeoKeyEvent(c, char=';', binding=';', w=w)
                 x.expandAbbrev(event=event, stroke=None)
                 test('head', w.getAllText(), expected)
@@ -129,7 +131,8 @@ class TestAbbrev(LeoUnitTest):
                 contents = definition[:i]
                 expected = definition[i + 2 :]
                 p.b = contents
-                w.setInsertPoint(len(contents), contents)
+                w.setAllText(contents)
+                w.setInsertPoint(len(contents))
                 event = LeoKeyEvent(c, char=';', binding=';', w=w)
                 x.expandAbbrev(event=event, stroke=None)
                 test_contents('body', p.b, expected)
@@ -146,7 +149,8 @@ class TestAbbrev(LeoUnitTest):
                 contents = definition[:i]
                 expected = definition[i + 2 :]
                 p.h = contents
-                w.setInsertPoint(len(contents), contents)
+                w.setAllText(contents)
+                w.setInsertPoint(len(contents))
                 event = LeoKeyEvent(c, char=';', binding=';', w=w)
                 x.expandAbbrev(event=event, stroke=None)
                 test_contents('head', w.getAllText(), expected)
@@ -183,7 +187,8 @@ class TestAbbrev(LeoUnitTest):
         for definition in definitions:
             i = definition.find(';=')
             p.b = contents = definition[:i]
-            w.setInsertPoint(len(contents), contents)
+            w.setAllText(contents)
+            w.setInsertPoint(len(contents))
             event = LeoKeyEvent(c, char=';', binding=';', w=w)
             x.expandAbbrev(event=event, stroke=None)
             test(w.getAllText())
@@ -195,7 +200,8 @@ class TestAbbrev(LeoUnitTest):
             w = c.headline_wrapper(p)
             i = definition.find(';=')
             p.h = contents = definition[:i]
-            w.setInsertPoint(len(contents), contents)
+            w.setAllText(contents)
+            w.setInsertPoint(len(contents))
             event = LeoKeyEvent(c, char=';', binding=';', w=w)
             x.expandAbbrev(event=event, stroke=None)
             test(w.getAllText())
@@ -233,7 +239,8 @@ class TestAbbrev(LeoUnitTest):
             w = c.frame.body.wrapper
             for contents, expected in table:
                 p.b = contents
-                w.setInsertPoint(len(contents), contents)
+                w.setAllText(contents)
+                w.setInsertPoint(len(contents))
                 event = LeoKeyEvent(c, char=';', binding=';', w=w)
                 x.expandAbbrev(event=event, stroke=None)
                 test(p.b, expected)
@@ -245,7 +252,8 @@ class TestAbbrev(LeoUnitTest):
             w = c.headline_wrapper(p)
             p.h = contents
             w.setAllText(contents)
-            w.setInsertPoint(len(contents), contents)
+            w.setAllText(contents)
+            w.setInsertPoint(len(contents))
             event = LeoKeyEvent(c, char=';', binding=';', w=w)
             x.expandAbbrev(event=event, stroke=None)
             test(w.getAllText(), expected)

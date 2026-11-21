@@ -853,21 +853,23 @@ class Undoer:
 
         For example usage, look for calls to this method.
 
-        Here is a relatively straightforward example from c.dragCloneAfter:
+        Here is am example from c.demote:
 
-        with u.change_outline('c.dragCloneAfter'):
-            clone = p.clone()
-            if (
-                c.checkDrag(p, after) and
-                c.checkMoveWithParentWithWarning(clone, after.parent(), True)
-            ):  # fmt: skip
-                clone.setDirty()
-                clone.moveAfter(after)
-                clone.setDirty()
-                p = clone
-            else:
-                # Destroys clone and makes p the current node.
-                clone.doDelete(newNode=p)
+        with u.change_outline('demote'):
+            parent_v = p._parentVnode()
+            n = p.childIndex()
+            followingSibs = parent_v.children[n + 1 :]
+            # Remove the moved nodes from the parent's children.
+            parent_v.children = parent_v.children[: n + 1]
+            # Add the moved nodes to p's children
+            p.v.children.extend(followingSibs)
+            # Adjust the parent links in the moved nodes.
+            # There is no need to adjust descendant links.
+            for child in followingSibs:
+                child.parents.remove(parent_v)
+                child.parents.append(p.v)
+            p.expand()
+            p.setDirty()
             c.p = p
         """
         u = self
@@ -1116,11 +1118,13 @@ class Undoer:
         u = self
         c = u.c
         w = c.frame.body.wrapper
+
         # Ignore redrawers in inner levels.
         if u.undoBeadLevel > 1:  # pragma: no cover
             return
+
         p.setDirty()  # Call p.v.setAllAncestorAtFileNodesDirty()
-        preserve_body = p == c.p and p.b == w.getAllText()
+        preserve_body = p == c.p  # PR #5059.
         if preserve_body:
             sel, ins, scroll = w.getSelectionRange(), w.getInsertPoint(), w.getYScrollPosition()
         c.updateSyntaxColorer(p)

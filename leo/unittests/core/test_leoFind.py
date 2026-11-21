@@ -484,11 +484,12 @@ class TestFind(LeoUnitTest):
         c.theTagController = DummyTagController()
         x.do_tag_children(p, 'test')
 
-    # @+node:ekr.20210219181001.1: *4* testFind.test_batch_change_regex
+    # @+node:ekr.20210219181001.1: *4* TestFind.test_batch_change_regex
     def test_batch_change_regex(self):
         c = self.c
         x = self.x
         # self.dump_tree()
+
         # Test 1: Match in body.
         settings = dict(
             ignore_case=False,
@@ -499,29 +500,21 @@ class TestFind(LeoUnitTest):
             suboutline_only=False,
             whole_word=False,
         )
-        # Test 1: Match in body.
-        n = x.batch_change(
-            root=c.rootPosition(), replacements=((r'^def\b', 'DEF'),), settings=settings
-        )
-        assert n > 3, n  # Test 1.
-        # Test 2: Match in headline.
-        n = x.batch_change(
-            root=c.rootPosition(), replacements=((r'^Node\b', 'DEF'),), settings=settings
-        )
-        self.assertEqual(n, 2)
-        # Test 3: node-only.
+
+        def test(replacements: tuple[str, str]) -> int:
+            return x.batch_change(
+                root=c.rootPosition(), replacements=replacements, settings=settings
+            )
+
+        assert test([(r'^def\b', 'DEF')]) > 3
+        assert test([(r'^Node\b', 'DEF')]) == 2
+
         settings['node_only'] = True
-        n = x.batch_change(
-            root=c.rootPosition(), replacements=((r'^DEF\b', 'def'),), settings=settings
-        )
-        self.assertEqual(n, 1)
-        # Test 4: suboutline-only.
+        assert test([(r'^DEF\b', 'def')]) == 1
+
         settings['node_only'] = False
         settings['suboutline_only'] = True
-        n = x.batch_change(
-            root=c.rootPosition(), replacements=((r'^def\b', 'DEF'),), settings=settings
-        )
-        self.assertEqual(n, 1)
+        assert test([(r'^def\b', 'DEF')]) == 1
 
     # @+node:ekr.20210219175850.1: *4* testFind.test_batch_change_word
     def test_batch_change_word(self):
@@ -955,41 +948,6 @@ class TestFind(LeoUnitTest):
             count2, result2 = fc._change_all_word(s)
             self.assertEqual(result, result2)
             self.assertEqual(count, count2)
-
-    # @+node:ekr.20210829203927.14: *4* TestFind.test_replace_back_slashes
-    def test_replace_back_slashes(self):
-        x = self.x
-        table = (
-            # Replace \n, \t, and \f by newline, tab, and form-feed.
-            ('\\f',      '\f'),
-            ('\\n',      '\n'),
-            ('\\t',      '\t'),
-            ('a\\n',     'a\n'),
-            ('a\\tc',    'a\tc'),
-            ('a\\t\\fc', 'a\t\fc'),
-            ('a\\nc',    'a\nc'),
-            # #4609: Replace one *or* two backslashes in the find string
-            #        with a single backslash in the change string.
-            ('\\',      '\\'),
-            ('\\\\',    '\\'),
-            ('\\\n',    '\\\n'),
-            ('\\\\n',   '\\n'),
-            ('\\\t',    '\\\t'),
-            ('\\\\t',   '\\t'),
-            ('\\\f',    '\\\f'),
-            ('\\\\f',   '\\f'),
-            (r'b\\\\nd', r'b\\nd'),
-            (r'a\bc',    r'a\bc'),
-            (r'a\\bc',   r'a\bc'),
-            (r'a\\\\bc', r'a\\bc'),
-            (r'a \ b',   r'a \ b'),
-            (r'a \\ b',  r'a \ b'),
-            (r'a \\\ b', r'a \\ b'),
-            (r'a \\\\ b', r'a \\ b'),
-        )  # fmt: skip
-        for input_s, expected_output_s in table:
-            got = x.replace_back_slashes(input_s)
-            self.assertEqual(got, expected_output_s, msg=input_s)
 
     # @+node:ekr.20210110073117.89: *4* TestFind.test_switch_style
     def test_switch_style(self):

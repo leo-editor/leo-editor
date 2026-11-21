@@ -75,6 +75,29 @@ class TestUndo(LeoUnitTest):
         func = c.addComments
         self.runTest(before, after, i, j, func)
 
+    # @+node:ekr.20261014103254.4: *3* TestUndo.test_bead_sharing
+    def test_bead_sharing(self):
+        c = self.c
+        p = c.p
+        u = c.undoer
+
+        before = tuple(v for v in c.all_unique_nodes())
+        with c.undoer as u:
+            u.set_command_name('two inserts')
+            first = u.insert_node(p)
+            second = u.insert_node(first)
+        after = tuple(v for v in c.all_unique_nodes())
+
+        for _i in range(3):
+            assert len(u.beads) == 1
+            assert first.v in after
+            assert second.v in after
+            assert tuple(c.all_unique_nodes()) == after
+            u.undo()
+            assert len(u.beads) == 1
+            assert tuple(c.all_unique_nodes()) == before
+            u.redo()
+
     # @+node:ekr.20210906172626.3: *3* TestUndo.test_convertAllBlanks
     def test_convertAllBlanks(self):
         c = self.c
@@ -183,6 +206,56 @@ class TestUndo(LeoUnitTest):
         func = c.convertTabs
         self.runTest(before, after, i, j, func)
 
+    # @+node:ekr.20261014103254.34: *3* TestUndo.test_copy_marked
+    def test_copy_marked(self):
+        c = self.c
+        p = c.p
+        u = c.undoer
+
+        before = c.hiddenRootNode.children[:]
+        child = p.insertAsLastChild()
+        child.setMarked()
+        after = c.hiddenRootNode.children[:]
+
+        for _i in range(3):
+            assert c.p == p, c.p.h
+            assert c.hiddenRootNode.children == after
+            u.undo()
+            assert c.p == p, c.p.h
+            assert c.hiddenRootNode.children == before
+            u.redo()
+
+    # @+node:ekr.20261118102844.1: *3* TestUndo.test_cutText
+    def test_cutText(self):
+
+        from leo.core.leoGui import LeoKeyEvent
+
+        c = self.c
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
+        before = 'abcdef'
+        after = 'aef'
+
+        # select and cut 'bcd'
+        p.b = before
+        w.setSelectionRange(1, 4, insert=1)
+        c.frame.cutText(event=LeoKeyEvent(c, w=w))
+
+        for _i in range(3):
+            w_s = w.getAllText()
+            w_sel = w.getSelectionRange()
+            assert p.b == after, repr(p.b)
+            assert w_s == after, repr(w_s)
+            assert w_sel == (1, 1), repr(w_sel)
+            u.undo()
+            w_s = w.getAllText()
+            w_sel = w.getSelectionRange()
+            assert p.b == before, repr(p.b)
+            assert w_s == before, repr(w_s)
+            assert w_sel == (1, 4), repr(w_sel)
+            u.redo()
+
     # @+node:ekr.20210906172626.7: *3* TestUndo.test_dedentBody
     def test_dedentBody(self):
         c = self.c
@@ -206,6 +279,32 @@ class TestUndo(LeoUnitTest):
         j = before.find('3')
         func = c.dedentBody
         self.runTest(before, after, i, j, func)
+
+    # @+node:ekr.20261014103254.17: *3* TestUndo.test_delete_root
+    def test_delete_root(self):
+        c = self.c
+        u = c.undoer
+        root = c.rootPosition()
+
+        # Setup.
+        root_v = root.v
+        assert root.h == 'root'
+        next = root.next()
+        next_h = next.h
+        next_v = next.v
+
+        # Delete.
+        c.deleteOutline()
+
+        for _i in range(3):
+            root = c.rootPosition()
+            assert root.h == next_h
+            assert root.v == next_v
+            u.undo()
+            root = c.rootPosition()
+            assert root.h == 'root'
+            assert root.v == root_v
+            u.redo()
 
     # @+node:ekr.20210906172626.8: *3* TestUndo.test_deleteComments
     def test_deleteComments(self):
@@ -338,6 +437,52 @@ class TestUndo(LeoUnitTest):
         func = c.extract
         self.runTest(before, after, i, j, func)
 
+    # @+node:ekr.20261103072930.1: *3* TestUndo.test_headline_expansion
+    def test_headline_expansion(self):
+
+        from leo.core.leoGui import LeoKeyEvent
+
+        c = self.c
+        p = c.p
+        u = c.undoer
+        x = c.abbrevCommands
+
+        # Setup.
+        x.abbrevs = {}
+        definition = 'det;;=<details><summary><|Title|></summary></details>'
+        x.addAbbrevHelper(definition)
+        i = definition.find(';=')
+        contents = definition[:i]
+        expected = definition[i + 2 :]
+        assert contents.strip()
+        assert expected.strip()
+
+        # Setup.
+        c.editHeadline()
+        w = c.headline_wrapper(p)
+        p.h = contents
+        w.setAllText(contents)
+        w.setInsertPoint(len(contents))
+        event = LeoKeyEvent(c, char=';', binding=';', w=w)
+        self.assertTrue(x.expandAbbrev(event=event, stroke=None))
+
+        # Check the headline wrapper.
+        w2 = c.headline_wrapper(p)
+        assert w2 is not None
+
+        # The headline becomes official when the editor closes.
+        c.endEditing()
+        for _i in range(3):
+            w_text = w2.getAllText()
+            assert w_text == expected, (repr(w_text), repr(expected))
+            assert p.h == expected, (p.h, expected)
+            self.assertEqual(p.h, expected)
+            u.undo()
+            w_text = w2.getAllText()
+            assert w_text == contents, (repr(w_text), repr(contents))
+            assert p.h == contents, (p.h, contents)
+            u.redo()
+
     # @+node:ekr.20210906172626.14: *3* TestUndo.test_line_to_headline
     def test_line_to_headline(self):
         c = self.c
@@ -388,6 +533,208 @@ class TestUndo(LeoUnitTest):
             u.undo()
             u.redo()
 
+    # @+node:ekr.20261014103254.21: *3* TestUndo.test_paste_retaining_clones
+    def test_paste_retaining_clones(self):
+        c = self.c
+        p = c.p
+        u = c.undoer
+
+        assert c.p.h == 'root'
+        hidden_root = c.hiddenRootNode
+        child = p.insertAsLastChild()
+        child.h, child.b = 'child', 'child body'
+        c.copyOutline()
+
+        before_children = c.hiddenRootNode.children[:]
+        pasted = c.pasteOutlineRetainingClones()
+        assert pasted == c.p
+        pasted_v = pasted.v
+        after_children = c.hiddenRootNode.children[:]
+
+        # g.printObj(before_children, tag='before')
+        # g.printObj(after_children, tag='after')
+        for _i in range(3):
+            assert c.p.h == 'root'
+            assert len(hidden_root.children) == 3
+            assert hidden_root.children[0] == hidden_root.children[1]
+            u.undo()
+            assert c.p.h == 'root'
+            assert len(hidden_root.children) == 2
+            u.redo()
+
+    # @+node:ekr.20261014103254.21: *3* TestUndo.test_paste_retaining_clones
+    def test_paste_retaining_clones(self):
+        c = self.c
+        p = c.p
+        u = c.undoer
+
+        assert c.p.h == 'root'
+        hidden_root = c.hiddenRootNode
+        child = p.insertAsLastChild()
+        child.h, child.b = 'child', 'child body'
+        c.copyOutline()
+
+        before_children = c.hiddenRootNode.children[:]
+        pasted = c.pasteOutlineRetainingClones()
+        assert pasted == c.p
+        pasted_v = pasted.v
+        after_children = c.hiddenRootNode.children[:]
+
+        # g.printObj(before_children, tag='before')
+        # g.printObj(after_children, tag='after')
+        for _i in range(3):
+            assert c.p.h == 'root'
+            assert len(hidden_root.children) == 3
+            assert hidden_root.children[0] == hidden_root.children[1]
+            u.undo()
+            assert c.p.h == 'root'
+            assert len(hidden_root.children) == 2
+            u.redo()
+
+    # @+node:ekr.20261118103021.1: *3* TestUndo.test_pasteText
+    def test_pasteText(self):
+
+        from leo.core.leoGui import LeoKeyEvent
+
+        c = self.c
+        p = c.p
+        u = c.undoer
+        w = c.frame.body.wrapper
+        before = 'abcdef'
+        after = 'aXYZef'
+
+        # Init the clipboard.
+        g.app.gui.replaceClipboardWith('XYZ')
+
+        # select and paste.
+        p.b = before
+        w.setSelectionRange(1, 4, insert=1)
+        c.frame.pasteText(event=LeoKeyEvent(c, w=w))
+
+        for _i in range(3):
+            w_s = w.getAllText()
+            w_sel = w.getSelectionRange()
+            assert p.b == after, repr(p.b)
+            assert w_s == after, repr(w_s)
+            assert w_sel == (4, 4), repr(w_sel)
+            u.undo()
+            w_s = w.getAllText()
+            w_sel = w.getSelectionRange()
+            assert p.b == before, repr(p.b)
+            assert w_s == before, repr(w_s)
+            assert w_sel == (1, 4), repr(w_sel)
+            u.redo()
+
+    # @+node:ekr.20261014103254.7: *3* TestUndo.test_selection_range
+    def test_selection_range(self):
+        c = self.c
+        p = c.p
+        u = c.undoer
+        p.b = 'before'
+        w = c.frame.body.wrapper
+
+        for use_vnode_setter in (True, False):
+            # Setup.
+            w.setSelectionRange(1, 3, insert=1)
+
+            # Test.
+            with u.change_node(p, 'edit'):
+                if use_vnode_setter:
+                    p.v.b = 'after'
+                else:
+                    p.b = 'after'
+                w.setSelectionRange(2, 4, insert=4)
+
+            for _i in range(3):
+                assert p.v.b == 'after', repr(p.b)
+                w_ins = w.getInsertPoint()
+                w_sel = w.getSelectionRange()
+                assert w_ins == 4, repr(w_ins)
+                assert w_sel == (2, 4), repr(w_sel)
+                u.undo()
+                assert p.v.b == 'before', repr(p.b)
+                w_ins = w.getInsertPoint()
+                w_sel = w.getSelectionRange()
+                assert w_ins == 1, repr(w_ins)
+                assert w_sel == (1, 3), repr(w_sel)
+                u.redo()
+
+    # @+node:ekr.20261014103254.33: *3* TestUndo.test_sort_children
+    def test_sort_children(self):
+        c = self.c
+        p = c.p
+        u = c.undoer
+
+        # Setup.
+        first = p.insertAsLastChild()
+        first.h = 'Z'
+        second = first.insertAfter()
+        second.h = 'A'
+
+        # c.sortChildren calls c.sortSiblings, which handles undo.
+        old_children = p.v.children[:]
+        c.sortChildren()
+        new_children = p.v.children[:]
+
+        for _i in range(3):
+            assert p.v.children == new_children
+            assert p.v.children != old_children
+            u.undo()
+            assert p.v.children == old_children
+            assert p.v.children != new_children
+            u.redo()
+
+    # @+node:ekr.20261118090710.1: *3* TestUndo.test_sort_siblings
+    def test_sort_siblings(self):
+        c = self.c
+        p = c.p
+        u = c.undoer
+
+        # Setup.
+        first = p.insertAsLastChild()
+        first.h = 'Z'
+        second = first.insertAfter()
+        second.h = 'A'
+
+        # self.dump_headlines(c)
+        old_p = p.copy()
+        c.p = p = p.firstChild()
+        assert p.h == 'Z', p.h
+        new_p = c.sortSiblings()
+        assert old_p != new_p
+        # self.dump_headlines(c)
+
+        for _i in range(3):
+            p = old_p
+            child = p.firstChild()
+            assert child.h == 'A', child.h
+            u.undo()
+            child = p.firstChild()
+            assert child.h == 'Z', child.h
+            u.redo()
+
+    # @+node:ekr.20261115084008.1: *3* TestUndo.test_u_change_headline
+    def test_u_change_headline(self):
+        # Cover u.restore_node with a changed headline.
+        c = self.c
+        p = c.p
+        u = c.undoer
+
+        old_h = p.h
+        new_h = 'new_headline'
+
+        def change_headline() -> None:
+            with u.change_node(p, g.my_name()):
+                c.p.h = new_h
+
+        change_headline()
+
+        for _i in range(3):
+            assert p.h == new_h
+            u.undo()
+            assert p.h == old_h
+            u.redo()
+
     # @+node:ekr.20261115065006.1: *3* TestUndo.test_u_change_outline
     def test_u_change_outline(self):
         c = self.c
@@ -415,28 +762,6 @@ class TestUndo(LeoUnitTest):
         insert_node()
         for _i in range(3):
             u.undo()
-            u.redo()
-
-    # @+node:ekr.20261115084008.1: *3* TestUndo.test_u_change_headline
-    def test_u_change_headline(self):
-        # Cover u.restore_node with a changed headline.
-        c = self.c
-        p = c.p
-        u = c.undoer
-
-        old_h = p.h
-        new_h = 'new_headline'
-
-        def change_headline() -> None:
-            with u.change_node(p, g.my_name()):
-                c.p.h = new_h
-
-        change_headline()
-
-        for _i in range(3):
-            assert p.h == new_h
-            u.undo()
-            assert p.h == old_h
             u.redo()
 
     # @+node:ekr.20261115013308.1: *3* TestUndo.test_u_change_recent_files
@@ -479,22 +804,27 @@ class TestUndo(LeoUnitTest):
 
         def test() -> None:
             with u.change_node(p, 'my-command'):
-                p.b = 'after'
+                p.v.b = 'after'
                 clone = u.clone_node(p)
                 assert clone.v == v
                 clone.setMarked()  # For coverage testing.
 
         test()
 
+        n = 1
         for _i in range(3):
+            assert c.redraw_count == n, f"1: {c.redraw_count=}"
             assert len(u.beads) == 1
             assert p.b == 'after'
             assert c.p.isCloned()
             u.undo()
+            n += 1
+            assert c.redraw_count == n, f"2: {c.redraw_count=}"
             assert len(u.beads) == 1
             assert p.b == 'before'
             assert not c.p.isCloned()
             u.redo()
+            n += 1
 
     # @+node:ekr.20261115011130.1: *3* TestUndo.test_u_cutStack
     def test_u_cutStack(self):
@@ -518,31 +848,6 @@ class TestUndo(LeoUnitTest):
 
         # u.cutStack must cut the *bottom* of the stack.
         assert u.beads == all_beads[2:]
-
-    # @+node:ekr.20261114085127.1: *3* TestUndo.test_u_delete_node_case_root
-    def test_u_delete_node_case_root(self):
-        # Test the `else` clause of the delete_node_undoer function.
-        c = self.c
-        p = c.p
-        u = c.undoer
-
-        old_p = p.copy()
-        old_h = p.h
-        assert not p.back()
-
-        def delete_root() -> None:
-            with u:
-                u.set_command_name(g.my_name())
-                u.delete_node(old_p)
-
-        delete_root()
-
-        for _i in range(3):
-            new_h = c.p.h
-            assert new_h != old_h
-            u.undo()
-            assert c.p.h == old_h, c.p.h
-            u.redo()
 
     # @+node:ekr.20261115090134.1: *3* TestUndo.test_u_delete_node_case_old_back
     def test_u_delete_node_case_old_back(self):
@@ -592,6 +897,31 @@ class TestUndo(LeoUnitTest):
             new_h = c.p.h
             assert new_h != old_h
             assert c.p.h == new_h, new_p.h
+            u.undo()
+            assert c.p.h == old_h, c.p.h
+            u.redo()
+
+    # @+node:ekr.20261114085127.1: *3* TestUndo.test_u_delete_node_case_root
+    def test_u_delete_node_case_root(self):
+        # Test the `else` clause of the delete_node_undoer function.
+        c = self.c
+        p = c.p
+        u = c.undoer
+
+        old_p = p.copy()
+        old_h = p.h
+        assert not p.back()
+
+        def delete_root() -> None:
+            with u:
+                u.set_command_name(g.my_name())
+                u.delete_node(old_p)
+
+        delete_root()
+
+        for _i in range(3):
+            new_h = c.p.h
+            assert new_h != old_h
             u.undo()
             assert c.p.h == old_h, c.p.h
             u.redo()

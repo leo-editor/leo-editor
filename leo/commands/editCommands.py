@@ -679,7 +679,7 @@ class EditCommandsClass:
 
         if capitalized != text:
             with u.change_node(p, 'capitalize-body-words'):
-                p.b = prefix + capitalized + suffix if sel else capitalized
+                p.v.b = prefix + capitalized + suffix if sel else capitalized
                 c.setChanged()
                 p.setDirty()
 
@@ -2035,7 +2035,7 @@ class EditCommandsClass:
         result = ''.join(result_list)
         i, j = 0, max(0, len(result) - 1)
         with u.change_node(p, 'remove-blank-lines'):
-            p.b = result
+            p.v.b = result
             w.setAllText(result)
             w.setSelectionRange(i, j, insert=j)
             w.setYScrollPosition(oldYview)

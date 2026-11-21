@@ -2183,27 +2183,8 @@ class Commands:
 
     # @+node:ekr.20040305223522: *5* c.setBodyString
     def setBodyString(self, p: Position, s: bytes | str) -> None:
-        """
-        This is equivalent to p.b = s.
-        """
-        c = self
-        v = p.v
-        if not c or not v:
-            return
-        s = g.toUnicode(s)
-        if c.p and p.v == c.p.v:
-            w = c.frame.body.wrapper
-            w.setAllText(s)
-            v.setSelection(0, 0)
-            c.recolor()
-
-        # Keep the body text in the VNode up-to-date.
-        if v.b != s:
-            v.setBodyString(s)
-            v.setSelection(0, 0)
-            p.setDirty()
-            if not c.isChanged():
-                c.setChanged()
+        """Set p.b Retained for compatibility."""
+        p.b = s  # Do *not* set p.v.b here!
 
     # @+node:ekr.20031218072017.2989: *5* c.setChanged
     def setChanged(self, *, force: bool = False) -> None:
@@ -3623,20 +3604,23 @@ class Commands:
             return None
         if not aList:
             return None
-        p = c.rootPosition()
-        level = 0
-        while level < len(aList):
-            i = aList[level]
-            while i > 0:
-                if p.hasNext():
-                    p.moveToNext()
-                    i -= 1
-                else:
-                    return None
-            level += 1
-            if level < len(aList):
-                p.moveToFirstChild()
-        return p
+        try:  # PR #5061.
+            p = c.rootPosition()
+            level = 0
+            while level < len(aList):
+                i = aList[level]
+                while i > 0:
+                    if p.hasNext():  # Might raise AttributeError!
+                        p.moveToNext()
+                        i -= 1
+                    else:
+                        return None
+                level += 1
+                if level < len(aList):
+                    p.moveToFirstChild()
+            return p
+        except AttributeError:
+            return None
 
     # @+node:ekr.20150422080541.1: *4* c.backup
     def backup(
@@ -4238,79 +4222,6 @@ class Commands:
                 message=f"Python errors in:\n\n{list_s}",
                 text="Ok",
             )
-
-    # @+node:ekr.20031218072017.2945: *4* c.Dragging
-    # @+node:ekr.20031218072017.2947: *5* c.dragToNthChildOf
-    def dragToNthChildOf(self, p: Position, parent: Position, n: int) -> None:
-        c = self
-        p = c.p
-        u = c.undoer
-        if not c.checkDrag(p, parent):
-            return
-        if not c.checkMoveWithParentWithWarning(p, parent, True):
-            return
-        c.endEditing()
-        with u.move_node(p, 'Drag'):
-            p.setDirty()
-            p.moveToNthChildOf(parent, n)
-            p.setDirty()
-            c.p = p
-
-    # @+node:ekr.20031218072017.2353: *5* c.dragAfter (not used)
-    def dragAfter(self, p: Position, after: Position) -> None:
-        c = self
-        p = c.p
-        u = c.undoer
-        if not c.checkDrag(p, after):
-            return
-        if not c.checkMoveWithParentWithWarning(p, after.parent(), True):
-            return
-        assert p.v
-        c.endEditing()
-        with u.move_node(p, 'Drag'):
-            p.setDirty()
-            p.moveAfter(after)
-            p.setDirty()
-            c.p = p
-
-    # @+node:ekr.20031218072017.2946: *5* c.dragCloneToNthChildOf
-    def dragCloneToNthChildOf(self, p: Position, parent: Position, n: int) -> None:
-        c = self
-        u = c.undoer
-        c.endEditing()
-        with u.change_outline('c.dragCloneToNthChildOf'):
-            clone = p.clone()
-            if (
-                c.checkDrag(p, parent) and
-                c.checkMoveWithParentWithWarning(clone, parent, True)
-            ):  # fmt: skip
-                clone.setDirty()
-                clone.moveToNthChildOf(parent, n)
-                clone.setDirty()
-                p = clone
-            else:
-                clone.doDelete(newNode=p)
-            c.p = clone
-
-    # @+node:ekr.20031218072017.2948: *5* c.dragCloneAfter
-    def dragCloneAfter(self, p: Position, after: Position) -> None:
-        c = self
-        u = c.undoer
-        c.endEditing()
-        with u.change_outline('c.dragCloneAfter'):
-            clone = p.clone()
-            if (
-                c.checkDrag(p, after) and
-                c.checkMoveWithParentWithWarning(clone, after.parent(), True)
-            ):  # fmt: skip
-                clone.setDirty()
-                clone.moveAfter(after)
-                clone.setDirty()
-                p = clone
-            else:
-                # Destroys clone and makes p the current node.
-                clone.doDelete(newNode=p)
-            c.p = p
 
     # @+node:ekr.20031218072017.2949: *4* c.Drawing
     # @+node:ekr.20080514131122.8: *5* c.bringToFront
