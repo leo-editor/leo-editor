@@ -247,7 +247,7 @@ readme = "README.md"
 #@-<< description >>
 requires-python = ">= 3.11"
 # Placeholder: publish.yml set the version from the release tag.
-version = "0.0.0.dev0"
+version = "6.9.0"
 name = "leo"
 authors =  [
     {"name" = "Edward K. Ream", "email" = "edreamleo@gmail.com"},

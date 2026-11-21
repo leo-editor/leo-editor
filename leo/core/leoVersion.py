@@ -64,8 +64,9 @@ leoVersion.version:     Leo's version number.
 # 6.8.8:  April 14, 2026.
 # 6.8.9:  June 1, 2026.
 # 6.8.10: August 17, 2026.
+# 6.9.0:  November 24, 2026.
 # @-<< version dates >>
-static_version = '6.8.11.dev1'
+static_version = '6.9.0'
 if 1:
     version = static_version
 else:
@@ -76,7 +77,7 @@ else:
     except Exception:
         # Not pip-installed (e.g. running from a git checkout): version is unknown.
         version = static_version
-static_date = 'August 19, 2026'
+static_date = 'November 24, 2026'
 # @@language python
 # @@tabwidth -4
 # @-leo
