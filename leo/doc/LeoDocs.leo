@@ -2183,7 +2183,6 @@
 <v t="ekr.20261116142444.1"><vh>------</vh></v>
 <v t="ekr.20261116101436.1"></v>
 <v t="ekr.20261116101656.1"></v>
-<v t="ekr.20261116145617.1"><vh>gh pr list</vh></v>
 </vnodes>
 <tnodes>
 <t tx=".20260810204531.45">Leo: organize code and ideas your way
@@ -28431,21 +28430,28 @@ Undoer beads are instances of ``UndoBead`` or ``TypingBead``.
 .. find ^\{\n"number": ([0-9]+),\n"title": "(.*?)"\n}(,)?
 .. repl PR #\1: \2
 
+New and improved commands
+
+- `PR #5037`_: Improve the ``next-line`` and ``prev-line`` commands
+- `PR #4942`_: Add the ``ty`` command
+- `PR #4991`_: Add the ``promote-to-at-others``, ``promote-section-def`` commands
+
 Enhancements
 
-- `PR #4931`_: soften the lion on Leo's website
-- `PR #5037`_: Improve next/prev-line commands
-- `PR #4942`_: Add ty command
-- `PR #4957`_: All commands should have docstrings
-- `PR #4981`_: Improve rust importer
-- `PR #4991`_: Add two promote commands
-- `PR #5062`_: Make Leo's find commands less confusing
+- `PR #4931`_: Soften the lion on Leo's website
+- `PR #4957`_: Add docstrings to all commands
+- `PR #4981`_: Improve the Rust importer
+- `PR #5062`_: Make Leo's find commands less confusing:
+    - Non-regex finds treat backspaces as normal characters.
+    - Regex finds treat backspaces as escape characters.
 
 Simplify Leo's API for undo
 
+See the ``Undoing commands`` section for details.
+
 - `PR #4994`_: Incrementally revise undo
 - `PR #4996`_: Complete new helpers
-- `PR #4997`_: Complete composable undo migration
+- `PR #4997`_: Complete undo migration
 - `PR #5001`_: Clean undo
 - `PR #5009`_: More changes to the undoer
 - `PR #5012`_: Rename u.redraw to u._redraw
@@ -28466,25 +28472,25 @@ Simplify Leo's text wrapper methods
 
 Fix bugs
 
-- `PR #4937`_: Autocompleter crash
+- `PR #4937`_: Fix crash in autocompleter
 - `PR #4939`_: Fix git-diff-pr
-- `PR #4940`_: Crash in show-settings-outline command
+- `PR #4940`_: Fix rash in show-settings-outline command
 - `PR #4946`_: Fix crashers
-- `PR #4958`_: Qt layout menu
+- `PR #4958`_: Fix Qt layout menu
 - `PR #4967`_: Enable VR commands for c only if the VR plugin is enabled for c
 - `PR #4975`_: Fix decluttering
-- `PR #4983`_: Adoc command drops text
+- `PR #4983`_: Fix adoc command
 - `PR #4985`_: Fix visual glitch during startup
 - `PR #4986`_: Fix flashes in tree pane and log panes
-- `PR #5003`_: Problems with non-BMP characters such as emoji
+- `PR #5003`_: Fix problems with non-BMP characters such as emoji
 - `PR #5004`_: Fix zap-to-character
 - `PR #5026`_: Restore log version
 - `PR #5027`_: Abbreviations in headlines
 - `PR #5033`_: Find failure!
-- `PR #5034`_: Reverse search fail.
+- `PR #5034`_: Fix reverse searchs
 - `PR #5035`_: Fix crasher in nav_qt.py
 - `PR #5046`_: Fix crash in quicksearch.py
-- `PR #5051`_: Control-click disables word wrap
+- `PR #5051`_: Fix bug: control-click disables word wrap
 - `PR #5061`_: Fix crash when loading test.leo
 
 Plugins
@@ -28496,15 +28502,15 @@ Distribution
 - `PR #4954`_: Add lxml and PyYAML as declared dependencies
 - `PR #4971`_: Prepare for Python 3.15
 - `PR #4976`_: Update docs for Python 3.15 and new workflows
-- `PR #4982`_: Optional dependencies
+- `PR #4982`_: Remove optional dependencies
 - `PR #4995`_: Drop support for 3.10. Add support for 3.14
 - `PR #5000`_: Add support for Python 3.15
 
 Testing
 
-- `PR #4943`_: remove mypy-only suppressions
+- `PR #4943`_: Remove mypy-only suppressions
 - `PR #4955`_: Require strict-equality-semantics
-- `PR #5038`_: remove all pylint suppressions
+- `PR #5038`_: Remove all pylint suppressions
 - `PR #5039`_: Require full annotations in leo/core, leo/commands, and leo/plugins/qt*.py
 - `PR #5047`_: Fix hole in unit tests for commands
 - `PR #5048`_: Clean all unit tests
@@ -28516,7 +28522,27 @@ Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor
 
 **The highlights of Leo 6.9.0**
 
-- **Breaking changes to Leo's API**: See the What's New section for details.
+- Remove an long-standing confusion about what backspaces mean in find strings:
+  - Non-regex finds treat backspaces as normal characters.
+  - Regex finds treat backspaces as escape characters.
+
+- Add the ``promote-to-at-others``, ``promote-section-def`` and ``ty`` commands.
+
+- Improve the ``next-line`` and ``prev-line`` commands.
+
+- Improve the Rust importer.
+
+Codebase changes
+
+- Convert all of Leo's codebase to a new, much simpler undo API.
+  This is a **breaking change** for any undoable script or plugin.
+
+- Complete the transition from Python-based checkers (black, pyflakes, pylint)
+  to Rust-based checkers (ruff format, ruff lint, ty).
+  These changes affected annotations and suppressions throughout Leo's code base.
+
+- Drop support for Python 3.10. Add support for Python 3.14.
+
 - The usual bug fixes.
 
 **Links**
@@ -28535,70 +28561,6 @@ Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor
 </t>
 <t tx="ekr.20261116142437.1"></t>
 <t tx="ekr.20261116142444.1"></t>
-<t tx="ekr.20261116145617.1">.. C:\Repos\leo-editor&gt;gh pr list --limit 100 --state merged --search milestone:6.9.0 --json number,title
-.. Convert json to single line
-.. find ^\{\n"number": ([0-9]+),\n"title": "(.*?)"\n}(,)?
-.. repl PR #\1: \2
-
-
-- `PR #4940`_:
-
-- `PR #4931`_: soften the lion on Leo's website
-- `PR #4937`_: autocompleter crash
-- `PR #4939`_: git-diff-pr
-- `PR #4940`_: crash in show-settings-outline command
-- `PR #4942`_: add ty command
-- `PR #4943`_: remove mypy-only suppressions
-- `PR #4946`_: PR fixes #4944 and #4945
-- `PR #4954`_: Add lxml and PyYAML as declared dependencies
-- `PR #4955`_: Require strict-equality-semantics
-- `PR #4957`_: all commands should have docstrings
-- `PR #4958`_: qt layout menu
-- `PR #4967`_: enable VR commands for c only if the VR plugin is enabled for c
-- `PR #4970`_: Move three plugins to the attic.
-- `PR #4971`_: Prepare for Python 3.15
-- `PR #4975`_: fix decluttering
-- `PR #4976`_: update docs for Python 3.15 and new workflows
-- `PR #4981`_: improve rust importer
-- `PR #4982`_: optional dependencies
-- `PR #4983`_: adoc command drops text
-- `PR #4985`_: fix visual glitch during startup
-- `PR #4986`_: Fix flashes in tree pane and log panes
-- `PR #4991`_: add two promote commands
-- `PR #4994`_: Incrementally revise undo
-- `PR #4995`_: Drop support for 3.10. Add support for 3.14
-- `PR #4996`_: PR2 for #4993: complete new helpers
-- `PR #4997`_: Complete composable undo migration on top of #4996
-- `PR #5000`_: Add support for Python 3.15
-- `PR #5001`_: PR fixes  #4999: clean undo
-- `PR #5003`_: Problems with non-BMP characters such as emoji
-- `PR #5004`_: PR Fixes #4998: zap-to-character
-- `PR #5009`_: More changes to the undoer
-- `PR #5012`_: Ekr no redraw
-- `PR #5015`_: Clean code and improve unit tests
-- `PR #5017`_: fix recent (serious!) undo bugs
-- `PR #5020`_: Retire old undo code
-- `PR #5025`_: retire legacy undo typing
-- `PR #5026`_: restore log version
-- `PR #5027`_: abbreviations in headlines
-- `PR #5030`_: more undo changes
-- `PR #5033`_: find failure!
-- `PR #5034`_: reverse search fail.
-- `PR #5035`_: Fix crasher in nav_qt.py
-- `PR #5036`_: fix boltex's suggestions in - `PR #5030`_
-- `PR #5037`_: improve next/prev-line
-- `PR #5038`_: remove all pylint suppressions
-- `PR #5039`_: Require full annotations in leo/core, leo/commands, and leo/plugins/qt*.py
-- `PR #5043`_: fix undo typing
-- `PR #5044`_: retain \"line\" undo granularity
-- `PR #5046`_: crash in quicksearch.py
-- `PR #5047`_: Fix hole in unit tests for commands
-- `PR #5048`_: clean all unit tests
-- `PR #5050`_: text reversion
-- `PR #5051`_: Control-click disables word wrap
-- `PR #5052`_: improve undo/redo typing
-- `PR #5053`_: Improve tests and coverage for leoUndo.py
-</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
