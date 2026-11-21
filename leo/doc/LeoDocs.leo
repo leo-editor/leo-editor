@@ -2177,12 +2177,9 @@
 </v>
 </v>
 </v>
-<v t="ekr.20261116142437.1"><vh>------</vh></v>
-<v t="ekr.20261018090533.1"></v>
-<v t="ekr.20190101093224.1"></v>
-<v t="ekr.20261116142444.1"><vh>------</vh></v>
 <v t="ekr.20261116101436.1"></v>
 <v t="ekr.20261116101656.1"></v>
+<v t="ekr.20261018090533.1"></v>
 </vnodes>
 <tnodes>
 <t tx=".20260810204531.45">Leo: organize code and ideas your way
@@ -28294,7 +28291,28 @@ saw this history model in Apple's Yellow Box documentation.
 Leo 6.9.0 introduced a new API for client code.
 This is a breaking change to Leo's API.
 
-</t>
+The Undoer class now contains ``__entry__`` and ``__exit__`` methods which
+support the following patterns:
+
+.. code-block:: python
+
+    with u.move_node(p, 'command-name'):
+        # List of undoable commands
+        # Don't call c.redraw().
+    
+
+    with u.change_node(p, 'command-name'):
+        # List of undoable commands
+        # Don't call c.redraw().
+       
+
+    with u.change_outline('command-name'):
+        # List of undoable commands
+        # Don't call c.redraw().
+        
+.. _`Cheat Sheet`: cheatsheet.html#undoing-commands
+- The `Cheat Sheet`_ tells how and when to use these patterns.
+​</t>
 <t tx="ekr.20261026060107.1">All undoable code exists within contexts created by ``with`` statements.
 Contexts handle *all* the details of doing, undoing and redoing an
 operation. See the source code for details.
@@ -28560,8 +28578,6 @@ Codebase changes
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 </t>
-<t tx="ekr.20261116142437.1"></t>
-<t tx="ekr.20261116142444.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
