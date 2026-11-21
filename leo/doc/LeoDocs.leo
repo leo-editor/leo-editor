@@ -28487,7 +28487,7 @@ Fix bugs
 - `PR #5026`_: Restore log version
 - `PR #5027`_: Abbreviations in headlines
 - `PR #5033`_: Find failure!
-- `PR #5034`_: Fix reverse searchs
+- `PR #5034`_: Fix reverse searches
 - `PR #5035`_: Fix crasher in nav_qt.py
 - `PR #5046`_: Fix crash in quicksearch.py
 - `PR #5051`_: Fix bug: control-click disables word wrap
