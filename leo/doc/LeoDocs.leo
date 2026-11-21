@@ -163,8 +163,8 @@
 </v>
 <v t="ekr.20101115152915.4937"><vh>Backup of wikipedia entry</vh></v>
 <v t="ekr.20100122073254.11655"><vh>Writing new importers</vh></v>
-</v>
 <v t="matt.20200331213038.1"><vh>PyPi install caveat</vh></v>
+</v>
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ekr.20090428133936.2"><vh>@edit html/conf.py</vh></v>
 <v t="ekr.20241124083101.1"><vh>@edit _static/custom.css</vh></v>
@@ -1214,14 +1214,7 @@
 <v t="ekr.20241112111533.1"><vh>About states and restarters</vh></v>
 <v t="ekr.20060430220749"><vh>Mode files</vh></v>
 </v>
-<v t="ekr.20261018090533.1"><vh>Leo's Undoer: Theory of Operation</vh>
-<v t="ekr.20261026060107.1"><vh>The new undo API</vh>
-<v t="ekr.20261026060246.1"><vh>with u.move_node(p, 'command-name'):</vh></v>
-<v t="ekr.20261026060249.1"><vh>with u.change_node(p, 'command-name'):</vh></v>
-<v t="ekr.20261026060249.2"><vh>with u.change_outline('command-name'):</vh></v>
-</v>
-<v t="ekr.20261026060054.1"><vh>Compatibility and migration</vh></v>
-</v>
+<v t="ekr.20261018090533.1"><vh>Leo's Undoer: Theory of Operation</vh></v>
 <v t="ekr.20200807105709.1"><vh>leoAst.py</vh>
 <v t="ekr.20200807111156.1"><vh>Running leoAst.py</vh>
 <v t="ekr.20200807110628.1"><vh>Running leoAst.py from the command line</vh></v>
@@ -1269,6 +1262,11 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20221108064449.1"><vh>What's new: Leo 6.x</vh>
+<v t="ekr.20261116101359.1"><vh>What's new: Leo 6.9.x</vh>
+<v t="ekr.20261116101436.1"><vh>What's new in Leo 6.9.0</vh></v>
+</v>
+<v t="ekr.20261116101143.1"><vh>What's new: Leo 6.8.x</vh>
 <v t="ekr.20260810021658.1"><vh>What's new in Leo 6.8.10</vh></v>
 <v t="ekr.20260531063902.1"><vh>What's new in Leo 6.8.9</vh></v>
 <v t="ekr.20251204122149.1"><vh>What's new in Leo 6.8.8</vh></v>
@@ -1279,7 +1277,8 @@
 <v t="ekr.20241126091611.1"><vh>What's new in Leo 6.8.3</vh></v>
 <v t="ekr.20240828095959.1"><vh>What's new in Leo 6.8.2</vh></v>
 <v t="ekr.20240527101024.1"><vh>What's new in Leo 6.8.0</vh></v>
-<v t="ekr.20240527100956.1"><vh>What's new in Leo 6.7</vh>
+</v>
+<v t="ekr.20240527100956.1"><vh>What's new: Leo 6.7.x</vh>
 <v t="ekr.20240222121346.1"><vh>What's new in Leo 6.7.8</vh></v>
 <v t="ekr.20240118094134.1"><vh>What's new in Leo 6.7.7</vh></v>
 <v t="ekr.20231126120048.1"><vh>What's new in Leo 6.7.6</vh></v>
@@ -1290,7 +1289,7 @@
 <v t="ekr.20221018092915.1"><vh>What's new in Leo 6.7.1</vh></v>
 <v t="ekr.20220912154542.1"><vh>What's new in Leo 6.7.0</vh></v>
 </v>
-<v t="ekr.20221108064449.1"><vh>What's new in Leo 6.6 and earlier</vh>
+<v t="ekr.20261116101222.1"><vh>What's new: Leo 6.6.x</vh>
 <v t="ekr.20220831093321.1"><vh>What's new in Leo 6.6.4</vh></v>
 <v t="ekr.20220719064316.1"><vh>What's new in Leo 6.6.3</vh></v>
 <v t="ekr.20220523145755.1"><vh>What's new in Leo 6.6.2</vh></v>
@@ -1303,7 +1302,8 @@
 <v t="ekr.20191003051240.1"><vh>What's new in Leo 6.1</vh></v>
 <v t="ekr.20190616175854.1"><vh>What's new in Leo 6.0</vh></v>
 </v>
-<v t="ekr.20221108064344.1"><vh>What's new in Leo 5.x</vh>
+</v>
+<v t="ekr.20221108064344.1"><vh>What's new: Leo 5.x</vh>
 <v t="ekr.20190122044116.1"><vh>What's new in Leo 5.9</vh></v>
 <v t="ekr.20180821154658.1"><vh>What's new in Leo 5.8</vh></v>
 <v t="ekr.20180527084307.1"><vh>What's new in Leo 5.7.3</vh></v>
@@ -1375,7 +1375,7 @@
 <v t="ekr.20141105050314.197"><vh>Settings</vh></v>
 </v>
 </v>
-<v t="ekr.20180404015644.1"><vh>What's new in Leo 4.x</vh>
+<v t="ekr.20180404015644.1"><vh>What's new: Leo 4.x</vh>
 <v t="ekr.20131019190351.16664"><vh>What's new in Leo 4.11</vh>
 <v t="ekr.20150312080344.32"><vh>Highlights</vh></v>
 <v t="ekr.20131019190351.16947"><vh>Commands</vh></v>
@@ -1461,6 +1461,7 @@
 </v>
 <v t="ekr.20180125034510.1"><vh>Release Notes</vh>
 <v t="ekr.20260812065654.1"><vh>@rst html/release-notes.html</vh>
+<v t="ekr.20261116101656.1"><vh>Leo 6.9.0 release notes</vh></v>
 <v t="ekr.20250422050948.1"><vh>Leo 6.8.x release notes</vh>
 <v t="ekr.20260716061125.1"><vh>Leo 6.8.10 release notes</vh></v>
 <v t="ekr.20260531063735.1"><vh>Leo 6.8.9 release notes</vh></v>
@@ -2170,11 +2171,10 @@
 </v>
 </v>
 </v>
-<v t="ekr.20260810021658.1"></v>
-<v t="ekr.20260716061125.1"></v>
-<v t="ekr.20131008041326.16091"></v>
-<v t="ekr.20190101093224.1"></v>
+<v t="ekr.20261116101436.1"></v>
+<v t="ekr.20261116101656.1"></v>
 <v t="ekr.20261018090533.1"></v>
+<v t="ekr.20131007143750.16070"></v>
 </vnodes>
 <tnodes>
 <t tx=".20260810204531.45">Leo: organize code and ideas your way
@@ -22437,7 +22437,9 @@ The body text of an ``@data history-list`` *setting node* preloads commands into
     check-clones
     expand-log-pane
     contract-log-pane</t>
-<t tx="ekr.20190101093224.1">Here is everything script writers need to know to make their code undoable.
+<t tx="ekr.20190101093224.1">.. in cheatsheet.html
+
+Here is everything script writers need to know to make their code undoable.
 
 The patterns below all assume the following definitions:
 
@@ -28181,7 +28183,8 @@ Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 </t>
-<t tx="ekr.20260810021658.1">.. _`PR #4721`: https://github.com/leo-editor/leo-editor/pull/4721
+<t tx="ekr.20260810021658.1">.. Use the link-pr abbreviation to create these links.
+.. _`PR #4721`: https://github.com/leo-editor/leo-editor/pull/4721
 .. _`PR #4737`: https://github.com/leo-editor/leo-editor/pull/4737
 .. _`PR #4747`: https://github.com/leo-editor/leo-editor/pull/4747
 .. _`PR #4753`: https://github.com/leo-editor/leo-editor/pull/4753
@@ -28280,68 +28283,242 @@ backwards; redo executes the next bead's redo functions and moves the
 pointer forwards. A new, nonempty command discards the redo tail. I first
 saw this history model in Apple's Yellow Box documentation.
 
-Leo 6.8.11 introduced a new API for client code.
+Leo 6.9.0 introduced a new API for client code.
+This is a breaking change to Leo's API.
 
-</t>
-<t tx="ekr.20261026060054.1">Legacy ``u.before*`` and ``u.after*`` methods (and ``u.doTyping``) will
-remain for use by scripts and plugins. All such methods are *deprecated*
-and may be removed in later versions of Leo.
-
-Leo's existing bead architecture will remain as it is:
-
-- Legacy undoer beads are instances of ``g.Bunch``.
-- New undoer beads are instances of ``UndoBead``.
-</t>
-<t tx="ekr.20261026060107.1">All undoable code exists within contexts created by ``with`` statements.
-Contexts handle *all* the details of doing, undoing and redoing an
-operation. See the source code for details.
-
-There are three main contexts. Use the most specific context possible.
-
-The examples below all assume the following definitions:
-
-.. code-block:: python
-
-    p = c.p
-    u = c.undoer
-    w = c.frame.body.wrapper
-
-
-</t>
-<t tx="ekr.20261026060246.1">Use the ``u.move_node`` context if your command only moves a single node p:
+The Undoer class now contains ``__entry__`` and ``__exit__`` methods which
+support the following patterns:
 
 .. code-block:: python
 
     with u.move_node(p, 'command-name'):
-        p.setDirty()  # Calls p.v.setAllAncestorAtFileNodesDirty().
-        # move the node
-        p.setDirty()  # p.v.setAllAncestorAtFileNodesDirty() again.
-        # call w.setInsertPoint() or w.setSelectionRange() as desired.
-        c.p = p
-        # Do *not* call c.redraw!
-        
-</t>
-<t tx="ekr.20261026060249.1">Use the ``u.change_node`` context if your command only changes a single node p:
-
-.. code-block:: python
+        # List of undoable commands
+        # Don't call c.redraw().
+    
 
     with u.change_node(p, 'command-name'):
-        # change p.b or p.h or both.
-        # call p.setDirty(), p.setMarked() or p.clearMarked() as desired.
-        # call w.setInsertPoint() or w.setSelectionRange() as desired.
-        # Do *not* call c.redraw!
-        
-        
-</t>
-<t tx="ekr.20261026060249.2">Finally, use the ``u.change_outline`` context for all other (more complex) changes:
-
-.. code-block:: python
+        # List of undoable commands
+        # Don't call c.redraw().
+       
 
     with u.change_outline('command-name'):
-        # make *arbitrary* changes to the outline.
-        # set c.p if it changes.
-        # call w.setInsertPoint() or w.setSelectionRange() as desired.
-        # Do *not* call c.redraw!
+        # List of undoable commands
+        # Don't call c.redraw().
+        
+.. _`Cheat Sheet`: cheatsheet.html#undoing-commands
+- The `Cheat Sheet`_ tells how and when to use these patterns.
+​</t>
+<t tx="ekr.20261116101143.1"></t>
+<t tx="ekr.20261116101222.1"></t>
+<t tx="ekr.20261116101359.1">.. Use the link-pr abbreviation to create these links.</t>
+<t tx="ekr.20261116101436.1">.. Use the link-pr abbreviation to create these links.
+.. _`PR #4931`: https://github.com/leo-editor/leo-editor/pull/4931
+.. _`PR #4937`: https://github.com/leo-editor/leo-editor/pull/4937
+.. _`PR #4939`: https://github.com/leo-editor/leo-editor/pull/4939
+
+.. _`PR #4940`: https://github.com/leo-editor/leo-editor/pull/4940
+.. _`PR #4942`: https://github.com/leo-editor/leo-editor/pull/4942
+.. _`PR #4943`: https://github.com/leo-editor/leo-editor/pull/4943
+.. _`PR #4946`: https://github.com/leo-editor/leo-editor/pull/4946
+
+.. _`PR #4955`: https://github.com/leo-editor/leo-editor/pull/4955
+.. _`PR #4957`: https://github.com/leo-editor/leo-editor/pull/4957
+.. _`PR #4958`: https://github.com/leo-editor/leo-editor/pull/4958
+
+.. _`PR #4967`: https://github.com/leo-editor/leo-editor/pull/4967
+
+.. _`PR #4970`: https://github.com/leo-editor/leo-editor/pull/4970
+.. _`PR #4971`: https://github.com/leo-editor/leo-editor/pull/4971
+.. _`PR #4975`: https://github.com/leo-editor/leo-editor/pull/4975
+.. _`PR #4976`: https://github.com/leo-editor/leo-editor/pull/4976
+
+.. _`PR #4981`: https://github.com/leo-editor/leo-editor/pull/4981
+.. _`PR #4982`: https://github.com/leo-editor/leo-editor/pull/4982
+.. _`PR #4983`: https://github.com/leo-editor/leo-editor/pull/4983
+.. _`PR #4985`: https://github.com/leo-editor/leo-editor/pull/4985
+.. _`PR #4986`: https://github.com/leo-editor/leo-editor/pull/4986
+
+.. _`PR #4991`: https://github.com/leo-editor/leo-editor/pull/4991
+.. _`PR #4994`: https://github.com/leo-editor/leo-editor/pull/4994
+.. _`PR #4995`: https://github.com/leo-editor/leo-editor/pull/4995
+.. _`PR #4996`: https://github.com/leo-editor/leo-editor/pull/4996
+.. _`PR #4997`: https://github.com/leo-editor/leo-editor/pull/4997
+
+.. _`PR #5000`: https://github.com/leo-editor/leo-editor/pull/5000
+.. _`PR #5001`: https://github.com/leo-editor/leo-editor/pull/5001
+.. _`PR #5003`: https://github.com/leo-editor/leo-editor/pull/5003
+.. _`PR #5004`: https://github.com/leo-editor/leo-editor/pull/5004
+.. _`PR #5009`: https://github.com/leo-editor/leo-editor/pull/5009
+
+.. _`PR #5012`: https://github.com/leo-editor/leo-editor/pull/5012
+.. _`PR #5015`: https://github.com/leo-editor/leo-editor/pull/5015
+.. _`PR #5017`: https://github.com/leo-editor/leo-editor/pull/5017
+
+.. _`PR #5020`: https://github.com/leo-editor/leo-editor/pull/5020
+.. _`PR #5025`: https://github.com/leo-editor/leo-editor/pull/5025
+.. _`PR #5026`: https://github.com/leo-editor/leo-editor/pull/5026
+.. _`PR #5027`: https://github.com/leo-editor/leo-editor/pull/5027
+
+.. _`PR #5030`: https://github.com/leo-editor/leo-editor/pull/5030
+.. _`PR #5033`: https://github.com/leo-editor/leo-editor/pull/5033
+.. _`PR #5034`: https://github.com/leo-editor/leo-editor/pull/5034
+.. _`PR #5035`: https://github.com/leo-editor/leo-editor/pull/5035
+.. _`PR #5036`: https://github.com/leo-editor/leo-editor/pull/5036
+.. _`PR #5037`: https://github.com/leo-editor/leo-editor/pull/5037
+.. _`PR #5038`: https://github.com/leo-editor/leo-editor/pull/5038
+.. _`PR #5039`: https://github.com/leo-editor/leo-editor/pull/5039
+
+.. _`PR #5043`: https://github.com/leo-editor/leo-editor/pull/5043
+.. _`PR #5044`: https://github.com/leo-editor/leo-editor/pull/5044
+.. _`PR #5046`: https://github.com/leo-editor/leo-editor/pull/5046
+.. _`PR #5047`: https://github.com/leo-editor/leo-editor/pull/5047
+.. _`PR #5048`: https://github.com/leo-editor/leo-editor/pull/5048
+
+.. _`PR #5050`: https://github.com/leo-editor/leo-editor/pull/5050
+.. _`PR #5051`: https://github.com/leo-editor/leo-editor/pull/5051
+.. _`PR #5052`: https://github.com/leo-editor/leo-editor/pull/5052
+.. _`PR #5053`: https://github.com/leo-editor/leo-editor/pull/5053
+.. _`PR #5057`: https://github.com/leo-editor/leo-editor/pull/5057
+.. _`PR #5059`: https://github.com/leo-editor/leo-editor/pull/5059
+
+.. _`PR #5061`: https://github.com/leo-editor/leo-editor/pull/5061
+.. _`PR #5062`: https://github.com/leo-editor/leo-editor/pull/5062
+
+.. C:\Repos\leo-editor&gt;gh pr list --limit 100 --state merged --search milestone:6.9.0 --json number,title
+
+.. Convert json to single line:
+.. find ^\{\n"number": ([0-9]+),\n"title": "(.*?)"\n}(,)?
+.. repl PR #\1: \2
+
+New and improved commands
+
+- `PR #5037`_: Improve the ``next-line`` and ``prev-line`` commands
+- `PR #4942`_: Add the ``ty`` command
+- `PR #4991`_: Add the ``promote-to-at-others``, ``promote-section-def`` commands
+
+Enhancements
+
+- `PR #4931`_: Soften the lion on Leo's website
+- `PR #4957`_: Add docstrings to all commands
+- `PR #4981`_: Improve the Rust importer
+- `PR #5062`_: Make Leo's find commands less confusing:
+    - Non-regex finds treat backspaces as normal characters.
+    - Regex finds treat backspaces as escape characters.
+
+Simplify Leo's API for undo
+
+See the ``Undoing commands`` section for details.
+
+- `PR #4994`_: Incrementally revise undo
+- `PR #4996`_: Complete new helpers
+- `PR #4997`_: Complete undo migration
+- `PR #5001`_: Clean undo
+- `PR #5009`_: More changes to the undoer
+- `PR #5012`_: Rename u.redraw to u._redraw
+- `PR #5015`_: Clean code and improve unit tests
+- `PR #5017`_: Fix recent (serious!) undo bugs
+- `PR #5020`_: Retire old undo code
+- `PR #5025`_: retire legacy undo typing
+- `PR #5030`_: More undo changes
+- `PR #5036`_: Fix boltex's suggestions
+- `PR #5043`_: Fix undo typing
+- `PR #5044`_: Retain "line" undo granularity
+- `PR #5050`_: Text reversion
+- `PR #5052`_: Improve undo/redo typing
+
+Simplify Leo's text wrapper methods
+
+- `PR #5059`_: Revises string methods
+
+Fix bugs
+
+- `PR #4937`_: Fix crash in autocompleter
+- `PR #4939`_: Fix git-diff-pr
+- `PR #4940`_: Fix rash in show-settings-outline command
+- `PR #4946`_: Fix crashers
+- `PR #4958`_: Fix Qt layout menu
+- `PR #4967`_: Enable VR commands for c only if the VR plugin is enabled for c
+- `PR #4975`_: Fix decluttering
+- `PR #4983`_: Fix adoc command
+- `PR #4985`_: Fix visual glitch during startup
+- `PR #4986`_: Fix flashes in tree pane and log panes
+- `PR #5003`_: Fix problems with non-BMP characters such as emoji
+- `PR #5004`_: Fix zap-to-character
+- `PR #5026`_: Restore log version
+- `PR #5027`_: Abbreviations in headlines
+- `PR #5033`_: Find failure!
+- `PR #5034`_: Fix reverse searches
+- `PR #5035`_: Fix crasher in nav_qt.py
+- `PR #5046`_: Fix crash in quicksearch.py
+- `PR #5051`_: Fix bug: control-click disables word wrap
+- `PR #5061`_: Fix crash when loading test.leo
+
+Plugins
+
+- `PR #4970`_: Move three plugins to the attic.
+
+Distribution
+
+- `PR #4954`_: Add lxml and PyYAML as declared dependencies
+- `PR #4971`_: Prepare for Python 3.15
+- `PR #4976`_: Update docs for Python 3.15 and new workflows
+- `PR #4982`_: Remove optional dependencies
+- `PR #4995`_: Drop support for 3.10. Add support for 3.14
+- `PR #5000`_: Add support for Python 3.15
+
+Testing
+
+- `PR #4943`_: Remove mypy-only suppressions
+- `PR #4955`_: Require strict-equality-semantics
+- `PR #5038`_: Remove all pylint suppressions
+- `PR #5039`_: Require full annotations in leo/core, leo/commands, and leo/plugins/qt*.py
+- `PR #5047`_: Fix hole in unit tests for commands
+- `PR #5048`_: Clean all unit tests
+- `PR #5053`_: Improve tests and coverage for leoUndo.py
+- `PR #5057`_: Move unit tests re undo.</t>
+<t tx="ekr.20261116101656.1">Leo https://leo-editor.github.io/leo-editor/ 6.9.0 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+
+Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor/preface.html).
+
+**The highlights of Leo 6.9.0**
+
+- Remove an long-standing confusion about what backspaces mean in find strings::
+
+  - Non-regex finds treat backspaces as normal characters.
+  - Regex finds treat backspaces as escape characters.
+
+- Add the ``promote-to-at-others``, ``promote-section-def`` and ``ty`` commands.
+
+- Improve the ``next-line`` and ``prev-line`` commands.
+
+- Improve the Rust importer.
+
+Codebase changes
+
+- Convert all of Leo's codebase to a new, much simpler undo API.
+  This is a **breaking change** for any undoable script or plugin.
+
+- Complete the transition from Python-based checkers (black, pyflakes, pylint)
+  to Rust-based checkers (ruff format, ruff lint, ty).
+  These changes affected annotations and suppressions throughout Leo's code base.
+
+- Drop support for Python 3.10. Add support for Python 3.14.
+
+- The usual bug fixes.
+
+**Links**
+
+- [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
+- [6.9.0 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.9.0+)
+- [6.9.0 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.9.0)
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
+- [Forum](https://groups.google.com/group/leo-editor)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
