@@ -1040,7 +1040,7 @@ def readFileIntoNode(self: Self, event: LeoKeyEvent | None = None) -> None:
     with u.change_outline('read-file-into-node'):
         p = c.p.insertAfter()
         p.setHeadString('@read-file-into-node ' + fileName)
-        p.setBodyString(s)
+        p.b = s
         w.setAllText(s)
         c.p = p
 

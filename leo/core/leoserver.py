@@ -1758,7 +1758,7 @@ class LeoServer:
                     p = c.insertHeadline(op_name='Read File Into Node')
                     # New node does not need c.setHeadString. p.setHeadString is ok.
                     p.setHeadString('@read-file-into-node ' + fileName)
-                    p.setBodyString(s)
+                    p.b = s
             except Exception as err:
                 print(f"{tag} Error while reading {param['name']}", flush=True)
                 print(err, flush=True)

@@ -137,11 +137,7 @@ class StringTextWrapper(QTextMixin):
     def getInsertPoint(self) -> int:
         """StringTextWrapper."""
         i = self.ins
-        if i is None:
-            if self.virtualInsertPoint is None:
-                i = 0
-            else:
-                i = self.virtualInsertPoint
+        assert i is not None, g.callers()
         self.virtualInsertPoint = i
         return i
 
@@ -161,20 +157,10 @@ class StringTextWrapper(QTextMixin):
     def getSelectionRange(self, sort: bool = True) -> tuple[int, int]:
         """Return the selected range of the widget."""
         sel = self.sel
-
-        ### g.trace(f"{sel=} {g.callers(2)}")
-
-        # Check if sel contains None values (can be set by leoFind.py's 'save' and 'restore' methods).
-        if len(sel) == 2 and (sel[0] is None or sel[1] is None):
-            return 0, 0
-
-        if len(sel) == 2 and sel[0] >= 0 and sel[1] >= 0:
-            i, j = sel
-            if sort and i > j:
-                sel = j, i  # Bug fix: 10/5/07
-            return sel
-        i = self.ins
-        return i, i
+        i, j = sel
+        if sort and i > j:
+            sel = j, i  # Bug fix: 10/5/07
+        return sel
 
     # @+node:ekr.20140903172510.18586: *4* StringTextWrapper.hasSelection
     def hasSelection(self) -> bool:
@@ -203,16 +189,13 @@ class StringTextWrapper(QTextMixin):
 
         Set the text and set the insert point to len(s).
         """
-
-        ### g.trace(f"StringTextWrapper: {len(s)=} {s=} {g.callers(4)}")
-
         self.s = s
         i = len(self.s)
         self.ins = i
         self.sel = i, i
 
     # @+node:ekr.20140903172510.18587: *4* StringTextWrapper.setInsertPoint
-    def setInsertPoint(self, i: int, s: str | None = None) -> None:
+    def setInsertPoint(self, i: int) -> None:
         """StringTextWrapper."""
         self.virtualInsertPoint = i
         self.ins = i

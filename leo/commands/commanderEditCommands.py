@@ -98,7 +98,7 @@ def convertAllBlanks(self: Self, event: LeoKeyEvent | None = None) -> None:
                 if changed:
                     count += 1
                     p.setDirty()
-                    p.setBodyString('\n'.join(result))
+                    p.b = '\n'.join(result)
         if not g.unitTesting:
             # Must come before c.redraw().
             g.es("blanks converted to tabs in", count, "nodes")
@@ -137,7 +137,7 @@ def convertAllTabs(self: Self, event: LeoKeyEvent | None = None) -> None:
                 if changed:
                     count += 1
                     p.setDirty()
-                    p.setBodyString('\n'.join(result))
+                    p.b = '\n'.join(result)
         if not g.unitTesting:
             g.es("tabs converted to blanks in", count, "nodes")
 
@@ -438,7 +438,7 @@ def createFirstChildNode(c: Cmdr, parent: Position, headline: str, body: str) ->
         body = ""
     p = parent.insertAsNthChild(0)
     p.initHeadString(headline)
-    p.setBodyString(body)
+    p.b = body
     p.setDirty()
     c.checkOutline()
     return p

@@ -1894,20 +1894,19 @@ class Position:
         return result
 
     # @+node:ekr.20090128083459.74: *3* p.Properties
-    # @+node:ekr.20090128083459.75: *4* p.b property (horrible test!)
+    # @+node:ekr.20090128083459.75: *4* p.b property
     def __get_b(self) -> str:
         """Return the body text of a position."""
         p = self
         return p.bodyString()
 
-    def __set_b(self, val: str) -> None:
+    def __set_b(self, s: str | bytes) -> None:
         """
         Set the body text of a position.
 
-        **Warning: the p.b = whatever is *expensive* because it calls
-        c.setBodyString().
+        **Warning: the p.b = whatever is *expensive*.
 
-        Usually, code *should* use this setter, despite its cost, because it
+        But usually code *should* use this setter, despite its cost, because it
         update's Leo's outline pane properly. Calling c.redraw() is *not*
         enough.
 
@@ -1916,12 +1915,23 @@ class Position:
         use p.v.b instead of p.b.
         """
         p = self
-
-        ### g.trace(f"{p.v=} {p.v.context=}")
-
-        if p.v and (c := p.v.context):
-            c.setBodyString(p, val)
-            # Warning: c.setBodyString is *expensive*.
+        if not p.v:
+            raise ValueError(f"p.b setter: no p.v {g.callers()=}")
+        c = p.v.context
+        v = p.v
+        s = g.toUnicode(s)
+        if c.p and p.v == c.p.v:
+            w = c.frame.body.wrapper
+            w.setAllText(s)
+            v.setSelection(0, 0)
+            c.recolor()
+        # Keep the body text in the VNode up-to-date.
+        if v.b != s:
+            v.setBodyString(s)
+            v.setSelection(0, 0)
+            p.setDirty()
+            if not c.isChanged():
+                c.setChanged()
 
     b = property(__get_b, __set_b, doc="position body string property")
 
@@ -2117,9 +2127,9 @@ class Position:
 
     # @+node:ekr.20040315034158: *4* p.setBodyString & setHeadString
     def setBodyString(self, s: bytes | str) -> None:
+        """Call p.b setter. Retained for compatibility."""
         p = self
-        assert p.v  # PR #4767: suppress mypy warning.
-        p.v.setBodyString(s)
+        p.b = s
 
     initBodyString = setBodyString
     setTnodeText = setBodyString

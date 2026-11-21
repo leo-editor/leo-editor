@@ -481,28 +481,24 @@ class QLineEditWrapper(QTextMixin):
             g.app.gui.set_focus(self.c, self.widget)
 
     # @+node:ekr.20110605121601.18129: *4* QLineEditWrapper.setInsertPoint
-    def setInsertPoint(self, i: int, s: str | None = None) -> None:
+    def setInsertPoint(self, i: int) -> None:
         """QHeadlineWrapper."""
         if not self.check():
             return
         w = self.widget
-        if s is None:
-            s = w.text()
+        s = w.text()
         i = max(0, min(i, len(s)))
         w.setCursorPosition(i)
 
     # @+node:ekr.20110605121601.18130: *4* QLineEditWrapper.setSelectionRange
-    def setSelectionRange(
-        self, i: int, j: int, insert: int | None = None, s: str | None = None
-    ) -> None:
+    def setSelectionRange(self, i: int, j: int, insert: int | None = None) -> None:
         """QHeadlineWrapper."""
         if not self.check():
             return
         w = self.widget
         if i > j:
             i, j = j, i
-        if s is None:
-            s = w.text()
+        s = w.text()
         n = len(s)
         i = max(0, min(i, n))
         j = max(0, min(j, n))
@@ -1374,10 +1370,8 @@ class QMinibufferWrapper(QLineEditWrapper):
         # level sheet will get pushed down quite frequently.
         self.widget.setStyleSheet(self.c.frame.top.styleSheet())
 
-    def setSelectionRange(
-        self, i: int, j: int, insert: int | None = None, s: str | None = None
-    ) -> None:
-        QLineEditWrapper.setSelectionRange(self, i, j, insert, s)
+    def setSelectionRange(self, i: int, j: int, insert: int | None = None) -> None:
+        QLineEditWrapper.setSelectionRange(self, i, j, insert)
         insert = j if insert is None else insert
         if self.widget:
             self.widget._sel_and_insert = (i, j, insert)
@@ -1614,7 +1608,7 @@ class QScintillaWrapper(QTextMixin):
         # w.update()
 
     # @+node:ekr.20110605121601.18114: *4* QScintillaWrapper.setInsertPoint
-    def setInsertPoint(self, i: int, s: str | None = None) -> None:
+    def setInsertPoint(self, i: int) -> None:
         """Set the insertion point in a QsciScintilla widget."""
         w = self.widget
         # w.SendScintilla(w.SCI_SETCURRENTPOS,i)
@@ -1622,9 +1616,7 @@ class QScintillaWrapper(QTextMixin):
         w.SendScintilla(w.SCI_SETSEL, i, i)
 
     # @+node:ekr.20110605121601.18115: *4* QScintillaWrapper.setSelectionRange
-    def setSelectionRange(
-        self, i: int, j: int, insert: int | None = None, s: str | None = None
-    ) -> None:
+    def setSelectionRange(self, i: int, j: int, insert: int | None = None) -> None:
         """Set the selection range in a QsciScintilla widget."""
         w = self.widget
         if insert is None:
