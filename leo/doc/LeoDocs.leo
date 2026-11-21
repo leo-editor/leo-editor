@@ -1214,13 +1214,7 @@
 <v t="ekr.20241112111533.1"><vh>About states and restarters</vh></v>
 <v t="ekr.20060430220749"><vh>Mode files</vh></v>
 </v>
-<v t="ekr.20261018090533.1"><vh>Leo's Undoer: Theory of Operation</vh>
-<v t="ekr.20261026060107.1"><vh>The new undo API</vh>
-<v t="ekr.20261026060246.1"><vh>with u.move_node(p, 'command-name'):</vh></v>
-<v t="ekr.20261026060249.1"><vh>with u.change_node(p, 'command-name'):</vh></v>
-<v t="ekr.20261026060249.2"><vh>with u.change_outline('command-name'):</vh></v>
-</v>
-</v>
+<v t="ekr.20261018090533.1"><vh>Leo's Undoer: Theory of Operation</vh></v>
 <v t="ekr.20200807105709.1"><vh>leoAst.py</vh>
 <v t="ekr.20200807111156.1"><vh>Running leoAst.py</vh>
 <v t="ekr.20200807110628.1"><vh>Running leoAst.py from the command line</vh></v>
@@ -2180,6 +2174,7 @@
 <v t="ekr.20261116101436.1"></v>
 <v t="ekr.20261116101656.1"></v>
 <v t="ekr.20261018090533.1"></v>
+<v t="ekr.20131007143750.16070"></v>
 </vnodes>
 <tnodes>
 <t tx=".20260810204531.45">Leo: organize code and ideas your way
@@ -28313,59 +28308,6 @@ support the following patterns:
 .. _`Cheat Sheet`: cheatsheet.html#undoing-commands
 - The `Cheat Sheet`_ tells how and when to use these patterns.
 ​</t>
-<t tx="ekr.20261026060107.1">All undoable code exists within contexts created by ``with`` statements.
-Contexts handle *all* the details of doing, undoing and redoing an
-operation. See the source code for details.
-
-There are three main contexts. Use the most specific context possible.
-
-The examples below all assume the following definitions:
-
-.. code-block:: python
-
-    p = c.p
-    u = c.undoer
-    w = c.frame.body.wrapper
-
-=== To do
-
-Undoer beads are instances of ``UndoBead`` or ``TypingBead``.
-</t>
-<t tx="ekr.20261026060246.1">Use the ``u.move_node`` context if your command only moves a single node p:
-
-.. code-block:: python
-
-    with u.move_node(p, 'command-name'):
-        p.setDirty()  # Calls p.v.setAllAncestorAtFileNodesDirty().
-        # move the node
-        p.setDirty()  # p.v.setAllAncestorAtFileNodesDirty() again.
-        # call w.setInsertPoint() or w.setSelectionRange() as desired.
-        c.p = p
-        # Do *not* call c.redraw!
-        
-</t>
-<t tx="ekr.20261026060249.1">Use the ``u.change_node`` context if your command only changes a single node p:
-
-.. code-block:: python
-
-    with u.change_node(p, 'command-name'):
-        # change p.b or p.h or both.
-        # call p.setDirty(), p.setMarked() or p.clearMarked() as desired.
-        # call w.setInsertPoint() or w.setSelectionRange() as desired.
-        # Do *not* call c.redraw!
-        
-        
-</t>
-<t tx="ekr.20261026060249.2">Finally, use the ``u.change_outline`` context for all other (more complex) changes:
-
-.. code-block:: python
-
-    with u.change_outline('command-name'):
-        # make *arbitrary* changes to the outline.
-        # set c.p if it changes.
-        # call w.setInsertPoint() or w.setSelectionRange() as desired.
-        # Do *not* call c.redraw!
-</t>
 <t tx="ekr.20261116101143.1"></t>
 <t tx="ekr.20261116101222.1"></t>
 <t tx="ekr.20261116101359.1">.. Use the link-pr abbreviation to create these links.</t>
