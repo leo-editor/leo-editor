@@ -28419,6 +28419,11 @@ Undoer beads are instances of ``UndoBead`` or ``TypingBead``.
 .. _`PR #5051`: https://github.com/leo-editor/leo-editor/pull/5051
 .. _`PR #5052`: https://github.com/leo-editor/leo-editor/pull/5052
 .. _`PR #5053`: https://github.com/leo-editor/leo-editor/pull/5053
+.. _`PR #5057`: https://github.com/leo-editor/leo-editor/pull/5057
+.. _`PR #5059`: https://github.com/leo-editor/leo-editor/pull/5059
+
+.. _`PR #5061`: https://github.com/leo-editor/leo-editor/pull/5061
+.. _`PR #5062`: https://github.com/leo-editor/leo-editor/pull/5062
 
 .. C:\Repos\leo-editor&gt;gh pr list --limit 100 --state merged --search milestone:6.9.0 --json number,title
 
@@ -28427,14 +28432,17 @@ Undoer beads are instances of ``UndoBead`` or ``TypingBead``.
 .. repl PR #\1: \2
 
 Enhancements
+
 - `PR #4931`_: soften the lion on Leo's website
 - `PR #5037`_: Improve next/prev-line commands
 - `PR #4942`_: Add ty command
 - `PR #4957`_: All commands should have docstrings
 - `PR #4981`_: Improve rust importer
 - `PR #4991`_: Add two promote commands
+- `PR #5062`_: Make Leo's find commands less confusing
 
 Simplify Leo's API for undo
+
 - `PR #4994`_: Incrementally revise undo
 - `PR #4996`_: Complete new helpers
 - `PR #4997`_: Complete composable undo migration
@@ -28452,7 +28460,12 @@ Simplify Leo's API for undo
 - `PR #5050`_: Text reversion
 - `PR #5052`_: Improve undo/redo typing
 
+Simplify Leo's text wrapper methods
+
+- `PR #5059`_: Revises string methods
+
 Fix bugs
+
 - `PR #4937`_: Autocompleter crash
 - `PR #4939`_: Fix git-diff-pr
 - `PR #4940`_: Crash in show-settings-outline command
@@ -28470,13 +28483,16 @@ Fix bugs
 - `PR #5033`_: Find failure!
 - `PR #5034`_: Reverse search fail.
 - `PR #5035`_: Fix crasher in nav_qt.py
-- `PR #5046`_: crash in quicksearch.py
+- `PR #5046`_: Fix crash in quicksearch.py
 - `PR #5051`_: Control-click disables word wrap
+- `PR #5061`_: Fix crash when loading test.leo
 
 Plugins
+
 - `PR #4970`_: Move three plugins to the attic.
 
 Distribution
+
 - `PR #4954`_: Add lxml and PyYAML as declared dependencies
 - `PR #4971`_: Prepare for Python 3.15
 - `PR #4976`_: Update docs for Python 3.15 and new workflows
@@ -28485,13 +28501,15 @@ Distribution
 - `PR #5000`_: Add support for Python 3.15
 
 Testing
+
 - `PR #4943`_: remove mypy-only suppressions
 - `PR #4955`_: Require strict-equality-semantics
 - `PR #5038`_: remove all pylint suppressions
 - `PR #5039`_: Require full annotations in leo/core, leo/commands, and leo/plugins/qt*.py
 - `PR #5047`_: Fix hole in unit tests for commands
-- `PR #5048`_: clean all unit tests
-- `PR #5053`_: Improve tests and coverage for leoUndo.py</t>
+- `PR #5048`_: Clean all unit tests
+- `PR #5053`_: Improve tests and coverage for leoUndo.py
+- `PR #5057`_: Move unit tests re undo.</t>
 <t tx="ekr.20261116101656.1">Leo https://leo-editor.github.io/leo-editor/ 6.9.0 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor/preface.html).
