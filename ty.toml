@@ -1,3 +1,5 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20260821134304.1: * @file ../../ty.toml
 # Config for `ty`: https://github.com/astral-sh/ty
 # See the `ty` job in .github/workflows/ci.yml
 
@@ -5,6 +7,8 @@
 include = ["leo"]
 exclude = [
 
+#@+<< ty.toml: exludes >>
+#@+node:ekr.20260902044618.1: ** << ty.toml: exludes >>
     # Mirrors the [mypy] exclude list in .mypy.ini.
     "leo/doc",
     "leo/dist",
@@ -34,6 +38,7 @@ exclude = [
     "leo/plugins/stickynotes_plus*",
     "leo/plugins/threadutil.py",
 ]
+#@-<< ty.toml: exludes >>
 
 [analysis]
 strict-equality-semantics = true
@@ -44,6 +49,8 @@ strict-equality-semantics = true
 missing-attribute = "ignore"
 missing-union-attribute = "ignore"
 
+#@+<< ty.toml: rules >>
+#@+node:ekr.20260902044553.1: ** << ty.toml: rules >>
 # EKR's environment does not specify a path to python, so this suppression is required.
 import-not-found = "ignore"  # Do not delete this.
 
@@ -57,3 +64,5 @@ incompatible-method-override = "ignore"
 # For now.
 lost-keyword-for-regular-parameter = "ignore"
 invalid-argument-type = "ignore"        # 83 failures with ty 0.0.105.
+#@-<< ty.toml: rules >>
+#@-leo
