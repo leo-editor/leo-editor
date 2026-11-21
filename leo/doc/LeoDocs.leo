@@ -28522,7 +28522,8 @@ Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor
 
 **The highlights of Leo 6.9.0**
 
-- Remove an long-standing confusion about what backspaces mean in find strings:
+- Remove an long-standing confusion about what backspaces mean in find strings::
+
   - Non-regex finds treat backspaces as normal characters.
   - Regex finds treat backspaces as escape characters.
 
