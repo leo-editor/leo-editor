@@ -383,13 +383,18 @@ class Commands:
         from leo.commands import rectangleCommands
         from leo.commands import spellCommands
 
-        # Import files that  execute @g.commander_command decorators
+        # Import files that execute @g.command decorators.
+
+        import leo.plugins.qt_commands  # noqa # required!
+
+        # Import files that  execute @g.commander_command decorators.
         from leo.core import leoCompare                     # noqa # required!
         from leo.core import leoDebugger                    # noqa # required!
         from leo.commands import commanderEditCommands      # noqa # required!
         from leo.commands import commanderFileCommands      # noqa # required!
         from leo.commands import commanderHelpCommands      # noqa # required!
         from leo.commands import commanderOutlineCommands   # noqa # required!
+
 
         # Other subcommanders.
         from leo.core import leoFind  # Leo 4.11.1
