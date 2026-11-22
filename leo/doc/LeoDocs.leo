@@ -64,7 +64,6 @@
 </v>
 <v t="ekr.20230111163935.1"><vh>@button backup</vh></v>
 <v t="ekr.20230110152344.1"><vh>@button find-bad-links</vh>
-<v t="ekr.20230110153129.1"><vh>find_web_links</vh></v>
 <v t="ekr.20230110153501.1"><vh>find_broken_links</vh></v>
 </v>
 </v>
@@ -2175,7 +2174,6 @@
 </v>
 <v t="ekr.20261116101436.1"></v>
 <v t="ekr.20261116101656.1"></v>
-<v t="ekr.20230110152344.1"></v>
 </vnodes>
 <tnodes>
 <t tx=".20260810204531.45">Leo: organize code and ideas your way
@@ -25195,25 +25193,11 @@ links = list(set([link.get("href") for link in soup.find_all("a")]))
 broken_links = find_broken_links(links)
 
 # Report.
-# g.printObj(links, tag='links')
 n1, n2 = len(links), len(broken_links)
 g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken in {root_domain}")
-</t>
-<t tx="ekr.20230110153129.1">def find_web_links(url):
-    """Return a list of all links with the root domain."""
-
-    # Make request to URL.        
-    data = requests.get(url)  ### .text
-    data.raise_for_status()  # Stop if the page fails to load.
+if broken_links:
+    g.printObj(broken_links, tag='broken_links')
     
-    g.trace(data.__class__.__name__)
-
-    # Parse HTML from request.
-    soup = BeautifulSoup(data, features="html.parser")
-    
-    links = list(set([link.get("href") for link in soup.find_all("a")]))
-    g.trace(len(links))
-    return links
 </t>
 <t tx="ekr.20230110153304.1">def find_outline_links():
     """Find all html links in this outline."""
@@ -25232,25 +25216,15 @@ g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken in {root_domain}")
     from concurrent.futures import ThreadPoolExecutor
 
     broken_links = []
-    suppress = (
-        '&lt;|URL|&gt;',
-    )
 
     def validate_url(url):
-        if url in suppress:
-            g.trace(f"Skip: {url}")
-            return
         r = requests.head(url)
         if r.status_code == 404:
             broken_links.append(url)
 
     # Loop through links checking for 404 responses, and append to list.
-    broken_links = []
     with ThreadPoolExecutor(max_workers=8) as executor:
         executor.map(validate_url, links)
-
-    for link in broken_links:
-        g.es_print(f"Bad link: {link}")
     return broken_links
 </t>
 <t tx="ekr.20230111160833.1">.. _`PR #3019`: https://github.com/leo-editor/leo-editor/pull/3019
