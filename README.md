@@ -1,25 +1,38 @@
-Leo https://leo-editor.github.io/leo-editor/ 6.8.10 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+Leo https://leo-editor.github.io/leo-editor/ 6.9.0 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor/preface.html).
 
-**The highlights of Leo 6.8.10**
+**The highlights of Leo 6.9.0**
 
-- Add authentication & secure websockets to leoserver.py.
-- Add the ``show-node-files`` command.
-- Add the ``clone-diff-pr`` command.
-- Add the ``c.p`` setter.
-- Update most theme files.
-- Add ``vv-dark.leo`` theme.
-- Add a Leo launcher generator for MacOS.
-- Remove the ``todo.py`` plugin.
-- **Breaking changes to Leo's API**: See the What's New section for details.
+- Remove an long-standing confusion about what backspaces mean in find strings::
+
+  - Non-regex finds treat backspaces as normal characters.
+  - Regex finds treat backspaces as escape characters.
+
+- Add the ``promote-to-at-others``, ``promote-section-def`` and ``ty`` commands.
+
+- Improve the ``next-line`` and ``prev-line`` commands.
+
+- Improve the Rust importer.
+
+Codebase changes
+
+- Convert all of Leo's codebase to a new, much simpler undo API.
+  This is a **breaking change** for any undoable script or plugin.
+
+- Complete the transition from Python-based checkers (black, pyflakes, pylint)
+  to Rust-based checkers (ruff format, ruff lint, ty).
+  These changes affected annotations and suppressions throughout Leo's code base.
+
+- Drop support for Python 3.10. Add support for Python 3.14.
+
 - The usual bug fixes.
 
 **Links**
 
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
-- [6.8.10 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.10+)
-- [6.8.10 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.10)
+- [6.9.0 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.9.0+)
+- [6.9.0 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.9.0)
 - [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)

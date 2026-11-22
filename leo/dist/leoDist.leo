@@ -114,10 +114,6 @@
 <v t="maphew.20200426185115.1"><vh>Outdated Preliminary build recipe</vh></v>
 <v t="maphew.20200424174722.1"><vh>@auto ../dist/conda/leo/meta.yaml</vh></v>
 </v>
-<v t="maphew.20200605112459.1"><vh>Continual Integration</vh>
-<v t="matt.20190205105334.1"><vh>@@@clean ../../.travis.yml</vh></v>
-<v t="maphew.20200605112532.1"><vh>@@@clean ../../.github/workflows/build-leo-exe.yml</vh></v>
-</v>
 <v t="mhw.20191107064451.1"><vh>Desktop integration</vh>
 <v t="mhw.20191107064521.1"><vh>@clean leo-editor.desktop</vh></v>
 </v>
@@ -177,28 +173,41 @@ These parts are are clearly marked in Leo's code as follows:
     Copyright (c) Jupyter Development Team.
     Distributed under the terms of the Modified BSD License.
 </t>
-<t tx="EKR.20040519090846.9">Leo https://leo-editor.github.io/leo-editor/ 6.8.10 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+<t tx="EKR.20040519090846.9">Leo https://leo-editor.github.io/leo-editor/ 6.9.0 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor/preface.html).
 
-**The highlights of Leo 6.8.10**
+**The highlights of Leo 6.9.0**
 
-- Add authentication &amp; secure websockets to leoserver.py.
-- Add the ``show-node-files`` command.
-- Add the ``clone-diff-pr`` command.
-- Add the ``c.p`` setter.
-- Update most theme files.
-- Add ``vv-dark.leo`` theme.
-- Add a Leo launcher generator for MacOS.
-- Remove the ``todo.py`` plugin.
-- **Breaking changes to Leo's API**: See the What's New section for details.
+- Remove an long-standing confusion about what backspaces mean in find strings::
+
+  - Non-regex finds treat backspaces as normal characters.
+  - Regex finds treat backspaces as escape characters.
+
+- Add the ``promote-to-at-others``, ``promote-section-def`` and ``ty`` commands.
+
+- Improve the ``next-line`` and ``prev-line`` commands.
+
+- Improve the Rust importer.
+
+Codebase changes
+
+- Convert all of Leo's codebase to a new, much simpler undo API.
+  This is a **breaking change** for any undoable script or plugin.
+
+- Complete the transition from Python-based checkers (black, pyflakes, pylint)
+  to Rust-based checkers (ruff format, ruff lint, ty).
+  These changes affected annotations and suppressions throughout Leo's code base.
+
+- Drop support for Python 3.10. Add support for Python 3.14.
+
 - The usual bug fixes.
 
 **Links**
 
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
-- [6.8.10 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.10+)
-- [6.8.10 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.10)
+- [6.9.0 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.9.0+)
+- [6.9.0 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.9.0)
 - [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
@@ -1772,98 +1781,6 @@ a = Analysis(['launchLeo.py'],
 # fix errors as can until everything works.
 
 -----</t>
-<t tx="maphew.20200605112459.1">Disabled for now.</t>
-<t tx="maphew.20200605112532.1">@language yaml
-# Create an "all in one" bundle of Leo and all dependencies for Windows that 
-# doesn't need to be installed in order to run, just unzip and use.
-
-name: Build standalone leo.exe
-
-on:
-  push:
-    branches: [ master, devel, gh-act ]
-    tags: 
-      - 'v*' 
-  pull_request:
-    branches: [ master, devel, gh-act ]
-    tags: 
-      - 'v*' 
-
-jobs:
-  build:
-    runs-on: windows-latest
-    strategy:
-      matrix:
-        python-version: [3.6]
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
-      with:
-        python-version: ${{ matrix.python-version }}
-    
-    - name: Cache pip packages
-      uses: actions/cache@v2
-      with:
-        path: ~\Appdata\Local\pip\Cache
-        # note addition of py ver, https://github.com/actions/cache/issues/175#issuecomment-586641991
-        #key: ${{ runner.os }}-${{ matrix.python-version }}-pip-${{ hashFiles('**/requirements.txt') }}
-        key: ${{ runner.os }}-${{ matrix.python-version }}-pip-${{ hashFiles('**/setup.py') }}
-        restore-keys: |
-          ${{ runner.os }}-${{ matrix.python-version }}-pip
-    
-    - name: Install Leo and dependencies
-      run: |
-        python -m pip install --upgrade pip
-        #if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        pip install wheel pyinstaller
-        pip install --editable .
-    - name: pyinstaller build
-      run: |
-        $ErrorView = 'NormalView'
-        pwd
-        ls
-        pyinstaller leo/dist/leo.spec
-    - name: create dist archive
-      run: |
-        $ErrorView = 'NormalView'
-        python leo/dist/zip-leo-exe.py
-    - uses: actions/upload-artifact@v2
-      with:
-        name: leo-windows-exe
-        path: dist/*.zip
-</t>
-<t tx="matt.20190205105334.1">@language yaml
-language: python
-python:
-  - "3.6"
-git:
-    ## Clone depth, must be big enough to include a tag
-    depth: 500
-install:
-    - python -m pip install --upgrade pip
-    - pip --version
-    - pip install setupext-janitor asttokens
-script:
-    ## Test: Unit tests
-    - python run_travis_unit_tests.py
-
-    ## Test: Build python wheel, install, and run Leo in console mode
-    - python setup.py --quiet bdist_wheel
-    - pip install dist/*.whl
-    - leo-console --version
-    
-deploy:
-  - provider: pypi
-    user: maphew
-    password:
-      secure: pZeDQzNu1XKDcGVEELttI/NqXMP5b5e99DgNzgTG+DVWU76sQ2wf4Jb1opIriHFQhN1etlndxVxp6YkugHDnu/B5rRklx+6WdAgHrIKcmbKzw86BsCzIwWqn1BqRlNT3mHo6uz1eQwQfJ/0/wptB5nougn8Z/E+hEIWbNgpu4CYr2TTa+9aWEpkg2h2ogOzZ1brp4hW2bJ0xW6XWBj+/bOsrgVKEmBvTZHkqFQSlODgHMJwsU3BWe/ntZ0J4QvLxseBSZM5tJTIG3w0pvGydGqxxAzbg1IY/4HZZFAttLGTr5ZJPBI2gPmz9FxmvJrWeV2iqkmMo8/OACqzSKYnMc2s8ACwUILNEZMSW+Z3IzFIUmomee3XKkkCCfbMi6eGHGYH2SFJLMnH11hGbr3yKY60FlWx8Hhds/aliGeEUdd6VqKfFeUgxcA4eDVSaAZCDFO9UWaFgrWdxEsi5aK+ElvrV/WYstouCOeMsfPIQREN8CPhQyvL4Q/gndLW904pmUkRQb9QMDzevL0gsBcP2I0mq742MmX3Kwk2gDyVxu1KafF1J6lFCBTWNyWqE18+CJxW/Qe7t1Qx7PPpDMf5kJwGtgOwg4hLELvSrA2hDL5h2kRtDoE1jkX0U5OLK2XWSHzFLLKt1VBNAal2JtJB1ii/7pC38jxFm/ZFRnOtJU0I=
-    distributions: sdist bdist_wheel
-    on:
-      tags: true
-      branch: master
-</t>
 <t tx="mhw.20191107064451.1">There is conceptual overlap between this node and the Desktop-integration
 scripts held in Scripts.leo. My current thinking is the scripts should be moved
 to or at least managed from Dist.
