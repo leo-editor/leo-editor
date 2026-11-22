@@ -64,8 +64,6 @@
 </v>
 <v t="ekr.20230111163935.1"><vh>@button backup</vh></v>
 <v t="ekr.20230110152344.1"><vh>@button find-bad-links</vh>
-<v t="ekr.20230111171223.1"><vh>find_docs_links</vh></v>
-<v t="ekr.20230110153304.1"><vh>find_outline_links</vh></v>
 <v t="ekr.20230110153129.1"><vh>find_web_links</vh></v>
 <v t="ekr.20230110153501.1"><vh>find_broken_links</vh></v>
 </v>
@@ -164,6 +162,10 @@
 <v t="ekr.20101115152915.4937"><vh>Backup of wikipedia entry</vh></v>
 <v t="ekr.20100122073254.11655"><vh>Writing new importers</vh></v>
 <v t="matt.20200331213038.1"><vh>PyPi install caveat</vh></v>
+<v t="ekr.20261121204208.1"><vh>From @button find-bad-links</vh>
+<v t="ekr.20230111171223.1"><vh>find_docs_links (no longer works)</vh></v>
+<v t="ekr.20230110153304.1"><vh>find_outline_links (doesn't work)</vh></v>
+</v>
 </v>
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ekr.20090428133936.2"><vh>@edit html/conf.py</vh></v>
@@ -2173,6 +2175,7 @@
 </v>
 <v t="ekr.20261116101436.1"></v>
 <v t="ekr.20261116101656.1"></v>
+<v t="ekr.20230110152344.1"></v>
 </vnodes>
 <tnodes>
 <t tx=".20260810204531.45">Leo: organize code and ideas your way
@@ -25172,58 +25175,49 @@ Other changes:
 </t>
 <t tx="ekr.20230110152214.1"></t>
 <t tx="ekr.20230110152240.1"></t>
-<t tx="ekr.20230110152344.1">"""
-Report broken links in all .html files leo-editor/docs.
-
-Adapted from https://brianli.com/2021/06/how-to-find-broken-links-with-python/
-
-pip install beautifulsoup4
-https://www.crummy.com/software/BeautifulSoup/
+<t tx="ekr.20230110152344.1">@language python
 """
-@language python
+Report broken links on Leo's Github Pages website.
+
+pip install beautifulsoup4 https://www.crummy.com/software/BeautifulSoup/
+"""
 g.cls()
-import glob
-import os
 import requests
 from bs4 import BeautifulSoup
-from concurrent.futures import ThreadPoolExecutor
 
-root_domain = 'https://leo-editor.github.io/leo-editor/'
+@others  # define find_broken_links
 
-# Define helpers
-@others
-
-if 1:  # Best test.
-    links = find_docs_links()
-elif 1:
-    links = find_outline_links()
-else:
-    url = f"{root_domain}/index.html"
-    links = find_web_links(url)
-# Report the found links.
-links = list(set(links))
-# Report all broken links.
-n = len(links)
-# g.printObj(links, tag=f"{len(links)} links")
-g.es_print(f"Testing {n} link{g.plural(n)}")
+root_domain = 'https://leo-editor.github.io/leo-editor/' 
+data = requests.get(root_domain)
+data.raise_for_status()  # Stop if the page fails to load.
+soup = BeautifulSoup(data.text, features="html.parser")
+links = list(set([link.get("href") for link in soup.find_all("a")]))
 broken_links = find_broken_links(links)
+
+# Report.
+# g.printObj(links, tag='links')
 n1, n2 = len(links), len(broken_links)
-g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken")
+g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken in {root_domain}")
 </t>
 <t tx="ekr.20230110153129.1">def find_web_links(url):
     """Return a list of all links with the root domain."""
+
     # Make request to URL.        
-    data = requests.get(url).text
+    data = requests.get(url)  ### .text
+    data.raise_for_status()  # Stop if the page fails to load.
+    
+    g.trace(data.__class__.__name__)
 
     # Parse HTML from request.
     soup = BeautifulSoup(data, features="html.parser")
-
-    return sorted(list(set([
-        link.get("href") for link in soup.find_all("a")
-    ])))
+    
+    links = list(set([link.get("href") for link in soup.find_all("a")]))
+    g.trace(len(links))
+    return links
 </t>
 <t tx="ekr.20230110153304.1">def find_outline_links():
-    """Find all links in this outline."""
+    """Find all html links in this outline."""
+    # There aren't many html links: most are sphinx links!
     links = set()
     for p in c.all_unique_positions():
         # Parse HTML in the body.
@@ -25231,9 +25225,11 @@ g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken")
         # Create a list containing all links with the root domain.
         for link in soup.find_all("a"):
             links.add(link.get("href"))
-    return sorted(list(links))
+    return list(links)
 </t>
 <t tx="ekr.20230110153501.1">def find_broken_links(links):
+    
+    from concurrent.futures import ThreadPoolExecutor
 
     broken_links = []
     suppress = (
@@ -28382,6 +28378,9 @@ support the following patterns:
 .. _`PR #5061`: https://github.com/leo-editor/leo-editor/pull/5061
 .. _`PR #5062`: https://github.com/leo-editor/leo-editor/pull/5062
 
+.. _`PR #5063`: https://github.com/leo-editor/leo-editor/pull/5063
+.. _`PR #5065`: https://github.com/leo-editor/leo-editor/pull/5065
+
 .. C:\Repos\leo-editor&gt;gh pr list --limit 100 --state merged --search milestone:6.9.0 --json number,title
 
 .. Convert json to single line:
@@ -28450,6 +28449,8 @@ Fix bugs
 - `PR #5046`_: Fix crash in quicksearch.py
 - `PR #5051`_: Fix bug: control-click disables word wrap
 - `PR #5061`_: Fix crash when loading test.leo
+- `PR #5063`_: Fix quirp in promoteToAtOthers
+- `PR #5065`_: Re-enable three qt commands
 
 Plugins
 
@@ -28518,6 +28519,7 @@ Codebase changes
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 </t>
+<t tx="ekr.20261121204208.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
