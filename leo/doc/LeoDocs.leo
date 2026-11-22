@@ -2880,7 +2880,7 @@ Issue the ":help modeline" command within Vim for the more information about mod
 Writing Leo scripts in Python
 #############################
 
-This chapter tells how to write **Leo scripts**, Python scripts run from any Leo node. This chapter is intended for those fairly comfortable with Python scripting. If you are not, please study the excellent `Python Tutorial &lt;https://docs.python.org/3/tutorial/index.html/&gt;`_.
+This chapter tells how to write **Leo scripts**, Python scripts run from any Leo node. This chapter is intended for those fairly comfortable with Python scripting. If you are not, please study the excellent Python Tutorial: https://docs.python.org/3/tutorial/index.html.
 
 Three predefined symbols, **c**, **g**, and **p** give Leo scripts easy access to all the data in the outline. These symbols also allow Leo scripts to execute any code in Leo's own codebase.
 
@@ -17204,8 +17204,7 @@ Rewrote rf.createRecentFiles, rf.readRecentFilesFile and rf.writeRecentFilesFile
 
 The fix was in xml_i.scan_tag &amp; helper
 </t>
-<t tx="ekr.20170707034853.3">A new chapter in Leo's documentation: https://leo-editor.github.io/leo-editor/console-gui.html
-
+<t tx="ekr.20170707034853.3">A new chapter in Leo's documentation
 https://github.com/leo-editor/leo-editor/issues/488
 </t>
 <t tx="ekr.20170707034853.30">It must return True if g.app.externalFilesController is None.
@@ -18105,7 +18104,6 @@ https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+
 </t>
 <t tx="ekr.20180124100450.1030"></t>
 <t tx="ekr.20180124100450.126">https://github.com/leo-editor/leo-editor/issues/488
-Docs: https://leo-editor.github.io/leo-editor/console-gui.html
 
 The highlights of recent work:
 
@@ -18463,9 +18461,6 @@ Added k.remove_conflicting_definitions.</t>
 <t tx="ekr.20180125235810.5">https://github.com/leo-editor/leo-editor/issues/550</t>
 <t tx="ekr.20180125235810.6">https://github.com/leo-editor/leo-editor/issues/510</t>
 <t tx="ekr.20180125235810.7">https://github.com/leo-editor/leo-editor/issues/509
-
-Serious unfixable bugs:
-https://leo-editor.github.io/leo-editor/console-gui.html#unfixed-bugs
 </t>
 <t tx="ekr.20180125235810.8">https://github.com/leo-editor/leo-editor/issues/493</t>
 <t tx="ekr.20180125235810.9">https://github.com/leo-editor/leo-editor/issues/489</t>
