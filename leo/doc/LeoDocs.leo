@@ -2103,6 +2103,8 @@
 <v t="ekr.20261116101436.1"></v>
 <v t="ekr.20261116101656.1"></v>
 <v t="ekr.20230110152344.1"></v>
+<v t="ekr.20261122121121.1"></v>
+<v t="ekr.20261122141808.1"><vh>ai answer</vh></v>
 </vnodes>
 <tnodes>
 <t tx=".20260810204531.45">Leo: organize code and ideas your way
@@ -2878,7 +2880,7 @@ Issue the ":help modeline" command within Vim for the more information about mod
 Writing Leo scripts in Python
 #############################
 
-This chapter tells how to write **Leo scripts**, Python scripts run from any Leo node. This chapter is intended for those fairly comfortable with Python scripting. If you are not, please study the excellent `Python Tutorial &lt;https://docs.python.org/2/tutorial/&gt;`_. Jacob Peck has written a more `informal scripting tutorial &lt;https://blog.suspended-chord.info/2014/01/28/intro-to-leo-scripting/&gt;`_.
+This chapter tells how to write **Leo scripts**, Python scripts run from any Leo node. This chapter is intended for those fairly comfortable with Python scripting. If you are not, please study the excellent `Python Tutorial &lt;https://docs.python.org/3/tutorial/index.html/&gt;`_.
 
 Three predefined symbols, **c**, **g**, and **p** give Leo scripts easy access to all the data in the outline. These symbols also allow Leo scripts to execute any code in Leo's own codebase.
 
@@ -7902,7 +7904,7 @@ will look something like:
 </t>
 <t tx="ekr.20101113063552.9416">Allows the user to import Cisco configuration files.
 
-Adds the "File:Import:Import Cisco Configuration" menu item. The plugin will:
+Adds an Import Cisco Configuration item to the File menu. The plugin will:
 
 1)  Create a new node, under the current node, where the configuration will be written. This node will typically have references to several sections (see below).
 
@@ -9013,15 +9015,7 @@ From Wikipedia::
 
     'Doctest' is a module included in the Python programming language's 
     standard library that allows for easy generation of tests based on 
-    output from the standard Python interpreter.
-
-https://tinyurl.com/cqh53 - Python.org doctest page    
-
-https://tinyurl.com/pxhlq - Jim Fulton's presentation::
-
-    Literate Testing:
-    Automated Testing with doctest
-</t>
+    output from the standard Python interpreter.</t>
 <t tx="ekr.20101113063552.9480">Outputs a Leo outline as a numbered list to an RTF file. The RTF file can be loaded into Microsoft Word and formatted as a proper outline.
 
 If this plug-in loads properly, you should have an "Outline to Microsoft RTF" option added to your File &gt; Export... menu in Leo.
@@ -12867,8 +12861,7 @@ Prior to Leo 5.1, Leo used Bernhard Mulder's original algorithm to read @shadow 
 In February 2015 EKR realized that the @shadow algorithm could be used to update @clean (@nosent) files. Simplifying the algorithm instantly became a top priority. The new code emerged several days later, made possible by the x.sentinels array. It is an important milestone in Leo's history.
 </t>
 <t tx="ekr.20150210062226.5">The algorithm depends on three simple, guaranteed, properties of
-SequenceMatcher.opcodes. See
-https://docs.python.org/2/library/difflib.html#sequencematcher-examples
+SequenceMatcher.opcodes.
 
 **Fact 1**: The opcodes tell how to turn x.a (a list of lines) into x.b
 (another list of lines).
@@ -15788,7 +15781,6 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - [Forum](https://groups.google.com/group/leo-editor)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @language md
@@ -16621,7 +16613,7 @@ Each ruleset consists of a list of lines:
 - The second line is a **replacement line**.
 - The ruleset ends with zero or more **style lines**.
 
-Find patterns are `regular expressions &lt;https://docs.python.org/2/library/re.html&gt;`_.
+Find patterns are regular expressions: https://docs.python.org/3/library/re.html.
 Decluttering affects only those headlines that match a rule pattern. 
 
 The following section shows some example rulesets. Later sections discuss decluttering commands, patterns and styles in more detail.
@@ -17045,7 +17037,6 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - [Forum](https://groups.google.com/group/leo-editor)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @language md
@@ -17699,7 +17690,7 @@ For each diffed file, this command uses a variant of the atFile read logic to cr
 - Added listen-to-log and kill-log-listen commands.
 - Added "yes/no to all" buttons for externally changed file dialog
 - Leo switches between git branches more smoothly.</t>
-<t tx="ekr.20170911082432.3">A new chapter in Leo's documentation: https://leo-editor.github.io/leo-editor//console-gui.html
+<t tx="ekr.20170911082432.3">A new chapter in Leo's documentation: console-gui.html
 
 https://github.com/leo-editor/leo-editor/issues/488
 </t>
@@ -18405,7 +18396,6 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @language md
@@ -19169,7 +19159,6 @@ Leo is an IDE, outliner and PIM, as described [here](https://leo-editor.github.i
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @language md
@@ -19306,7 +19295,6 @@ Leo is an IDE, outliner and PIM, as described [here](https://leo-editor.github.i
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @language md
@@ -19748,7 +19736,6 @@ Leo is an IDE, outliner and PIM, as described [here](https://leo-editor.github.i
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @language md
@@ -20032,7 +20019,6 @@ Leo is an IDE, outliner and PIM, as described [here](https://leo-editor.github.i
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @language md
@@ -21386,7 +21372,6 @@ Other features
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @language md
@@ -22093,7 +22078,6 @@ their contributions to Leo 6.1.
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @language md
@@ -22298,7 +22282,6 @@ Leo is an IDE, outliner and PIM, as described [here](https://leo-editor.github.i
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @language md</t>
@@ -22806,7 +22789,6 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @language md</t>
@@ -22943,13 +22925,13 @@ everything outside current node to one single ellipsis/plus sign as
 well.
 
 Back to learning new leo  then :)</t>
-<t tx="ekr.20200807105709.1">The classes in `leoAst.py &lt;https://github.com/leo-editor/leo-editor/blob/devel/leo/core/leoAst.py&gt;`_
-unify python's token-based and ast-based worlds by creating two-way links
-between tokens in the token list and ast nodes in the parse tree.
+<t tx="ekr.20200807105709.1">The classes in leoAst.py unify python's token-based and ast-based
+worlds by creating two-way links between tokens in the token list and
+ast nodes in the parse tree.
 
 Are you sure you want to use leoAst?
 
-- `asttokens &lt;https://asttokens.readthedocs.io/en/latest/user-guide.html&gt;`_ will usually be a better choice:
+- `asttokens: https://github.com/gristlabs/asttokens will usually be a better choice:
 - Support for the leoAst module ends with Python 3.14.
 
 leoAst.py is part of `Leo &lt;https://leo-editor.github.io/leo-editor/&gt;`_, and can be used
@@ -23085,7 +23067,6 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @language md</t>
@@ -23421,7 +23402,6 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @language md
@@ -23617,7 +23597,6 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @nowrap
@@ -23687,7 +23666,6 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @nowrap
@@ -23757,7 +23735,6 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @nowrap
@@ -23838,7 +23815,6 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @nowrap
@@ -23870,7 +23846,6 @@ Leo, https://leo-editor.github.io/leo-editor/ is an [IDE, outliner and PIM](http
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @nowrap
@@ -23922,7 +23897,6 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @nowrap
@@ -24017,7 +23991,6 @@ Other changes:
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @nowrap
@@ -24041,15 +24014,15 @@ all_links, all_broken_links = [], []
 invalid_urls = set()
 skipped_urls = set()
 seen = set()
-count, max_count = 0, 60
+count, max_count = 0, 250
 root_url = 'https://leo-editor.github.io/leo-editor/'
 to_do = [root_url]
 for count in range(max_count):
-    if (count + 1) % 10 == 0:
-        print(f"Pass {count+1:&lt;2}: to_do: {len(list(to_do))}")
     if not to_do:
         break
     url = to_do.pop()
+    url = url.replace('leo-editor//', 'leo-editor/')
+    print(f"Pass {count+1:&lt;3}: to_do: {len(list(to_do)):&lt;4} {url}")
     if not is_valid_url(url):
         continue
     i = url.find('#')
@@ -24064,28 +24037,53 @@ for count in range(max_count):
         continue
     seen.add(url)
     try:
-        data = requests.get(url)
+        # See if the URL exists.
+        res = requests.get(url)
         # Stop if the page fails to load.
-        data.raise_for_status()
-        soup = BeautifulSoup(data.text, features="html.parser")
+        res.raise_for_status()
         
-        # Stats.
+        # Don't check inside non-Leo pages!
+        if 'leo-editor' not in url:
+            continue
+            
+        # Only parse HTML documents
+        content_type = res.headers.get("Content-Type", "")
+        if "text/html" not in content_type:
+            continue
+            
+        # Get the links inside the Leo page.
+        soup = BeautifulSoup(res.text, features="html.parser")
         links = list(set([link.get("href") for link in soup.find_all("a")]))
         links = [z for z in links if '?' not in z]
         new_links = [z for z in links if z not in all_links]
-        # g.printObj(new_links, tag='new_links')
         all_links.extend(new_links)
+        
+        # Add all the new links found at this url.
+        # g.printObj(new_links, tag='new_links')
         for z in new_links:
+            seen.add(z)
             if not is_valid_url(z):
-                seen.add(z)
-            elif z not in seen:
+                continue
+            i = z.find('#')
+            if i &gt; -1:
+                z = z[:i]
+            if not z.strip():
+                continue
+            if z in to_do:
+                continue
+            if z.startswith('https://'):
                 to_do.append(z)
+            else:
+                z = f"{root_url}/{z}".replace('leo-editor//', 'leo-editor/')
+                if z not in to_do:
+                    to_do.append(z) 
                 
         # Find broken links!
         broken_links = find_broken_links(links)
         all_broken_links.extend([z for z in broken_links if z not in all_broken_links])
     except Exception as e:
-        if 'Invalid URL' in repr(e) or 'Client Error' in repr(e):
+        errors = ('Invalid URL', 'Client Error', 'NoneType')
+        if any(z in repr(e) for z in errors):
             invalid_urls.add(url)
         else:
             print(f"Error: {e} {url}")
@@ -24110,7 +24108,6 @@ if all_broken_links:
     g.printObj(all_broken_links, tag='all_broken_links')
 
 if to_do:
-    print()
     print(f"Scan stopped after scanning {max_count} files")
 
 # g.printObj(all_links, tag='links')
@@ -25380,7 +25377,6 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @nowrap
@@ -25511,7 +25507,6 @@ See the first comment of PR #3424 for full details.
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @nowrap
@@ -25627,7 +25622,6 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @nowrap
@@ -25838,7 +25832,6 @@ The usual assortment of minor bug fixes and code-level improvements.
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @nowrap
@@ -25920,7 +25913,6 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @nowrap
@@ -25963,7 +25955,6 @@ See https://leo-editor.github.io/leo-editor/getting-started.html
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)</t>
 <t tx="ekr.20240222121346.1">.. Use the link-pr abbreviation to create these links.
 
@@ -26063,7 +26054,6 @@ See the `What's new in Leo 6.8.0` section for details.
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)</t>
 <t tx="ekr.20240527100956.1"></t>
 <t tx="ekr.20240527101024.1">.. Use the link-pr abbreviation to create these links.
@@ -27379,9 +27369,12 @@ Codebase changes
 <t tx="ekr.20261122121121.1">def is_valid_url(url: str) -&gt; bool:
     invalid = (
         '?',
+        'File:',
+        'apps.apple.com',
         'githubusercontent.com',
         'kaleguy',
         'leo-editor/snippets',
+        'localhost',
         'mailto:',
         'npm',
         'www',
@@ -27395,10 +27388,109 @@ Codebase changes
         or url.startswith('_')
         or url.startswith('#')  ### temp.
         or url.startswith('/')  ### maybe.
+        or url.startswith('..') ### Experimental
         or any(z in url for z in invalid)
     ):   # fmt: skip
         return False
     return True
+</t>
+<t tx="ekr.20261122141808.1">@language python
+
+import requests
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin, urlparse
+from collections import deque
+from concurrent.futures import ThreadPoolExecutor
+
+def crawl_broken_links(start_url, max_pages=100, max_workers=10):
+    headers = {"User-Agent": "Mozilla/5.0 (compatible; LinkChecker/1.0)"}
+    base_domain = urlparse(start_url).netloc
+
+    queue = deque([start_url])
+    visited_pages = {start_url}       # Internal pages already queued/crawled
+    checked_urls = {}                # Cache of {url: status_or_error} to avoid duplicate checks
+    broken_links = []                # List of (source_page, broken_url, status)
+
+    def fetch_and_parse(page_url):
+        try:
+            res = requests.get(page_url, headers=headers, timeout=10)
+            checked_urls[page_url] = res.status_code
+            if res.status_code &gt;= 400:
+                return None, res.status_code
+            
+            # Only parse HTML documents
+            content_type = res.headers.get("Content-Type", "")
+            if "text/html" not in content_type:
+                return [], 200
+
+            soup = BeautifulSoup(res.text, "html.parser")
+            found_links = set()
+            for tag in soup.find_all("a", href=True):
+                full_url = urljoin(page_url, tag["href"].strip())
+                parsed = urlparse(full_url)
+                if parsed.scheme in ("http", "https"):
+                    clean_url = full_url.split("#")[0]
+                    found_links.add(clean_url)
+            return found_links, 200
+        except requests.RequestException as err:
+            checked_urls[page_url] = str(err)
+            return None, str(err)
+
+    def check_external_or_unvisited(url):
+        if url in checked_urls:
+            status = checked_urls[url]
+            return (url, status) if (isinstance(status, str) or status &gt;= 400) else None
+
+        try:
+            res = requests.head(url, headers=headers, allow_redirects=True, timeout=10)
+            if res.status_code == 405:
+                res = requests.get(url, headers=headers, allow_redirects=True, timeout=10)
+            checked_urls[url] = res.status_code
+            if res.status_code &gt;= 400:
+                return (url, res.status_code)
+        except requests.RequestException as err:
+            checked_urls[url] = str(err)
+            return (url, str(err))
+        return None
+
+    while queue and len(visited_pages) &lt;= max_pages:
+        current_page = queue.popleft()
+        links, page_status = fetch_and_parse(current_page)
+
+        if links is None:
+            continue
+
+        links_to_verify = []
+        for link in links:
+            link_domain = urlparse(link).netloc
+
+            # Queue unvisited internal pages for crawling
+            if link_domain == base_domain and link not in visited_pages:
+                if len(visited_pages) &lt; max_pages:
+                    visited_pages.add(link)
+                    queue.append(link)
+                else:
+                    links_to_verify.append(link)
+            else:
+                links_to_verify.append(link)
+
+        # Concurrently verify all links found on the current page
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            for result in executor.map(check_external_or_unvisited, links_to_verify):
+                if result:
+                    broken_url, status = result
+                    broken_links.append((current_page, broken_url, status))
+
+    return broken_links
+
+# Example usage
+if __name__ == "__main__":
+    site = "https://example.com"
+    results = crawl_broken_links(site, max_pages=50)
+
+    print(f"Found {len(results)} broken link(s) across {site}:")
+    for source, target, status in results:
+        print(f" - On [{source}] -&gt; {target} ({status})")
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
