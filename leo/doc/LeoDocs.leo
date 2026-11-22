@@ -521,8 +521,6 @@
 <v t="ekr.20180126061429.7"><vh>The beautify command &amp; @nobeautify directive</vh></v>
 <v t="ekr.20180126061429.22"><vh>The find-quick-selected command</vh></v>
 <v t="ekr.20180126061429.23"><vh>The parse-body command</vh></v>
-<v t="ekr.20180126061429.6"><vh>The pyflakes command</vh></v>
-<v t="ekr.20180126061429.8"><vh>The pylint command</vh></v>
 <v t="ekr.20180126061429.9"><vh>The rst3 command</vh></v>
 <v t="ekr.20180126061429.24"><vh>The sort-siblings command</vh></v>
 <v t="ekr.20180126061429.26"><vh>Use Alt-N (goto-next-clone) to find "primary" clones</vh></v>
@@ -7535,8 +7533,6 @@ controller(c).run()
     Creates and updates ``@read-only`` nodes.
 ``redirect_to_log.py``
     Sends all output to the log pane.
-``richtext.py``
-    Enables rich text using the `CKEditor &lt;https://ckeditor.com/&gt;`_ editor.
 ``rss.py``
     Adds rss reader features to Leo.
 ``run_nodes.py``
@@ -18657,22 +18653,7 @@ Here is a common pattern for @file nodes for python files:
 <t tx="ekr.20180126061429.5">The @button make-md-toc script in LeoDocs.leo writes a markdown table of
 contents to the console. You can then copy the text from the console to
 your document. The selected outline node should be an ``@auto-md`` node.</t>
-<t tx="ekr.20180126061429.6">.. _`pyflakes`: https://pypi.python.org/pypi/pyflakes
-
-`pyflakes`_ is a superb programming tool. It checks python files almost instantly.
-
-These settings cause Leo to run pyflakes whenever saving a .py file and to
-raise a dialog if pyflakes finds any errors::
-
-    @bool run-pyflakes-on-write = True
-    @bool syntax-error-popup = True
-</t>
 <t tx="ekr.20180126061429.7">The @nobeautify directive suppresses beautification of the node in which it appears.</t>
-<t tx="ekr.20180126061429.8">.. _`pylint`: https://www.pylint.org/
-
-Leo's pylint command runs `pylint`_ on all ``@&lt;file&gt;`` nodes in the selected trees.
-Pylint runs in the background, so you can continue to use Leo while pylint runs.
-</t>
 <t tx="ekr.20180126061429.9">.. _`rst3 command`: tutorial-rst3.html
 
 The `rst3 command`_ converts an @rst tree to a document file.
@@ -21440,7 +21421,6 @@ See this posting:
 https://groups.google.com/forum/#!msg/leo-editor/WGQIzBzQ058/QTJRUvl9CwAJ</t>
 <t tx="ekr.20190117143942.672">https://github.com/leo-editor/leo-editor/issues/672
 
-TravisCI: https://travis-ci.org/
 </t>
 <t tx="ekr.20190117143942.673">https://github.com/leo-editor/leo-editor/issues/804
 
@@ -24077,8 +24057,10 @@ for count in range(max_count):
         errors = ('Invalid URL', 'Client Error', 'NoneType')
         if any(z in repr(e) for z in errors):
             invalid_urls.add(url)
+        elif url in repr(e):
+            print(f"Error: {e}")
         else:
-            print(f"Error: {e} {url}")
+            print(f"Error: {e} {url=}")
         # g.es_exception()
 if to_do:
     print()
@@ -27361,6 +27343,7 @@ Codebase changes
 <t tx="ekr.20261122121121.1">def is_valid_url(url: str) -&gt; bool:
     invalid = (
         '?',
+        ' ',
         'File:',
         'file://',
         'apps.apple.com',
