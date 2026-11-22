@@ -11872,12 +11872,9 @@ More Leo Resources
 .. _`Leo in a nutshell`:    https://groups.google.com/d/msg/leo-editor/lgHE4OJSLzw/2VXkckrvnsIJ
 .. _`Leo page viewer`:      https://bl.ocks.org/kaleguy/cef095e16e147bc04dd6c5812d732fb2
 .. _`Leo University`:       https://github.com/leo-editor/leo-editor/issues/816
-
-.. Not a secure link
-.. .. _`Mind Mapping`:         http://www.mind-mapping.org/
 .. _`bookmarks plugin video`: https://vimeo.com/77720098 
-.. _`literate programming`: http://www.literateprogramming.com/
-.. _`scripting tutorial`:   http://blog.suspended-chord.info/2014/01/28/intro-to-leo-scripting/
+.. _`literate programming`: https://en.wikipedia.org/wiki/Literate_programming
+.. _`scripting tutorial`:   https://blog.suspended-chord.info/2014/01/28/intro-to-leo-scripting/
 .. _`slashdot article`:     testimonials.html#speed-ream-s-slashdot-article
 .. _`wikipedia page`:       http://en.wikipedia.org/wiki/Leo_(editor)
 
@@ -27365,6 +27362,7 @@ Codebase changes
     invalid = (
         '?',
         'File:',
+        'file://',
         'apps.apple.com',
         'githubusercontent.com',
         'kaleguy',
