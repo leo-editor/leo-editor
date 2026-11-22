@@ -4187,13 +4187,12 @@ class EditCommandsClass:
         u = c.undoer
         val = k.arg
         d = p.v.u
-        d[self.uaName] = val
         self.showNodeUas()
         k.clearState()
         k.resetLabel()
         k.showStateAndMode()
         with u.change_node(p, 'set-ua'):
-            pass  # handles redraw.
+            d[self.uaName] = val
 
     # @-others
 
