@@ -64,8 +64,11 @@
 </v>
 <v t="ekr.20230111163935.1"><vh>@button backup</vh></v>
 <v t="ekr.20230110152344.1"><vh>@button find-bad-links</vh>
+<v t="ekr.20261123052529.1"><vh>clean_url</vh></v>
+<v t="ekr.20261123051525.1"><vh>create_target_node</vh></v>
+<v t="ekr.20261123043834.1"><vh>find_all_urls</vh></v>
+<v t="ekr.20261123064345.1"><vh>find_rst_urls</vh></v>
 <v t="ekr.20230110153501.1"><vh>find_broken_links</vh></v>
-<v t="ekr.20261122121121.1"><vh>is_valid_url</vh></v>
 </v>
 </v>
 <v t="ekr.20131017051340.16850"><vh>Scripts</vh>
@@ -2100,9 +2103,6 @@
 </v>
 <v t="ekr.20261116101436.1"></v>
 <v t="ekr.20261116101656.1"></v>
-<v t="ekr.20230110152344.1"></v>
-<v t="ekr.20261122121121.1"></v>
-<v t="ekr.20261122141808.1"><vh>ai answer</vh></v>
 </vnodes>
 <tnodes>
 <t tx=".20260810204531.45">Leo: organize code and ideas your way
@@ -3349,9 +3349,7 @@ This will cause a traceback whenever docutils_ crashes. I have found that such t
 
 3.  As a last resort, you can isolate syntax errors by reducing your input files until they work again, then adding sections until you get a crash. This is easy enough to do (when using the rst3 plugin) by change a headline 'x' to @rst-ignore-tree x.
 </t>
-<t tx="ekr.20050830115714.116">.. From: https://sourceforge.net/forum/message.php?msg_id=3240374
-
-Using Leo's File-Export-Flatten Outline commands creates a MORE style outline which places all Leo body sections on the left margin. The headlines_ are indented with tabs which Excel will read as a tab delimited format. Once inside Excel there are benefits.
+<t tx="ekr.20050830115714.116">Using Leo's File-Export-Flatten Outline commands creates a MORE style outline which places all Leo body sections on the left margin. The headlines_ are indented with tabs which Excel will read as a tab delimited format. Once inside Excel there are benefits.
 
 1. The most obvious benefit inside Excel is that the body sections (Excel first column) can be selected easily and highlighted with a different font color. This makes the MORE format very readable. Save a copy of your sheet as HTML and now you have a web page with the body sections highlighted.
 
@@ -5209,7 +5207,6 @@ For details about how to use these file dialogs, look for examples in Leo's own 
 <t tx="ekr.20071116062917.2">.. Links used in this document.
 .. _`leoBridge`:            leoBridge.html
 .. _`debugging with Leo`:   debuggers.html
-.. _`Using @shadow`:        atShadow.html
 .. _`Python's gettext`:     https://docs.python.org/lib/module-gettext.html
 .. _Emacs:                  https://www.xemacs.org/
 .. _pymacs:                 https://pymacs.progiciels-bpi.ca/index.html
@@ -10858,7 +10855,7 @@ In more detail:
     pair: Vnode; Tutorial
     pair: vnode class; Tutorial
 
-.. _`Python properties`: https://stackabuse.com/python-properties/
+.. _`Python properties`: https://docs.python.org/3/builtins/functions.html#property
 
 A **position** represents an outline node at a *specific position* in the outline. Positions provide methods to insert, delete and move outline nodes. The `scripting portion`_ of `Leo's cheat sheet`_ lists the most important methods of the position class.
 
@@ -11863,7 +11860,6 @@ More Leo Resources
 ##################
 
 .. _`2012 PyOhio talk`:     https://www.youtube.com/watch?v=JgJ89ekGj-s
-.. _`Icons`:                icons.html
 .. _`Introduction to Leo`:  https://www.youtube.com/watch?v=Zu6J-J0qFi0
 .. _`Leo in a nutshell`:    https://groups.google.com/d/msg/leo-editor/lgHE4OJSLzw/2VXkckrvnsIJ
 .. _`Leo page viewer`:      https://bl.ocks.org/kaleguy/cef095e16e147bc04dd6c5812d732fb2
@@ -11872,7 +11868,7 @@ More Leo Resources
 .. _`literate programming`: https://en.wikipedia.org/wiki/Literate_programming
 .. _`scripting tutorial`:   https://blog.suspended-chord.info/2014/01/28/intro-to-leo-scripting/
 .. _`slashdot article`:     testimonials.html#speed-ream-s-slashdot-article
-.. _`wikipedia page`:       http://en.wikipedia.org/wiki/Leo_(editor)
+.. _`wikipedia page`:       https://en.wikipedia.org/wiki/Leo_(editor)
 
 Videos:
 
@@ -11889,7 +11885,6 @@ More resources:
 - A page about `literate programming`_.
 - Joe Orr's `Leo page viewer`_.
 - Satish Goda's `Leo tutorial &lt;https://github.com/satishgoda/leo-editor-tutorial&gt;`_.
-- `Icons`_ telling the world that you used Leo.
 - `Leo in a nutshell`_: A summary Leo's more than one million lines of source code.
 </t>
 <t tx="ekr.20131031101712.16486">Supported by Leo's core::
@@ -23977,122 +23972,43 @@ Report broken links on Leo's Github Pages website.
 pip install beautifulsoup4 https://www.crummy.com/software/BeautifulSoup/
 """
 g.cls()
+import re
 import requests
 from bs4 import BeautifulSoup
+from concurrent.futures import ThreadPoolExecutor
 
-@others  # define find_broken_links
+@others  # define helpers
 
-all_links, all_broken_links = [], []
-invalid_urls = set()
-skipped_urls = set()
-seen = set()
-count, max_count = 0, 250
-root_url = 'https://leo-editor.github.io/leo-editor/'
-to_do = [root_url]
-for count in range(max_count):
-    if not to_do:
-        break
-    url = to_do.pop()
-    url = url.replace('leo-editor//', 'leo-editor/')
-    print(f"Pass {count+1:&lt;3}: to_do: {len(list(to_do)):&lt;4} {url}")
-    if not is_valid_url(url):
-        continue
-    i = url.find('#')
-    if i &gt; -1:
-        url = url[:i]
-    if not url:
-        continue
-    if not is_valid_url(url):
-        skipped_urls.add(url)
-        continue
-    if url in seen:
-        continue
-    seen.add(url)
-    try:
-        # See if the URL exists.
-        res = requests.get(url)
-        # Stop if the page fails to load.
-        res.raise_for_status()
-        
-        # Don't check inside non-Leo pages!
-        if 'leo-editor' not in url:
-            continue
-            
-        # Only parse HTML documents
-        content_type = res.headers.get("Content-Type", "")
-        if "text/html" not in content_type:
-            continue
-            
-        # Get the links inside the Leo page.
-        soup = BeautifulSoup(res.text, features="html.parser")
-        links = list(set([link.get("href") for link in soup.find_all("a")]))
-        links = [z for z in links if '?' not in z]
-        new_links = [z for z in links if z not in all_links]
-        all_links.extend(new_links)
-        
-        # Add all the new links found at this url.
-        # g.printObj(new_links, tag='new_links')
-        for z in new_links:
-            seen.add(z)
-            if not is_valid_url(z):
-                continue
-            i = z.find('#')
-            if i &gt; -1:
-                z = z[:i]
-            if not z.strip():
-                continue
-            if z in to_do:
-                continue
-            if z.startswith('https://'):
-                to_do.append(z)
-            else:
-                z = f"{root_url}/{z}".replace('leo-editor//', 'leo-editor/')
-                if z not in to_do:
-                    to_do.append(z) 
-                
-        # Find broken links!
-        broken_links = find_broken_links(links)
-        all_broken_links.extend([z for z in broken_links if z not in all_broken_links])
-    except Exception as e:
-        errors = ('Invalid URL', 'Client Error', 'NoneType')
-        if any(z in repr(e) for z in errors):
-            invalid_urls.add(url)
-        elif url in repr(e):
-            print(f"Error: {e}")
-        else:
-            print(f"Error: {e} {url=}")
-        # g.es_exception()
-if to_do:
-    print()
-    print(f"Scan stopped after scanning {max_count} files")
-    # g.printObj(sorted(list(seen)), tag='seen')
-    g.printObj(sorted(list(to_do)), tag='to_do')
-    print()
+target = create_target_node()
+
+# Find urls defined in @rst nodes.
+rst_urls = find_rst_urls()
+broken_rst_urls = find_broken_links(rst_urls, trace=False)
+
+# Find full (https://) urls.
+full_urls = find_all_urls()
+broken_full_urls = find_broken_links(full_urls, trace=True)
 
 # Report.
-skipped_urls = sorted(list(set(skipped_urls)))
-g.printObj(skipped_urls, tag='skipped_urls')
+print(f"Found {len(rst_urls):4} @rst urls, {len(broken_rst_urls)} broken")
+if broken_rst_urls:
+    g.printObj(broken_rst_urls, tag='broken')
 
-invalid_urls = sorted(list(set(invalid_urls)))
-g.printObj(invalid_urls, tag='invalid_urls')
+print(f"Found {len(full_urls):4} full urls, {len(broken_full_urls)} broken")
+if broken_full_urls:
+    g.printObj(broken_full_urls, tag='broken_full_urls')
 
-n1, n2 = len(all_links), len(all_broken_links)
-g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken in {root_url}")
-if all_broken_links:
-    g.printObj(all_broken_links, tag='all_broken_links')
-
-if to_do:
-    print(f"Scan stopped after scanning {max_count} files")
-
-# g.printObj(all_links, tag='links')
-</t>
-<t tx="ekr.20230110153501.1">def find_broken_links(links):
-    
-    from concurrent.futures import ThreadPoolExecutor
+# Set target.b.
+rst_urls_s = 'rst_urls...\n\n' + '\n'.join(rst_urls)
+full_urls_s = 'full_urls...\n\n' + '\n'.join(full_urls)
+target.b = f"{rst_urls_s}\n\n{full_urls_s}"
+c.redraw(target)
+print('Done!')</t>
+<t tx="ekr.20230110153501.1">def find_broken_links(links, trace: bool) -&gt; list[str]:
 
     broken_links = []
-
     def validate_url(url):
+        print(f"find_broken_links {url}")
         r = requests.head(url)
         if r.status_code == 404:
             broken_links.append(url)
@@ -25309,9 +25225,7 @@ Leo's ``beautify`` command differs from `Black`_ as follows:
 <t tx="ekr.20230228100301.2">When checked, the Find and Change commands ignore the case of alphabetic characters when determining matches.
 </t>
 <t tx="ekr.20230228100301.3"></t>
-<t tx="ekr.20230303070618.1">ctrl-click-at-cursor
-make-sphinx
-find-bad-links</t>
+<t tx="ekr.20230303070618.1">find-bad-links</t>
 <t tx="ekr.20230409052507.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.3 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
@@ -27343,134 +27257,54 @@ Codebase changes
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 </t>
-<t tx="ekr.20261122121121.1">def is_valid_url(url: str) -&gt; bool:
-    invalid = (
-        '?',
-        ' ',
-        'File:',
-        'file://',
-        'apps.apple.com',
-        'githubusercontent.com',
-        'kaleguy',
-        'leo-editor/snippets',
-        'localhost',
-        'mailto:',
-        'npm',
-        'www',
-        'https://github.com/',  # Important!
-        '.yml',
-        '/blob/',
-        '/en/',
-    )
-    if (
-        not url.strip()
-        or url.startswith('_')
-        or url.startswith('#')  ### temp.
-        or url.startswith('/')  ### maybe.
-        or url.startswith('..') ### Experimental
-        or any(z in url for z in invalid)
-    ):   # fmt: skip
-        return False
-    return True
+<t tx="ekr.20261123043834.1">https_pat = re.compile(r'^.*?(https://.*?)$')
+
+def find_all_urls() -&gt; list[str]:
+    
+    result = set()
+    for p in c.all_unique_positions():
+        for s in g.splitLines(p.b):
+            if m := https_pat.match(s):
+                url = m.group(1)
+                if url != 'https://':
+                    result.add(clean_url(url))
+    return list(sorted(list(result)))
 </t>
-<t tx="ekr.20261122141808.1">@language python
-
-import requests
-from bs4 import BeautifulSoup
-from urllib.parse import urljoin, urlparse
-from collections import deque
-from concurrent.futures import ThreadPoolExecutor
-
-def crawl_broken_links(start_url, max_pages=100, max_workers=10):
-    headers = {"User-Agent": "Mozilla/5.0 (compatible; LinkChecker/1.0)"}
-    base_domain = urlparse(start_url).netloc
-
-    queue = deque([start_url])
-    visited_pages = {start_url}       # Internal pages already queued/crawled
-    checked_urls = {}                # Cache of {url: status_or_error} to avoid duplicate checks
-    broken_links = []                # List of (source_page, broken_url, status)
-
-    def fetch_and_parse(page_url):
-        try:
-            res = requests.get(page_url, headers=headers, timeout=10)
-            checked_urls[page_url] = res.status_code
-            if res.status_code &gt;= 400:
-                return None, res.status_code
-            
-            # Only parse HTML documents
-            content_type = res.headers.get("Content-Type", "")
-            if "text/html" not in content_type:
-                return [], 200
-
-            soup = BeautifulSoup(res.text, "html.parser")
-            found_links = set()
-            for tag in soup.find_all("a", href=True):
-                full_url = urljoin(page_url, tag["href"].strip())
-                parsed = urlparse(full_url)
-                if parsed.scheme in ("http", "https"):
-                    clean_url = full_url.split("#")[0]
-                    found_links.add(clean_url)
-            return found_links, 200
-        except requests.RequestException as err:
-            checked_urls[page_url] = str(err)
-            return None, str(err)
-
-    def check_external_or_unvisited(url):
-        if url in checked_urls:
-            status = checked_urls[url]
-            return (url, status) if (isinstance(status, str) or status &gt;= 400) else None
-
-        try:
-            res = requests.head(url, headers=headers, allow_redirects=True, timeout=10)
-            if res.status_code == 405:
-                res = requests.get(url, headers=headers, allow_redirects=True, timeout=10)
-            checked_urls[url] = res.status_code
-            if res.status_code &gt;= 400:
-                return (url, res.status_code)
-        except requests.RequestException as err:
-            checked_urls[url] = str(err)
-            return (url, str(err))
-        return None
-
-    while queue and len(visited_pages) &lt;= max_pages:
-        current_page = queue.popleft()
-        links, page_status = fetch_and_parse(current_page)
-
-        if links is None:
-            continue
-
-        links_to_verify = []
-        for link in links:
-            link_domain = urlparse(link).netloc
-
-            # Queue unvisited internal pages for crawling
-            if link_domain == base_domain and link not in visited_pages:
-                if len(visited_pages) &lt; max_pages:
-                    visited_pages.add(link)
-                    queue.append(link)
-                else:
-                    links_to_verify.append(link)
-            else:
-                links_to_verify.append(link)
-
-        # Concurrently verify all links found on the current page
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            for result in executor.map(check_external_or_unvisited, links_to_verify):
-                if result:
-                    broken_url, status = result
-                    broken_links.append((current_page, broken_url, status))
-
-    return broken_links
-
-# Example usage
-if __name__ == "__main__":
-    site = "https://example.com"
-    results = crawl_broken_links(site, max_pages=50)
-
-    print(f"Found {len(results)} broken link(s) across {site}:")
-    for source, target, status in results:
-        print(f" - On [{source}] -&gt; {target} ({status})")
+<t tx="ekr.20261123051525.1">def create_target_node() -&gt; None:
+    """Create the target node if necessary."""
+    h = 'All links'
+    target = g.findTopLevelNode(c, h)
+    if not target:
+        target = c.lastTopLevel().insertAfter()
+        target.h = h
+    return target</t>
+<t tx="ekr.20261123052529.1">def clean_url(url: str) -&gt; str:
+    for ch in '\' ",&gt;)':
+        i = url.find(ch)
+        if i &gt; -1:
+            url = url[:i]
+    if url.endswith('.'):
+        url = url[:-1]
+    return url
 </t>
+<t tx="ekr.20261123064345.1"># Example:
+# .. _`Customizing Leo`: customizing.html
+
+rst_pat = re.compile(r'^\.\. _`.*?`: (.*?)\s*$')
+
+def find_rst_urls() -&gt; list[str]:
+    
+    result = set()
+    leo_prefix = 'https://leo-editor.github.io/leo-editor/'
+    url_prefix = ''
+    for p in c.all_unique_positions():
+        for s in g.splitLines(p.b):
+            if m := rst_pat.match(s):
+                url = m.group(1).strip()
+                if not url.startswith('https://'):
+                    result.add(f"{leo_prefix}{url}")
+    return list(sorted(list(result)))
+    </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
