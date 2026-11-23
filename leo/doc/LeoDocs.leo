@@ -66,9 +66,10 @@
 <v t="ekr.20230110152344.1"><vh>@button find-bad-links</vh>
 <v t="ekr.20261123052529.1"><vh>clean_url</vh></v>
 <v t="ekr.20261123051525.1"><vh>create_target_node</vh></v>
+<v t="ekr.20230110153501.1"><vh>find_broken_links</vh></v>
 <v t="ekr.20261123043834.1"><vh>find_full_urls</vh></v>
 <v t="ekr.20261123064345.1"><vh>find_rst_urls</vh></v>
-<v t="ekr.20230110153501.1"><vh>find_broken_links</vh></v>
+<v t="ekr.20261123130542.1"><vh>find_unused_rst_defs</vh></v>
 </v>
 </v>
 <v t="ekr.20131017051340.16850"><vh>Scripts</vh>
@@ -2104,6 +2105,9 @@
 <v t="ekr.20261116101436.1"></v>
 <v t="ekr.20261116101656.1"></v>
 <v t="ekr.20230110152344.1"></v>
+<v t="ekr.20261123064345.1"></v>
+<v t="ekr.20261123130542.1"></v>
+<v t="ekr.20261123134453.1"><vh>All links</vh></v>
 </vnodes>
 <tnodes>
 <t tx=".20260810204531.45">Leo: organize code and ideas your way
@@ -23233,7 +23237,8 @@ Fixed all known bugs.</t>
 .. _`reStructuredText`: https://docutils.sourceforge.net/rst.html
 .. _`4478`: https://github.com/leo-editor/leo-editor/issues/4478
 
-This section explains how to use **user filters** to alter the output of the ``rst3`` command. See Leo info issue `4478`_ and ``leo/plugins/example_rst_filter.py`` and for examples.
+This section explains how to use **user filters** to alter the output of the ``rst3`` command.
+See Leo info issue `4478`_ and ``leo/plugins/example_rst_filter.py`` and for examples.
 
 **Background**
 
@@ -23982,12 +23987,15 @@ slow = False
 
 @others  # define helpers
 
-target = create_target_node()
+if slow:
+    target = create_target_node()
 
 # Find urls defined in @rst nodes.
 rst_urls = find_rst_urls()
 rst_urls_s = 'rst_urls...\n\n' + '\n'.join(rst_urls)
 broken_rst_urls = find_broken_links(rst_urls, trace=False)
+unused_rst_defs = find_unused_rst_defs(rst_urls)
+# unused_rst_defs_s = 'unused rst defs...\n\n' + '\n'.join(unused_rst_defs)
 
 # Find full (https://) urls.
 if slow:
@@ -23999,13 +24007,17 @@ if slow:
         g.printObj(broken_full_urls, tag='broken_full_urls')
 
 # Report
-print(f"Found {len(rst_urls):4} @rst urls, {len(broken_rst_urls)} broken")
-if broken_rst_urls:
-    g.printObj(broken_rst_urls, tag='broken')
+if 0:
+    print(f"Found {len(rst_urls):4} @rst urls, {len(broken_rst_urls)} broken")
+    if broken_rst_urls:
+        g.printObj(broken_rst_urls, tag='broken')
+if unused_rst_defs:
+    g.printObj(unused_rst_defs, tag='unused rst defs')
 
 # Set target.b.
-target.b = f"{rst_urls_s}\n\n{full_urls_s}" if slow else f"{rst_urls_s}\n"
-c.redraw(target)
+if slow:
+    target.b = f"{rst_urls_s}\n\n{full_urls_s}" if slow else f"{rst_urls_s}\n"
+    c.redraw(target)
 print('Done!')</t>
 <t tx="ekr.20230110153501.1">def find_broken_links(links, trace: bool) -&gt; list[str]:
 
@@ -26135,7 +26147,7 @@ You can add, delete, change and reorganize child nodes like any other outline tr
 .. _`go`: https://go.dev/
 .. _`block-level syncing`: https://github.com/user-attachments/assets/e29d4b27-48d9-4006-ab94-d4e8276c2e79
 
-This section contains comments by ``HaveF`` (edited by EKR) about ``@jupytext``.
+This section contains comments by `HaveF`_ (edited by EKR) about ``@jupytext``.
 The ``What People are Saying about Leo`` page contains the full version of these remarks.
 
 Users of Jupyter Notebooks have a love-hate relationship with ``.ipynb`` files. Notebooks make it super easy to write code and see the results, but version control systems don't handle ``.json`` files very well. However, GitHub now offers comparison tools for ``.ipynb`` files.
@@ -27309,6 +27321,93 @@ def find_rst_urls() -&gt; list[str]:
                     result.add(f"{leo_prefix}{url}")
     return list(sorted(list(result)))
     </t>
+<t tx="ekr.20261123130542.1"># Example:
+# .. _`Customizing Leo`: customizing.html
+rst_def_pat = re.compile(r'^\.\. _`(.*?)`')
+
+# Example:
+# `Customizing Leo`_
+rst_ref_pat = re.compile(r'`(.*?)`_')
+
+
+def find_unused_rst_defs(rst_urls: list[str]) -&gt; list[str]:
+    """Return a list of unused rst definitions"""
+    # Fnd all defs and refs.
+    defs, refs = set(), set()
+    for p in c.all_unique_positions():
+        for s in g.splitLines(p.b):
+            if m := rst_def_pat.match(s):
+                defs.add(m.group(1))
+            for ref in re.findall(rst_ref_pat, s):
+                if ref.strip() and not '.*?' in ref and not '&lt;' in ref and not '`' in ref:
+                    refs.add(ref)
+    # g.printObj(list(sorted(list(defs))), tag='defs')
+    # g.printObj(list(sorted(list(refs))), tag='refs')
+    unused=list(sorted([z for z in defs if z not in refs]))
+    return unused
+    </t>
+<t tx="ekr.20261123134453.1">rst_urls...
+
+https://leo-editor.github.io/leo-editor/FAQ.html#how-can-i-use-leo-to-develop-leo-itself
+https://leo-editor.github.io/leo-editor/FAQ.html#how-can-i-use-python-s-pdb-debugger-with-leo
+https://leo-editor.github.io/leo-editor/FAQ.html#what-is-a-reference-leo-file
+https://leo-editor.github.io/leo-editor/appendices.html#format-of-external-files
+https://leo-editor.github.io/leo-editor/appendices.html#history-of-leo
+https://leo-editor.github.io/leo-editor/appendices.html#leo-4-0-eliminating-error-recovery
+https://leo-editor.github.io/leo-editor/appendices.html#the-mulder-ream-update-algorithm
+https://leo-editor.github.io/leo-editor/cheatsheet.html
+https://leo-editor.github.io/leo-editor/cheatsheet.html#scripting
+https://leo-editor.github.io/leo-editor/cheatsheet.html#undoing-commands
+https://leo-editor.github.io/leo-editor/commands.html
+https://leo-editor.github.io/leo-editor/commands.html#executing-commands-from-the-minibuffer
+https://leo-editor.github.io/leo-editor/commands.html#key-reference
+https://leo-editor.github.io/leo-editor/commands.html#outline-commands
+https://leo-editor.github.io/leo-editor/commands.html#syncing-clean-files
+https://leo-editor.github.io/leo-editor/commands.html#using-chapters
+https://leo-editor.github.io/leo-editor/customizing.html
+https://leo-editor.github.io/leo-editor/customizing.html#adding-extensible-attributes-to-nodes-and-leo-files
+https://leo-editor.github.io/leo-editor/customizing.html#specifying-settings
+https://leo-editor.github.io/leo-editor/debuggers.html
+https://leo-editor.github.io/leo-editor/directives.html
+https://leo-editor.github.io/leo-editor/emacs.html
+https://leo-editor.github.io/leo-editor/emacs.html#using-org-mode-org-files-in-leo
+https://leo-editor.github.io/leo-editor/glossary.html#external-file
+https://leo-editor.github.io/leo-editor/glossary.html#external-files
+https://leo-editor.github.io/leo-editor/glossary.html#section-name
+https://leo-editor.github.io/leo-editor/glossary.html#section-names
+https://leo-editor.github.io/leo-editor/glossary.html#sentinel
+https://leo-editor.github.io/leo-editor/glossary.html#sentinel-lines
+https://leo-editor.github.io/leo-editor/installing.html#creating-windows-file-associations
+https://leo-editor.github.io/leo-editor/installing.html#installing-leo-on-windows
+https://leo-editor.github.io/leo-editor/installing.html#running-leo-from-a-console-window
+https://leo-editor.github.io/leo-editor/leoBridge.html
+https://leo-editor.github.io/leo-editor/leonine-world.html
+https://leo-editor.github.io/leo-editor/plugins.html#bookmarks-py
+https://leo-editor.github.io/leo-editor/plugins.html#contextmenu-py
+https://leo-editor.github.io/leo-editor/plugins.html#mod-scripting-py
+https://leo-editor.github.io/leo-editor/plugins.html#quicksearch-py
+https://leo-editor.github.io/leo-editor/plugins.html#todo-py
+https://leo-editor.github.io/leo-editor/plugins.html#viewrendered-py
+https://leo-editor.github.io/leo-editor/running.html#running-leo-from-a-console-window
+https://leo-editor.github.io/leo-editor/scripting-miscellany.html
+https://leo-editor.github.io/leo-editor/scripting-miscellany.html#recursive-import-script
+https://leo-editor.github.io/leo-editor/testimonials.html#speed-ream-s-slashdot-article
+https://leo-editor.github.io/leo-editor/tutorial-basics.html
+https://leo-editor.github.io/leo-editor/tutorial-basics.html#accessing-outline-data
+https://leo-editor.github.io/leo-editor/tutorial-basics.html#button-and-command-nodes
+https://leo-editor.github.io/leo-editor/tutorial-basics.html#commands
+https://leo-editor.github.io/leo-editor/tutorial-basics.html#scripting-basics
+https://leo-editor.github.io/leo-editor/tutorial-pim.html
+https://leo-editor.github.io/leo-editor/tutorial-pim.html#clones
+https://leo-editor.github.io/leo-editor/tutorial-pim.html#using-abbreviations-and-templates
+https://leo-editor.github.io/leo-editor/tutorial-pim.html#views
+https://leo-editor.github.io/leo-editor/tutorial-rst3.html
+https://leo-editor.github.io/leo-editor/tutorial-scripting.html
+https://leo-editor.github.io/leo-editor/tutorial-scripting.html#positions-and-vnodes
+https://leo-editor.github.io/leo-editor/tutorial.html
+https://leo-editor.github.io/leo-editor/vimBindings.html#using-vimoutline-otl-files-in-leo
+https://leo-editor.github.io/leo-editor/writingPlugins.html
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
