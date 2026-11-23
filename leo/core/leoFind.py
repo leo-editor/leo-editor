@@ -537,7 +537,6 @@ class LeoFind:
         if not p.isCloned():  # pragma: no cover
             g.es(f"not a clone: {p.h}")
             return False
-        p.copy()
         aList = c.vnode2allPositions(p.v)
         if not aList:  # pragma: no cover
             g.trace('can not happen: no parents')
