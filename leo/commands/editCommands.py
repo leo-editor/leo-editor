@@ -4173,26 +4173,26 @@ class EditCommandsClass:
             k.setLabelBlue('Set uA: ')
             k.get1Arg(event, handler=self.setUa1)
 
-    def setUa1(self) -> None:
+    def setUa1(self, event: LeoKeyEvent | None = None) -> None:
         k = self.c.k
         self.uaName = k.arg
         s = f"Set uA: {self.uaName} To: "
         k.setLabelBlue(s)
         k.getNextArg(self.setUa2)
 
-    def setUa2(self) -> None:
+    def setUa2(self, event: LeoKeyEvent | None = None) -> None:
         c = self.c
         k = c.k
         p = c.p
         u = c.undoer
         val = k.arg
         d = p.v.u
-        self.showNodeUas()
         k.clearState()
         k.resetLabel()
         k.showStateAndMode()
         with u.change_node(p, 'set-ua'):
             d[self.uaName] = val
+        self.showNodeUas()
 
     # @-others
 
