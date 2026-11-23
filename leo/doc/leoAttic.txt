@@ -1267,6 +1267,113 @@ def test_drag_clone(self):
         assert not target.hasChildren()
         u.redo()
 
+# @+node:ekr.20261123085335.1: *3* --- deleted from LeoDocs.leo
+# @+node:ekr.20261123085326.1: *4* @@@ button find-bad-links
+"""
+Report broken links in all .html files leo-editor/docs.
+
+Adapted from https://brianli.com/2021/06/how-to-find-broken-links-with-python/
+
+pip install beautifulsoup4
+https://www.crummy.com/software/BeautifulSoup/
+"""
+@language python
+g.cls()
+import glob
+import os
+import requests
+from bs4 import BeautifulSoup
+from concurrent.futures import ThreadPoolExecutor
+
+root_domain = 'https://leo-editor.github.io/leo-editor/'
+
+# Define helpers
+@others
+
+if 1:  # Best test.
+    links = find_docs_links()
+elif 1:
+    links = find_outline_links()
+else:
+    url = f"{root_domain}/index.html"
+    links = find_web_links(url)
+# Report the found links.
+links = list(set(links))
+# Report all broken links.
+n = len(links)
+# g.printObj(links, tag=f"{len(links)} links")
+g.es_print(f"Testing {n} link{g.plural(n)}")
+broken_links = find_broken_links(links)
+n1, n2 = len(links), len(broken_links)
+g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken")
+# @+node:ekr.20261123085326.2: *5* find_docs_links
+def find_docs_links():
+    """Find all links in all .html files in the leo-editor/leo/doc/html directory."""
+    docs_path = g.os_path_finalize_join(g.app.loadDir,'..','doc', 'html')
+    if not os.path.exists(docs_path):
+        g.es_print(f"Not found: {docs_path!r}")
+        return []
+    files = glob.glob(f"{docs_path}{os.sep}*.html")
+    if not files:
+        g.es_print(f"No .html files in {docs_path!r}")
+        return []
+    links = set()
+    for filename in files:
+        with open(filename,'rb') as f:
+            contents = g.toUnicode(f.read())
+        soup = BeautifulSoup(contents, features="html.parser")
+        for link in soup.find_all("a"):
+            ref = link.get("href")
+            if not ref.startswith(('mailto:',)):
+                links.add(ref)
+    return sorted(list(links))
+# @+node:ekr.20261123085326.3: *5* find_outline_links
+def find_outline_links():
+    """Find all links in this outline."""
+    links = set()
+    for p in c.all_unique_positions():
+        # Parse HTML in the body.
+        soup = BeautifulSoup(p.b, features="html.parser")
+        # Create a list containing all links with the root domain.
+        for link in soup.find_all("a"):
+            links.add(link.get("href"))
+    return sorted(list(links))
+# @+node:ekr.20261123085326.4: *5* find_web_links
+def find_web_links(url):
+    """Return a list of all links with the root domain."""
+    # Make request to URL.        
+    data = requests.get(url).text
+
+    # Parse HTML from request.
+    soup = BeautifulSoup(data, features="html.parser")
+
+    return sorted(list(set([
+        link.get("href") for link in soup.find_all("a")
+    ])))
+# @+node:ekr.20261123085326.5: *5* find_broken_links
+def find_broken_links(links):
+
+    broken_links = []
+    suppress = (
+        '<|URL|>',
+    )
+
+    def validate_url(url):
+        if url in suppress:
+            g.trace(f"Skip: {url}")
+            return
+        r = requests.head(url)
+        if r.status_code == 404:
+            broken_links.append(url)
+
+    # Loop through links checking for 404 responses, and append to list.
+    broken_links = []
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        executor.map(validate_url, links)
+
+    for link in broken_links:
+        g.es_print(f"Bad link: {link}")
+    return broken_links
 # @-all
 # @@nosearch
 # @-leo
