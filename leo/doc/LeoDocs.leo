@@ -2104,10 +2104,6 @@
 </v>
 <v t="ekr.20261116101436.1"></v>
 <v t="ekr.20261116101656.1"></v>
-<v t="ekr.20230110152344.1"></v>
-<v t="ekr.20261123064345.1"></v>
-<v t="ekr.20261123130542.1"></v>
-<v t="ekr.20261123134453.1"><vh>All links</vh></v>
 </vnodes>
 <tnodes>
 <t tx=".20260810204531.45">Leo: organize code and ideas your way
@@ -3583,24 +3579,19 @@ new_leo_file_encoding
 .. External links
 
 .. _docutils:           https://docutils.sourceforge.net/
-.. _`git repository`:   https://github.com/leo-editor/leo-editor
 .. _unicode:            https://www.unicode.org/
 
 .. Glossary
 .. _directive:              glossary.html#directive
 .. _directives:             glossary.html#directives
-.. _`external file`:        glossary.html#external-file
-.. _`external files`:       glossary.html#external-files
 .. _headline:               glossary.html#headline
 .. _headlines:              glossary.html#headlines
 .. _node:                   glossary.html#node
 .. _nodes:                  glossary.html#nodes
 .. _outliner:               glossary.html#outliner
 .. _sections:               glossary.html#sections
-.. _`section name`:         glossary.html#section-name
-.. _`section names`:        glossary.html#section-names
+.. _`Section names`:        glossary.html#section-names
 .. _sentinels:              glossary.html#sentinels
-.. _`sentinel line`:        glossary.html#sentinel
 .. _`sentinel lines`:       glossary.html#sentinel
 .. _setting:                glossary.html#setting
 .. _settings:               glossary.html#settings
@@ -3618,7 +3609,6 @@ new_leo_file_encoding
 .. Other local references
 .. _command:                commands.html
 .. _`History of Leo`:       appendices.html#history-of-leo
-.. _`Leo 4.0: Eliminating error 'recovery'`: appendices.html#leo-4-0-eliminating-error-recovery
 
 </t>
 <t tx="ekr.20050830120844">c.frame.menu.createMenuItemsFromTable will append items to the end of an existing menu. For example, the following script will add a new item at the end of the 'File' menu::
@@ -4573,7 +4563,7 @@ Here are the sentinels used by modern versions of Leo, in alphabetical order.
 <t tx="ekr.20060928172457"></t>
 <t tx="ekr.20060928172457.4">::
 
-    Leo can be called from Emacs: See the `Leo and Emacs` chapter
+    Leo can be called from Emacs: See the `Leo and Emacs`_ chapter
     Added support for middle-button paste
     Writing .leo files is about twice as fast as before
     Integrated sax with read logic
@@ -5210,9 +5200,6 @@ For details about how to use these file dialogs, look for examples in Leo's own 
     toggle-collapse_nodes_during_finds
 </t>
 <t tx="ekr.20071116062917.2">.. Links used in this document.
-.. _`leoBridge`:            leoBridge.html
-.. _`debugging with Leo`:   debuggers.html
-.. _`Python's gettext`:     https://docs.python.org/lib/module-gettext.html
 .. _Emacs:                  https://www.xemacs.org/
 .. _pymacs:                 https://pymacs.progiciels-bpi.ca/index.html
 .. _`Leo and Emacs`:        emacs.html
@@ -5291,7 +5278,7 @@ Scripts can delete icons from the presently selected node using the following me
     c.editCommands.deleteLastIcon() 
     c.editCommands.deleteNodeIcons() 
 </t>
-<t tx="ekr.20080310093038.4">.. _gettext: https://docs.python.org/lib/module-gettext.html
+<t tx="ekr.20080310093038.4">.. _`gettext`: https://docs.python.org/lib/module-gettext.html
 
 It is easy to translate Leo's menu strings: simply create an ``@menus`` tree in ``leoSettings.leo`` or ``myLeoSettings.leo`` that contains the translated menu names.
 
@@ -5303,7 +5290,7 @@ It is easy to translate Leo's menu strings: simply create an ``@menus`` tree in 
 
 - ``g.translateString`` does the actual translation using Python's `gettext`_ module.
 
-- You can use the script in the node ``@button print g.es stats`` in ``scripts.leo`` to create catalogs of all scripts that need to be translated. Such catalogs are used by Python's ``gettext`` module. (This script was also used to check that the proper arguments to ``g.es`` and ``g.es_print`` were translated.)
+- You can use the script in the node ``@button print g.es stats`` in ``scripts.leo`` to create catalogs of all scripts that need to be translated. Such catalogs are used by Python's `gettext`_ module. (This script was also used to check that the proper arguments to ``g.es`` and ``g.es_print`` were translated.)
 </t>
 <t tx="ekr.20080314081157.127"></t>
 <t tx="ekr.20080315115427.568">This series of releases featured hundreds of improvements.
@@ -5808,12 +5795,13 @@ Glossary
 
 .. Links
 .. _`Customizing Leo`:              customizing.html
-.. _`git repository`:               https://github.com/leo-editor/leo-editor
 .. _`Writing plugins and hooks`:    writingPlugins.html
 .. _`Leo's reference`:              directives.html
-.. _`leo's tutorial`:               tutorial.html
+.. _`Leo's tutorial`:               tutorial.html
 
-This is a short glossary of important terms in Leo's world. For more information about terms, look in the index for links to discussions in other places, especially in `Leo's Tutorial`_ and `Leo's Reference`_.
+This is a short glossary of important terms in Leo's world. For more
+information about terms, look in the index for links to discussions in
+other places, especially in `Leo's tutorial`_ and `Leo's reference`_.
 
 .. .. glossary::
 ..    :sorted:
@@ -5831,10 +5819,9 @@ Leo's Tutorials
 
 .. index:: Leo's tutorial
 
-.. _`Python`: https://www.python.org/
-
-
-Leo is a full-featured outliner. Unique features make Leo a powerful IDE, Personal Information Manager, and scripting environment. The first three tutorials are for everyone:
+Leo is a full-featured outline-based text editor. Leo is also a
+powerful Personal Information Manager and scripting environment. The
+first three tutorials are for everyone:
 
 .. toctree::
     :maxdepth: 1
@@ -6892,7 +6879,7 @@ You can also specify importers *explicitly* as follows::
 
 .. _`org-mode`:         https://en.wikipedia.org/wiki/Org-mode
 .. _`Emacs`:            emacs.html#using-org-mode-org-files-in-leo
-.. _`markdown`:         https://en.wikipedia.org/wiki/Markdown
+.. _`Markdown`:         https://en.wikipedia.org/wiki/Markdown
 .. _`reStructuredText`: https://docutils.sourceforge.net/rst.html
 .. _`vim outline`:      https://www.vim.org/scripts/script.php?script_id=3515
 .. _`vim`:              vimBindings.html#using-vimoutline-otl-files-in-leo
@@ -10860,8 +10847,6 @@ In more detail:
     pair: Vnode; Tutorial
     pair: vnode class; Tutorial
 
-.. _`Python properties`: https://docs.python.org/3/builtins/functions.html#property
-
 A **position** represents an outline node at a *specific position* in the outline. Positions provide methods to insert, delete and move outline nodes. The `scripting portion`_ of `Leo's cheat sheet`_ lists the most important methods of the position class.
 
 Because of clones, the *same* node may appear at *multiple positions* in the outline. A **vnode** represents the node's data, which is shared by all positions referring to that node.
@@ -11155,7 +11140,10 @@ This chapter tells how to install and run Leo.
 - Positions become invalid when outline nodes are inserted, deleted, or moved.
 - Generators visit all or parts of the outline, in a specified order.
 
-For more information, consult `Leo's cheat sheet &lt;cheatsheet.html&gt;`_ and `Leo's scripting miscellany &lt;scripting-miscellany.html&gt;`_</t>
+.. _`Cheat sheet`:            cheatsheet.html
+.. _`Scripting miscellany`:   scripting-miscellany.html
+
+For more information, consult Leo's `Cheat sheet`_ and `Scripting miscellany`_.</t>
 <t tx="ekr.20131016103844.16730">See the docstring of these plugins for more details::
 
     bookmarks.py        Manages URL's used as bookmarks.
@@ -11325,7 +11313,7 @@ Writers and programmers often want to view or manipulate the same text in differ
 
 **Integrated Python Scripting**
 
-Leo is fully scriptable in Python. Any outline node can contain a Python script that accesses the outline’s data directly. Such `leonine`_ scripts also have full access to all of Leo's source code via a straightforward `Python API`_. Leonine scripts and plugins can create new Leo commands. See Leo's `scripting basics chapter`_  for more details.
+Leo is fully scriptable in Python. Any outline node can contain a Python script that accesses the outline’s data directly. Such `leonine`_ scripts also have full access to all of Leo's source code via a straightforward `Python API`_. Leonine scripts and plugins can create new Leo commands. See Leo's `Scripting basics chapter`_  for more details.
 
 **Summary**
 
@@ -16147,7 +16135,7 @@ Leo's Documentation Page
 
 Leo has hundreds of commands, described in `Leo's Command Reference`_. **Very important**: You can (and should) ignore most of these commands at first. You execute commands using `key bindings`_ or *by name* in `Leo's minibuffer`_, similar to the `Emacs minibuffer`_.
 
-You could type the full command name in the minibuffer, followed by the ``&lt;Return&gt;`` key to invoke the command, but that would be *way* too much work. Instead, you should use **typing completion** to avoid most typing. For example, you can execute the sort-lines commands this way::
+You could type the full command name in the minibuffer, followed by the ``&lt;Return&gt;`` key to invoke the command, but that would be *way* too much work. Instead, you should use `typing completion`_ to avoid most typing. For example, you can execute the sort-lines commands this way::
 
     &lt;Alt-X&gt;so&lt;Tab&gt;
 
@@ -18624,7 +18612,7 @@ documentation for each.</t>
 This command is a fast way of finding the clone whose ancestor is an @&lt;file&gt; node.</t>
 <t tx="ekr.20180126061429.27">.. _`cloning nodes`: tutorial-pim.html#clones
 
-Focus your attention on the task at hand by `cloning nodes`, including
+Focus your attention on the task at hand by `cloning nodes`_, including
 \@file nodes, then moving those clones so they are the last top-level nodes
 in the outline. This organization allows you to work on nodes scattered
 throughout an outline without altering the structure of @file nodes.
@@ -18721,7 +18709,6 @@ the headline of any node.
 </t>
 <t tx="ekr.20180130033527.1">.. _`Install pip`:      https://pip.pypa.io/en/stable/installation/               
 .. _`Install Python`:   https://python.org
-.. _`pip`:              https://pypi.org/pypi/pip
 .. _`PyPi`:             https://pypi.org/
 
 The following will install Leo from `PyPi`_, Python's package repository.
@@ -23983,7 +23970,7 @@ import requests
 from bs4 import BeautifulSoup
 from concurrent.futures import ThreadPoolExecutor
 
-slow = False
+slow = True
 
 @others  # define helpers
 
@@ -24024,7 +24011,7 @@ print('Done!')</t>
     broken_links = []
     def validate_url(url):
         if slow:
-            print(f"find_broken_links {url}")
+            print(f"Scanning {url}")
         r = requests.head(url)
         if r.status_code == 404:
             broken_links.append(url)
@@ -25963,7 +25950,6 @@ See the `What's new in Leo 6.8.0` section for details.
 <t tx="ekr.20240527101024.1">.. Use the link-pr abbreviation to create these links.
 
 .. _`PR #3828`: https://github.com/leo-editor/leo-editor/pull/3828
-.. _`PR #3832`: https://github.com/leo-editor/leo-editor/pull/3832
 .. _`PR #3841`: https://github.com/leo-editor/leo-editor/pull/3841
 .. _`PR #3870`: https://github.com/leo-editor/leo-editor/pull/3870
 .. _`PR #3872`: https://github.com/leo-editor/leo-editor/pull/3872
@@ -26144,8 +26130,6 @@ You can add, delete, change and reorganize child nodes like any other outline tr
 .. _`GoNB`: https://github.com/janpfeifer/gonb
 .. _`jupytext library`: https://jupytext.readthedocs.io/en/latest/
 .. _`Jupyter kernels`: https://docs.jupyter.org/en/stable/projects/kernels.html#kernels
-.. _`go`: https://go.dev/
-.. _`block-level syncing`: https://github.com/user-attachments/assets/e29d4b27-48d9-4006-ab94-d4e8276c2e79
 
 This section contains comments by `HaveF`_ (edited by EKR) about ``@jupytext``.
 The ``What People are Saying about Leo`` page contains the full version of these remarks.
@@ -26743,7 +26727,6 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 .. _`PR #4487`: https://github.com/leo-editor/leo-editor/pull/4487
 .. _`PR #4490`: https://github.com/leo-editor/leo-editor/pull/4490
 .. _`PR #4498`: https://github.com/leo-editor/leo-editor/pull/4498
-.. _`PR #4502`: https://github.com/leo-editor/leo-editor/pull/4502
 .. _`PR #4503`: https://github.com/leo-editor/leo-editor/pull/4503
 .. _`PR #4506`: https://github.com/leo-editor/leo-editor/pull/4506
 .. _`PR #4531`: https://github.com/leo-editor/leo-editor/pull/4531
@@ -26935,7 +26918,6 @@ Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor
 .. _`PR #4753`: https://github.com/leo-editor/leo-editor/pull/4753
 .. _`PR #4781`: https://github.com/leo-editor/leo-editor/pull/4781
 .. _`PR #4782`: https://github.com/leo-editor/leo-editor/pull/4782
-.. _`PR #4783`: https://github.com/leo-editor/leo-editor/pull/4783
 .. _`PR #4790`: https://github.com/leo-editor/leo-editor/pull/4790
 .. _`PR #4788`: https://github.com/leo-editor/leo-editor/pull/4788
 .. _`PR #4770`: https://github.com/leo-editor/leo-editor/pull/4770
@@ -27321,14 +27303,15 @@ def find_rst_urls() -&gt; list[str]:
                     result.add(f"{leo_prefix}{url}")
     return list(sorted(list(result)))
     </t>
-<t tx="ekr.20261123130542.1"># Example:
+<t tx="ekr.20261123130542.1">@language python
+
+# Example:
 # .. _`Customizing Leo`: customizing.html
 rst_def_pat = re.compile(r'^\.\. _`(.*?)`')
 
 # Example:
 # `Customizing Leo`_
-rst_ref_pat = re.compile(r'`(.*?)`_')
-
+rst_ref_pat = re.compile(r'(?&lt;!`)`([^`]+)`(?!`)_')
 
 def find_unused_rst_defs(rst_urls: list[str]) -&gt; list[str]:
     """Return a list of unused rst definitions"""
@@ -27346,68 +27329,6 @@ def find_unused_rst_defs(rst_urls: list[str]) -&gt; list[str]:
     unused=list(sorted([z for z in defs if z not in refs]))
     return unused
     </t>
-<t tx="ekr.20261123134453.1">rst_urls...
-
-https://leo-editor.github.io/leo-editor/FAQ.html#how-can-i-use-leo-to-develop-leo-itself
-https://leo-editor.github.io/leo-editor/FAQ.html#how-can-i-use-python-s-pdb-debugger-with-leo
-https://leo-editor.github.io/leo-editor/FAQ.html#what-is-a-reference-leo-file
-https://leo-editor.github.io/leo-editor/appendices.html#format-of-external-files
-https://leo-editor.github.io/leo-editor/appendices.html#history-of-leo
-https://leo-editor.github.io/leo-editor/appendices.html#leo-4-0-eliminating-error-recovery
-https://leo-editor.github.io/leo-editor/appendices.html#the-mulder-ream-update-algorithm
-https://leo-editor.github.io/leo-editor/cheatsheet.html
-https://leo-editor.github.io/leo-editor/cheatsheet.html#scripting
-https://leo-editor.github.io/leo-editor/cheatsheet.html#undoing-commands
-https://leo-editor.github.io/leo-editor/commands.html
-https://leo-editor.github.io/leo-editor/commands.html#executing-commands-from-the-minibuffer
-https://leo-editor.github.io/leo-editor/commands.html#key-reference
-https://leo-editor.github.io/leo-editor/commands.html#outline-commands
-https://leo-editor.github.io/leo-editor/commands.html#syncing-clean-files
-https://leo-editor.github.io/leo-editor/commands.html#using-chapters
-https://leo-editor.github.io/leo-editor/customizing.html
-https://leo-editor.github.io/leo-editor/customizing.html#adding-extensible-attributes-to-nodes-and-leo-files
-https://leo-editor.github.io/leo-editor/customizing.html#specifying-settings
-https://leo-editor.github.io/leo-editor/debuggers.html
-https://leo-editor.github.io/leo-editor/directives.html
-https://leo-editor.github.io/leo-editor/emacs.html
-https://leo-editor.github.io/leo-editor/emacs.html#using-org-mode-org-files-in-leo
-https://leo-editor.github.io/leo-editor/glossary.html#external-file
-https://leo-editor.github.io/leo-editor/glossary.html#external-files
-https://leo-editor.github.io/leo-editor/glossary.html#section-name
-https://leo-editor.github.io/leo-editor/glossary.html#section-names
-https://leo-editor.github.io/leo-editor/glossary.html#sentinel
-https://leo-editor.github.io/leo-editor/glossary.html#sentinel-lines
-https://leo-editor.github.io/leo-editor/installing.html#creating-windows-file-associations
-https://leo-editor.github.io/leo-editor/installing.html#installing-leo-on-windows
-https://leo-editor.github.io/leo-editor/installing.html#running-leo-from-a-console-window
-https://leo-editor.github.io/leo-editor/leoBridge.html
-https://leo-editor.github.io/leo-editor/leonine-world.html
-https://leo-editor.github.io/leo-editor/plugins.html#bookmarks-py
-https://leo-editor.github.io/leo-editor/plugins.html#contextmenu-py
-https://leo-editor.github.io/leo-editor/plugins.html#mod-scripting-py
-https://leo-editor.github.io/leo-editor/plugins.html#quicksearch-py
-https://leo-editor.github.io/leo-editor/plugins.html#todo-py
-https://leo-editor.github.io/leo-editor/plugins.html#viewrendered-py
-https://leo-editor.github.io/leo-editor/running.html#running-leo-from-a-console-window
-https://leo-editor.github.io/leo-editor/scripting-miscellany.html
-https://leo-editor.github.io/leo-editor/scripting-miscellany.html#recursive-import-script
-https://leo-editor.github.io/leo-editor/testimonials.html#speed-ream-s-slashdot-article
-https://leo-editor.github.io/leo-editor/tutorial-basics.html
-https://leo-editor.github.io/leo-editor/tutorial-basics.html#accessing-outline-data
-https://leo-editor.github.io/leo-editor/tutorial-basics.html#button-and-command-nodes
-https://leo-editor.github.io/leo-editor/tutorial-basics.html#commands
-https://leo-editor.github.io/leo-editor/tutorial-basics.html#scripting-basics
-https://leo-editor.github.io/leo-editor/tutorial-pim.html
-https://leo-editor.github.io/leo-editor/tutorial-pim.html#clones
-https://leo-editor.github.io/leo-editor/tutorial-pim.html#using-abbreviations-and-templates
-https://leo-editor.github.io/leo-editor/tutorial-pim.html#views
-https://leo-editor.github.io/leo-editor/tutorial-rst3.html
-https://leo-editor.github.io/leo-editor/tutorial-scripting.html
-https://leo-editor.github.io/leo-editor/tutorial-scripting.html#positions-and-vnodes
-https://leo-editor.github.io/leo-editor/tutorial.html
-https://leo-editor.github.io/leo-editor/vimBindings.html#using-vimoutline-otl-files-in-leo
-https://leo-editor.github.io/leo-editor/writingPlugins.html
-</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
