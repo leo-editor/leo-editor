@@ -4187,12 +4187,12 @@ class EditCommandsClass:
         u = c.undoer
         val = k.arg
         d = p.v.u
-        self.showNodeUas()
         k.clearState()
         k.resetLabel()
         k.showStateAndMode()
         with u.change_node(p, 'set-ua'):
             d[self.uaName] = val
+        self.showNodeUas()
 
     # @-others
 
