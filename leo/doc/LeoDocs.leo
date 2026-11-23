@@ -2103,6 +2103,7 @@
 </v>
 <v t="ekr.20261116101436.1"></v>
 <v t="ekr.20261116101656.1"></v>
+<v t="ekr.20230110152344.1"></v>
 </vnodes>
 <tnodes>
 <t tx=".20260810204531.45">Leo: organize code and ideas your way
@@ -23977,38 +23978,41 @@ import requests
 from bs4 import BeautifulSoup
 from concurrent.futures import ThreadPoolExecutor
 
+slow = False
+
 @others  # define helpers
 
 target = create_target_node()
 
 # Find urls defined in @rst nodes.
 rst_urls = find_rst_urls()
+rst_urls_s = 'rst_urls...\n\n' + '\n'.join(rst_urls)
 broken_rst_urls = find_broken_links(rst_urls, trace=False)
 
 # Find full (https://) urls.
-full_urls = find_full_urls()
-broken_full_urls = find_broken_links(full_urls, trace=True)
+if slow:
+    full_urls = find_full_urls()
+    full_urls_s = 'full_urls...\n\n' + '\n'.join(full_urls)
+    broken_full_urls = find_broken_links(full_urls, trace=True)
+    print(f"Found {len(full_urls):4} full urls, {len(broken_full_urls)} broken")
+    if broken_full_urls:
+        g.printObj(broken_full_urls, tag='broken_full_urls')
 
-# Report.
+# Report
 print(f"Found {len(rst_urls):4} @rst urls, {len(broken_rst_urls)} broken")
 if broken_rst_urls:
     g.printObj(broken_rst_urls, tag='broken')
 
-print(f"Found {len(full_urls):4} full urls, {len(broken_full_urls)} broken")
-if broken_full_urls:
-    g.printObj(broken_full_urls, tag='broken_full_urls')
-
 # Set target.b.
-rst_urls_s = 'rst_urls...\n\n' + '\n'.join(rst_urls)
-full_urls_s = 'full_urls...\n\n' + '\n'.join(full_urls)
-target.b = f"{rst_urls_s}\n\n{full_urls_s}"
+target.b = f"{rst_urls_s}\n\n{full_urls_s}" if slow else f"{rst_urls_s}\n"
 c.redraw(target)
 print('Done!')</t>
 <t tx="ekr.20230110153501.1">def find_broken_links(links, trace: bool) -&gt; list[str]:
 
     broken_links = []
     def validate_url(url):
-        print(f"find_broken_links {url}")
+        if slow:
+            print(f"find_broken_links {url}")
         r = requests.head(url)
         if r.status_code == 404:
             broken_links.append(url)
