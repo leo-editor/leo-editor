@@ -432,6 +432,8 @@ class Chapter:
         c = self.c
         cc = self.cc
         cc.selectedChapter = self
+        u = c.undoer
+
         if self.name == 'main':
             return
 
@@ -451,8 +453,9 @@ class Chapter:
                 self.p = p = p.firstChild()
             else:
                 # Create a dummy first child.
-                self.p = p = p.insertAsLastChild()
-                p.h = 'New Headline'
+                with u.change_node(p, 'select-chapter'):
+                    self.p = p = p.insertAsLastChild()
+                    p.h = 'New Headline'
         c.hoistStack.append(g.Bunch(p=root.copy(), expanded=True))
         g.doHook('hoist-changed', c=c)
 
