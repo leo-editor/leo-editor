@@ -66,7 +66,7 @@
 <v t="ekr.20230110152344.1"><vh>@button find-bad-links</vh>
 <v t="ekr.20261123052529.1"><vh>clean_url</vh></v>
 <v t="ekr.20261123051525.1"><vh>create_target_node</vh></v>
-<v t="ekr.20261123043834.1"><vh>find_all_urls</vh></v>
+<v t="ekr.20261123043834.1"><vh>find_full_urls</vh></v>
 <v t="ekr.20261123064345.1"><vh>find_rst_urls</vh></v>
 <v t="ekr.20230110153501.1"><vh>find_broken_links</vh></v>
 </v>
@@ -23986,7 +23986,7 @@ rst_urls = find_rst_urls()
 broken_rst_urls = find_broken_links(rst_urls, trace=False)
 
 # Find full (https://) urls.
-full_urls = find_all_urls()
+full_urls = find_full_urls()
 broken_full_urls = find_broken_links(full_urls, trace=True)
 
 # Report.
@@ -27259,14 +27259,14 @@ Codebase changes
 </t>
 <t tx="ekr.20261123043834.1">https_pat = re.compile(r'^.*?(https://.*?)$')
 
-def find_all_urls() -&gt; list[str]:
+def find_full_urls() -&gt; list[str]:
     
     result = set()
     for p in c.all_unique_positions():
         for s in g.splitLines(p.b):
             if m := https_pat.match(s):
                 url = m.group(1)
-                if url != 'https://':
+                if url not in ('https://', 'https://.*?'):
                     result.add(clean_url(url))
     return list(sorted(list(result)))
 </t>
