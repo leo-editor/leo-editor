@@ -27202,6 +27202,8 @@ support the following patterns:
 .. _`PR #5063`: https://github.com/leo-editor/leo-editor/pull/5063
 .. _`PR #5065`: https://github.com/leo-editor/leo-editor/pull/5065
 
+.. _`PR #5070`: https://github.com/leo-editor/leo-editor/pull/5070
+
 .. C:\Repos\leo-editor&gt;gh pr list --limit 100 --state merged --search milestone:6.9.0 --json number,title
 
 .. Convert json to single line:
@@ -27272,6 +27274,7 @@ Fix bugs
 - `PR #5061`_: Fix crash when loading test.leo
 - `PR #5063`_: Fix quirp in promoteToAtOthers
 - `PR #5065`_: Re-enable three qt commands
+- `PR #5070`_: Fix crash in set-ua command
 
 Plugins
 
