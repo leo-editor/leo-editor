@@ -2093,8 +2093,6 @@
 </v>
 <v t="ekr.20261116101436.1"></v>
 <v t="ekr.20261116101656.1"></v>
-<v t=".20260810204531.45"></v>
-<v t="ekr.20090428133936.2"></v>
 </vnodes>
 <tnodes>
 <t tx=".20260810204531.45">Leo: organize code and ideas your way

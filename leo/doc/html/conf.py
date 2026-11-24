@@ -11,23 +11,22 @@ release = '6.9.0'
 
 html_theme = 'sphinx_book_theme'
 html_theme_options = {
-    "extra_footer": f"<p>Leo {release}</p>",
+    'extra_footer': f"<p>Leo version {release}</p>",
+    'repository_url': 'https://github.com/leo-editor/leo-editor',
+    'use_issues_button': True,
+    'use_repository_button': True,
     'home_page_in_toc': True,
-    'logo': {
-        'image_light': '../_static/LeoLogo.svg',
-        'image_dark': '../_static/LeoLogo-dark.svg',
-    },
     'show_navbar_depth': 2,
-
     # Everything in the navbar is already available in the primary sidebar.
     # Leaving all slots empty also lets the theme bind the visible sidebar toggle.
     'navbar_start': [],
     'navbar_center': [],
     'navbar_end': [],
     'navbar_persistent': [],
-    'repository_url': 'https://github.com/leo-editor/leo-editor',
-    'use_issues_button': True,
-    'use_repository_button': True,
+    'logo': {
+        'image_light': '../_static/LeoLogo.svg',
+        'image_dark': '../_static/LeoLogo-dark.svg',
+    },
 }
 pygments_style = 'sphinx'
 source_suffix = '.html.txt'
