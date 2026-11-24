@@ -1934,7 +1934,6 @@ class QTextEditWrapper(QTextMixin):
             clear_selection()
             prev_row = cursor.blockNumber()
             row = cursor.blockNumber()
-            w.moveCursor(op, mode)
             if row == 0 == prev_row:  # PR #5037
                 w.moveCursor(MoveOperation.StartOfLine, mode)
             else:
