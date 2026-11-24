@@ -27124,7 +27124,7 @@ Distribution
 - `PR #4971`_: Prepare for Python 3.15
 - `PR #4976`_: Update docs for Python 3.15 and new workflows
 - `PR #4982`_: Remove optional dependencies
-- `PR #4995`_: Drop support for 3.10. Add support for 3.14
+- `PR #4995`_: Drop support for 3.10.
 - `PR #5000`_: Add support for Python 3.15
 
 Testing
@@ -27163,7 +27163,7 @@ Codebase changes
   to Rust-based checkers (ruff format, ruff lint, ty).
   These changes affected annotations and suppressions throughout Leo's code base.
 
-- Drop support for Python 3.10. Add support for Python 3.14.
+- Drop support for Python 3.10. Add support for Python 3.15.
 
 - The usual bug fixes.
 
