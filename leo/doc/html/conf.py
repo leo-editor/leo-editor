@@ -11,7 +11,7 @@ release = '6.9.0'
 
 html_theme = 'sphinx_book_theme'
 html_theme_options = {
-    "extra_footer": f"<p>Leo {release}</p>",
+    # 'extra_footer': f"<p>Leo {release}</p>",
     'home_page_in_toc': True,
     'logo': {
         'image_light': '../_static/LeoLogo.svg',
