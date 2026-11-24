@@ -731,77 +731,44 @@
 <v t="ekr.20170312085434.1"><vh>Filename completion</vh></v>
 </v>
 <v t="ekr.20170215102815.1"><vh>Most important commands</vh>
-<v t="ekr.20131004191204.16079"><vh>File operations &amp; sessions</vh></v>
-<v t="ekr.20150315132217.3"><vh>Switching focus</vh></v>
-<v t="ekr.20131002055813.19835"><vh>Outline commands</vh></v>
-<v t="ekr.20131002055813.19036"><vh>Selecting outline nodes</vh></v>
-<v t="ekr.20131002055813.19037"><vh>Moving the cursor</vh></v>
-<v t="ekr.20131001100335.15938"><vh>Finding &amp; replacing text</vh></v>
-<v t="ekr.20191004123555.1"><vh>Formatting text</vh></v>
-<v t="ekr.20131002055813.19837"><vh>Undoing and redoing changes</vh></v>
-<v t="ekr.20160428113347.1"><vh>Clone-find commands</vh></v>
-<v t="ekr.20230105123159.1"><vh>Syncing @clean files</vh></v>
-<v t="ekr.20131001100335.15947"><vh>Help commands</vh></v>
-<v t="ekr.20190414191837.1"><vh>Debugger commands</vh></v>
-</v>
-<v t="ekr.20170215103337.1"><vh>All other commands</vh>
-<v t="ekr.20160428110816.1"><vh>Clone-find commands</vh></v>
-<v t="ekr.20150318110552.10"><vh>Debug commands</vh>
-<v t="ekr.20161020064204.1"><vh>Running External debuggers</vh></v>
-<v t="ekr.20161020064706.1"><vh>Printing settings and other data</vh></v>
-<v t="ekr.20161020064436.1"><vh>Other debugging commands</vh></v>
-</v>
-<v t="ekr.20150318110552.18"><vh>Edit commands</vh>
-<v t="ekr.20150318110552.21"><vh>Cutting, pasting and selecting text</vh></v>
-<v t="ekr.20150318110552.22"><vh>Indenting body text</vh></v>
-<v t="ekr.20150318110552.23"><vh>Adding and deleting comments in body text</vh></v>
-<v t="ekr.20150323200607.1"><vh>Moving the cursor</vh></v>
-<v t="ekr.20150318110552.24"><vh>Text formatting commands</vh></v>
-<v t="ekr.20150318110552.25"><vh>Creating nodes from body text</vh></v>
-<v t="ekr.20150318110552.26"><vh>Executing Python scripts in body text</vh></v>
-<v t="ekr.20150318110552.20"><vh>Undoing changes</vh></v>
-</v>
-<v t="ekr.20150323185514.1"><vh>Emacs-like commands</vh>
 <v t="ekr.20150318110552.74"><vh>Abbreviation commands</vh></v>
+<v t="ekr.20160428110816.1"><vh>Clone-find commands</vh></v>
 <v t="ekr.20150318110552.8"><vh>Cursor movement commands</vh></v>
-<v t="ekr.20150323185921.1"><vh>Emacs text formatting</vh></v>
-<v t="ekr.20150323103115.1"><vh>Rectangle commands</vh></v>
-<v t="ekr.20150318110552.56"><vh>Scrolling the outline pane</vh></v>
+<v t="ekr.20150318110552.18"><vh>Edit commands</vh>
+<v t="ekr.20150318110552.23"><vh>Adding and deleting comments in body text</vh></v>
+<v t="ekr.20150318110552.25"><vh>Creating nodes from body text</vh></v>
+<v t="ekr.20150318110552.21"><vh>Cutting, pasting and selecting text</vh></v>
+<v t="ekr.20150318110552.26"><vh>Executing Python scripts in body text</vh></v>
+<v t="ekr.20150318110552.22"><vh>Indenting body text</vh></v>
+<v t="ekr.20150323200607.1"><vh>Moving the cursor</vh></v>
+<v t="ekr.20150318110552.20"><vh>Undoing changes</vh></v>
 <v t="ekr.20150323185611.1"><vh>Yank, kill &amp; delete commands</vh></v>
 </v>
 <v t="ekr.20150318110552.29"><vh>File commands</vh>
 <v t="ekr.20150318110552.30"><vh>Loading, saving &amp; reverting files</vh></v>
 <v t="ekr.20150318110552.31"><vh>Closing outlines &amp; quitting Leo</vh></v>
-<v t="ekr.20150318110552.32"><vh>Importing &amp; exporting files</vh></v>
 <v t="ekr.20150318110552.33"><vh>Using sessions</vh></v>
-<v t="ekr.20150318110552.34"><vh>Communicating with external editors </vh></v>
-<v t="ekr.20150318110552.35"><vh>Creating &amp; deleting directories &amp; files</vh></v>
-<v t="ekr.20150318110552.36"><vh>Managing recent files</vh></v>
 </v>
-<v t="ekr.20150318110552.37"><vh>Help commands</vh></v>
-<v t="ekr.20150323200950.1"><vh>Language conversion commands</vh></v>
+<v t="ekr.20131004191204.16079"><vh>File operations &amp; sessions</vh></v>
+<v t="ekr.20131001100335.15938"><vh>Finding &amp; replacing text</vh></v>
+<v t="ekr.20191004123555.1"><vh>Formatting text</vh></v>
+<v t="ekr.20131001100335.15947"><vh>Help commands</vh></v>
 <v t="ekr.20150318110552.38"><vh>Minibuffer commands</vh></v>
-<v t="ekr.20150318110552.75"><vh>Miscellaneous commands</vh></v>
-<v t="ekr.20150318110552.39"><vh>Mouseless Leo commands</vh>
-<v t="ekr.20150318110552.40"><vh>Event simulation commands</vh></v>
-<v t="ekr.20150318110552.41"><vh>Focus commands</vh></v>
-<v t="ekr.20150318110552.42"><vh>Pane commands</vh></v>
-</v>
+<v t="ekr.20131002055813.19037"><vh>Moving the cursor</vh></v>
 <v t="ekr.20150318110552.43"><vh>Outline commands</vh>
-<v t="ekr.20150318110552.44"><vh>Creating, cloning &amp; destroying nodes</vh></v>
-<v t="ekr.20150318110552.45"><vh>Expanding &amp; contracting nodes</vh></v>
-<v t="ekr.20150318110552.46"><vh>Editing headlines</vh></v>
-<v t="ekr.20150318110552.47"><vh>Selecting nodes</vh></v>
-<v t="ekr.20150318110552.48"><vh>Cutting, pasting &amp; deleting nodes</vh></v>
-<v t="ekr.20150318110552.49"><vh>Moving &amp; reorganizing nodes</vh></v>
+<v t="ekr.20131002055813.19835"><vh>Basic outline commands</vh></v>
 <v t="ekr.20150318110552.50"><vh>Converting between outlines and text</vh></v>
+<v t="ekr.20150318110552.44"><vh>Creating, cloning &amp; destroying nodes</vh></v>
+<v t="ekr.20150318110552.48"><vh>Cutting, pasting &amp; deleting nodes</vh></v>
 <v t="ekr.20150318110552.51"><vh>Dragging nodes</vh></v>
+<v t="ekr.20150318110552.46"><vh>Editing headlines</vh></v>
+<v t="ekr.20150318110552.45"><vh>Expanding &amp; contracting nodes</vh></v>
 <v t="ekr.20150318110552.52"><vh>Marking nodes</vh></v>
+<v t="ekr.20150318110552.49"><vh>Moving &amp; reorganizing nodes</vh></v>
 <v t="ekr.20150318110552.53"><vh>Operations on marked nodes</vh></v>
-<v t="ekr.20150318110552.54"><vh>Comparing outlines</vh></v>
+<v t="ekr.20150318110552.47"><vh>Selecting nodes</vh></v>
 <v t="ekr.20150318110552.55"><vh>Using Chapters</vh></v>
 </v>
-<v t="ekr.20150318110552.79"><vh>Plugins commands</vh></v>
 <v t="ekr.20150318110552.57"><vh>Search &amp; spell commands</vh>
 <v t="ekr.20150318110552.59"><vh>Basic searches</vh></v>
 <v t="ekr.20150318110552.60"><vh>Incremental find commands</vh></v>
@@ -810,14 +777,37 @@
 <v t="ekr.20150318110552.63"><vh>Radio buttons and their commands </vh></v>
 <v t="ekr.20150318110552.64"><vh>Spell commands</vh></v>
 </v>
-<v t="ekr.20150318110552.65"><vh>Settings commands</vh></v>
-<v t="ekr.20150603161559.1"><vh>Code beautification commands</vh>
-<v t="ekr.20230124061650.1"><vh>Comparison with Black</vh></v>
-<v t="ekr.20150603115243.1"><vh>Beautifier directives</vh></v>
-<v t="ekr.20150603115400.1"><vh>Stand-alone beautifier</vh></v>
+<v t="ekr.20131002055813.19036"><vh>Selecting outline nodes</vh></v>
+<v t="ekr.20150315132217.3"><vh>Switching focus</vh></v>
+<v t="ekr.20230105123159.1"><vh>Syncing @clean files</vh></v>
+<v t="ekr.20131002055813.19837"><vh>Undoing and redoing changes</vh></v>
 </v>
-<v t="ekr.20150318110552.66"><vh>Window-related commands</vh></v>
+<v t="ekr.20170215103337.1"><vh>All other commands</vh>
+<v t="ekr.20150603161559.1"><vh>Beautify commands</vh>
+<v t="ekr.20150603115243.1"><vh>Beautifier directives</vh></v>
+</v>
+<v t="ekr.20150318110552.34"><vh>Communicating with external editors </vh></v>
+<v t="ekr.20150318110552.54"><vh>Comparing outlines</vh></v>
+<v t="ekr.20150318110552.35"><vh>Creating &amp; deleting directories &amp; files</vh></v>
+<v t="ekr.20190414191837.1"><vh>Debugger commands</vh></v>
+<v t="ekr.20161020064436.1"><vh>Debugging commands</vh></v>
+<v t="ekr.20150323185921.1"><vh>Emacs text formatting</vh></v>
+<v t="ekr.20150318110552.40"><vh>Event simulation commands</vh></v>
+<v t="ekr.20150318110552.41"><vh>Focus commands</vh></v>
+<v t="ekr.20150318110552.37"><vh>Help commands</vh></v>
+<v t="ekr.20150318110552.32"><vh>Importing &amp; exporting files</vh></v>
+<v t="ekr.20150323200950.1"><vh>Language conversion commands</vh></v>
+<v t="ekr.20150318110552.36"><vh>Managing recent files</vh></v>
+<v t="ekr.20150318110552.75"><vh>Miscellaneous commands</vh></v>
+<v t="ekr.20150318110552.42"><vh>Pane commands</vh></v>
+<v t="ekr.20150318110552.79"><vh>Plugins commands</vh></v>
+<v t="ekr.20150323103115.1"><vh>Rectangle commands</vh></v>
+<v t="ekr.20150318110552.56"><vh>Scrolling the outline pane</vh></v>
+<v t="ekr.20150318110552.65"><vh>Settings commands</vh></v>
+<v t="ekr.20161020064706.1"><vh>Show data commands</vh></v>
+<v t="ekr.20150318110552.24"><vh>Text formatting commands</vh></v>
 <v t="ekr.20150318110552.87"><vh>Vim mode commands</vh></v>
+<v t="ekr.20150318110552.66"><vh>Window-related commands</vh></v>
 </v>
 <v t="ekr.20150323161357.1"><vh>Key Reference</vh>
 <v t="ekr.20150323161357.2"><vh>Selecting outline nodes</vh></v>
@@ -2104,6 +2094,7 @@
 </v>
 <v t="ekr.20261116101436.1"></v>
 <v t="ekr.20261116101656.1"></v>
+<v t="ekr.20261124043114.1"><vh>=== To do</vh></v>
 </vnodes>
 <tnodes>
 <t tx=".20260810204531.45">Leo: organize code and ideas your way
@@ -13419,11 +13410,6 @@ print('found: %s not found: %s' % (len(found),len(not_found)))</t>
 </t>
 <t tx="ekr.20150318043636.16"></t>
 <t tx="ekr.20150318043636.17"></t>
-<t tx="ekr.20150318110552.10">.. contents:: Contents
-    :depth: 3
-    :local:
-
-</t>
 <t tx="ekr.20150318110552.18">.. contents:: Contents
     :depth: 2
     :local:</t>
@@ -13471,7 +13457,8 @@ These commands work with either headline or body text.</t>
 
 - If Python is the present language, Leo inserts an additional tab if the previous line ends with a colon.  When the ``smart_auto_indent setting`` is True, Leo uses Emacs-style auto-indentation instead.  This style of auto-indent aligns newly created lines with unmatched ``( [{`` brackets in the previous line.
 </t>
-<t tx="ekr.20150318110552.23">``add-comments (Ctrl-))``
+<t tx="ekr.20150318110552.23">
+``add-comments (Ctrl-))``
     Adds comments to the selected lines, according to the ``@language``
     directive in effect. These commands use single-line comments if
     possible. It's not necessary to select all of the first or last lines.
@@ -13745,20 +13732,13 @@ A **session** specifies a list of .leo files that Leo opens automatically when L
     Execute the last command entered from the minibuffer.
 
 </t>
-<t tx="ekr.20150318110552.39">.. contents:: Contents
-    :depth: 2
-    :local:</t>
 <t tx="ekr.20150318110552.40">The following commands trigger event hooks::
 
     click-click-box
-    click-headline
     click-icon-box
     ctrl-click-at-cursor
     ctrl-click-icon    
-    double-click-headline
     double-click-icon-box # Invokes vim or xemacs plugin if enabled.
-    simulate-begin-drag
-    simulate-end-drag
 </t>
 <t tx="ekr.20150318110552.41">::
 
@@ -14268,7 +14248,9 @@ The following commands enable, disable or toggle various settings::
 ``zoom-out``.
     Decrease text size by 1 pt.
 </t>
-<t tx="ekr.20150318110552.74">**Important**: The following describes Leo's new abbreviation scheme.  Such abbreviations *fire immediately* whenever they are completed. You do *not* have to execute a command!  By convention, abbreviations end with ``;;``, something you are not likely to type by accident, but you can pick any abbreviation you like.
+<t tx="ekr.20150318110552.74">Abbreviations *fire immediately* whenever they are completed. You do *not* have to execute a command!
+
+By convention, abbreviations end with ``;;``, something you are not likely to type by accident, but you can pick any abbreviation you like.
 
 **Note**:
 
@@ -14684,10 +14666,6 @@ Regardless of focus::
 **Shift keys**: Adding the Shift key modifier to any of the keys above moves the cursor and extends the selected text.
 
 </t>
-<t tx="ekr.20150323185514.1">.. contents:: Contents
-    :depth: 2
-    :local:
-</t>
 <t tx="ekr.20150323185611.1">The following commands typically work like the corresponding Emacs command. For details about any command use ``F11 (help-for-command)``::
 
     backward-delete-char
@@ -14888,51 +14866,10 @@ beautifies the entire node.  Otoh:
 
 skips beautification of the entire node. Yes, this is less precise than one could imagine, but it's good enough.
 </t>
-<t tx="ekr.20150603115400.1">You can run leoBeautify.py from the command line::
-
-    python -m leo.core.leoAst --orange file1, file2...
-
-Running::
-
-    python -m leo.core.leoAst -h
-
-Produces something like this::
-
-    usage: leoAst.py [-h] [--fstringify | --fstringify-diff | --orange | --orange-diff] [--allow-joined] [--max-join N]
-                     [--max-split N] [--recursive] [--tab-width N]
-                     [PATHS ...]
-
-    Execute fstringify or beautify commands contained in leoAst.py.
-
-    positional arguments:
-      PATHS              directory or list of files
-
-    options:
-      -h, --help         show this help message and exit
-      --fstringify       fstringify PATHS
-      --fstringify-diff  fstringify diff PATHS
-      --orange           beautify PATHS
-      --orange-diff      diff beautify PATHS
-      --allow-joined     allow joined strings
-      --max-join N       max unsplit line length (default 0)
-      --max-split N      max unjoined line length (default 0)
-      --recursive        include directories recursively
-      --tab-width N      tab-width (default -4)
-</t>
-<t tx="ekr.20150603161559.1">.. _`PEP8`: https://peps.python.org/pep-0008/
-
-``beautify-node``
-    Beautifies the Python code in the selected node.
-``beautify-tree``
+<t tx="ekr.20150603161559.1">``beautify-tree``
     Beautifies all the Python code in the selected tree.
 ``beautify-c``
     Reformats all C code in the selected tree.
-
-These commands skip any nodes for which ``@language python`` (or ``c``) is not in effect.
-
-The **Python beautifier** (``beautify-tree`` and ``beautify-node``) is `PEP8`_ compliant. The beautifier will *just work* for most people. 
-
-The Python beautifier works only on syntactically correct code. It issues a warning and does nothing for syntactically incorrect code.
 </t>
 <t tx="ekr.20150817125512.1">efc.compareTrees does most of the work of comparing two similar outlines.
 For example, here is "@button compare vr-controller" in leoPyRef.leo:
@@ -15322,16 +15259,6 @@ The `clone-find-tag` aka ``(cft)`` command creates clones of all nodes having a 
 The `tag-children` applies a given tag to all the children of the selected node.
 </t>
 <t tx="ekr.20160428111506.1">The body text contains a list of commands, one per line, to be preloaded into Leo's command history. You access command history using the up and down arrow keys in Leo's minibuffer.</t>
-<t tx="ekr.20160428113347.1">The **clone find** commands, cfa and cff are extraordinarily useful. These commands move clones of all nodes matching the search pattern under a single **organizer node**, created as the last top-level node. **Flattened** searches put all nodes as direct children of the organizer node::
-
-    cfa     clone-find-all
-    cff     clone-find-all-flattened
-
-The **clone-marked** commands move clones of all marked nodes under an organizer node. Especially useful for gathering nodes by hand::
-
-    cfam    clone-find-marked 
-    cffm    clone-find-flattened-marked
-</t>
 <t tx="ekr.20161014050133.1">The following shows how to cut and paste text to the clipboard:
 
 .. code-block:: python
@@ -15406,43 +15333,29 @@ Removed all chapter-* commands except the chapter-select and chapter-select-main
 - @int autojustify
 - @int qweb_view_font_size
 </t>
-<t tx="ekr.20161020064204.1">``flake8``
-    Run flake8 on all nodes of the selected tree, or the first ancestor @&lt;file&gt; node.
-``pyflakes``
-    Runs pyflakes on the Python source files in the selected tree, or the first ancestor @&lt;file&gt; node. Prints results in the console window and Leo's log pane.
-``pylint``
-    Runs pylint on the Python source files in the selected tree, or the first ancestor @&lt;file&gt; node. This command is also available from the popup menus created by the contextmenu plugin.
-
-</t>
-<t tx="ekr.20161020064436.1">``check-derived-file``
-    Makes sure an external file written by Leo can be read properly. 
-``check-leo-file``
-    Performs a full check of the consistency of a .leo file.  As of Leo 5.1, Leo performs checks of gnx's and outline structure before writes and after reads, pastes and undo/redo.
-``check-outline``
-    Checks the outline for consistency. Leo automatically checks the syntax of Python external files when Leo writes the external file.
+<t tx="ekr.20161020064436.1">``check-external-file``
+    Makes sure an external file written by Leo can be read properly. when Leo writes the external file.
 ``clear-all-caches``
     Clear all file caches in g.app.leoHomeDir/db
 ``clear-cache``
     Clear the outline's file cache.
-``escape``
-    Enter watch escape mode.
 ``find-long-lines``
     Report lines longer than specified by:
     ``@bool max-find-long-lines-length = 110``
 ``find-missing-docstrings``
     Report python classes, functions and methods lacking python docstrings.
     Does not report nodes that are descendants of ``@nopylint``.
-``pdb``
-    Drops into debugger, in the middle of the command-handling logic. Get the commander by stepping out into k.masterKeyHandler or k.masterCommandHandler. Using c, one can then get all other info.
-``show-buttons``
-    Show all ``@button`` and ``@command`` commands, their bindings and their source.
 
 Dumping Leo's internal data::
 
-    dump-all-objects
-    dump-new-objects
-    dump-outline
-    verbose-dump-objects
+   dump-caches
+   dump-clone-parents
+   dump-expanded
+   dump-gnx-dict
+   dump-last-colorizer-trace
+   dump-log
+   dump-node
+   dump-outline
 
 Python's garbage collector::
 
@@ -15450,30 +15363,52 @@ Python's garbage collector::
     gc-dump-all-objects
     gc-dump-objects-verbose
     gc-show-summary
-    gc-trace-disable
-    gc-trace-enable
 
 Idle time::
 
     disable-idle-time-events
     enable-idle-time-events
     toggle-idle-time-events
-
-``print-window-state``
-    This command is for Leo's developers.
-
 </t>
 <t tx="ekr.20161020064706.1">The following print information to Leo's log pane::
 
-    show--bindings
-    show--commands
-    show--focus
-    show--plugin-handlers
-    show--plugins-info
-    show--settings
-    show--style-sheet
-    show-colors
-    show-find-options</t>
+     show-all-uas
+     show-bindings
+     show-buttons
+     show-buttons-and-at-commands
+     show-calltips
+     show-calltips-force
+     show-clone-ancestors
+     show-clone-parents
+     show-color-names
+     show-color-settings
+     show-color-wheel
+     show-commands
+     show-commands-with-docs
+     show-current-layout
+     show-file-line
+     show-find-options
+     show-focus
+     show-font-settings
+     show-fonts
+     show-gnx
+     show-icon-bar
+     show-invisibles
+     show-layouts
+     show-minibuffer
+     show-node-files
+     show-node-uas
+     show-plugin-handlers
+     show-plugins-info
+     show-qt-widgets
+     show-settings
+     show-settings-outline
+     show-spell-info
+     show-stats
+     show-status-bar
+     show-style-sheet
+     show-tips
+</t>
 <t tx="ekr.20161029072351.1">It is dead easy for scripts, including @button scripts, plugins, etc., to drive any external processes, including compilers and interpreters, from within Leo.
 
 - The first section discusses three ways of calling subprocess.popen directly or via Leo helper functions.
@@ -25212,18 +25147,6 @@ More Leo Links
     Glossary            &lt;glossary&gt;
     Still more links    &lt;leoLinks&gt;
     </t>
-<t tx="ekr.20230124061650.1">.. _`Black`: https://github.com/psf/black
-
-Leo's ``beautify`` command differs from `Black`_ as follows:
-
-- ``beautify`` never changes Leo's sentinel comments.
-- ``beautify`` never splits or joints lines (with the default settings).
-  Black sometimes inserts horrible line breaks.
-- ``beautify`` never converts single-quote strings to double-quote strings.
-  That is, ``beautify`` simulates Black's ``--skip-string-normalization`` command-line option.
-- ``beautify`` doesn't insert extra blank lines at the end of nodes.
-  Technically, this is a pep8 violation, but these extra lines are not Leonine.
-</t>
 <t tx="ekr.20230228100301.1"></t>
 <t tx="ekr.20230228100301.2">When checked, the Find and Change commands ignore the case of alphabetic characters when determining matches.
 </t>
@@ -27329,6 +27252,15 @@ def find_unused_rst_defs(rst_urls: list[str]) -&gt; list[str]:
     unused=list(sorted([z for z in defs if z not in refs]))
     return unused
     </t>
+<t tx="ekr.20261124043114.1">@language rest
+
+Remove discussion of Leo's beautifier.
+Mention Rust-based checkers.
+
+Add to history:
+- Milestone: use Black-compatible sentinels.
+- Milestone: use Rust-based checkers.
+- Milestone: use GitHub actions.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
