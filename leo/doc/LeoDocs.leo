@@ -99,14 +99,12 @@
 </v>
 </v>
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
-<v t="ekr.20090428133936.2"><vh>@edit html/conf.py</vh></v>
 <v t="ekr.20241124083101.1"><vh>@edit _static/custom.css</vh></v>
 <v t=".20260811190042.45"><vh>@edit _static/LeoLogo-dark.svg</vh></v>
-<v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
-<v t="ekr.20131005214621.16088"><vh>Home pages</vh>
-<v t="ekr.20230110155708.1"><vh>@file html/redirect_index.html</vh></v>
+<v t="ekr.20090428133936.2"><vh>@edit html/conf.py</vh></v>
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
-</v>
+<v t="ekr.20230110155708.1"><vh>@file html/redirect_index.html</vh></v>
+<v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
 </v>
 <v t="ekr.20040414161647"><vh>Leo's Documentation</vh>
 <v t=".20260810204531.45"><vh>@rst html/index.html</vh></v>
@@ -2099,6 +2097,8 @@
 <tnodes>
 <t tx=".20260810204531.45">Leo: organize code and ideas your way
 ======================================
+
+@language html
 
 .. raw:: html
 
@@ -9909,7 +9909,6 @@ Please take a few moments to experiment with clones:
 
 A **session** specifies a list of .leo files that Leo opens automatically when Leo first starts.  Leo will reload the last session provided that command-line arguments *don't* contain any file names.
 </t>
-<t tx="ekr.20131005214621.16088"></t>
 <t tx="ekr.20131005214621.16090">Leo is a full-featured outliner with the following special features:
 
 - Directives control how Leo works.
