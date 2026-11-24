@@ -1119,8 +1119,9 @@
 <v t="ekr.20230909073504.3"><vh>EKR: Why @clean is so important</vh></v>
 </v>
 <v t="ekr.20230908140206.569"><vh>2016-2018: 5.2 through 5.9: precursors to LeoInteg</vh></v>
-<v t="ekr.20230908152641.1"><vh>2019-2023: Leo 6.0 through 6.7: LeoInteg</vh></v>
-<v t="ekr.20250727055239.1"><vh>2024 onward: Leo 6.8: Easy layouts, @jupytext, @leo</vh></v>
+<v t="ekr.20230908152641.1"><vh>2019-2023: Leo 6.x: LeoInteg</vh></v>
+<v t="ekr.20250727055239.1"><vh>2024: 6.8: Easy layouts, @jupytext, @leo</vh></v>
+<v t="ekr.20261124051529.1"><vh>2026: 6.9.0: GitHub actions and Rust-based checkers</vh></v>
 </v>
 </v>
 </v>
@@ -2094,7 +2095,6 @@
 </v>
 <v t="ekr.20261116101436.1"></v>
 <v t="ekr.20261116101656.1"></v>
-<v t="ekr.20261124043114.1"><vh>=== To do</vh></v>
 </vnodes>
 <tnodes>
 <t tx=".20260810204531.45">Leo: organize code and ideas your way
@@ -25528,7 +25528,11 @@ This is one of the most important dates in Leo's history:
 
 Leo on vs-code means that Leo will live on. Nothing lasts forever, but when IDE's become obsolete, the replacement might build on `vs-code` and Leo. That's pretty close to immortality in my book.
 
-6.5: (October 22, 2021): Removed ``@test/@suite``, fixing the biggest mistake I ever made with Leo. It was shocking how much *harder* ``@test`` made unit testing! The ``create_app`` function in leoTest2.py allows Leo to use python's ``unittest`` module.
+6.5: (October 22, 2021):
+
+- Removed ``@test/@suite``, fixing the biggest mistake I ever made with Leo. It was shocking how much *harder* ``@test`` made unit testing! The ``create_app`` function in leoTest2.py allows Leo to use python's ``unittest`` module.
+
+- Leo writes Black-compatible sentinels. Later, this allowed Leo to use ``ruff format``.
 
 6.7.0 (September 26, 2022): Fully annotate Leo's core files and important plugins.
 
@@ -27252,15 +27256,10 @@ def find_unused_rst_defs(rst_urls: list[str]) -&gt; list[str]:
     unused=list(sorted([z for z in defs if z not in refs]))
     return unused
     </t>
-<t tx="ekr.20261124043114.1">@language rest
+<t tx="ekr.20261124051529.1">Leo 6.9.0: (November 25, 2026):
 
-Remove discussion of Leo's beautifier.
-Mention Rust-based checkers.
-
-Add to history:
-- Milestone: use Black-compatible sentinels.
-- Milestone: use Rust-based checkers.
-- Milestone: use GitHub actions.</t>
+- GitHub actions (.yml scripts) transformed Leo's developmental workflow.
+- Using Rust-based checkers: ``ruff``, ``ruff-format``, and ``ty`` were a revolution in Leo's code processes.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
