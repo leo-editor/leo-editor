@@ -1518,29 +1518,29 @@ Update versions in script files:
   Run @button check .leo files in leoDist.leo.
 </t>
 <t tx="ekr.20260811100339.8">.. All GitHub actions
-https://github.com/leo-editor/leo-editor/blob/devel/.github/workflows
+https://github.com/leo-editor/leo-editor/blob/main/.github/workflows
 
-.. Step one:  Create the release tag in "devel"
+.. Step one:  Create the release tag in "main"
 
-git tag -a v6.8.10 -m "Added v6.8.10 tag"
+git tag -a v6.9.0 -m "Added v6.9.0 tag"
 git push --follow-tags
 
-.. Step Two: Create on the ..GitHub release page
+.. Step Two: Create the release on the ..GitHub release page
 https://github.com/leo-editor/leo-editor/releases
 
 - Click the Draft New Release button.
-- Use the "Select Tag" button to select the v6.8.10.
+- Use the "Select Tag" button to select the v6.9.0.
 - Copy the release notes from LeoDocs.leo.
 - Choose the "Latest" or "Pre-release" in the "Release label" area at the bottom.
 - Click Publish release.
 
-This will automatically create the PyPi release
+This will automatically create the PyPi release!
 
 
 
 </t>
 <t tx="ekr.20260813091710.1">.. All GitHub actions
-https://github.com/leo-editor/leo-editor/blob/devel/.github/workflows
+https://github.com/leo-editor/leo-editor/blob/main/.github/workflows
 </t>
 <t tx="ekr.20260813092546.1">leoVersion.py:
 - Update version constant.
