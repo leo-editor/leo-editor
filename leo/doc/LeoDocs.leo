@@ -102,7 +102,6 @@
 <v t="ekr.20241124083101.1"><vh>@edit _static/custom.css</vh></v>
 <v t=".20260811190042.45"><vh>@edit _static/LeoLogo-dark.svg</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html/conf.py</vh></v>
-<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 <v t="ekr.20230110155708.1"><vh>@file html/redirect_index.html</vh></v>
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
 </v>
@@ -2093,6 +2092,31 @@
 </v>
 <v t="ekr.20261116101436.1"></v>
 <v t="ekr.20261116101656.1"></v>
+<v t="ekr.20100808060203.4273"><vh>@@@@file html/index.html</vh>
+<v t="ekr.20100808060203.4274"><vh>&lt;&lt; head contents &gt;&gt;</vh>
+<v t="ekr.20230110051126.1"><vh>&lt;&lt; DOCUMENTATION_OPTIONS &gt;&gt;</vh></v>
+<v t="ekr.20230110051147.1"><vh>&lt;&lt; scale screen-shot to fit parent container &gt;&gt;</vh></v>
+<v t="ekr.20230110042146.1"><vh>&lt;&lt; search script &gt;&gt;</vh></v>
+<v t="ekr.20230110050910.1"><vh>&lt;&lt; search box &gt;&gt;</vh></v>
+<v t="ekr.20110518101739.18155"><vh>&lt;&lt; flattr head &gt;&gt;</vh></v>
+<v t="ekr.20111028195854.16608"><vh>&lt;&lt; feed2js stylesheet &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20100808060203.4276"><vh>&lt;&lt; div top nav &gt;&gt;</vh></v>
+<v t="ekr.20100808060203.4286"><vh>&lt;&lt; div main section &gt;&gt;</vh>
+<v t="ekr.20111019104425.15904"><vh>&lt;&lt; Leo Quotes &gt;&gt;</vh></v>
+<v t="ekr.20240424062021.1"><vh>&lt;&lt; Leo Links &gt;&gt;</vh></v>
+<v t="ekr.20190415091241.1"><vh>&lt;&lt; embed leovue demo &gt;&gt;</vh></v>
+<v t="ekr.20130924043646.21624"><vh>&lt;&lt; screenshot &gt;&gt;</vh></v>
+<v t="ekr.20150414224436.1"><vh>&lt;&lt; embed leo-editor &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20100808060203.4282"><vh>&lt;&lt; sidebar &gt;&gt; (home page)</vh>
+<v t="ekr.20100808060203.4283"><vh>&lt;&lt; sidebar contents &gt;&gt; (home page)</vh>
+<v t="ekr.20230123104719.1"><vh>&lt;&lt; sidebar links &gt;&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20100808060203.4277"><vh>&lt;&lt; div bottom nav &gt;&gt;</vh></v>
+<v t="ekr.20100808060203.4278"><vh>&lt;&lt; div footer &gt;&gt;</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx=".20260810204531.45">Leo: organize code and ideas your way
@@ -7120,6 +7144,146 @@ Nevertheless, these sentinels can be useful in special situations.
     A single node may contain only one ``@others`` directive, but descendant nodes
     may have other ``@others`` directives.
 </t>
+<t tx="ekr.20100808060203.4273">@language html
+@tabwidth -2
+&lt;!DOCTYPE html&gt;
+&lt;head&gt;
+  &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+  &lt;title&gt;Leo's Home Page&lt;/title&gt;
+  &lt;&lt; head contents &gt;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;&lt; div top nav &gt;&gt;
+  &lt;div class="document"&gt;
+    &lt;div class="documentwrapper"&gt;
+      &lt;div class="bodywrapper"&gt;
+        &lt;div class="body"&gt;
+          &lt;&lt; div main section &gt;&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;&lt; sidebar &gt;&gt;
+    &lt;div class="clearer"&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;&lt; div bottom nav &gt;&gt;
+  &lt;&lt; div footer &gt;&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20100808060203.4274">&lt;link rel="stylesheet" href="_static/classic.css" type="text/css" /&gt;
+&lt;link rel="stylesheet" href="_static/pygments.css" type="text/css" /&gt;
+&lt;link rel="stylesheet" href="_static/custom.css" type="text/css" /&gt;
+
+&lt;&lt; DOCUMENTATION_OPTIONS &gt;&gt;
+
+&lt;script type="text/javascript" src="_static/jquery.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="_static/underscore.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="_static/doctools.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="_static/sidebar.js"&gt;&lt;/script&gt;
+
+&lt;&lt; scale screen-shot to fit parent container &gt;&gt;
+&lt;&lt; search script &gt;&gt;
+&lt;&lt; search box &gt;&gt;
+
+&lt;!-- Disabled --&gt;
+&lt;&lt; flattr head &gt;&gt;
+&lt;&lt; feed2js stylesheet &gt;&gt;
+
+&lt;link rel="top" title="Leo 6.9.0 documentation" href="index.html" /&gt;
+&lt;link rel="next" title="Table of Contents" href="leo_toc.html" /&gt;
+&lt;link rel="Users Guide" title="Leo&amp;#8217;s Users Guide" href="leo_toc.html" /&gt;
+</t>
+<t tx="ekr.20100808060203.4276">&lt;div class="related"&gt;
+  &lt;h3&gt;Navigation&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;li class="right" style="margin-right: 10px"&gt;
+      &lt;a href="genindex.html" title="General Index"
+         accesskey="I"&gt;index&lt;/a&gt;&lt;/li&gt;
+    &lt;li class="right" &gt;
+      &lt;a href="glossary.html" title="Glossary"
+         accesskey="G"&gt;glossary&lt;/a&gt; |&lt;/li&gt;
+    &lt;li class="right" &gt;
+      &lt;a href="leo_toc.html" title="Users Guide"
+         accesskey="N"&gt;contents&lt;/a&gt; |&lt;/li&gt;
+    &lt;li&gt;&lt;a href="leo_toc.html"&gt;Leo 6.9.0 documentation&lt;/a&gt;&lt;/li&gt;
+    &lt;!--  &amp;raquo; --&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+</t>
+<t tx="ekr.20100808060203.4277">&lt;div class="related"&gt;
+  &lt;h3&gt;Navigation&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;li class="right" style="margin-right: 10px"&gt;
+      &lt;a href="genindex.html" title="General Index"
+         &gt;index&lt;/a&gt;&lt;/li&gt;
+    &lt;li class="right" &gt;
+      &lt;a href="glossary.html" title="Glossary"
+         accesskey="G"&gt;glossary&lt;/a&gt; |&lt;/li&gt;
+    &lt;li class="right" &gt;
+      &lt;a href="leo_toc.html" title="Users Guide"
+         &gt;contents&lt;/a&gt; |&lt;/li&gt;
+
+    &lt;li&gt;&lt;a href="leo_toc.html"&gt;Leo 6.9.0 documentation&lt;/a&gt;&lt;/li&gt; 
+  &lt;/ul&gt;
+&lt;/div&gt;
+</t>
+<t tx="ekr.20100808060203.4278">&lt;div class="footer"&gt;
+  &amp;copy; Copyright 1997-2026, Edward K. Ream.
+  Last updated on November 23, 2026
+  Created using &lt;a href="https://www.sphinx-doc.org/en/master/"&gt;Sphinx 9.1.0&lt;/a&gt;.
+&lt;/div&gt;
+</t>
+<t tx="ekr.20100808060203.4282">&lt;div class="sphinxsidebar"&gt;
+    &lt;div class="sphinxsidebarwrapper"&gt;
+        &lt;&lt; sidebar contents &gt;&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</t>
+<t tx="ekr.20100808060203.4283">@language html
+@tabwidth -2
+
+&lt;p class="logo"&gt;&lt;a href="leo_toc.html"&gt;
+  &lt;!--
+  Tribal Lion: licensed from:
+  www.dreamstime.com/royalty-free-stock-photos-tribal-lion-image3490018
+  --&gt;
+  &lt;img class="Leo's lion logo" src="_static/LeoLogo.svg" alt="Logo"/&gt;&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  &lt;a class="reference external" href="leo_toc.html"&gt;Table of contents&lt;/a&gt;: Click the lion!
+&lt;/p&gt;
+
+&lt;&lt; sidebar links &gt;&gt;
+
+&lt;p&gt;
+  &lt;div id="searchbox" style=""&gt;
+      &lt;input id='q' type="text" name="q" onkeypress="search(event)"&gt;
+    &lt;div&gt;&lt;button onclick="search(null)"&gt;Google Search&lt;/button&gt;&lt;/div&gt;
+    &lt;div class="searchtip" style="font-size: 90%"&gt;
+      &lt;!-- Use quotes for "@file" and similar symbols. --&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  &lt;!-- &lt;a HREF="ekr.html"&gt;Edward K. Ream&lt;/a&gt;&lt;br&gt; --&gt;
+  Written by
+  &lt;a href= "mailto: edreamleo@gmail.com"&gt; Edward K. Ream &lt;/a&gt;
+  and
+  &lt;a HREF="acknowledgements.html"&gt;many others&lt;/a&gt;.
+&lt;/p&gt;
+</t>
+<t tx="ekr.20100808060203.4286">&lt;div class="section" id="Leo&amp;#8217;s Home page"&gt;
+
+    &lt;h1&gt;Leo&amp;#8217;s Home Page&lt;/h1&gt;
+    &lt;&lt; Leo Quotes &gt;&gt;
+    &lt;&lt; Leo Links &gt;&gt;
+    &lt;&lt; embed leovue demo &gt;&gt;
+    &lt;&lt; screenshot &gt;&gt;
+    &lt;&lt; embed leo-editor &gt;&gt;
+&lt;/div&gt;
+</t>
 <t tx="ekr.20100821182153.4343">.. This file must be located in the leo/doc/html.
 
 ######
@@ -9333,6 +9497,20 @@ browser_command:
 
 At present, the file leo/plugins/leo_to_html.ini contains configuration settings. In particular, the default export path, "c:\" must be changed for \*nix systems.
 </t>
+<t tx="ekr.20110518101739.18155">&lt;!--
+    &lt;script type="text/javascript"&gt;
+    /* &lt;![CDATA[ */
+        (function() {
+            var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+            s.type = 'text/javascript';
+            s.async = true;
+            s.src = 'https://api.flattr.com/js/0.6/load.js?mode=auto';
+            t.parentNode.insertBefore(s, t);
+        })();
+    /* ]]&gt; */
+    &lt;/script&gt;
+--&gt;
+</t>
 <t tx="ekr.20110521135104.18151">Any outline (.leo file) may contain clones that appear in multiple external files defined *within* that outline. There is no problem with such **intra-outline clones**.
 
 In contrast, **cross-outline clones** are clones that appear in more than one outline.  Leo's paste-retaining-clones command makes it possible for two outlines to contain nodes with the same gnx. Conceivably, both outlines could use those clones in the *same* external file!
@@ -9363,6 +9541,53 @@ In short, Leo will never support features that encourage cross-outline clones.</
 <t tx="ekr.20110531155858.20564">See the node ``@data qt-gui-plugin-style-sheet`` in your theme file or ``myLeoSettings.leo``.
 </t>
 <t tx="ekr.20110601105631.19349">
+</t>
+<t tx="ekr.20111019104425.15904">&lt;p&gt;&lt;blockquote&gt;
+"Leo is a revolutionary step in the right direction for programming."&amp;#8213;Brian Takita
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt; "Leo is the best IDE that I have had the pleasure to use. It
+has totally changed not only the way that I program, but also the way that
+I store and organize all of the information that I need for the job that I
+do."&amp;#8213;Ian Mulvany
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+"When first I opened Leo, it was out of curiosity. But having used it, I'll
+never go back. They'll have to pry Leo out of my cold, dead fingers!"&amp;#8213;Travers A. Hough
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+Leo makes managing long, complex code bases many many times more easy and feasible than anything else I've tried. Leo also makes trying experimental code way easier than anything else (e.g., running a script to test out some programming issue).
+I use Leo every day, all the time,  for non-programming things. I don't see how I could replace it if it somehow vanished."&amp;#8213;Thomas Passin
+&lt;/blockquote&gt;
+
+&lt;p&gt;
+Leo is a scriptable outliner that accelerates the work flow of programmers, authors and web designers.
+&lt;em&gt;Outline nodes may appear in more than one place&lt;/em&gt;, allowing multidimensional views of data, including computer programs, within a single outline.
+</t>
+<t tx="ekr.20111028195854.16608">&lt;!--
+    &lt;style type="text/css" media="all"&gt;
+
+
+    .rss_box {
+        width:   0px;
+        padding: 0px;
+        border:  0px solid white;
+        margin:  0px;
+    }
+
+    .rss_title {
+        visibility:hidden;
+        line-height: 0px;
+    }
+
+    .rss_items {
+        font-size: 80%;
+    }
+
+    &lt;/style&gt;
+--&gt;
 </t>
 <t tx="ekr.20111108052738.5507">run-marked-unit-tests-externally = Alt-4
 run-all-unit-tests-externally = Alt-5
@@ -9567,6 +9792,12 @@ Valid values are (case is ignored):
 
 actionscript,c,csharp,css,cweb,elisp,html,java,latex,
 pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
+<t tx="ekr.20130924043646.21624">&lt;p&gt;Here is reduced screenshot of Leo's main window. You can view the full-sized image using something like "view image" in your browser.&lt;/p&gt;
+
+&lt;img class="screenshot"
+    src="screen-shots/DarkScreenShot.png"
+    alt="ScreenShot"/&gt;
+</t>
 <t tx="ekr.20131001100335.15938">This section explains how to use Leo's standard search/replace commands.
 **Note**: you can also use the Nav Tab (in the Log pane) to search for text.
 
@@ -14785,6 +15016,22 @@ There have been some posts about the recovered nodes, comparing the old and new 
 There has been some discussion of @auto v. @clean. Preference is obviously a matter of taste. I will say that for me the fact that node headlines are unaffected by external file changes is a feature not a problem since I place notes in the headlines that I want preserved when I edit files externally. Yes, if the node headlines are the method names then they won't be updated if an external edit changes a method name but this was true of @file as well.
 
 The ability to work on projects with people who don't have Leo is obvious; one perhaps slightly less obvious benefit of no sentinels is that I suspect that the likelihood that someone will clone a git repository is reduced when that repository's code is riddled with Leo sentinels (unless the potential cloner is a Leo loyalist). The one downside to no sentinels--there is no evidence that Leo is being used but I think that raises the broader question of marketing Leo, which I certainly believe will be aided significantly by being able to take advantage of Leo without sentinels in external files.--- Steve Zatz
+</t>
+<t tx="ekr.20150414224436.1">&lt;!-- This works --
+&lt;iframe id="forum_embed"
+    src="javascript:void(0)"
+    scrolling="yes"
+    frameborder="1"
+    width="900"
+    height="700"&gt;
+&lt;/iframe&gt;
+&lt;script type="text/javascript"&gt;
+  document.getElementById('forum_embed').src =
+     'https://groups.google.com/forum/embed/?place=forum/leo-editor'
+     + '&amp;showsearch=true&amp;showpopout=true&amp;showtabs=true'
+     + '&amp;parenturl=' + encodeURIComponent(window.location.href);
+&lt;/script&gt;
+--&gt;
 </t>
 <t tx="ekr.20150415105956.1">clone-find-all-flattened often includes clones of nodes whose location is unclear.  No problem! Just select the mysterious node and do Alt-N (goto-next-clone). Leo will select the next clone of that node, wrapping the search as necessary.  One or two Alt-N takes me to the "real" node, the node having an ancestor @&lt;file&gt; node.
 
@@ -21669,6 +21916,16 @@ described when refactoring code.
 
 Neither tags, nor filters, nor refactoring packages can emulate the
 Leonine way of refactoring.</t>
+<t tx="ekr.20190415091241.1">&lt;!-- &lt;p&gt; --&gt;
+&lt;!-- The following is --&gt;
+&lt;!-- &lt;a class="reference external" href="https://kaleguy.github.io/leovue/#/t/2/"&gt; --&gt;
+&lt;!-- Joe Orr's &lt;strong&gt;must see&lt;/strong&gt; demo&lt;/a&gt;: --&gt;
+&lt;!-- &lt;/p&gt; --&gt;
+&lt;!-- &lt;iframe --&gt;
+  &lt;!-- src="https://chrisgeorge.ca/leovue/#/t/1" --&gt;
+  &lt;!-- style="height:768px;width:1024px" &gt; --&gt;
+&lt;!-- &lt;/iframe&gt; --&gt;
+</t>
 <t tx="ekr.20190422181351.1">To specify a color, say for comment1, for *all* languages, create an @color node::
 
     @color comment1 = blue
@@ -23844,6 +24101,43 @@ needed attention.
   The body of the ``@data`` node contains a list of strings, one per line.
   Headlines that match these suppressions *exactly* are not considered
   dubious. Default: None.</t>
+<t tx="ekr.20230110042146.1">&lt;script type="text/javascript"&gt;
+function search(event) {
+  if (event === null || (event.keyCode || event.which) === 13) {
+    window.open('https://www.google.com/search?q=site:leo-editor.github.io/leo-editor+'+document.getElementById('q').value);
+  }
+}
+&lt;/script&gt;
+</t>
+<t tx="ekr.20230110050910.1">&lt;link rel="search" title="Search" href="search.html" /&gt;
+&lt;div id="searchbox" style="display: none" role="search"&gt;
+  &lt;h3&gt;Quick search&lt;/h3&gt;
+    &lt;form class="search" action="search.html" method="get"&gt;
+      &lt;div&gt;&lt;input type="text" name="q" /&gt;&lt;/div&gt;
+      &lt;div&gt;&lt;input type="submit" value="Go" /&gt;&lt;/div&gt;
+      &lt;input type="hidden" name="check_keywords" value="yes" /&gt;
+      &lt;input type="hidden" name="area" value="default" /&gt;
+    &lt;/form&gt;
+&lt;/div&gt;
+</t>
+<t tx="ekr.20230110051126.1">
+&lt;script type="text/javascript"&gt;
+var DOCUMENTATION_OPTIONS = {
+  URL_ROOT:    './',
+  VERSION:     '6.9.0',
+  COLLAPSE_INDEX: false,
+  FILE_SUFFIX: '.html',
+  HAS_SOURCE:  true,
+  SOURCELINK_SUFFIX: '.txt'
+};
+&lt;/script&gt;
+</t>
+<t tx="ekr.20230110051147.1">&lt;style type="text/css"&gt;
+img {
+    max-width:50%; max-height:50%;
+}
+&lt;/style&gt;
+</t>
 <t tx="ekr.20230110152131.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.2 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/).
@@ -25146,6 +25440,41 @@ More Leo Links
     Glossary            &lt;glossary&gt;
     Still more links    &lt;leoLinks&gt;
     </t>
+<t tx="ekr.20230123104719.1">&lt;a class="reference external"
+  href="https://leo-editor.github.io/leo-editor/getting-started.html"&gt;
+  Getting started&lt;/a&gt;&lt;br&gt;
+
+&lt;a class="reference external" href="https://groups.google.com/group/leo-editor"&gt;
+  Leo's forum&lt;/a&gt;&lt;br&gt;
+
+&lt;a class="reference external" href="https://github.com/leo-editor/leo-editor"&gt;
+  Leo's GitHub repository&lt;/a&gt;&lt;br&gt;
+
+&lt;a class="reference external" href="tutorial.html"&gt;
+  Leo's main tutorial&lt;/a&gt;&lt;br&gt;
+
+&lt;a class="reference external"
+  href="https://kaleguy.github.io/leovue/#/t/2/"&gt;
+  Joe Orr's &lt;em&gt;must see&lt;/em&gt; demo&lt;/a&gt;&lt;br&gt;
+
+&lt;a class="reference external" href="testimonials.html"&gt;
+  Quotes from Leonistas&lt;/a&gt;&lt;br&gt;
+
+&lt;a class="reference external" href="https://github.com/leo-editor/leo-editor/issues"&gt;
+  Report a bug&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="https://github.com/boltex/leointeg?tab=readme-ov-file#-leo-for-visual-studio-code"&gt;
+  LeoInteg&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="https://github.com/boltex/leojs?tab=readme-ov-file#web-based-development"&gt;
+  LeoJS&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="https://boltex.github.io/leo-web/"&gt;
+  LeoWeb&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="leoLinks.html"&gt;
+  More links...&lt;/a&gt;&lt;br&gt;
+</t>
 <t tx="ekr.20230228100301.1"></t>
 <t tx="ekr.20230228100301.2">When checked, the Find and Change commands ignore the case of alphabetic characters when determining matches.
 </t>
@@ -25832,6 +26161,35 @@ gnx: ekr.20240303070818.2
 unl: Using objtrees for caching
 gnx: ekr.20240303070818.3
 unl: The `Leo database` (c.db, g.app.db)
+</t>
+<t tx="ekr.20240424062021.1">&lt;p&gt;
+  &lt;a href="https://kaleguy.github.io/leovue/#/t/2/"&gt;
+    &lt;strong&gt;Joe Orr's must see demo&lt;/strong&gt;&lt;/a&gt;.
+  &lt;br&gt;
+  &lt;a href="preface.html"&gt;
+    &lt;strong&gt;Technical introduction to Leo&lt;/strong&gt;&lt;/a&gt;.
+  &lt;br&gt;
+  &lt;a href="testimonials.html"&gt;
+    &lt;strong&gt;What people are saying about Leo&lt;/strong&gt;&lt;/a&gt;.
+  &lt;br&gt;
+  &lt;a href="tutorial.html"&gt;
+    &lt;strong&gt;Learn about Leo in 20 minutes&lt;/strong&gt;&lt;/a&gt;.
+&lt;/p&gt;
+&lt;p&gt;
+  &lt;a href="https://github.com/boltex/leojs"&gt;
+    &lt;strong&gt;Zero Install Leo (LeoJS): Leo for vs-code&lt;/strong&gt;&lt;/a&gt;.
+  &lt;br&gt;
+  &lt;a href="https://boltex.github.io/leo-web/"&gt;
+    &lt;strong&gt;Zero Install Leo (LeoWeb): Leo for the browser&lt;/strong&gt;&lt;/a&gt;.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;strong&gt;Ask us anything&lt;/strong&gt; at the
+&lt;a href="https://groups.google.com/group/leo-editor"&gt;&lt;strong&gt;leo-editor Google Group&lt;/strong&gt;&lt;/a&gt;.
+&lt;br&gt;
+&lt;a href="mailto:edreamleo@gmail.com?Subject=About%20Leo" target="_top"&gt;
+  &lt;strong&gt;Send us a postcard&lt;/strong&gt;&lt;/a&gt;, telling how you use Leo. Thanks!
+&lt;/p&gt;
+
 </t>
 <t tx="ekr.20240527100702.1">Leo https://leo-editor.github.io/leo-editor/ 6.8.0 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
