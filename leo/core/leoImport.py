@@ -77,7 +77,6 @@ class FreeMindImporter:
         """Create a tree of nodes from a FreeMind file."""
         c = self.c
         u = c.undoer
-        _, fileName = g.os_path_split(path)
         with u.change_outline('freemind.create_outline'):
             try:
                 self.import_file(path)
@@ -1380,7 +1379,6 @@ class MindMapImporter:
     def create_outline(self, path: str) -> Position:
         c = self.c
         u = c.undoer
-        _, fileName = g.os_path_split(path)
         with u.change_outline('mindmap.create_outline'):
             # Create the top-level headline.
             p = c.lastTopLevel().insertAfter()
