@@ -104,9 +104,9 @@
 <v t="ekr.20090428133936.2"><vh>@edit html/conf.py</vh></v>
 <v t="ekr.20230110155708.1"><vh>@file html/redirect_index.html</vh></v>
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
+<v t=".20260810204531.45"><vh>@rst html/index.html</vh></v>
 </v>
 <v t="ekr.20040414161647"><vh>Leo's Documentation</vh>
-<v t=".20260810204531.45"><vh>@rst html/index.html</vh></v>
 <v t="ekr.20170215081358.1"><vh> Table of contents</vh>
 <v t="ekr.20170215075612.1"><vh>@rst html/leo_toc.html</vh></v>
 </v>
@@ -6698,7 +6698,7 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
     ``@wrap`` may appear in either headlines or body text.
 </t>
 <t tx="ekr.20100805171546.4412">This section contains files used to generate Leo's web site,
-including Leo's home page.
+including the @rst node for index.html.
 </t>
 <t tx="ekr.20100806170836.4392">.. From directives reference
 
