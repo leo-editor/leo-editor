@@ -66,18 +66,9 @@ leoVersion.version:     Leo's version number.
 # 6.8.10: August 17, 2026.
 # 6.9.0:  November 24, 2026.
 # @-<< version dates >>
-static_version = '6.9.0'
-if 1:
-    version = static_version
-else:
-    try:
-        from importlib.metadata import version as _installed_version
-
-        version = _installed_version('leo')
-    except Exception:
-        # Not pip-installed (e.g. running from a git checkout): version is unknown.
-        version = static_version
-static_date = 'November 24, 2026'
+static_version = '6.9.0'  # Used by publish.yml.
+version = static_version  # Used by app.computeSignon.
+static_date = 'November 25, 2026'
 # @@language python
 # @@tabwidth -4
 # @-leo
