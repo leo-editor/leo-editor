@@ -27040,6 +27040,8 @@ support the following patterns:
 .. _`PR #5065`: https://github.com/leo-editor/leo-editor/pull/5065
 
 .. _`PR #5070`: https://github.com/leo-editor/leo-editor/pull/5070
+.. _`PR #5075`: https://github.com/leo-editor/leo-editor/pull/5075
+.. _`PR #5077`: https://github.com/leo-editor/leo-editor/pull/5077
 
 .. C:\Repos\leo-editor&gt;gh pr list --limit 100 --state merged --search milestone:6.9.0 --json number,title
 
@@ -27112,6 +27114,7 @@ Fix bugs
 - `PR #5063`_: Fix quirp in promoteToAtOthers
 - `PR #5065`_: Re-enable three qt commands
 - `PR #5070`_: Fix crash in set-ua command
+- `PR #5075`_: Fix blunder in leoMoveCursorHelper
 
 Plugins
 
@@ -27125,6 +27128,7 @@ Distribution
 - `PR #4982`_: Remove optional dependencies
 - `PR #4995`_: Drop support for 3.10.
 - `PR #5000`_: Add support for Python 3.15
+- `PR #5077`_: Remove unused files in leo/doc directory tree
 
 Testing
 
@@ -27135,7 +27139,8 @@ Testing
 - `PR #5047`_: Fix hole in unit tests for commands
 - `PR #5048`_: Clean all unit tests
 - `PR #5053`_: Improve tests and coverage for leoUndo.py
-- `PR #5057`_: Move unit tests re undo.</t>
+- `PR #5057`_: Move unit tests re undo.
+</t>
 <t tx="ekr.20261116101656.1">Leo https://leo-editor.github.io/leo-editor/ 6.9.0 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor/preface.html).
