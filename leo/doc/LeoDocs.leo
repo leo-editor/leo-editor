@@ -1182,9 +1182,7 @@
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20221108064449.1"><vh>What's new: Leo 6.x</vh>
-<v t="ekr.20261116101359.1"><vh>What's new: Leo 6.9.x</vh>
 <v t="ekr.20261116101436.1"><vh>What's new in Leo 6.9.0</vh></v>
-</v>
 <v t="ekr.20261116101143.1"><vh>What's new: Leo 6.8.x</vh>
 <v t="ekr.20260810021658.1"><vh>What's new in Leo 6.8.10</vh></v>
 <v t="ekr.20260531063902.1"><vh>What's new in Leo 6.8.9</vh></v>
@@ -26962,7 +26960,6 @@ support the following patterns:
 ​</t>
 <t tx="ekr.20261116101143.1"></t>
 <t tx="ekr.20261116101222.1"></t>
-<t tx="ekr.20261116101359.1">.. Use the link-pr abbreviation to create these links.</t>
 <t tx="ekr.20261116101436.1">.. Use the link-pr abbreviation to create these links.
 .. _`PR #4931`: https://github.com/leo-editor/leo-editor/pull/4931
 .. _`PR #4937`: https://github.com/leo-editor/leo-editor/pull/4937
