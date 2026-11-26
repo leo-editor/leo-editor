@@ -13,16 +13,47 @@ import logging
 import logging.handlers
 import pickle
 import select
-
-try:
-    import SocketServer  # Python 2
-except ImportError:
-    import socketserver as SocketServer  # Python 3
+import socketserver as SocketServer
 import struct
+
+from leo.core import leoGlobals as g
 
 
 # @-<< pdb_listener imports >>
 # @+others
+# @+node:ekr.20180628055640.7: ** class LogRecordSocketReceiver
+class LogRecordSocketReceiver(SocketServer.ThreadingTCPServer):
+    """
+    Simple TCP socket-based logging receiver suitable for testing.
+    """
+
+    allow_reuse_address = 1
+
+    # @+others
+    # @+node:ekr.20180628055640.8: *3* __init__
+    def __init__(
+        self,
+        host='localhost',
+        port=logging.handlers.DEFAULT_TCP_LOGGING_PORT,
+        handler=LogRecordStreamHandler,
+    ):
+        SocketServer.ThreadingTCPServer.__init__(self, (host, port), handler)
+        self.abort = 0
+        self.timeout = 1
+        self.logname = None
+
+    # @+node:ekr.20180628055640.9: *3* serve_until_stopped
+    def serve_until_stopped(self):
+        abort = 0
+        while not abort:
+            rd, wr, ex = select.select([self.socket.fileno()], [], [], self.timeout)
+            if rd:
+                self.handle_request()
+            abort = self.abort
+
+    # @-others
+
+
 # @+node:ekr.20180628055640.3: ** class LogRecordStreamHandler
 class LogRecordStreamHandler(SocketServer.StreamRequestHandler):
     """Handler for a streaming logging request.
@@ -58,9 +89,9 @@ class LogRecordStreamHandler(SocketServer.StreamRequestHandler):
         print('listener suspended')
         # This method can be re-invoked later.
 
-    # @+node:ekr.20180628055640.5: *3* unPickle
+    # @+node:ekr.20180628055640.5: *3* unPickle (pdb_listener.py()
     def unPickle(self, data):
-        return pickle.loads(data)
+        return ua_loads(data)  # PR #5079
 
     # @+node:ekr.20180628055640.6: *3* handleLogRecord
     def handleLogRecord(self, record):
@@ -77,37 +108,36 @@ class LogRecordStreamHandler(SocketServer.StreamRequestHandler):
     # @-others
 
 
-# @+node:ekr.20180628055640.7: ** class LogRecordSocketReceiver
-class LogRecordSocketReceiver(SocketServer.ThreadingTCPServer):
-    """
-    Simple TCP socket-based logging receiver suitable for testing.
-    """
+# @+node:ekr.20261126091740.1: ** class UaUnpickler and ua_loads
+# See PR https://github.com/leo-editor/leo-editor/pull/5079
 
-    allow_reuse_address = 1
+SAFE_UA_TYPES = {
+    'bool',
+    'bytearray',
+    'bytes',
+    'complex',
+    'dict',
+    'float',
+    'frozenset',
+    'int',
+    'list',
+    'set',
+    'str',
+    'tuple',
+}
 
-    # @+others
-    # @+node:ekr.20180628055640.8: *3* __init__
-    def __init__(
-        self,
-        host='localhost',
-        port=logging.handlers.DEFAULT_TCP_LOGGING_PORT,
-        handler=LogRecordStreamHandler,
-    ):
-        SocketServer.ThreadingTCPServer.__init__(self, (host, port), handler)
-        self.abort = 0
-        self.timeout = 1
-        self.logname = None
 
-    # @+node:ekr.20180628055640.9: *3* serve_until_stopped
-    def serve_until_stopped(self):
-        abort = 0
-        while not abort:
-            rd, wr, ex = select.select([self.socket.fileno()], [], [], self.timeout)
-            if rd:
-                self.handle_request()
-            abort = self.abort
+def ua_loads(data: bytes, **kwargs: Any) -> Any:
+    return UaUnpickler(io.BytesIO(data), **kwargs).load()
 
-    # @-others
+
+class UaUnpickler(pickle.Unpickler):
+    """Unpickle uA's built from plain Python values only."""
+
+    def find_class(self, module: str, name: str) -> Any:
+        if module in ('builtins', '__builtin__') and name in SAFE_UA_TYPES:
+            return super().find_class(module, name)
+        raise pickle.UnpicklingError(f"uA type not allowed: {module}.{name}")
 
 
 # @+node:ekr.20180628055640.10: ** start

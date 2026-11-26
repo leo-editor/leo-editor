@@ -22,36 +22,37 @@ import struct
 
 # @-<< log_listener imports >>
 # @+others
-# @+node:ekr.20261126085659.1: ** class UaUnpickler and ua_loads
-# See PR https://github.com/leo-editor/leo-editor/pull/5079
+# @+node:ekr.20170429152049.6: ** class LogRecordSocketReceiver
+class LogRecordSocketReceiver(SocketServer.ThreadingTCPServer):
+    """
+    Simple TCP socket-based logging receiver suitable for testing.
+    """
 
-SAFE_UA_TYPES = {
-    'bool',
-    'bytearray',
-    'bytes',
-    'complex',
-    'dict',
-    'float',
-    'frozenset',
-    'int',
-    'list',
-    'set',
-    'str',
-    'tuple',
-}
+    allow_reuse_address = 1
 
+    # @+others
+    # @+node:ekr.20170429152049.7: *3* __init__
+    def __init__(
+        self,
+        host='localhost',
+        port=logging.handlers.DEFAULT_TCP_LOGGING_PORT,
+        handler=LogRecordStreamHandler,
+    ):
+        super().__init__((host, port), handler)
+        self.abort = 0
+        self.timeout = 1
+        self.logname = None
 
-def ua_loads(data: bytes, **kwargs: Any) -> Any:
-    return UaUnpickler(io.BytesIO(data), **kwargs).load()
+    # @+node:ekr.20170429152049.8: *3* serve_until_stopped
+    def serve_until_stopped(self):
+        abort = 0
+        while not abort:
+            rd, wr, ex = select.select([self.socket.fileno()], [], [], self.timeout)
+            if rd:
+                self.handle_request()
+            abort = self.abort
 
-
-class UaUnpickler(pickle.Unpickler):
-    """Unpickle uA's built from plain Python values only."""
-
-    def find_class(self, module: str, name: str) -> Any:
-        if module in ('builtins', '__builtin__') and name in SAFE_UA_TYPES:
-            return super().find_class(module, name)
-        raise pickle.UnpicklingError(f"uA type not allowed: {module}.{name}")
+    # @-others
 
 
 # @+node:ekr.20170429152049.2: ** class LogRecordStreamHandler
@@ -108,37 +109,36 @@ class LogRecordStreamHandler(SocketServer.StreamRequestHandler):
     # @-others
 
 
-# @+node:ekr.20170429152049.6: ** class LogRecordSocketReceiver
-class LogRecordSocketReceiver(SocketServer.ThreadingTCPServer):
-    """
-    Simple TCP socket-based logging receiver suitable for testing.
-    """
+# @+node:ekr.20261126085659.1: ** class UaUnpickler and ua_loads
+# See PR https://github.com/leo-editor/leo-editor/pull/5079
 
-    allow_reuse_address = 1
+SAFE_UA_TYPES = {
+    'bool',
+    'bytearray',
+    'bytes',
+    'complex',
+    'dict',
+    'float',
+    'frozenset',
+    'int',
+    'list',
+    'set',
+    'str',
+    'tuple',
+}
 
-    # @+others
-    # @+node:ekr.20170429152049.7: *3* __init__
-    def __init__(
-        self,
-        host='localhost',
-        port=logging.handlers.DEFAULT_TCP_LOGGING_PORT,
-        handler=LogRecordStreamHandler,
-    ):
-        super().__init__((host, port), handler)
-        self.abort = 0
-        self.timeout = 1
-        self.logname = None
 
-    # @+node:ekr.20170429152049.8: *3* serve_until_stopped
-    def serve_until_stopped(self):
-        abort = 0
-        while not abort:
-            rd, wr, ex = select.select([self.socket.fileno()], [], [], self.timeout)
-            if rd:
-                self.handle_request()
-            abort = self.abort
+def ua_loads(data: bytes, **kwargs: Any) -> Any:
+    return UaUnpickler(io.BytesIO(data), **kwargs).load()
 
-    # @-others
+
+class UaUnpickler(pickle.Unpickler):
+    """Unpickle uA's built from plain Python values only."""
+
+    def find_class(self, module: str, name: str) -> Any:
+        if module in ('builtins', '__builtin__') and name in SAFE_UA_TYPES:
+            return super().find_class(module, name)
+        raise pickle.UnpicklingError(f"uA type not allowed: {module}.{name}")
 
 
 # @+node:ekr.20170429153814.1: ** start
