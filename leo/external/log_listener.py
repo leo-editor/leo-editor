@@ -63,7 +63,7 @@ class LogRecordStreamHandler(SocketServer.StreamRequestHandler):
     """
 
     # @+others
-    # @+node:ekr.20170429152049.3: *3* handle
+    # @+node:ekr.20170429152049.3: *3* LogRecordStreamHandler.handle
     def handle(self):
         """
         Handle multiple requests - each expected to be a 4-byte length,
@@ -89,11 +89,11 @@ class LogRecordStreamHandler(SocketServer.StreamRequestHandler):
         print('listener suspended')
         # This method can be re-invoked later.
 
-    # @+node:ekr.20170429152049.4: *3* unPickle
+    # @+node:ekr.20170429152049.4: *3* LogRecordStreamHandler.unPickle
     def unPickle(self, data):
         return ua_loads(data)  # PR #5079
 
-    # @+node:ekr.20170429152049.5: *3* handleLogRecord
+    # @+node:ekr.20170429152049.5: *3* LogRecordStreamHandler.handleLogRecord
     def handleLogRecord(self, record):
         # if a name is specified, we use the named logger rather than the one
         # implied by the record.
