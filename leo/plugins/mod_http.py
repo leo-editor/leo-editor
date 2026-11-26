@@ -39,8 +39,6 @@ Settings
     port to use (1 3 0 ~= L E O)
 ``@bool http_allow_remote_exec = False``
     must be changed to True for remote code execution
-``@string rst_http_attributename = 'rst_http_attribute'``
-    link to obsolete rst3 plugin
 ``@data user_bookmark_stylesheet``
     Additional .css for bookmarks.
 ``@data http_stylesheet``

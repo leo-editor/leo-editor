@@ -17,7 +17,6 @@ exclude = [
     "leo/extensions",
     "leo/external",
     "leo/modes",
-    "leo/plugins/obsolete",
     "leo/scripts",
     "leo/themes",
     "leo/unittests",
