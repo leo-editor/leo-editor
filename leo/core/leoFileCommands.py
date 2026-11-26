@@ -1280,8 +1280,6 @@ class FileCommands:
         return result
 
     # @+node:EKR.20040627114602: *5* fc.getDescendentUnknownAttributes
-    # Only @thin & @shadow vnodes have descendentVnodeUnknownAttributes field.
-
     def getDescendentUnknownAttributes(self, s: str, v: VNode | None = None) -> Value:
         """Unhexlify and unpickle t/v.descendentUnknownAttribute field."""
         try:
