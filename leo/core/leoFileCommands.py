@@ -29,38 +29,6 @@ from leo.core import leoGlobals as g
 from leo.core import leoNodes
 
 # @-<< leoFileCommands: imports >>
-# @+<< leoFileCommands: safe unpickle stuff >>
-# @+node:ekr.20261126052359.1: ** << leoFileCommands: safe unpickle stuff >>
-_SAFE_UA_TYPES = {
-    'bool',
-    'bytearray',
-    'bytes',
-    'complex',
-    'dict',
-    'float',
-    'frozenset',
-    'int',
-    'list',
-    'set',
-    'str',
-    'tuple',
-}
-
-
-class _UaUnpickler(pickle.Unpickler):
-    """Unpickle uA's built from plain Python values only."""
-
-    def find_class(self, module: str, name: str) -> Any:
-        if module in ('builtins', '__builtin__') and name in _SAFE_UA_TYPES:
-            return super().find_class(module, name)
-        raise pickle.UnpicklingError(f"uA type not allowed: {module}.{name}")
-
-
-def _ua_loads(data: bytes, **kwargs: Any) -> Any:
-    return _UaUnpickler(io.BytesIO(data), **kwargs).load()
-
-
-# @-<< leoFileCommands: safe unpickle stuff >>
 # @+<< leoFileCommands: annotations >>
 # @+node:ekr.20220819121640.1: ** << leoFileCommands: annotations >>
 if TYPE_CHECKING:  # pragma: no cover
@@ -283,10 +251,10 @@ class FastRead:
             return ''
         try:
             # No change needed to support protocols.
-            return _ua_loads(binString)
+            return g.ua_loads(binString)
         except Exception:
             try:
-                val2 = _ua_loads(binString, encoding='bytes')
+                val2 = g.ua_loads(binString, encoding='bytes')
                 return g.toUnicode(val2)
             except Exception:
                 g.trace(f"can not unpickle {attr}={val}")
@@ -1188,7 +1156,7 @@ class FileCommands:
             for row in conn.execute(sql):
                 (gnx, h, b, children, parents, iconVal, statusBits, ua) = row
                 try:
-                    ua = _ua_loads(g.toEncodedString(ua))
+                    ua = g.ua_loads(g.toEncodedString(ua))
                 except (ValueError, pickle.UnpicklingError):
                     ua = None
                 v = leoNodes.VNode(context=c, gnx=gnx)
@@ -1286,7 +1254,7 @@ class FileCommands:
             s_bytes = g.toEncodedString(s)
             # Throws a TypeError if val is not a hex string.
             bin = binascii.unhexlify(s_bytes)
-            val = _ua_loads(bin)  # Returns a Python object.
+            val = g.ua_loads(bin)  # Returns a Python object.
             return val
         except Exception:
             if v:

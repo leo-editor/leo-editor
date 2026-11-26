@@ -24,6 +24,7 @@ import io
 import operator
 import os
 from pathlib import Path
+import pickle
 
 # import pdb  # Do NOT import pdb here! g.pdb is a *function*
 import pprint
@@ -87,6 +88,21 @@ isPython3 = python_version_tuple >= (3, 0, 0)
 isValidPython = python_version_tuple >= minimum_python_version_tuple
 isMac = sys.platform.startswith('darwin')
 isWindows = sys.platform.startswith('win')
+
+SAFE_UA_TYPES = {
+    'bool',
+    'bytearray',
+    'bytes',
+    'complex',
+    'dict',
+    'float',
+    'frozenset',
+    'int',
+    'list',
+    'set',
+    'str',
+    'tuple',
+}
 # @-<< leoGlobals: global constants >>
 # @+<< define g.binary_file_extensions >>
 # @+node:ekr.20260709184046.1: ** << define g.binary_file_extensions >>
@@ -2120,6 +2136,43 @@ class SettingsDict(dict):
     # @-others
 
 
+# @+node:ekr.20200219071828.1: *3* class g.TestLeoGlobals
+class TestLeoGlobals(unittest.TestCase):
+    """Tests for leoGlobals.py."""
+
+    # @+others
+    # @+node:ekr.20200219071958.1: *4* TestLeoGlobals.test_comment_delims_from_extension
+    def test_comment_delims_from_extension(self) -> None:
+        from leo.core import leoGlobals as leo_g
+        from leo.core import leoApp
+
+        leo_g.app = leoApp.LeoApp()
+        assert leo_g.comment_delims_from_extension(".py") == ('#', '', '')
+        assert leo_g.comment_delims_from_extension(".c") == ('//', '/*', '*/')
+        assert leo_g.comment_delims_from_extension(".html") == ('', '<!--', '-->')
+
+    # @+node:ekr.20200219072957.1: *4* TestLeoGlobals.test_is_sentinel
+    def test_is_sentinel(self) -> None:
+        from leo.core import leoGlobals as leo_g
+
+        # Python. Test regular and blackened sentinels.
+        py_delims = leo_g.comment_delims_from_extension('.py')
+        assert leo_g.is_sentinel("#@+node", py_delims)
+        assert leo_g.is_sentinel("# @+node", py_delims)
+        assert not leo_g.is_sentinel("#comment", py_delims)
+        assert not leo_g.is_sentinel("# comment", py_delims)
+        # C.
+        c_delims = leo_g.comment_delims_from_extension('.c')
+        assert leo_g.is_sentinel("//@+node", c_delims)
+        assert not g.is_sentinel("//comment", c_delims)
+        # Html.
+        html_delims = leo_g.comment_delims_from_extension('.html')
+        assert leo_g.is_sentinel("<!--@+node-->", html_delims)
+        assert not leo_g.is_sentinel("<!--comment-->", html_delims)
+
+    # @-others
+
+
 # @+node:ekr.20191013145307.1: *3* class g.TkIDDialog (EmergencyDialog)
 class TkIDDialog(EmergencyDialog):
     """A class that creates an tkinter dialog to get the Leo ID."""
@@ -2425,6 +2478,20 @@ def null_object_print(id_: int, kind: str, *args) -> None:
         g.pr(f"{s:40} {callers_s}")
 
 
+# @+node:ekr.20261126083627.1: *3* class g.UaUnpickler and g.ua_loads
+def ua_loads(data: bytes, **kwargs: Any) -> Any:
+    return UaUnpickler(io.BytesIO(data), **kwargs).load()
+
+
+class UaUnpickler(pickle.Unpickler):
+    """Unpickle uA's built from plain Python values only."""
+
+    def find_class(self, module: str, name: str) -> Any:
+        if module in ('builtins', '__builtin__') and name in SAFE_UA_TYPES:
+            return super().find_class(module, name)
+        raise pickle.UnpicklingError(f"uA type not allowed: {module}.{name}")
+
+
 # @+node:ville.20090827174345.9963: *3* class g.UiTypeException & g.assertui
 class UiTypeException(Exception):
     pass
@@ -2433,43 +2500,6 @@ class UiTypeException(Exception):
 def assertUi(uitype: str) -> None:
     if not g.app.gui.guiName() == uitype:
         raise UiTypeException
-
-
-# @+node:ekr.20200219071828.1: *3* class TestLeoGlobals (leoGlobals.py)
-class TestLeoGlobals(unittest.TestCase):
-    """Tests for leoGlobals.py."""
-
-    # @+others
-    # @+node:ekr.20200219071958.1: *4* TestLeoGlobals.test_comment_delims_from_extension
-    def test_comment_delims_from_extension(self) -> None:
-        from leo.core import leoGlobals as leo_g
-        from leo.core import leoApp
-
-        leo_g.app = leoApp.LeoApp()
-        assert leo_g.comment_delims_from_extension(".py") == ('#', '', '')
-        assert leo_g.comment_delims_from_extension(".c") == ('//', '/*', '*/')
-        assert leo_g.comment_delims_from_extension(".html") == ('', '<!--', '-->')
-
-    # @+node:ekr.20200219072957.1: *4* TestLeoGlobals.test_is_sentinel
-    def test_is_sentinel(self) -> None:
-        from leo.core import leoGlobals as leo_g
-
-        # Python. Test regular and blackened sentinels.
-        py_delims = leo_g.comment_delims_from_extension('.py')
-        assert leo_g.is_sentinel("#@+node", py_delims)
-        assert leo_g.is_sentinel("# @+node", py_delims)
-        assert not leo_g.is_sentinel("#comment", py_delims)
-        assert not leo_g.is_sentinel("# comment", py_delims)
-        # C.
-        c_delims = leo_g.comment_delims_from_extension('.c')
-        assert leo_g.is_sentinel("//@+node", c_delims)
-        assert not g.is_sentinel("//comment", c_delims)
-        # Html.
-        html_delims = leo_g.comment_delims_from_extension('.html')
-        assert leo_g.is_sentinel("<!--@+node-->", html_delims)
-        assert not leo_g.is_sentinel("<!--comment-->", html_delims)
-
-    # @-others
 
 
 # @+node:ekr.20140904112935.18526: *3* g.isTextWrapper & isTextWidget
