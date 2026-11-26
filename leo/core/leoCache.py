@@ -169,7 +169,7 @@ class SqlitePickleShare:
             if data:
                 # Retain this code for maximum compatibility.
                 try:
-                    val = pickle.loads(zlib.decompress(data))
+                    val = g.ua_loads(zlib.decompress(data))  # PR #5079
                 except (ValueError, TypeError):
                     g.es("Unpickling error - Python 3 data accessed from Python 2?")
                     return None

@@ -219,7 +219,6 @@
 <v t="ekr.20230203163544.1"><vh>@file tracing_utils.py</vh></v>
 </v>
 <v t="ekr.20180225010743.1"><vh>In leo/external</vh>
-<v t="ekr.20190607124533.1"><vh>@nopylint</vh>
 <v t="ekr.20220823195205.1"><vh>@clean ../external/leoftsindex.py</vh></v>
 <v t="ekr.20180708145905.1"><vh>@clean ../external/py2cs_theory.md</vh>
 <v t="ekr.20180708152000.1"><vh>The problem</vh></v>
@@ -235,7 +234,6 @@
 <v t="ville.20091010232339.6117"><vh>@file ../external/lproto.py</vh></v>
 <v t="ekr.20180628055640.1"><vh>@file ../external/pdb_listener.py</vh></v>
 <v t="ekr.20160316091132.1"><vh>@file ../external/py2cs.py</vh></v>
-</v>
 </v>
 <v t="ekr.20180225010850.1"><vh>In leo/modes</vh>
 <v t="ekr.20250330145834.1"><vh>@edit ../modes/tex.py</vh></v>
@@ -1187,7 +1185,6 @@ efc.GitDiffController(c).diff_two_revs(
     path='leo/core',  # Optional path, relative to the git directory.
 )
 </t>
-<t tx="ekr.20190607124533.1"></t>
 <t tx="ekr.20200222083959.1">import logging
 rootLogger = logging.getLogger('')
 rootLogger.setLevel(logging.DEBUG)

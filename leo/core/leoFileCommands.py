@@ -2,8 +2,8 @@
 # @+node:ekr.20031218072017.3018: * @file leoFileCommands.py
 """Classes relating to reading and writing .leo files."""
 
-# @+<< leoFileCommands imports >>
-# @+node:ekr.20050405141130: ** << leoFileCommands imports >>
+# @+<< leoFileCommands: imports >>
+# @+node:ekr.20050405141130: ** << leoFileCommands: imports >>
 from __future__ import annotations
 import binascii
 from collections import defaultdict
@@ -28,9 +28,9 @@ import xml.sax.saxutils
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 
-# @-<< leoFileCommands imports >>
-# @+<< leoFileCommands annotations >>
-# @+node:ekr.20220819121640.1: ** << leoFileCommands annotations >>
+# @-<< leoFileCommands: imports >>
+# @+<< leoFileCommands: annotations >>
+# @+node:ekr.20220819121640.1: ** << leoFileCommands: annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
@@ -41,7 +41,7 @@ if TYPE_CHECKING:  # pragma: no cover
     Value = Any
 
 
-# @-<< leoFileCommands annotations >>
+# @-<< leoFileCommands: annotations >>
 # @+others
 # @+node:ekr.20150509194827.1: ** cmd (decorator)
 def cmd(name: str) -> Callable:
@@ -251,10 +251,10 @@ class FastRead:
             return ''
         try:
             # No change needed to support protocols.
-            return pickle.loads(binString)
+            return g.ua_loads(binString)  # PR #5079
         except Exception:
             try:
-                val2 = pickle.loads(binString, encoding='bytes')
+                val2 = g.ua_loads(binString, encoding='bytes')
                 return g.toUnicode(val2)
             except Exception:
                 g.trace(f"can not unpickle {attr}={val}")
@@ -1156,8 +1156,8 @@ class FileCommands:
             for row in conn.execute(sql):
                 (gnx, h, b, children, parents, iconVal, statusBits, ua) = row
                 try:
-                    ua = pickle.loads(g.toEncodedString(ua))
-                except ValueError:
+                    ua = g.ua_loads(g.toEncodedString(ua))  # PR #5079
+                except (ValueError, pickle.UnpicklingError):
                     ua = None
                 v = leoNodes.VNode(context=c, gnx=gnx)
                 v._headString = h
@@ -1248,17 +1248,13 @@ class FileCommands:
         return result
 
     # @+node:EKR.20040627114602: *5* fc.getDescendentUnknownAttributes
-    # Pre Leo 4.5 Only @thin vnodes had the descendentTnodeUnknownAttributes field.
-    # New in Leo 4.5: @thin & @shadow vnodes have descendentVnodeUnknownAttributes field.
-
     def getDescendentUnknownAttributes(self, s: str, v: VNode | None = None) -> Value:
         """Unhexlify and unpickle t/v.descendentUnknownAttribute field."""
         try:
-            # Changed in version 3.2: Accept only bytestring or bytearray objects as input.
-            s_bytes = g.toEncodedString(s)  # 2011/02/22
+            s_bytes = g.toEncodedString(s)
             # Throws a TypeError if val is not a hex string.
             bin = binascii.unhexlify(s_bytes)
-            val = pickle.loads(bin)  # Returns a Python object.
+            val = g.ua_loads(bin)  # PR #5079  # Returns a Python object.
             return val
         except Exception:
             if v:

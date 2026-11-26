@@ -22,60 +22,6 @@ import struct
 
 # @-<< log_listener imports >>
 # @+others
-# @+node:ekr.20170429152049.2: ** class LogRecordStreamHandler
-class LogRecordStreamHandler(SocketServer.StreamRequestHandler):
-    """Handler for a streaming logging request.
-
-    This basically logs the record using whatever logging policy is
-    configured locally.
-    """
-
-    # @+others
-    # @+node:ekr.20170429152049.3: *3* handle
-    def handle(self):
-        """
-        Handle multiple requests - each expected to be a 4-byte length,
-        followed by the LogRecord in pickle format. Logs the record
-        according to whatever policy is configured locally.
-        """
-        # print('listener started')
-        # This isn't shown.
-        while True:
-            try:
-                chunk = self.connection.recv(4)
-            except ConnectionResetError:
-                break
-            if len(chunk) < 4:
-                break
-            slen = struct.unpack('>L', chunk)[0]
-            chunk = self.connection.recv(slen)
-            while len(chunk) < slen:
-                chunk = chunk + self.connection.recv(slen - len(chunk))
-            obj = self.unPickle(chunk)
-            record = logging.makeLogRecord(obj)
-            self.handleLogRecord(record)
-        print('listener suspended')
-        # This method can be re-invoked later.
-
-    # @+node:ekr.20170429152049.4: *3* unPickle
-    def unPickle(self, data):
-        return pickle.loads(data)
-
-    # @+node:ekr.20170429152049.5: *3* handleLogRecord
-    def handleLogRecord(self, record):
-        # if a name is specified, we use the named logger rather than the one
-        # implied by the record.
-        if self.server.logname is not None:
-            name = self.server.logname
-        else:
-            name = record.name
-        logger = logging.getLogger(name)
-        # Do filtering at the client (other) end to save network bandwidth!
-        logger.handle(record)
-
-    # @-others
-
-
 # @+node:ekr.20170429152049.6: ** class LogRecordSocketReceiver
 class LogRecordSocketReceiver(SocketServer.ThreadingTCPServer):
     """
@@ -107,6 +53,92 @@ class LogRecordSocketReceiver(SocketServer.ThreadingTCPServer):
             abort = self.abort
 
     # @-others
+
+
+# @+node:ekr.20170429152049.2: ** class LogRecordStreamHandler
+class LogRecordStreamHandler(SocketServer.StreamRequestHandler):
+    """Handler for a streaming logging request.
+
+    This basically logs the record using whatever logging policy is
+    configured locally.
+    """
+
+    # @+others
+    # @+node:ekr.20170429152049.3: *3* LogRecordStreamHandler.handle
+    def handle(self):
+        """
+        Handle multiple requests - each expected to be a 4-byte length,
+        followed by the LogRecord in pickle format. Logs the record
+        according to whatever policy is configured locally.
+        """
+        # print('listener started')
+        # This isn't shown.
+        while True:
+            try:
+                chunk = self.connection.recv(4)
+            except ConnectionResetError:
+                break
+            if len(chunk) < 4:
+                break
+            slen = struct.unpack('>L', chunk)[0]
+            chunk = self.connection.recv(slen)
+            while len(chunk) < slen:
+                chunk = chunk + self.connection.recv(slen - len(chunk))
+            obj = self.unPickle(chunk)
+            record = logging.makeLogRecord(obj)
+            self.handleLogRecord(record)
+        print('listener suspended')
+        # This method can be re-invoked later.
+
+    # @+node:ekr.20170429152049.4: *3* LogRecordStreamHandler.unPickle
+    def unPickle(self, data):
+        return ua_loads(data)  # PR #5079
+
+    # @+node:ekr.20170429152049.5: *3* LogRecordStreamHandler.handleLogRecord
+    def handleLogRecord(self, record):
+        # if a name is specified, we use the named logger rather than the one
+        # implied by the record.
+        if self.server.logname is not None:
+            name = self.server.logname
+        else:
+            name = record.name
+        logger = logging.getLogger(name)
+        # Do filtering at the client (other) end to save network bandwidth!
+        logger.handle(record)
+
+    # @-others
+
+
+# @+node:ekr.20261126085659.1: ** class UaUnpickler and ua_loads
+# See PR https://github.com/leo-editor/leo-editor/pull/5079
+
+SAFE_UA_TYPES = {
+    'bool',
+    'bytearray',
+    'bytes',
+    'complex',
+    'dict',
+    'float',
+    'frozenset',
+    'int',
+    'list',
+    'set',
+    'str',
+    'tuple',
+}
+
+
+def ua_loads(data: bytes, **kwargs: Any) -> Any:
+    return UaUnpickler(io.BytesIO(data), **kwargs).load()
+
+
+class UaUnpickler(pickle.Unpickler):
+    """Unpickle uA's built from plain Python values only."""
+
+    def find_class(self, module: str, name: str) -> Any:
+        if module in ('builtins', '__builtin__') and name in SAFE_UA_TYPES:
+            return super().find_class(module, name)
+        raise pickle.UnpicklingError(f"uA type not allowed: {module}.{name}")
 
 
 # @+node:ekr.20170429153814.1: ** start

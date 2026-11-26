@@ -1,5 +1,0 @@
-#@+leo-ver=5-thin
-#@+node:ekr.20081121105001.147: * @file qtNotes.txt
-#@+all
-#@-all
-#@-leo

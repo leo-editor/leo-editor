@@ -1507,7 +1507,7 @@ class TestIni(BaseTestImporter):
                 # No trailing '|' on last entry!
 
                 # Directories...
-                doc/|dist/|editpane/|examples/|extensions/|external/|modes/|obsolete/|scripts/|themes/|unittests/|www/|
+                doc/|dist/|editpane/|examples/|extensions/|external/|modes/|scripts/|themes/|unittests/|www/|
 
 
             # Settings for particular files...

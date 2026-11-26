@@ -195,7 +195,6 @@ exclude = [
     "leo/plugins/examples/*.py",
     "leo/plugins/importers/*.py",
     "leo/plugins/leo_babel/*.py",
-    "leo/plugins/obsolete/*.py",
     "leo/plugins/pygeotag/*.py",
     "leo/plugins/qmlnb*.py",
     "leo/plugins/qt_quick*.py",

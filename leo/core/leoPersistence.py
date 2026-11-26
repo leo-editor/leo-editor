@@ -534,7 +534,7 @@ class PersistenceDataController:
         try:
             # Throws TypeError if s is not a hex string.
             bin = binascii.unhexlify(g.toEncodedString(s))
-            return pickle.loads(bin)
+            return g.ua_loads(bin)  # PR #5079
         except Exception:
             g.es_exception()
             return None
