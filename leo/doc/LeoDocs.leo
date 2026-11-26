@@ -703,20 +703,16 @@
 <v t="ekr.20141105055521.5"><vh>livecode.py</vh></v>
 <v t="ekr.20101113063552.9403"><vh>nav_qt.py</vh></v>
 <v t="ekr.20141105055521.6"><vh>nodetags.py</vh></v>
-<v t="ekr.20130815102041.15618"><vh>printing.py</vh></v>
 <v t="ekr.20101113063552.9404"><vh>projectwizard.py</vh></v>
 <v t="ekr.20170314090824.1"><vh>python_terminal.py</vh></v>
 <v t="ekr.20170314090914.1"><vh>QNCalendarWidgets</vh></v>
 <v t="ekr.20101113063552.9405"><vh>quicksearch.py</vh></v>
-<v t="ekr.20170314091002.1"><vh>richtext.py</vh></v>
 <v t="ekr.20130815102041.15630"><vh>screen_capture.py</vh></v>
 <v t="ekr.20130815102041.15631"><vh>screencast.py</vh></v>
-<v t="ekr.20101113063552.9406"><vh>scrolledmessage.py</vh></v>
 <v t="ekr.20170314091035.1"><vh>settings_finder.py</vh></v>
 <v t="ekr.20101113063552.9407"><vh>spydershell.py</vh></v>
 <v t="ekr.20101113063552.9408"><vh>stickynotes.py</vh></v>
 <v t="ekr.20170314091127.1"><vh>systray.py</vh></v>
-<v t="ekr.20101113063552.9409"><vh>todo.py</vh></v>
 <v t="ekr.20101113063552.9410"><vh>viewrendered.py</vh></v>
 <v t="ekr.20141105055521.7"><vh>viewrendered2.py</vh></v>
 <v t="ekr.20170314091206.1"><vh>wikiview.py</vh></v>
@@ -7729,59 +7725,6 @@ syntax, as documented in
 https://docs.python.org/library/re.html#regular-expression-syntax
 
 </t>
-<t tx="ekr.20101113063552.9406">Provides a Scrolled Message Dialog service for Qt.
-
-The plugin can display messages supplied as plain text or formatted as html. In
-addition the plugin can accept messages in rst format and convert them to be
-displayed as html.
-
-The displayed format can be controlled by the user via check boxes, so rst
-messages may be viewed either as text or as html. Html messages can also be
-viewed as raw text, which will be a good debug feature when creating complex
-dynamically generated html messages.
-
-The user interface is provided by a ScrolledMessage.ui file which is dynamically
-loaded each time a new dialog is loaded.
-
-The dialog is not modal and many dialogs can exist at one time. Dialogs can be
-named and output directed to a dialog with a specific name.
-
-The plugin is invoked like this:
-
-.. code-block:: python
-
-    g.doHook('scrolledMessage', c=c, msg='message', title='title',  ...)
-
-or:
-
-.. code-block:: python
-
-    g.app.gui.runScrolledMessageDialog(c=c, ...)
-
-All parameters are optional except ``c``.
-
-**Parameters**
-
-msg:
-    The text to be displayed (html, rst, plain).
-
-    If the text starts with 'rst:' it is assumed to be rst text and
-    is converted to html for display after the rst: prefix has been removed.
-    If the text starts with '&lt;' it is assumed to be html.
-    These auto detection features can be overridden by 'flags'.
-
-label:
-    The text to appear in a label above the display. If it is '', the label is hidden.
-
-title:
-    The title to appear on the window or dock.
-
-flags:
-    Says what kind of message: 'rst', 'text', 'html'. This overrides auto-detection.
-
-    Flags can be combined, for example, 'rst html' causes the message
-    to be interpreted as rst and displayed as html.
-</t>
 <t tx="ekr.20101113063552.9407">Launches the spyder environment with access to Leo instance.
 See https://packages.python.org/spyder/
 
@@ -7827,15 +7770,6 @@ Also, you must not edit the text in the Leo node.
 When **creating an encrypted note**, you should **start with an empty node**.
 If you want to encrypt text that already exists in a node, select-all cut it to
 empty the node, then paste it into the note.
-
-</t>
-<t tx="ekr.20101113063552.9409">Provides to-do list and simple task management for leo (Qt only).
-
-This plugin adds time required, progress and priority settings for nodes. With
-the ``@project`` tag a branch can display progress and time required with dynamic
-hierarchical updates.
-
-For more documentation see: https://leo.zwiki.org/tododoc.
 
 </t>
 <t tx="ekr.20101113063552.9410">Creates a window for *live* rendering of rst, html, etc.  Qt only.
@@ -9518,9 +9452,6 @@ say, python/Lib/site-packages.
 - git diff ensures that import hasn't significantly altered the code,
 
 This is exactly what I need:  I can make changes to important tools *safely* within Leo.
-</t>
-<t tx="ekr.20130815102041.15618">This plugin supports printing using the Qt GUI.
-Written by Jacob M. Peck.
 </t>
 <t tx="ekr.20130815102041.15628">By Ville M. Vainio
 See: https://en.wikipedia.org/wiki/Mylyn
@@ -16784,8 +16715,6 @@ The **@all** directive tells Leo to write the nodes of an **@file tree** to the 
 <t tx="ekr.20170314090749.1">Dumps files dropped into Leo.</t>
 <t tx="ekr.20170314090824.1">Embeds an python interpreter in Leo's log pane.</t>
 <t tx="ekr.20170314090914.1">Adds a calendar widget in the log area.
-</t>
-<t tx="ekr.20170314091002.1">Enables rich text using the `CKEditor &lt;https://ckeditor.com/&gt;`_ editor.
 </t>
 <t tx="ekr.20170314091035.1">Adds the Edit Settings menu tree to the Settings menu.</t>
 <t tx="ekr.20170314091127.1">Adds Leo to the system tray.</t>
@@ -27038,12 +26967,17 @@ support the following patterns:
 .. _`PR #5070`: https://github.com/leo-editor/leo-editor/pull/5070
 .. _`PR #5075`: https://github.com/leo-editor/leo-editor/pull/5075
 .. _`PR #5077`: https://github.com/leo-editor/leo-editor/pull/5077
+.. _`PR #5079`: https://github.com/leo-editor/leo-editor/pull/5079
 
 .. C:\Repos\leo-editor&gt;gh pr list --limit 100 --state merged --search milestone:6.9.0 --json number,title
 
 .. Convert json to single line:
 .. find ^\{\n"number": ([0-9]+),\n"title": "(.*?)"\n}(,)?
 .. repl PR #\1: \2
+
+Urgent security fix
+
+- `PR #5079`_: Fix a serious security vulnerability.
 
 New and improved commands
 
@@ -27142,6 +27076,9 @@ Testing
 Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor/preface.html).
 
 **The highlights of Leo 6.9.0**
+
+- Fixes a serious security vulnerability.
+  All of Leo's users should upgrade to Leo 6.9.0 immediately.
 
 - Remove an long-standing confusion about what backspaces mean in find strings::
 
