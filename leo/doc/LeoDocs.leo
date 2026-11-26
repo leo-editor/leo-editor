@@ -27077,7 +27077,7 @@ Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor
 
 **The highlights of Leo 6.9.0**
 
-- Fixes a serious security vulnerability.
+- Fix a serious security vulnerability.
   All of Leo's users should upgrade to Leo 6.9.0 immediately.
 
 - Remove an long-standing confusion about what backspaces mean in find strings::
