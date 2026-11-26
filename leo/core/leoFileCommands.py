@@ -1280,17 +1280,14 @@ class FileCommands:
         return result
 
     # @+node:EKR.20040627114602: *5* fc.getDescendentUnknownAttributes
-    # Pre Leo 4.5 Only @thin vnodes had the descendentTnodeUnknownAttributes field.
-    # New in Leo 4.5: @thin & @shadow vnodes have descendentVnodeUnknownAttributes field.
+    # Only @thin & @shadow vnodes have descendentVnodeUnknownAttributes field.
 
     def getDescendentUnknownAttributes(self, s: str, v: VNode | None = None) -> Value:
         """Unhexlify and unpickle t/v.descendentUnknownAttribute field."""
         try:
-            # Changed in version 3.2: Accept only bytestring or bytearray objects as input.
-            s_bytes = g.toEncodedString(s)  # 2011/02/22
+            s_bytes = g.toEncodedString(s)
             # Throws a TypeError if val is not a hex string.
             bin = binascii.unhexlify(s_bytes)
-            ### val = pickle.loads(bin)  # Returns a Python object.
             val = _ua_loads(bin)  # Returns a Python object.
             return val
         except Exception:
