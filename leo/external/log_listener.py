@@ -22,6 +22,38 @@ import struct
 
 # @-<< log_listener imports >>
 # @+others
+# @+node:ekr.20261126085659.1: ** class UaUnpickler and ua_loads
+# See PR https://github.com/leo-editor/leo-editor/pull/5079
+
+SAFE_UA_TYPES = {
+    'bool',
+    'bytearray',
+    'bytes',
+    'complex',
+    'dict',
+    'float',
+    'frozenset',
+    'int',
+    'list',
+    'set',
+    'str',
+    'tuple',
+}
+
+
+def ua_loads(data: bytes, **kwargs: Any) -> Any:
+    return UaUnpickler(io.BytesIO(data), **kwargs).load()
+
+
+class UaUnpickler(pickle.Unpickler):
+    """Unpickle uA's built from plain Python values only."""
+
+    def find_class(self, module: str, name: str) -> Any:
+        if module in ('builtins', '__builtin__') and name in SAFE_UA_TYPES:
+            return super().find_class(module, name)
+        raise pickle.UnpicklingError(f"uA type not allowed: {module}.{name}")
+
+
 # @+node:ekr.20170429152049.2: ** class LogRecordStreamHandler
 class LogRecordStreamHandler(SocketServer.StreamRequestHandler):
     """Handler for a streaming logging request.
@@ -59,7 +91,7 @@ class LogRecordStreamHandler(SocketServer.StreamRequestHandler):
 
     # @+node:ekr.20170429152049.4: *3* unPickle
     def unPickle(self, data):
-        return pickle.loads(data)
+        return ua_loads(data)  # PR #5079
 
     # @+node:ekr.20170429152049.5: *3* handleLogRecord
     def handleLogRecord(self, record):
