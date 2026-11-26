@@ -2,8 +2,8 @@
 # @+node:ekr.20031218072017.3018: * @file leoFileCommands.py
 """Classes relating to reading and writing .leo files."""
 
-# @+<< leoFileCommands imports >>
-# @+node:ekr.20050405141130: ** << leoFileCommands imports >>
+# @+<< leoFileCommands: imports >>
+# @+node:ekr.20050405141130: ** << leoFileCommands: imports >>
 from __future__ import annotations
 import binascii
 from collections import defaultdict
@@ -28,9 +28,41 @@ import xml.sax.saxutils
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 
-# @-<< leoFileCommands imports >>
-# @+<< leoFileCommands annotations >>
-# @+node:ekr.20220819121640.1: ** << leoFileCommands annotations >>
+# @-<< leoFileCommands: imports >>
+# @+<< leoFileCommands: safe unpickle stuff >>
+# @+node:ekr.20261126052359.1: ** << leoFileCommands: safe unpickle stuff >>
+_SAFE_UA_TYPES = {
+    'bool',
+    'bytearray',
+    'bytes',
+    'complex',
+    'dict',
+    'float',
+    'frozenset',
+    'int',
+    'list',
+    'set',
+    'str',
+    'tuple',
+}
+
+
+class _UaUnpickler(pickle.Unpickler):
+    """Unpickle uA's built from plain Python values only."""
+
+    def find_class(self, module: str, name: str) -> Any:
+        if module in ('builtins', '__builtin__') and name in _SAFE_UA_TYPES:
+            return super().find_class(module, name)
+        raise pickle.UnpicklingError(f"uA type not allowed: {module}.{name}")
+
+
+def _ua_loads(data: bytes, **kwargs: Any) -> Any:
+    return _UaUnpickler(io.BytesIO(data), **kwargs).load()
+
+
+# @-<< leoFileCommands: safe unpickle stuff >>
+# @+<< leoFileCommands: annotations >>
+# @+node:ekr.20220819121640.1: ** << leoFileCommands: annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
@@ -41,7 +73,7 @@ if TYPE_CHECKING:  # pragma: no cover
     Value = Any
 
 
-# @-<< leoFileCommands annotations >>
+# @-<< leoFileCommands: annotations >>
 # @+others
 # @+node:ekr.20150509194827.1: ** cmd (decorator)
 def cmd(name: str) -> Callable:
@@ -251,10 +283,12 @@ class FastRead:
             return ''
         try:
             # No change needed to support protocols.
-            return pickle.loads(binString)
+            ### return pickle.loads(binString)
+            return _ua_loads(binString)
         except Exception:
             try:
-                val2 = pickle.loads(binString, encoding='bytes')
+                ### val2 = pickle.loads(binString, encoding='bytes')
+                val2 = _ua_loads(binString, encoding='bytes')
                 return g.toUnicode(val2)
             except Exception:
                 g.trace(f"can not unpickle {attr}={val}")
@@ -1156,8 +1190,10 @@ class FileCommands:
             for row in conn.execute(sql):
                 (gnx, h, b, children, parents, iconVal, statusBits, ua) = row
                 try:
-                    ua = pickle.loads(g.toEncodedString(ua))
-                except ValueError:
+                    ### ua = pickle.loads(g.toEncodedString(ua))
+                    ua = _ua_loads(g.toEncodedString(ua))
+                except (ValueError, pickle.UnpicklingError):
+                    ### except ValueError:
                     ua = None
                 v = leoNodes.VNode(context=c, gnx=gnx)
                 v._headString = h
@@ -1258,7 +1294,8 @@ class FileCommands:
             s_bytes = g.toEncodedString(s)  # 2011/02/22
             # Throws a TypeError if val is not a hex string.
             bin = binascii.unhexlify(s_bytes)
-            val = pickle.loads(bin)  # Returns a Python object.
+            ### val = pickle.loads(bin)  # Returns a Python object.
+            val = _ua_loads(bin)  # Returns a Python object.
             return val
         except Exception:
             if v:
