@@ -2956,12 +2956,11 @@ They contain restructured text markup for the sphinx tool. See::
     https://docutils.sourceforge.net/rst.html
     https://docutils.sourceforge.net/docs/user/rst/quickstart.html
 
-To generate these docs:
+To generate Leo's documentation, devs with write permission can go to the publish-docs page:
 
-    `git checkout gh-pages`
-    Click the `make-sphinx` button
-    `git commit -m "log message"`
-    `git push`
+    https://github.com/leo-editor/leo-editor/actions/workflows/publish-docs.yml
+    
+Click on the green ``Run Workflow`` and select the desired branch. That's all!
 </t>
 <t tx="ekr.20040414172218.4">
 ################
