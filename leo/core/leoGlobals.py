@@ -88,21 +88,6 @@ isPython3 = python_version_tuple >= (3, 0, 0)
 isValidPython = python_version_tuple >= minimum_python_version_tuple
 isMac = sys.platform.startswith('darwin')
 isWindows = sys.platform.startswith('win')
-
-SAFE_UA_TYPES = {
-    'bool',
-    'bytearray',
-    'bytes',
-    'complex',
-    'dict',
-    'float',
-    'frozenset',
-    'int',
-    'list',
-    'set',
-    'str',
-    'tuple',
-}
 # @-<< leoGlobals: global constants >>
 # @+<< define g.binary_file_extensions >>
 # @+node:ekr.20260709184046.1: ** << define g.binary_file_extensions >>
@@ -2479,6 +2464,22 @@ def null_object_print(id_: int, kind: str, *args) -> None:
 
 
 # @+node:ekr.20261126083627.1: *3* class g.UaUnpickler and g.ua_loads
+SAFE_UA_TYPES = {  # For g.ua_loads.
+    'bool',
+    'bytearray',
+    'bytes',
+    'complex',
+    'dict',
+    'float',
+    'frozenset',
+    'int',
+    'list',
+    'set',
+    'str',
+    'tuple',
+}
+
+
 def ua_loads(data: bytes, **kwargs: Any) -> Any:
     return UaUnpickler(io.BytesIO(data), **kwargs).load()
 

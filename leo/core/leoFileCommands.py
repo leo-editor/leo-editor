@@ -251,7 +251,7 @@ class FastRead:
             return ''
         try:
             # No change needed to support protocols.
-            return g.ua_loads(binString)
+            return g.ua_loads(binString)  # PR #5079
         except Exception:
             try:
                 val2 = g.ua_loads(binString, encoding='bytes')
@@ -1156,7 +1156,7 @@ class FileCommands:
             for row in conn.execute(sql):
                 (gnx, h, b, children, parents, iconVal, statusBits, ua) = row
                 try:
-                    ua = g.ua_loads(g.toEncodedString(ua))
+                    ua = g.ua_loads(g.toEncodedString(ua))  # PR #5079
                 except (ValueError, pickle.UnpicklingError):
                     ua = None
                 v = leoNodes.VNode(context=c, gnx=gnx)
@@ -1254,7 +1254,7 @@ class FileCommands:
             s_bytes = g.toEncodedString(s)
             # Throws a TypeError if val is not a hex string.
             bin = binascii.unhexlify(s_bytes)
-            val = g.ua_loads(bin)  # Returns a Python object.
+            val = g.ua_loads(bin)  # PR #5079  # Returns a Python object.
             return val
         except Exception:
             if v:
