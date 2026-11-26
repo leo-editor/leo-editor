@@ -283,11 +283,9 @@ class FastRead:
             return ''
         try:
             # No change needed to support protocols.
-            ### return pickle.loads(binString)
             return _ua_loads(binString)
         except Exception:
             try:
-                ### val2 = pickle.loads(binString, encoding='bytes')
                 val2 = _ua_loads(binString, encoding='bytes')
                 return g.toUnicode(val2)
             except Exception:
@@ -1190,10 +1188,8 @@ class FileCommands:
             for row in conn.execute(sql):
                 (gnx, h, b, children, parents, iconVal, statusBits, ua) = row
                 try:
-                    ### ua = pickle.loads(g.toEncodedString(ua))
                     ua = _ua_loads(g.toEncodedString(ua))
                 except (ValueError, pickle.UnpicklingError):
-                    ### except ValueError:
                     ua = None
                 v = leoNodes.VNode(context=c, gnx=gnx)
                 v._headString = h
