@@ -8,7 +8,7 @@ from __future__ import annotations
 from collections.abc import Callable
 import re
 import time
-from typing import Any, cast, Self, TYPE_CHECKING
+from typing import Any, cast, TYPE_CHECKING
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 from leo.core.leoQt import EndEditHint, Format, ItemFlag, KeyboardModifier
 from leo.core import leoGlobals as g
@@ -72,27 +72,6 @@ class LeoQtTree(leoFrame.LeoTree):
         self.declutter_data: dict[Any, Any] = {}
         self.loaded_images: dict[str, QIcon] = {}
 
-        if 0:  # None of this works.
-            # @+<< Drag and drop >>
-            # @+node:ekr.20220913074246.1: *4* << Drag and drop >>
-            w.setDragEnabled(True)
-            w.viewport().setAcceptDrops(True)
-            w.showDropIndicator = True
-            w.setAcceptDrops(True)
-            w.setDragDropMode(w.InternalMove)
-            if 1:  # Does not work
-
-                def dropMimeData(
-                    self: Self, data: str, action: str, row: str, col: str, parent: str
-                ) -> None:
-                    g.trace()
-
-                # w.dropMimeData = dropMimeData
-
-                def mimeData(self: Self, indexes: str) -> None:
-                    g.trace()
-            # @-<< Drag and drop >>
-
         # Early inits...
         try:
             w.headerItem().setHidden(True)
@@ -117,6 +96,7 @@ class LeoQtTree(leoFrame.LeoTree):
         tw.itemCollapsed.connect(self.onItemCollapsed)
         tw.itemExpanded.connect(self.onItemExpanded)
         tw.customContextMenuRequested.connect(self.onContextMenu)
+        tw.setSelectionMode(tw.SelectionMode.SingleSelection)
         # tw.onItemChanged.connect(self.onItemChanged)
         g.app.gui.setFilter(c, tw, self, tag='tree')
         # 2010/01/24: Do not set this here.
