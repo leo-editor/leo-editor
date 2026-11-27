@@ -9,8 +9,8 @@ from collections.abc import Callable
 import re
 import time
 from typing import Any, cast, Self, TYPE_CHECKING
-from leo.core.leoQt import QtCore, QtGui, QtWidgets
-from leo.core.leoQt import EndEditHint, Format, ItemFlag, KeyboardModifier
+from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6.QtCore import Qt
 from leo.core import leoGlobals as g
 from leo.core import leoFrame
 from leo.core import leoPlugins  # Uses leoPlugins.TryNext.
@@ -653,7 +653,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 # Careful. We may have switched gui during unit testing.
                 if hasattr(g.app.gui, 'qtApp'):
                     mods = g.app.gui.qtApp.keyboardModifiers()
-                    isCtrl = bool(mods & KeyboardModifier.ControlModifier)
+                    isCtrl = bool(mods & mods.KeyboardModifier.ControlModifier)
                     # We could also add support for Qt.ShiftModifier, Qt.AltModifier
                     # & Qt.MetaModifier.
                     if isCtrl:
@@ -731,8 +731,8 @@ class LeoQtTree(leoFrame.LeoTree):
 
         if hasattr(g.app.gui, 'qtApp'):
             mods = g.app.gui.qtApp.keyboardModifiers()
-            isCtrl = bool(mods & KeyboardModifier.ControlModifier)
-            isShift = bool(mods & KeyboardModifier.ShiftModifier)
+            isCtrl = bool(mods & mods.KeyboardModifier.ControlModifier)
+            isShift = bool(mods & mods.KeyboardModifier.ShiftModifier)
             if isCtrl and not isShift:
                 self.expandItem(item)
             elif isShift and not isCtrl:
@@ -819,7 +819,7 @@ class LeoQtTree(leoFrame.LeoTree):
         height = max([i.height() for i in images])
         images = [i.scaledToHeight(height) for i in images]
         width = sum([i.width() for i in images]) + hsep * (len(images) - 1)
-        pix = QtGui.QImage(width, height, Format.Format_ARGB32_Premultiplied)
+        pix = QtGui.QImage(width, height, QtGui.QImage.Format.Format_ARGB32_Premultiplied)
         pix.fill(QtGui.QColor(0, 0, 0, 0))
         painter = QtGui.QPainter()
         ok = painter.begin(pix)
@@ -970,9 +970,8 @@ class LeoQtTree(leoFrame.LeoTree):
         w = self.treeWidget
         itemOrTree = parent_item or w
         item = QtWidgets.QTreeWidgetItem(itemOrTree)
-        item.setFlags(item.flags() | ItemFlag.ItemIsEditable)
-        ChildIndicatorPolicy = QtWidgets.QTreeWidgetItem.ChildIndicatorPolicy
-        item.setChildIndicatorPolicy(ChildIndicatorPolicy.DontShowIndicatorWhenChildless)
+        item.setFlags(item.flags() | Qt.ItemFlag.ItemIsEditable)
+        item.setChildIndicatorPolicy(item.ChildIndicatorPolicy.DontShowIndicatorWhenChildless)
         try:
             g.visit_tree_item(self.c, p, item)
         except leoPlugins.TryNext:
@@ -1234,7 +1233,7 @@ class LeoQtTree(leoFrame.LeoTree):
             return
         # Trigger the end-editing event.
         w = self.treeWidget
-        w.closeEditor(e, EndEditHint.NoHint)
+        w.closeEditor(e, e.EndEditHint.NoHint)
         w.setCurrentItem(item)
 
     # @+node:ekr.20110605121601.17915: *4* LeoQtTree.getSelectedPositions
