@@ -11,11 +11,13 @@ from leo.core.leoTest2 import LeoUnitTest
 from leo.core import leoGlobals as g
 
 
+# @+others
+# @+node:ekr.20261127201202.1: ** class TestRealQtGui
 class TestRealQtGui(LeoUnitTest):
     """Test cases that actually use the Qt Gui."""
 
     # @+others
-    # @+node:ekr.20261127192442.1: ** TestRealQtGui.test_qt_tree
+    # @+node:ekr.20261127192442.1: *3* TestRealQtGui.test_qt_tree
     def test_qt_tree(self):
 
         from PyQt6 import QtCore, QtGui, QtWidgets
@@ -48,5 +50,7 @@ class TestRealQtGui(LeoUnitTest):
 
     # @-others
 
+
+# @-others
 
 # @-leo
