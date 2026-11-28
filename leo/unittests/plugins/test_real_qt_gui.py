@@ -20,12 +20,13 @@ class TestRealQtGui(LeoUnitTest):
     # @+node:ekr.20261127192442.1: *3* TestRealQtGui.test_qt_tree
     def test_qt_tree(self):
 
-        from PyQt6 import QtGui
+        from PyQt6 import QtGui, QtWidgets
 
         c = create_app(gui_name='qt')
         p = c.p
         w = c.frame.tree
         assert w.__class__.__name__ == 'LeoQtTree'
+        w.treeWidget.__class__.__name__ == 'LeoQTreeWidget'
 
         # Start editing,
         w.editLabel(p)
@@ -34,8 +35,12 @@ class TestRealQtGui(LeoUnitTest):
         item = w.createTreeItem(p, parent_item=None)
         assert item.__class__.__name__ == 'QTreeWidgetItem'
 
-        # Test endEditLabel.
-        w.endEditLabel()
+        e = w.getTreeEditorForItem(item)
+
+        # Test code endEditLabel.
+        w = w.treeWidget
+        w.closeEditor(e, QtWidgets.QAbstractItemDelegate.EndEditHint.NoHint)
+        w.setCurrentItem(item)
 
         # Test code in onItemEntered and onItemClicked.
         mods = g.app.gui.qtApp.keyboardModifiers()
