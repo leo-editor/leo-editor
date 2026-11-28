@@ -9,8 +9,8 @@ from collections.abc import Callable
 import re
 import time
 from typing import Any, cast, Self, TYPE_CHECKING
-from leo.core.leoQt import QtCore, QtGui, QtWidgets
-from leo.core.leoQt import EndEditHint, Format, ItemFlag, KeyboardModifier
+from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6.QtCore import Qt
 from leo.core import leoGlobals as g
 from leo.core import leoFrame
 from leo.core import leoPlugins  # Uses leoPlugins.TryNext.
@@ -144,17 +144,6 @@ class LeoQtTree(leoFrame.LeoTree):
         """Return the name of this widget: must start with "canvas"."""
         return 'canvas(tree)'
 
-    # @+node:ekr.20110605121601.17868: *3* LeoQtTree: Debugging & tracing
-    def error(self, s: str) -> None:
-        if not g.unitTesting:
-            g.trace('LeoQtTree Error: ', s, g.callers())
-
-    def traceItem(self, item: QTreeWidgetItem) -> str:
-        if item:
-            # A QTreeWidgetItem.
-            return f"item {id(item)}: {self.getItemText(item)}"
-        return '<no item>'
-
     # @+node:ekr.20110605121601.17872: *3* LeoQtTree: Drawing
     # @+node:ekr.20110605121601.18408: *4* LeoQtTree.clear
     def clear(self) -> None:
@@ -243,10 +232,11 @@ class LeoQtTree(leoFrame.LeoTree):
                 try:
                     s = pattern.sub(arg, text)
                 except re.error as e:
-                    g.app.log(
-                        f'Error in declutter: {e!r}"\n  REPLACE:{arg!r}\n  HEADLINE:{text!r}',
-                        color='error',
-                    )  # ty:ignore
+                    g.es_print_unique_message(
+                        f"Error in declutter: {e!r}\n"
+                        f"   Replace: {arg!r}\n"
+                        f"  Headline: {text!r}"
+                    )  # fmt: skip
             elif cmd == 'REPLACE-HEAD':
                 s = text[: m.start()].rstrip()
             elif cmd == 'REPLACE-TAIL':
@@ -542,14 +532,18 @@ class LeoQtTree(leoFrame.LeoTree):
             return
         c = self.c
         p = c.p
-        if p:
-            h = p.h  # 2010/02/09: Fix bug 518823.
-            for item in self.vnode2items(p.v):
-                if self.isValidItem(item):
-                    self.setItemText(item, h)
-                    if self.use_declutter:  # #2844.
-                        icon = self.declutter_node(c, p.v, item)
-                        item.setIcon(0, icon)  # 0 is the column number.
+        if not p:
+            return
+        h = p.h
+        ### g.printObj(self.vnode2itemsDict, tag=f"LeoQtTree.{g.my_name()} vnode2itemsDict {p.h}")  ###
+        g.trace(f"{len(list(self.vnode2itemsDict.keys()))=}")
+        for item in self.vnode2items(p.v):
+            g.trace(f"{item=}")
+            if self.isValidItem(item):
+                self.setItemText(item, h)
+                if self.use_declutter:  # #2844.
+                    icon = self.declutter_node(c, p.v, item)
+                    item.setIcon(0, icon)  # 0 is the column number.
 
     # @+node:ekr.20140907201613.18986: *4* LeoQtTree.repaint (not used)
     def repaint(self) -> None:
@@ -653,7 +647,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 # Careful. We may have switched gui during unit testing.
                 if hasattr(g.app.gui, 'qtApp'):
                     mods = g.app.gui.qtApp.keyboardModifiers()
-                    isCtrl = bool(mods & KeyboardModifier.ControlModifier)
+                    isCtrl = bool(mods & mods.ControlModifier)
                     # We could also add support for Qt.ShiftModifier, Qt.AltModifier
                     # & Qt.MetaModifier.
                     if isCtrl:
@@ -688,7 +682,7 @@ class LeoQtTree(leoFrame.LeoTree):
         c = self.c
         p = self.item2position(item)
         if not p:
-            self.error('no p')
+            g.es_print(f"no p: {item=}")
             return
         # Do **not** set lockouts here.
         # Only methods that actually generate events should set lockouts.
@@ -711,7 +705,7 @@ class LeoQtTree(leoFrame.LeoTree):
         finally:
             self.busy = False
         if not p:
-            self.error('no p')
+            g.es_print(f"no p: {item=}")
             return
         # 2014/02/21: generate headdlick1/2 instead of icondclick1/2.
         if g.doHook("headdclick1", c=c, p=p, event=None) is None:
@@ -726,13 +720,15 @@ class LeoQtTree(leoFrame.LeoTree):
         <CTRL-hover> -- expand;
         <SHIFT-hover> -- contract.
         """
+        g.trace(g.callers())
+
         if not self.use_mouse_expand_gestures:
             return
 
         if hasattr(g.app.gui, 'qtApp'):
             mods = g.app.gui.qtApp.keyboardModifiers()
-            isCtrl = bool(mods & KeyboardModifier.ControlModifier)
-            isShift = bool(mods & KeyboardModifier.ShiftModifier)
+            isCtrl = bool(mods & mods.ControlModifier)
+            isShift = bool(mods & mods.ShiftModifier)
             if isCtrl and not isShift:
                 self.expandItem(item)
             elif isShift and not isCtrl:
@@ -748,7 +744,7 @@ class LeoQtTree(leoFrame.LeoTree):
         c = self.c
         p = self.item2position(item)
         if not p:
-            self.error('no p')
+            g.es_print(f"no p: {item=}")
             return
         # Do **not** set lockouts here.
         # Only methods that actually generate events should set lockouts.
@@ -766,7 +762,7 @@ class LeoQtTree(leoFrame.LeoTree):
         item = self.getCurrentItem()
         p = self.item2position(item)
         if not p:
-            self.error(f"no p for item: {item}")
+            g.es_print(f"no p for item: {item}")
             return
         # Do **not** set lockouts here.
         # Only methods that actually generate events should set lockouts.
@@ -819,7 +815,7 @@ class LeoQtTree(leoFrame.LeoTree):
         height = max([i.height() for i in images])
         images = [i.scaledToHeight(height) for i in images]
         width = sum([i.width() for i in images]) + hsep * (len(images) - 1)
-        pix = QtGui.QImage(width, height, Format.Format_ARGB32_Premultiplied)
+        pix = QtGui.QImage(width, height, QtGui.QImage.Format.Format_ARGB32_Premultiplied)
         pix.fill(QtGui.QColor(0, 0, 0, 0))
         painter = QtGui.QPainter()
         ok = painter.begin(pix)
@@ -970,9 +966,8 @@ class LeoQtTree(leoFrame.LeoTree):
         w = self.treeWidget
         itemOrTree = parent_item or w
         item = QtWidgets.QTreeWidgetItem(itemOrTree)
-        item.setFlags(item.flags() | ItemFlag.ItemIsEditable)
-        ChildIndicatorPolicy = QtWidgets.QTreeWidgetItem.ChildIndicatorPolicy
-        item.setChildIndicatorPolicy(ChildIndicatorPolicy.DontShowIndicatorWhenChildless)
+        item.setFlags(item.flags() | Qt.ItemFlag.ItemIsEditable)
+        item.setChildIndicatorPolicy(item.ChildIndicatorPolicy.DontShowIndicatorWhenChildless)
         try:
             g.visit_tree_item(self.c, p, item)
         except leoPlugins.TryNext:
@@ -1149,13 +1144,12 @@ class LeoQtTree(leoFrame.LeoTree):
     # @+node:ekr.20110605121601.17909: *4* LeoQtTree.editLabel and helper
     def editLabel(
         self, p: Position, selectAll: bool = False, selection: tuple | None = None
-    ) -> None:
+    ) -> QWidget | None:
         """Start editing p's headline."""
         if self.busy:
             return
         c = self.c
         # Do any scheduled redraw.
-        # This won't do anything in the new redraw scheme.
         c.outerUpdate()
         if item := self.position2item(p):
             if self.use_declutter:
@@ -1163,11 +1157,12 @@ class LeoQtTree(leoFrame.LeoTree):
             e, _wrapper = self.editLabelHelper(item, selectAll, selection)
         else:
             e = None
-            self.error(f"no item for {p}")
+            g.es_print(f"no item for {p}")
         if e:
             self.sizeTreeEditor(c, e)
             # A nice hack: just set the focus request.
             c.requestedFocusWidget = e
+        return e  # For unit tests.
 
     # @+node:ekr.20110605121601.18422: *5* LeoQtTree.editLabelHelper
     def editLabelHelper(
@@ -1234,7 +1229,7 @@ class LeoQtTree(leoFrame.LeoTree):
             return
         # Trigger the end-editing event.
         w = self.treeWidget
-        w.closeEditor(e, EndEditHint.NoHint)
+        w.closeEditor(e, QtWidgets.QAbstractItemDelegate.EndEditHint.NoHint)
         w.setCurrentItem(item)
 
     # @+node:ekr.20110605121601.17915: *4* LeoQtTree.getSelectedPositions
@@ -1252,9 +1247,8 @@ class LeoQtTree(leoFrame.LeoTree):
         # p.setHeadString(s)
         if w := self.headline_wrapper(p):
             w.setAllText(s)
-        else:
-            if item := self.position2item(p):
-                self.setItemText(item, s)
+        elif item := self.position2item(p):
+            self.setItemText(item, s)
 
     # @+node:ekr.20110605121601.17913: *4* LeoQtTree.setItemForCurrentPosition
     def setItemForCurrentPosition(self) -> QTreeWidgetItem | None:
