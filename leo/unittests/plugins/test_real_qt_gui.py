@@ -25,19 +25,22 @@ class TestRealQtGui(LeoUnitTest):
         c = create_app(gui_name='qt')
         p = c.p
         w = c.frame.tree
+        assert w.__class__.__name__ == 'LeoQtTree'
 
         # Start editing,
         w.editLabel(p)
 
         # Test createTreeItem.
         item = w.createTreeItem(p, parent_item=None)
-        assert item, repr(item)
+        assert item.__class__.__name__ == 'QTreeWidgetItem'
 
         # Test endEditLabel.
         w.endEditLabel()
 
         # Test code in onItemEntered and onItemClicked.
         mods = g.app.gui.qtApp.keyboardModifiers()
+        assert mods.__class__.__name__ == 'KeyboardModifier'
+
         isCtrl = bool(mods & mods.ControlModifier)
         isShift = bool(mods & mods.ShiftModifier)
 
@@ -45,6 +48,7 @@ class TestRealQtGui(LeoUnitTest):
         width = 100
         height = 200
         pix = QtGui.QImage(width, height, QtGui.QImage.Format.Format_ARGB32_Premultiplied)
+        assert pix.__class__.__name__ == 'QImage'
 
     # @-others
 
