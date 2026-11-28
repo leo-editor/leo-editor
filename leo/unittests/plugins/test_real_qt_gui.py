@@ -45,8 +45,7 @@ class TestRealQtGui(LeoUnitTest):
         isShift = bool(mods & mods.ShiftModifier)
 
         # Test code in make_composite_icon.
-        width = 100
-        height = 200
+        height, width = 200, 100
         pix = QtGui.QImage(width, height, QtGui.QImage.Format.Format_ARGB32_Premultiplied)
         assert pix.__class__.__name__ == 'QImage'
 
