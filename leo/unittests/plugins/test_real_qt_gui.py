@@ -2,13 +2,13 @@
 # @+node:ekr.20261127191851.1: * @file ../unittests/plugins/test_real_qt_gui.py
 from __future__ import annotations
 
-from leo.core.leoTest2 import LeoUnitTest
+from leo.core.leoTest2 import create_app, LeoUnitTest
+from leo.core import leoGlobals as g
+
+# Individual unit tests may import any of these.
 
 # from PyQt6 import QtCore, QtGui, QtWidgets
 # from PyQt6.QtCore import Qt
-# from leo.plugins.qt_tree.py import LeoQtTree
-
-from leo.core import leoGlobals as g
 
 
 # @+others
@@ -20,9 +20,7 @@ class TestRealQtGui(LeoUnitTest):
     # @+node:ekr.20261127192442.1: *3* TestRealQtGui.test_qt_tree
     def test_qt_tree(self):
 
-        from PyQt6 import QtCore, QtGui, QtWidgets
-        from PyQt6.QtCore import Qt
-        from leo.core.leoTest2 import create_app
+        from PyQt6 import QtGui
 
         c = create_app(gui_name='qt')
         p = c.p
