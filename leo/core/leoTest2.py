@@ -81,6 +81,7 @@ def create_app(gui_name: str = 'null') -> Cmdr:
     lm.globalSettingsDict = settings_d
     lm.globalBindingsDict = bindings_d
     cast(Any, c.config).settingsDict = settings_d
+    g.app.initComplete = True  # PR #5082
     assert g.unitTesting is True  # Defensive.
     t4 = time.process_time()
     if trace and t4 - t3 > 0.1:  # pragma: no cover
@@ -191,6 +192,7 @@ class LeoUnitTest(unittest.TestCase):
         print('')
         for p in c.all_positions():
             print(f"{p.gnx:25}: {' ' * p.level()}{p.h}")
+        print('')
 
     # @+node:ekr.20220806170537.1: *4* LeoUnitTest.dump_string
     def dump_string(self, s: str, tag: str = '') -> None:
