@@ -35,12 +35,12 @@ class TestRealQtGui(LeoUnitTest):
         item = w.createTreeItem(p, parent_item=None)
         assert item.__class__.__name__ == 'QTreeWidgetItem'
 
-        e = w.getTreeEditorForItem(item)
+        e = w.getTreeEditorForItem(item)  # Not changed, and return None.
 
         # Test code endEditLabel.
-        w = w.treeWidget
-        w.closeEditor(e, QtWidgets.QAbstractItemDelegate.EndEditHint.NoHint)
-        w.setCurrentItem(item)
+        # w = self.treeWidget
+        w.treeWidget.closeEditor(e, QtWidgets.QAbstractItemDelegate.EndEditHint.NoHint)
+        w.treeWidget.setCurrentItem(item)
 
         # Test code in onItemEntered and onItemClicked.
         mods = g.app.gui.qtApp.keyboardModifiers()
