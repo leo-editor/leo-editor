@@ -653,7 +653,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 # Careful. We may have switched gui during unit testing.
                 if hasattr(g.app.gui, 'qtApp'):
                     mods = g.app.gui.qtApp.keyboardModifiers()
-                    isCtrl = bool(mods & mods.KeyboardModifier.ControlModifier)
+                    isCtrl = bool(mods & mods.ControlModifier)
                     # We could also add support for Qt.ShiftModifier, Qt.AltModifier
                     # & Qt.MetaModifier.
                     if isCtrl:
@@ -726,13 +726,15 @@ class LeoQtTree(leoFrame.LeoTree):
         <CTRL-hover> -- expand;
         <SHIFT-hover> -- contract.
         """
+        g.trace(g.callers())
+
         if not self.use_mouse_expand_gestures:
             return
 
         if hasattr(g.app.gui, 'qtApp'):
             mods = g.app.gui.qtApp.keyboardModifiers()
-            isCtrl = bool(mods & mods.KeyboardModifier.ControlModifier)
-            isShift = bool(mods & mods.KeyboardModifier.ShiftModifier)
+            isCtrl = bool(mods & mods.ControlModifier)
+            isShift = bool(mods & mods.ShiftModifier)
             if isCtrl and not isShift:
                 self.expandItem(item)
             elif isShift and not isCtrl:
@@ -1233,7 +1235,7 @@ class LeoQtTree(leoFrame.LeoTree):
             return
         # Trigger the end-editing event.
         w = self.treeWidget
-        w.closeEditor(e, e.EndEditHint.NoHint)
+        w.closeEditor(e, QtWidgets.QAbstractItemDelegate.EndEditHint.NoHint)
         w.setCurrentItem(item)
 
     # @+node:ekr.20110605121601.17915: *4* LeoQtTree.getSelectedPositions
